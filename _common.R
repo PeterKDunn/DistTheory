@@ -6,3 +6,9 @@ knitr::opts_chunk$set(
   comment = "#>",
   collapse = TRUE
   )
+
+
+
+plotColour <- rgb(47, 105, 113, 
+                  alpha = 0.2, 
+                  maxColorValue = 256)
