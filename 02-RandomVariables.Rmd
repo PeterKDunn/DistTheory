@@ -1,0 +1,1460 @@
+# Distribution of random variables {#RandomVariables}
+
+::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
+Upon completion of this module you should be able to:
+
+* understand the concept of univariate random variables
+* distinguish between discrete, continuous and mixed random variables both for discrete and continuous cases
+* determine the probability function of random variables defined for an experiment
+* determine the distribution function of a random variable from its probability function and apply it to the computation of probabilities of defined events
+* plot the probability function and distribution function of a random variable
+* understand the concept of a mixed random variable and manipulate its probability function
+
+
+## Introduction
+
+In Module~\ref{SC:prob}, the tools of probability were used to assist in answering questions about phenomena involving uncertainty.  
+The sample space was defined as the set of all possible outcomes and an event was defined as a subset of the sample space.  
+Probabilities were associated with events.  
+The outcomes themselves could be numeric, as in tossing a die, or non-numeric, as in tossing a coin.
+
+Interestingly it turns out that it is advantageous to restrict ourselves to numerical outcomes from experiments.  
+This may sound unnecessarily restrictive, but is not.
+After all, we are quite at liberty to number all the outcomes in the sample space, thereby converting non-numeric elements to numeric ones.  
+So, for example, heads could be denoted 1 and tails 2 in the sample space associated with tossing a coin.
+
+This might sounds a bit unnecessary, and in the case of coin tossing it probably is.
+However by restricting ourselves to numeric outcomes we can make use of the powerful concepts that are associated with numbers.  
+In particular the concepts of discreteness, continuousness, types of infinity, limits, etc. are available.  
+So what might appear to be a restrictive step is in reality the key to unlocking some powerful ideas and results that make probability theory and in turn, statistical theory, a force to be reckoned.
+
+Of course, in most scientific, engineering and business applications, our interests are in assigning probabilities to numeric outcomes.  
+For example,
+
+* Probabilities can be assigned to different amounts of money made by an investment
+* Probabilities can be assigned to the proportion of people that contract a given disease
+* Probabilities can be assigned to observing different water levels at a certain river crossing
+* Probabilities can be assigned to matching DNA sequences when their genome sequences are almost identical
+* Probabilities can be assigned to recording certain rainfall amounts.
+
+
+The point however is that some experiments give rise to just a limited number of outcomes (eg tossing a die), some give rise to an unlimited number of discrete outcomes (eg the number of attempts needed to win a lottery) and some give rise to a range of possible outcomes over some interval (eg water levels, rainfall, tomorrow's maximum temperature).
+The differences amongst these types of sample spaces is what drives us to thinking in terms of discrete numbers (such as integers) and continuous numbers (such as the reals).
+
+To make the connection we define something called a *random variable* on the sample space.
+This is simply a way of converting the elements of the sample space into numbers.
+Depending on the type of sample space, this random variable can be discrete, continuous, or a mixture of both.
+Regardless, it is useful and important to be able to describe the possible values of the random variable and the probability associated with these values.  
+This is called the *distribution of the random variable* and is the concept underlying the name of this course.
+
+As an example, when a fair die is rolled, the classical approach to probability can be used to determine the theoretical probabilities $\Pr(\text{roll\ a\ \epsdice{1}}) = \Pr(\text{roll\ a\ \epsdice{2}}) = \cdots = \Pr(\text{roll a \epsdice{6}}) = 1/6$.
+If we define a random variable $X$ in this experiment as the number of pips showing on the die then we see, for example, that $X = 1$ for the outcome $\epsdice{1}$. 
+Consequently we have $\Pr(X = 1) = \Pr(X = 2) = \dots = \Pr(X = 6) = 1/6$ and this describes the distribution of the random variable $X$ for this experiment.
+
+This random variable $X$ is discrete and the distribution of $X$ is an example of a *discrete uniform distribution* for obvious reasons.  
+We learn more about this distribution in Section~\ref{SC:specdiscrete:uniform}.
+
+When a die is rolled repeatedly, and the relative frequency is determined for each value of $X$, we don't of course get 1/6 for each.  
+We recognise the discrete uniform distribution is a theoretical distribution based on the principle of indifference as described in section~\ref{SS:classical}.
+The observed distribution of relative frequencies based on actual dice tossing will only approximate the theoretical distribution.
+How well the two match we would be justified in thinking depends on how many times the die is tossed and how balanced it is.
+This is an investigation we pursue later.
+
+The theoretical distribution is said to *model* the experiment.
+Hence the discrete uniform distribution is a model for dice tossing.
+The classical approach to assignment of probabilities gives us a model in this case.  
+For other experiments other models will be appropriate.
+
+This module discusses the concept of the random variable and the distribution of probabilities amongst the values of a random variable.
+Further modules describe specific distributions useful in modelling experiments.
+
+
+## Random variables
+
+Colloquially, a random variable is a numerical-valued variable. 
+A random variable may be *continuous*, *discrete* or a combination of the two.  
+Some examples follow the more formal definition below.
+
+:::{.definition DomainRange, name="Domain and range"}
+A random variable $X$ is a *real-valued function* mapping each element of the sample space into a real number. 
+The *domain* of a random variable is the sample space, and the *range space* or *value set* is the set of real numbers taken by function.
+:::
+
+The random variable $X$ can be thought of as a rule assigning a number to each and every outcome in the sample space.
+
+Using functional notation we see that a function $X$ assigning to every sample point $s\in S$ a real number $X(s)$ is a random variable.
+Further, since $X$ is a function, to every $s\in S$ there corresponds exactly one value $X(s)$.  
+The domain of $X$ is the set $S$ and the range space is the set $\{X(s)\mid s\in S\}$.
+
+Commonly, ``random variable'' is abbreviated to rv.
+
+A *discrete* random variable (rv) is defined on a discrete sample space.
+Examples of discrete random variables include:
+
+* The number of mice in a cohort of twenty that develop an illness
+* The number of rain events occurring during a week
+* The amount of money in a person's pocket
+* The shoe size of a person
+* The number of attempts needed to win Lotto
+* The number of offspring successfully reared by an endangered species of bird
+* The gender (after coding) of the next customer.
+
+The last example might need explaining.  
+The sample space for the associated experiment contains two points `female' and `male'; i.e., $S = \{\text{female},\text{male}\}$. 
+A random variable though must be numeric so if `Gender' is to be a random variable we must associate the outcomes in the sample space with numerical values; e.g., an arbitrary coding such as 0 for `female' and 1 for `male' achieves this.  
+We can then write $X(\text{female}) = 0$ and $X(\text{male}) = 1$ where $X$ denotes the random variable `Gender'.
+Notice the range space or value set of $X$ is $\{0,1\}$ which we might denote as $R_X$.
+
+NOTE CODE IS ARBITRARY!
+
+Often we dispense with formal functional notation when defining random variables and write, for example,
+\[
+   X = 
+   \begin{cases} 
+      0 & \text{if female}\\
+      1 & \text{if male}
+    \end{cases}
+\]
+
+Incidentally don't confuse the *definition* of a random variable with the *values* of the random variable.
+In the last example, the rv `Gender' can have two values, female or male coded as 0 or 1. 
+`Male' or 0 is not a rv; it is one *value* of the rv `Gender'.
+
+Loosely speaking, a *continuous* random variable is one that can never be measured exactly. 
+If a random variable can assume any value or a set of values in an interval, then it is called *continuous*. 
+For example, consider your height. 
+Your height could be recorded as 174\,cm, but with better measuring instruments it may be 174.023\,451\,006\,cm, and even more decimals are possible
+with even better instruments! 
+Even though height may be written down to the nearest centimetre or even millimetre, height itself is still a continuous measure. 
+In addition, your height does not change by a distinct amount. 
+My baby daughter grows continually; she doesn't grow in jumps of 1cm, for example! 
+Examples of continuous random variables include:
+
+* The volume of waste water treated at a sewage plant per day
+* The amount of money made (or lost) by an investment over 12 months
+* The weight of hearts in normal rats
+* The lengths of the wings of butterflies
+* The lifetime of diseased mice after taking an experimental drug
+* The yield of barley from a large paddock
+* The amount of rainfall recorded each year
+* The time taken to perform a psychological test.
+
+
+
+Mixed random variables are less common. 
+Typically, they consist of a quantity that can be measured exactly (discrete) sometimes and inexactly (continuous) at other times. 
+Consider, for example, the time spent waiting at a set of traffic lights before proceeding.
+If the light is already green when you arrive, you can drive straight through and have to wait exactly zero seconds (the discrete part). 
+If the light is red when you arrive, you have to wait a continuous amount of time before it turns green and you go.
+Hence, the time spent waiting is a mixed random variable.
+
+\begin{sbexample}
+The \emph{Sunday Mail} newspaper (Brisbane, Australia) on 21
+December 1997 gave data giving the birth weight, gender, and time
+of birth of 44 babies born in the 24-hour period of 18 December
+1997 at the Mater Mother's Hospital in Brisbane, Australia. The
+gender of the babies is a discrete random variable; the birth
+weight and time of birth are continuous. The data can be used to
+determine the number of births each hour (discrete) and the time
+between births (continuous).
+\end{sbexample}
+
+\begin{sbexample}
+Consider tossing a coin twice and observing the outcome of the two
+tosses. Since a random variable is a \emph{real-valued function},
+simply observing the outcome as $\{\head, \tail\}$, for example,
+is not a rv. We could define the rv of interest, say $H$, as the
+\emph{number} of heads on the two tosses of the coin. The
+\emph{sample space} for the experiment is $S=\{ (\tail\tail),
+(\tail\head), (\head\tail), (\head\head)\}$. The connection
+between the sample space and $H$ is shown in
+Table~\ref{TB:prob:samplespace}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{ccc}
+Element of $S$ & Function $H$  & Value of $H$
+\botnewrule\\
+\hline \topnewrule
+$(\tail\tail) = s_1$ & $H(s_1)$, the number of heads in $s_1$ & $0$\\
+$(\tail\head) = s_2$ & $H(s_2)$, the number of heads in $s_2$ & $1$\\
+$(\head\tail) = s_3$ & $H(s_3)$, the number of heads in $s_3$ & $1$\\
+$(\head\head) = s_4$ & $H(s_4)$, the number of heads in $s_4$ & $2$\\
+\end{tabular}
+\caption{The random variable $H$ maps each element in the sample
+space $S$ to a real number.} \label{TB:prob:samplespace}
+\end{center}
+\end{table}
+
+In this case, the range of $H$ is $R_H=\{0, 1, 2\}$.
+\end{sbexample}\label{EG:2coins}
+
+
+Methods for describing random variables and how probabilities are
+assigned or distributed amongst the values of a random variable
+occupies much of this course.
+
+One of the reasons for distinguishing between discrete and
+continuous random variables is that the ways we can describe the
+distribution of probabilities depend to some extent on this
+distinction.
+
+
+
+\section{Univariate distributions}\label{SC:unidist}
+
+\reading{\WMS, Section~3.2.}
+
+This section focuses on methods of describing the distribution of
+probabilities amongst the values of a random variable.
+We need to consider separately discrete and continuous rvs.
+
+
+\subsection{The probability function}\label{SS:probfnc}
+
+The \emph{probability function}
+is a function that indicates how probabilities
+are assigned to the values of a discrete rv; that is,
+a rv with range space that is finite or countably infinite.
+
+
+\begin{definition}
+Let the range space of the discrete rv $X$ be $R_X$.
+With each $x\in R_X$ we associate a number
+$$p_X(x)=\Pr{X=x}$$
+
+The function $p_X$ is called the \emph{probability function} of $X$.
+\end{definition}
+
+Some texts call the probability function, the probability mass function.
+
+\begin{definition} If $R_X =\{ x_1,x_2,\dots,x_n, \dots
+\}$, the set  $ \{ (x_i,p_X(x_i);\quad i=1,2,\dots\}$
+is called the \emph{probability distribution} of the discrete rv $X$.
+\end{definition}
+
+\WMS\ and \DGS\ denote the probability function as $p(x)$ rather than $p_X(x)$.
+Using the subscript is recommended to avoid confusion in situations where
+a number of random variables are on the go.  So if we are dealing with the discrete
+rv's $X$ and $Y$ we can denote their respective probability distributions by
+$p_X$ and $p_Y$ respectively.  We use this subscript idea where appropriate throughout
+this course.
+
+Essentially the probability distribution of a random variable is a description
+of the range space or value set of the variable and the associated assignment
+of probabilities.  The above definition only applies to a discrete rv.
+
+The probability distribution of a discrete rv $X$ can be represented by a
+formula, a table or a graph which displays the probabilities $p(x)$
+corresponding to each $x\in R_X$.
+
+
+\begin{sbexample}
+\label{R2.1}
+Five balls numbered 1, 2, 3, 4, 5 are in a box.
+Two balls are selected at random.  Find the probability distribution
+of the larger of the two numbers.
+     \[ S =\{ (1,2),(1,3),(1,4),(1,5),(2,3),(2,4),(2,5),(3,4)_,(3,5),(4,5)\}
+\]
+     and all 10 points are equally likely.
+
+     Let rv $X$ be the larger of the 2 numbers chosen.  Then $R_X =\{2,3,4,5]$ and
+
+    \begin{align*}
+     \Pr{X=2} &= \Pr{(1,2)}=1/10\\
+     \Pr{X=3} &= \Pr{(1,3) \mbox{ or }  (2,3)}=2/10\\
+     \Pr{X=4} &= \Pr{(1,4) \mbox{ or } (2,4) \mbox{ or } (3,4)} = 3/10\\
+     \Pr{X=5} &= \Pr{(1,5) \mbox{ or } (2,5) \mbox{ or } (3,5)\mbox{ or } (4,5)} = 4/10.
+     \end{align*}
+     This is the probability distribution of $X$ but it can be expressed
+more neatly as a `formula',
+     \[ \Pr{X=x} = (x-1)/10, \quad x=2,3,4,5, \]
+     or shown in a table
+     \begin{tabular}{c|cccc}
+     x & 2 & 3 & 4 & 5\\
+     \hline
+     $\Pr{X=x}$ & .1 & .2 & .3 & .4
+     \end{tabular}
+     or as a graph as in Figure \ref{fig2.1}.
+
+\begin{figure}[h]
+\hspace{20mm}
+\includegraphics[bb=60 650 420 770,scale=0.8]{../pics/rvs/c2f2prb.ps}
+\caption{Probability distribution of $X$}\label{fig2.1}
+\end{figure}
+
+\emph{Computer exercise} Write an \R\ function to allow you to simulate
+the distribution in this example.
+\end{sbexample}
+
+\begin{sbexample}
+\label{EG:rvs:heads}
+Suppose a fair coin is tossed twice.
+Then the \emph{sample space} is
+$S=\{\head\head, \head\tail, \tail\head, \tail\tail\}$.
+Let $H$ be the \emph{number} of heads observed.
+$H$ is a (discrete) random variable,
+and the range of $H$ is $R_H = \{0, 1, 2\}$,
+representing the values that $H$ can take.
+The probability function maps each of these values
+to the associated probability.
+Using techniques from Module~\ref{SC:prob},
+the probabilities can be computed and given as a list:
+\begin{align*}
+   \Pr{H=0} =\,& \Pr{\mbox{no heads}} = 0.25\\
+   \Pr{H=1} =\,& \Pr{\mbox{one head}} = 0.5\\
+   \Pr{H=2} =\,& \Pr{\mbox{two heads}} = 0.25.
+\end{align*}
+This information can be presented as a table:
+\begin{center}
+\begin{tabular}{cccc}
+$h$: & $0$ & $1$ & $2$ \\
+$\Pr{H=h}:$ & $0.25$ & $0.5$ & $0.25$
+\end{tabular}
+\end{center}
+
+As a function,
+the probability function could be written as
+\[
+   p_H(h) = \Pr{H=h} = \begin{cases}
+               0.25 & \mbox{if $h=0$}\\
+               0.5 & \mbox{if $h=1$}\\
+               0.25 & \mbox{if $h=2$}\\
+               0 & \mbox{otherwise}
+              \end{cases}
+\]
+(Recall that the upper case~$H$ refers to the name of the rv.)
+For the more adventurous,
+it could also be given as
+\[
+   p_H(h) = \Pr{H=h} = \begin{cases}
+                  (0.5)0.5^{|h-1|} & \mbox{for $h=0$, $1$ or $2$}\\
+                  0 & \mbox{otherwise}
+              \end{cases}
+\]
+Graphically,
+the probability function could be shown as in
+Figure~\ref{FG:rvs:heads}.
+For discrete distributions,
+the pf can be displayed using the `stick' approach in this
+figure,
+or a histogram.
+
+Note that $\sum_{t \in \{0, 1, 2\}} p_H(t) = 1$
+and $p_H(h)\ge0$ for all $h$
+as required of a pf.
+
+
+\begin{figure}
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(70,70)(-10,-10)
+\linethickness{0.3mm}
+\put(0,0){\vector(1,0){50}} % Vertical axis
+\put(0,0){\vector(0,1){50}} % Horizontal axis
+\put(10,0){\line(0,-1){1}}   % X- Tick marks
+\put(20,0){\line(0,-1){1}}
+\put(30,0){\line(0,-1){1}}
+\put(40,0){\line(0,-1){1}}
+\put(0,20){\line(-1,0){1}}  % Y-Tick marks
+\put(0,40){\line(-1,0){1}}  % Y-Tick marks
+%\thicklines
+\linethickness{0.7mm}
+\put(10,0){\line(0,1){20}}    % \Pr{X=0}
+\put(20,0){\line(0,1){40}}    % \Pr{X=1}
+\put(30,0){\line(0,1){20}}    % \Pr{X=2}
+% Now annotate with text
+\put(10,-5){\makebox(0,0){$0$}}  % On horizontal axis
+\put(20,-5){\makebox(0,0){$1$}}
+\put(30,-5){\makebox(0,0){$2$}}
+\put(40,-5){\makebox(0,0){$3$}}
+\put(-5,20){\makebox(0,0){$0.25$}} % On vertical axis
+\put(-5,40){\makebox(0,0){$0.50$}}
+\put(55,0){\makebox(0,0){$h$}}  % X-axis label
+\put(0,55){\makebox(0,0){$\Pr{H=h}$}}  % Y-axis label
+\end{picture}
+\caption{A graphical representation of the probability
+function for Example~\ref{EG:rvs:heads}.}
+\label{FG:rvs:heads}
+\end{center}
+\end{figure}
+\end{sbexample}
+
+
+The following properties of the probability function are implied by the definition.
+
+\begin{enumerate}
+   \item
+   $p_X(t)\ge0$ for all values of $t$;
+   that is, probabilities are never negative;
+   \item
+   $\displaystyle \sum_{t\in R_X}  p_X(t) = 1$ where $R_X$ is the range of $X$;
+   that is,
+   the probability function accounts for all possible sample points
+   in the sample space;
+
+   \item
+   $p_X(t)=0$ if $t\not\in R_X$;
+
+   \item
+   For an event $A$ defined on a sample space $S$,
+   the probability of event $A$ is computed using
+   \[
+      \Pr{A} = \sum_{t\in A} p_X(t).
+   \]
+
+\end{enumerate}
+
+Don't be put off by the use of $t$ in these properties; $x$, $y$ or any other letter
+could also have been used.  The letter simply represents a particular value of the rv.
+
+The distinction between upper and lower case letters though when
+discussing rv's is worth noting.  Consider the notation $p_X(x)$
+used to define the probability function.
+The upper case~$X$ is the \emph{name} of the random variable;
+the lower case~$x$ is a \emph{particular value} that the random variable~$X$ may take.
+For example, if I roll a standard die,
+the random variable of interest may be ``the number on the top face'',
+which may be called~$X$.
+Then, the \emph{values} that this random variable can take are
+$x=1$, $x=2$ through to $x=6$.
+So the notation $\Pr{X=1}$ means
+``the probability that the number of the top face
+(that is, $X$)
+will be equal
+(that is, the equal to sign ${}={}$)
+to the particular value~$1$''.
+In general,
+upper case (usually Roman, not Greek) letters refer to
+the \emph{name} of a random variable;
+lower case Roman letters refer to the values the variable can take.
+
+There are times when it's difficult to know whether its the rv itself or a value
+of the rv that is being referred to.  Don't lose any sleep over it.  You
+won't be penalised if you get it wrong.
+
+
+
+\subsection{The probability density function}\label{SS:pdf}
+
+\reading{\DGS, Section~3.2; \WMS, Sections~4.1 and~4.2.}
+
+We run into a major difficulty when attempting to use a probability
+function to describe the distribution of a continuous rv; that is, a rv
+that can take on every value in a bounded or unbounded interval.
+
+The problem arises because probability behaves like mass.
+In the discrete case we imagine mass can be distributed over a number
+(possibly countably infinite) of distinct points where each
+point has non-zero mass.  This is sufficient to tell us all we
+need to know about the mass or probability associated with any set
+of points.
+
+In the continuous case, mass cannot be thought of as an attribute of a point
+but rather of a region surrounding a point in that as an object is shrunk
+to a single point
+its mass also shrinks to zero.
+The only way we can retain information about how `massive' an object is
+at a point is to consider its mass per unit volume in the neighbourhood
+of that point and
+consider what happens as the volume of the neighbourhood shrinks to zero.
+This measure does not go to zero.  And it is familiar to all of us as (mass) density.
+
+Not only does density have meaning at a point, it allows us to determine the mass
+of an object by integration if we know the density at every point throughout the mass.
+
+Similarly, to describe the probability distribution for a continuous rv
+requires us to know the probability density at every point in the range space.
+The function describing this density is naturally called the
+\emph{probability density function}
+or pdf.  Once the pdf is known we can determine by integration the probability
+associated with any event defined on the range space.
+
+Many texts (eg \DGS) either don't explicitly define the pdf or
+define it indirectly (eg \WMS).
+The definition given below relates directly to the idea of
+a density as described above
+but doesn't tell us much about how to actually find the function.
+
+\begin{definition}
+The \emph{probability density function} (pdf)
+of the continuous rv $X$ is a function $f_X$ such that
+$$\Pr{a<X\le b} = \int_a^b f_X(x)\,dx$$
+for any interval $(a,b]$ ($a<b$) on the real line.
+\end{definition}
+
+We are usually only concerned with $a,b\in R_X$ but it makes sense
+to think of the pdf
+as defined for all $x$, insisting that $f_X(x)=0$ for $x\notin R_x$.
+This definition focuses on the idea that areas under the graph of the pdf
+represent probabilities and leads to the following properties.
+
+
+
+The following properties of the probability density function are implied
+by the definition.
+
+\begin{enumerate}
+   \item
+   $f_X(x) \ge 0$ for all $-\infty<x<\infty$
+    \item
+   $\int_{-\infty}^\infty f_X(x)\,dx=1$
+      \item
+   For an event $E$ defined on a sample space $S$,
+   the probability of event $E$ is computed using
+   \[
+      \Pr{E} = \int_{E} f_X(x)\, dx
+   \]
+   \item
+   $\Pr{a<X\le b} = \Pr{a<X< b} = \Pr{a\le X< b} = \Pr{a\le X\le b} =\int_a^b f_X(x)\,dx$
+   \item
+   From the mean value theorem in calculus it follows that
+     \[ \Pr{x < X < x + \Delta x} = \int ^{x+\Delta x}_x f(t)\, dt = \Delta
+xf(\xi ), \ x<\xi < x + \Delta x \]
+   \item  For $\Delta x$ small,
+     \begin{equation}
+     \Pr{x<X <x+\Delta x}\simeq f(x)\Delta x
+     \end{equation}
+
+\end{enumerate}
+
+Properties 1 and 2 are sufficient to prove that a function is a pdf; ie if we're
+asked to show that some function $g(x)$ is a pdf all we need do is show that
+$g(x) \ge 0$ for all $-\infty<x<\infty$ and that $\int_{-\infty}^\infty g(x)\,dx=1$.
+
+Property 4 results from noting that if $X$ is a continuous rv,
+$\Pr{X=a}=0$ for any and every value~$a$ for the same reason that
+a point has mass zero.
+
+%Properties 5 and 6 are useful in theoretical work and in approximations.
+
+It's important to remember that the value of a pdf at some point $x$ does not represent
+a probability, but rather a probability density, and as such can have any non-negative
+value of arbitrary size.  Properties 5 and 6 directly relate the idea of a density
+to that of a probability.  These properties often find use in making approximations
+and in theoretical work.
+
+\begin{sbexample}
+\label{EG:rvs:conteg}
+Consider the continuous rv $W$
+with the pdf
+\[
+   f_W(w) = 2w\quad\mbox{for $0<w<1$}
+\]
+There are two ways to compute the probability
+$\Pr{0<W<0.5}$.
+One is to use the pdf.
+\begin{align*}
+   \Pr{0<W<0.5}
+   &= \int_0^{0.5} 2w\, dw\\
+   &= w^2\Big|_0^{0.5}\\
+   &= 0.25
+\end{align*}
+
+Alternately,
+the probability can be computed geometrically.
+The pdf is shown in
+Figure~\ref{FG:rvs:conteg}.
+The region corresponding to $\Pr{0<W<0.5}$
+is triangular;
+integration simply finds the area of this region.
+The area can also be found using the area of a triangle:
+the length of the base times the height,
+divided by two.
+So the area shaded is
+\[
+   \underbrace{0.5}_{\mbox{base}} \times \overbrace{1}^{\mbox{height}} /2 = 0.25,
+\]
+and the answer is the same as before.
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5,angle=270]{../pics/rvs/conteg.eps}
+\caption{The pdf of the rv $W$ from Example~\ref{EG:rvs:conteg}.
+The shaded region is $\Pr{0<W<0.5}$.}
+\label{FG:rvs:conteg}
+\end{center}
+\end{figure}
+
+\end{sbexample}
+
+
+\subsection{The distribution function}
+\label{SS:rvs:distfunction}
+
+\reading{\DGS, Section~3.3.}
+
+Another way of describing rvs is using a
+\emph{distribution function} (df),
+also called a \emph{cumulative distribution function} (cdf).
+We will use the df description in this course.
+
+The df gives the probability that a random variable $X$
+is less than or equal to a given value $t$.
+
+\begin{definition}
+For any rv $X$ the \emph{distribution function}, $F_X(x)$, is given by
+     $$
+     F_X(x)=\Pr{X\leq x}\quad\mbox{for $-\infty<x<\infty$}
+     $$
+\end{definition}
+
+Note that the distribution function applies to
+discrete or continuous or mixed (see below) rvs.
+
+Two important points to note:
+\begin{enumerate}
+   \item
+   The definition includes a less than \emph{or equal to} sign.
+   \item
+   The distribution function is defined for \emph{all} values of $x$.
+\end{enumerate}
+
+If $X$ is a discrete rv with range space $R_x$, the df,
+     \begin{align*}
+     F_X(x)&=\Pr{X\leq x}\\
+         &=\sum_{x_i\leq x} \Pr{X=x_i}\mbox{ for }x_i\in R_x,\mbox{ and }-\infty<x<\infty
+     \end{align*}
+
+If $X$ is a continuous rv, the df,
+     \begin{align*}
+     F_(x)&=\Pr{X\leq x}
+         = \int^x_{-\infty} f(t)\,dt \mbox{ for } -\infty<x<\infty
+     \end{align*}
+
+
+\begin{sbexample}
+\label{EG:rvs:heads2}
+Consider the simple example in
+Example~\ref{EG:rvs:heads}.
+The probability function for $H$ is given in that Example
+in numerous forms.
+To determine the df,
+first note that when $t<0$,
+the accumulated probability is zero;
+hence,
+$F_H(t) = 0 $ when $t<0$.
+At $t=0$,
+the probability of $0.25$ is accumulated,
+and no more probability is accumulated until $t=1$.
+Thus,
+$F_H(t) = 0.25$ for $0\le t<1$.
+Continuing, the df is
+\[
+   F_H(t) = \begin{cases}
+               0 & \mbox{for $t<0$}\\
+               0.25 & \mbox{for $0\le t<1$}\\
+               0.75 & \mbox{for $1\le t<2$}\\
+               1 & \mbox{for $t\ge 2$}
+            \end{cases}
+\]
+Note that the variable $t$ is used where $-\infty<t<\infty$.
+The df can be produced graphically,
+being careful to clarify what happens at $X=1$, $X=2$ and $X=3$
+using open or filled circles (see Figure~\ref{FG:rvs:headsdf}).
+
+\begin{figure}
+\begin{center}
+\setlength{\unitlength}{0.8mm}
+\begin{picture}(70,70)(-20,-10)
+\linethickness{0.3mm}
+\put(0,0){\vector(1,0){50}} % Vertical axis
+\put(0,0){\vector(0,1){50}} % Horizontal axis
+\put(10,0){\line(0,-1){1}}   % X- Tick marks
+\put(20,0){\line(0,-1){1}}
+\put(30,0){\line(0,-1){1}}
+\put(40,0){\line(0,-1){1}}
+\put(0,10){\line(-1,0){1}}  % Y-Tick marks
+\put(0,20){\line(-1,0){1}}  % Y-Tick marks
+\put(0,30){\line(-1,0){1}}  % Y-Tick marks
+\put(0,40){\line(-1,0){1}}  % Y-Tick marks
+%\thicklines
+\linethickness{0.7mm}
+\put(-5,0){\line(1,0){5}}    % F(x)=0 for t<0
+\put(0,10){\line(1,0){10}}    % F(x) = 0.25 for 0<=t<1
+\put(10,30){\line(1,0){10}}    % F(x) = 0.75 for 1<=t<2
+\put(20,40){\line(1,0){10}}   % F(x)=1 for t>2
+\multiput(-15,0)(2,0){8}{\line(1,0){1}}  % Dotted bits
+\multiput(30,40)(2,0){8}{\line(1,0){1}}  % Dotted bits
+% Circles
+\put(0,0){\circle{2}}
+\put(10,10){\circle{2}}
+\put(20,30){\circle{2}}
+\put(0,10){\circle*{2}}
+\put(10,30){\circle*{2}}
+\put(20,40){\circle*{2}}
+% Now annotate with text
+\put(0,-5){\makebox(0,0){$0$}}  % On horizontal axis
+\put(10,-5){\makebox(0,0){$1$}}  % On horizontal axis
+\put(20,-5){\makebox(0,0){$2$}}
+\put(30,-5){\makebox(0,0){$3$}}
+\put(40,-5){\makebox(0,0){$4$}}
+\put(-5,10){\makebox(0,0){$0.25$}} % On vertical axis
+\put(-5,20){\makebox(0,0){$0.5$}} % On vertical axis
+\put(-5,30){\makebox(0,0){$0.75$}} % On vertical axis
+\put(-5,40){\makebox(0,0){$1$}}
+\put(55,0){\makebox(0,0){$t$}}  % X-axis label
+\put(0,55){\makebox(0,0){$F_H(t)$}} % Y-axis label
+\end{picture}
+\caption{A graphical representation of the distribution
+function for Example~\ref{EG:rvs:heads2}.
+The filled circles contain the given point,
+while the empty circles omit the given point.}
+\label{FG:rvs:headsdf}
+\end{center}
+\end{figure}
+\end{sbexample}
+
+\begin{sbexample}
+Consider a continuous rv $V$ with pdf
+\[
+   f_V(v) = \begin{cases}
+               v/2 & \mbox{for $0<v<2$}\\
+               0 & \mbox{otherwise}
+            \end{cases}
+\]
+The df is zero whenever $v\le 0$.
+For $0<v<2$,
+\[
+   F_V(v) = \int_0^v t/2\,dt = v^2/4.
+\]
+Whenever $v\ge 2$,
+the df is one.
+So the df is
+\[
+   F_V(v) = \begin{cases}
+               0 & \mbox{if $v\le 0$}\\
+               v^2/4 & \mbox{if $0< v<2$}\\
+               1 & \mbox{if $v\ge 2$}
+             \end{cases}
+\]
+
+\Note: For the integral, \emph{do not write}
+\[
+   \int_0^v v/2\,dv
+\]
+It makes no sense to have the variable of integration
+as a limit on the integral and also in the function to be integrated.
+Either write the integral as given in the example,
+or write
+$\int_0^t v/2\,dv = t^2/4$
+and then change the variable from $t$ to $v$.
+\end{sbexample}
+
+Note that if a random variable $X$ is discrete,
+then the df will have points of discontinuity.
+If the variable is continuous then the df will be continuous.
+
+These and other properties of the df are stated below.
+
+     \begin{enumerate}
+     \item[(a)] $0\leq F_X(x)\leq 1$ because $F_X(x)$ is a probability.
+     \item[(b)] $F_X(x)$ is a non-decreasing function of $x$.\\
+     If $x_1 <x_2$ then $\{ x:x\leq x_1\} \subset \{ x:x\leq x_2\}$\\
+     So $F_X(x_1)=\Pr{X\leq x_1}\leq \Pr{X\leq x_2}=F_X(x_2)$
+     \item[(c)] Denoting $\displaystyle{\lim_{x\to \infty} F_X(x)}$ by
+$F_X(\infty )$ and $\displaystyle{\lim_{x\to -\infty} F_X(x)}$ by $F_X(-\infty )$
+we have $F_X(\infty )=1$ and $F_X(-\infty )=0$.
+     \item[(d)] $\Pr{a<X \leq b}=F_X(b)-F_X(a)$
+     \item[(e)] If $X$ is discrete then $F_X(x)$ is a step-function but if $X$
+is continuous $F_X$ will be a continuous function for all $x$.
+     \item[(f)] We can use (2.2) to find $F_X(x)$ given $\Pr{X=x}$ or (3.4)
+to find $F_X(x)$ given $f_X(x)$
+but we need to be able to proceed in the other direction as well.  That is,
+given $F_X(x)$ how do we find $\Pr{X=x}$ for $X$ discrete or $f_X(x)$ for $X$
+continuous?
+     \begin{itemize}
+     \item[(i)] It can be seen from the graph of the df in Example~\ref{EG:rvs:heads2} that
+the values of $x$ where a `jump' in $F_X(x)$ occurs are the points in the
+range space and the probability associated with a particular point in $R_X$
+is the `height' of the jump there.  That is,
+     \begin{equation}
+      p_X(x_j) = \Pr{X=x_j}=F_X(x_j)-F_X(x_{j-1})
+     \end{equation}
+     \item[(ii)] For $X$ continuous, from the Fundamental Theorem of
+Calculus,
+     \begin{equation}
+     f_X(x)=\frac{dF_X(x)}{dx}\quad\mbox{where the derivative exists.}
+     \end{equation}
+     \end{itemize}
+     \end{enumerate}
+
+
+\subsection{Mixed random variables}\label{SS:mixedrv}
+
+Some rvs are neither continuous nor discrete,
+but have parts of both.
+These rvs are called \emph{mixed random variables}.
+
+\begin{sbexample}
+\label{EG:rvs:diodemixed}
+In a factory producing diodes,
+a fraction of the diodes $p$ fail immediately.
+The distribution of the lifetime
+(in hundred of days), say $Y$,
+of the diodes is given by a discrete part at $y=0$
+for which $\Pr{Y=0}=p$ and a continuous part for $y>0$ described say
+by the pdf
+\[
+   f_Y(y) = (1-p) \exp(-y)\quad\mbox{if $y>0$.}
+\]
+
+(Strictly speaking $f_Y(y)$ is not a proper pdf because it doesn't
+integrate to one but we can see that the total probability is
+\[
+   0.4 + \int_0^\infty 0.6\exp(-y) \, dy = 0.4 + 0.6 = 1
+\]
+as required.)
+
+Consider a diode for which $p=0.4$.
+The probability distribution is displayed in
+Figure~\ref{FG:rvs:mixed}~(a) where a solid dot is included to show the discrete part.
+
+\begin{figure}
+\begin{center}
+\subfigure[The probability distribution of
+$Y$]{\includegraphics[scale=0.5,angle=270]{../pics/rvs/mixedpdf.eps}}
+\subfigure[The distribution
+function]{\includegraphics[scale=0.5,angle=270]{../pics/rvs/mixeddf.eps}}
+\caption{A mixed random variable. In~(a), the pdf and probability
+function; in~(b), the distribution function (see
+Section~\ref{SS:rvs:distfunction}). In (a), the empty circle implies
+the probability does not occur at this point.} \label{FG:rvs:mixed}
+\end{center}
+\end{figure}
+
+We see there are difficulties representing the probability distribution in this mixed case
+because we need to combine a probability distribution and a pdf.  These difficulties
+are circumvented by using the distribution function.  The df of $Y$ is
+$$F_Y(y)=\begin{cases}
+0 &\hbox{if $y<0$}\\
+0.4&\hbox{if $y=0$}\\
+0.4+0.6(1-\exp(-y))&\hbox{if $y>0$}
+\end{cases}$$
+\end{sbexample}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Self-assessment exercises}
+
+The following exercises are designed to provide practice at problem-solving
+based on the material in this module. Solutions are provided at the end of the module.
+Additional exercises are available in the next section and in the textbook.
+
+\begin{exercises}
+
+\item Find a formula for the pf of the number of heads observed in
+five tosses of a fair coin. Compute the df also.
+
+\begin{answer}
+\begin{enumerate}
+\item Let $X$ be the number of heads in five tosses. The range of
+$X$ is $R_X=\{0, 1, 2, 3, 4, 5\}$. There are a total of $2^5=32$
+possible outcomes from the five tosses. Zero heads can occur in
+$C^5_0 =1$ way; one head in $C^5_1 = 5$ ways; and so on. So the
+probability of zero heads is $C^5_0/32$; and the probability of
+one head is $C^5_1/32$; and so on. In general then,
+\[
+   p_X(x) = \Pr{X=x} =
+      \begin{cases}
+          \displaystyle\frac{ C^5_x}{32} & \mbox{ for $x=0, 1, 2, 3, 4, 5$}\\
+          0 & \mbox{elsewhere}
+      \end{cases}
+\]
+\item The df is
+\[
+   F_X(x) =
+   \begin{cases}
+      0 & \mbox{if $x<0$}\\
+      1/32 & \mbox{if $0\le x<1$}\\
+      6/32 & \mbox{if $1\le x<2$}\\
+      16/32 & \mbox{if $2\le x<3$}\\
+      26/32 & \mbox{if $3\le x<4$}\\
+      31/32 & \mbox{if $4\le x<5$}\\
+      1 & \mbox{if $x\ge 5$.}\\
+   \end{cases}
+\]
+\end{enumerate}
+\end{answer}
+
+
+\item If the pdf of $X$ is
+\[
+   f_X(x) = \begin{cases}
+               k\exp(-3x) & \mbox{$x>0$}\\
+               0 & \mbox{otherwise}
+            \end{cases}
+\]
+compute
+\begin{enumerate}
+   \item
+   the value of $k$.
+   \item
+   the probability $\Pr{0.5<X<1}$.
+   \item
+   the df of $X$.
+\end{enumerate}
+
+\begin{answer}
+\begin{enumerate}
+\item First, $f_X(x)\ge 0$ for all values of $x$ provided $k>0$.
+Secondly,
+\[
+   \int_0^\infty  k\exp(-3x)\, dx = k \frac{\exp(-3x)}{-3}\Big|_{x=0}^{x=\infty} = k/3=1,
+\]
+so  $k=3$. \item $\Pr{0.5<X<1} = \int_{x=0.5}^{x=1} 3\exp(-3x)\,dx
+\approx 0.173$. \item
+\[
+   F_X(x) = \int_{u=0}^{u=x} 3\exp(-3u)\,du = 3 \frac{\exp(-3u)}{-3}\Big|_{u=0}^{u=x}
+          = 1-\exp(-3x).
+\]
+Therefore
+\[
+   F_X(x) = \begin{cases}
+            0 & \mbox{if $x\le 0$}\\
+            1 - \exp(-3x) & \mbox{if $x>0$}
+            \end{cases}
+\]
+\end{enumerate}
+\end{answer}
+
+
+\item
+Consider the rv $W$ with pf
+\[
+   p_W(w) = 0.6(0.4)^{w-1}
+\]
+when $w=1, 2, \dots$, and is zero elsewhere.
+\begin{enumerate}
+   \item
+   Find $\Pr{W<5}$.
+   \item
+   Find $\Pr{2\le W\le 4 \mid  W< 5}$.
+\end{enumerate}
+
+\begin{answer}
+(a) $0.9744$ (b) $0.3744/0.9744 = 0.3842$.
+\end{answer}
+
+
+
+
+\item The rv $X$ has the pf
+\[
+   p_X(x) = \begin{cases}
+               0.3 & \mbox{for $x=10$}\\
+               0.2 & \mbox{for $x=15$}\\
+               0.5 & \mbox{for $x=20$}\\
+               0 & \mbox{elsewhere}
+            \end{cases}
+\]
+\begin{enumerate}
+   \item
+   Find the distribution function for $X$.
+   \item
+   Compute $\Pr{X>13}$.
+   \item
+   Compute $\Pr{X\le 10 \mid  X\le 15}$.
+\end{enumerate}
+
+\begin{answer}
+$F_X(x)=0$ for $x<10$, $F_X(x)=0.3$ for $10\le x<15$, $F_X(x)=0.5$
+for $15\le x<20$, $F_X(x)=1$ for $x\ge 20$; $\Pr{X>13} = 1 -
+F_X(13) = 0.7$; $\Pr{X\le 10\mid X\le 15} = \Pr{X\le 10}/\Pr{X\le15} =
+F_X(10)/F_X(15) = 0.3/0.5 = 0.6$.
+\end{answer}
+
+\item
+Consider the continuous rv $Z$ with pdf
+\[
+   f_Z(z) = \begin{cases}
+               2(3-z)/15 & \mbox{for $-1<z<2$}\\
+               0 & \mbox{elsewhere}
+            \end{cases}
+\]
+\begin{enumerate}
+   \item
+    Find the df of $Z$.
+   \item
+   Find $\Pr{Z<0}$.
+\end{enumerate}
+
+\begin{answer}
+\begin{enumerate}
+   \item $F_Z(z)=0$ for $z\le -1$; $F_Z(z)=6z/15 - z^2/15 + 7/15$ for $-1<
+z < 2$; $F_Z(z)=1$ for $z\ge 2$.
+\item $\Pr{Z<0} = F_Z(0) = 7/15$.
+\end{enumerate}
+\end{answer}
+
+
+%\begin{answer}
+%$\kappa=21.623732$; (no answer); $\Pr{0<Z<1} = 0.0547$.
+%\end{answer}
+
+\item
+The random variable $A$ has the distribution
+\[
+   p_A(a) = \frac{c}{a}\qquad \mbox{for $a=1, 2, 4$},
+\]
+and is zero otherwise.
+\begin{enumerate}
+   \item
+   Determine the value for $c$.
+   \item
+   Determine and plot the distribution function for $A$.
+   \item
+   Calculate $\Pr{A<2\mid A<3}$.
+\end{enumerate}
+
+\begin{answer}
+\begin{enumerate}
+   \item $c=4/7$
+   \item $F_A(a)=0$ for $a<1$; $F_A(a)=4/7$ for $1\le a<2$;
+$F_A(a)=6/7$ for $2\le a<4$; $F_A(a)=1$ for $a\ge 4$
+\item  $(4/7)/(6/7)= 2/3$.
+\end{enumerate}
+\end{answer}
+
+
+
+
+\item\label{QN:pdfQ}
+The random variable $Q$ has a probability density function given
+by Figure~\ref{FG:pdfk}.
+\begin{enumerate}
+   \item
+   Determine the distribution function of $Q$.
+
+   \item
+   Using the distribution function or otherwise, find the median of $Q$ (ie the point
+   that divides the area under the pdf into two equal halves).
+\end{enumerate}
+
+\begin{figure}[ht]
+   \begin{center}
+%      \psfrag{k}[][[B]{\footnotesize $1/2$}%
+%      \psfrag{-1}[B][[B]{\footnotesize$-1$}%
+%      \psfrag{1}[B][[B]{\footnotesize $1$}%
+%      \psfrag{2}[B][[B]{\footnotesize $2$}%
+%      \psfrag{0}[B][[B]{\footnotesize $0$}%
+%      \psfrag{f}[B][[B]{\footnotesize $f_Q(q)$}%
+%      \psfrag{E}{\footnotesize $f_Q(q)=1/2-q/4$}%
+%      \psfrag{Q}[][[B]{\footnotesize $q$}%
+%      \includegraphics[scale=0.4]{../pics/rvs/pdfk.eps}
+%\includegraphics[bb=60 650 420 900,scale=0.75]{../pics/rvs/pdfk.jpg}
+\includegraphics[scale=0.6]{../pics/rvs/pdfk1.eps}
+      \caption{Probability density function in Question~\ref{QN:pdfQ}.}
+      \label{FG:pdfk}
+   \end{center}
+\end{figure}
+
+\begin{answer}
+$F_Q(q) = 0$ for $q<-1$, $F_Q(q) = (q_1)/2 $ for $-1\le q< 0$,
+$F_Q(q) = (1/2) + (q/2) - (q^2/8)$ for $0 \le q<2$, $F_Q(q) = 1$
+for $q>2$; solve for $1/2 = (1/2) + (q/2) - (q^2/8)$, median is
+$q=0$ (ignore solution $q=4$).
+\end{answer}
+
+
+\item
+(Computer exercise) Use \R\ to estimate $\Pr{0 \le X \le 0.5,
+0\le Y \le 0.5}$ if the random vector, $(X,Y)$, has the bivariate
+uniform distribution in Example~\ref{EG:3:bivunif}. (Generate a
+random sample of size 500 from the bivariate uniform distribution
+then count the number of pairs, $(x,y)$, which satisfy $0 < x <
+0.5$ and $0 < y < 0.5$.)
+
+\begin{answer}
+\Method: First generate 500 random vectors $(X,Y)$ from the
+bivariate uniform distribution in Example~\ref{EG:3:bivunif}. Do this by generating
+two columns of 500 random numbers from a uniform distribution on $[0,1]$.
+Each row then forms a random vector from the required distribution.
+Count the number of $(x,y)$ that satisfy $0<x<0.5$ and $0<y<0.5$.
+\begin{verbatim}
+samsz<-500
+u1<-runif(n=samsz,min=0,max=1)
+u2<-runif(n=samsz,min=0,max=1)
+# a logical vector T/F depending on whether conditions are met
+datain<-(u1 < 0.5) & (u2 < 0.5)
+# coercing the logical vector into a 1/0 vector and summing
+N.cond.met<-sum(datain)
+Pu1u2lt.half<-N.cond.met/samsz
+print(Pu1u2lt.half)
+\end{verbatim}
+
+(For one simulation I obtained a sum of 120 giving and estimate of 0.24.)
+Try repeating the simulation to give a total sample size of 1000.
+\end{answer}
+
+
+\end{exercises}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Exercises}
+
+\begin{exercises}
+
+\item
+Suppose $X$ is a continuous rv and
+\[ f_X(x)=ke^{-(x/4)}, \quad 0 \le x < \infty \]
+\begin{enumerate}
+\item Find $k$ so that $f_X(x)$ is a pdf.
+\item Find $F_X(x)$.
+\item Find $\Pr{X \le 2}$.
+\item Find $\Pr{2 < X < 4}$.
+\end{enumerate}
+
+\begin{answer}
+(a) $k=0.25$ (b) $F_X(x) = 1 - e^{-x/4}$
+(c) Use the result of (b) 0.3935 (d) 0.2387
+\end{answer}
+
+
+\item
+The pdf of a random variable $X$ is defined by
+\[ f(x)=\left[ \begin{array}{l l}
+0&x \le 1\\
+\frac{1}{4}&1 < x \le 2\\
+0&2 < x \le 3\\
+\frac{1}{2}&3 < x \le 4\\
+0&4 <x \le 5\\
+\frac{1}{4}&5 < x \le 6\\
+0&x > 6
+\end{array} \right. \]
+\begin{enumerate}
+\item Find $F(x)$ and draw a graph of both $f(x)$ and $F(x)$.
+\item Find $\Pr{X < 4.3}$.
+\item Find $\Pr{1.5 < X < 5.3}$
+\item Find $\Pr{X \ge 3.5}$.
+\end{enumerate}
+
+\begin{answer}
+Remember $F(x)=\Pr{X \le x} = \ds{\int_{-\infty}^x f(t)dt}$ which will
+become a sum of integrals over the appropriate ranges in this problem. Use
+the distribution function to answer parts (b)--(d).\\
+(b) 0.75 (c) 0.7 (d) 0.5
+\end{answer}
+
+
+
+\item
+For the following experiments, determine the sample space and
+carefully write down the random variable of interest stating
+whether it is a discrete, continuous or mixed random variable.
+
+\begin{enumerate}
+   \item
+   The number of heads in two throws of a fair coin.
+
+   \item
+   The number of throws of a fair coin until a head is observed.
+
+   \item
+   A quality audit team at USQ is interested in the
+   time taken for students to download the USQ homepage.%\footnote{\url{www.usq.edu.au}}
+
+   \item
+   The Toowoomba City Council is currently undertaking a study
+   into alternative means of transport,
+   and are gathering data on the time it would take people to walk to work.
+
+   \item
+   Traffic engineers collect data to improve traffic control.
+   They count number of cars that pass through an intersection during a day.
+
+
+   \item
+   Hospital administrators collect data on the number of procedures they
+   perform to ensure adequate service.
+   They record the number of X-rays performed at the local hospital per day.
+
+   \item
+   Weather and climate forecasting requires knowledge of
+   the barometric pressure in Toowoomba at 5pm each afternoon.
+
+\end{enumerate}
+
+
+
+
+
+\item
+
+Consider the density function defined as follows:
+\[
+   f_W(w) = \begin{cases}
+               kw & \mbox{for $0<w<1$}\\
+               k  & \mbox{for $1\le w\le 2$}\\
+               0  & \mbox{otherwise}
+            \end{cases}
+\]
+for some constant $k$.
+\begin{enumerate}
+\item For what value of $k$ is $f_W(w)$ a valid pdf? \item Plot
+the probability density function of $W$. \item Determine and plot
+the distribution function of $W$.
+\end{enumerate}
+
+
+
+\item
+
+Very little is known about the random variable $U$.  It is known,
+however, that $U$ is a continuous random variable such that the
+probability density function is zero for $U<-2$ and $U>4$, and is
+non-zero for $-2<U<4$.
+\begin{enumerate}
+   \item
+   Sketch a possible distribution function for $U$.  Label any important
+   details of your sketch.
+
+   \item
+   It is later found  the median of $U$ is $2$.  On a fresh set
+   of axes, sketch a possible distribution function for $U$.  Label
+   any important details of your sketch.
+
+\end{enumerate}
+
+\item
+Suppose a fair coin is tossed three times, and a head (\head) or a
+tail (\tail)
+is recorded on each toss.  The two events $A$ and $B$ are defined as:\\
+\quad $A$: The number of heads in the three tosses\\
+\quad $B$: The number of heads in the first two tosses
+
+
+\begin{enumerate}
+\item Construct a joint probability table for the events $A$ and
+$B$.
+\item Determine the correlation coefficient between $A$ and
+$B$.
+\item Explain in the context of the question what the
+correlation coefficient means.
+\end{enumerate}
+
+
+\item\label{QN:2.5}
+Consider the diagram in Figure~\ref{FG:exampf}. Answer the
+following questions.
+
+\begin{enumerate}
+   \item
+   Is the random variable, $X$, a discrete, continuous or
+   mixed random variable?  Justify your answer.
+
+   \item
+   Determine and sketch the distribution function for $X$.
+
+   \item
+   Find $\Pr{12<X\le15}$.
+\end{enumerate}
+
+\begin{figure}[ht]
+   \begin{center}
+%      \newcommand{\fns}{\footnotesize}%
+%      \psfrag{f}[B][B]{\fns $\Pr{X=x}$}%
+%      \psfrag{X}[][B]{\fns $x$}%
+%      \psfrag{1}[B][B]{\fns $1$}%
+%      \psfrag{25}[][B]{\fns $0.25$\ }%
+%      \psfrag{50}[][B]{\fns $0.50$\ }%
+%      \psfrag{75}[B][B]{\fns $0.75$}%
+%      \psfrag{12}[B][B]{\fns $12$}%
+%      \psfrag{13}[B][B]{\fns $13$}%
+%      \psfrag{14}[B][B]{\fns $14$}%
+%      \psfrag{15}[B][B]{\fns $15$}%
+%      \psfrag{16}[B][B]{\fns $16$}%
+%      \psfrag{17}[B][B]{\fns $17$}%
+%      \includegraphics[scale=0.4]{../pics/rvs/exampmf.eps}%
+%\includegraphics[bb=60 650 420 900,scale=0.75]{../pics/rvs/exampmf.jpg}%
+\includegraphics[scale=0.5]{../pics/rvs/exampmf1.eps}
+      \caption{Diagram for Exercise~\ref{QN:2.5}}%
+      \label{FG:exampf}%
+   \end{center}
+\end{figure}
+
+
+\item
+In production lines, it is important to ensure that the amount of
+product placed in containers is not less than the amount
+advertised.  However, it is also important that there is not too
+much product in the container as this reduces profits.   Balancing
+the two criteria requires careful management.
+
+A company selling cordial advertises that the bottles contain two
+litres of cordial. In practice, the machine actually fills bottles
+with an amount that varies randomly between a minimum of $1.97$
+litres and a maximum of $2.07$ litres.
+
+\begin{enumerate}
+
+\item Carefully write down the variable of interest.
+
+\item Write down the sample space for the amount of cordial placed
+in the bottles.
+
+\item Could the relative frequency approach to probability be used
+to determine the probability that a bottle is underfilled?
+Explain your answer.
+
+\item It is found that the actual amount of cordial placed in the
+bottles, $C$, follows the probability density function pictured in
+Figure~\ref{FG:cordial}. Determine a value for $k$ (preferably
+\emph{without} using calculus).
+
+\item Determine the probability that the bottles are underfilled.
+
+\item Calculate the median amount of cordial placed in the
+containers.
+
+\begin{figure}[h]
+   \begin{center}
+   \setlength{\unitlength}{0.5mm}
+   \begin{picture}(120,100)
+      % Axes
+      \put(0,10){\vector(1,0){140}}
+      \put(10,0){\vector(0,1){100}}
+      % PDF
+      \thicklines
+      \put(15,10){\line(1,1){70}}
+      \put(85,80){\line(1,-2){35}}
+      % Labels
+      \thinlines
+      \put(85,10){\line(0,-1){3}}
+      \put(85,0){\makebox(0,0){\small$2.04$}}
+      \put(15,10){\line(0,-1){3}}
+      \put(17,0){\makebox(0,0){\small$1.97$}}
+      \put(120,10){\line(0,-1){3}}
+      \put(120,0){\makebox(0,0){\small$2.07$}}
+      \put(10,80){\line(-1,0){3}}
+      \put(5,80){\makebox(0,0)[r]{\small$k$}}
+      \put(0,100){\makebox(0,0)[l]{$y$}}
+      \put(145,0){\makebox(0,0)[l]{$x$}}
+      % Dotted guidelines
+      \multiput(10,80)(10,0){8}{\line(1,0){5}}
+      \multiput(85,10)(0,10){7}{\line(0,1){5}}
+   \end{picture}
+      \caption{The pdf for the distribution of cordial in two litre bottles.}
+      \label{FG:cordial}
+   \end{center}
+\end{figure}
+
+\end{enumerate}
+
+
+
+\item The rv $V$ has the probability function
+\[
+   p_V(v) = c^2/v
+\]
+for $v=1, 2, 3$ and is zero elsewhere.
+\begin{enumerate}
+   \item
+   Show  there are two values of $c$ such that
+   $\sum_{v=1}^3 p_V(v)=1$.
+
+   \item
+   What is the only possible value for $c$?  Explain.
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\item
+A random variable $X$ has probability function given by
+\[\Pr{X=x}=kx, \quad \quad x=1,2,3,\cdots,2n \]
+\begin{enumerate}
+\item Find the value of $k$ that makes this a probability function.
+\item Find the probability that $X \le n$.
+\item Find the probability that $X$ is even.
+\end{enumerate}
+
+\begin{answer}
+All three parts involve summation of an arithmetic progression.\\
+(a) $k=\ds{\frac{1}{n(1+2n)}}$ \ (b) $\ds{\frac{1+n}{2(1+2n)}}$ \
+(c) $\ds{\frac{(1+n)}{(1+2n)}}$
+\end{answer}
+
+
+\item
+A random variable $X$ has probability function
+\begin{center}
+\begin{tabular}{c| c c c c}
+$X$&0&1&2&3\\
+\hline\rule{0mm}{7mm}
+$\Pr{X=x}$&$\ds{\frac{1+3\theta}{4}}$&$\ds{\frac{1-\theta}{4}}$&
+$\ds{\frac{1+2\theta}{4}}$&$\ds{\frac{1-4\theta}{4}}$
+\end{tabular}
+\end{center}
+For what range of values of $\theta$ is this a probability distribution?
+
+\begin{answer}
+Each probabilities must lie in the range [0,1]. Thus $-1/3 \le \theta \le 1/4$.
+(Check probabilities sum to 1 for all $\theta$.)
+\end{answer}
+
+
+
+%\begin{answer}
+%See Section~\ref{SC:mgf}, Definition~\ref{DF:mgf} for a {\em discrete} rv.
+%$M_X(t) = \ds{\frac{1}{2}(e^t+e^{-t})}$\\
+%(a) Expand the mgf and find the coefficient of
+%$\ds{\frac{t^r}{r!}}$.\\
+%(b) Note that since $\E(X)=0$ that
+%$\E(X-\mu)^r = \E(X)^r$.
+%\end{answer}
+
+
+\item
+(Computer exercise) Use simulation to estimate the value of $\pi$.
+
+
+\end{exercises}
+
+\makeanswers
+
+\endinput
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%unused qns
+
+\item
+In meteorological studies, rainfall is often graphed using
+rainfall exceedance charts.  In these charts, the plotted function
+is $1-F_X(x)$, where $X$ represents the rainfall.
+\begin{enumerate}
+\item Explain what is measured by $1-F_X(x)$ in this context, and
+explain
+      why it may be more useful than just $F_X(x)$ when
+      dealing with rainfall.
+\item The data in the table below is total monthly rainfall at
+      Charleville, Queensland, from 1882 until 1995 for the
+      months of June and December. (Data supplied by the Queensland DPI.)
+      Plot $1-F_X(x)$ for this rainfall data for each month
+      on the same graph.
+\item Suppose a producer requires at least 800 mm of rain in June
+      to plant a crop.  Find the probability of this occurring from the
+      plot above.
+\item Determine the median monthly rainfall in Charleville in June
+      and December.
+\item Decide if the mean or the median is an appropriate measure
+of central
+      tendency, giving reasons for your answer.
+\item Compare the probabilities of obtaining 300mm, 500mm, 1000mm
+and
+      1500mm of rain in the months of June and December.
+\item Write a one page explanation of how to use diagrams like
+that
+      presented here.  The explanation should be aimed at producers
+      (that is, experts in farming, but not in statistics) and
+      should be able to demonstrate the usefulness of such graphs in
+      decision making.  Your explanation should be clear and without
+      jargon.  Use diagrams if necessary.
+\end{enumerate}
