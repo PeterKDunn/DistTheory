@@ -1,0 +1,530 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Self-assessment exercises}
+
+The following exercises are designed to provide practice at problem-solving
+based on the material in this module. Solutions are provided at the end of the module.
+Additional exercises are available in the next section and in the textbook.
+
+\begin{exercises}
+
+\item Suppose the number of tpyograhpical\footnote{This one was
+intentional to keep you alert.} errors on a single page has a
+Poisson distribution with $\mu=2$. Assume errors are
+independent from page to page. What is the probability that two
+pages out of ten will contain no such errors?
+\begin{answer}
+Let the number of typographical errors be $E$. Then
+$E\sim\text{Pois}(2)$. Then, $\Pr{E=0}= \text{E}xp(-2) 2^0/0! = 0.1353$.
+Now let $P$ be the number of pages out of 10 with no errors. Then
+$P\sim\text{Bin}(n=10, p=0.1353)$ so $\Pr{P=2} = {10\choose 2}(0.1353)^2
+(0.8647)^8 = 0.2575$.
+\text{E}nd{answer}
+
+\item
+
+A university department has a photocopier security system to track
+the number of photocopies made by individual staff members. The
+staff members must punch in their access code before being allowed
+to make photocopies. The access code consists of any combination
+of the ten digits $0$ to $9$, and each staff member can choose any
+four digit number.
+
+\begin{enumerate}
+\item Determine how many access codes are possible.
+%\item In a department with 25 staff members, each with their own access code,
+%      determine the probability that each staff member will choose a
+%      unique access code. Assume the staff all pick a four digit
+%      number at random.
+\item Determine the probability that a randomly chosen access code
+      contains more than two digits \text{E}mph{greater} than~6.
+\item Comment on how likely it is that the access codes were all
+      chosen at random.
+\item Determine the number of access codes possible if no digit
+      can be repeated.
+\text{E}nd{enumerate}
+
+\begin{answer}
+\begin{enumerate}
+\item $10^4$
+\item binomial with the probability of choosing a number greater
+than 6 being $0.3$ and $n=4$, so answer is $C^4_3 (0.3)^3 (0.7)^1
++ C^4_4 (0.3)^4 (0.7)^0 = 0.0837$
+\item unlikely (people use number
+easy to remember, such as years of birth); order is important:
+$P^{10}_4 = 5040$.
+\text{E}nd{enumerate}
+\text{E}nd{answer}
+
+\item In Australia, most number plates on cars, trucks and buses
+consist of any 3 letters and any 3 numbers. How many vehicles
+(cars, trucks and buses) can I expect to pass by me while waiting
+to cross the road before I see the letter A on a number plate?
+
+\begin{answer}
+Let $A$ be the event `seeing a number plate with an A'. $\Pr{A} =
+1 - \Pr{A'} = 1 - (25/26)^3 = 0.1110036$; so the probability is
+geometric with $p=0.111$ and the expected number is $1/p = 9$.
+\text{E}nd{answer}
+
+\item The number of phone calls received at a real estate firm per
+hour has approximately a Poisson distribution with mean $6$.
+Determine
+\begin{enumerate}
+\item the probability that more than ten phone calls will be
+received in one hour. \item Suppose the secretary takes a 30
+minute lunch break. What is the probability that no calls will be
+be received in this time?
+\text{E}nd{enumerate}
+\begin{answer}
+Let $X$ be the number of calls received in one hour; $X\sim
+\text{Pois}(6)$. Then $\Pr{X>10} =  1 - \Pr{X\le 10} = 0.0426$. In
+half-an-hour, the mean is three phone calls. Let $Y$ be the number
+of calls received in half-an-hour; $Y\sim \text{Pois}(3)$. Then
+$\Pr{Y=0} = 0.0498$.
+\text{E}nd{answer}
+
+
+\item Example~\ref{EG:prob:wolfdice} gives data on the number of
+times each face appears when standard die was rolled. Do the data
+appear to come from a discrete uniform distribution? Justify your
+answer.
+\begin{answer}
+Yes---the variations are small enough to be explained by sampling
+error.
+\text{E}nd{answer}
+
+
+\item
+(Computer exercise) In Section~\ref{SC:CAO} an experiment concerning
+21 CAO patients was described. If it is assumed there is no
+difference in effect of the two experimental conditions then each
+patient represents an independent Bernoulli trial with\\
+$\Pr{\text{success}}=\Pr{\text{Patient does better under condition 1}}=0.5$.\\
+Using \R\ find $\Pr{X=x}$ ({\sf dbinom}) and $\Pr{X \le x}$ ({\sf 1-pbinom})
+for $x=0,1,2,\dots,21$ when $X \sim \text{Bin}(21, 0.5)$
+and compare these probabilities to those estimated in Section~\ref{SC:CAO}.\\
+(\Note: Simulation won't generally give you the exact theoretical
+answer but, provided the sample size is not too small, should give
+a reasonable estimate of the true value.)
+
+\begin{answer}
+\begin{verbatim}
+improve<-0:21
+Px<-dbinom(x=improve,size=21,prob=0.5)
+PGTx<-pbinom(q=improve,size=21,prob=0.5)
+PLTx<-1-PGTx
+results<-cbind(improve,Px,PLTx,PGTx)
+dimnames(results)<-list(NULL,c("x","P{X=x}","P(X<=x)","P(X>x)"))
+print(round(results,4))
+\text{E}nd{verbatim}
+\text{E}nd{answer}
+
+\item
+(Computer exercise) Use the {\sf ppois} function to calculate the
+probability
+that 5 or more customers will arrive in a half minute interval.
+(That is $\Pr{X \ge 5}$).\\
+Simulate the arrival of customers in 100 such half minute
+intervals and
+estimate $\Pr{X \ge 5}$. Compare the true and estimated results. \\
+If five customers arrived in a half minute period is there
+sufficient evidence to claim that $\mu\ne 2$?
+
+\begin{answer}
+\begin{verbatim}
+ppois(q=5,mu=2)
+sim.results<-table(rpois(n=100,mu=2))
+print(sim.results)
+\text{E}nd{verbatim}
+My results gave
+\begin{verbatim}
+ sim.results
+ 0  1  2  3  4  5  6
+14 24 27 21  8  4  2
+\text{E}nd{verbatim}
+There are 2 intervals where at least five customers enter giving an
+estimated probability of 0.06. We need to combine categories 5 and 6 so that
+ class  frequency is $>$ 5 and large sample theory applies.
+
+This would indicate that it is unlikely
+that five (or more) customers would arrive in a half minute interval if in fact
+$\mu=2$. We would have reason to suspect that $\mu$ may be
+greater than 2 if five (or more) customers arrive in a half minute
+interval.\\
+(Try it for 1000 intervals, your
+estimate should improve.)
+\text{E}nd{answer}
+
+
+\text{E}nd{exercises}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Exercises}
+
+
+\begin{exercises}
+
+
+\item
+In a taste testing experiment $N$ judges are offered four different
+brands of orange juice to taste. Suppose $Y$ is the number of judges that
+choose brand A as the best .
+\begin{enumerate}
+\item Write down the probability function of $Y$ assuming there is no
+difference in taste between the brands.
+\item What is the probability that at least one judge chooses brand A?  Use
+a calculator to evaluate the expression for $N=10$.\\[2mm]
+Use \R\ for parts (c)--(g):
+\item If there are 10 judges, simulate 1000 trials
+and so estimate $\Pr{Y=y}$ for $i=0,1,2,\dots,10$.\\
+\begin{verbatim}
+p <- numeric(0)
+for (i in 1:1000) {
+ChooseA <- sample(c(0,1),size=10,replace=T,prob=c(0.75,0.25))
+nA <- sum(ChooseA)
+p <- c(p,nA)   }
+table(p)/1000
+\text{E}nd{verbatim}
+
+\item Estimate $\Pr{Y \ge 6}$. If 6 judges did choose brand A in the taste testing experiment
+what conclusion would you come to. Explain.
+\item What would you conclude if only one judge chose brand A?
+\item Use the following commands to find the exact probabilities in (c),(d) and (e).
+\begin{itemize}
+\item {\sf dbinom(prob=0.25,x=0:10,size=10)}
+\item {\sf pbinom(prob=0.25,q=0:10,size=10)}
+\text{E}nd{itemize}
+Would your \text{E}mph{conclusions} change in (d) and (e) if you used the exact
+probabilities? (The practical advantage of simulation is that provided a large enough sample
+size is used the estimated probabilities are usually sufficient and
+finding the exact probabilities is unnecessary making it extremely useful in
+complex situations.)\\
+Graph the pdf and df on the same set of axes.
+\text{E}nd{enumerate}
+
+\begin{answer}
+(a) See Section~\ref{SC:specdiscrete:binomial} (c) Use {\sf rbinom} (d) Use {\sf pbinom}
+\text{E}nd{answer}
+
+
+\item
+Assume that the probability that an observer will see a particular
+bird is $p$. If there are 6 observers in a search party
+\begin{enumerate}
+\item write down the probability distribution for $X$, the number of observers that
+see the bird.
+\item What is the probability a bird will not be seen by the search party?
+\item How large should a search party be to ensure that there is
+at least a  95\% chance of the bird being seen?
+\text{E}nd{enumerate}
+
+\begin{answer}
+See Section~\ref{SC:specdiscrete:binomial} (c) $\ds{n \ge \frac{\log(0.05)}{\log q}}$
+\text{E}nd{answer}
+
+
+\item
+The probability of brill fish being infected by parasites is known to be
+0.6. Suppose brill are sampled until an infected fish is found. Let $Y$ be
+the number of fish sampled. Find the probability that
+\begin{enumerate}
+\item the first infected fish is the fifth sampled.
+\item Find the probability that more than 3 fish must be sampled to find the first
+infected fish.
+\item If sampling continues after the first infected fish is found find the
+probability that the third infected fish is the eighth sampled.
+\text{E}nd{enumerate}
+
+\begin{answer}
+See Sections~\ref{SC:geom} and~\ref{SC:specdiscrete:negbin}.\\
+(a) 0.015 (b) 0.064 (c) 0.0464
+\text{E}nd{answer}
+
+
+\item
+Find the variance of the negative binomial distribution
+\[ \Pr{Y=y} = {y-1\choose n-1}p^n q^{y-n}\]
+where $y=n,n+1,n+2,\cdots,$ and $p+q=1$.
+
+\begin{answer}
+First find $\text{E}[Y(Y+1)]=\text{E}(Y^2)+\text{E}(Y)$ using a method similar to that
+for finding $\text{E}(Y)$, (Theorem~\ref{TM:negbin}. Then use $\text{var}(Y)E(Y^2)-[\text{E}(Y)^2]$.
+\text{E}nd{answer}
+
+\item
+The change in depth, $Y$  of a river at a specific location has pdf
+given by $f(y)=1/4$, $-2 \le y \le 2$.
+\begin{enumerate}
+\item Find the probability that  $Y$ is greater than 1.
+\item If readings on four different days are taken what is the probability
+that exactly two are greater than 1?
+\text{E}nd{enumerate}
+
+\begin{answer}
+(a) 0.25 (b) 0.2109
+\text{E}nd{answer}
+
+
+\item
+\begin{enumerate}
+\item If more than three cars per minute enter a tunnel it is known that
+a hazardous situation will develop. It is known that on average 1 car enters
+the tunnel per 2 minute interval. Write down the probability function,
+$\Pr{X=x}$ for $x=0,1,2,\dots$ for the number of cars that enter the tunnel in a {\text{E}m one
+minute} period and use the Poisson functions in \R\ to evaluate it for $x=0,1,2,\dots,8$ and graph
+the probability function.
+\item Find the probability that more than three cars will enter in a 1 minute period.
+\item The tunnel is observed for a total of ten (independent) 1 minute periods.
+Write down an expression for the probability that more than three cars enter
+the tunnel during at least one of the ten 1 minute periods. Evaluate this
+expression using \R\ ({\sf pbinom}).
+\text{E}nd{enumerate}
+
+\begin{answer}
+See \ref{SC:pois} with $\mu=0.5$ since interested in intervals of 1 minute.\\
+(a) Use $\Pr{X>3}=1-\Pr{X \le 3}$. Ans = 0.001752. (b) Use {\sf ppois}
+subcommand. (c) Let $X =$ number of times more than three cars enter tunnel (ie
+number of `successes' in 10 trials, $p = 0.001752$). Ans = 0.01736.
+\text{E}nd{answer}
+
+\item When modelling counts $Y$ defined on $\{0, 1, 2, \dots\}$,
+it is common to use the Poisson distribution, when $\text{E}(Y) =
+\text{var}(Y)$ is implied. Show that the negative binomial distribution
+may be a better choice if $\text{var}(Y) > \text{E}(Y)$.
+\begin{answer}
+Make sure you use the correct parameterisation of the negative
+binomial!
+\text{E}nd{answer}
+
+
+
+\item
+List the assumptions made when using the following distributions:
+
+\begin{enumerate}
+
+   \item
+   the Poisson distribution
+
+   \item
+   the binomial distribution
+
+\text{E}nd{enumerate}
+
+
+
+\item The number of tornadoes recorded in New York state from 1959
+to 1988 are shown in Table~\ref{TB:specdiscrete:nytornados} (from
+Wilks~\cite{BIB:Wilks:statistical}).
+
+\begin{table}
+\begin{center}
+\begin{tabular}{cccccccc}
+Year & No. && Year & No. && Year & No
+\botnewrule \\
+\hline \topnewrule
+1959 & 3 && 1969 & 7 && 1979 & 3\\
+1960 & 4 && 1970 & 4 && 1980 & 4\\
+1961 & 5 && 1971 & 5 && 1981 & 3\\
+1962 & 1 && 1972 & 6 && 1982 & 3 \\
+1963 & 3 && 1973 & 6 && 1983 & 8 \\
+1964 & 1 && 1974 & 6 && 1984 & 6 \\
+1965 & 5 && 1975 & 3 && 1985 & 7 \\
+1966 & 1 && 1976 & 7 && 1986 & 9 \\
+1967 & 2 && 1977 & 5 && 1987 & 6 \\
+1968 & 2 && 1978 & 8 && 1988 & 5
+\text{E}nd{tabular}
+\caption{The number of tornado's recorded in New York state from
+1959 to 1988.} \label{TB:specdiscrete:nytornados}
+\text{E}nd{center}
+\text{E}nd{table}
+
+
+\begin{enumerate}
+   \item
+   Tabulate the number of years in which there
+   are zero, one, two, \dots tornado's recorded.
+
+   \item
+   Use the data to compute the sample mean number of tornado's
+   recorded per year.
+
+   \item
+   Use the mean found above
+   to compute the theoretical Poisson distribution of tornado's
+   per year recorded in New York state.
+
+   \item
+   Is the Poisson distribution a good model in this example?
+   Explain.
+
+\text{E}nd{enumerate}
+
+
+\item
+In a classic experiment, Rutherford and Geiger examined the
+radioactive decay of polonium (see Rutherford and
+Geiger~\cite{BIB:rutherford}). They counted the number of
+scintillations in 72~second intervals of the element. There were a
+total of 10097 scintillations during 2608 intervals. The data is
+presented in Table~\ref{TB:specdiscrete:geiger}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{ccccccccc}
+Count & Freq. && Count & Freq. && Count & Freq.
+\botnewrule \\
+\hline \topnewrule
+0 & 57  && 5 & 408 && 10 & 10 \\
+1 & 203 && 6 & 273 && 11 & 4\\
+2 & 383 && 7 & 139 && 12 & 0\\
+3 & 525 && 8 & 45  && 13 & 1\\
+4 & 532 && 9 & 27  && 14 & 1\\
+\text{E}nd{tabular}
+\caption{The number of scintillations in 72~second intervals of
+radioactive polonium.} \label{TB:specdiscrete:geiger}
+\text{E}nd{center}
+\text{E}nd{table}
+
+\begin{enumerate}
+\item Convert the counts into probabilities. \item Determine the
+mean of the distribution. \item Using the mean calculated above,
+determine the probabilities under the assumption of a Poisson
+distribution. \item By comparing theoretical Poisson probabilities
+and the probabilities calculated above, comment on the suitability
+of using the Poisson distribution to model radioactive decay.
+\text{E}nd{enumerate}
+
+
+\item
+Table~\ref{TB:specdiscrete:firstbirth} gives the number of women
+having their first births in the University Hospital of Basel,
+Switzerland, for each month of the year.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{ccccc}
+Month & Births && Month & Births
+\botnewrule \\
+\hline \topnewrule
+Jan & 66 && Jul & 70 \\
+Feb & 63 && Aug & 59 \\
+Mar & 64 && Sep & 54 \\
+Apr & 48 && Oct & 51 \\
+May & 64 && Nov & 45 \\
+Jun & 74 && Dec & 42
+\text{E}nd{tabular}
+\caption{The number of women in Basel, Switzerland having first
+births by month.} \label{TB:specdiscrete:firstbirth}
+\text{E}nd{center}
+\text{E}nd{table}
+
+\begin{enumerate}
+  \item
+  Is it reasonable to expect that the distribution will be approximately
+  uniform over the months?
+  Explain.
+
+  \item
+  Do the data appear to follow a discrete uniform distribution?
+  Explain.
+
+  \item
+  Assuming the discrete uniform distribution applies,
+  determine\\
+  $\Pr{\text{woman has a first birth after August}}$
+
+  \item
+  Assuming the discrete uniform distribution applies,
+  determine\\
+  $\Pr{\text{woman has a first birth after August}\mid \text{woman has first birth after May}}$
+\text{E}nd{enumerate}
+
+\item
+The gambling game of Keno has become popular recently. In this
+game, players pay \$1 and then select numbers between 1 and 80
+inclusive. (How many numbers they choose is discussed later.)
+Then, a computer selects twenty numbers between 1 and 80
+inclusive. Prizes are then awarded depending on how many selected
+numbers are in the computers sample of twenty. Players can select
+any quantity  of numbers, from just one up to forty.
+\begin{enumerate}
+\item Consider a player who picks $n$ numbers. Show that the
+probability of the player successfully picking $x$ numbers follows
+a hypergeometric distribution.
+\item Consider a player who decided
+to select ten numbers. Determine the probability of having these
+ten numbers selected in the computer's sample of twenty.
+\item Determine the expected payoff (see Exercise~\ref{QN:payoff}) for
+the player in the last question. Successfully selecting ten
+numbers from ten wins a maximum of \$2\,000\,000
+\item Determine the
+expected payoff for successfully selecting one number from one,
+five from five, and fifteen from fifteen also. The prizes are \$3,
+\$600 and \$250000 respectively. Which strategy has the greatest
+expected payoff?
+\item For players that select ten numbers, having
+seven, eight or nine numbers matching the computers selection wins
+\$90, \$900 and \$9000 respectively. Which of these options has
+the greatest expected payoff?
+\item Write a short discussion on
+the statistical aspects of Keno, focusing on the chance of players
+winning money on the long term. Your answer should be no more than
+6 sentences.
+\text{E}nd{enumerate}
+
+
+\item Basinski~\cite[Exhibit 7.17, page
+190]{BIB:Basinski:hospital} gives the mean number of daily
+admissions and daily discharges for heart attacks victims in
+medium-sized hospitals in Ontario, Canada; see
+Table~\ref{TB:specdiscrete:EG:hospital} Do the discharges appear
+to be discrete uniform? What about the admissions? Can you offer
+any explanations?
+
+\begin{table}
+\begin{center}
+\begin{tabular}{ccc}
+Day & Admission & Discharges
+\botnewrule \\
+\hline \topnewrule
+Monday         &1193    &1142 \\
+Tuesday &1091   &1278 \\
+Wednesday   &1057   &1321 \\
+Thursday    &1193   &1244 \\
+Friday         &1142    &1705 \\
+Saturday    &1091   &843 \\
+Sunday         &1125    &375 \\
+\text{E}nd{tabular}
+\caption{Mean daily admission and discharges for heart attacks
+victims in medium-sized hospitals in Ontario, Canada.}
+\label{TB:specdiscrete:EG:hospital}
+\text{E}nd{center}
+\text{E}nd{table}
+
+\text{E}nd{exercises}
+
+\makeanswers
+
+\text{E}ndinput
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%unused qns
+
+%
+%\item
+%Use moment generating functions to show that
+%the Poisson distribution approached the binomial distribution
+%as $p\to0$ and $n\to\infty$.
+%(\Hint:
+%Use the result
+%XX XX XX XX XX XX XX XX.)
+%
+%\item
+%More Bliss data sets.
