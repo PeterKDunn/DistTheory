@@ -1,0 +1,1347 @@
+# Standard continuous distributions
+
+::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
+On completion of this module, you should be able to:
+
+* be familiar with probability density functions of uniform, exponential, gamma, beta, and normal random variables
+* know the basic properties of the continuous distributions covered in this module
+* be able to apply the various continuous distributions as appropriate to problem solving
+* be able to approximate the binomial distribution by a normal distribution
+:::
+
+
+
+In this module, some popular continuous distributions are discussed.
+Properties such as definitions and applications are considered.
+
+
+## Continuous uniform distribution {#ContinuousUniform}
+
+The continuous uniform distribution has a constant pdf over a given range.
+
+:::{.definition #ContinuousUniformDistribution name="Continuous uniform distribution"}
+If a rv $X$ with range space $[a, b]$ has the pdf
+\[
+   f_X(x) = \displaystyle\frac{1}{b - a}\quad\text{for $a\le x\le b$}
+\]
+then $X$ has a *continuous uniform distribution* and we write $Y\sim U(a,b)$ or $X\sim\unif(a,b)$.
+:::
+
+The same notation is used to denote the discrete continuous uniform distribution; the context should make it clear which is meant). 
+A plot of the pdf for a continuous uniform distribution is shown in Fig. \@ref(fig:ContinuousUniform).
+
+
+```{r ContinuousUniform, echo=FALSE, fig.align="center", fig.caption="The pdf for a continuous uniform distribution $U(a,b)$."}
+plot( x = c(1, 7),
+      y = c(0, 1),
+      type = "n",
+      xlab = "x",
+      ylab = "FX",
+      main = "Continuous uniform distribution")
+lines( x = c(1, 7),
+       y = c(1, 1),
+       lwd = 2)
+```
+
+
+
+The following are the basic properties of the continuous uniform distribution.
+
+:::{.theorem}
+If $X\sim\unif(a,b)$ then
+
+1. $\text{E}(X)  = (a+b)/2$
+2.$\text{var}(X) = (b-a)^2/12$
+3. $M_X(t) = \{ \exp(bt) - \exp(at) \} / [t(b-a)]$
+:::
+
+
+:::{.proof}
+These proofs are left as exercises.
+:::
+
+
+:::{.example #ContinuousUniform name="Continuous uniform"}
+ If $X$ is uniformly distributed on $[-2, 2]$, find $\Pr(|X|>\frac 12)$.
+\begin{align*}
+     \Pr(|X|>\frac 12 ) 
+     &= \Pr{X > \frac 12 }+ \Pr{X < -\frac 12}\\
+     &= \int^2_{\frac 12} f(x)\,dx +\int^{-\frac 12}_{-2} f(x)\,dx \text{ where }f(x)=\frac 14\\
+     &= \frac 34.
+\end{align*}
+:::
+
+
+
+
+## Normal distribution {#Normal}
+
+The most readily known continuous distribution is probably the *normal distribution*, sometimes called the *bell-shaped* distribution.
+In many ways it is the cornerstone of modern statistical theory as you will see in this and follow-up courses. 
+It was first investigated in the 18th century when scientists observed an astonishing degree of regularity in errors of measurement. 
+They found that the patterns which they observed could be closely approximated by continuous curves which they referred to as 'normal curves of errors' and attributed to laws of chance.
+It has many applications and many natural quantities (such as heights and weights of humans) follow normal distributions.
+
+
+:::{.definition #NormalDistribution name="Normal distribution"}
+If a rv $X$ has the pdf
+\[
+   f_X(x) =
+   \displaystyle \frac{1}{\sigma \sqrt{2\pi}}
+                 \exp\left\{ -\frac{1}{2}\left( \frac{x-\mu}{\sigma}\right)^2 \right\}
+\]
+for $-\infty<x<\infty$, then $X$ has a *normal distribution* where the two parameters are
+
+* the mean $\mu$ such that $-\infty < \mu < \infty$; and
+* the standard deviation $\sigma$ such that $\sigma > 0$.
+
+We write $X\sim N(\mu, \sigma^2)$.
+:::
+
+Some texts use the notation $X\sim N(\mu,\sigma)$ so it is wise to check.
+
+Some examples of normal distribution pdfs are shown in Fig. \@ref(fig:Normal).
+
+```{r Normal, echo=FALSE, fig.align="center", fig.cap="Some examples of normal distributions. The solid lines correspond to $\\sigma = 0.5$ and the dashed lines to $\\sigma = 1$. For the left diagram, $\\mu = -3$; for the right diagram, $\\mu = 2$."}
+
+par(mfrow = c(1, 2))
+
+z <- seq(-3.5, 3.5,
+         length = 100)
+
+mu <- c(-3, 2)
+sigma <- c(0.5, 1)
+
+for (i in (1:2)){
+   x <- mu[i] + z * max(sigma)
+   plot( x,
+         dnorm(x, 
+               mean = mu[i], 
+               sd = sigma[1]),
+         type = "l",
+         xlab = "x",
+         ylab = "FX",
+         lwd = 2,
+         las = 1,
+         main = paste("Normal distribution: mean =", mu[i])
+         )
+   lines( x,
+         dnorm(x, 
+               mean = mu[i], 
+               sd = sigma[2]),
+         lty = 2,
+         lwd = 2)
+   
+}
+```
+
+
+In drawing the graph of the normal pdf, note that
+
+1. $f_X(x)$ is symmetrical about $\mu$
+2. $f_X(x) \to 0$ asymptotically as $x\to \pm \infty$
+3. $f_X'(x) = 0$  when $x = \mu$ and a maximum occurs there
+4. $f_X''(x) = 0$ when $x = \mu \pm \sigma$ (points of inflexion): PROVE THIS IN EXERCISE!
+
+
+The proof that $\int^\infty_{-\infty} f_X(x)\,dx = 1$ is not obvious and relies on first squaring the integral and then changing to polar coordinates.
+
+The following are the basic properties of the normal distribution.
+
+:::{.theorem}
+If $X\sim N(\mu,\sigma^2)$ then
+
+1. $\text{E}(X) = \mu$
+2. $\text{var}(X) = \sigma^2$
+3. $M_X(t) = \displaystyle \exp\left(\mu t + \frac{t^2\sigma^2}{2}\right)$
+:::
+
+:::{.proof}
+The proof of these results is delayed until after the Theorem~\ref{TM:stdnormal}.
+:::
+
+
+## The standard normal distribution {#StandardNormal}
+
+A special case of the normal distribution is the *standard normal* distribution.
+This is simply the normal distribution with mean zero and variance one.
+
+:::{.definition #StandardNormal name="Standardard normal distribution"}
+The pdf for a random variable $Z$ with a *standard normal distribution* is
+\[
+   f_Z(z) = \displaystyle \frac{1}{\sqrt{2\pi}}
+                                \exp\left\{ -\frac{z^2}{2}\right\}
+\]
+where $-\infty < z < \infty$.
+We write $Z\sim N(0, 1)$.
+:::
+
+It's useful to note that
+\begin{equation}
+   \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty} e^{-\frac 12 z^2}\,dz = 1
+\end{equation}
+by virtue of the fact that $f_Z(z)$ is a pdf. 
+The proof of \ref{EQN:stdnormal} is given...
+
+The following are the basic properties of the standard normal distribution.
+
+:::{.theroem}
+If $Z\sim N(0,1)$ then
+
+* $\text{E}(Z) = 0$
+* $\text{var}(Z) = 1$
+* $M_Z(t) = \displaystyle \exp\left(\frac{t^2}{2}\right)$
+:::
+
+:::{.proof}
+As usual we could prove part 3 and use that result to prove parts 1 and 2.
+However, it's instructive to prove parts 1 and 2 directly.
+
+\begin{align*}
+    \text{E}(Z)&=\frac 1{\sqrt{2\pi }} \int^\infty_{-\infty} z e^{-\frac 12 z^2}\,dz\\
+&= \int^\infty_{-\infty} -d(e^{-\frac 12z^2})\\
+&= \left[ -e^{-\frac 12z^2}\right]^\infty_{-\infty}\\
+&= 0
+\end{align*}
+
+\begin{align*}
+   \text{var}(Z) & = \text{E}(Z^2) - \text{E}(Z)^2 = \text{E}(Z^2)\\
+   &= \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty}z^2e^{-\frac 12z^2}\,dz\\
+   &= \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty}-zd(e^{-\frac 12z^2})\\
+   &= \frac 1{\sqrt{2\pi}}\left[ -z\,e^{-\frac12 z^2}\right]^\infty_{-\infty} + \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty} e^{-\frac 12 z^2}\,dz\\
+   &= 1
+\end{align*}
+since the first term is zero and the second term makes use of~(\ref{EQN:stdnormal}).
+
+\[ 
+   M_Z(t) = \text{E}(e^{tZ}) =\int^\infty_{-\infty}e^{tz} \frac 1{\sqrt{2\pi}}e^{-\frac 12z^2}\,dz.
+\]
+Collecting together the terms in the exponent and completing the square, we have
+\begin{equation*}
+     -\frac 1{2}[z^2 -2tz] = -\frac 1{2}((z-t))^2+\frac 12 t^2.
+\end{equation*}
+Taking the constants outside the integral, we have
+\[ 
+   M_Z(t) = e^{\frac12t^2}\int^\infty_{-\infty} \frac{1}{\sqrt{2\pi}}e^{-\frac 12[z-t]^2}\,dz. 
+\]
+The integral here is 1 being the area under an $N(t,1)$ pdf curve. 
+Hence
+\[ 
+   M_Z(t) = e^{\frac12t^2}
+\]
+:::
+
+This distribution is important in practice since *any* normal distribution can be rescaled into a standard normal distribution using
+\begin{equation}
+   Z = \frac{X - \mu}{\sigma}.
+   \label{EQN:speccontinuous:zscore}
+\end{equation}
+
+Theorem~\ref{TM:stdnormal} makes this proof straightforward:
+
+We have $Z = (X - \mu)/\sigma$. 
+Therefore
+\[
+   X = \mu + \sigma Z.
+\]  
+It follows
+\[
+   \text{E}(X) = \text{E}(\mu + \sigma Z) = \mu + \sigma \text{E}(Z) = \mu
+\]
+because $\text{E}(Z) = 0$.
+
+Also
+\[
+   \text{var}(X)=\text{var}(\mu+\sigma Z)=\sigma^2\text{var}(Z)=\sigma^2
+\]
+because $\text{var}(Z) = 1$.
+
+Finally
+\[
+   M_X(t) = \text{E}(e^{tX})=\text{E}(\exp(t(\mu+\sigma Z)))=\exp(\mu t)\text{E}(\exp(t\sigma Z))
+\]
+but $\text{E}(\exp(t\sigma Z))=M_Z(t\sigma)=e^{\frac12(\sigma t)^2}$ so 
+\[
+   M_Z(t) = \displaystyle \exp\left(\frac{t^2}{2}\right).
+\]
+
+
+
+
+
+### LOG NORMAL?
+
+### Determining normal probabilities
+
+The probability $\Pr(a < X \le b)$ where $X\sim N(\mu,\sigma^2)$ can be written
+\[
+   \Pr(a < X \le b) = F_X(b) - F_X(a)
+\]
+where the distribution function
+\[
+   F_X(x) 
+   = \Pr(X \le x) 
+   = \frac1{\sqrt{2\pi}\sigma}\int_{-\infty}^x e^{-\frac 12(u-\mu )^2 / \sigma ^2}\, du
+\]
+This integral cannot be written in terms of standard functions and in general must be evaluated for a particular $x$ numerically (eg using Simpson's rule or the like).
+
+We don't have to do this because all statistical packages have a built-in procedure that evaluates $F_X(x)$ for any $x$.
+Also there are tables which tabulate values for the df of the standard normal distribution
+\[
+   F_Z(z) = \Phi(z) = \int_{-\infty}^z \frac{1}{\sqrt{2\pi}}
+                                \exp\left\{ -\frac{z^2}{2}\right\}\, dz
+\]
+Tabulation of the standard normal df, commonly denoted $\Phi(z)$ (some texts use $\phi$), is sufficient to evaluate
+areas under any normal pdf because we have that $X = \mu + \sigma Z$, from which
+\[
+   F_X(x)
+   = \Pr(X \le x)
+   = \Pr(\mu + \sigma Z \le x)
+   = \Pr(Z\le\frac{x - \mu}{\sigma}) 
+   = \Phi\left(\frac{x - \mu}{\sigma}\right).
+\]
+The process of converting a value $x$ into $z$ using $z = \frac{x - \mu}{\sigma}$ is called *standardising*.
+
+The standard normal tables tabulates $1 - \Phi(z) = \Pr(Z > z)$. CHECK!
+These tables can be used to compute any probabilities associated with the normal distributions (see the examples below).
+The tables in the text are accurate to two decimal places; the $z$-scores are listed down the left with the second decimal place across the top of the table.
+The body of the table gives the areas (or probabilities) as indicated by the diagram at the top of the page.
+
+In addition, the tables are often used in the reverse sense, where the probability of an event is given and the value of the random variable is sought.
+In these case, the tables are used 'backwards'; the appropriate area is found in the body of the table and the corresponding $z$-value found in the table margins; this is then converted to a value of the original random variable using
+\begin{equation}
+   x = \mu + z\sigma.
+   \label{EQN:unstandardising}
+\end{equation}
+This process is sometimes referred to as *unstandardising*.
+
+The following examples illustrate the use of the standard normal table.
+You might find it helpful to draw rough graphs showing the relevant areas.
+
+
+:::{.example #ComputingNormalProbs name="Computing normal probabilities"}
+If the rv $Z$ is distributed $N(0, 1)$ then,
+
+* $\Pr(Z \leq 1.3) = \Phi(1.3) = .9032$
+* $\Pr(Z > 1.6)=1-\Pr{Z\leq 1.6}=1-\Phi(1.6)=1 - .9452 = .0548$
+* $\Pr(Z < -1) = \Pr(Z>+1)$ using the symmetry property of $\phi(z)$.
+  $= 1 - \Pr(Z\leq 1) = 1-.8413 = 0.1578$
+* $\Pr(1 < Z < 1.3) = \Phi(1.3) - \Phi(1) = 0.9032 -.08413 = 0.0619$
+* $\Pr(-2 < Z < -1) = \Pr(1 < Z < 2)$ by symmetry.
+  $ = \Phi(2) - \Phi(1) = 0.9772 - 0.8413 = 0.1359$.
+* $\Pr(-1 < Z < 1) = 2\times \Pr(0 < Z < 1)$ by symmetry.
+  ${}= 2[\Phi(1) - \Phi(0)] = 2\times 0.3413 = 0.6826$.
+* $\Pr(-.5 < Z <1.7) = \Phi(1.7) - \Phi(-0.5) = \Phi(1.7) - [1- \Phi(0.5)] = 0.9554 - 1 + 0.6915 = 0.6469$
+:::
+
+
+:::{.example #ComputingNormalProbs name="Computing normal probabilities"}
+If $Z$ is distributed $N(0, 1)$ find $z$ so that
+
+* $\Pr(Z \leq z) = 0.8849$. 
+Thus, (realizing 0.8849 is an area), $z = 1.2$
+
+* $\Pr(Z > z) = 0.3446$; that is, $\Pr(Z \leq z) = 0.6554$ so $z = 0.4$.
+* $\Pr(|Z| < z) = 0.950$; that is, $\Pr(-z < Z < z) = 0.950$.
+  So $\Pr(Z < z ) = 0.475$ and hence $z = 1.96$.
+:::
+
+
+```{r, AreaUnderNormal, echo=FALSE, fig.align="center", fig.cap="Area under standard normal curve: $z = -1.96$ to $z = 1.96$"}
+
+z <- seq(-3.5, 3.5,
+         length = 100)
+fz <- dnorm( z )
+
+plot(fz ~ z,
+     type = "l",
+     lwd = 2,
+     xlab = "z",
+     ylab = "",
+     axes = FALSE)
+axis(side = 1,
+     at = c(-1.96, 1.96))
+polygon( x = c(-1.96, -1.96,
+               z[ (z > -1.96) & (z < 1.96) ],
+               1.96, 1.96),
+         y = c(0, dnorm(-1.96),
+               fz[ (z > -1.96) & (z < 1.96) ],
+               dnorm(1.96), 0),
+         col = "blue")
+box()
+
+```
+
+
+:::{.example #Normal name="Normal probabilities"}
+Here, assume $X$ is distributed $N(4, 9)$.
+
+* $\Pr(X < 7) = \Pr(Z < \frac{7 - 4}{3}) = \Phi(1) = 0.8413$.
+* $\Pr(X > 2.5) = \Pr(Z > \frac{2.5 - 4}{3}) = \Pr(Z > -0.5) = \Phi(0.5) = 0.6915$.
+* $\Pr(|X - 4| < 0.3) = \Pr(\frac{|X - 4|}{3} < \frac{0.3}{3}) =\Pr(|Z| < 0.1) = \Pr(-0.1 < Z < 0.1) = 2\times [\Phi(0.1) - \Phi(0)] = 0.0796$.
+* $\Pr(-0.5 < X < 4.3) = \Pr(\frac{0.5 - 4}{3} < Z < \frac{4.3 - 4}{3}) = \Pr(-1.5 < Z < 0.1) = \Phi(0.1) - [1 - \Phi(1.5)] = 0.5398 -1 + 0.9332 = 0.4730$.
+* Find $k$ so that $\Pr(|X - 4| > k) = 0.05$; that is, $\Pr(|X - 4| \leq k) = 0.95$.
+  So $\Pr(\frac{-k}{3} < \frac{X - 4}{3} < \frac k3) = 0.95$. 
+  Therefore $\Pr(Z < \frac k3) = 0.475$.
+  Hence $k/3 = 1.96$ so $k = 5.88$.
+:::
+
+
+:::{.example #Forearms name="Using normal distributions"}
+Pearson and Lee~\cite{BIB:Pearson:laws} give the forearms lengths of 140 adult males (in inches).
+The mean of the lengths is $18.80$ inches and the variance is $1.120$ (inches$^2$).
+Fitting a normal distribution with these parameters produces an excellent fitting model;
+see Figure~\ref{FG:speccont:normal}.
+
+Using these computed values, what is the probability that a forearm in a male is longer than 20.5 inches?
+
+Of the men in the study, 15\% have forearms shorter than what length?
+
+Let $X$ be a length of a male forearm; then $X\sim N(18.80, 1.120)$.
+
+To compute the probability $\Pr(X > 20.5)$, first transform into a standard normal distribution using Equation~(\ref{EQN:speccontinuous:zscore}), and then use the tables.
+\begin{align*}
+   \Pr(X > 20.5)
+   &= \Pr(Z > (20.5 - 18.80)/\sqrt{1.120} ) \\
+   &= \Pr(Z > 1.61 ) \\
+   &= 0.0537,
+\end{align*}
+so approximately 5.4\% of males in the study have a forearm longer than 20.5 inches.
+(Note that the sample is not a random sample of all males; the results can only be generalized to the population---which is unknown in this case---from which the sample was taken.)
+
+Many students find it useful to draw a picture to help them understand what to do; see Fig. \@ref(fig:NormalForearms).
+
+
+It is often useful to draw a picture of the situation; see Fig. \@ref(NormalForearmsBackwards).
+
+The $x$-value we seek, say $x^*$, is to the *left* of the mean; it will therefore be negative.
+To use the tables in the text WHERE, and using symmetry, we need the $z$-value that cuts off the highest 15\% (look in the *body* of the table for an area close to $0.15$); this is $z = -1.04$ approximately.
+To convert this into a forearm length, use Equation~(\ref{EQN:unstandardising}) to get
+\begin{align*}
+   x^*
+   &= z\sigma + \mu \\
+   &= (-1.04 \times \sqrt{1.120}) + 18.80\\
+   & = 17.6
+\end{align*}
+So approximately 15\% of men in the study have forearms shorter than about 17.6 inches.
+:::
+
+
+
+
+```{r NormalForearms, echo=FALSE, fig.align="center", fig.cap="The forearm lengths (in inches) of 140 adult males. The shaded region corresponds to the proportion of males with a forearm longer than 20.5 inches."}
+
+par( mfrow = c(1, 2))
+
+mu <- 18.80
+sigma <- sqrt(1.120)
+
+z <- seq(-3.5, 3.5,
+         length = 100)
+x <- mu + z * sigma
+  
+fz <- dnorm( z )
+
+plot(fz ~ x,
+     type = "l",
+     lwd = 2,
+     las = 1,
+     xlab = "Forearm lengths (cm)",
+     ylab = "",
+     main = "Normal distribution")
+polygon( x = c(20.5, 20.5,
+               x[ (x > 20.5) ],
+               25, 25),
+         y = c(0, dnorm(20.5, mean = mu, sd = sigma),
+               fz[ (x > 20.5) ],
+               dnorm(25, mean = mu, sd = sigma), 0),
+         col = "blue")
+box()
+
+
+
+plot(fz ~ z,
+     type = "l",
+     lwd = 2,
+     las = 1,
+     xlab = "Forearm lengths (cm)",
+     ylab = "",
+     main = "Standard normal distribution")
+polygon( x = c(1.52, 1.52,
+               z[ (z > 1.52) ],
+               5, 5),
+         y = c(0, dnorm(1.52),
+               fz[ (z > 1.52) ],
+               dnorm(5), 0),
+         col = "blue")
+box()
+
+```
+
+
+```{r NormalForearmsBackwards, echo=FALSE, fig.align="center", fig.cap="The forearm lengths (in inches) of 140 adult males. The shaded region corresponds to the proportion of males with a forearm longer than 20.5 inches."}
+
+par( mfrow = c(1, 2))
+
+mu <- 18.80
+sigma <- sqrt(1.120)
+
+z <- seq(-3.5, 3.5,
+         length = 100)
+x <- mu + z * sigma
+  
+fz <- dnorm( z )
+
+plot(fz ~ x,
+     type = "l",
+     lwd = 2,
+     las = 1,
+     xlab = "Forearm lengths (cm)",
+     ylab = "",
+     main = "Normal distribution")
+polygon( x = c(10, 10,
+               x[ (x < 17.6) ],
+               17.6, 17.6),
+         y = c(0, dnorm(10, mean = mu, sd = sigma),
+               fz[ (x < 17.6) ],
+               dnorm(17.6, mean = mu, sd = sigma), 0),
+         col = "blue")
+box()
+arrows( 18, 0.05,
+       16.75, 0.025,
+       length = 0.15)
+text(18, 0.05,
+     label = "Area: 15%",
+     pos = 4)
+
+
+plot(fz ~ z,
+     type = "l",
+     lwd = 2,
+     las = 1,
+     xlab = "Forearm lengths (cm)",
+     ylab = "",
+     main = "Standard normal distribution")
+polygon( x = c(-4, -4,
+               z[ (x < 17.6) ],
+               -1.04, -1.04),
+         y = c(0, dnorm(-5),
+               fz[ (x < 17.6) ],
+               dnorm(-1.04), 0),
+         col = "blue")
+box()
+arrows( 18, 0.05,
+       16.75, 0.025,
+       length = 0.15)
+text(18, 0.05,
+     label = "Area: 15%",
+     pos = 4)
+```
+
+
+
+
+
+:::{.example #Exam name="Using normal distributions"}
+An examination has mean score of 500 and standard deviation 100.
+The top 75\% of candidates taking this examination are to be passed.
+Assuming the score has a normal distribution what is the lowest passing score?
+
+We have $X\sim N(500, 100^2)$. 
+Let $x_1$ be such that
+\begin{align*}
+   \Pr(X > x_1) 
+   &= 0.75\\
+   \Pr(Z > \frac{x_1 - 500}{100}) 
+   &= 0.75\\
+   \Pr(Z < \frac{500 - x_1}{100}) 
+   & = 0.75
+\end{align*}
+From tables, $0.75 = \Phi(0.675)$ so $(500 - x_1)/100 = 0.675$ and $x_1 = 432.5$.
+:::
+
+
+### Normal approximation to the binomial {#NormalApproxBinomial}
+
+In Section~\ref{SC:specdiscrete:binomial}, the binomial distribution was considered.
+There are times when it is very tedious to use the binomial distribution; consider the case of a binomial random variable $X$ where $n = 1000$, $p = 0.45$ and we seek $\Pr(X > 997)$.
+
+However, sometimes the normal distribution can be used to approximate binomial probabilities.
+This is possible since, for certain parameter values, the binomial pf starts to take on a normal distribution shape; see
+Figures~\ref{FG:specdiscrete:binomial} and~\ref{FG:speccont:normbin}.
+
+When is the binomial pf close enough to use the normal approximation?
+There is no definitive answer; a common guideline suggests that if *both* $np \ge 5$ *and* $n(1 - p) \ge 5$ the approximation is satisfactory.
+(These are only guidelines, and other texts may suggest different guidelines.)
+
+Figure~\ref{FG:speccont:normbin} shows some picture of various binomial pfs overlaid with the corresponding normal distribution; the approximation is visibly better as the guidelines given above are satisfied.
+
+```{r NormalApprox, echo=FALSE, fig.align="center", fig.cap="The normal distribution approximating a binomial distribution. The guidelines suggest the approximation should be good when $np \\ge 5$ and $n (1 - p) \\ge 5$; this is evident from the pictures. In the top row, a significant amount of the approximating normal distribution even appears when $Y < 0$."}
+par( mfrow = c(2, 2))
+
+n <- c(5, 10, 
+         20, 50)
+p <- c(0.2, 0.2,
+       0.2, 0.2)
+ylim <- c(0.5, 0.35,
+          0.25, 0.14)
+
+for (i in (1:4)){
+  ni <- n[i]
+  pi <- p[i]
+  
+  mn <- ni * pi
+  sd <- sqrt( ni * pi * (1 - pi) )
+  
+  xBinomial <- 1:ni
+  xNormal <- seq(0, ni,
+                 length = 100)
+    
+  yBinomial <- dbinom(xBinomial,
+                      size = ni,
+                      prob = pi)
+  yNormal <- dnorm(xNormal, 
+                   mean = mn,
+                   sd = sd) 
+  plot( x = xBinomial,
+        y = yBinomial,
+        xlab = "x",
+        ylab = "Prob fn",
+        type = "h",
+        ylim = c(0, ylim[i]),
+        las = 1,
+        lty = 2,
+        col = "grey",
+        main = paste("n =", ni," and p =", pi))
+  points( x = xBinomial,
+          y = yBinomial,
+          pch = 19)
+  lines( x = xNormal,
+         y = yNormal,
+         lwd = 2)
+}
+
+
+```
+
+
+
+The normal distribution can be used to approximate probabilities in situation that are actually binomial.
+There is a fundamental difficulty with this approach: modelling a discrete distribution with a continuous distribution.
+This is best explained through an example.
+The example explains the *principle*; the idea extends to all situations where the normal distribution is used to approximate a binomial distribution.
+
+:::{.example #NormalApproxMice name="Normal approximation to binomial"}
+Consider *mdx* mice (which have a strain of muscular dystrophy) from a particular source for which 30% of the mice survive for at least 40 weeks.
+One particular experiment requires at least 35 mice to live beyond 40 weeks, and 100 mice have been sourced from this supplier.
+What is the probability that 35 or more  of the group will survive beyond 40 weeks?
+
+First note that the situation is binomial; if $X$ is the number of mice from the group of 100 that survive, then $X \sim \text{Bin}(100, 0.3)$.
+This could be *approximated* by the normal distribution $Y\sim N(30, 21)$.
+(Note that the variance is $np(1 - p) = 100\times 0.3\times 0.7 = 21$.)
+Since $np = 30$ and $n(1 - p) = 70$ are both much larger than 5, this approximation is expected to be quite good.
+Figure~\ref{FG:speccont:contcorr} shows the upper tail of the distribution near $X = 35$.
+Note that if we use the normal approximation from only $Y = 35$, only *half* of the original bar in the binomial pf is included; but since the number of mice is discrete, we want the *entire* bar corresponding to $X = 35$.
+So to compute the correct answer, we need to use the normal distribution to find $\Pr(Y > 34.5)$.
+This change from the $X \ge 34.5$ to $Y > 34.5$ is called using the *continuity correction*.
+
+The exact answer (using the binomial distribution) is $0.1629$ (rounded to four decimal places).
+Using the normal distribution *with* the continuity correction gives the answer as $0.1631$; using the normal distribution *without* the continuity correction, the answer is $0.1376$.
+The solution is more accurate, as expected, using the continuity correction.
+:::
+
+
+```{r echo=TRUE}
+# Exact
+sum( dbinom(x = 35:100,
+            size = 100,
+            prob = 0.30))
+# Normal approx
+1 - pnorm(35, 
+          mean = 30,
+          sd = sqrt(21))
+# Normal approx with continuity correction
+1 - pnorm(34.5, 
+          mean = 30,
+          sd = sqrt(21))
+```
+
+
+
+:::{.example #ContCorrectionDice name="Continuity correction"}
+Consider rolling a standard die 100 times, and counting the number of \epsdice{1}'s that appear uppermost.
+The random variable $X$ is the number of \epsdice{1}'s; then, $X\sim \text{Bin}(n = 100, p = 1/6)$.
+Since $np = 16.667$ and $n(1 - p) = 83.333$ are both greater than $5$, a normal approximation  should be accurate, so define $Y\sim N(16.6667, 13.889)$ (the variance is $np(1 - p) = 13.889$).
+Various probabilities have been computed as shown in Table \@ref(tab:ContCorrectionTable) that indicate the accuracy of the approximation, and the way in which the continuity correction has been used.
+
+You should ensure you understand how the concept of the continuity correction has been applied in each situation, and be able to compute the probabilities for the normal approximation.
+:::
+
+```{r ContCorrectionTable, echo=FALSE}
+CCTable <- array( "",
+                  dim = c(6, 5) )
+colnames(CCTable) <- c("Event (binomial)",
+                       "Prob (binomial)",
+                       "",  # Spacer
+                       "Event (normal)",
+                       "Prob (normal)")
+CCTable[1, ] <- c("\\Pr(X<10)",
+                  "",
+                  "",
+                  "\\Pr(Y<9.5)",
+                  "")
+CCTable[, 1] <- c("\\Pr(X<10)",
+                  "\\Pr(X\\le 15)",
+                  "\\Pr(X > 17)",
+                  "\\Pr(X \\ge 21)",
+                  "\\Pr(X = 16)",
+                  "\\Pr(15 < X \\le 17)")
+
+knitr::kable(CCTable,
+             caption = "Some events and their probabilities, computed using the binomial distribution (exact) and the normal approximation using the continuity correction. The accuracy of the approximation is very good.")
+
+```
+
+
+
+
+
+## Exponential distribution {#ExponentialDistribution}
+
+An important distribution intimately connected with the Poisson distribution is the exponential distribution. 
+If the number of events in a process follows a Poisson distribution the space or time between two consecutive events
+has an exponential distribution.
+(See Theorem~\ref{TM:poisexp}.)
+Hence the exponential distribution is used to describe the interval between consecutive randomly occurring events.
+
+:::{.definition #ExponentialDistribution name="Exponential distribution"}
+If a rv $X$ has the pdf
+\[
+   f_X(x) = \displaystyle \frac{1}{\beta}  \exp(-x/\beta)
+\]
+then $X$ has an *exponential distribution* with parameter $\beta > 0$. 
+We write $X\sim\text{Exp}(\beta)$.
+:::
+
+
+The parameter $\lambda$ (or $\theta = 1/\beta$) is often used in place of $\beta$.??????
+
+Plots of the pdf for various exponential distributions are given in Figure~\ref{FG:speccont:exponential}.
+
+```{r, echo=FALSE, fig.align="center", fig.cap="Exponential distributions"}
+x <- seq(0, 12,
+         length = 100)
+
+lambda <- c(0.5, 1, 2, 5)
+
+for (i in (1:length(lambda))){
+  if (i == 1) {
+     plot(x = x,
+          y = dexp(x,
+                   rate = 1/lambda[i]),
+          xlab = "x",
+          ylab = "FX",
+          lwd = 2,
+          las = 1,
+          ylim = c(0, 1.5),
+          type = "l",
+          main = "Exponential distributions")
+  } else {
+    lines(x = x,
+          y = dexp(x,
+                   rate = 1/lambda[i]),
+          lty = i,
+          lwd = 2)
+  }
+}
+
+legend( "topright",
+        lty = 1:4,
+        lwd = 2,
+        legend = paste("lamba =",lambda)
+        )
+```
+
+The following are the basic properties of the exponential distribution.
+
+:::{.theorem}
+If $X\sim\text{Exp}(\beta)$ then 
+
+* $\text{E}(X) = \beta$.
+* $\text{var}(X) = \beta^2$.
+* $M_X(t) = (1-\beta t)^{-1}$ for $t<1/\beta$.
+:::
+
+:::{.proof}
+These proofs are left as an exercise.
+:::
+
+
+Notice that the parameter $\beta$ represents the *mean* of the exponential distribution or, in the context of a Poisson process, the mean interval length between consecutive events.
+Then the alternative parameter $\lambda = 1/\beta$ represents the mean *rate* at which events occur.
+
+
+
+:::{.example #Forearms name="Using normal distributions"}
+This example reveals the relationships amongst the parameters typically used to describe the exponential and Poisson distributions.
+
+A Poisson process occurs at the mean rate of 5 events per hour.
+Describe the distribution of the time between consecutive events and the distribution of the number of events in one day (24 hours).
+
+Let $N$ represent the number of events in one day and $T$ the time between consecutive events. 
+We are given that events occur at the mean rate of $\lambda = 5$ events per hour. 
+It follows that the mean time between consecutive events, $\beta = 1/\lambda = 0.2$ hours. 
+Also, the mean number of events in one day is $\mu = 24\times 5 = 120$.
+Consequently we have that $N\sim\Pois(\mu = 120)$ and  $X\sim\text{Exp}(\beta = 0.2)$ (or, equivalently, $X\sim\text{Exp}(\lambda = 5)$).
+(These parameter definitions are strongly recommended although not all texts follow them.)
+:::
+
+
+
+:::{.example #ExpRainFall name="Exponential distributions"}
+Allan and Haan~\cite{BIB:Allan:rainfall} use the exponential distribution to model rainfall.
+:::
+
+
+:::{.example #ExprainFall2 name="Exponential distributions"}
+Cox and Lewis~\cite{BIB:Cox:series} give data collected by Fatt and Katz concerning the time intervals between successive nerve pulses along a nerve fibre.
+There are 799 observations which we do not give here.
+The mean time between pulses is $\beta = 0.2186$ seconds. 
+An exponential distribution might be expected to model the data well.
+This is indeed the case; see Figure~\ref{FG:speccont:expon}.
+What proportion of time intervals can be expected to be longer than 1 second?
+
+If $X$ is the time between successive nerve pulses (in seconds), then $X\sim \text{Exp}(\beta = 0.2186)$.
+The solution will then be
+\begin{align*}
+   \Pr(X>1)
+   &=  \int_1^\infty \frac{1}{0.2186}\exp(-x/0.2186)\, dx \\
+   &= -\exp(-x/0.2186)\Big|_1^\infty \\
+   &= (-0) + (\exp\{-1/0.2186\})\\
+   &=  0.01031.
+\end{align*}
+There is about a 1\% chance of a nerve pulse exceeding one second.
+:::
+
+
+### Relationship between the Poisson and exponential distributions {#PoiussonExponential}
+
+Events occurring according to a Poisson process are characterised by an exponential distribution describing the interval between consecutive events.
+This relationship is captured in the following theorem.
+
+
+:::{.theorem}
+Consider a Poisson process at rate $\lambda$ and suppose observation starts at an arbitrary time point. 
+Then the time $T$ to the first event has an exponential distribution with mean $\text{E}(T) = 1/\lambda$; i.e.,
+\[
+   f_T(t) = \lambda e^{-\lambda t},\quad t > 0
+\]
+:::
+
+
+:::{.proof}
+Let $t = 0$ be the arbitrary time at which observation of the Poisson process starts. 
+Consider an interval $(0, t]$ for some fixed value $t > 0$. 
+Now $T$ is the elapsed time after observations starts until the first event occurs.
+
+Clearly, if the first event takes longer than $t$ to occur, then $T > t$ and the number of events in $(0, t]$ is zero.
+Conversely, if the first event occurs at time $t$ or earlier then $T \le t$ and the number of events in $(0, t]$ is greater than zero.
+It follows that the events $\{T > t\}$ and $\{N(t) = 0\}$ are equivalent where $N(t)$ is the number of events occurring in time $(0, t]$.
+Therefore
+\[
+\Pr{T > t} = \Pr{N(t) = 0}
+\]
+But $N(t) \sim \Pois(\lambda)$ with mean $\text{E}(N(t)) = \lambda t$.
+Hence
+\begin{equation}
+   \Pr(T > t) 
+   = \frac{(\lambda t)^0 e^{-\lambda t}}{0!}
+   = e^{-\lambda t}\label{EQ:expsurvivor}
+\end{equation}
+This shows that the df of $T$ is given by
+\[
+   F_T(t)
+   = \Pr(T \le t) 
+   = 1 - \Pr(T > t)
+   = 1 - e^{-\lambda t}.
+\]
+Differentiating with respect to $t$ yields the pdf
+\[
+   f_T(t)
+   = \frac{d}{dt}F_T(t)
+   = \lambda e^{-\lambda t}
+\]
+which we recognise as the exponential distribution with mean $\beta = 1/\lambda$.
+:::
+
+
+Although the theorem refers to 'time', the variable of interest may be distance or any other continuous variable which may be applicable in measuring the interval between events.
+
+An important feature of a Poisson process and hence of the exponential distribution is the *memoryless* or *Markov property*; that is, the future of the process at any time point does not depend on the history of the process.
+This property is captured in the following theorem.
+
+:::{.theorem}
+If $T \sim \text{Exp}(\lambda)$, then for $s > 0$ and $t > 0$, 
+\[
+    \Pr(T > s + t \mid T > s) = \Pr(T > t)
+\]
+:::
+
+:::{.proof}
+Using Definition~\ref{DF:conditional},
+\[
+   \Pr(T > s + t \mid T > s) 
+   = \frac{ \Pr( \{T > s + t\} \cap \{T > s\})} {\Pr(T > s)}
+\]
+But if $T > s + t$; then $T > s$. 
+Consequently $\Pr( \{T > s + t \}\cap \{T > s \} ) = \Pr(T > s + t)$ and so
+\begin{align*}
+   \Pr(T > s + t \mid T > s )
+   &= \frac{\Pr(T > s +t )}{\Pr(T > s)}\\
+   &= \frac{e^{-\lambda(s + t)}}{e^{-\lambda s}}\\
+   &= e^{-\lambda t}\\
+   &= \Pr(T > t)
+\end{align*}
+where we have used Equation~(\ref{EQ:expsurvivor}).
+:::
+
+This theorem states that the probability that the time to the next event is greater than $t$ does not depend on the time $s$ back to the previous event.
+
+:::{.example #memoryless name="Memoryless propery of exponential distribution"}
+Suppose the lifespan of component $A$ is modelled by an exponential distribution with mean 12 months.
+
+1.  What is the probability that component $A$ fails in less than 6 months?
+2. Component $A$ has been in place for 12 months. 
+   What is the probability that it will fail in less than a further 6 months?
+
+By the memoryless property, the answers are the same, and are both given by $\Pr(T < 6)$ where $T \sim \text{Exp}(\beta = 6)$; i.e.,
+\[
+   \Pr(T < 6) = 1 - \exp(-6/12) = 0.3935.
+\]
+:::
+
+Example~\ref{EG:explifespan} highlights the notion that an exponential process is ageless, in the sense that the risk of 'mortality' remains constant with age.
+In other words, the probability of such an event occurring in the next small interval, whether it be the failure of a component or the occurrence of an accident, remains constant regardless of the age of the component or the length of time since the last accident. 
+In this sense an exponential lifetime is different from a human lifetime or the lifetime of many man-made objects where the risk of 'death' in the next small interval increases with age.
+
+
+
+## Gamma distribution {#GammaDistribution}
+
+The normal distribution is often used in modelling, but there is one significant shortcoming.
+A lot of data is only defined for non-negative values or for positive values\footnote{The phrase *non-negative* permits zero; *positive* explicitly excludes zero.}
+yet the normal distribution allows negative values of the random variable.
+This is not always a problem, especially when the observations are far from zero; see Example~\ref{EG:speccont:normal:forearm}.
+But some data sets have observations close to zero, and the data are often skewed to the right (positively skewed).
+
+There are many distributions for modelling right skewed data; here the gamma distribution is considered.
+
+
+:::{.definition #GammaDistribution  name="Gamma distribution"}
+If a rv $X$ has the pdf
+\[
+   f_X(x) 
+   = \frac{1}{\beta^\alpha \Gamma(\alpha)} x^{\alpha - 1} \exp(-x/\beta)
+\]
+then $X$ has a *gamma distribution*, where $\Gamma(\cdot)$ is the *gamma function* (see Section~\ref{SEC:speccont:gamma:gammafn}) and $\alpha, \beta > 0$.
+We write $X \sim \text{Gam}(\alpha, \beta)$.
+:::
+
+
+The parameter $\alpha$ is called the *shape parameter* and $\beta$ is called the *scale parameter*.
+Some texts use different notation for the shape and scale parameters.
+In broad terms, the *shape* parameter dictates the general shape of the distribution; the *scale* parameter dictates how 'stretched out' the distribution is.
+
+Plots of the gamma pdf for various values of the parameters are given in Figure~\ref{FG:speccont:gamma}.
+
+The exponential distribution is a special case of the gamma distribution with $\alpha = 1$.
+This means that properties of the exponential distribution can be obtained by substituting $\alpha = 1$ into the formulae for the gamma distribution.
+
+
+```{r GammaDistribution, echo=FALSE, fig.align="center", fig.cap="The pdf of a gamma distribution for various values of $\\alpha$ and $\\beta$"}
+
+par( mfrow = c(2, 2))
+
+alpha <- c(0.9, 1,
+           2, 3)
+beta <- c(0.5, 1, 2)
+
+x <- seq(0, 10,
+         length = 100)
+
+for (i in (1:length(alpha))){
+  alphai <- alpha[i]
+  
+  plot(x = x,
+       y = dgamma(x,
+                  shape = alphai,
+                  scale = beta[1]),
+       xlab = "x",
+       ylab = "FX",
+       las = 1,
+       lwd = 2,
+       type = "l",
+       main= paste("Gamma distributions\nwith alpha =", alphai))
+  
+  lines( x = x,
+         y = dgamma(x,
+                  shape = alphai,
+                  scale = beta[2]),
+         lty = 2,
+         lwd = 2)
+  lines( x = x,
+         y = dgamma(x,
+                  shape = alphai,
+                  scale = beta[3]),
+         lty = 3,
+         lwd = 2)
+  legend("topright",
+         lwd = 2,
+         lty = 1:3,
+         legend = paste("beta = ", beta))
+}
+```
+
+Notice that
+\begin{align}
+   \int_0^\infty f_X(x)\,dx&=\int_0^\infty\frac{e^{-x/\beta}x^{\alpha-1}}{\beta^\alpha\Gamma(\alpha)}\,dx\nonumber\\
+   &= \frac{1}{\Gamma(\alpha)}\int_0^\infty e^{-y} y^{\alpha-1}\,dy  \quad \text{(on putting } y=x/\beta)\nonumber \\
+   &= 1\quad \text{(because $\int_0^\infty e^{-y} y^{\alpha-1}\,dy=\Gamma(\alpha)$)}\label{EQN:gammastd}
+\end{align}
+as it must.
+
+
+The following are the basic properties of the gamma distribution.
+
+:::{.theorem}
+If $X\sim\Gam(\alpha,\beta)$ then
+
+* $\text{E}(X) = \alpha\beta$.
+* $\text{var}(X) = \alpha\beta^2$.
+* $M_X(t) = (1-\beta t)^{-\alpha}$ for $t < 1/\beta$.
+:::
+
+:::{.proof}
+\[
+   \text{E}(X)
+   = \int_0^{\infty}x f_X(x)\,dx = \beta \frac{\Gamma(\alpha+1)}{\Gamma(\alpha)}
+\underbrace{\int_0^{\infty}\frac{e^{-x/\beta}x^{(\alpha+1)-1}}{\beta^{\alpha+1}\Gamma(\alpha+1)} \, dx}_{=1}
+   = \alpha\beta.
+\]
+This result follows from using~(\ref{EQN:gammastd}) and Theorem~\ref{TM:gamma}.
+
+\[
+   \text{E}(X^2)
+   = \int_0^{\infty}x^2  f_X(x) \, dx= \beta^2\frac{\Gamma(\alpha+2)}{\Gamma(\alpha)}
+\underbrace{\int_0^{\infty}\frac{e^{-x/\beta}x^{(\alpha+2)-1}}{\beta^{\alpha+2}\Gamma(\alpha+2)}\,dx}_{=1}
+  =\alpha(\alpha+1)\beta^2
+\]
+where the result follows by writing $\Gamma(\alpha + 2) = (\alpha + 1)\alpha\Gamma(\alpha)$.
+Hence
+\[
+   \text{var}(X)
+   = \text{E}(X^2)-[\text{E}(X)]^2=\alpha(\alpha+1)\beta^2-(\alpha\beta)^2=\alpha\beta^2
+\]
+
+\begin{align*}
+   M_X(t)
+   = \text{E}(e^{Xt})&=\int_0^{\infty}e^{tx}  \frac{e^{-x/\beta}x^{\alpha-1}}{\beta^{\alpha}\Gamma(\alpha)}
+ \, dx\\
+   &=\int_0^{\infty}\frac{e^{-x(1-\beta t)/\beta}x^{\alpha-1}}{\beta^{\alpha}\Gamma(\alpha)} \, dx\\
+   &=\int_0^{\infty}\frac{e^{-z}z^{\alpha-1}}{\Gamma(\alpha)(1-\beta t)^{\alpha-1}} \, \frac{dz} {1-\beta t}, \text{ putting } z=x(1-\beta t)/\beta\\ 
+   &=(1-\beta t)^{-\alpha},\ \text{ since the integral remaining is }1.
+\end{align*}
+:::
+
+As usual the moments can be found by expanding $M_X(t)$ in series.
+That is,
+\[
+   M_X(t) = 1 \ + \ \alpha\beta t \ + \ \frac{\alpha(\alpha+1)\beta^2}{2!}  t^2 \ + \ \cdots
+\]
+from which
+\begin{align*}
+   E(X)   &= \text{coefficient of }t =\alpha\beta,\\
+   E(Y^2) &= \text{coefficient of }t^2/2!=\alpha(\alpha+1)\beta^2, \text{ as found earlier.}
+\end{align*}
+
+Like for the normal distribution, the distribution function of the gamma cannot, in general, be computed without using numerical integration or tables (although see Example~\ref{EG:speccontinuous:gamma:eval}).
+
+:::{.example #Rainfall name="Rainfall"}
+Das~\cite{BIB:Das:rainfall} used a (truncated) gamma distribution for modelling precipitation.
+A similar approach is adopted by Wilks~\cite{BIB:Wilks:gamma}.
+:::
+
+:::{.example #Rainfall name="Rainfall"}
+Larsen and Marx~\cite[Case Study 4.6.1]{BIB:Larsen:stats} use the gamma distribution to model daily rainfall in Sydney, Australia using the parameter estimates $\alpha = 0.105$ and $\beta = 76.9$.
+(Their example is based on Das~\cite{BIB:Das:rainfall}.)
+The comparison between the data and the model is given in Table~\ref{TB:speccontinuous:gamma:rainfall} indicating a good correspondence between the data and the theoretical distribution.
+:::
+
+<!-- \begin{table} -->
+<!-- \begin{center} -->
+<!-- {\small -->
+<!-- \begin{tabular}{ccccccc} -->
+<!-- Rainfall & Observed  & Expected  && Rainfall & Observed  & Expected \\ -->
+<!-- (in mm)  & Frequency & Frequency && (in mm)  & Frequency & Frequency -->
+<!-- \botnewrule \\ -->
+<!-- \cline{1-3}\cline{5-7} -->
+<!-- \topnewrule -->
+<!-- 0--5 & 1631 & 1639 && 46--50 & 18 & 12 \\ -->
+<!-- 6--10 & 115 & 106 && 51--60 & 18 & 20 \\ -->
+<!-- 11--15 & 67 & 62 && 61--70 & 13 & 15 \\ -->
+<!-- 16--20 & 42 & 44 && 71--80 & 13 & 12 \\ -->
+<!-- 21--25 & 27 & 32 && 81--90 & 8 & 9 \\ -->
+<!-- 26--30 & 26 & 26 && 91--100 & 8 & 7 \\ -->
+<!-- 31--35 & 19 & 21 && 101--125 & 16 & 12 \\ -->
+<!-- 36--40 & 14 & 17 && 126--150 & 7 & 7 \\ -->
+<!-- 41--45 & 12 & 14 && 151--425 & 14 & 13 -->
+<!-- \end{tabular} -->
+<!-- } -->
+<!-- \caption{The gamma distribution used to model Sydney daily rainfall.} -->
+<!-- \label{TB:speccontinuous:gamma:rainfall} -->
+<!-- \end{center} -->
+<!-- \end{table} -->
+
+
+:::{.example #ElectricalComponent name="Electrical components"}
+The lifetime of an electrical component in hours, say $T$, can be well modelled by the distribution $\text{Gam}(\alpha = 2, \beta = 1)$.
+What is the probability that a component will last for more than three hours?
+
+From the information, $T\sim \Gam(\alpha = 2, \beta = 1)$.
+The required probability is therefore
+\begin{align*}
+   \Pr{T>3}
+   &= \int_3^\infty \frac{1}{1^2 \Gamma(2)}t^{2-1} \exp(-t/1)\,dt \\
+   &= \int_3^\infty t \exp(-t)\,dt \\
+\end{align*}
+since $\Gamma(2) = 1! = 1$.
+This expression can be integrated using integration by parts as follows:
+\begin{align*}
+   \Pr{T>3}
+   &= \int_3^\infty t \exp(-t)\,dt \\
+   &= \left\{ -t \exp(-t)\right\}\Big|_3^\infty - \int_3^\infty -\exp(-t)\, dt \\
+   &= [ (0) - \{-3\exp(-3)\}] - \left\{ \exp(-t)\Big|_3^\infty\right\} \\
+   &= 3\exp(-3) + \exp(-3)\\
+   &= 0.1991
+\end{align*}
+
+Note that this is only possible since $\alpha$ is integer.
+If $\alpha$ was, for example $\alpha = 2.5$, this (INT BY PARTS?) could not have been done.
+
+A more general approach is to use tables of the incomplete gamma function to evaluate the integral or, alternatively,
+a numerical integration technique (such as Simpson's rule or the trapezoidal rule) can be used to approximate the
+probability, where it may be easier to compute
+\[
+   \Pr(T>3) = 1 - \Pr(0 < T < 3 ).
+\]
+Software can also be used; R is used below:
+
+```{r echo=TRUE}
+# Integrate
+integrate(dgamma, # The gamma distribution probability function
+          lower = 3,
+          upper = Inf,  # "Inf" means "infinity"
+          shape = 2,
+          scale = 1)
+
+# Directly
+1 - pgamma(3,
+           shape = 2,
+           scale = 1)
+```
+
+Using any method, the probability is about 20\%.
+:::
+
+
+
+:::{.example #Gamma name="Gamma"}
+If $X\sim \Gam(\alpha, \beta)$, find the distribution of $Y = kX$ for some constant $k$.
+
+One way to approach this question is to use moment generating functions.
+Since $X$ has a gamma distribution, $M_X(t) = (1-\beta t)^{-\alpha}$.
+Now,
+\begin{align*}
+   M_X(t)
+   &= \text{E}(\exp(tX)) \qquad\text{by definition of the mgf}\\
+   &= \text{E}(\exp(t kX)) \qquad\text{since $X=kX$}\\
+   &= \text{E}(\exp(s X)) \qquad\text{by letting $s=kt$}\\
+   &= M_X(s) \qquad\text{by definition of the mgf}\\
+   &= M_X(kt) \\
+   &= (1-\beta kt)^{-\alpha}.
+\end{align*}
+This is just the mgf for random variable $X$ with $k\beta$ in place of $\beta$, so the distribution of $X$ is $\text{Gam}(\alpha, k\beta)$.
+:::
+
+
+
+## Beta distribution {#BetaDistribution}
+
+Apart from the uniform distribution, all the continuous distributions considered so far have densities which are positive over an infinite interval.
+It is useful to have another class of distributions that can be used to model phenomena constrained to a finite interval. 
+The beta distribution fits this category.
+
+
+:::{.definition #BetaDistribution name="Beta distribution"}
+A random variable $X$ with probability density function
+\begin{equation*}
+   f_X(x)
+   = \frac{x ^ {m - 1}(1 - x)^{n - 1}}{B(m,n)}, \ 0 \leq x \leq 1, \ m>0, \ n>0
+\end{equation*}
+where
+\begin{equation}
+   B(m, n)
+   = \int_0^1  x^{m - 1}(1 - x)^{n - 1} \, dx, \quad m > 0, \ n > 0
+\end{equation}
+is said to have a *beta distribution* with parameters $m$, $n$.
+We write $X \sim \text{Beta}(m, n)$.
+:::
+
+$B(m, n)$ defined by (\ref{EQN:betadef}) is known as the *beta function* with parameters $m$ and $n$.
+
+We see from $\int_0^1 f_X(x)\,dx=1$ that
+\begin{equation}
+   \int_0^1  \frac{x^{m - 1}(1 - x)^{n - 1}}{B(m, n)}\,dx = 1.
+\end{equation}
+
+Some properties of the beta function follow.
+
+
+:::{.theorem}
+The beta function (\ref{EQN:betadef}) satisfies the following:
+
+* The beta function is symmetric in $m$ and $n$.
+  That is, if $m$ and $n$ are interchanged, the function remains unaltered; i.e., $B(m, n) = B (n, m)$.
+* $B(1, 1) = 1$
+* $\ds B\left(\frac{1}{2}, \frac{1}{2}\right) = \pi$
+* For positive constants $m$, $n$ (not necessarily integers) $B(m, n) = \frac{\Gamma(m) \Gamma(n)}{\Gamma(m + n)}$.
+:::
+
+:::{.proof}
+To prove this, put $z = 1 - x$ and hence $dz = -dx$ in (\ref{EQN:betadef}). 
+We obtain
+\begin{align*}
+   B(m, n)
+   &= -\int_1^0(1 - z)^{m - 1}  z^{n - 1} \, dz\\
+   &= \int_0^1 z^{n - 1}(1 - z)^{m - 1} \, dz\\
+   &= B(n, m)
+\end{align*}
+
+Put $x = \sin^2\theta$, $dx = 2\sin\theta\cos\theta\,d\theta$ in (\ref{EQN:betadef}).
+We have
+\[
+   B(m, n) = 2 \int_0^{\pi/2} \sin^{2m - 1}\theta \cos ^{2n - 1}\theta\,d\theta.
+\]
+So, for $m = n = \frac{1}{2}$,
+\[
+   B\left(\frac{1}{2},\frac{1}{2}\right) = 2\int_0^{\pi/2} d\theta = \pi.
+\]
+The proof (not required) involves expressing $\Gamma(m)$ as
+\[
+   2 \int_0^{\infty} e^{-u^2}  u^{2m-1} \, du,
+\]
+then writing $\Gamma(m)\Gamma(n)$ as a double integral. 
+Changing to polar coordinates, the double integral is written as a repeated integral which is $\Gamma(m + n)B(m, n)$.
+:::
+
+Typical graphs for the beta pdf are given below. 
+Note that, if $m = n$, the distribution is symmetric about $x = \frac{1}{2}$, and in the special case where $m = n = 1$, the beta distribution becomes the uniform distribution on $(0,1)$.
+
+
+```{r BetaDistributions, echo=FALSE, fig.align="center", fig.cap="Various beta-distribution PDFs"}
+x <- seq(0, 1, 
+         length = 100)
+
+m <- c( 3, 4, 6)
+n <- c(7, 4, 2)
+
+
+plot( x = x,
+      y = dbeta(x = x,
+                shape1 = m[1],
+                shape2 = n[1]),
+      xlab = "x",
+      ylab = "FX",
+      lwd = 2,
+      type = "l",
+      las = 1,
+      main = "Beta distributions")
+lines( x = x,
+       y = dbeta(x = x,
+                 shape1 = m[2],
+                 shape2 = n[2]),
+       lty = 2)
+lines( x = x,
+       y = dbeta(x = x,
+                 shape1 = m[3],
+                 shape2 = n[3]),
+       lty = 3)
+
+legend("bottom",
+       lty = 1:3,
+       lwd = 2,
+       legend = c( paste("m =", m[1], "and n =", n[1]),
+                   paste("m =", m[2], "and n =", n[2]),
+                   paste("m =", m[3], "and n =", n[3]) )
+)
+
+```
+
+
+Some basic properties of the beta distribution follow.
+
+:::{theorem}
+
+If $X \sim \be(m,n)$ then
+
+* $\text{E}(X) = \ds\frac{m}{m + n}$.
+* $\text{var}(X) = \ds\frac{mn}{(m + n)^2(m + n + 1)}$.
+* A mode occurs at $x = \ds\frac{m - 1}{m + n - 2}$ for $m, n > 1$.
+:::
+
+
+:::{.proof}
+Assume $X \sim \be(m,n)$, then
+\begin{align*}
+   \mu_r'
+   =\text{E}(X^r)
+   &= \int_0^1  \frac{x^r  x^{m-1}(1-x)^{n-1}}{B(m,n)}\,dx
+   &= \frac{B(m+r,n)}{B(m,n)}  \int_0^1 \frac{x^{m+r-1}(1-x)^{n-1}}{B(m + r,n)}\,dx\\
+   &= \frac{\Gamma(m+r)\Gamma(n)}{\Gamma(m+r+n)}\frac{\Gamma(m+n)}{\Gamma(m)\Gamma(n)}\\
+   &= \frac{\Gamma(m + r)\Gamma(m + n)}{\Gamma(m + r + n)\Gamma(m)}
+\end{align*}
+Putting $r = 1$ and $r = 2$ into the above expression, and using the fact that $\text{var}(X) = \text{E}(X^2) - (\text{E}(X))^2$, it is easy to verify that the mean and variance are $\text{E}(X) = \ds\frac{m}{m + n}$ and $\text{var}(X) = \ds\frac{mn}{(m + n)^2(m + n + 1)}$.
+
+Any mode $\theta$ of the distribution for which $0 < \theta < 1$ will satisfy $f'_X(\theta) = 0$. 
+From the definition we see that for $m, n>1$ and $0 < x < 1$,
+\[
+   f'_X(x) = (m - 1)x^{m - 2} (1 - x)^{n - 1} - (n - 1)x^{m - 1}(1 - x)^{n - 1}/B(m, n) = 0
+\]
+implies $(m - 1)(1 - x) = (n - 1)x$ which is satisfied by $x = (m - 1) / (m + n - 2)$.
+:::
+
+The mgf of the beta distribution cannot be written in terms of standard functions.
+
+The distribution function of the beta must be evaluated numerically in general, except when $m$ and $n$ are integers as shown in the example below.
+
+:::{.example #Beta name="Beta distributions"}
+The bulk storage tanks of a fuel retailed are filled each Monday.
+The retailer has observed that over many weeks the proportion of the available fuel supply sold is well modelled by a beta distribution with $m = 4$ and $n = 2$.
+According to this model, on average what proportion of fuel is sold each week?  
+Is it likely that at least 90\% of the supply will sell in a given week?
+
+If $X$ denotes the proportion of the total supply sold in a given week.
+\[
+   \text{E}(X) = m/(m + n) = 4/6 = 2/3.
+\]
+In the second part our interest is in
+\begin{align*}
+   \Pr(X > 0.9)
+   &= \int_{0.9}^1\frac{\Gamma(4 + 2)}{\Gamma(4)\Gamma(2)}x^3(1 - x)dx\\
+   &= 20\int_{0.9}^1 (x^3 - x^4))\,dx\\
+   &= 20(0.004)\\
+   &= 0.08
+\end{align*}
+It is unlikely that 90\% of the supply will be sold in a given week.
+:::
+

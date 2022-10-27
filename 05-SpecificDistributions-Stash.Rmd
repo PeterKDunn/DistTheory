@@ -1,0 +1,890 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Self-assessment exercises}
+
+The following exercises are designed to provide practice at problem-solving
+based on the material in this module. Solutions are provided at the end of the module.
+Additional exercises are available in the next section and in the textbook.
+
+In Questions~\ref{QN:norm1} and \ref{QN:norm2} use tables of the standard normal
+to obtain the answers then check these answers using
+the {\sf pnorm} or {\sf qnorm} functions.
+
+\begin{exercises}
+
+
+\item\label{QN:norm1}
+If $Z\sim N(0,1)$ find
+\begin{enumerate}
+\item $\Pr{Z \le 1.75}$
+\item $\Pr{Z > 2.25}$
+\item $\Pr{Z < -0.85}$
+\item $\Pr{Z \ge -1.64}$
+\item $\Pr{|Z| < 1.84}$
+\end{enumerate}
+
+\begin{answer}
+(a) 0.9599 (b) 0.01222 (c) 0.1977 (d) 0.9495 (e) 0.9342
+\end{answer}
+
+
+
+\item\label{QN:norm2}
+If $Z\sim N(0,1)$ find $k$ such that
+\begin{enumerate}
+\item $\Pr{Z < -k}=0.25$
+\item $\Pr{|Z| \le k}=.25$
+\end{enumerate}
+
+\begin{answer}
+(a) $k=0.67$ (b) \ $k=0.32$
+\end{answer}
+
+
+\item The life time in years of new restaurants initiated in a
+given city is random variable with an approximate gamma
+distribution with $\alpha = 1$ and $\beta= 5$. Find
+\begin{enumerate}
+\item the mean and the variance of the life time of new
+restaurants in that city; \item the probability that at most 5 of
+the 20 new restaurants will fail within the next year.
+\end{enumerate}
+\begin{answer}
+Let $X$ be lifetime of new restaurants in the city in years. Then
+$X\sim\Gam(\alpha=1,\beta=5)$.
+\begin{enumerate}
+\item The expected number of years before a new restaurant fails
+is $\text{E}(X) = \alpha\times\beta = 1\times 5 = 5$. Also, $\text{var}(X) =
+\alpha\times\beta^2 = 1\times 5^2 = 25$.
+
+\item The probability that one randomly selected new restaurant
+failed within the first year is
+\[
+   p = \int_{x=0}^1 \frac{1}{5} \exp(-x/5)\, dx = 1-\exp(-1/5)\approx 0.18.
+\]
+Let $X$ be the number of new restaurants failing within the first
+year. Then $X\sim \bin(n=20, p=0.18)$ so $\Pr{X\le 5} = 0.781$
+using the binomial distribution.
+\end{enumerate}
+\end{answer}
+
+
+\item The exponential distribution is sometime called the lifetime
+distribution, since it is commonly used to model the lifetimes of
+manufactured components. Assume that the lifetime of diodes
+follows an exponential distribution with mean $\lambda=40$~hours.
+\begin{enumerate}
+
+    \item
+    Find the probability that a diode will last longer than $60$~hours.
+
+    \item
+    Find the probability that three diodes out of five will last longer than
+    $60$~hours.
+
+\end{enumerate}
+
+
+\begin{answer}
+Let $D$ be the lifetime of a diode in hours so that
+$D\sim\text{E}xp(40)$; then $\Pr{D>60}=\int_{60}^\infty \exp(-t/40)/40\,
+dt \approx 1-0.777 = 0.223$; let $N$ be the number of diodes out
+of five that last longer than 60 hours; then
+$N\sim\bin(n=5,p=0.223)$, so that $\Pr{N=3}\approx0.067$.
+\end{answer}
+
+\item In the following situations, determine which distribution
+studied in
+    the course would be most appropriate for modelling the variable of interest,
+    justifying your answer.
+
+\begin{enumerate}
+
+     \item
+     The number of people using an Automatic Teller Machine per 15~minutes.
+
+     \item
+     The number of independent shots taken at a target until a missile hits
+     the target.
+
+     \item
+     The heights of two year old children at a Day Care Centre.
+
+     \item
+     The time interval between successive births at a busy hospital.
+\end{enumerate}
+
+\begin{answer}
+Poisson or negative binomial; geometric; normal; exponential.
+\end{answer}
+
+
+\item If $H$ is a binomial random variable such that $H\sim\bin(n,
+p)$, then the normal approximation can be used under certain
+conditions.
+\begin{enumerate}
+   \item
+   State the conditions under which the normal approximation is
+   satisfactory.
+
+   \item
+   In this context, explain what is meant by a
+   \emph{continuity correction},
+   and why it is necessary.
+
+   \item
+   If $H$ represents the number of heads in $100$ tosses of
+   a fair coin, use the normal approximation to determine $\Pr{H<45}$.
+\end{enumerate}
+
+\begin{answer}
+$\Pr{H<45} = \Pr{Z< (44.5 - 50)/5 } = \Pr{Z<-1.1} =  0.136$.
+\end{answer}
+
+\item
+(Computer exercise) Generate a random sample of size 1000 from a uniform
+distribution on the interval [-1,1].
+\begin{enumerate}
+\item Find the mean and standard deviation of
+the sample. Is it as predicted by Theorem~\ref{TM:unifcts}?
+({\sf runif(n=1000,min=-1,max=1)})
+\item Draw a histogram letting \R\ choose the number of bins and
+midpoints for the bins. A common problem encountered here is that
+the two extreme bins are centred at the endpoints causing them to
+only be half the height you would expect. (Why?) If this occurs
+redraw the histogram choosing the centres of the bins to be at
+$-.9, -.7, -.5,\dots,.7,.9$.
+\end{enumerate}
+
+\begin{answer}
+\begin{verbatim}
+urv<-runif(n=1000,min=-1,max=1)
+print(mean(urv))
+print(sqrt(var(urv)))
+hist(urv,breaks=seq(-1,1,0.2))
+\end{verbatim}
+\end{answer}
+
+
+\item (Computer exercise)
+\begin{enumerate}
+\item Generate a sample of size 1000 from an exponential
+distribution with rate parameter $\lambda=0.5$.
+\item Find the sample mean and variance and compare with the theoretical result
+from Theorem~\ref{TM:expprop}.
+\item Estimate $\Pr{X \ge 4}$ and compare it with the true result found
+by integrating the density function.
+\item Draw a histogram, (be careful, make sure the first bin is not centred at zero).
+\item Draw a boxplot of the random sample. What does it show?
+\end{enumerate}
+
+\begin{answer}
+\begin{verbatim}
+v<-rexp(n=1000,rate=0.5)
+mnv<-mean(v)
+sdv<-var(v)
+Pgt4<-1-pexp(q=4,rate=0.5)
+print(c(mnv,sdv,Pgt4))
+l<-length(v [v>4])
+hist(v)
+\end{verbatim}
+
+I obtained 136 observations greater than 4,
+giving an estimate of $\Pr{X>4}$ of 0.136.
+That is about 13\% of workers would be expected to take 4 minutes or more. A
+worker taking 4 minutes to complete the task should not be considered unusual
+under the assumptions made.
+\end{answer}
+
+
+\item
+(Computer exercise) Plot the pdf and df for the standard normal curve
+on the one set of axes.
+
+\begin{answer}
+\begin{verbatim}
+x<-seq(-3,3,0.1)
+phix<-dnorm(x,mean=0,sd=1)
+PHIx<-pnorm(x,mean=0,sd=1)
+plot(x,PHIx,type=`l',las=1,xlab="x",ylab="density, distribution")
+lines(x,phix,lty=2)
+\end{verbatim}
+\end{answer}
+
+
+\item
+(Computer exercise) Use the {\sf pnorm} function of \R\ to verify the results
+in Example~\ref{EG:norm2}(a)--(d).
+
+\begin{answer}
+\begin{verbatim}
+#         P(X<7)
+print( pnorm(q=7,mean=4,sd=3))
+#         P(X>2.5)
+print(1-pnorm(q=2.5,mean=4,sd=3) )
+#         P{|X-4| <0.3}
+P1<-pnorm(q=-0.3,mean=0,sd=3)
+P2<-pnorm(q=0.3,mean=0,sd=3)
+print(P2-P1)
+#        P(-0.5<X<4.3)
+print(diff(pnorm(q=c(-0.5,4.3),mean=4,sd=3)))
+\end{verbatim}
+\end{answer}
+
+
+\end{exercises}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Exercises}
+
+In Questions~\ref{QN:norm3} and~\ref{QN:norm4} use tables of the standard normal
+to obtain the answers then check these answers using
+the {\sf pnorm} or {\sf qnorm} functions.
+
+\begin{exercises}
+
+
+\item\label{QN:norm3}
+If $X\sim N(12,16)$ find
+\begin{enumerate}
+\item $\Pr{X < 9}$
+\item $\Pr{X \ge 17}$
+\item $\Pr{0 < X \le 18}$
+\end{enumerate}
+
+\begin{answer}
+(a) 0.2266 (b) 1.1056 (c) 0.93185
+\end{answer}
+
+
+\item\label{QN:norm4}
+If $X\sim N(5,2.5^2)$ find $k$ such that
+\begin{enumerate}
+\item $\Pr{X > k} = 0.75$
+\item $\Pr{|X-5| > k} = 0.01$
+\end{enumerate}
+
+\begin{answer}
+(a) 3.3 \ (b) 6.45
+\end{answer}
+
+
+
+\item
+At one locality near a busy airport the noise level of a jet aircraft
+taking off is approximately normally distributed with a mean of 101
+decibels and a standard deviation of 5 decibels.
+\begin{enumerate}
+\item What is the probability that a randomly selected jet will generate
+a noise level greater than 110 decibels.
+\item Estimate the probability in (a) by simulating the noise level of
+1000 such jets.
+\item What is the probability that if four jets are selected at random none will generate
+a noise level greater than 110 decibels?
+\item If a noise regulation is introduced which specifies that 95\% of
+all jets taking off must have noise levels less than 105 decibels by how much
+must the mean noise level of aircraft be reduced assuming the standard deviation remains
+the same?
+\item (Computer exercise) Use \R\ to simulate the problem in part (d).
+\end{enumerate}
+
+\begin{answer}
+(a) 0.0359 (b)  Use {\sf rnorm}) to simulate 1000
+observations. Use the comparison operator, ($>$), and count the number
+of observations greater than 110.
+(c) 0.8639
+(d) Let $\mu$ be the mean noise level to be attained so $X\sim N(\mu,5^2)$.
+Reduction $=101-\mu=4.2$ decibels (e) Find the observation in (b) above which
+there are 5\% of the observations. That is sort the column ({\sf sort}) and look for the
+observation in position 950 in the sorted column. The required reduction is the
+value required to make this observed value 105.
+\end{answer}
+
+\item
+(Computer exercise) Use the {\sf qnorm } command to verify the result
+in Example~\ref{EG:norm2}(e).
+
+\begin{answer}
+\begin{verbatim}
+print(qnorm(p=0.975,mean=0,sd=3))
+\end{verbatim}
+\end{answer}
+
+\item
+For a rv $Z$ which has a normal distribution with
+mean 0 and variance 1, show that $\text{E}(|Z|)=\sqrt{2/\pi}$.\\
+Hence (or otherwise) find $\text{E}(|X-\mu|)$ where $X \sim N(\mu,\sigma^2)$.
+
+\begin{answer}
+$|Z| =\begin{cases}
+Z& Z \ge 0\\
+-Z& Z < 0
+\end{cases}$\\
+This integral should be written as sum of two integrals over
+$(-\infty,0)$ and $[0, \infty)$. Note $\ds{\frac{X-\mu}{\sigma} \sim
+N(0,1)}$
+\end{answer}
+
+
+\item
+Given that the rv $X$ has mgf given by
+$M_X(t)=e^{\mu t + \sigma^2 t^2/2}$ show that
+\begin{enumerate}
+\item $Y=aX + b$ has a normal distribution and write down its mean and variance.
+\item Hence show that $Z=(X-\mu)/\sigma$ has a standard normal distribution and
+write down its mgf.
+\end{enumerate}
+
+\begin{answer}
+(a) Use Theorem~\ref{TM:3:mgf1} and show $M_Y(t)$ has
+the form of mgf for normal distribution.
+\end{answer}
+
+
+
+\item
+A large service company receives calls from would be subscribers. If
+a company representative is not free to talk to them they are put on hold.
+From past experience the company knows that most potential customers will be
+lost if they are required to hold longer than 4 minutes. It is assumed that the
+holding time is normally distributed with standard deviation 0.7 minutes.
+\begin{enumerate}
+\item If the average holding time is 2.8 minutes what proportion
+of potential customers will be lost?
+\item The holding time is varied by providing more (or fewer) representatives.
+What holding time must be attained if the company aims to lose no more
+than 1\% of potential customers.
+\end{enumerate}
+
+\begin{answer}
+(a) 0.0436 (b) 2.3 mins
+\end{answer}
+
+
+
+\item
+If $Y$ is a random variable with pdf given by
+\[ f_Y(y) = \frac{y^{m-1}(1-y)^{n-1}}{B(m,n)}, \quad 0 \le y \le 1, \]
+find
+\begin{enumerate}
+\item the mode of the distribution
+\item $\text{E}(Y)$
+\item $\text{var}(Y)$
+\end{enumerate}
+
+\begin{answer}
+(a) $\ds{\frac{m-1}{m+n-2}}$ \ (b) $\ds{\frac{m}{m+n}}$
+(c) $\ds{\frac{mn}{(m+n)^2(m+n+1)}}$
+\end{answer}
+
+
+\item
+For a particular variety of corn on average 2/3 of all seeds will germinate.
+\begin{enumerate}
+\item If 120 seeds are planted find the number expected to germinate and its
+variance.
+\item Find a lower bound on the probability that the number germinating will be
+between 70 and 90.
+\item Use \R\  to calculate $\Pr{70 < X < 89}$ and compare it with the bound
+found in (b).
+\end{enumerate}
+
+\begin{answer}
+Let $X$ be the number of seeds that germinate.\\
+(a) $\text{E}(X)=80$ $\text{var}(X) = 80/3$ (b) 11/15\\
+(c) {\sf diff(pbinom(q=c(70,89),size=120,prob=2/3))}
+\end{answer}
+
+
+\item
+A task is set which is claimed will take an average worker 2 minutes.
+If it is assumed that the time taken is exponentially distributed
+what could be said if a worker
+takes 4 minutes to complete the task?
+
+
+
+\item The exponential distribution is said to be \emph{memoryless}
+in that
+\[
+   \Pr{X>s+t\mid X>t} = \Pr{X>s}
+\]
+for all $s, t\ge 0$.
+\begin{enumerate}
+   \item
+   Explain, in simple terms, why the above mathematical expression
+   implies that the distribution is \emph{memoryless}.
+
+   \item
+   Prove that the exponential distribution is indeed memoryless.
+
+   \item
+   Consider the exponential distribution
+   \[
+      f_P(p) =  \frac{1}{\alpha}\exp(-p/\alpha) \quad\text{for $p\ge 0$.}
+   \]
+   Determine $\Pr{P>4 \mid  P>1}$.
+
+\end{enumerate}
+
+
+\item The amount of time in minutes, $T$, spent waiting for an
+elevator on the ground floor of a building is given by the
+function
+\[
+   f_T(t) = \frac{1}{\Gamma(1/2)}t^{-1/2}e^{-t}\quad\text{for $t>0$}
+\]
+where $\Gam(1/2) = \sqrt{\pi}$.
+\begin{enumerate}
+   \item
+   By noting that the distribution is in the gamma family,
+   write down the moment generating function of $T$.
+
+   \item
+   Use the mgf to determine the mean and variance of $T$.
+\end{enumerate}
+
+
+\item Consider the distribution
+\[
+   f_Z(z) = k\exp(-z^4)\quad\text{for $-\infty<z<\infty$}
+\]
+where $\displaystyle k=\frac{\pi}{\sqrt{2}\Gamma(3/2)}\approx
+1.8128$. Using a numerical method, determine $\Pr{0<z<1}$ accurate
+to at least 2 decimal places.
+
+
+\item In 1951, Gupta~\cite{BIB:Gupta:lamps} studied the lifetimes
+of 300 electric lamps, given in  Table~\ref{TB:lamps}. The data
+has also been looked at by others.
+
+\begin{table}
+\begin{center}
+{\footnotesize
+\begin{tabular}{cc}
+\botnewrule\textit{Lifetimes (hours)} & \textit{Frequency} \\
+\hline
+\topnewrule 950-1000&2 \\
+1000--1050&2 \\
+1050--1100&3 \\
+1100--1150&6 \\
+1150--1200&7 \\
+1200--1250&12 \\
+1250--1300&16 \\
+1300--1350&20 \\
+1350--1400&24 \\
+1400--1450&27 \\
+1450--1500&29 \\
+1500--1550&29 \\
+1550--1600&28 \\
+1600--1650&25 \\
+1650--1700&21 \\
+1700--1750&16 \\
+1750--1800&12 \\
+1800--1850&8 \\
+1850--1900&6 \\
+1900--1950&3 \\
+1950--2000&2 \\
+2000--2050&1 \\
+2050--2100&1 \\
+\end{tabular}
+\caption{Lifetimes of Electric Lamps (\Source:
+Gupta~\cite{BIB:Gupta:lamps})} \label{TB:lamps}}
+\end{center}
+\end{table}
+
+\begin{enumerate}
+\item Convert the counts to probabilities.
+\item Determine the
+sample mean and sample variance of the lifetime of the electric
+lamps using the given data.
+\item Sketch a histogram of the data,
+and comment on its normality.
+\item Assume the data has a normal
+distribution with the mean and variance as found in part~(b).
+Determine the theoretical probabilities of a lamp lasting between
+$1300$ and $1500$~hours, and compare to the probability computed
+from the given data. Comment on your answers.
+\item Using the
+theoretical normal distribution developed above, determine the
+probability that a lamp will last for longer than 1600 hours given
+that it has lasted 1300 hours.
+\end{enumerate}
+
+
+\item Rainfall is often modelled using the gamma distribution or
+the exponential distribution for simplicity. However, sometimes
+other distributions are used. An example of such a distribution
+is described by the following functions
+\begin{align*}
+   f_R(r) &= \frac{1-p}{\Gamma(\alpha)\beta^\alpha}
+                    r^{\alpha-1} \exp( -r/\beta) \quad\text{if $r>0$}\\
+   p_R(r) &= p \quad\text{if $r=0$}
+\end{align*}
+where $R$ is the daily rainfall in millimetres.
+\begin{enumerate}
+\item
+    Determine if $R$ is a discrete, continuous or mixed distribution,
+    justifying your answer.
+\item
+    Find $f_{R\mid R>0}(r\mid R>0)$,
+    and show that it is a gamma distribution.
+\item
+    Explain, in the context of the question, the difference between
+    $\Pr{R>10}$ and $\Pr{R>10\mid R>0}$.
+\item
+    Given the data in Table~\ref{TB:melbrain},
+    determine a value for $p$.
+\item
+    Four days at random are independently drawn from the data in
+    Table~\ref{TB:melbrain}.
+    Calculate the probability of getting more than two dry days in the
+    four days.
+\end{enumerate}
+
+\begin{table}
+   \begin{center}
+     {\small
+      \begin{tabular}{rr}
+         Rainfall (in mm) & Frequency \\
+         \hline
+0&2237 \\
+$0<\hbox{\rm Rain}\le 25$&809 \\
+$25<\hbox{\rm Rain}\le 50$&260 \\
+$\vdots$\qquad 75&93 \\
+100&81 \\
+125&56 \\
+150&43 \\
+175&12 \\
+200&17 \\
+225&5 \\
+250&12 \\
+275&5 \\
+300&3 \\
+325&1 \\
+350&5 \\
+375&2 \\
+400&3 \\
+700&9 \\
+\hline
+& 3653 \\
+      \end{tabular}
+      \caption{Daily rainfall for Melbourne, from 1~January 1981 to
+               31~December 1990 (\textsc{Original Source}: Australian
+               Bureau of Meteorology)}
+      \label{TB:melbrain}}
+   \end{center}
+\end{table}
+%Get data for Melbourne daily rainfall from
+%\url{http://www.maths.uq.edu.au/~gks/data/oz/melbrain.html}
+
+
+
+\item\label{QN:5:q2}
+The life of a certain electrical component has probability
+density function
+$$f_T(t)=\alpha e^{-\alpha t},\quad t \in (0,\infty)$$
+\begin{enumerate}
+\item Find the probability that the life of the component will be more than
+$t_1$ hours.
+\item Find the conditional probability that the lifetime of the component
+will be more than $t_1 + t_2$ hours given that the component has already
+been in operation for $t_1$ hours.
+\item Assume that a machine using such a component will fail when the component fails.
+If the machine is inspected at time $t_1$ and will not be inspected
+again until time $t_2$ is the best strategy to replace the component at time
+$t_1$ with a new one even though it shows no sign of failing?
+(Assume the exponential model is correct!)
+Explain your answer.
+\end{enumerate}
+
+\begin{answer}
+(a) Integrate to find $\Pr{T>t_1}=e^{-\alpha t_1}$.\\
+(b) This is a conditional probability, $\Pr{A\mid B}$ where $A = \{T>t_1+t_2\}$,
+$B = \{T>t_1\}$.\\
+(c) Explain which has the greater probability of failing (assuming the exponential model)
+in the next $t_2$ hours, a new component or a component which has already lasted $t_1$ hours?
+\end{answer}
+
+
+
+
+\item If a company employs $n$ sales persons, its gross sales in
+thousands of dollars may be regarded as a rv having a gamma
+distribution with $\alpha=80\sqrt{n}$ and $\beta=2$. If the sales
+cost is \$8000 per salesperson, how many salespersons should the
+company employ to maximise the expected profit?
+
+\begin{answer}
+Let $X$ be the gross sales in thousands of dollars. Then
+$X\sim\Gam(\alpha=80\sqrt{n}, \beta=2)$. Since the cost per
+salesperson is \$8 000, the profit (in thousand dollars) is a
+random variable denoted by $Y = X - 8n$ (that is, the difference
+between the total gross sale and the total cost of employing $n$
+salespersons). The expected profit is given by $\text{E}(Y) = \text{E}(X-8n) =
+\text{E}(X) - 8n = 160\sqrt{n} - 8n$. The value of $n$ maximizing
+expected profit is found by differentiating.
+\[
+   \frac{d}{dn}\text{E}(Y) = 80n^{-1/2} - 8,
+\]
+which is zero when $n=100$. (\Note: The second derivative can be
+used to confirm this is a maximum.)
+\end{answer}
+
+\item
+The Cauchy distribution has the pdf
+\[
+   f_X(x) = \frac{k}{1+x^2}
+\]
+for $-\infty<x<\infty$.
+\begin{enumerate}
+
+   \item
+   Find the value of $k$.
+
+   \item
+   Sketch the Cauchy distribution over the range $-6\le x \le 6$.
+
+   \item
+   Determine $\Pr{X>2 \mid  X<4}$.
+
+   \item
+   Find the distribution function for $X$.
+
+   \item
+   Using the distribution function,
+   determine the median of the Cauchy distribution.
+\end{enumerate}
+
+\begin{answer}
+(a) $k=1/\pi$ (c) $\left[\arctan(4)-\arctan(2)\right]/[\arctan(4) + \pi]$
+(c) $F_X(x) = \arctan(2)/\pi + 1/2$ (d) median is $0$.
+\end{answer}
+
+
+\item
+\begin{enumerate}
+\item Suppose in Question~\ref{QN:5:q2} the mean lifetime is 500 hours (= $1/\alpha$).
+Calculate the exact probabilities in parts~(a) and~(b) using the {\sf pexp()} function if
+$t_1=500$ and $t_1 + t_2=1000$.
+\item Estimate the probability in part~(a) by simulating the lifetimes of 1000
+components.
+\end{enumerate}
+
+\begin{answer}
+(a) Use {\sf pexp(rate = 1/500, q = 500)}.
+(b) Use {\sf rexp()}. Count the number of observations greater than 500.
+\end{answer}
+
+
+\item
+The von Mises distribution is often used to model
+directional data. (It was used, for example, by Fisher and
+Lee~\cite{BIB:Fisher:angular} to model the direction and distance
+travelled by blue periwinkles after they had been transplanted
+downshore from the height at which they normally live.) The von
+Mises distribution has the probability density function
+\[
+   f_Y(y; \lambda) =  \begin{cases}
+        \kappa \exp\{ \lambda \cos(y-\mu) \} & \text{if $0\le y<2\pi$} \\
+        0                                  & \text{otherwise} \\
+                            \end{cases}
+\]
+where $\lambda>0$ and $0\le \mu < 2\pi$.
+%Jorgensen p21
+
+   The density function \emph{cannot} be integrated using standard methods
+   (so don't try!),
+   and so the constant,
+   $\kappa$ (kappa),
+   must be determined by using a numerical integration method.
+
+\begin{enumerate}
+   \item
+   Using such a method,
+   determine the value of the constant $\kappa$ in the case where
+   $\lambda = 1$ and $\mu = \pi$,
+   \emph{accurate to two significant figures}.
+   (You are encouraged to use a computer package such as
+   \Matlab, R or Excel,
+    though this is not essential.)
+
+   \item
+   Numerically determine
+   $\Pr{Y>2}$ when $\lambda=1$ and $\mu=\pi$.
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\item
+(Computer exercise) Use the {\sf dexp} and {\sf pexp} commands to calculate the
+density function and corresponding distribution function
+for an exponential distribution
+with parameter $\theta=0.5$.\\ Plot the resulting pdf and df on the one set of
+axes for $x=0,1,2, \dots, 15$.
+
+\begin{answer}
+\begin{verbatim}
+x<-0:15
+PDFx<-dexp(x,rate=0.5)
+CDFx<-pexp(x,rate=0.5)
+plot(x,PDFx,ylim=c(0,1),type=`l',las=1)
+lines(x,CDFx,lty=3)
+\end{verbatim}
+\end{answer}
+
+\item
+(Computer exercise) Plot the pdf's for the three normal distributions
+that each have mean 0 but have standard deviations 0.5, 1 and 2 on the one set
+of axes. (In each case calculate the pdf for $x \in [-3,3]$ at $x$ increments
+of $0.1$.)
+
+\begin{answer}
+\begin{verbatim}
+x<-seq(-3,3,0.1)
+sd<-c(0.5,1,2)
+fx<-array(0,dim=c(length(x),length(sd)))
+# set up the plot frame with a dummy
+plot(x,rep(0,length(x)),type=`n',las=1,xlab="x",ylab="f(x)",ylim=c(0,1))
+
+for ( k in seq(along=sd)){
+fx[,k]<-dnorm(x,mean=0,sd=sd[k])
+lines(x,fx[,k],lty=k)
+                         }
+\end{verbatim}
+\end{answer}
+
+
+\item
+(Computer exercise) Simulate Example~\ref{EG:exam} for a class size of 50. What is
+the lowest mark to pass if the top 75\% pass. How does it compare with the
+theoretical result (which essentially assumes an infinite population).
+(Try it for a larger class size. As the class size increases you would expect
+the theoretical result and estimated result to get closer.)
+
+\begin{answer}
+\begin{verbatim}
+marks<-rnorm(mean=500,sd=100,n=50)
+pass.mark<-quantile(marks,probs=0.25)
+\end{verbatim}
+\end{answer}
+
+\item
+(Computer exercise) To see the effect of the second parameter $\beta$, plot the gamma
+functions with a common $\alpha=2$ but $\beta$ = 1, 2 and 4. Use
+$x \in [0,6]$ with an increment of 0.1.
+
+\begin{answer}
+\begin{verbatim}
+x<-seq(0,6,0.1)
+alpha<-2
+beta<-c(1,2,4)
+ymax<-1.5
+plot(x,rep(0,length(x)),type=`n',xlab="x",
+      ylab="gamma density",las=1,ylim=c(0,ymax))
+for ( i in seq(along=beta)){
+lines(x,dgamma(x,shape=alpha,scale=1/beta[i]),lty=i)
+   }
+# legend with upper left corner denoted by (p1,p2) coordinate
+p1<-2
+p2<-0.9*ymax
+legend(p1,p2,legend=c("beta=1","beta=2","beta=4"),lty=1:3)
+\end{verbatim}
+\end{answer}
+
+
+\item
+(Computer exercise) On the one graph, plot the chi-square distribution
+for $\nu = 1,2,3,4$. Use $x \in [0.1,\ 5]$ with increments of 0.1.
+
+\begin{answer}
+\begin{verbatim}
+nu<-1:4
+x<-seq(0.1,5,0.1)
+ymax<-1.5
+plot(x,rep(0,length(x)),type=`n',las=1,ylim=c(0,ymax),
+                      xlab="x",ylab="Chi-Square density")
+for ( j in seq(along=nu)){
+lines(x,dchisq(x,df=nu[j]),lty=j) }
+p1<-2
+p2<-0.9*ymax
+legend(p1,p2,legend=c("nu=1","nu=2","nu=3","nu=4"),lty=1:4)
+\end{verbatim}
+\end{answer}
+
+
+
+\item
+\emph{Testing for Normality} If we are given a random sample
+we can use \R\ to examine if it is likely
+to have been drawn from a normal distribution. To do this we use a normal
+probability plot.
+\begin{enumerate}
+\item Generate a sample of 100 random variables from a normal distribution
+with mean 3 and standard deviation 2, {\sf rnorm(n=100,mean=3,sd=2)}.
+\item Get a normal probability graph of this data by
+\begin{verbatim}
+qqnorm(y)
+qqline(y,col=2)}
+\end{verbatim}
+If the data is normally distributed the graph should be approximately linear.
+\item Generate a sample of size 100 from an exponential distribution with
+parameter 1 and obtain a normal probability plot for this data. What do you observe?
+\end{enumerate}
+(Try a few distributions for yourself. You could try uniform, Cauchy,
+gamma, binomial, etc.)
+
+\item\label{QN:5:MonteCarlo}
+(Computer exercise) Estimate $\int_0^1 e^{-x}dx$ by considering the
+integral as the expected value of $e^{-X}$ where $X$ is
+distributed uniformly on $[0,1]$, this is called estimation by
+\emph{Monte-Carlo integration}. That is
+\[ \text{E}(e^{-X}) = \int_0^1 e^{-x}f(x) dx, \quad \text{where $f(x)=1$,
+$0 \le x \le 1$}\]
+(In general, if $X$ is uniformly distributed on $[0,1]$ then
+$\text{E}(g(X))$ can be estimated by first generating a random sample of
+size $N$ from the uniform distribution on [0,1] and then using
+the fact that $\text{E}(g(X))$ can be approximated by
+$\frac{1}{N}\sum_{i=1}^{N} g(x_i)$.)
+
+\begin{answer}
+\begin{verbatim}
+x<-runif(n=1000,min=0,max=1)
+expX<-exp(-x[x>0])           # read this as -x s.t. x>0
+print(mean(expX))
+\end{verbatim}
+\end{answer}
+
+
+\end{exercises}
+
+\makeanswers
+
+\endinput
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%unused qns
+
+\item
+(Computer exercise) Simulate the manufacture of 1000 washers assuming
+the thickness does have a $N(2.20,0.15^2)$ distribution. Hence estimate
+the proportion that would be rejected under the rule in the problem.
+
+\begin{answer}
+\begin{verbatim}
+nsample<-1000
+washers<-rnorm(mean=2.20,sd=0.15,n=nsample)
+rejects<-washers[washers>2.50]
+prop<-length(rejects)/nsample  # length(rejects) gives the number of
+elements
+print(prop)
+print(1 - pnorm(q=2.5,mean=2.2,sd=0.15))
+\end{verbatim}
+\end{answer}
