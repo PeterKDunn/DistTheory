@@ -1,0 +1,845 @@
+# Sampling distributions {#SamplingDistributions}
+
+::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
+On completion of this module, students should be able to:
+
+* use appropriate techniques to determine the sampling distributions of some statistics ($t$, $F$, $\chi^2$) related to the normal distribution
+* understand the concepts of the Central Limit Theorem and be able to apply the Central Limit Theorem in appropriate circumstances
+* use the Central Limit Theorem to approximate binomial probabilities by normal probabilities in appropriate circumstances
+:::
+
+
+## Introduction
+
+This module introduces the application of distribution theory to the discipline of statistics. 
+Distribution theory is about describing random variables using the concept of probability. 
+Statistics is about data collection and extracting information from data. 
+A simple example demonstrates how these two things are related.
+
+
+
+:::{.example #Exprain name="Exponential distributions"}
+A simple random sample (SRS) is taken from a population. 
+Interest is in the *mean* of the sample.
+
+Typically the population of potential values will be very large.
+For demonstration purposes however suppose the population contains only $N = 5$ elements,
+\[
+   2, 3, 3, 6, 8
+\]
+and assume that the sample is of size $n = 2$ and sampling is without replacement.
+
+By simple random sampling, we mean all possible samples of size $n$ are equally likely. 
+But there are ${N\choose n}$ samples of size $n$ sampling without replacement from $N$ objects. 
+Hence in our example there are ${5\choose 2} = 10$ equally likely possible samples.
+For example, the sample $\{2,6\}$ has a probability of 1/10 of being selected. 
+Further, the mean of this sample, is 4.0.
+
+We can systematically list all 10 samples as shown in Table~\ref{TB:simpsamp1}.
+
+\begin{table}
+$$\vbox{\offinterlineskip
+\def\jump{\omit&height3truept&&&\cr}
+\halign{\strut\enskip\hfil#\hfil\enskip&&\vrule#&\enskip\hfil#\hfil\enskip\cr
+Sample&&Mean&&Probability\cr
+\jump
+\noalign{\hrule}
+2,3&&2.5&&1/10\cr
+2,3&&2.5&&1/10\cr
+2,6&&4.0&&1/10\cr
+2,8&&5.0&&1/10\cr
+3,3&&3.0&&1/10\cr
+3,6&&4.5&&1/10\cr
+3,8&&5.5&&1/10\cr
+3,6&&4.5&&1/10\cr
+3,8&&5.5&&1/10\cr
+6,8&&7.0&&1/10\cr
+\jump\noalign{\hrule}
+}}
+$$
+\caption{List of samples in Example~\ref{EG:simpsamp}.}\label{TB:simpsamp1}
+\end{table}
+
+From this table we can obtain the distribution of the mean itself---see Table~\ref{TB:simpsamp2}.
+This distribution is known as the sampling distribution of the mean in recognition that it's based on sampling data.
+
+\begin{table}
+$$\vbox{\offinterlineskip
+\def\jump{\omit&height3truept&&&&&&&\cr}
+\halign{\strut\enskip\hfil#\hfil\enskip&\vrule#&&\enskip\hfil#\hfil\enskip\cr
+Mean&&2.5&3.0&4.0&4.5&5.0&5.5&7.0\cr
+\jump\noalign{\hrule}\jump
+Probability&&0.2&0.1&0.1&0.2&0.1&0.2&0.1\cr
+}}$$
+\caption{Sampling distribution of the mean in Example~\ref{EG:simpsamp}.}
+\label{TB:simpsamp2}
+\end{table}
+
+
+Notice we can determine the mean and variance of the distribution as $\mu_{\bar{X}} = 4.4$ and $\sigma^2_{\bar{X}} = 1.89$.
+
+It is instructive to repeat this example, this time sampling randomly *with replacement*.
+Then there are 25 equally-likely samples possible. 
+You should show that the mean and variance of the sampling distribution in this case are respectively $\mu_{\bar{X}} = 4.4$ and $\sigma^2_{\bar{X}} = 2.52$.
+:::
+
+
+In principle we could obtain the distribution of any statistic, whether it be a mean, median, variance, range or whatever, using the approach in Example~\ref{EG:simpsamp}.
+In practice, the number of possible samples may be astronomical or infinite and the exact elements of the population difficult or impossible to list.
+
+In terms of distribution theory we should see Table~\ref{TB:simpsamp2} as just the distribution of a random variable, since a sample mean is a random variable. 
+From a statistical viewpoint this distribution tells us what we can expect for the mean when we randomly sample from a population. 
+This sort of knowledge is essential in extracting information from samples. 
+In particular notice that the mean of the sampling distribution in the example is the same as the mean of the population itself $\mu = (2 + 3 + 3 + 6 + 8 )/5 = 4.4$ and the variance of the sampling distribution is *smaller* than the variance of the population ($\sigma^2 = 5.04$). 
+(The exact relationship between $\sigma^2_{\bar{X}}$ and $\sigma^2$ is expanded on in Theorem~\ref{TM:meandist} below.)
+
+
+## Sampling distributions {#SamplingDistributions}
+
+:::{.definition #Statistic name="Statistic"}
+A *statistic* is a real-valued function of the observations in a sample.
+:::
+
+In general terms, if $X_1,X_2,\dots,X_n$ represents a numerical sample of size $n$ from some population, then $T = g(X_1, X_2, \dots, X_n)$ represents a statistic.
+Examples of statistics are the sample mean, standard deviation, variance and proportion.
+The individual observations in a sample are also statistics.
+Hence, for example, the minimum (usually denoted $\min$ or $X_{[1]}$), maximum, and the range $\max - \min$ are statistics. 
+In fact, so is the first observation $X_1$ or even just the number 2 (or any other number), which can be thought of as a degenerate function of the observations.
+
+The point is, a rv is a numeric variable which is fully determined by the values of all, some or even no members of the sample.
+
+:::{.example #SamplingDistributionStatistic name="Sampling distribution of a statistic"}
+The *sampling distribution of a statistic* is the theoretical probability distribution of the statistic associated with all possible samples of a particular size drawn from a particular population.
+:::
+
+
+Notice that this definition is not confined to *random* samples.
+In practically all applications though it is assumed that the sample involved is random in some sense.
+Random sampling imposes a probability structure on the possible values of the statistic which enables us to define the sampling distribution.
+
+
+
+### Random sampling {#RandomSamples}
+
+For our purposes a random sample is defined as follows:
+
+:::{.definition #RandomSample name="Random sample"}
+The set of random variables $X_1,X_2,\dots,X_n$ is said to be a *random sample* of size $n$ from a population with df $F_X(x)$ if the $X_i$ are identically and independently distributed (iid) with df $F_X(x)$.
+:::
+
+
+In this definition, the distribution function has been used to cater for both discrete and continuous rvs.
+
+It should be pointed out that this definition of a random sample is standard in theoretical statistics.
+In the practice of statistics however there are many sampling designs involving randomness; eg simple random sampling, stratified sampling, systematic sampling. 
+These are often said to give rise to 'random samples' even though the samples produced don't necessarily satisfy Definition~\ref{DF:randomsample}.
+It is usually clear from the context whether the strict or loose meaning of 'random sample' is intended.
+
+When a sample of size $n$ is assumed to be chosen 'at random' *without replacement* from a population of size $N$, does this sample constitute a random sample in the sense of Definition~\ref{DF:randomsample}?
+
+The strict answer is no.
+Even though each member of the sample has the same distribution as the population, the members of the sample are not independent.
+For example, in Example~\ref{EG:simpsamp}, consider say the second member of the sample, $X_2$.
+We have that $\Pr(X_2 = 2) = 0.2$ (why is this?) but that $\Pr(X_2  =2 \mid X_1 = 2) = 0$. 
+Therefore $\Pr(X_2 = 2 \mid X_1 = 2) \ne\Pr(X_2 = 2)$ and so $X_2$ and $X_1$ are dependent.
+
+Sampling at random without replacement however does approximate a random sample *if the sample size $n$ is small compared to the population size $N$*. 
+In this case, the impact of removing some members of the population has minimal impact on the distribution of the population remaining and we can argue the observations are approximately independent.
+This typifies many practical sampling situations.
+
+Note also in Example~\ref{EG:simpsamp}, if the sampling is *with replacement*, we have that $\Pr(X_2 = 2 \mid X_1 = 2) = \Pr(X_2 = 2) = \Pr(X_1 = 2)$ and a similar statement can be made for all sample members and all values of the population. 
+We can conclude that in this case the sample is a random sample according to the definition.
+
+So sampling at random with replacement gives rise to a random sample and sampling at random without replacement approximates a random sample provided $n << N$.
+Sampling without replacement when the sample size is not much smaller than the population size does not give rise to a random sample.
+This situation is often referred to as *sampling from a finite population*.
+
+Sampling at random with replacement is also known as *repeated sampling*.
+A typical example is a sequence of independent trials (Bernoulli or otherwise) such as occur when a coin or die is tossed repeatedly.
+Each trial involves random sampling from a population, which in the case of a coin comprises H and T with equal probability.
+
+It should be noted that sampling from a continuous distribution is really a theoretical concept in which the population is assumed uncountably infinite.
+Consequently sampling at random in this situation is assumed to produce a random sample.
+
+
+### The sampling distribution of the mean {#SamplingDistributionMean}
+
+Some powerful results exist describing the sampling distribution of the mean of a random sample.
+
+:::{.theorem}
+If $X_1, X_2, \dots, X_n$ is a *random sample* of size $n$ from a population with mean $\mu$ and variance $\sigma^2$, then the sample mean $\bar{X}$ has a sampling distribution with mean $\mu$ and variance $\sigma^2 / n$.
+:::
+
+:::{.proof}
+This is a direct application of Corollary~\ref{CR:varlincomb} with $a_i = 1/n$.
+:::
+
+
+Theorem~\ref{TM:meandist} applies to a random sample as defined in~\ref{DF:randomsample}. 
+The distribution of the population from which the sample is drawn is irrelevant.
+
+It is interesting to note what happens if a sample is randomly selected without replacement from a finite population as described in~\ref{SS:randomsampling}.
+
+It turns out in this situation that $\mu_{\bar{X}}$ still equals $\mu$ (because this result does not depend on the observations being independent) but
+\begin{equation}
+   \text{Var}(\bar{X})
+   = \frac{\sigma^2}{n}\frac{(N - n)}{(N - 1)}
+\end{equation}
+which is smaller than $\frac{\sigma^2}{n}$ by the factor $\frac{N - n}{N - 1}$, which is known as the *finite population correction* factor.
+
+
+:::{.example #Exprain name="Exponential distributions"}
+In Example~\ref{EG:simpsamp} we have that $\mu = 4.4$ and $\sigma^2 = 5.04$ for the population.
+
+If sampling is done without replacement, the sampling distribution of the mean has mean $\mu_{\bar{X}} = \mu = 4.4$ and variance $\text{Var}(\bar{X}) = 1.89 = \frac{5.04}{2}\frac{(5 - 2)}{(5 - 1)}$ in agreement with the note following Theorem~\ref{TM:meandist}.
+
+If sampling is done with replacement we see $\mu_{\bar{X}} = \mu=4.4$ and $\text{Var}(\bar{X}) = 2.52 = \ds{\frac{5.04}{2}}$ in agreement with the theorem.
+:::
+
+
+Theorem~\ref{TM:meandist} describes the location and spread of the sampling distribution of the mean.
+Can we say anything about its shape?   
+Wouldn't that depend on the shape of the population distribution?
+
+Well, yes, but surprisingly *only when the sample is small*.
+For large samples it turns out that it doesn't as we see in Section~\ref{SC:CLT}.
+
+
+## Sampling distributions related to the normal distribution
+
+The normal distribution is a model of many naturally occurring phenomena. 
+Consequently it is particularly useful to study the sampling distributions of statistics of random samples from normal populations.
+
+Firstly a useful result.
+
+:::{.theorem}
+Let $X_1, X_2, \dots, X_n$ be a set of independent rvs where $X_i\sim N(\mu_i,\sigma^2_i)$. 
+Define the linear combination $Y$ as
+\[
+   Y = a_1 X_1 + a_2 X_2 + \dots + a_nX_n
+\]
+Then $Y$ is distributed $N(\Sigma a_i\mu_i, \Sigma a^2_i\sigma^2_i)$.
+:::
+
+:::{.proof}
+In Theorem~\ref{TM:normal} we showed the mgf of the rv $X_i$ to be
+\[ 
+   M_{X_i} (t)
+   =\exp\{\mu_it+\frac 12 \sigma^2_it^2\}\quad i=1,2,\dots,n.
+\]
+So, for a constant $a_i$,
+\begin{align*}
+     M_{a_iX_i}(t) & = M_{X_i}(a_it)\quad\text{(using Theorem 3.3 with} \quad\beta =0, \ \alpha = a_i)\\
+     & = \exp\{\mu_ia_it+\frac 12 \sigma^2_ia^2_it^2\}.
+\end{align*}
+Since the mgf of a sum of independent rv's is equal to the product of their mgf's we have
+\begin{align*}
+     M_Y(t) & = \prod^n_{i=1} \exp\{\mu_ia_it+\frac 12
+\sigma^2_ia^2_it^2\}\\
+     & = \exp\{t\Sigma a_i\mu_i +\frac 12 t^2\Sigma a^2_i
+\sigma^2_i\}.
+\end{align*}
+This is of the form of the mgf of a normal rv with mean, $\text{E}(Y) = \Sigma a_i\mu_i$ and variance, $\text{Var}(Y) = \Sigma a^2_i\sigma^2_i$.
+:::
+
+
+The sampling distribution of the sum and mean of a random sample from a normal population follows directly from
+Theorem~\ref{TM:normlinsum}.
+
+
+:::{.corollary}
+Let $X_1, X_2, \dots, X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$. 
+Define the sum $S$ and mean respectively as
+\begin{align*}
+   S
+   &=X_1+X_2 + \dots + X_n\\
+   \bar{X}
+   &=(X_1+X_2 + \dots + X_n)/n
+\end{align*}
+Then $S\sim N(n\mu,n\sigma^2)$ and $\bar{X}\sim N(\mu,\sigma^2/n)$.
+:::
+
+:::{.proof}
+The proof is left as an exercise.
+:::
+
+
+
+Corollary~\ref{CR:normmeasum} (Theorem~7.1 in \WMS) relies only on the population from which the sample is drawn being normally distributed and on the properties of expectation.
+It forms the basis for inference about the population mean of a normal distribution with known variance.
+
+:::{.example #Exprain name="Exponential distributions"}
+Suppose that envelopes are counted out in packets of 25 by weighing them, and that the weight of an envelope is distributed normally with mean 3\,gm and standard deviation 0.6\,gm. 
+Any weighed pile of envelopes is 'counted' as 25 if it weighs between 70 and 80\,gm.
+What is the probability that a pile of 25 will not be counted as such?
+
+Let rv $X_i$ be the weight of the $i$th envelope. 
+Then $X_i$ is distributed $N(3,0.36)$. 
+Let $Y=X_1+X_2+\dots +X_{25}$. 
+Then $Y$ is distributed $N(75, 9)$. 
+We require
+\begin{align*}
+     1-\Pr{70<Y<80} & = 1-\Pr{\frac{70-75}{\sqrt{9}}<Z<\frac{80 - 75}{\sqrt{9}}}\\
+     & = 1-[\Phi(1.667) - \Phi(-1.667)]\\
+     & = 1-2\times .4522\\
+     & = .10
+     \end{align*}
+:::
+
+
+
+:::{.example #Exprain name="Exponential distributions"}
+The I.Q.'s for a large population of 10 year-old boys (assumed normally distributed) were determined and found to have a mean of 110 and a variance of 144. 
+How large a sample would have to be taken in order to have a probability of 0.9 that the mean I.Q. of the sample would not differ from the expected value 110 by more than 5?
+
+Let $X_i$ be the I.Q. of the $i$th boy. 
+Then $X_i$ is distributed $N(110,144)$.
+Consider a sample of size $n$ and let $\bar{X} = \sum^n_{i = 1}X_i/n$.
+Then $\bar{X}$ is distributed $N(110,144/n)$.
+We have
+\[ 
+   \Pr{|\bar{X}-110|\leq 5}=.90 .
+\]
+That is
+\[ 
+   \Pr{\frac{|\bar{X}-110|\sqrt{n}}{12} \leq \frac{5\sqrt{n}}{12}} = 0.90 . 
+\]
+That is,
+\[ 
+   \Pr{Z \leq 5\sqrt{n} /12} = 0.90. 
+\]
+From tables, $5\sqrt{n}/12 = 1.645$, so $n = 16$.
+:::
+
+
+
+:::{.example #Exprain name="Exponential distributions"}
+A certain product involves a plunger fitting into a cylindrical tube and the 2 items are manufactured in such a way that the diameter of the plunger can be considered a normal rv with mean 2.1\,cm and s.d. $0.1$\,cm while the inside diameter of the cylindrical tube is a normal rv with mean 2.3\,cm and s.d. $0.05$\,cm. 
+For a plunger and tube chosen randomly from a day's production run, find the probability that the plunger will not fit
+into the cylinder.
+
+Let $X,Y$ be the diameter of the plunger and cylinder respectively.
+Then $X\sim N(2.1, 0.01)$, $Y\sim N(2.3, 0.0025)$ and we want $\Pr(Y < X)$.
+
+The distribution of $Y - X$ is $N(2.3 - 2.1, 0.0025 + 0.01)$ so that,
+\begin{align*}
+     \Pr(Y - X < 0) 
+     & = \Pr(Z <\frac{0 - 0.2}{\sqrt{.0125}}) \quad\text{where }Z\sim N(0,1)\\
+     & = \Pr(Z < -1.78)\\
+     & = 0.0375
+\end{align*}
+:::
+
+
+We now turn our interest to the sampling distribution of the variance in a normal population.
+
+Firstly a preliminary result which is little more than a rewording of Theorem~\ref{TM:chin}.
+
+:::{.theorem}
+Let $X_1,X_2,\dots,X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$.
+Then $\sum_{i=1}^n \left(\ds{\frac{X_i-\mu}{\sigma}}\right)^2$ has a chi-square distribution with $n$ degrees of freedom.
+:::
+
+
+:::{.proof}
+Putting $Z_i = \ds{\frac{X_i-\mu}{\sigma}}$ we have
+\[
+   \sum_{i=1}^n \left(\frac{X_i-\mu}{\sigma}\right)^2=\sum_{i=1}^n Z_i^2.
+\]
+But $Z_i$ is the standardised version of $X_i$ and has a standard normal $N(0,1)$ distribution.  
+Also the rvs $Z_i$ are independent because the $X_i$ are independent ($i = 1,2,\dots,n$).
+The required result follows directly from Theorem~\ref{TM:chin}.
+:::
+
+
+The key result describing the distribution of the sample variance
+\begin{equation}
+   S^2
+   = \frac{1}{n-1}\sum_{i=1}^n (X_i-\bar{X})^2
+\end{equation}
+follows.
+
+:::{.theorem}
+Let $X_1, X_2, \dots, X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$.
+Then
+\[
+   \frac{(n - 1)S^2}{\sigma^2} \sim \chi^2(n-1).
+\]
+:::
+
+:::{.proof}
+We provide only a **partial proof**.
+
+We have, using (\ref{EQN:sampvar}),
+\[
+   \frac{(n - 1)S^2}{\sigma^2}
+   = \sum_{i = 1}^n \left(\frac{X_i - \bar{X}}{\sigma}\right)^2
+\]
+which looks much like the conditions for Theorem~\ref{TM:chin2}. 
+The difference is that $\bar{X}$ replaces $\mu$. 
+*This difference is important.*
+We can write
+\begin{align*}
+  \sum_{i=1}^n \left(\frac{X_i-\bar{X}}{\sigma}\right)^2
+  &= \sum_{i=1}^n \left(\frac{X_i-\bar{X}+\mu-\mu}{\sigma}\right)^2\\
+  &= \sum_{i=1}^n \left(\frac{X_i-\mu}{\sigma}\right)^2-n\frac{(\bar{X}-\mu)^2}{\sigma^2}
+\end{align*}
+(Check the algebra for yourself.)
+This expression can be rewritten $T = U + V$, where
+\begin{align*}
+   T
+   &= \sum_{i = 1}^n \left( \frac{X_i - \mu}{\sigma} \right)^2,\\
+   U
+   &= n\frac{(\bar{X}-\mu)^2}{\sigma^2}, \\
+   V
+   &= \sum_{i=1}^n \left(\frac{X_i-\bar{X}}{\sigma}\right)^2
+\end{align*}
+Now $T\sim\chi^2(n)$ (by Theorem~\ref{TM:chin2}) and $V\sim\chi^2(1)$ because $V$ is the square of a standard normal rv (since $\bar{X}\sim N(\mu,\sigma^2/n)$.
+Therefore the mgf of $T$ is $(1 - 2t)^{-n}$ and the mgf of $V$ is $(1-2t)^{-1}$.
+
+It follows that, provided $T$ and $V$ are independent, the mgf of $T$ is the product of the mgfs of $U$ and $V$. 
+The mgf of $U$ is therefore
+\[
+   M_U(t)
+   = \frac{M_T(t)}{M_V(t)}=(1-2t)^{n-1}
+\]
+which is the mgf of the chi-square distribution with $n-1$ df.
+(This is a partial proof because we have not proven the independence of $U$ and $V$.)
+:::
+
+
+:::{.example #Exprain name="Exponential distributions"}
+A random sample of size 10 is selected from the $N(20,5)$ distribution.
+What is the probability that the variance of this sample exceeds 10?
+
+By Theorem~\ref{TM:variancedist},
+\[
+   \frac{(n - 1)S^2}{\sigma^2}
+   = \frac{9S^2}{5}\sim\chi^2(9).
+\]
+Therefore
+\[
+   \Pr(S^2 > 10) 
+   = \Pr(\frac{9S^2}{5} > \frac{9\times10}{5})
+   = \Pr(\chi^2>18)
+\]
+where $\chi^2\sim\chi^2(9)$.
+Using \R, for example, we find $\Pr(S^2 > 10) = 0.03517$:
+
+```{r, echo=TRUE}
+1 - pchisq(18, df = 9)
+```
+:::
+
+
+### The $t$ distribution {#TDistribution}
+
+The basis of the independence assumed in the proof of Theorem~\ref{TM:variancedist} is the rather surprising result that the mean and variance of a random sample from a normal population are independent rvs as stated in the following
+theorem.
+
+:::{.theorem}
+Let $X_1, X_2,\dots, X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$.
+Then the sample mean
+\[
+   \bar{X}
+   = 
+   \frac1n\sum_{i=1}^n X_i
+\]
+and sample variance
+\[
+   S^2
+   = \frac{1}{n-1}\sum_{i=1}^n (X_i-\bar{X})^2
+\]
+are independent.
+:::
+
+:::{.proof}
+See \DGS, Section 7.3 or \WMS, Exercise~13.83.
+This proof is not examinable.
+:::
+
+A further distribution that derives from sampling a normal population is the $t$-distribution.
+
+:::{.definition #TDistribution name="T-Distribution"}
+A continuous random variable $X$ with probability density function
+\begin{equation}
+   f_X(x)
+   = \frac{\Gamma((\nu+1)/2)}{\sqrt{\pi \nu}\Gamma(\nu/2)}\left(1+\frac{x^2}{\nu}\right)^{-(\nu+1)/2}\quad\text{for all $x$}
+\end{equation}
+is said to have a *$t$ distribution* with parameter $\nu >0$).
+The parameter $\nu$ is known as the *degrees of freedom*. 
+We write $X \sim t(\nu)$ (or $t_\nu$).
+:::
+
+
+The pdf of the $t$ distribution is very similar to the standard normal distribution, being bell-shaped and symmetric about zero. 
+The variance is greater than one however and is dependent on $\nu$ as shown in the following theorem.
+
+:::{.theorem}
+If $X\sim t(\nu)$ then
+
+* For $\nu > 1$, $\text{E}(X) = 0$
+* For $\nu > 2$, $\text{Var}(X) = \ds{\frac{\nu}{\nu - 2}}$
+The mgf does not exist because only the first $\nu - 1$ moments exist. 
+:::
+
+
+:::{.proof}
+See \WMS, Exercise~7.12 or \DGS, Exercise~1, p409.
+This proof is not examinable.
+:::
+
+
+It can be shown, although we won't prove it, that as $\nu\to\infty$, the $t$ distribution converges to the standard normal.
+
+The usefulness of the $t$-distribution derives from the following result.
+
+
+:::{.theorem}
+Let $X_1, X_2, \dots, X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$.
+Then the rv
+\[
+   T = \frac{\bar{X} - \mu}{S/\sqrt{n}}
+\]
+follows a $t(n - 1)$ distribution where $\bar{X}$ is the sample variance and $S^2$ is the sample variance as defined in (\ref{EQN:sampvar}).
+:::
+
+
+:::{.proof}
+**We give a partial proof only.**
+
+The statistic $T$ can be re-expressed as
+\begin{align*}
+  T
+  &= \frac{\bar{X}-\mu}{S/\sqrt{n}}\\
+  &= \left(\frac{\bar{X}-\mu}{\sigma/\sqrt{n}}\right)   \frac{1}{\sqrt{\frac{(n-1)S^2}{\sigma^2}/(n-1)}}\\
+  &= \frac{Z}{Y/(n-1)}
+\end{align*}
+where $Z$ is a $N(0, 1)$ variable and $Y$ is a chi-square variable with $(n - 1)$ df.
+
+The derivation of the pdf of $\ds{\frac{Z}{Y/(n - 1)}}$ is addressed in \DGS, Section~7.4 and \WMS, Exercise~7.56. 
+This proof is not examinable.
+:::
+
+Notice that $T$ represents a standardised version of the sample mean and because of this is an important statistic in statistical inference.
+You will have seen it's use in examples such as the following where the behaviour of a sample mean from a normal population (or one that approximates it) is of interest.
+
+:::{.example #Exprain name="Exponential distributions"}
+A random sample $21, 18, 16, 24, 16$ is drawn from a normal population with mean of 20.
+
+1. What is the value of $T$ for this sample.
+2. In random samples from this population, what is the probability that $T$ is less than the value found in~(a)?
+
+From the sample $\overline{x} = 19.0$ and $s^2 = 12.0$. 
+Therefore $t = \frac{19.0 - 20}{\sqrt{12.0/5}} = -0.645$.
+(Notice we have used lower-case symbols for specific values of statistics and upper-case for the rvs, but don't lose any sleep over the distinction!)
+
+Interest here is in $\Pr(T < -0.645)$ where $T\sim t(4)$. 
+From R, the answer is 0.277:
+```{r echo=TRUE}
+pt(-0.645, df = 4)
+```
+:::
+
+
+### The $F$-distribution {#FDistribution}
+
+Definition~\ref{DF:Fdist} introduces a distribution which describes the ratio of two sample variances from normal populations and is used in inferences concerning the comparison of two variances.
+This distribution is also used in *analysis of variance*, a technique used to test the equality of several means.
+
+:::{.definition #FDistribution name="$F$-distribution"}
+A continuous random variable $X$ with probability density function
+\begin{equation}
+  f_X(x)
+  = \frac{\Gamma((\nu_1+\nu_2)/2)\nu_1^{\nu_1/2}\nu_2^{\nu_2/2}x^{(\nu_1/2)-1}}
+  {\Gamma(\nu_1/2)\Gamma(\nu_2/2)(\nu_1 x+\nu_2)^{(\nu_1+\nu_2)/2}}\quad\text{for $x>0$}
+\end{equation}
+is said to have an *$F$ distribution* with parameters $\nu_1 >0$ and $\nu_2 >0$.
+The parameters are known respectively as the numerator and denominator degrees of freedom. 
+We write $X \sim F(\nu_1,\nu_2)$.
+:::
+
+The basic properties of the $F$ distribution are as follows.
+
+:::{.theroem}
+If $X\sim F(\nu_1,\nu_2)$ then
+
+* For $\nu_2 > 2$, $\text{E}(F)=\ds{\frac{\nu_2}{\nu_2-2}}$.
+* For $\nu_2>4$, $\text{Var}(F)=\ds{\frac{2\nu_2^2(\nu_1+\nu_2-2)} {\nu_1(\nu_2-2)^2(\nu_2-4)}}$.
+* The mgf does not exist.
+:::
+
+:::{.proof}
+Not covered.
+:::
+
+:::{.theorem}
+Let $X_1, X_2, \dots, X_{n_1}$ be a random sample of size $n_1$ from $N(\mu_1,\sigma_1^2)$ and $Y_1,Y_2,\dots,Y_{n_2}$ be an independent random sample of size $n_2$ from $N(\mu_2, \sigma_2^2)$.
+Then the rv
+\[
+   F
+   = \frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}
+\]
+follows a $F(n_1 - 1, n_2 - 1)$ distribution.
+:::
+
+:::{.proof}
+**We give a partial proof only.**
+
+The $F$ statistic can be rewritten as
+\[
+   F
+   = \frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}
+   = \frac{U_1/\nu_1}{U_2/\nu_2}
+\]
+where
+\begin{align*}
+   U_1 
+   &= \ds{\frac{(n_1-1)S_1^2}{\sigma_1^2}}$\\
+   \nu_1 
+   &= n_1 - 1, \\
+   U_2 
+   &= \ds{\frac{(n_2-1)S_2^2}{\sigma_2^2}}$, 
+   \nu_2 
+   &= n_2 - 1.
+\end{align*}
+$U_1$ and $U_2$ have chi-square distributions and the pdf of $\frac{U_1/\nu_1}{U_2/\nu_2}$ is described in \WMS, Exercise~7.57 or \DGS, Section~8.7.
+This proof is not examinable.
+:::
+
+
+Quantiles of the $F$ distribution are available in most statistics texts including \WMS\ and \DGS. 
+$F$ probabilities are available in \R.
+
+:::{.example #Exprain name="Exponential distributions"}
+Suppose $X\sim F(2, 10)$. 
+
+*  $\Pr(X < 1)$
+*  $x$ such that $\Pr(X > x) = 0.01$
+
+
+Using R:
+
+```{r echo=TRUE}
+pf(1, 
+   df1 = 2, 
+   df2 = 10) ### CHECK!!!
+qf(0.99, 
+   df1 = 2, 
+   df2 = 10)
+```
+:::
+
+
+## The Central Limit Theorem {#CentralLimitTheorem}
+
+Sampling distributions for various statistics of interest are well developed when sampling is from a normal distribution as shown in Section~\ref{SC:normsamp}.
+Although these results are important, the question remains, what say we don't know, as is usually the case, the distribution of the population from which the random sample is drawn?
+
+In Section~\ref{SS:meandist} general results are given describing the mean and variance of the sample mean which hold for any population distribution.
+Can we say more than this about the sampling distribution of the mean in general?
+
+The answer is yes of course---why else would we mention it!  
+The main result is contained in the following theorem which is so important that it is given the grand title *The Central Limit Theorem* or *CLT* for short.
+
+
+:::{.theorem}
+Let $X_1, X_2, \dots, X_n$ be a random sample from a distribution with mean $\mu$ and variance $\sigma^2$.
+Then the rv $Z_n$ defined by
+\[ 
+   Z_n 
+   = \frac{\bar{X} - \mu}{\sigma / \sqrt{n}}
+\]
+converges in distribution to a standard normal variable.
+:::
+
+:::{.proof}
+Let the rv $X_i$ $(i = 1, \dots, n)$ have mgf $M_{X_i}(t)$. 
+Then
+\[
+   M_{X_i}(t) 
+   = 1 + \mu'_1t + \mu'_2\frac{t^2}{2!} + \dots . 
+\]
+But
+\[ 
+   \bar{X} = \frac 1n X_1 + \dots + \frac 1n X_n 
+\]
+so
+\[ 
+   M_{\bar{X}}(t)
+   = \prod^n_{i = 1} M_{X_i/n}(t)=\left[ M_{X_i} (t/n)\right]^n.
+\]
+Now $\displaystyle{Z_n = \frac{\sqrt{n}}{\sigma}\bar{X}-\frac{\sqrt{n}\mu}{\sigma}}$, which is of the form $Y = aX + b$ so
+\begin{align*}
+  M_{Z_n}(t)
+  &= e^{-\sqrt{n}\mu  t/\sigma}M_{\bar{X}} (\sqrt{n}t/\sigma )\\
+  &= e^{-\sqrt{n}\mu t / \sigma} \left[ M_{X_i}\left(\frac{\sqrt{n}t}{\sigma n}
+  \right)\right]^n\\
+  &= e^{-\sqrt{n}\mu t /\sigma}\left[ M_{X_i}(t / \sigma \sqrt{n})\right]^n
+\end{align*}
+Then
+\begin{align*}
+     \log M_{Z_n}(t) =\,&\frac{-\sqrt{n}\mu t}{\sigma}+n\log \left[ 1+\frac{\mu'_1t}{\sigma\sqrt{n}}+\frac{\mu'_2t^2}{2!n\sigma^2}
+     +\frac{\mu'_3t^3}{3!n\sqrt{n}\sigma^3}  + \dots \right] \\
+     =\,&\frac{-\sqrt{n}\mu t}{\sigma} +n\left[  \mu'_1 \frac{t}{\sigma
+\sqrt{n}}+\frac{\mu'_2t^2}{2n\sigma^2}+\frac{\mu'_3t^3}{6n\sqrt{n}\sigma^3}+\dots
+\right]\\
+     & \text{} - \frac n2 \left[ \frac{\mu'_1t}{\sigma\sqrt{n}}+\dots
+\right]^2 + \frac n3 \left[\phantom{\frac n3}\dots\phantom{\frac n3}\right]^3 - \dots \\
+     =\,&\frac{\mu'_2t^2}{2\sigma^2}-\frac{(\mu'_1)^2t^2}{2\sigma^2} +
+\text{ terms in }(1 / \sqrt{n}),\text{ etc}.
+\end{align*}
+Now, 
+\[
+   \lim_{n\to \infty} \log M_{Z_n}(t)
+   = 
+   \frac{(\mu'_2- (\mu'_1)^2)}{\sigma^2}\frac{t^2}{2} = \frac{t^2}{2}
+\]
+because the terms in $(1/\sqrt{n})$, etc. go to zero and $\mu'_2-(\mu'_1)^2=\sigma^2$.
+Thus $\displaystyle{ \lim_{n\to\infty} M_{Z_n}(t) = e^{\frac 12 t^2}}$, which is the mgf of a $N(0, 1)$ random variable.
+So $Z_n$ converges in distribution to a standard normal.
+:::
+
+
+Strictly this is a partial proof in that the concept of convergence in distribution has not been defined and it's assumed that the mgf of $X_i$ exists, which does not need to be the case.
+However, the arguments used in the proof are powerful and worth understanding.
+The 'convergence in distribution' bit is saying that $Z_n$ approaches normality as $n\to \infty$. So when $n$ is 'large' we can expect $Z_n$ to approximate a standard normal distribution and, transforming $Z_n$ back to the sample mean, we can expect the $\bar{X}$ to approximate a $N(\mu,\sigma^2/n)$ distribution.
+
+
+:::{.example #Exprain name="Exponential distributions"}
+A soft-drink vending machine is set so that the amount of drink dispensed is a random variable with a mean of 200 millilitres and a standard deviation of 15 millilitres.
+What is the probability that the average amount dispensed in a random sample of size 36 is at least 204 millilitres?
+
+Let $X$ be the amount of drink dispensed in ml. 
+The distribution of $X$ is not known.
+However, the mean of $X$, $\mu = 200$, and standard deviation of $X$, $\sigma = 15$, are known.
+The distribution of the sample mean (average), $\bar{X}$, can be approximated by the normal distribution with mean of
+$\mu = 200$ and standard error of $\sigma_{\bar{X}} = \sigma/\sqrt{n} = 15/\sqrt{36} = 15/6$, according to the CLT.
+That is, $\bar{X} \sim N(200, (15/6)^2)$.
+Now
+\[
+   \Pr{\bar{X}\ge 204} \approx P_N\left(Z \ge \frac{204-200}{15/6}\right)
+   = \Pr{Z\ge1.6}=0.0548,
+\]
+so that $\Pr{\bar{X}\ge204} \approx 0.0548$.
+The probability is about $5.5$\%.
+($P_N(A)$ denotes the probability
+of event $A$ involving a rv assumed to be normal in distribution.)
+:::
+
+
+
+
+:::{.example #Exprain name="Exponential distributions"}
+Consider the experiment of throwing a fair die $n$ times where we observe the sum of the faces showing. 
+For $n = 12$, find the probability that the sum of the faces is at least 52.
+
+Let the rv $X_i$ be the number showing on the $i$th throw and define $Y = X_1 + \dots + X_{12}$. 
+We want $\Pr(Y\geq 52)$.
+
+In order to use Theorem~\ref{TM:CLT} note that the event '$Y\geq 52$' is equivalent to '$\bar{X}\geq 52/12$' where $\bar{X} = Y/12$ is the mean number showing from the 12 tosses. 
+Now the distribution of each $X_i$ is rectangular with $\Pr(X_i = x) = 1/6$, $x = 1, 2, \dots, 6$ and $\text{E}(X_i) = 7/2$, $\text{Var}(X_i) = 35/12$.
+It follows that $\text{E}(\bar{X}) = 7/2$ and $\text{Var}(\bar{X}) = 35/(12\times12)$. 
+Then from Theorem~\ref{TM:CLT},
+\begin{align*}
+  \Pr{Y\geq 52} &\simeq \Pr{\bar{X}\geq 52/12}\\
+  &= P_N \left(Z\geq \frac{52/12-7/2}{\sqrt{35/144}}\right)\\
+  &= 1 -\Phi(1.690)\\
+  &= 0.0455
+\end{align*}
+:::
+
+
+Example~\ref{EG:dieclt} can also be solved using a generalisation of the Central Limit Theorem.
+This generalisation indicates why the normal distribution plays such an important role in statistical theory. 
+It says that a large class of rv's converge in distribution to the standardized normal.
+
+:::{.theorem}
+Let $X_1, X_2, \dots, X_n$ be a sequence of independent rv's with $\text{E}(X_i) = \mu_i$, $\text{Var}(X_i) = \sigma^2_i$.
+Define $Y=a_1X_1+a_2X_2+\dots + a_nX_n$.
+
+Then under certain general conditions, including $n$ large, $Y$ is distributed approximately $N(\sum_ia_i\mu_i, \ \sum_i a^2_i\sigma^2_i)$.
+:::
+
+:::{.proof}
+Not part of the course.
+:::
+
+Note that if the $X_i$ are normally distributed then $Y=\sum_{i = 1}^n a_iX_i$ will have a normal distribution for any $n$, large or small.
+
+:::{.example #Exprain name="Exponential distributions"}
+Suppose we have a number of independent noise voltages, say $V_i$, $i = 1, 2, \dots, n$. 
+Let $V$ be the sum of the voltages and suppose each $V_i$ is distributed $U(0, 10)$.
+For $n = 20$ find $\Pr(V > 105)$.
+
+This is clearly an example of Theorem~\ref{TM:CLTgen} with each $a_i = 1$. 
+In order to find $\Pr(V > 105)$ we need to know the distribution of $V$. 
+We have $\text{E}(V_i) = 5$ and $\text{Var}(V_i) = 100/12$ so that from Theorem~\ref{TM:CLTgen}, we can say that $V$ is distributed approximately normal with mean $20\times 5 = 100$ and variance $20\times 100/12$.
+That is, $\displaystyle{\frac{V - 100}{10\sqrt{5/3}}}$ is distributed $N(0, 1)$ approximately. 
+So
+\[ 
+   \Pr(V > 105) 
+   \simeq P_N\left (Z > \frac{105 - 100}{12.91}\right )
+   = 1 - \Phi(0.387)
+   = 0.352.
+\]
+:::
+
+
+
+## The normal approximation to the binomial
+
+The normal approximation to the binomial distribution has already been considered in Section~\ref{SEC:speccont:normalbin}; it is seen here again as an application of the Central Limit Theorem.
+
+The essential point to recognise is that a sample proportion is a sample mean. 
+Consider a sequence of independent Bernoulli trials resulting in the random sample $X_1, X_2, \dots, X_n$ where
+\[
+  X_i
+  =
+  \begin{cases}
+     0&\text{if failure}\\
+     1&\text{if success}
+  \end{cases}
+\]
+denotes whether or not the $i$th trial is a success.
+Then the sum
+\[
+   Y = \sum_{i = 1}^n X_i
+\]
+represents the number of successes in the $n$ trials and
+\[
+   \bar{X}
+   = 
+   \frac1n\sum_{i = 1}^n X_i
+   = 
+   \frac Yn
+\]
+is a sample mean representing the proportion or fraction of trials which are successful. 
+In this context we usually denote $\bar{X}$ by the sample proportion $\widehat{p}$.
+
+Note that $\text{E}(X_i) = p$ and $\text{Var}(X_i) = p(1 - p)$.
+Therefore
+\[
+   \text{E}(Y)
+   = np
+   \quad\text{and}\quad
+   \text{Var}(Y) = np(1 - p)
+\]
+and
+\[
+   \text{E}(\bar{X})
+   =
+   p
+   \quad\text{and}\quad
+   \text{Var}(\bar{X}) = \frac{p(1 - p)}{n}.
+\]
+Theorems~\ref{TM:CLT} and~\ref{TM:CLTgen} are applicable to $\bar{X}$ and $Y$ respectively. 
+Hence
+\[
+   \bar{X} = \widehat{p}\sim N\left(p,\frac{p(1-p)}{n}\right)\text{ approx}
+\]
+and
+\[
+   Y = n\widehat{p}\sim N(np,np(1-p))\text{ approx}.
+\]
+

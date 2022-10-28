@@ -1,0 +1,833 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Self-assessment exercises}
+
+The following exercises are designed to provide practice at problem-solving
+based on the material in this module. Solutions are provided at the end of the module.
+Additional exercises are available in the next section and in the textbook.
+
+\begin{exercises}
+
+\item
+Two tanks $A$ and $B$  fight a duel.
+Produce the transition matrix and state diagram if
+the  finite states are those  tanks that are  still active; ie,
+$\{ \emptyset, A, B, AB \}$.
+
+\item
+An experiment leads to a random variable $X$ taking values 0 or 1
+with a pf $p_X$ that depends on the parameter $\theta$ where $\theta$
+can be one of two values $\theta_1$ or $\theta_2$.
+In particular
+$$p_X(x|\theta=\theta_1)=\begin{cases}0.8&\text{if $x=0$}\\
+0.2&\text{if $x=1$}
+\end{cases}$$
+and
+$$p_X(x|\theta=\theta_2)=\begin{cases}0.4&\text{if $x=0$}\\
+0.6&\text{if $x=1$}
+\end{cases}$$
+Suppose the pf of $\theta$ is such that $p_\theta(\theta_1)=p_\theta(\theta_1)=1/2$.
+\begin{enumerate}
+\item Determine $p_X(x)$.
+\item Determine $p_\theta(\theta|x)$.
+\item If $X_1,X_2,\dots,X_n$ is a random sample from $p_X(x|\theta)$, determine
+an expression for the likelihood function $L(\theta)$.
+\item Hence determine an expression for the log-likelihood $\ell(\theta)$.
+\item Determine an expression for the mle of $\theta$.
+\end{enumerate}
+
+
+\end{exercises}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Exercises}
+
+
+\begin{exercises}
+
+\item  I have three coins, one of which is double-headed,
+one is double-tailled and one is fair.
+I toss one of the coins and obtain a head.
+\begin{enumerate}
+\item What is the probability that the coin tossed is fair?
+\item I toss the coin again and obtain another head.
+What now is the probability the coin tossed is fair?
+\item I toss the coin a 3rd time and obtain a tail.
+What now is the probability the coin tossed is fair?
+\end{enumerate}
+
+\end{exercises}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\section{Bayesian Inference}
+
+Information known {\em a priori} about parameters $\bv{\theta}$ are incorporated into
+the {\em prior} pdf $p(\bv{\theta})$.\\
+
+The pdf of the data $\bv{X}$ subject to the parameters is denoted by
+$p(\bv{X} | \bv{\theta})$.
+
+Using Bayes' theorem for (vector) random variables, we have
+$$
+p(\bv{\theta}|\bv{X}) \propto p(\bv{\theta}) p(\bv{X} | \bv{\theta})
+$$
+where $p(\bv{\theta}|\bv{X})$ is called the {\em posterior} distribution for $\bv{\theta}$ given
+$\bv{X}$.
+
+The {\em likelihood} function $L$ considers the probability law for the data as a function
+of the parameters, hence
+
+$$
+L(\bv{\theta}|\bv{X}) = p(\bv{X}|\bv{\theta})
+$$
+so Bayes' theorem can be written as
+
+
+\begin{center}
+posterior $\propto$ prior $\times$ likelihood
+\end{center}
+
+which shows how prior information is updated by knowledge of the data. \\
+
+The posterior/prior/likelihood relation is sometimes written as
+$$
+p(\theta|x) = \frac{p(\theta) p(x|\theta)}{p(x)}
+$$
+where $$ p(x) = \int p(\theta) p(x|\theta) d\theta $$
+
+where we have reverted to scalar notation momentarily.
+
+
+The marginal distribution $p(x)$ is called the predictive or preposterior distribution.
+
+These equations will be used in later work.
+
+
+\section{Normal data}
+
+The procedure whereby prior information is updated by knowledge of the data is now
+demonstrated using a simple example of sampling of a {\em single}  observation from
+a Normal population with known
+variance. Hence the data point $X$ comes from $N(\mu,\sigma^2)$ where $\sigma^2 $ is
+assumed known. \\
+The parameter of interest is $\mu$. Thus
+$$
+p(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\textstyle (x-\mu)^2/ 2 \sigma^2}
+$$
+
+The prior is taken as
+$$
+\mu \sim N(\mu_0 , \sigma^2_0 )
+$$
+and the likelihood is $$ L(\mu|x) =
+ \frac{1}{\sigma\sqrt{2\pi}} e^{-\textstyle (x-\mu)^2/ 2 \sigma^2}
+$$
+So the posterior becomes
+$$
+p(\mu|x) = p(\mu) \cdot p(x|\mu) = p(\mu) \cdot L(\mu|x)
+$$
+$$
+= \frac{1}{\sigma_0 \sqrt{2\pi}} e^{-\textstyle (\mu-\mu_0)^2/ 2 \sigma^2_0}
+ \frac{1}{\sigma \sqrt{2\pi}} e^{-\textstyle (x-\mu)^2/ 2 \sigma^2}
+$$
+
+$$
+\propto e^{- \textstyle \mu^2 (1/\sigma^2_0 + 1/\sigma^2 )/2 +
+\mu(\mu_0 /\sigma^2_0 + x/\sigma^2  )}
+$$
+$$
+= e^{-\textstyle \mu^2 / 2 \sigma^2_1 + \mu\mu_1 /\sigma^2_1 }
+$$
+where $$ \sigma^2_1 = \frac{1}{1/\sigma^2_0 + 1/\sigma^2 } $$
+and $$ \mu_1 = \sigma^2_1 (\mu_0 /\sigma^2_0 + x /\sigma^2 ) $$
+Therefore
+$$
+p(\mu|x) \propto e^{\-\textstyle (\mu^2/\sigma^2_1 - 2 \mu\mu_1 /\sigma^2_1 +
+ \mu^2_1 /\sigma^2_1 )/2 }
+$$
+$$
+= e^{- \textstyle (\mu-\mu_1)^2 / 2 \sigma^2_1 }
+$$
+Thus the posterior distribution is given by
+$$
+\mu | x  \sim N(\mu_1 , \sigma^2_1 )
+$$
+
+
+\subsection{Note}
+If we define precision as the inverse of the the variance, then since
+$$
+ 1/\sigma^2_1 = 1/\sigma^2_0 + 1/\sigma^2
+$$
+we have that \\
+
+posterior precision = prior precision + data precision . \\
+
+For the mean, we have
+
+$$ \mu_1 / \sigma^2_1  = \mu_0 /\sigma^2_0 + x /\sigma^2  $$
+and so the posterior mean is a weighted sum of the prior mean and the data mean~(point),
+with the weights being proportional to the respective precisions.
+
+
+
+\section{Normal data - several observations}
+
+The process that was undertaken for a single data point is now described for a
+sample consisting of more than one observation.
+
+
+
+The prior is again
+$$
+\mu \sim N(\mu_0 , \sigma^2_0 )
+$$
+but the likelihood is $$ L(\mu|x_1,\ldots, x_n) = p(x_1|\mu) \ldots p(x_n | \mu) =
+ \frac{1}{(\sigma\sqrt{2\pi})^n} e^{-\textstyle \sum_i (x_i-\mu)^2/ 2 \sigma^2}
+$$
+Thus the posterior becomes
+$$
+p(\mu|x_1, \ldots , x_n) = p(\mu) \cdot p(x_1,\ldots, x_n |\mu) =
+ p(\mu) \cdot L(\mu|x_1,\dots , x_n)
+$$
+$$
+= \frac{1}{\sigma_0 \sqrt{2\pi}} e^{-\textstyle (\mu-\mu_0)^2/ 2 \sigma^2_0}
+ \frac{1}{(\sigma \sqrt{2\pi}^n} e^{-\textstyle\sum_i (x_i-\mu)^2/ 2 \sigma^2}
+$$
+
+$$
+\propto e^{- \textstyle \mu^2 (1/\sigma^2_0 + n/\sigma^2 )/2 +
+\mu(\mu_0 /\sigma^2_0 + \sum_i x_i /\sigma^2  )}
+$$
+$$
+= e^{-\textstyle \mu^2 / 2 \sigma^2_1 + \mu\mu_1 /\sigma^2_1 }
+$$
+where $$ \sigma^2_1 = \frac{1}{1/\sigma^2_0 + n/\sigma^2 } $$
+and $$ \mu_1 = \sigma^2_1 (\mu_0 /\sigma^2_0 + \sum_i x_i  /\sigma^2 ) $$
+Therefore
+$$
+p(\mu|\bv{x}) \propto e^{\-\textstyle (\mu^2/\sigma^2_1 - 2 \mu\mu_1 /\sigma^2_1 +
+ \mu^2_1 /\sigma^2_1 )/2 }
+$$
+$$
+= e^{- \textstyle (\mu-\mu_1)^2 / 2 \sigma^2_1 }
+$$
+Thus the posterior distribution is given by
+$$
+\mu | \bv{x}  \sim N(\mu_1 , \sigma^2_1 )
+$$
+This result could be obtained using the single observation derivation,
+since
+$$
+\bar{x} \sim N(\mu,\sigma^2/n)
+$$
+and so the posterior result given here for a sample of size $n$ is equivalent to that
+obtained for a
+single observation on the mean of a sample of size $n$.
+
+
+\section{Highest density regions}
+
+One method of characterising the posterior distribution or density is to describe
+an interval or region that contains 'most' of the distribution. Such and interval
+would be expected to contain more of the distribution inside than out, and the interval
+or region should be chosen to be as short or as small as possible. In most cases, there
+is one such interval or region for a chosen probability level. For Bayesian inference,
+such an interval or region is called a {\em higher (posterior) density region}
+or {\em HDR}.
+Alternative terminology includes {\em Bayesian confidence interval}, {\em credible
+interval} or {\em higher posterior density~(HPD)}.
+\subsection{Comparison of HDR with CI}
+
+The {\em confidence interval} or {\em CI} obtained from the sampling theory approach
+of classical frequentist statistics appears at first similar to the HDR. For either
+method,using the normal distribution as an example, we use the fact that
+$$
+\frac{x-\mu}{\sigma} \sim N(0,1)
+$$
+
+For the sampling theory approach $x$ is consider random, while $\mu$ is taken as fixed.
+The resulting interval is taken as random.
+
+In the Bayesian context, the random variable is taken as $\mu$, while the interval is
+fixed once the data are available.
+
+If we use the notation $\sim$ to denote a random variable, then for a  95\%CI we have
+$$
+|(\stackrel{\sim}{x} - \mu)/\sigma| < 1.96
+$$
+whereas a 95\% HDR is saying that
+$$
+|(\stackrel{\sim}{\mu} - x)/\sigma| < 1.96
+$$
+
+In cases other than the simple situation described here, the two methods can differ.
+
+
+\section{Choice of Prior}
+
+Using the results of the two simple examples already given, it should be clear that
+not only form of the prior as well as it parameters can have a bearing on the
+posterior distribution. For this reason, the choice of prior needs to be given
+consideration, in its form and representation via suggested values for the parameters.
+
+\subsection{Improper priors}
+
+In the case of the Normal distribution with several observations, the posterior variance
+was
+$$
+\sigma^2_1 = \frac{1}{1/\sigma^2_0 + n/\sigma^2} .
+$$
+
+This posterior variance approaches $\sigma^2_n$  when $\sigma^2_0$ is large compared to
+$\sigma^2 /n $. Alas in the limit, this means that the prior $N(\mu_0 , \sigma^2_0)$
+would become uniform on the whole real line in the limit, and thus would not be a proper
+density. Hence the term {\em improper} prior.
+
+Such improper priors can nevertheless produce quite proper posterior distributions when
+combined with an ordinary likelihood. (In such cases, the likelihood dominates the
+posterior.)
+
+Operationally, improper priors are best interpreted as approximations over a large range of
+values rather than being truly valid over an infinite interval. The construction of such
+approximations can be formalised, see Lee p42, theorem.
+
+
+\subsection{Reference Priors}
+
+The term 'reference' prior is used to cover the case where the data analysis proceeds on
+the assumption that the likelihood should be expected to dominate the prior, especially
+where there is no strongly held belief 'a priori'.
+
+\subsection{Locally uniform priors}
+
+ A prior that is reasonably constant over the  region where the likelihood dominates and
+is not large elsewhere is said to be locally uniform. For such a prior, the posterior
+becomes
+$$
+p(\theta|x) \propto p(x|\theta)= L(\theta|x)
+$$
+and so as expected, the likelihood dominates the prior. Bayes postulated (not his theorem)
+that the 'know nothing' prior $p(\theta)$ should be represented by a uniform prior
+where $\theta$ is an unknown probability such that $0<\theta<1$. This implies
+$$
+p(\theta) = 1 , \; 0<\theta<1
+$$
+
+Alas this suffer the same problems of improper priors, but again if appropriate
+intervals can be chosen, a local uniform prior can be found that will be workable.
+
+
+\section{Data--translated likelihoods}
+
+In choosing a reference prior that is 'flat', it would seem natural to choose an
+appropriate scale of measurement for the uniform prior, which is related to the
+problem at hand.
+One such scale is one on which the likelihood is data--translated, ie, one for which
+
+$$
+L(\theta| x) = g(\theta - t(x))
+$$
+for a function $t$, which is a sufficient statistic for $\theta$. \\
+
+For example, the Normal has
+$$
+L(\mu|x) \propto e^{-(x-\mu)^2 / 2 \sigma^2 }
+$$
+and it is thus clearly of this type. \\
+
+However, a binomial $B(n,\pi)$ has
+$$
+L(\pi|x) \propto \pi^x (1-\pi)^{n-x}
+$$
+which cannot be but into the form $g(\pi-t(x))$. \\
+
+If the likelihood $L$ is data--translated, then different data values give the same form
+for $L$ except for a shift in location. Thus the main function of the data is to
+determine location. Thus it would seem sensible to adopt a uniform prior for such
+data--translated likelihoods.
+
+\section{Sufficiency}
+
+Recall that a statistic $T=t(\bv{x})$ is sufficient for $\theta$ iff
+$$
+f(\bv{x};\theta) = g(t(\bv{x})) \cdot h(\bv{x})
+$$
+by the Fisher--Neyman factorisation criterion. \\
+
+{\bf Theorem}\\
+
+For any prior distribution, the posterior of $\theta$ given $\bv{x}$ is the same as the
+posterior of $\theta$ given a sufficient statistic $t$ for $\theta$, assuming that $t$
+exists. \\
+
+
+{\bf Proof}\\
+
+
+From sufficiency
+$$
+p(\bv{x}|\theta) = p(t|\theta) p(\bv{x}|t)
+$$
+and so the posterior is
+$$
+p(\theta|\bv{x}) \propto p(\theta) p(\bv{x}|\theta) = p(\theta) p(t|\theta) p(\bv{x}|t)
+$$
+
+$$
+~~~~~~~~~~~ \propto p(\theta) p(t|\theta)
+$$
+which proves the result.
+
+
+\section{Conjugate priors}
+
+A class $P$ of priors forms a {\em conjugate family} if the posterior is in the class
+for all $\bv{x}$ when the prior is in $P$. \\
+
+
+In practice, we restrict $P$ to the class of the exponential family, mostly.\\
+
+As an example, the Normal has a Normal conjugate prior, as shown by the posterior
+being Normal as well.
+
+
+
+
+\section{Exponential family}
+
+Earlier in the Unit we defined the exponential family of distributions by
+
+$$
+f(x_i ;\theta) = p(x_i |\theta) = h(x_i) B(\theta) e^{\textstyle q(\theta) K(x_i)}
+$$
+Note the change from $p(\theta)$ to $q(\theta)$ to avoid confusion with the general form
+for the prior.
+
+This form for the density gives the likelihood as
+$$
+L(\theta|\bv{x}) = h(\bv{x})  B^n (\theta) e^{\textstyle q(\theta) \sum_i K(x_i) }
+$$
+For the exponential family, there is a family of conjugate priors defined by
+$$
+p(\theta) \propto B(\theta) e^{\textstyle q(\theta) \tau}
+$$
+since the posterior is then
+$$
+p(\theta) \cdot L(\theta|\bv{x}) = B(\theta) e^{\textstyle q(\theta) \tau} B^n (\theta)
+e^{\textstyle q(\theta) \sum_i K(x_i )}
+$$
+$$
+= B^{n+1} (\theta) e^{\textstyle q(\theta) (\tau + \sum_i K(x_i)}
+$$
+which belongs to the same class as the prior. Hence the class is conjugate.
+
+\subsubsection{Normal mean}
+
+For the normal case with known variance,
+$\tau \propto x$ and $t= \sum_i K(x_i) \propto n x$, the general form for the
+class (in the exponent) is
+$$
+ - \nu \mu^2/2 \sigma^2  + {\cal T} \mu / \sigma^2
+$$
+where $\cal T$ can be chosen as $\nu \mu_0$ to give the correct scale. The full form is
+proportional to
+$$
+e^{\textstyle -\nu (\mu-\mu_0)^2 / 2\sigma^2}
+$$
+which for $\nu=1$ generates the prior used for the normal.
+
+
+
+\subsubsection{Binomial proportion}
+
+In a fixed number of $n$ trials, the number of successes $x$ can be such that
+$$
+x\sim B(n,\pi)
+$$
+ie, $x$ follows the Binomial distribution, where $\pi$ is the probability of a success
+at each of the (independent) trials.
+Thus
+$$
+p(x|\pi) = {n\choose x} \pi^x (1-\pi)^{n-x}, \; x=0,1,\ldots, n
+$$
+$$
+\propto \pi^x(1-\pi)^{n-x} .
+$$
+
+If we choose the prior as a Beta distribution, ie,
+$$
+p(\pi) \propto \pi^{\alpha -1} (1-\pi)^{\beta -1}, \; 0 \leq \pi \leq 1
+$$
+then the posterior is
+$$
+p(\pi|x) \propto \pi^{\alpha +x -1} (1-\pi)^{\beta+n-x-1}
+$$
+which is also a Beta distribution. Thus the prior is conjugate.\\
+
+Alternatively, we could construct the prior from the general form, using the fact that
+the Binomial is a member of the exponential family.
+
+\section{Reference prior for the binomial}
+
+
+We should note from the previous section that if we choose a $B(\alpha, \beta)$ prior, then
+the posterior is $B(\alpha+x, \beta+n-x)$, when we have $x$ successes in $n$ trials.
+\subsection{Bayes}
+
+Bayes proposed the following uniform prior for the binomial;
+
+
+$$
+\pi \begin{array}{ll} =  1, &  0 \leq \pi \leq 1 , \\  = 0 &  {\rm else} \end{array}
+$$
+
+which is really $B(1,1)$. In short, the implications of this prior is that the mode of the
+posterior distribution corresponds to the unbiased estimate of the proportion from classical
+statistics.
+
+
+
+\subsection{Haldane}
+
+Haldane proposed a $B(0,0)$ prior, ie, $$ p(\pi) \propto \pi^{-1} (1-\pi)^{-1}$$
+
+For this prior, the mean of the posterior is the observed proportion.
+
+\subsection{Arc--sine}
+
+The arc--sine prior is a $B(1/2,1/2)$ which gives a uniform prior on the scale $\sin^{-1} \sqrt{\pi}$,
+hence the name arc--sine. This transformation corresponds to the variance stablising transformation
+for the binomial proportion.
+
+\subsection{Conclusion}
+
+All 3 priors give equivalent answers even for small amounts of data, but the reason for labouring
+the point is to show the problem of describing the situation of knowing nothing about the proportion.
+
+\section{Jeffrey's Rule}
+
+\subsection{Fisher information}
+
+Recall that Fisher information from a single observation $x$ is given by $$ I(\theta|x) = - E \left( \partial^2 \ell/ \partial \theta^2
+\right) = E\left( \partial \ell/ \partial \theta \right)^2 $$
+where $ \ell = \ln L$. The information from $n$ observations $\bv{x}$ is given  by $I(\theta|\bv{x})$ and
+$$ I(\theta| \bv{x}) = n I(\theta|x)$$
+
+\subsection{Jeffrey's prior}
+
+If the parameter $\theta$ is transformed to $\phi$ via $\phi = \phi(\theta)$, then
+$$
+\frac{\partial \ell (\phi | x ) }{ \partial \phi} = \frac{\partial \ell (\theta|x) }{\partial \theta}
+\frac{d \theta}{d \phi}
+$$
+So
+$$
+E\left[ \frac{\partial \ell(\phi| x)}{\partial \phi} \right]^2 = I (\phi|x) =
+E\left[\frac{\partial \ell (\theta|x)}{\partial \theta}\right]^2 \left(\frac{d\theta}{d\phi}\right)^2
+ = I(\theta|x)
+\left( \frac{d\theta}{d\phi} \right)^2
+$$
+
+So if $p(\theta) \propto \sqrt{I(\theta| x)} $ then  $p(\phi) \propto \sqrt{I(\phi| x)} $, therefore
+choose $\sqrt{I}$ as a reference prior, as it is invariant to change of scale. So the reference prior is
+given by $$ p(\theta) \propto \sqrt{(I(\theta|x)}$$
+called Jeffrey's rule. \\
+
+Note that this is not the only form of prior possible, but it can be used as a guide especially
+if there is no other obvious method of finding a prior.
+
+
+\subsubsection{Example}
+
+Consider the binomial parameter $\pi$ for which we have
+
+$$
+p(x|\theta ) \propto \pi^x (1-\pi)^{(n-x)}
+$$
+and so
+$$
+\ell = x  \ln \pi + (n-x) \ln (1-\pi) + {\rm constant}
+$$
+
+to give
+$$
+\partial \ell / \partial \pi = x/\pi  - (n-x)/ (1-\pi)
+$$
+which becomes
+$$
+{\partial}^2 \ell / \partial \pi^2 = - x/\pi^2 - (n-x)/ (1-\pi)^2
+$$
+The information is thus
+$$
+I = - E{\partial}^2 \ell / \partial \pi^2 = Ex/\pi^2 + E(n-x) /(1-\pi)^2 = n/\pi + n/(1-\pi)
+$$
+$$
+I = \frac{n}{\pi(1-\pi)}
+$$
+So finally  the prior is
+$$
+p(\pi) \propto \pi^{-1/2} (1-\pi)^{-1/2}
+$$
+or, $\pi \sim B(1/2, 1/2)$, ie, the arc--sine distribution given earlier as a reference prior
+for the binomial.
+
+
+\section{Approximations based on the likelihood}
+
+
+One way of describing a HDR is to quote the mode of the posterior density, although this goes against
+the idea of constricting a HDR.
+
+If the likelihood dominates the prior, if for example the prior chosen is a reference prior, then the
+posterior mode will be close to the MLE $\widehat{\theta}$, obtained by solving
+ $$ \ell' (\widehat{\theta})=0$$
+
+In the neighbourhood of $\widehat{\theta}$, we have
+$$
+\ell(\theta) = \ell(\widehat{\theta}) + (\theta-\widehat{\theta})^2 \ell''(\widehat{\theta})/2 + \ldots
+$$
+and so $$ L(\theta | \bv{x}) \propto e^{\textstyle (\theta-\widehat{\theta})^2 \ell''(\widehat{\theta})/2 }
+$$
+Thus $$L( \theta | \bv{x} ) \propto N(\widehat{\theta}, -1/\ell''( \widehat{\theta} )) $$
+or
+$$
+ \propto N(\widehat{\theta}, 1/I(\widehat{\theta}|x)) $$
+
+Thus a HDR could be constructed for $\theta$ using this approximation. to the likelihood, assuming that
+the likelihood dominates the prior.
+
+\subsection{Example}
+
+For a sample $\bv{x}'= (x_1, \ldots, x_n)$  from a $\Pr{\lambda}$ with $T=\sum_i x_i$, we have
+
+$$
+L(\lambda |x ) \propto e^{- \textstyle  n \lambda} \frac{\lambda^T}{T!}
+$$
+Thus $$ \ell (\lambda) = T\ln \lambda - n \lambda + {\rm constant} $$
+to give
+$$
+\ell' (\lambda) = T/\lambda - n
+$$
+and $$ \ell'' (\lambda) = -T/\lambda^2 $$
+
+Now $ \widehat{\lambda} = T/n = \bar{x} $ and $I(\lambda|\bv{x}) = n\lambda/\lambda^2 = n/\lambda $.
+
+So $ I(\widehat{\lambda} | \bv{x} ) = - \ell'' (\widehat{\lambda}) = n^2 /T$. Thus the posterior
+can be approximated by $N(T/n, T/n^2)$, asymptotically. \\
+
+
+Note that this posterior differs from the posterior obtained by using a conjugate prior.
+
+
+
+\section{Reference posterior distributions}
+
+\subsection{Information provided by an experiment}
+
+Note that while the term {\em information}
+used here is related to Fisher information, it is best to treat the two as separate quantities for
+the moment.
+
+
+\subsection{Reference priors under asymptotic normality}
+
+Lindley defined the amount ${\cal I} (x|p)$ of {\em information} that an observation
+ $x$ provides about $\theta$  as
+
+$$
+{\cal I} (x|p) = \int p(\theta |x) \ln \left[ p(\theta|x) / p(\theta) \right] d\theta
+$$
+
+Averaged over all random observations, we obtain the expected information
+as
+
+$$
+{\cal I}  = \int p(x)  \int p(\theta |x) \ln \left[ p(\theta|x) / p(\theta) \right] d\theta dx
+$$
+
+
+This is equivalent to Shannon's information. \\
+
+\newpage
+
+{\bf Exercise }\\
+
+( Show that the two expressions
+
+
+$$
+\int p(\theta)  \int p( x | \theta ) \ln \left[ p( x | \theta) / p(x) \right] dx  d\theta
+$$
+and
+$$
+ \int   \int p(\theta,  x) \ln \left[\frac{p(\theta,x) }{  p(\theta) p(x)} \right] d\theta dx
+$$
+are equivalent to the original form for expected information. ) \\
+
+
+Define ${\cal I}_n $ as the information about $\theta$ from $n$ (independent) observations
+from the same distribution as $x$. \\
+
+
+Thus ${\cal I}_{\infty}$ gives the information about $\theta$ when the prior is $p(\theta)$, since
+in that case we would have the exact value of $\theta$. This condition ensures that we have a true
+reference prior, ie, one that contains no information about $\theta$. \\
+
+
+Define $p_n (\theta|x)$ as the posterior corresponding to the prior $p_n (\theta)$, where
+the prior $p_n (\theta)$ maximises ${\cal I}_n$. \\
+
+The reference posterior  $p(\theta|x)$ is then  ${\lim}_{n \rightarrow \infty} p_n (\theta |x)$. \\
+
+The reference prior $ p(\theta)$ is defined (indirectly) as the $p(\theta)$ such that
+
+$$
+p(\theta | x) \propto p(\theta) p(x|\theta)
+$$
+where $p(\theta | x)$ is the reference posterior defined above.
+
+To find the reference prior, define {\em entropy } $H$ as
+
+$$
+H\{p(\theta)\} = - \int p(\theta) \ln p(\theta) d \theta
+$$
+
+
+
+Now the information about $\theta$ contained  in $n$ observations $\bv{x}' = (x_1, \ldots , x_n)$ is
+$$
+{\cal I}_n   = \int p(\bv{x})  \int p(\theta |\bv{x}) \ln \left[ p(\theta|\bv{x}) / p(\theta)
+ \right] d\theta d\bv{x}
+$$
+where the posterior $p_n (\theta |x) = p(\theta | \bv{x})$ and the prior $ p_n (\theta) = p(\theta) $
+ to make the notation concise.
+
+$$
+{\cal I}_n   = \int p(\bv{x})  \int p(\theta |\bv{x}) \ln p(\theta|\bv{x})  d\theta d\bv{x}
+- \int p(\bv{x})  \int p(\theta |\bv{x}) \ln p(\theta)  d\theta d\bv{x}
+$$
+
+$$
+= -\int p(\bv{x} ) H\{ p(\theta|\bv{x}) \} d\bv{x}  - \int\int p (\bv{x})  p(\theta|\bv{x})  \ln
+p(\theta) d\theta d\bv{x}
+$$
+
+$$
+= -\int p(\bv{x} ) H\{ p(\theta|\bv{x} )\} d\bv{x}  - \int\int p(\theta) p(\bv{x} | \theta) \ln
+p(\theta) d\bv{x} d\theta
+$$
+
+$$
+= -\int p(\bv{x} ) H\{ p(\theta|\bv{x} ) \} d\bv{x}  -
+ \int p(\theta) \ln p(\theta) \
+\left[ \int p(\bv{x} | \theta) d\bv{x} \right]_{=1} d\theta
+$$
+
+$$
+= -\int p(\bv{x} ) H\{ p(\theta|\bv{x} ) \} d\bv{x}  -
+ \int p(\theta) \ln p(\theta) d\theta
+$$
+but the predictive distribution $p(x)$ is given by
+$$ p(x) = \int p(\theta) p(\bv{x}|\theta) d\theta)$$
+and so
+$${\cal I}_n = - \int \int p(\theta) p(\bv{x}|\theta) d\theta) H\{ p(\theta|\bv{x}) \}
+ d\bv{x} - \int p(\theta) \ln p(\theta) d\theta $$
+ $$ = - \int  p(\theta) \int p(\bv{x}|\theta)  H\{ p(\theta|\bv{x}) \} d\bv{x} d\theta
+- \int p(\theta) \ln p(\theta) d\theta
+$$
+
+$$
+= \int p(\theta) \left( - \int p(\bv{x} | \theta ) H\{ p(\theta|\bv{x} ) \} d\bv{x}
++  \ln p(\theta) \right) d\theta
+$$
+
+$$
+= \int p(\theta) \ln \left\{ \exp{ [- \textstyle  \int p(\bv{x}|\theta)
+ H \{ p(\theta |\bv{x}) \} d\bv{x}  ] }   / p(\theta)  \right\} d\theta
+$$
+
+This puts ${\cal I}_n $ into the form
+$$
+{\cal I}_n = \int p(\theta) \ln \frac{f(\theta)}{p(\theta)} d\theta
+$$
+
+Now ${\cal I}_n$ is maximal when $p(\theta) \propto f(\theta)$, via the calculus of
+variations (Exercise!!). \\
+
+Thus the prior corresponding to a maximal ${\cal I}_n$ is
+$$
+p_n (\theta) \propto e^{ - \textstyle \int p(\bv{x}|\theta) H\{p(\theta|\bv{x}) \} d\bv{x} }
+$$
+
+\subsection{Reference priors under asymptotic normality}
+
+Here the posterior distribution for  $n$ observations is approximately
+ $$ N(\widehat{\theta}, 1/I(\widehat{\theta} | \bv{x})) $$
+and so
+$$
+p(\theta|\bv{x}) \sim N(\widehat{\theta},1/nI(\widehat{\theta}|x))
+$$
+using the additive property of Fisher information. \\
+
+The entropy $H$  for a $N(\mu,\sigma^2)$ density  becomes
+
+$$
+H\{p(\mu)\} = - \int \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\textstyle (z-\mu)^2 /2 \sigma^2 } \left\{
+- \ln \sqrt{2 \pi \sigma^2} - (z-\mu)^2/ 2 \sigma^2 \right\} dz = \ln \sqrt{2\pi e \sigma^2}
+$$
+This gives $$ H\{ p(\mu | \bv{x} ) \} = \ln \sqrt{2 \pi e / n I(\widehat{\theta} | x ) } $$
+where $\mu = \theta$.
+
+Thus we get $$ \int p( \bv{x} | \theta ) H\{ p(\theta |\bv{x} ) \} d\bv{x} = - \int p(\bv{x} | \theta )
+\ln \sqrt{2 \pi e / nI(\widehat{\theta} | x) } d\bv{x} $$
+$$
+= - \int p(\widehat{\theta} | \theta) \ln \sqrt{2 \pi e / n I(\widehat{\theta} | x ) }
+d\widehat{\theta}
+$$
+$$
+= - \ln \sqrt{2 \pi e / n I(\theta | x)}
+$$
+since $p(\widehat{\theta}|\theta) \approx 0$ except when $\widehat{\theta} \approx \theta$.
+
+Thus $$p_n (\theta) \propto e^{\textstyle \ln \sqrt{ I(\theta | x)} } = \sqrt{I(\theta | x)} $$
+which is Jeffrey's prior.
+
+
+This result has use for a wider class of problems and for handling nuisance parameters. \\
+
+
+{\bf EXERCISE }\\
+
+
+Show that the entropy for the prior $p(\theta) = e^{- \textstyle \theta/\beta} / \beta$ is
+$1 + \ln \beta $.
+
+
+
+\newpage
+\section{References}
+\begin{enumerate}
+\item
+Bernardo J.M. and A.F.M. Smith, (1994), {\em Bayesian Theory}, Wiley.
+\item
+Broemeling L.D., (1985), {\em Bayesian Analysis of Linear Models}, Marcel Dekker.
+\item
+Carlin B.P. and Louis T.A., (2000), {\em Bayes and Empirical Bayes Methods for Data
+Analysis}, 2nd ed., Chapman and Hall.
+\item
+Gelman A., Carlin J.B., Stern H.S. and Rubin D.B., (2004), {\em Bayesian Data Analysis},
+2nd ed., Chapman and Hall.
+\item
+Lee P.M., (2004), {\em Bayesian Statistics}, 3rd ed., Arnold.
+\item
+Leonard T. and Hsu T.S.J., (2001), {\em Bayesian Methods}, Cambridge University Press.
+\end{enumerate}
