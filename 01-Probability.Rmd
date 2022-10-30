@@ -279,7 +279,7 @@ knitr::kable(WolfTable,
 ::: {.example #CoinToss name="Tossing coins"}
 A computer can be used to simulate large numbers of coin tosses.
 
-Using $\Pr(Toss head) = 0.5$, R was used to simulate 500 tosses.
+Using $\Pr(\text{Toss head}) = 0.5$, R was used to simulate 500 tosses.
 After each toss, the probability of obtaining a head using all the available information was computed.
 For one such simulation, the running probabilities are shown in Fig. \@ref(fig:SimTosses).
 :::
@@ -523,7 +523,10 @@ Without the extra information, the chance of obtaining a \epsdice{2} is $1/6$ as
 $S = \{ \epsdice{1}, \epsdice{2}, \epsdice{3}, \epsdice{4}, \epsdice{5}, \epsdice{6}\}$.
 
 But since there *is* extra information---that the number is even---this probability can be refined.
-If the number is even, there are only three possibly outcomes in the sample space: $S_R = \{ \epsdice{2}, \epsdice{4}, \epsdice{6}\}$,
+If the number is even, there are only three possibly outcomes in the sample space: 
+\[
+   S_R = \{ \epsdice{2}, \epsdice{4}, \epsdice{6}\},
+\]
 where $S_R$ is called the *reduced sample space*.
 
 Since each of these outcomes in the reduced sample space are equally likely, $\Pr(\text{Roll a 2}) = 1/3$.
@@ -571,7 +574,7 @@ As a consequence of Definition \@ref(def:ConditionalProb), we have the following
 :::{.theorem #MultRule name="Multiplication rule for probabilities"}
 For any events $A$ and $B$, the probability of $A$ and $B$ is
 \begin{align*}
-     \Pr(A\cap B}
+     \Pr(A\cap B)
      &= \Pr(A) \Pr(B \mid A)\\
      & =\Pr(B) \Pr(A \mid B).
 \end{align*}
@@ -698,7 +701,7 @@ For example, $\Pr(\text{round peas}) = 0.7608$.
 Biologically, we would expect about $75$\% to be round; the data appear reasonably sound in this respect.
 
 ```{r PeaTable, echo=FALSE}
-PeaTable <- array(dim = c() )
+PeaTable <- array(dim = c(2, 2) )
 
 colnames(PeaTable) <- c("Yellow", 
                         "Green")
@@ -757,9 +760,11 @@ We use this concept in the following theorem.
 :::{.theorem #TotalProb name="Theorem of total probability"}
 Let $A$ be an event in $S$ and $\{B_1, B_2, \ldots , B_k\}$ a partition of $S$.
 Then
-\begin{equation*}
-   \Pr(A) = \Pr(A \mid B_1) \Pr(B_1) + \Pr(A \mid B_2)\Pr(B_2) + \ldots +\Pr(A \mid B_k)\Pr(B_k)
-\end{equation*}
+\begin{align*}
+   \Pr(A) 
+   &= \Pr(A \mid B_1) \Pr(B_1) + \Pr(A \mid B_2)\Pr(B_2) + 
+   &\qquad \ldots +\Pr(A \mid B_k)\Pr(B_k)
+\end{align*}
 :::
 
 :::{.proof}
@@ -1097,16 +1102,17 @@ Consider rolling two standard dice and noting the *sum* of the numbers shown.
 The sample space is listed in Table \@ref(tab:TwoDice).
 
 
-```{r TwoDice, echo=TRUE}
-DiceTable <- array( dim = c(6, 6))
-
+```{r TwoDice, echo=FALSE}
 Die1 <- 1:6
 Die2 <- 1:6
 
-DieSum < Die1 %o% Die2
+DieSum <- Die1 %o% Die2
 
-DieSum
+rownames(DieSum) <- paste("Die 1:", 1:6)
+colnames(DieSum) <- paste("Die 2:", 1:6)
 
+knitr::kable(DieSum,
+             caption = "The sum of rolling two dice")
 ```
 
 \begin{center}
@@ -1145,7 +1151,7 @@ The number of elements in a set is often large, and a complete enumeration of th
 If we have $m$ ways to perform act $A$ and if, for each of these, there are $n$ ways to perform act $B$, then there are $m\times n$ ways to perform the acts $A$ *and* $B$. 
 This is called the *multiplication principle*.
 
-:::{.definition #MultiplicationPrinciple, name="Multiplication principle"}
+:::{.definition #MultiplicationPrinciple name="Multiplication principle"}
 With $m$ elements $a_1, a_2, \ldots , a_m$ and $n$ elements $b_1, b_2, \ldots, b_n$ it is possible to form $mn$ pairs containing one element from each group.
 :::
 
@@ -1181,7 +1187,7 @@ This number is denoted by $^nP_r$, and we write
 \[
    ^nP_r = n(n-1)(n-2)\ldots (n - r + 1) = \frac{n!}{(n - r)!}.
 \]
-This expression is referred to as *the number of permutations of $r$ elements from a set with $n$ elements.
+This expression is referred to as *the number of permutations of $r$ elements from a set with $n$ elements*.
 
 
 ### Combinations
@@ -1476,20 +1482,20 @@ For convenience and reference we state some results here involving series that o
 
 ### Finite series
 
-Sum of natural numbers:
+* Sum of natural numbers:
 \begin{equation}
    1 + 2 + 3 + \ldots + n 
    = \frac{n(n + 1)}{2}.
  \end{equation}
  \label{EQN:series1}
 
-Sum of squares of natural numbers:
+* Sum of squares of natural numbers:
 \begin{equation}
    1^2 + 2^2 + 3^2 + \ldots + n^2
    = \frac{n}{6}(n + 1)(2n + 1)
  \end{equation}\label{EQN:series2}
  
-Geometric series
+* Geometric series
 \begin{align}
    a + ar + ar^2 + \ldots + ar^{n - 1}
    &= \frac{a(1 - r^n)}{1 - r}\label{EQN:series3}\\
@@ -1497,7 +1503,7 @@ Geometric series
 \end{align}
 where the infinite series only converges if $|r| < 1$.
 
-Binomial expansion:
+* Binomial expansion:
 \[
    (a + b)^n = b^n + {n \choose 1}ab^{n - 1} + \ldots + {n \choose r}a^r b^{n - r} + \ldots a^n.
 \]
@@ -1508,15 +1514,15 @@ Binomial expansion:
 
 A power series is a series of the form $\sum_{n = 0}^{\infty}a_n z^n$.
 
-Exponential function:
+* Exponential function:
 \begin{align}
    e^z
    &= 1 + z + \frac{z^2}{2!} + \frac{z^3}{3!} + \ldots\label{EQN:series6}\\
    e^{-z}
    &= 1 - z + \frac{z^2}{2!} - \frac{z^3}{3!} + \ldots\label{EQN:series7}
-\]
+\end{align}
 
-Logarithmic series:
+* Logarithmic series:
 \begin{align}
    \log(1 + z)
    &= z - \frac{z^2}{2} + \frac{z^3}{3} - \ldots\label{EQN:series8}\\
@@ -1524,7 +1530,7 @@ Logarithmic series:
    &= -z - \frac{z^2}{2} - \frac{z^3}{3} - \ldots\label{EQN:series9}
 \end{align}
 
-Others:
+* Others:
 \begin{align}
    (1 - z)^{-1}
    &= 1 + z + z^2 + z^3 + \ldots\label{EQN:series10} \\
