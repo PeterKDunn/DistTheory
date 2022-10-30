@@ -1,4 +1,4 @@
-# Probability basics {#Probability}
+# Probability essentials {#Probability}
 
 
 
@@ -1387,7 +1387,7 @@ Suppose we carried out the experiment 1000 times, we should be able to make some
 However, it is of course not really feasible to actually throw a coin this number of times.
 We get around this problem by simulating the experiment on a computer using R. 
 
-We let 1 represent a patient doing better on experimental Condition 1, and by a 0 a patient doing better on Condition 2. 
+We let 0 represent a patient doing better on experimental Condition 1, and by a 1 a patient doing better on Condition 2. 
 We can then generate a sequence of 1's and 0's representing the results of 21 patients. 
 This can be repeated 1000 times.
 The results of one such *simulation* experiment are given below:
@@ -1396,45 +1396,59 @@ FIX!!!!
 
 
 ```{r echo=TRUE}
-rbinom(1000,
-       size = 1,
-       p = 0.5)
+set.seed(416893) # For reproducibility
+
+numSimulations <- 1000 # The number of simulations
+recordResults <- array( dim = numSimulations)
+
+for (i in 1:1000){   # Do 1000 simulations, of:
+   Results <- rbinom(21,       # 21 patients
+                     size = 1, # Two outcomes: 0 (Cond 1 better) and 1 (Cond 2 better)
+                     p = 0.5)
+   recordResults[i] <- sum(Results)   
+}
+
+table(recordResults)
 ```
 
-
-
 Let $X$ represent the number of times (out of 21) that CAO patients under Condition 1 do better than under Condition 2.
-The Count column then gives the number of trials (out of 1000) in which there were exactly $x$ CAO patients doing better under condition 1.
+In Table \@ref(tab:CAOTable), the `Count` column then gives the number of trials (out of 1000) in which there were exactly $x$ CAO patients doing better under Condition 1.
 This is given as a percentage in the third column.
 
+```{r CAOTable, echo=FALSE}
+tabResults <- table(recordResults)
 
+CAOTable <- array( dim = c(7, 7))
 
-### Tabulated statistics
+colnames(CAOTable) <- c("Number",
+                        "Count",
+                        "Percentage",
+                        " ", # Spacer
+                        "Number",
+                        "Count",
+                        "Percentage")
+                        
+CAOTable[, 1] <- names(tabResults)[1:7]
+CAOTable[, 5] <- names(tabResults)[8:14]
 
-\begin{tabular}{|r| r| r||r|r|r|}
-\hline
-$X=x$&Count&Percentage&$X=x$&Count&Percentage\\
-\hline
- 3         &2     &0.20& 11      &173    &17.30\\
- 4         &1     &0.10& 12      &120    &12.00\\
- 5        &10     &1.00& 13      &109    &10.90\\
- 6        &22     &2.20& 14       &65     &6.50\\
- 7        &65     &6.50& 15       &23     &2.30\\
- 8       &104    &10.40& 16       &14     &1.40\\
- 9       &132    &13.20& 17        &3     &0.30\\
- 10      &157    &15.70&           &      &    \\
-\hline
-&&&Total    &1000   &100.00\\
-\hline
-\end{tabular}
+CAOTable[, 2] <- tabResults[1:7]
+CAOTable[, 6] <- tabResults[8:14]
 
-(Note: In the 1000 trials although the values of $x$ = 0,1,2,18,19,20 or 21 were *possible*, they did not occur.)
+CAOTable[, 3] <- round( as.numeric(CAOTable[, 2]) / numSimulations * 100, 1)
+CAOTable[, 7] <- round( as.numeric(CAOTable[, 6]) / numSimulations * 100, 1)
 
-We now have the information to make an informed answer to the original question.
-Notice that $23 + 14 + 3 = 40$ of the experiments result in 15 or more CAO patients doing better on Condition 1 while $2 + 1 + 10 + 22 = 35$ of the experiments result in 6 or fewer of the CAO patients doing better on Condition 1.
-That is, 75 out of the 1000 experiments resulted in an outcome as extreme as the one observed in the actual experiment, or an estimated probability of .075 that a result this extreme would occur purely by chance if there is in fact NO DIFFERENCE in effect of the two experimental conditions.
+knitr::kable(CAOTable,
+             caption = "The results of the CAO simulation")
+                       
+```
+We can now make an informed answer to the original question.
+
+Notice that $29 + 9 = 38$ (or 0.038) of the result in 15 or more CAO patients doing better on Condition 1, while $22 + 10 + 3 + 2 = 37$ (or 0.037) of the experiments result in 6 or fewer of the CAO patients doing better on Condition 2.
+That is, $38 + 37 = 75$ out of the 1000 experiments resulted in an outcome as extreme as the one observed in the actual experiment, an estimated probability of 0.075 that a result this extreme would occur purely by chance if there is in fact NO DIFFERENCE in effect of the two experimental conditions.
+
 If the probability is above 0.05 (that is 5\%), we usually say the case of a difference in effect has not been shown on the grounds that we can't be sure it has not occurred by chance alone. 
 (5\% would mean we expect it to occur by chance 1 out of 20 times, a rate which is not unreasonable to expect to happen.)
+
 Our conclusion here would be that there is insufficient evidence to conclude a difference in effect of the two experimental conditions.
 
 
@@ -1459,35 +1473,67 @@ We will return to this example later when we have the tools to find the probabil
 
 For convenience and reference we state some results here involving series that occur quite frequently in probability and statistical theory.
 
-1. Some finite series
 
-   1. Sum of natural numbers
-\begin{equation}1+2+3+\ldots+n=\frac{n(n+1)}{2}\end{equation}\label{EQN:series1}
-   2. Sum of squares of natural numbers
-\begin{equation}1^2+2^2+3^2+ \ldots +n^2=\frac{n}{6}(n+1)(2n+1)\end{equation}\label{EQN:series2}
-   3. Geometric series
+### Finite series
+
+Sum of natural numbers:
+\begin{equation}
+   1 + 2 + 3 + \ldots + n 
+   = \frac{n(n + 1)}{2}.
+ \end{equation}
+ \label{EQN:series1}
+
+Sum of squares of natural numbers:
+\begin{equation}
+   1^2 + 2^2 + 3^2 + \ldots + n^2
+   = \frac{n}{6}(n + 1)(2n + 1)
+ \end{equation}\label{EQN:series2}
+ 
+Geometric series
 \begin{align}
-a+ar+ar^2+ \ldots +ar^{n-1}&=\frac{a(1-r^n)}{1-r}\label{EQN:series3}\\
-&\rightarrow \frac{a}{1-r} \mbox{ as } \ n  \rightarrow  \infty\label{EQN:series4}
+   a + ar + ar^2 + \ldots + ar^{n - 1}
+   &= \frac{a(1 - r^n)}{1 - r}\label{EQN:series3}\\
+   &\rightarrow \frac{a}{1 - r} \text{ as $n  \rightarrow  \infty$}\label{EQN:series4}
 \end{align}
-where the infinite series only converges if $|r|<1$.
-   4. Binomial expansion
+where the infinite series only converges if $|r| < 1$.
+
+Binomial expansion:
 \[
-   (a + b)^n = b^n + {n \choose 1}ab^{n - 1} + \ldots + {n \choose r}a^r b^{n - r} + \ldots a^n
+   (a + b)^n = b^n + {n \choose 1}ab^{n - 1} + \ldots + {n \choose r}a^r b^{n - r} + \ldots a^n.
 \]
 
-2. Power series:
-   A power series is a series of the form $\sum_{n=0}^{\infty}a_nz^n$.
+
+
+### Power series:
+
+A power series is a series of the form $\sum_{n = 0}^{\infty}a_n z^n$.
+
+Exponential function:
 \begin{align}
-e^z&=1+z+\frac{z^2}{2!}+\frac{z^3}{3!} + \ldots\label{EQN:series6}\\
-e^{-z}&=1-z+\frac{z^2}{2!}-\frac{z^3}{3!}+ \ldots\label{EQN:series7}\\
-\log(1+z)&=z-\frac{z^2}{2}+\frac{z^3}{3}- \ldots\label{EQN:series8}\\
-\log(1-z)&=-z-\frac{z^2}{2}-\frac{z^3}{3}- \ldots\label{EQN:series9}\\
-(1-z)^{-1}&=1+z+z^2+z^3+ \ldots\label{EQN:series10} \\
-(1-z)^{-r}&=1+rz+\frac{r(r+1)z^2}{2!}+\frac{r(r+1)(r+2)z^3}{3!}+\ldots
+   e^z
+   &= 1 + z + \frac{z^2}{2!} + \frac{z^3}{3!} + \ldots\label{EQN:series6}\\
+   e^{-z}
+   &= 1 - z + \frac{z^2}{2!} - \frac{z^3}{3!} + \ldots\label{EQN:series7}
+\]
+
+Logarithmic series:
+\begin{align}
+   \log(1 + z)
+   &= z - \frac{z^2}{2} + \frac{z^3}{3} - \ldots\label{EQN:series8}\\
+   \log(1 - z)
+   &= -z - \frac{z^2}{2} - \frac{z^3}{3} - \ldots\label{EQN:series9}
+\end{align}
+
+Others:
+\begin{align}
+   (1 - z)^{-1}
+   &= 1 + z + z^2 + z^3 + \ldots\label{EQN:series10} \\
+   (1 - z)^{-r}
+   &= 1 + rz + \frac{r(r + 1)z^2}{2!} + \frac{r(r + 1)(r + 2)z^3}{3!} + \ldots
 \label{EQN:series11}\end{align}
 Note that the expressions on the RHS above do not converge to the LHS for all values of $z$.
 
+DOES THIS APPLY TO ALL????
 
 
 
@@ -1501,12 +1547,12 @@ Note that the expressions on the RHS above do not converge to the LHS for all va
 
 
 :::{.exercise}
-Given $\Pr(A) = 0.3$, $\Pr(B) = 0.5$ and $\Pr(A\cap B) = 0.24$, find
+Given $\Pr(A) = 0.34$, $\Pr(B) = 0.5$ and $\Pr(A\cap B) = 0.15$, find
 
-1. $\Pr(A\cup B)$
-2. $\Pr(\overline{A}\cap B)$
-3. $\Pr(\overline{A} \cup \overline{B})$
-4. $\Pr(A \mid B)$
+1. $\Pr(A\cup B)$.
+2. $\Pr(\overline{A}\cap B)$.
+3. $\Pr(\overline{A} \cup \overline{B})$.
+4. $\Pr(A \mid B)$.
 5. Are events $A$ and $B$ independent?
 :::
 
@@ -1528,11 +1574,11 @@ events.
 
 
 :::{.exercise]
-A computer programmer is running a subroutine to solve the general quadratic equation $y=ax^2 + bx + c = 0$. 
+A computer programmer is running a subroutine to solve the general quadratic equation $y = ax^2 + bx + c = 0$. 
 This is an 'experiment' of choosing values for the constants $a$, $b$ and $c$ satisfying the quadratic equation.
 
 1. Define the sample space $S$ for the experiment.
-2. Define the event $A$: `the equation has two equal real roots'.
+2. Define the event $A$: 'the equation has two equal real roots'.
 :::
 
 \begin{answer}
@@ -1550,8 +1596,12 @@ For two equal roots, $b^2-4ac=0$. So event $A$ is defined as $A=\{
 \end{enumerate}
 \end{answer}
 
+
+
 :::{.exercise}
-Senie~\etal~\cite{BIB:Senie:breast} studied the relationship between breast self-examination and the age of diagnosis of breast cancer; the data are shown in Table~\ref{TB:prob:breast}.
+REPLACE!
+
+Senie \etal~\cite{BIB:Senie:breast} studied the relationship between breast self-examination and the age of diagnosis of breast cancer; the data are shown in Table~\ref{TB:prob:breast}.
 
 1. Compute $\Pr(\text{age} < 45)$.
 2. Compute $\Pr(\text{conduct self-examinations monthly})$.
