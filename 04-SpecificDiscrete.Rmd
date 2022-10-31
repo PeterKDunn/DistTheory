@@ -1,6 +1,8 @@
 # Standard discrete distributions {#DiscreteDistribution}
 
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
+Upon completion of this chapter, you should be able to:
+
 * be familiar with the probability functions and underlying parameters of uniform, binomial, geometric, negative binomial, Poisson, and hypergeometric random variables
 * know the basic properties of the above discrete distributions covered in this module
 * apply these discrete distributions as appropriate to problem solving
@@ -13,90 +15,115 @@ Properties such as definitions and applications are considered.
 
 ## Discrete uniform distribution {#DiscreteUniform}
 
-If a discrete rv $Y$ can assume $k$ different and distinct values with *equal* probability, then $Y$ is said to have a *discrete
-uniform distribution*. 
+If a discrete rv $Y$ can assume $k$ different and distinct values with *equal* probability, then $Y$ is said to have a *discrete uniform distribution*. 
 This is one of the simplest discrete distributions.
 
-:::{.definition #Discreteuniform name="Discrete uniform distribution"}
-If a rv $X$ with range space $\{a, a+1, a+2, \dots, b\}$ where $a$ and $b$ ($a < b$) are integers has the pf
+:::{.definition #DiscreteUniform name="Discrete uniform distribution"}
+If a rv $X$ with range space $\{a, a + 1, a + 2, \dots, b\}$ where $a$ and $b$ ($a < b$) are integers has the pf
 \[
-   p_X(x) = \displaystyle\frac{1}{b-a+1}\text{ for $x = a, a+1, \dots, b$}
+   p_X(x) = \frac{1}{b - a + 1}\text{ for $x = a, a + 1, \dots, b$}
 \]
 then $X$ has a *discrete uniform distribution*.
-We write $X\sim U(a,b)$ or $X\sim \text{Unif}(a,b)$.
+
+We write $X\sim U(a, b)$ or $X\sim \text{Unif}(a, b)$.
 :::
 
 This distribution is also called the *rectangular distribution*.
 
-A plot of the pf for a discrete uniform distribution is shown in Fig.~\ref{FG:specdiscrete:uniform}.
-
-:::{.example #DiscreteUniform name="Discrete uniform"}
-Let $X$ be the number of spots showing after a single throw of a fair die.
-Then $X \sim \text{Unif}(1,6)$.
-     
-For an experiment involving selection of a single-digit number from a table of random digits, the number chosen, $X$, has probability distribution $\text{Unif}(0,9)$.
-:::
-
-The following are the basic properties of the discrete uniform distribution.
-
-:::{.theorem #DiscreteUniform name="Discrete uniform"}
-If $X\sim \text{Unif}(a,b)$ then
-
-1. $\text{E}(X) = (a + b)/2$
-2. $\text{var}(X) = \{(b - a)(b - a + 2)\}/12$
-:::
-
-:::{.proof}
-A smart approach here is to consider $Y = X - a$ rather than $X$ itself.
-The point is that $\text{E}(X) = \text{E}(Y)+a$ and $\text{var}(Y)=\text{var}(X)$ but it's easier to find $\text{E}(Y)$ and $\text{var}(Y)$ directly than $\text{E}(X)$ and $\text{var}(X)$.
-
-Noticing that $Y\sim\text{Unif}(0,b-a)$ we have using~(1.11)
-%~(\ref{EQN:series1})  %Not working correctly???*********************
-\begin{align*}
-\text{E}(Y)&=\sum_{i=0}^{b-a} i\frac1{b-a+1}\\
-&=\frac1{b-a+1}(0+1+2+\dots+(b-a))\\
-&=\frac{(b-a)(b-a+1)}{2(b-a+1)}\\
-&=\frac{b-a}2
-\end{align*}
-Therefore $\text{E}(X)=\text{E}(Y)+a=\ds{\frac{b-a}2+a}=\ds{\frac{a+b}2}$.
-
-Now $\text{var}(Y)=\text{E}(Y^2)-\text{E}(Y)^2$ in which
-\begin{align*}
-\text{E}(Y^2)&=\sum_{i=0}^{b-a} i^2\frac1{b-a+1}\\
-&=\frac1{b-a+1}(0^2+1^2+2^2+\dots+(b-a)^2)\\
-&=\frac1{b-a+1}\frac{(b-a)(b-a+1)(2(b-a)+1)}{6}\\
-&=\frac{(b-a)(2(b-a)+1)}6
-\end{align*}
-where~(1.12)
-%~(\ref{EQN:series2}) %Not working correctly???*********************
-has been used. Therefore
-\[
-   \text{var}(X)
-   =
-   \text{var}(Y)=\frac{(b-a)(2(b-a)+1)}6-\left(\frac{b-a}2\right)^2=\frac{(b-a)(b-a+2)}{12}
-\]
-:::
+A plot of the pf for a discrete uniform distribution is shown in Fig. \@ref(fig:DiscreteUnform).
 
 
-```{r DiscreteUnform, echo=FALSE, fig.align="center", fig.cap="The pf for the discrete uniform distribution $\text{Unif}(a,b)$"}
+
+
+```{r DiscreteUnform, echo=FALSE, fig.align="center", fig.cap="The pf for the discrete uniform distribution $\\text{Unif}(a, b)$"}
 x <- c(1:4, 7)
 y <- rep(1, length(x))
 
 plot(x = x,
      y = y,
+     ylim = c(0, 1.3),
      type = "h",
+     axes = FALSE,
+     lty = 3,
      col = "grey",
-     xlab = "x",
-     ylab = "fx",
+     xlab = expression(italic(x)),
+     ylab = expression(
+        paste(italic(f)[italic(X)](italic(x)))
+     ),
      las = 1)
 points(x = x,
        y = y,
        pch = 19)
-
-
+points( x = c(5, 5.5, 6),
+        y = c(0.5, 0.5, 0.5),
+        pch = 20) # Smaller dots than  pch = 19
+axis(side = 2,
+     at = c(0, 1),
+     labels = expression(0, 1/(b - a + 1) ) )
+axis(side = 1,
+     at = c(1, 2, 3, 4, 7),
+     labels = expression(
+                 italic(a),
+                 italic(a) + 1,
+                 italic(a) + 2,
+                 italic(a) + 3,
+                 italic(b) )
+                 )
+box()
 ```
 
 
+:::{.example #DiscreteUniform name="Discrete uniform"}
+Let $X$ be the number of spots showing after a single throw of a fair die.
+Then $X \sim \text{Unif}(1, 6)$.
+     
+For an experiment involving selection of a single-digit number from a table of random digits, the number chosen, $X$, has probability distribution $\text{Unif}(0, 9)$.
+:::
+
+The following are the basic properties of the discrete uniform distribution.
+
+:::{.theorem #DiscreteUniform name="Discrete uniform"}
+If $X\sim \text{Unif}(a, b)$ then
+
+1. $\text{E}(X) = (a + b)/2$.
+2. $\displaystyle \text{var}(X) = \{(b - a)(b - a + 2)\}/12$.
+:::
+
+:::{.proof}
+A smart approach here is to consider $Y = X - a$ rather than $X$ itself.
+The point is that $\text{E}(X) = \text{E}(Y) + a$ and $\text{var}(Y) = \text{var}(X)$, but it's easier to find $\text{E}(Y)$ and $\text{var}(Y)$ directly than $\text{E}(X)$ and $\text{var}(X)$.
+
+Noticing that $Y\sim\text{Unif}(0, b - a)$ we have using~(1.11)
+\begin{align*}
+  \text{E}(Y)
+  & =\sum_{i = 0}^{b - a} i\frac1{b - a + 1}\\
+  & =\frac1{b - a + 1}(0 + 1 + 2 + \dots + (b - a))\\
+  & =\frac{(b - a)(b - a + 1)}{2(b - a + 1)}\\
+  & =\frac{b - a}{2}.
+\end{align*}
+Therefore,
+\[
+   \text{E}(X) = \text{E}(Y) + a = \frac{b - a}{2 + a} = \frac{a + b}{2}.
+\]
+
+Now $\text{var}(Y) = \text{E}(Y^2) - \text{E}(Y)^2$; so:
+\begin{align*}
+  \text{E}(Y^2)
+  &= \sum_{i = 0}^{b - a} i^2\frac1{b - a + 1}\\
+  &= \frac1{b - a + 1}(0^2 + 1^2 + 2^2 + \dots  +(b - a)^2)\\
+  &= \frac1{b - a + 1}\frac{(b - a)(b - a + 1)(2(b - a) + 1)}{6}\\
+  &= \frac{(b - a)(2(b - a) + 1)}{6}
+\end{align*}
+where~(1.12) has been used. 
+Therefore
+\begin{align*}
+   \text{var}(X)
+   =
+   \text{var}(Y)
+   &= \frac{(b - a)(2(b - a) + 1)}{6} - \left(\frac{b - a}2\right)^2\\
+   &= \frac{(b - a)(b - a + 2)}{12}.
+\end{align*}
+:::
 
 
 :::{.example #Lotto name="Lotto"}
@@ -107,7 +134,7 @@ Figure~\ref{FG:specdiscrete:dunif:ozlotto} shows the proportion of times each nu
 The data appear to be approximately uniform as expected.
 
 If the data follow a discrete uniform distribution exactly, the mean should be  $(1 + 45) / 2 = 23$ and the variance $(44 \times 46)/12 = 168.66$.
-Using the sample data, the sample mean is computed to be $23.29$ and the sample variance as $166.36$; these are both very close to what one might expect for a $U(1,45)$ random variable.
+Using the sample data, the sample mean is computed to be $23.29$ and the sample variance as $166.36$; these are both very close to what one might expect for a $U(1, 45)$ random variable.
 :::
 
 FIG HERE. get the Oz Lotto data...
@@ -118,41 +145,43 @@ FIG HERE. get the Oz Lotto data...
 
 A binomial distribution is used in a situation where the same 'experiment' is repeated a number of times, and one of two outcomes is observed.
 A simple example is tossing a coin ten times and observing if a head falls. 
-The same experiment (tossing the coin) is repeated, there are only two outcomes on each trial (a head or a tail), and the probability of a head remains constant on each trial.
 
-Consider tossing a die five times and observing the number of times a \text{E}psdice{1} is rolled.
-The probability of observing three \text{E}psdice{1}'s can be found as follows.
-In the five tosses, a \text{E}psdice{1} must appear three times; there are ${5\choose 3}$ ways of allocating on which of the five rolls they will appear.
-In the five rolls, \text{E}psdice{1} must appear three time with probability $1/6$; the other two rolls must produce another number with probability $5/6$.
+The same experiment is repeated (tossing the coin), there are only two outcomes on each trial (a head or a tail), and the probability of a head remains constant on each trial.
+
+Consider tossing a die five times and observing the number of times a \epsdice{1} is rolled.
+The probability of observing three \epsdice{1}'s can be found as follows:
+In the five tosses, a \epsdice{1} must appear three times; there are ${5\choose 3}$ ways of allocating on which of the five rolls they will appear.
+In the five rolls, \epsdice{1} must appear three times with probability $1/6$; the other two rolls must produce another number with probability $5/6$.
 So the probability will be
 \[
-   {5\choose 3} (1/6)^3 (5/6)^2 = 0.032,
+   \Pr(3 ones) = {5\choose 3} (1/6)^3 (5/6)^2 = 0.032,
 \]
 assuming independence of the events.
-In this way, the binomial distribution can be developed.
+Using this approach, the pmf for the binomial distribution can be developed.
 
-Formally situations giving rise to a binomial distribution are defined in terms of Bernoulli trials.
+Formally situations giving rise to a binomial distribution are defined in terms of *Bernoulli trials*.
 
 :::{.definition #BernoulliTrials name="Bernoulli trials"}
 A *Bernoulli trial* is an experiment with only two possible outcomes, usually labelled 'success' and 'failure'.
-The sample space can be denoted by $S = \{ s,f\}$.
+The sample space can be denoted by $S = \{ s, f\}$.
 :::
 
-A binomial situation arises if a sequence of Bernoulli trials is observed in each of which $\Pr{\{ s\} }=p$ and $\Pr{\{ f\} } = q$, where $p + q = 1$.
-If $n$ such trials are conducted consider the random variable $X$, where $X$ is the number of successes in $n$ trials. 
-Now $X$ will have value set $R_X = \{ 0,1,2,\dots,n\}$.
-It is assumed that $p$ is constant from trial to trial, and that the $n$ trials are independent.
+A binomial situation arises if a *sequence* of Bernoulli trials is observed, in each of which $\Pr(\{ s\} ) = p$ and $\Pr(\{ f\} ) = q = 1 - p$.
+If $n$ such trials are conducted, consider the random variable $X$, where $X$ is the number of successes in $n$ trials. 
+Now $X$ will have value set $R_X = \{ 0, 1, 2, \dots, n\}$.
+$p$ must be constant from trial to trial, and the $n$ trials must be independent.
 
 Consider the event $X = r$ (where $0\leq r\leq n$). 
 This could correspond to the sample point
 \[ 
-   \underbrace{S \ \ S \ \ S \dots S \ \ S \ \ S \ \ S}_r\quad
-   \underbrace{ F \ \ F \dots F \ \ F}_{n-r} 
+   \underbrace{S \quad S \quad S \dots S \quad S \quad S \quad S}_r\quad
+   \underbrace{F \quad F \dots F \quad F}_{n - r} 
 \]
-which is the intersection of $n$ independent events consisting of $r$ successes and $n - r$ failures and hence the probability is $p^r q^{n - r}$.
+which is the intersection of $n$ independent events consisting of $r$ successes and $n - r$ failures, and hence the probability is $p^r q^{n - r}$.
 
 Every other sample point in the event $X = r$ will appear as a rearrangement of the $S$'s and $F$'s in the sample point described above and will therefore have the same probability. 
-Now the number of distinct arrangements of the $r\,S$'s and $(n - r)$ $F$'s is ${n\choose r}$ so
+
+Now the number of distinct arrangements of the $r\,S$'s and $(n - r)$ $F$'s is ${n\choose r}$, so
 \begin{equation}\label{EQN:bindist}
      \Pr(X = r) = {n\choose r} p^r q^{n - r},\quad r = 0,1,\dots,n.
 \end{equation}
@@ -193,6 +222,7 @@ for (i in (1:4)) {
          ylab = "pmf",
          main = paste("Binomial: n =", n[i], "and p =", p[i]),
          las = 1,
+         lty = 3,
          col = "grey",
          type = "h")
   points(x = x,
@@ -228,11 +258,12 @@ If $X\sim\text{Bin}(n,p)$ then
 :::{.proof}
 We make use of equation~(\ref{EQN:sumbin}) in the following:
 \begin{align*}
-     \text{E}(X) & = \sum^n_{x=0} x{n\choose x} p^xq^{n-x}\\
-     & = \sum^n_{x=1} x \frac nx {n-1\choose x-1} p^xq^{n-x}\\
-     & = np\sum^n_{x=1} {n-1\choose x-1} p^{x-1}q^{n-x}\\
-     & = np \sum^{n-1}_{y=0} {n-1\choose y}p^yq^{n-1-y}\quad
-\text{putting }y=x-1.
+     \text{E}(X) 
+     & = \sum^n_{x = 0} x{n\choose x} p^xq^{n - x}\\
+     & = \sum^n_{x = 1} x \frac nx {n - 1\choose x - 1} p^xq^{n - x}\\
+     & = np\sum^n_{x = 1} {n-1\choose x-1} p^{x - 1}q^{n - x}\\
+     & = np \sum^{n - 1}_{y = 0} {n - 1\choose y}p^yq^{n - 1 - y}\quad
+\text{putting }y = x - 1.
 \end{align*}
 Now the sum is 1 since a term in the sum is the probability of $y$ successes in $(n - 1)$ Bernoulli trials and the sum is over all values in $R_X$.
 Note also that in the second line the sum is over $x$ from $1$ to $n$ because for $x = 0$ we have a binomial coefficient of the form ${b\choose a}$ with $a < 0$ which in this context we define to be zero. 
@@ -244,28 +275,32 @@ Thus,
 To find the variance, we use the computational formula $\text{var}(X)=\text{E}(X^2)-\text{E}(X)^2$.
 Firstly, to find $\text{E}(X^2)$, write $\text{E}(X^2)$ as $\text{E}[X(X-1)+X]$ then write it as $\text{E}[X(X-1)]+\text{E}(X)$.
 \begin{align*}
-     \text{E}(X^2) & = \sum^n_{x=0} x(x-1)\Pr{X=x} + np\\
-     & = \sum^n_{x=2} x(x-1)\frac{n(n-1)}{x(x-1)} {n-2\choose x-2}
-p^xq^{n-x} \ + \ np\\
-     & = \sum^n_{x=2} n(n-1){n-2\choose x-2} p^xq^{n-x} \ + \ np\\
-     & = n(n-1)p^2 \sum^{n-2}_{y=0} {n-2\choose y} p^yq^{n-2-y} \ + \ np,
+     \text{E}(X^2) 
+     &= \sum^n_{x = 0} x(x - 1)\Pr(X = x) + np\\
+     &= \sum^n_{x = 2} x(x  -1)\frac{n(n - 1)}{x(x - 1)} {n - 2\choose x - 2} p^xq^{n - x} + np\\
+     &= \sum^n_{x = 2} n(n - 1){n - 2\choose x - 2} p^x q^{n - x} + np\\
+     &= n(n - 1)p^2 \sum^{n - 2}_{y = 0} {n - 2\choose y} p^yq^{n - 2 - y} + np,
 \end{align*}
 putting $y = x - 2$.
 For the same reason as before, the sum is 1, so
 \[ 
-   \text{E}(X^2) =n^2p^2-np^2+np 
+   \text{E}(X^2) = n^2 p^2 - np^2 + np 
 \]
 and hence
 \[ 
-   \text{var}(X) \equiv \text{E}(X^2)-[\text{E}(X)]^2 = n^2p^2 - np^2 + np -n^2 p^2 = np (1- p). 
+   \text{var}(X) 
+   \equiv \text{E}(X^2) - [\text{E}(X)]^2 
+   = n^2p^2 - np^2 + np -n^2 p^2
+   = np (1- p). 
 \]
 
 The mgf of $X$ is given by
 \begin{align*}
-   M_X(t)&=\text{E}(\text{E}xp(tX))\\
-   &=\sum^n_{x=0} e^{tx}{n\choose x} p^xq^{n-x}\\
-   &=\sum^n_{x=0}{n\choose x} (pe^t)^xq^{n-x}\\
-   &=(pe^t+q)^n
+   M_X(t)
+   &= \text{E}(\text{E}x p(tX))\\
+   &= \sum^n_{x = 0} e^{tx}{n\choose x} p^x q^{n - x}\\
+   &= \sum^n_{x = 0}{n\choose x} (pe^t)^x q^{n - x}\\
+   &= (pe^t + q)^n
 \end{align*}
 (Note that the smart operator would have proven this result first and then used it to prove (i) and (ii), making use of the methods in~\ref{SS:mgfmoments}---try this as an exercise.)
 :::
@@ -291,9 +326,13 @@ The terms 'success' and 'failure' are not literal.
 'Success' simply means that the event is of interest.
 If the event of interest is the number of damaging tornadoes, this is still called a 'success'.
 
-Remember that a binomial situation requires the trials to be *independent*, and the probability of success to be a constant $p$ throughout the trials.
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+A binomial situation requires the trials to be *independent*, and the probability of success $p$ to be *constant* throughout the trials.
+
 For example, drawing cards from a pack without replacing them is **not** a binomial situation; after drawing one card, the probabilities will then change for the drawing of the next card.
-In this case, the *hypergeometric distribution* could be used (see Section~\ref{SC:specdiscrete:hypergeometric}).
+
+In this case, the *hypergeometric distribution* could be used (see Sect. \@ref(Hypergeometric)).
+:::
 
 Binomial probabilities can sometimes be approximated using the normal distribution (see Section~\ref{SEC:speccont:normalbin}) or the Poisson distribution (see Section~\ref{SS:poisapprox}).
 
@@ -312,35 +351,37 @@ The Poisson distribution arises as a result of assumptions that are made about a
 Whenever these assumptions are valid, or approximately so, the Poisson distribution is appropriate, and quite a number of natural phenomena fall into this category.
 
 :::{.definition #PoissonDistribution name="Poisson distribution"}
-A random variable $X$ is said to have a *Poisson distribution* if its pf is
+A random variable $X$ is said to have a *Poisson distribution* if its pmf is
 \[
    p_X(x) = \frac{e^{-\mu} \mu^x}{x!}\quad   \text{for $x=0$, $1$, $2$, $\dots$}
 \]
 where the parameter is $\mu > 0$.
-We write $X\sim\Pois(\mu)$.
+We write $X\sim\text{Pois}(\mu)$.
 :::
 
-The pf for a Poisson distribution for different values of $\mu$ is shown in Fig. \@ref(fig:PoissonExamples).
+The pmf for a Poisson distribution for different values of $\mu$ is shown in Fig. \@ref(fig:PoissonExamples).
 
 
-```{r PoissonExamples, echo=FALSE, fig.align="center", fig.cap="The pf for the Poisson distribution for ..."}
+```{r PoissonExamples, echo=FALSE, fig.align="center", fig.cap="The pf for the Poisson distribution for various values of $\\mu$"}
 par( mfrow = c(2, 2))
 
 xmax <- 10
 mu <- c(0.5, 1, 2, 5)
 
 for (i in (1:4)) {
+  muvalue <- mu[i]
   x <-  0:xmax
   y <- dpois(x, 
-             lambda = mu[i])
+             lambda = muvalue )
   
    plot( x = x,
          y = y,
          xlim = c(0, xmax),
-         xlab = "x",
-         ylab = "pmf",
-         main = paste("Poisson: mu =", mu[i]),
+         xlab = expression(italic(x)),
+         ylab = "Probability function",
+         main = bquote("Poisson mean:" ~ mu == .(muvalue)),
          las = 1,
+         lty = 3,
          col = "grey",
          type = "h")
   points(x = x,
@@ -354,30 +395,31 @@ for (i in (1:4)) {
 The following are the basic properties of the Poisson distribution.
 
 ::: {.theorem}
-If $X\sim\Pois(\mu)$ then
+If $X\sim\text{Pois}(\mu)$ then
 
 1. $\text{E}(X) = \mu$
 2. $\text{var}(X) = \mu$
-3. $M_X(t) = \text{E}xp[ -\mu\{1-\text{E}xp(t)\}]$.
+3. $M_X(t) = \exp[ -\mu\{1 - \exp(t)\}]$.
 :::
 
 :::{.proof}
-Result 3 is proven as follows:
+The third result is proven as follows:
 \begin{align*}
-   M_X(t) = \text{E}(e^{tX}) & = \sum^\infty_{x=0} e^{xt}e^{-\mu} \mu^x / x!\\
-     & = e^{-\mu} \sum^\infty_{x=0} \frac{(\mu\,e^t)^x}{x!} \\
-     & = e^{-\mu} \left[ 1+\mu\,e^t+\frac{(\mu\,e^t)^2}{2!} + \dots \right]\\
-     & = e^{-\mu} e^{\mu\,e^t}\\
-     & = e^{-\mu (1-e^t)}.
+   M_X(t) = \text{E}(e^{tX}) 
+     &= \sum^\infty_{x = 0} e^{xt} e^{-\mu} \mu^x / x!\\
+     &= e^{-\mu} \sum^\infty_{x = 0} \frac{(\mu\,e^t)^x}{x!} \\
+     &= e^{-\mu} \left[ 1 + \mu\,e^t + \frac{(\mu\,e^t)^2}{2!} + \dots \right]\\
+     &= e^{-\mu} e^{\mu\,e^t}\\
+     &= e^{-\mu (1 - e^t)}.
 \end{align*}
-Results 1 and 2 follow from differentiating the mgf.
+The first two results follow from differentiating the mgf.
 :::
 
 :::{.example #Queues name="Queuing"}
 Customers enter a waiting line 'at random' at a rate of 4 per minute.
 Assuming that the number entering the line in any given time interval has a Poisson distribution, determine the probability that at least one customer enters the line in a given $\frac 12$-minute interval, we have (since $\mu = 2$):
 \[ 
-   \Pr(X\geq 1) = 1-\Pr{X = 0} = 1 -e^{-2}=.865.
+   \Pr(X\geq 1) = 1 - \Pr(X = 0) = 1 - e^{-2} = 0.865.
 \]
 :::
 
@@ -436,27 +478,34 @@ If the number of trials is very large and the probability of success in a single
 For example, consider $X\sim \text{Bin}(n = 2000, p = 0.005)$. 
 Then, the pf is
 \[
-   p_X(x) = {2000\choose x}(0.005)^x 0.995^{2000 - x},
+   p_X(x) = {2000\choose x}(0.005)^x 0.995^{2000 - x}.
 \]
-and it is then tedious to the compute $\Pr(X > 101)$ for example.
+
+Usingf the pmf, computing some probabiliuties, such as $\Pr(X > 101)$, is very tedious.
 (Try computing ${2000\choose 102}$ on your calculator, for example.)
-The Poisson distribution can be used to approximate this probability however.
-We could set the Poisson mean to equal the binomial mean (that is, set $\mu = np$).
+However, the Poisson distribution can be used to approximate this probability.
+
+We could set the Poisson mean to equal the binomial mean (that is, $\mu = np$).
 The same can be done for the variance, setting $\mu = np(1 - p)$.
 Since $\text{E}(Y) = \text{var}(Y) = \mu$ for the Poisson distribution, this can only be (approximately) true here if $p$ is close to zero.
 
 A general guideline is that the Poisson distribution can be used to approximate the binomial when $n$ is large, $p$ is small and $np$ is less than about 7.
 
 
-```{r BinomialPoisson, echo=FALSE, fig.align="center", fig.cap="The Poisson distribution is an excellent approximation to the binomial distribution when $p$ is small and $n$ is large. In this example, the binomial parameters are $n=2000$ and $p=0.005$ so that the Poisson mean is $\\mu=2000\\times 0.05 = 10$. The binomial pf is shown using the bars; the Poisson pf using the solid line."}
+```{r BinomialPoisson, echo=FALSE, fig.align="center", fig.cap="The Poisson distribution is an excellent approximation to the binomial distribution when $p$ is small and $n$ is large. The binomial pf is shown using empty circles; the Poisson pf using crosses."}
 par( mfrow = c(2, 2))
 
 n <- c(10, 50, 
        100, 1000)
 p <- c(0.2, 0.1, 
        0.010, 0.005)
+xmax <- c(10, 20, 
+          10, 15)
 
 for (i in (1:4)) {
+   pValue <- p[i]
+   nValue <- n[i]
+   
   x <-  0:n[i]
   y <- dbinom(x, 
               size = n[i],
@@ -464,15 +513,24 @@ for (i in (1:4)) {
   
    plot( x = x,
          y = y,
-         xlab = "x",
-         ylab = "pmf",
-         main = paste("Binomial: n =", n[i], "and p =", p[i]),
+         xlim = c(0, xmax[i]),
+         xlab = expression(italic(x)),
+         ylab = "Probability",
+         main = bquote("Binomial: " ~ italic(n) == ~ .(nValue) ~ "and" ~ italic(p) == .(pValue) ),
          las = 1,
+         lty = 3,
          col = "grey",
          type = "h")
   points(x = x,
          y = y,
-         pch = 19)
+         pch = 1)
+
+  muPoisson <- nValue * pValue
+  xValues <- 1:xmax[i]
+  points( x = xValues,
+          y = dpois(xValues,
+                    lambda = muPoisson),
+          pch = 4)
   
 }
 
@@ -508,7 +566,7 @@ We write $X\sim\text{Geom}(p)$.
 
 The pf for a geometric distribution for various values of $p$ is shown in Fig. \@ref(BinomialPoisson2).
 
-```{r BinomialPoisson2, echo=FALSE, fig.align="center", fig.cap="The pf for the geometric distribution for $p=0.2$, $0.3$, $0.5$ and~$0.8$"}
+```{r BinomialPoisson2, echo=FALSE, fig.align="center", fig.cap="The pf for the geometric distribution for $p = 0.2$, $0.3$, $0.5$ and $0.8$"}
 par( mfrow = c(2, 2))
 
 xmax <- 15
@@ -516,18 +574,20 @@ p <- c(0.1, 0.3,
        0.5, 0.8)
 
 for (i in (1:4)) {
+  pValue <- p[i]
   x <-  0:n[i]
   y <- dgeom(x,
-              prob = p[i])
+             prob = pValue)
   
    plot( x = x,
          y = y,
          xlim = c(0, xmax),
-         xlab = "x",
-         ylab = "pmf",
-         main = paste("Geometric: n =", n[i], "and p =", p[i]),
-         las = 1,
+         xlab = expression(italic(x)),
+         ylab = "Probability",
+         main = bquote("Geometric: " ~ italic(p) == .(pValue) ),
+                  las = 1,
          col = "grey",
+         lty = 3,
          type = "h")
   points(x = x,
          y = y,
@@ -547,7 +607,7 @@ If $X\sim\text{Geom}(p)$ then
 :::
 
 :::{.proof}
-Results 1 and~3 can be proven directly, but it's easier to prove Result 3 first and then use the mgf to prove Results 1 and 2.
+The first and last results can be proven directly, but easier is to prove the third results and then use the mgf to prove the first two.
 This is left as an exercise.
 :::
 
@@ -563,9 +623,11 @@ Suppose we wish to find the probability that the system will first fail before d
 We seek $\Pr(Y < 20) = \Pr(Y \le 19)$.
 This can be done by hand, or using a computer.
 In R, the command `dgeom()` gives the probability mass function for the gempetric distribution, and `pgeom()` gives values from the distribution function of the geometric distribution: FIX!!!
-```{r}
-sum( dgeom( x = 1:19, prob = 0.02))
-pgeom(q = 18, prob = 0.02) # ie up to 18 failures at p=0.02
+```{r echo=TRUE}
+sum( dgeom( x = 1:19, 
+            prob = 0.02))
+pgeom(q = 18, 
+      prob = 0.02) # i.e., up to 18 failures at p=0.02
 ```
 The probability is $0.32$ that the system will fail before day $20$.
 
@@ -576,7 +638,7 @@ The system could be expected to last fifty days before the first failure.
 
 
 
-:::{.example #BabyBoom name="BabyBoom"}
+:::{.example #BabyBoom name="Baby Boom"}
 An article appearing in *The Sunday Mail* on 21 December 1997 give the birth weight, gender, and time of birth of 44 babies born in the 24-hour period of 18 December 1997 at the Mater Mother's Hospital in Brisbane, Australia.
 
 KEEP FOR EXERCISE OR ASSIGNMENT
@@ -615,7 +677,7 @@ A random variable $X$ with pf
    \label{EQN:specdiscrete:negbin}
 \end{equation}
 has a *negative binomial distribution* with parameters $r$ (an integer $\ge 1$) and $p$ ($0\le p\le1$).
-We write $X\sim\negbin(r, p)$.
+We write $X\sim\text{NB}(r, p)$.
 :::
 
 
@@ -635,6 +697,9 @@ p <- c(0.2, 0.2,
        0.6, 0.6)
 
 for (i in (1:4)) {
+  rValue <- r[i]
+  pValue <- p[i]
+  
   x <-  0:n[i]
   y <- dnbinom(x, 
               size = r[i],
@@ -643,10 +708,11 @@ for (i in (1:4)) {
    plot( x = x,
          y = y,
          xlim = c(0, xmax),
-         xlab = "x",
-         ylab = "pmf",
-         main = paste("Negative b: r =", r[i], "and p =", p[i]),
+         xlab = expression(italic(x)),
+         ylab = "Probability",
+         main = bquote("Negative binomial: " ~ italic(r) == ~ .(rValue) ~ ";" ~ italic(p) == .(pValue) ),
          las = 1,
+         lty = 3,
          col = "grey",
          type = "h")
   points(x = x,
@@ -661,11 +727,11 @@ for (i in (1:4)) {
 The following are the basic properties of the negative binomial distribution.
 
 :::{.theorem}
-If $X\sim \negbin(r,p)$ with pf (\ref{EQN:specdiscrete:negbin}) then
+If $X\sim \text{NB}(r,p)$ with pf (\ref{EQN:specdiscrete:negbin}) then
 
 1. $\text{E}(X) = r/p$.
-2. $\text{var}(X) =r(1-p)/p^2$.
-3. $M_X(t) = \left[ pe^t/\{1-(1-p)e^t\} \right]^r$
+2. $\text{var}(X) = r(1 - p)/p^2$.
+3. $M_X(t) = \left[ pe^t/\{1 - (1 - p)e^t\} \right]^r$
 :::
 
 :::{.proof}
@@ -757,7 +823,7 @@ Since the negative binomial distribution has two parameters and the Poison only 
 
 For the reparameterised version of the negative binomial distribution Theorem~\ref{TM:negbin} becomes:
 
-If $X\sim \negbin(r,p)$ with pf (\ref{EQN:specdiscrete:negbin2}) then
+If $X\sim \text{NB}(r,p)$ with pf (\ref{EQN:specdiscrete:negbin2}) then
 
 1. $\text{E}(X) = r(1-p)/p$
 2. $\text{var}(X) = r(1-p)/p^2$
