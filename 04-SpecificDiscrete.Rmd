@@ -1,4 +1,5 @@
-# Standard discrete distributions {#DiscreteDistribution}
+# Standard discrete distributions {#DiscreteDistributions}
+
 
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
 Upon completion of this chapter, you should be able to:
@@ -93,7 +94,7 @@ If $X\sim \text{Unif}(a, b)$ then
 A smart approach here is to consider $Y = X - a$ rather than $X$ itself.
 The point is that $\text{E}(X) = \text{E}(Y) + a$ and $\text{var}(Y) = \text{var}(X)$, but it's easier to find $\text{E}(Y)$ and $\text{var}(Y)$ directly than $\text{E}(X)$ and $\text{var}(X)$.
 
-Noticing that $Y\sim\text{Unif}(0, b - a)$ we have using~(1.11)
+Noticing that $Y\sim\text{Unif}(0, b - a)$ we have, using \@ref(eq:SumNaturalNumbers)
 \begin{align*}
   \text{E}(Y)
   & =\sum_{i = 0}^{b - a} i\frac1{b - a + 1}\\
@@ -114,7 +115,7 @@ Now $\text{var}(Y) = \text{E}(Y^2) - \text{E}(Y)^2$; so:
   &= \frac1{b - a + 1}\frac{(b - a)(b - a + 1)(2(b - a) + 1)}{6}\\
   &= \frac{(b - a)(2(b - a) + 1)}{6}
 \end{align*}
-where~(1.12) has been used. 
+using \@ref(eq:SumSquaredNaturalNumbers). 
 Therefore
 \begin{align*}
    \text{var}(X)
@@ -154,7 +155,7 @@ In the five tosses, a \epsdice{1} must appear three times; there are ${5\choose 
 In the five rolls, \epsdice{1} must appear three times with probability $1/6$; the other two rolls must produce another number with probability $5/6$.
 So the probability will be
 \[
-   \Pr(3 ones) = {5\choose 3} (1/6)^3 (5/6)^2 = 0.032,
+   \Pr(\text{3 ones}) = {5\choose 3} (1/6)^3 (5/6)^2 = 0.032,
 \]
 assuming independence of the events.
 Using this approach, the pmf for the binomial distribution can be developed.
@@ -182,11 +183,12 @@ which is the intersection of $n$ independent events consisting of $r$ successes 
 Every other sample point in the event $X = r$ will appear as a rearrangement of the $S$'s and $F$'s in the sample point described above and will therefore have the same probability. 
 
 Now the number of distinct arrangements of the $r\,S$'s and $(n - r)$ $F$'s is ${n\choose r}$, so
-\begin{equation}\label{EQN:bindist}
+\begin{equation}
      \Pr(X = r) = {n\choose r} p^r q^{n - r},\quad r = 0,1,\dots,n.
+        (\#eq:BinomialPMF)
 \end{equation}
 
-Note that the sum of the probabilities is 1 as the binomial expansion of $(p + q)^n$ (see~(\ref{EQN:series5})) is just
+Note that the sum of the probabilities is 1 as the binomial expansion of $(p + q)^n$ \@ref(eq:BinomialSeries) is just
 \begin{equation}
    \sum_{r = 0}^n {n\choose r} p^r q^{n - r} = (p + q)^n = 1\label{EQN:sumbin}
 \end{equation}
@@ -194,8 +196,8 @@ since $p + q = 1$.
 So we have the following:
 
 :::{.definition #BinomialDistribution name="Binomial distribution"}
-Let $X$ be the number of successes in $n$ independent Bernoulli trials with $\Pr{\text{Success}}=p$ ($0\le p\le 1$) constant in each trial.
-Then $X$ is said to have a *binomial probability distribution* with parameters $n$, $p$ and pf given by (\ref{EQN:bindist}).
+Let $X$ be the number of successes in $n$ independent Bernoulli trials with $\Pr(\text{Success}) = p$ ($0\le p\le 1$) constant in each trial.
+Then $X$ is said to have a *binomial probability distribution* with parameters $n$, $p$ and pf given by \@ref(eq:BinomialPMF).
 We write $X\sim\text{Bin}(n, p)$.
 :::
 
@@ -256,7 +258,7 @@ If $X\sim\text{Bin}(n,p)$ then
 :::
 
 :::{.proof}
-We make use of equation~(\ref{EQN:sumbin}) in the following:
+We make use of \@ref(eq:BinomialSeries) in the following:
 \begin{align*}
      \text{E}(X) 
      & = \sum^n_{x = 0} x{n\choose x} p^xq^{n - x}\\
@@ -302,11 +304,11 @@ The mgf of $X$ is given by
    &= \sum^n_{x = 0}{n\choose x} (pe^t)^x q^{n - x}\\
    &= (pe^t + q)^n
 \end{align*}
-(Note that the smart operator would have proven this result first and then used it to prove (i) and (ii), making use of the methods in~\ref{SS:mgfmoments}---try this as an exercise.)
+Prove the third result first, and then using it to prove the others, is easier (using of the methods in \@ref(MGFMoments)---try this as an exercise.)
 :::
 
 
-:::{.example name="???"}
+:::{.example name="Freezing lake"}
 Wilks~\cite[p~68]{BIB:Wilks:statistical} notes that in the 200 years from 1796 to 1995, Cayuga Lake has frozen only in ten of those years.
 Since the lake is deep, it will only freeze during exceptionally cold weather.
 The probability the lake freezes during any one year can be estimated as $p = 10/200 = 0.05$.
@@ -322,19 +324,22 @@ Tables of binomial probabilities are commonly available, but computers (e.g., us
 If the number of 'successes' has a binomial distribution, so does the number of 'failures'.
 Specifically if $X\sim \text{Bin}(n,p)$, then $Y = n - X\sim\text{Bin}(n, 1 - p)$.
 
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The terms 'success' and 'failure' are not literal.
+
 'Success' simply means that the event is of interest.
 If the event of interest is the number of damaging tornadoes, this is still called a 'success'.
+:::
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 A binomial situation requires the trials to be *independent*, and the probability of success $p$ to be *constant* throughout the trials.
 
 For example, drawing cards from a pack without replacing them is **not** a binomial situation; after drawing one card, the probabilities will then change for the drawing of the next card.
 
-In this case, the *hypergeometric distribution* could be used (see Sect. \@ref(Hypergeometric)).
+In this case, the *hypergeometric distribution* could be used (Sect. \@ref(HypergeometricDistribution)).
 :::
 
-Binomial probabilities can sometimes be approximated using the normal distribution (see Section~\ref{SEC:speccont:normalbin}) or the Poisson distribution (see Section~\ref{SS:poisapprox}).
+Binomial probabilities can sometimes be approximated using the normal distribution (Sect. \@ref(NormalApproxBinomial)) or the Poisson distribution (Sect. \@ref(PoissonBinomial)).
 
 
 
@@ -437,8 +442,10 @@ Using the proportions as estimates of the true probabilities, the sample mean ca
    &=  0.9323
 \end{align*}
 Using this value as an estimate of the Poisson mean, the pf for the Poisson distribution can be compared to the empirical probabilities computed above; see Table \@ref(tab:BombTable).
-(For example, the probability of zero hits is $\exp(-0.9323) (0.9323)^0/0! \approx 0.3936$.)
-
+(For example, the probability of zero hits is 
+\[
+   \frac{\exp(-0.9323) (0.9323)^0}{0!} \approx 0.3936.
+\]
 The two probabilities are very close; the Poisson distributions fits the data very well.
 :::
 
@@ -548,28 +555,31 @@ Since the first success may occur on the first trial, or second trial or third t
 The distribution is easy to derive.
 To observe the first success on the $y$th trial, there must be $y - 1$ failures followed by one success.
 Since the probability of failure is $q$ and the probability of success is $p$, the probability of the first success on trial $y$ is
-\[
-   \overbrace{q^{y-1}}^{\text{\small $y-1$ failures}} \times  \underbrace{p}_{\text{\small One success}}.
-\]
+\begin{align*}
+   \text{$(y - 1)$ failures} 
+   &\times \text{first success} \\
+   q^{y - 1}
+   &\times  p.
+\end{align*}
 This derivation assumes the events are independent.
 
 
 :::{.definition #GeometricDistribution name="Geometric distribution"}
-A rv $X$ has a *geometric distribution* if the pf of~$X$ is given by
+A rv $X$ has a *geometric distribution* if the pf of $X$ is given by
 \[
-   p_X(x) =  q^{x-1} p\quad\text{for $x=1,2,\dots$}
+   p_X(x) =  q^{x-1} p\quad\text{for $x = 1,2,\dots$}
 \]
 where $q = 1 - p$ and $0 < p < 1$ is the parameter of the distribution.
 We write $X\sim\text{Geom}(p)$.
 :::
 
 
-The pf for a geometric distribution for various values of $p$ is shown in Fig. \@ref(BinomialPoisson2).
+The pf for a geometric distribution for various values of $p$ is shown in Fig. \@ref(fig:BinomialPoisson2).
 
 ```{r BinomialPoisson2, echo=FALSE, fig.align="center", fig.cap="The pf for the geometric distribution for $p = 0.2$, $0.3$, $0.5$ and $0.8$"}
 par( mfrow = c(2, 2))
 
-xmax <- 15
+xmax <- c(10, 15, 15, 15)
 p <- c(0.1, 0.3, 
        0.5, 0.8)
 
@@ -581,7 +591,7 @@ for (i in (1:4)) {
   
    plot( x = x,
          y = y,
-         xlim = c(0, xmax),
+         xlim = c(0, xmax[i]),
          xlab = expression(italic(x)),
          ylab = "Probability",
          main = bquote("Geometric: " ~ italic(p) == .(pValue) ),
@@ -658,36 +668,39 @@ Consider now an experiment where independent Bernoulli trials are repeated until
 What is the distribution of the number of trials required?
 
 Let rv $Y$ be the number of trials necessary to obtain $r$ successes.
-Clearly $Y$ will be at least $r$ and the range space for $Y$ is $\{ r, r + 1, r + 2,\dots \}$. 
+Clearly $Y$ will be at least $r$ and the range space for $Y$ is $\{ r, r + 1, r + 2,\dots \}$.
+
 To observe the $r$th success in the $y$th trial, there must have been $y - r$ failures and $r - 1$ successes in the first $y - 1$ trials; the $r$th success then happens on the $y$th trial.
 There are ${y - 1\choose r - 1}$ ways in which to allocate these successes to the first $y - 1$ trials.
-Each of the $r-1$ successes occur with probability $p$, and the $y - r$ failures with probability $1 - p$ (assuming events are independent).
+Each of the $r - 1$ successes occur with probability $p$, and the $y - r$ failures with probability $1 - p$ (assuming events are independent).
+
 Hence the probability of observing the $r$th success in trial $y$ is
-\[
-   \underbrace{{y-1\choose r-1}}_{\text{\small No. ways}} \times
-   \overbrace{(1-p)^{y-r}}^{\text{\small $y-r-1$ failures}} \times
-   \underbrace{p^r}_{\text{\small $r$ successes}}.
-\]
+\begin{align*}
+   \text{No. ways}
+   &\times \text{$(y - r - 1)$ failures} \times \text{$r$ successes} \\
+   {y - 1 \choose r - 1} 
+   &\times (1 - p)^{y - r} \times p^r.
+\end{align*}
 
 
 :::{.definition #NegativeBinomialDistribution name="Negative binomial distribution"}
 A random variable $X$ with pf
 \begin{equation}
    p_X(x) = {x - 1\choose r - 1}(1 - p)^{x - r} p^r
-   \label{EQN:specdiscrete:negbin}
+   (\#eq:NegativeBinomialPMF)
 \end{equation}
 has a *negative binomial distribution* with parameters $r$ (an integer $\ge 1$) and $p$ ($0\le p\le1$).
 We write $X\sim\text{NB}(r, p)$.
 :::
 
 
-The pf for the negative binomial distribution for various values of $p$ and $r$ is shown in Figure~\ref{FG:specdiscrete:negbinomial}.
+The pf for the negative binomial distribution for various values of $p$ and $r$ is shown in Fig. \@ref(fig:NegativeBinomial).
 
 When $r = 1$, the negative binomial distribution is the same as the geometric distribution, so the geometric distribution is a special case of the negative binomial.
 
 
 
-```{r NegativeBinomial, echo=FALSE, fig.align="center", fig.cap="The pf for the negative binomial distribution for $p=0.2$ and $0.7$ and $r=1$ and $r=3$"}
+```{r NegativeBinomial, echo=FALSE, fig.align="center", fig.cap="The pf for the negative binomial distribution for $p = 0.2$ and $0.7$ and $r = 1$ and $r = 3$"}
 par( mfrow = c(2, 2))
 xmax <- 15
 
@@ -726,8 +739,8 @@ for (i in (1:4)) {
 
 The following are the basic properties of the negative binomial distribution.
 
-:::{.theorem}
-If $X\sim \text{NB}(r,p)$ with pf (\ref{EQN:specdiscrete:negbin}) then
+:::{.theorem #NegBinomialProperties}
+If $X\sim \text{NB}(r,p)$ with pf \@ref(eq:NegativeBinomialPMF) then
 
 1. $\text{E}(X) = r/p$.
 2. $\text{var}(X) = r(1 - p)/p^2$.
@@ -735,7 +748,7 @@ If $X\sim \text{NB}(r,p)$ with pf (\ref{EQN:specdiscrete:negbin}) then
 :::
 
 :::{.proof}
-Once again it makes sense to prove (iii) first and this is left as an exercise.
+Once again it makes sense to prove the third statement iniially, and this is left as an exercise.
 :::
 
 
@@ -797,37 +810,37 @@ This form can be seen as the number of *failures* which occur in a sequence of i
 The pf is this reparameterized form in
 \begin{equation}
    p_X(x) = {x+r-1 \choose x} p^r (1-p)^x
-   \label{EQN:specdiscrete:negbin-var}
+   (\#eq:NegativeBinomialPMFAlternative)
 \end{equation}
 where $X$ is the number of *failures* until the $r$th success is observed. 
 Note that the variables $X$ and $Y$ are related by $Y = X + r$ for constant $r$. 
 Hence, this pf is defined for $x = 0$, $1$, $2$, $\dots$.
 
 It is also possible to allow $r$ to be any positive number, not just an integer.
-This is true for the form above or for the parameterization in Equation~(\ref{EQN:specdiscrete:negbin}).
-It is, however, most common to relax this restriction with the alternative parameterization of Equation~(\ref{EQN:specdiscrete:negbin-var}).
+This is true for the form above or for the parameterization in \@ref(eq:NegativeBinomialPMFAlternative).
+It is, however, most common to relax this restriction with the alternative parameterization of \@ref(eq:NegativeBinomialPMFAlternative).
 
 When $r$ is permitted to be non-integer, the interpretations given above are lost, but the distribution is then more flexible.
-Relaxing the restriction on $r$ in the form of Equation~(\ref{EQN:specdiscrete:negbin}) gives the pf as
+Relaxing the restriction on $r$ in the form of \@ref(eq:NegativeBinomialPMFAlternative) gives the pf as
 \begin{equation}
    p_X(x) = \frac{\Gamma(x+r)}{\Gamma(r) x!} p^r (1-p)^x,
-   \label{EQN:specdiscrete:negbin2}
+   (\#eq:NegativeBinomialPMFAlternative2)
 \end{equation}
 for $x = 0$, $1$, $2$, $\dots$ and $r>0$.
 In this expression, $\Gamma(r)$ is the *gamma function* (see below), and is like a factorial;
 indeed, $\Gamma(r) = (r-1)!$ if $r$ is a positive integer.
-See Figure~\ref{FG:speccont:gammafn} and Section~\ref{SEC:speccont:gamma:gammafn}.
+See Sect. \@ref(GammaFunction).
 
 This form of the negative binomial distribution is sometimes used in place of the Poisson distribution used to model count data (they are both defined on $\{0, 1, 2, \dots\}$).
 Since the negative binomial distribution has two parameters and the Poison only one, the negative binomial distribution often produces a better fit.
 
-For the reparameterised version of the negative binomial distribution Theorem~\ref{TM:negbin} becomes:
+For the reparameterised version of the negative binomial distribution, Theorem \@ref(thm:NegBinomialProperties)} becomes:
 
-If $X\sim \text{NB}(r,p)$ with pf (\ref{EQN:specdiscrete:negbin2}) then
+If $X\sim \text{NB}(r, p)$ with pf (\@ref(eq:NegativeBinomialPMFAlternative)) then
 
-1. $\text{E}(X) = r(1-p)/p$
-2. $\text{var}(X) = r(1-p)/p^2$
-3. $M_X(t) = \left[ p/\{1-(1-p)e^t\} \right]^r$
+1. $\text{E}(X) = r(1 - p)/p$
+2. $\text{var}(X) = r(1 - p)/p^2$
+3. $M_X(t) = \left[ p/\{1 - (1 - p)e^t\} \right]^r$
 
 
 ### The gamma function {#GammaFunction}
@@ -848,7 +861,7 @@ if $r$ is a positive integer (see Fig. \@ref(fig:GammaFunction)).
 
 Here are important properties of the gamma function
 
-:::{.theorem}
+:::{.theorem #GammaProperties name="Gamma function properties"}
 For the gamma function $\Gamma(\cdot)$,
 
 1. $\Gamma(r) = (r - 1)\Gamma(r - 1)$ if $r>0$
@@ -862,9 +875,9 @@ Integration by parts gives
    &= 0 \ + \ (r-1) \int_0^{\infty}  e^{-x}  x^{r-2} \, dx\\
    &= ( r -1) \Gamma(r - 1)
 \end{align*}
-Property~(\ref{EQN:gammaprop}) follows directly from this result (Exercise!).
+The second property follows directly from this result (Exercise!).
 
-Putting $r=1/2$ in the first part of this theorem gives
+Putting $ r =1/2$ in the first part of this theorem gives
 \begin{align*}
    \Gamma(1/2)&=\int_0^{\infty}e^{-x}  x^{-\frac{1}{2}}\,dx\\
    &=\sqrt{2}\int_0^{\infty}e^{-\frac{1}{2}z^2}\,dz, \text { putting }
@@ -902,12 +915,13 @@ points(x = xPoints,
 legend("top",
        pch = c(NA, 19),
        lty = c(1, NA),
+       lwd = c(2, NA),
        legend = c("Gamma{z)",
                   "(z - 1)!"))
 ```
 
 :::{.example #Computing name="negative binomial"}
-Consider the computer system in Example~\ref{EG:specdiscrete:geom:computer}. 
+Consider the computer system in Example \@ref(exm:GeometricComputerFail). 
 Suppose after five failures, the system is upgraded.
 
 1. What is the probability that an upgrade will happen within one year?
@@ -930,7 +944,7 @@ So the probability of upgrading within one year is about $85$\%.
 :::
 
 :::{.example #NBMites name="Mites"}
-Bliss~\cite{BIB:Bliss:negbin} gives data from the counts of adult European red mites on leaves selected at random from six similar apple trees; see
+Bliss [@BIB:Bliss:negbin] gives data from the counts of adult European red mites on leaves selected at random from six similar apple trees; see
 Table~\ref{TB:specdiscrete:negbintrees}.
 From the data, the mean mites per leaf is
 \[
