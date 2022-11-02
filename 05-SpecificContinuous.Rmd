@@ -35,6 +35,7 @@ A plot of the pdf for a continuous uniform distribution is shown in Fig. \@ref(f
 plot( x = c(1, 7),
       y = c(0, 1),
       type = "n",
+      ylim = c(0, 1.1),
       xlab = expression(italic(x)),
       ylab = "Probability function",
       axes = FALSE,
@@ -45,11 +46,13 @@ axis(side = 1,
      labels = c(expression(italic(a)), 
                 expression(italic(b)) ) )
 axis(side = 2,
-     at = 1,
-     label = expression(frac(1, (italic(b) - italic(a))) ),
+     at = c(0, 1),
+     label = c(0,
+               expression(frac(1, (italic(b) - italic(a))) ) ),
      las = 1)
 box()
-
+abline(h = 0,
+       col = "grey")
 lines( x = c(1, 7),
        y = c(1, 1),
        lwd = 2)
@@ -82,12 +85,12 @@ These proofs are left as exercises.
 
 
 :::{.example #ContinuousUniform name="Continuous uniform"}
- If $X$ is uniformly distributed on $[-2, 2]$, find $\Pr(|X|>\frac 12)$.
+ If $X$ is uniformly distributed on $[-2, 2]$, find $\Pr(|X| > \frac{1}{2})$.
 \begin{align*}
-     \Pr(|X|>\frac 12 ) 
-     &= \Pr{X > \frac 12 }+ \Pr{X < -\frac 12}\\
-     &= \int^2_{\frac 12} f(x)\,dx +\int^{-\frac 12}_{-2} f(x)\,dx \text{ where }f(x)=\frac 14\\
-     &= \frac 34.
+     \Pr\left(|X| > \frac{1}{2}\right) 
+     &= \Pr(X > \frac{1}{2}) + \Pr(X < -\frac{1}{2}\\
+     &= \int^2_{\frac{1}{2}} f(x)\,dx  +  \int^{-\frac{1}{2}}_{-2} f(x)\,dx \text{ where $f(x) = \frac{1}{4}$}\\
+     &= \frac{3}{4}.
 \end{align*}
 :::
 
@@ -97,10 +100,7 @@ These proofs are left as exercises.
 ## Normal distribution {#Normal}
 
 The most readily known continuous distribution is probably the *normal distribution*, sometimes called the *bell-shaped* distribution.
-In many ways it is the cornerstone of modern statistical theory as you will see in this and follow-up courses. 
-It was first investigated in the 18th century when scientists observed an astonishing degree of regularity in errors of measurement. 
-They found that the patterns which they observed could be closely approximated by continuous curves which they referred to as 'normal curves of errors' and attributed to laws of chance.
-It has many applications and many natural quantities (such as heights and weights of humans) follow normal distributions.
+The normal distribution has many applications, and many natural quantities (such as heights and weights of humans) follow normal distributions.
 
 
 :::{.definition #NormalDistribution name="Normal distribution"}
@@ -118,7 +118,7 @@ for $-\infty<x<\infty$, then $X$ has a *normal distribution* where the two param
 We write $X\sim N(\mu, \sigma^2)$.
 :::
 
-Some texts use the notation $X\sim N(\mu,\sigma)$ so it is wise to check.
+Some authors use the notation $X\sim N(\mu,\sigma)$ so it is wise to check each article or book.
 
 Some examples of normal distribution pdfs are shown in Fig. \@ref(fig:Normal).
 
@@ -134,16 +134,17 @@ sigma <- c(0.5, 1)
 
 for (i in (1:2)){
    x <- mu[i] + z * max(sigma)
+   muvalue <- mu[i]
    plot( x,
          dnorm(x, 
                mean = mu[i], 
                sd = sigma[1]),
          type = "l",
-         xlab = "x",
-         ylab = "FX",
+         xlab = expression(italic(x)),
+         ylab = "Probability function",
          lwd = 2,
          las = 1,
-         main = paste("Normal distribution: mean =", mu[i])
+         main = bquote("Normal distribution: " ~ mu == .(muvalue))
          )
    lines( x,
          dnorm(x, 
@@ -158,26 +159,26 @@ for (i in (1:2)){
 
 In drawing the graph of the normal pdf, note that
 
-1. $f_X(x)$ is symmetrical about $\mu$
-2. $f_X(x) \to 0$ asymptotically as $x\to \pm \infty$
-3. $f_X'(x) = 0$  when $x = \mu$ and a maximum occurs there
+1. $f_X(x)$ is symmetrical about $\mu$: $f_X(\mu - x) = f_X(\mu + x)$.
+2. $f_X(x) \to 0$ asymptotically as $x\to \pm \infty$.
+3. $f_X'(x) = 0$  when $x = \mu$, and a maximum occurs there.
 4. $f_X''(x) = 0$ when $x = \mu \pm \sigma$ (points of inflexion): PROVE THIS IN EXERCISE!
 
 
-The proof that $\int^\infty_{-\infty} f_X(x)\,dx = 1$ is not obvious and relies on first squaring the integral and then changing to polar coordinates.
+The proof that $\displaystyle \int^\infty_{-\infty} f_X(x)\,dx = 1$ is not obvious and relies on first squaring the integral and then changing to polar coordinates.
 
 The following are the basic properties of the normal distribution.
 
-:::{.theorem}
+:::{.theorem #NormalProperties name="Properties of the normal distribution"}
 If $X\sim N(\mu,\sigma^2)$ then
 
-1. $\text{E}(X) = \mu$
-2. $\text{var}(X) = \sigma^2$
-3. $M_X(t) = \displaystyle \exp\left(\mu t + \frac{t^2\sigma^2}{2}\right)$
+1. $\text{E}(X) = \mu$.
+2. $\text{var}(X) = \sigma^2$.
+3. $M_X(t) = \displaystyle \exp\left(\mu t + \frac{t^2\sigma^2}{2}\right)$.
 :::
 
 :::{.proof}
-The proof of these results is delayed until after the Theorem~\ref{TM:stdnormal}.
+The proof of these results is delayed until after the Theorem \@ref(thm:StandardNormalProperties).
 :::
 
 
@@ -206,17 +207,17 @@ The proof of \@ref(eq:ZDistribution) is given... WHERE?
 
 The following are the basic properties of the standard normal distribution.
 
-:::{.theroem}
+:::{.theorem #StandardNormalProperties name="Properties of the standard normal distribution"}
 If $Z\sim N(0, 1)$ then
 
-* $\text{E}(Z) = 0$
-* $\text{var}(Z) = 1$
-* $M_Z(t) = \displaystyle \exp\left(\frac{t^2}{2}\right)$
+1. $\text{E}(Z) = 0$
+2. $\text{var}(Z) = 1$
+3. $M_Z(t) = \displaystyle \exp\left(\frac{t^2}{2}\right)$
 :::
 
 :::{.proof}
-As usual we could prove part 3 and use that result to prove parts 1 and 2.
-However, it's instructive to prove parts 1 and 2 directly.
+As usual, Part 3 could be proven first, and used to prove Parts 1 and 2.
+However, proving Parts 1 and 2 directly is constructive.
 
 \begin{align*}
     \text{E}(Z)&=\frac 1{\sqrt{2\pi }} \int^\infty_{-\infty} z e^{-\frac 12 z^2}\,dz\\
@@ -233,13 +234,13 @@ However, it's instructive to prove parts 1 and 2 directly.
    &= 1
 \end{align*}
 since the first term is zero and the second term makes use of \@ref(eq:ZDistribution).
-
+Also:
 \[ 
    M_Z(t) = \text{E}(e^{tZ}) =\int^\infty_{-\infty}e^{tz} \frac 1{\sqrt{2\pi}}e^{-\frac 12z^2}\,dz.
 \]
 Collecting together the terms in the exponent and completing the square, we have
 \begin{equation*}
-     -\frac 1{2}[z^2 -2tz] = -\frac 1{2}((z-t))^2+\frac 12 t^2.
+     -\frac{1}{2}[z^2 -2tz] = -\frac 1{2}(z - t)^2+\frac{1}{2} t^2.
 \end{equation*}
 Taking the constants outside the integral, we have
 \[ 
@@ -571,18 +572,15 @@ Let $x_1$ be such that
 \begin{align*}
    \Pr(X > x_1) 
    &= 0.75\\
-   \Pr(Z > \frac{x_1 - 500}{100}) 
+   \Pr\left(Z > \frac{x_1 - 500}{100}\right) 
    &= 0.75\\
-   \Pr(Z < \frac{500 - x_1}{100}) 
+   \Pr\left(Z < \frac{500 - x_1}{100}\right) 
    & = 0.75
 \end{align*}
 From tables, $0.75 = \Phi(0.675)$ so $(500 - x_1)/100 = 0.675$ and $x_1 = 432.5$.
 :::
 
 
-
-
-### LOG NORMAL?
 
 
 ### Normal approximation to the binomial {#NormalApproxBinomial}
@@ -600,7 +598,7 @@ There is no definitive answer; a common guideline suggests that if *both* $np \g
 
 Figure \@ref(fig:NormalApprox) shows some picture of various binomial pfs overlaid with the corresponding normal distribution; the approximation is visibly better as the guidelines given above are satisfied.
 
-```{r NormalApprox, echo=FALSE, fig.align="center", fig.cap="The normal distribution approximating a binomial distribution. The guidelines suggest the approximation should be good when $np \\ge 5$ and $n (1 - p) \\ge 5$; this is evident from the pictures. In the top row, a significant amount of the approximating normal distribution even appears when $Y < 0$."}
+```{r NormalApprox, echo=FALSE, fig.height=7, fig.align="center", fig.cap="The normal distribution approximating a binomial distribution. The guidelines suggest the approximation should be good when $np \\ge 5$ and $n (1 - p) \\ge 5$; this is evident from the pictures. In the top row, a significant amount of the approximating normal distribution even appears when $Y < 0$."}
 par( mfrow = c(2, 2))
 
 n <- c(5, 10, 
@@ -629,14 +627,14 @@ for (i in (1:4)){
                    sd = sd) 
   plot( x = xBinomial,
         y = yBinomial,
-        xlab = "x",
-        ylab = "Prob fn",
+        xlab = expression(italic(x)),
+        ylab = "Probability function",
         type = "h",
         ylim = c(0, ylim[i]),
         las = 1,
         lty = 2,
         col = "grey",
-        main = paste("n =", ni," and p =", pi))
+        main = bquote(italic(n) == .(ni) ~ "and" ~ italic(p) == .(pi)))
   points( x = xBinomial,
           y = yBinomial,
           pch = 19)
@@ -653,7 +651,9 @@ for (i in (1:4)){
 The normal distribution can be used to approximate probabilities in situation that are actually binomial.
 There is a fundamental difficulty with this approach: modelling a discrete distribution with a continuous distribution.
 This is best explained through an example.
+
 The example explains the *principle*; the idea extends to all situations where the normal distribution is used to approximate a binomial distribution.
+
 
 :::{.example #NormalApproxMice name="Normal approximation to binomial"}
 Consider *mdx* mice (which have a strain of muscular dystrophy) from a particular source for which 30% of the mice survive for at least 40 weeks.
@@ -677,17 +677,20 @@ The solution is more accurate, as expected, using the continuity correction.
 
 ```{r echo=TRUE}
 # Exact
-sum( dbinom(x = 35:100,
-            size = 100,
-            prob = 0.30))
+ExactP <- sum( dbinom(x = 35:100,
+                      size = 100,
+                      prob = 0.30))
 # Normal approx
-1 - pnorm(35, 
-          mean = 30,
-          sd = sqrt(21))
+NormalP <- 1 - pnorm(35, 
+                     mean = 30,
+                     sd = sqrt(21))
 # Normal approx with continuity correction
-1 - pnorm(34.5, 
-          mean = 30,
-          sd = sqrt(21))
+ContCorrP <- 1 - pnorm(34.5, 
+                       mean = 30,
+                       sd = sqrt(21))
+c("Exact:" = round(ExactP, 6), 
+  "Normal approx:" = round(NormalP, 6),
+  "With correction:" = round(ContCorrP, 6))
 ```
 
 
@@ -730,6 +733,9 @@ knitr::kable(CCTable,
 
 
 
+## LOG NORMAL?
+
+
 ## Exponential distribution {#ExponentialDistribution}
 
 An important distribution intimately connected with the Poisson distribution is the exponential distribution. 
@@ -758,12 +764,13 @@ x <- seq(0, 12,
 lambda <- c(0.5, 1, 2, 5)
 
 for (i in (1:length(lambda))){
+  lambdai <- lambda[i]
   if (i == 1) {
      plot(x = x,
           y = dexp(x,
                    rate = 1/lambda[i]),
-          xlab = "x",
-          ylab = "FX",
+          xlab = expression(italic(x)),
+          ylab = "Probability function",
           lwd = 2,
           las = 1,
           ylim = c(0, 1.5),
@@ -781,7 +788,10 @@ for (i in (1:length(lambda))){
 legend( "topright",
         lty = 1:4,
         lwd = 2,
-        legend = paste("lamba =",lambda)
+        legend = c(bquote(lambda == 0.5),
+                   bquote(lambda == 1),
+                   bquote(lambda == 2),
+                   bquote(lambda == 5))
         )
 ```
 
@@ -931,7 +941,7 @@ where we have used \@ref(eq:ExpSurvivor).
 
 This theorem states that the probability that the time to the next event is greater than $t$ does not depend on the time $s$ back to the previous event.
 
-:::{.example #Memoryless name="Memoryless propery of exponential distribution"}
+:::{.example #Memoryless name="Memoryless property of exponential distribution"}
 Suppose the lifespan of component $A$ is modelled by an exponential distribution with mean 12 months.
 
 1.  What is the probability that component $A$ fails in less than 6 months?

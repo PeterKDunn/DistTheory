@@ -31,7 +31,7 @@ We write $X\sim U(a, b)$ or $X\sim \text{Unif}(a, b)$.
 
 This distribution is also called the *rectangular distribution*.
 
-A plot of the pf for a discrete uniform distribution is shown in Fig. \@ref(fig:DiscreteUnform).
+A plot of the probability function for a discrete uniform distribution is shown in Fig. \@ref(fig:DiscreteUnform).
 
 
 
@@ -55,9 +55,17 @@ plot(x = x,
 points(x = x,
        y = y,
        pch = 19)
-points( x = c(5, 5.5, 6),
+       
+# Ellipses
+points( x = c(5.3, 5.5, 5.7),
         y = c(0.5, 0.5, 0.5),
         pch = 20) # Smaller dots than  pch = 19
+points( x = c(5.3, 5.5, 5.7),
+        y = c(1, 1, 1),
+        pch = 20) # Smaller dots than  pch = 19
+
+
+
 axis(side = 2,
      at = c(0, 1),
      labels = expression(0, 1/(b - a + 1) ) )
@@ -86,15 +94,15 @@ The following are the basic properties of the discrete uniform distribution.
 :::{.theorem #DiscreteUniform name="Discrete uniform"}
 If $X\sim \text{Unif}(a, b)$ then
 
-1. $\text{E}(X) = (a + b)/2$.
-2. $\displaystyle \text{var}(X) = \{(b - a)(b - a + 2)\}/12$.
+1. $\text{E}(X) = \frac{a + b}{2}$.
+2. $\displaystyle \text{var}(X) = \frac{(b - a)(b - a + 2)}{12}$.
 :::
 
 :::{.proof}
-A smart approach here is to consider $Y = X - a$ rather than $X$ itself.
-The point is that $\text{E}(X) = \text{E}(Y) + a$ and $\text{var}(Y) = \text{var}(X)$, but it's easier to find $\text{E}(Y)$ and $\text{var}(Y)$ directly than $\text{E}(X)$ and $\text{var}(X)$.
+Working with  $Y = X - a$ rather than $X$ itself is easier.
+Since $\text{E}(X) = \text{E}(Y) + a$ and $\text{var}(Y) = \text{var}(X)$, it is easier to find $\text{E}(Y)$ and $\text{var}(Y)$ directly than $\text{E}(X)$ and $\text{var}(X)$.
 
-Noticing that $Y\sim\text{Unif}(0, b - a)$ we have, using \@ref(eq:SumNaturalNumbers)
+Since $Y\sim\text{Unif}(0, b - a)$, then using \@ref(eq:SumNaturalNumbers)
 \begin{align*}
   \text{E}(Y)
   & =\sum_{i = 0}^{b - a} i\frac1{b - a + 1}\\
@@ -131,11 +139,10 @@ Therefore
 Oz Lotto, like many lottery games, challenges players to match randomly chosen numbers.
 Oz Lotto randomly picks numbers between 1 and 45 (inclusive).
 Each number should have an equal chance of selection, so the discrete uniform distribution $U(1,45)$ is appropriate.
-Figure~\ref{FG:specdiscrete:dunif:ozlotto} shows the proportion of times each number has been chosen from Game 1 to Game 473.
-The data appear to be approximately uniform as expected.
 
-If the data follow a discrete uniform distribution exactly, the mean should be  $(1 + 45) / 2 = 23$ and the variance $(44 \times 46)/12 = 168.66$.
-Using the sample data, the sample mean is computed to be $23.29$ and the sample variance as $166.36$; these are both very close to what one might expect for a $U(1, 45)$ random variable.
+If the data follow a discrete uniform distribution exactly, the mean number drawn should be  $(1 + 45) / 2 = 23$, and the variance $(44 \times 46)/12 = 168.66$.
+
+Using the sample data, the sample mean is computed to be ??? and the sample variance as ???; these are both very close to what one might expect for a $U(1, 45)$ random variable.
 :::
 
 FIG HERE. get the Oz Lotto data...
@@ -149,10 +156,11 @@ A simple example is tossing a coin ten times and observing if a head falls.
 
 The same experiment is repeated (tossing the coin), there are only two outcomes on each trial (a head or a tail), and the probability of a head remains constant on each trial.
 
-Consider tossing a die five times and observing the number of times a \epsdice{1} is rolled.
-The probability of observing three \epsdice{1}'s can be found as follows:
-In the five tosses, a \epsdice{1} must appear three times; there are ${5\choose 3}$ ways of allocating on which of the five rolls they will appear.
-In the five rolls, \epsdice{1} must appear three times with probability $1/6$; the other two rolls must produce another number with probability $5/6$.
+Consider tossing a die five times and observing the number of times a `r knitr::include_graphics("Dice/dice1.png", dpi=2000)` is rolled.
+The probability of observing three `r knitr::include_graphics("Dice/dice1.png", dpi=2000)` can be found as follows:
+In the five tosses, a `r knitr::include_graphics("Dice/dice1.png", dpi=2000)` must appear three times; there are ${5\choose 3}$ ways of allocating on which of the five rolls they will appear.
+In the five rolls, `r knitr::include_graphics("Dice/dice1.png", dpi=2000)` must appear three times with probability $1/6$; the other two rolls must produce another number with probability $5/6$.
+
 So the probability will be
 \[
    \Pr(\text{3 ones}) = {5\choose 3} (1/6)^3 (5/6)^2 = 0.032,
@@ -198,13 +206,14 @@ So we have the following:
 :::{.definition #BinomialDistribution name="Binomial distribution"}
 Let $X$ be the number of successes in $n$ independent Bernoulli trials with $\Pr(\text{Success}) = p$ ($0\le p\le 1$) constant in each trial.
 Then $X$ is said to have a *binomial probability distribution* with parameters $n$, $p$ and pf given by \@ref(eq:BinomialPMF).
+
 We write $X\sim\text{Bin}(n, p)$.
 :::
 
 Fig. \@ref(fig:BinomialExamples) shows the pf for the binomial distribution for various parameter values.
 
 
-```{r BinomialExamples, echo=FALSE, fig.align="center", fig.cap="The pf for the binomial distribution for $p=0.2$ and $p=0.7$; $n=10$ and $n=20$"}
+```{r BinomialExamples, echo=FALSE, fig.height = 7, fig.align="center", fig.cap="The pf for the binomial distribution for $p=0.2$ and $p=0.7$; $n=10$ and $n=20$"}
 par( mfrow = c(2, 2))
 
 n <- c(8, 8, 
@@ -221,7 +230,7 @@ for (i in (1:4)) {
    plot( x = x,
          y = y,
          xlab = "x",
-         ylab = "pmf",
+         ylab = "Probability function",
          main = paste("Binomial: n =", n[i], "and p =", p[i]),
          las = 1,
          lty = 3,
@@ -268,7 +277,7 @@ We make use of \@ref(eq:BinomialSeries) in the following:
 \text{putting }y = x - 1.
 \end{align*}
 Now the sum is 1 since a term in the sum is the probability of $y$ successes in $(n - 1)$ Bernoulli trials and the sum is over all values in $R_X$.
-Note also that in the second line the sum is over $x$ from $1$ to $n$ because for $x = 0$ we have a binomial coefficient of the form ${b\choose a}$ with $a < 0$ which in this context we define to be zero. 
+Note also that in the second line the sum is over $x$ from $1$ to $n$ because for $x = 0$ we have a binomial coefficient of the form ${b\choose a}$ with $a < 0$, which is defined to be zero. 
 Thus,
 \[ 
    \text{E}(X) = np.
@@ -308,8 +317,17 @@ Prove the third result first, and then using it to prove the others, is easier (
 :::
 
 
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+A binomial situation requires the trials to be *independent*, and the probability of success $p$ to be *constant* throughout the trials.
+
+For example, drawing cards from a pack without replacing them is **not** a binomial situation; after drawing one card, the probabilities will then change for the drawing of the next card.
+
+In this case, the *hypergeometric distribution* could be used (Sect. \@ref(HypergeometricDistribution)).
+:::
+
+
 :::{.example name="Freezing lake"}
-Wilks~\cite[p~68]{BIB:Wilks:statistical} notes that in the 200 years from 1796 to 1995, Cayuga Lake has frozen only in ten of those years.
+@BIB:Wilks:statistical (p. 68) notes that in the 200 years from 1796 to 1995, Cayuga Lake has frozen only in ten of those years.
 Since the lake is deep, it will only freeze during exceptionally cold weather.
 The probability the lake freezes during any one year can be estimated as $p = 10/200 = 0.05$.
 
@@ -322,7 +340,7 @@ Then, $Y\sim\text{Bin}(10, 0.05)$ and we would compute $\Pr(Y = 0)$ and get the 
 
 Tables of binomial probabilities are commonly available, but computers (e.g., using R) can also be used to generate the probabilities.
 If the number of 'successes' has a binomial distribution, so does the number of 'failures'.
-Specifically if $X\sim \text{Bin}(n,p)$, then $Y = n - X\sim\text{Bin}(n, 1 - p)$.
+Specifically if $X\sim \text{Bin}(n,p)$, then $Y = (n - X) \sim \text{Bin}(n, 1 - p)$.
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The terms 'success' and 'failure' are not literal.
@@ -331,21 +349,13 @@ The terms 'success' and 'failure' are not literal.
 If the event of interest is the number of damaging tornadoes, this is still called a 'success'.
 :::
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-A binomial situation requires the trials to be *independent*, and the probability of success $p$ to be *constant* throughout the trials.
-
-For example, drawing cards from a pack without replacing them is **not** a binomial situation; after drawing one card, the probabilities will then change for the drawing of the next card.
-
-In this case, the *hypergeometric distribution* could be used (Sect. \@ref(HypergeometricDistribution)).
-:::
-
 Binomial probabilities can sometimes be approximated using the normal distribution (Sect. \@ref(NormalApproxBinomial)) or the Poisson distribution (Sect. \@ref(PoissonBinomial)).
 
 
 
 ## Poisson distribution {#PoissonDistribution}
 
-The Poisson distribution is a commonly used distribution to model the number of occurrences of an event which occurs randomly in time or space.
+The Poisson distribution is commonly used to model the number of occurrences of an event which occurs randomly in time or space.
 
 The Poisson distribution arises as a result of assumptions that are made about a random experiment, and roughly these are:
 
@@ -361,13 +371,14 @@ A random variable $X$ is said to have a *Poisson distribution* if its pmf is
    p_X(x) = \frac{e^{-\mu} \mu^x}{x!}\quad   \text{for $x=0$, $1$, $2$, $\dots$}
 \]
 where the parameter is $\mu > 0$.
+
 We write $X\sim\text{Pois}(\mu)$.
 :::
 
 The pmf for a Poisson distribution for different values of $\mu$ is shown in Fig. \@ref(fig:PoissonExamples).
 
 
-```{r PoissonExamples, echo=FALSE, fig.align="center", fig.cap="The pf for the Poisson distribution for various values of $\\mu$"}
+```{r PoissonExamples, echo=FALSE, fig.height = 7, fig.align="center", fig.cap="The pf for the Poisson distribution for various values of $\\mu$"}
 par( mfrow = c(2, 2))
 
 xmax <- 10
@@ -402,8 +413,8 @@ The following are the basic properties of the Poisson distribution.
 ::: {.theorem}
 If $X\sim\text{Pois}(\mu)$ then
 
-1. $\text{E}(X) = \mu$
-2. $\text{var}(X) = \mu$
+1. $\text{E}(X) = \mu$.
+2. $\text{var}(X) = \mu$.
 3. $M_X(t) = \exp[ -\mu\{1 - \exp(t)\}]$.
 :::
 
@@ -499,7 +510,7 @@ Since $\text{E}(Y) = \text{var}(Y) = \mu$ for the Poisson distribution, this can
 A general guideline is that the Poisson distribution can be used to approximate the binomial when $n$ is large, $p$ is small and $np$ is less than about 7.
 
 
-```{r BinomialPoisson, echo=FALSE, fig.align="center", fig.cap="The Poisson distribution is an excellent approximation to the binomial distribution when $p$ is small and $n$ is large. The binomial pf is shown using empty circles; the Poisson pf using crosses."}
+```{r BinomialPoisson, echo=FALSE, fig.height = 7, fig.align="center", fig.cap="The Poisson distribution is an excellent approximation to the binomial distribution when $p$ is small and $n$ is large. The binomial pf is shown using empty circles; the Poisson pf using crosses."}
 par( mfrow = c(2, 2))
 
 n <- c(10, 50, 
@@ -539,6 +550,13 @@ for (i in (1:4)) {
                     lambda = muPoisson),
           pch = 4)
   
+  if (i == 4 ){
+    legend("topright", 
+           pch = c(1, 4),
+           legend = c("binomial",
+                      "Poisson approx."))
+  }
+  
 }
 
 ```
@@ -570,13 +588,14 @@ A rv $X$ has a *geometric distribution* if the pf of $X$ is given by
    p_X(x) =  q^{x-1} p\quad\text{for $x = 1,2,\dots$}
 \]
 where $q = 1 - p$ and $0 < p < 1$ is the parameter of the distribution.
+
 We write $X\sim\text{Geom}(p)$.
 :::
 
 
-The pf for a geometric distribution for various values of $p$ is shown in Fig. \@ref(fig:BinomialPoisson2).
+The pf for a geometric distribution for various values of $p$ is shown in Fig. \@ref(fig:Geometric).
 
-```{r BinomialPoisson2, echo=FALSE, fig.align="center", fig.cap="The pf for the geometric distribution for $p = 0.2$, $0.3$, $0.5$ and $0.8$"}
+```{r Geometric, echo=FALSE, fig.align="center", fig.cap="The pf for the geometric distribution for $p = 0.2$, $0.3$, $0.5$ and $0.8$"}
 par( mfrow = c(2, 2))
 
 xmax <- c(10, 15, 15, 15)
@@ -611,9 +630,9 @@ The following are the basic properties of the geometric distribution.
 :::{.theorem}
 If $X\sim\text{Geom}(p)$ then
 
-1. $\text{E}(X) = 1/p$
-2. $\text{var}(X) = (1 - p)/p^2$
-3. $M_X(t) = pe^t/\{1 - (1 - p)e^t\}$
+1. $\text{E}(X) = 1/p$.
+2. $\text{var}(X) = (1 - p)/p^2$.
+3. $M_X(t) = pe^t/\{1 - (1 - p)e^t\}$.
 :::
 
 :::{.proof}
@@ -677,7 +696,7 @@ Each of the $r - 1$ successes occur with probability $p$, and the $y - r$ failur
 Hence the probability of observing the $r$th success in trial $y$ is
 \begin{align*}
    \text{No. ways}
-   &\times \text{$(y - r - 1)$ failures} \times \text{$r$ successes} \\
+   &\times \text{$(y - r)$ failures} \times \text{$r$ successes} \\
    {y - 1 \choose r - 1} 
    &\times (1 - p)^{y - r} \times p^r.
 \end{align*}
@@ -690,6 +709,7 @@ A random variable $X$ with pf
    (\#eq:NegativeBinomialPMF)
 \end{equation}
 has a *negative binomial distribution* with parameters $r$ (an integer $\ge 1$) and $p$ ($0\le p\le1$).
+
 We write $X\sim\text{NB}(r, p)$.
 :::
 
@@ -700,7 +720,7 @@ When $r = 1$, the negative binomial distribution is the same as the geometric di
 
 
 
-```{r NegativeBinomial, echo=FALSE, fig.align="center", fig.cap="The pf for the negative binomial distribution for $p = 0.2$ and $0.7$ and $r = 1$ and $r = 3$"}
+```{r NegativeBinomial, echo=FALSE, fig.height=7, fig.align="center", fig.cap="The pf for the negative binomial distribution for $p = 0.2$ and $0.7$ and $r = 1$ and $r = 3$"}
 par( mfrow = c(2, 2))
 xmax <- 15
 
@@ -834,7 +854,7 @@ See Sect. \@ref(GammaFunction).
 This form of the negative binomial distribution is sometimes used in place of the Poisson distribution used to model count data (they are both defined on $\{0, 1, 2, \dots\}$).
 Since the negative binomial distribution has two parameters and the Poison only one, the negative binomial distribution often produces a better fit.
 
-For the reparameterised version of the negative binomial distribution, Theorem \@ref(thm:NegBinomialProperties)} becomes:
+For the reparameterised version of the negative binomial distribution, Theorem \@ref(thm:NegBinomialProperties) becomes:
 
 If $X\sim \text{NB}(r, p)$ with pf (\@ref(eq:NegativeBinomialPMFAlternative)) then
 
@@ -848,7 +868,7 @@ If $X\sim \text{NB}(r, p)$ with pf (\@ref(eq:NegativeBinomialPMFAlternative)) th
 :::{.definition #GammaFunction name="Gamma function"}
 The function $\Gamma(\cdot)$ is called the *gamma function* and is defined as
 \[
-   \Gamma(r) = \int_0^\infty x^{r-1}\text{E}xp(-x)\, dx
+   \Gamma(r) = \int_0^\infty x^{r-1}\exp(-x)\, dx
 \]
 for $r>0$.
 :::
@@ -864,8 +884,8 @@ Here are important properties of the gamma function
 :::{.theorem #GammaProperties name="Gamma function properties"}
 For the gamma function $\Gamma(\cdot)$,
 
-1. $\Gamma(r) = (r - 1)\Gamma(r - 1)$ if $r>0$
-2. $\Gamma(1/2) = \sqrt{\pi}$
+1. $\Gamma(r) = (r - 1)\Gamma(r - 1)$ if $r > 0$.
+2. $\Gamma(1/2) = \sqrt{\pi}$.
 :::
 
 :::{.proof}
@@ -873,17 +893,18 @@ Integration by parts gives
 \begin{align*}
    \Gamma(r)&=\int_0^{\infty}-x^{r-1} \, d(e^{-x})\\
    &= 0 \ + \ (r-1) \int_0^{\infty}  e^{-x}  x^{r-2} \, dx\\
-   &= ( r -1) \Gamma(r - 1)
+   &= ( r -1) \Gamma(r - 1).
 \end{align*}
 The second property follows directly from this result (Exercise!).
 
-Putting $ r =1/2$ in the first part of this theorem gives
+Putting $r = 1/2$ in the first part of this theorem gives
 \begin{align*}
-   \Gamma(1/2)&=\int_0^{\infty}e^{-x}  x^{-\frac{1}{2}}\,dx\\
-   &=\sqrt{2}\int_0^{\infty}e^{-\frac{1}{2}z^2}\,dz, \text { putting }
+   \Gamma(1/2)
+   &= \int_0^{\infty}e^{-x}  x^{-\frac{1}{2}}\,dx\\
+   &= \sqrt{2}\int_0^{\infty}e^{-\frac{1}{2}z^2}\,dz, \text { putting }
    x=z^2/2,\quad z \geq 0\\
-   &=\sqrt{2}  \sqrt{2 \pi} \underbrace{\int_0^{\infty}\frac{1}{\sqrt{2 \pi}}
-   e^{-\frac{1}{2}z^2}\,dz}_{1/2}
+   &= \sqrt{2}  \sqrt{2 \pi} \underbrace{\int_0^{\infty}\frac{1}{\sqrt{2 \pi}}
+   e^{-\frac{1}{2}z^2}\,dz}_{1/2}.
 \end{align*}
 Note that the integral is $\frac{1}{2}$, being half the area under a normal curve. 
 So
@@ -903,8 +924,8 @@ plot( x = c(0, 5),
       y = c(0, 25),
       type = "n",
       las = 1,
-      xlab = "z",
-      ylab = "Gamma(x)",
+      xlab = expression(italic(z)),
+      ylab = bquote("Gamma function" ~ Gamma(z)),
       main = "The Gamma function")
 lines( x = xCont,
        y = gamma(xCont),
@@ -916,11 +937,11 @@ legend("top",
        pch = c(NA, 19),
        lty = c(1, NA),
        lwd = c(2, NA),
-       legend = c("Gamma{z)",
-                  "(z - 1)!"))
+       legend = c(bquote("Gamma function" ~ Gamma(z)),
+                  expression(paste( group("(", list(z - 1),")"), "!" ) ) ) )
 ```
 
-:::{.example #Computing name="negative binomial"}
+:::{.example #Computing name="Negative binomial"}
 Consider the computer system in Example \@ref(exm:GeometricComputerFail). 
 Suppose after five failures, the system is upgraded.
 
@@ -928,14 +949,15 @@ Suppose after five failures, the system is upgraded.
 2. What is the expected number of days between upgrades?
 
 Let $D$ be the days on which the system fails for the fifth time.
-Then $D\sim \text{NBin}(p=0.02, r=5)$. Note that $D=\{5, 6, 7, \dots\}$.
+Then $D\sim \text{NBin}(p=0.02, r=5)$. Note that $D = \{5, 6, 7, \dots\}$.
 
-1. We seek $\Pr(D < 365)$ or if using the alternate parameterization where $X = D - r$ we seek $\Pr(X<360)$.
-   This is best done using a computer.
-   Using \R:
+1. We seek $\Pr(D < 365)$ or if using the alternate parameterization where $X = D - r$ we seek $\Pr(X < 360)$.
+   This is best done using a computer:
 
-```{r}
-pnbinom(360,5,0.02)
+```{r echo=TRUE}
+pnbinom(360, 
+        size = 5, 
+        prob = 0.02)
 ```
 So the probability of upgrading within one year is about $85$\%.
 
@@ -944,8 +966,7 @@ So the probability of upgrading within one year is about $85$\%.
 :::
 
 :::{.example #NBMites name="Mites"}
-Bliss [@BIB:Bliss:negbin] gives data from the counts of adult European red mites on leaves selected at random from six similar apple trees; see
-Table~\ref{TB:specdiscrete:negbintrees}.
+@BIB:Bliss:negbin gives data from the counts of adult European red mites on leaves selected at random from six similar apple trees; see Table~\ref{TB:specdiscrete:negbintrees}.
 From the data, the mean mites per leaf is
 \[
    \text{E}(X) = (0.467 \times 0) + (0.253 \times 1) +\cdots \approx 1.14667.
@@ -1030,7 +1051,8 @@ Consider a set of $N$ items of which $r$ are of one kind (call them successes) a
 We are interested in the probability of $x$ successes in $n$ trials, when the selection (or drawing) is made *without* replacement. 
 Then the rv $X$ is said to have a *hypergeometric distribution* with pf
 \begin{equation}
-   p_X(x) = \frac{ {r\choose x}{N - r\choose n - x}}{{N\choose n}}\label{EQN:hypergeom}
+   p_X(x) = \frac{ {r\choose x}{N - r\choose n - x}}{{N\choose n}}
+   (\#eq:HypergeometricPMF)
 \end{equation}
 where $x = 0$, $1$, $\dots$, $n$; $x \le r$, and $n - x \le N - r$.
 :::
@@ -1038,20 +1060,20 @@ where $x = 0$, $1$, $\dots$, $n$; $x \le r$, and $n - x \le N - r$.
 The following are the basic properties of the hypergeometric  distribution.
 
 :::{.theorem}
-If $X$ has a hypergeometric distribution with pf (\ref{EQN:hypergeom}) then
+If $X$ has a hypergeometric distribution with pf \@ref(eq:HypergeometricPMF), then
 
 1. $\text{E}(X) = nr/N$
 2. $\text{var}(X) = {n\left(\frac{r}{N}\right)\left(\frac{N-r}{N}\right)\left(\frac{N-n}{N-1}\right)}$
 :::
-The moment generating function is far too difficult\footnote{This probably comes as no surprise given the pf!} and will not be considered here.
+The moment generating function is far too difficult and will not be considered here.
 
-If the population is much larger than the sample size (that is, $N$ is much larger than $n$), then the probability of a success will be approximately constant SO THE ??? DIST MIGHT BE USED (shwo onplot as exercise).
+If the population is much larger than the sample size (that is, $N$ is much larger than $n$), then the probability of a success will be approximately constant.
 
-Consider the example at the start of this Section.
-The probability of drawing a red ball initially is $6/10=0.6$.
-The probability that the next ball is red becomes $5/9=0.556$.
+Consider the example at the start of this section.
+The probability of drawing a red ball initially is $6/10 = 0.6$.
+The probability that the next ball is red is $5/9 = 0.556$.
 But suppose there are 10000 balls in the (very big!) bag, of which 6000 are red.
-The probability of drawing a red ball initially is $6000 / 10000 = 0.6$ and the probability that the next ball is red becomes $5999/9999=0.59996$; the probability is almost the same.
+The probability of drawing a red ball initially is $6000 / 10000 = 0.6$ and the probability that the next ball is red becomes $5999/9999 = 0.59996$; the probability is almost the same.
 In this case, we might consider using the binomial distribution with $p\approx 0.6$.
 
 In general, if $N$ is much larger than $n$, the population proportion then will be approximately $p\approx r/N$, and so $1 - p \approx (N - r)/N$.
@@ -1068,6 +1090,7 @@ and
 \end{align*}
 which correspond to the mean and variance of the binomial distribution.
 
+
 :::{.example #Mice name="Mice"}
 Twenty mice are available to be used in an experiment; seven of the mice are female and $13$ are male.
 Five mice are required and will be sacrificed.
@@ -1076,11 +1099,11 @@ What is the probability that more than three of the mice are males?
 Let $X$ be the number of male mice chosen in a sample of size $5$.
 Then $X$ has  a hypergeometric distribution (since mice are chosen without replacement) where $N = 20$, $n = 5$, $r = 13$ and we seek
 \begin{align*}
-   \Pr(X>3)
-   &=\Pr(X=4) + \Pr(X=5) \\
-   &=\frac{ {13\choose 4} {7\choose 1}}{ {20\choose 5} } +
+   \Pr(X > 3)
+   &= \Pr(X = 4) + \Pr(X = 5) \\
+   &= \frac{ {13\choose 4} {7\choose 1}}{ {20\choose 5} } +
        \frac{ {13\choose 5} {7\choose 0}}{ {20\choose 5} } \\
-   &\approx  0.3228 + 0.0830 = 0.4058
+   & \approx  0.3228 + 0.0830 = 0.4058
 \end{align*}
 The probability is about 41\%.
 :::
