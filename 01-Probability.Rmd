@@ -219,7 +219,7 @@ arrows( x0 = 0.5,
         length = 0.15,
         lwd = 1)
 text(x = 0.5,
-     y = 0.15,
+     y = 0.18,
      pos = 1,
      labels = expression(italic(A) ~~ intersect() ~~ italic(B)))
 mtext(text = expression(italic(S)),
@@ -228,6 +228,9 @@ mtext(text = expression(italic(S)),
 
 
 ### UNION
+colour1 <- rgb(128, 204, 255, 
+               max = 255) 
+
 plot( x = c(0, 1),
       y = c(0, 1),
       type = "n",
@@ -242,23 +245,16 @@ polygon( x = c(0, 0, 1, 1),
 plotrix::draw.circle(x = 0.4, 
                      y = 0.5,
                      radius = 0.2,
-                     col = colourA)
-# Now plot the other circle in white to remove the intersection.
-# Then replot it, so the intersection has same shading
+                     col = colour1,
+                     border = colour1)
 plotrix::draw.circle(x = 0.6,
                      y = 0.5,
                      radius = 0.2,
-                     col = "white")
-
-plotrix::draw.circle(x = 0.6,
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourA)
-plotrix::draw.circle(x = 0.4, 
-                     y = 0.5,
-                     radius = 0.2,
-                     border = NULL,
-                     col = colourA)
+                     col = colour1,
+                     border = colour1)
+text(x = 0.5,
+     y = 0.5,
+     labels = expression(italic(A) ~~ union() ~~ italic(B)))
 
 
 text(x = 0.4,
@@ -272,6 +268,7 @@ text(x = 0.6,
 mtext(text = expression(italic(S)),
       side = 1,
       adj = 0.25)
+
 
 
 ### SUBSET
@@ -529,17 +526,18 @@ The complement of an event $A$ (everything that is *not* in event $A$) can be de
 
 ## Empirical (relative frequency) approach
 
-In this method, the experiment is repeated a large number of times and the proportion of times the event occurs is noted.
-Mathematically, if an experiment is repeated $n$ times, and $m$ of these favour event $E$, then the probability is of the event occuring is
+When the random process is repeated many times, counting the number of times the event of interest occurs means we can compute the *proportion* of times the event occurs.
+Mathematically, if the process is repeated $n$ times, and event $E$ occurs in $m$ of these ($m < n$), then the probability is of the event occurring is
 \[
    \Pr(E) = \lim_{n\to\infty} \frac{m}{n}.
 \]
-$n$ needs to be very large to compute probabilities accurately.
-In any case, approximate probabilities can only ever be found.
+$n$ needs to be very large to compute probabilities accurately, and approximate probabilities can only ever be found.
 
-This method is that it cannot always be used.
-For example, suppose a company wishes to determine the probability that matches in a given box will light.
-To determine an accurate probability, matches must be struck, and then can no longer be used, which may defeat the purpose of the experiment.
+This is the *empirical* (or *relative frequency*) approach to probability.
+
+This method cannot always be used.
+For example, suppose a company wishes to determine the probability that matches they produce  will light.
+To determine an accurate probability, matches must be struck, and then can no longer be sold, which may defeat the purpose the study.
 
 As another example, consider the probability that the airbag in a car will prevent a serious injury in the passenger.
 It is not ethical or financially viable to crash thousands of vehicles with passengers in them to see how many people break bones.
@@ -554,19 +552,22 @@ To test the effectiveness of the vaccine, the data in Table \@ref(tab:Polio) wer
 The relative frequency approach can be used to estimate the probabilities of developing polio *with* the vaccine and *without* the vaccine (the control group):
 \begin{align*}
    \Pr(\text{develop polio in control group}) 
-   &= 115/201\,229 = 0.00057\\
+   &= 115/201\,229 = 0.00057;\\
    \Pr(\text{develop polio in vaccinated group}) 
-   &= 33/200\,745 = 0.00016
+   &= 33/200\,745 = 0.00016.
 \end{align*}
-Do you think this suggests the vaccine was effective?
+This shows that the estimated *probability* of contracting polio in the control group is about 3.5 times greater than in the control group.
+The precision of these sample estimates could be quantified by producing a confidence interval for the proportions.
 
-Rather than using probabilitis, we would also use *odds*:
+Rather than using probabilities, we would also use *odds*:
 \begin{align*}
    \text{Odds}(\text{develop polio in control group}) 
-   &= \frac{115}{201,229} = 0.000571\\
+   &= \frac{115}{201,229} = 0.000571;\\
    \text{Odds}(\text{develop polio in vaccinated group}) 
    &= \frac{33}{200,745} = 0.000164.
 \end{align*}
+This shows that the estimated *odds* of contracting polio in the control group is about 3.5 times greater than in the control group.
+In this context, the *odds ratio* is about 3.5.
 :::
 
 
@@ -585,43 +586,15 @@ knitr::kable(VaccTable,
 ```
 
 
-::: {.example #WolfDice name="Wolf's dice"}
-Someone rolled a die 20\,000 times [@wolf1882] and counted the number of times each face came up (Table \@ref(tab:WolfDice)).
-Using the classical approach, the six *equally-likely outcomes* are a {1}, {2}, {3}, {4}, {5} and {6}, so the chance of rolling each should be $1/6 = 0.166\dots$.
-
-Even after 20\,000 throws, the probabilities are only approximate.
-:::
-
-```{r WolfDice, echo=FALSE}
-WolfTable <-  array( dim = c(6, 2))
-WolfTable[, 1] <- c(3407,
-                    3631,
-                    3176,
-                    2916,
-                    3448,
-                    3422)
-WolfTable[, 2] <- round( WolfTable[, 1] / sum(WolfTable[, 1]), 4)
-
-colnames(WolfTable) <- c("No. times",
-                         "Proportion")
-rownames(WolfTable) <- c("One",
-                         "Two",
-                         "Three",
-                         "Four",
-                         "Five",
-                         "Six")
-
-knitr::kable(WolfTable,
-             caption = "The number of times each face on a standard, fair die was face up in 20000 rolls")
-```
-
 
 
 ::: {.example #CoinToss name="Tossing coins"}
-A computer can be used to simulate large numbers of coin tosses.
+Repeating random process large numbers of times can be impractical and tedious.
+However, sometimes a computer can be used to *simulate* the random processes.
+Consider using a computer can be used to simulate large numbers of coin tosses.
 
-Using $\Pr(\text{Toss head}) = 0.5$, R was used to simulate 500 tosses.
-After each toss, the probability of obtaining a head using all the available information was computed.
+Using $\Pr(\text{Toss head}) = 0.5$, R is used to simulate 500 tosses.
+After each toss, the probability of obtaining a head using all the available information was computed at each toss.
 For one such simulation, the running probabilities are shown in Fig. \@ref(fig:SimTosses).
 :::
 
@@ -648,24 +621,21 @@ abline( h = 0.5,
 ```
 
 ::: {.example #MaximumTemp name="Maximum temperature"}
-Using data supplied by the DPI\footnote{The Department of Primary Industries.} from 1 Jan 1889 to 21 July 2002, the maximum temperatures recorded for January on 3534 days.
+Using data supplied by the Queensland Department of Primary Industries (QDPI) from 1 Jan 1889 to 21 July 2002, the maximum temperatures recorded for January on 3534 days.
 Of these, 302 maximum temperatures are greater than 30$^\circ$.
 
 An estimate of the probability that a day in January has a maximum temperature greater than 30$^\circ$ is $302/3534 =  0.08545$, or about 8.5\%.
 :::
 
 
+Using the empirical approach shows why probabilities are between 0 and 1 (inclusive), since  proportions are always between 0 and 1 (inclusive).
 
 
 ## Classical approach
 
 The *classical approach* requires being able to define a sample space containing a set of *equally-likely* outcomes.
-In practice, this is only true for trivial experiments, like tossing coins, rolling dice, dealing cards.
-For the classical approach, for an experiment with $n$ *equally-likely* outcomes, all are assigned probability $1/n$.
-
-::: {.example #Lotto name="Lotto"}
-In a game of Lotto, there's no reason to suspect that any one number should be more or less likely to occur than any other number.
-:::
+In practice, this is only true for trivial experiments, like tossing coins, rolling dice, and dealing cards.
+For the classical approach, for a random process with $n$ *equally-likely* outcomes, all are assigned probability $1/n$.
 
 
 :::{.example #TossingDice name="Tossing dice"}
@@ -678,57 +648,29 @@ The probability is $3/6 = 0.5$.
 :::
 
 
+::: {.example #Lotto name="Lotto"}
+In a game of Oz Lotto, [seven numbered balls are drawn from balls numbered 1 to 47](https://www.thelott.com/oz-lotto/how-to-play).
+
+There is no reason to suspect that any one number should be more or less likely to occur than any other number.
+Any set of seven numbers is just a likely to occur as any other set of seven numbers.
+
+Listing the sample space is difficult as there are a very arge number of options for selecting seven numbers from 47.s
+:::
+
+
+
+
 ## Subjective approach
 
-'Subjective' probabilities are estimated by considering all the relevant issues that may impact the probability  (and may, for example, be based on mathematical models that incorporate information from numerous inputs).
-Depending on how these other issues are considered and combined, different individuals (or models) may give different subjective probabilities.
+'Subjective' probabilities are estimated after identifying the information that may influence the probability, and then evaluating this information. 
+The final (subjective) probability may, for example, be computed using mathematical models that use the information.
+When different people or systems identify different information as relevant, and combine them differently, different subjective probabilities eventuate.
 
 Some examples include:
 
 * What proportion of the Australian public will vote for the Labor Party at the next election?
 * What is the chance an investment will be a success?
 * How likely is it that Auckland will have above average rainfall next year?
-
-
-
-## Axiomatic approach
-
-For a sample space $S$ for an experiment, for every event $A$  (a subset of $S$), a number $\Pr(A)$ can be assigned which is called the *probability* of event $A$.
-
-An *axiom* is... FINISH!!
-
-The three axioms of probability are (NEEDS BOX)
-
-1. $\Pr(A) \ge 0$ (that is, probabilities are never negative);
-2. $\Pr(S) = 1$ (that is, the total probability (or the probability of everything in the sample space) is one);
-3. If $A_1$, $A_2$, $\dots$ form a sequence of pairwise mutually exclusive events in $S$, then
-   \[
-      \Pr(A_1 \cup A_2 \cup A_3 \cup \dots) = \sum_{i = 1}^\infty \Pr(A_i)
-   \]
-   (that is, for *mutually exclusive* events, the probability of the *union* of events is the sum of    the individual probabilities).
-
-While this approach can sometimes help to assign probabilities, its main purpose is to formally define the rules that apply to probabilities.
-This means that if any other approach is used to assign probabilities, the probabilities must obey the rules specified in these axioms.
-
-The axioms of probability can also be used to develop all other probability formulae.
-
-::: {.example #UsingAxions name="Using the axioms"}
-Consider proving that $\Pr(\emptyset) = 0$.
-(While this may appear 'obvious', it is not one of the axioms.)
-
-By definition, the empty set $\emptyset$ contain no points; hence $\emptyset \cup A = A$ for any event $A$.
- 
-Also, $\emptyset\cap A = \emptyset$, as $\emptyset$ and $A$ are mutually exclusive (that is, they have no elements in common).
-Hence, by the third axiom
-\begin{equation}
-   \Pr(\emptyset\cup A) = \Pr(\emptyset) + \Pr(A)
-           (\#eq:ByThirdAxiom)
-\end{equation}
-But since $\emptyset \cup A = A$, then $\Pr(\emptyset \cup A) = \Pr(A)$, and so $\Pr(A) = \Pr(\emptyset) + \Pr(A)$ from \@ref(eq:ByThirdAxiom).
-Hence $\Pr(\emptyset) = 0$.
-:::
-
-While this may have seemed obvious, *all* probability formulae can be developed just from assuming the three axioms of probability.
 
 
 ::: {.example #ChanceRain name="The chance of rain"}
@@ -744,9 +686,65 @@ An *approximation* to the probability is therefore $96/113 = 0.85$, or $85$\%.
 :::
 
 
-## Some rules of probability
 
-Many results can be deduced from the axioms.
+## Axiomatic approach
+
+An **axiom** is a self-evident truth that does not require proof, or cannot be proven.
+
+Perhaps surprisingly, only three axioms of probability are needed, from which all other results in probability can be proven.
+
+
+:::{.definition #ThreeAxioms name="Three axioms of probability"}
+Consider a sample space $S$ for a random process.
+For every event $A$ (a subset of $S$), a number $\Pr(A)$ can be assigned which is called the *probability* of event $A$.
+
+The three axioms of probability are:
+
+1. $\Pr(A) \ge 0$.
+2. $\Pr(S) = 1$.
+3. If $A_1$, $A_2$, $\dots$ form a sequence of pairwise mutually exclusive events in $S$, then
+   \[
+      \Pr(A_1 \cup A_2 \cup A_3 \cup \dots) = \sum_{i = 1}^\infty \Pr(A_i).
+   \]
+:::
+
+In simple terms, these three axioms state:
+
+1. Probabilities are never negative.
+2. The probability that something in the sample space will occur is is one.
+   (Recall that the sample space lists every possible outcome.)
+3.  For [*mutually exclusive* events](#def:MutuallyExclusive), the probability of the *union* of events is the sum of the individual probabilities.
+
+
+While this approach can sometimes help to assign probabilities, its main purpose is to formally define the rules that apply to probabilities.
+Probabilities must obey the rules specified in these axioms.
+
+These axioms of probability can also be used to develop all other probability formulae.
+
+::: {.example #UsingAxions name="Using the axioms"}
+Consider proving that $\Pr(\emptyset) = 0$.
+While this may appear 'obvious', it is not one of the three axioms.
+
+By definition, the empty set $\emptyset$ contain no points; hence $\emptyset \cup A = A$ for any event $A$.
+ 
+Also, $\emptyset\cap A = \emptyset$, as $\emptyset$ and $A$ are [mutually exclusive](#def:MutuallyExclusive) (that is, they have no elements in common).
+Hence, by the [third axiom](#def:ThreeAxioms)
+\begin{equation}
+   \Pr(\emptyset\cup A) = \Pr(\emptyset) + \Pr(A)
+   (\#eq:ByThirdAxiom)
+\end{equation}
+But since $\emptyset \cup A = A$, then $\Pr(\emptyset \cup A) = \Pr(A)$, and so $\Pr(A) = \Pr(\emptyset) + \Pr(A)$ from \@ref(eq:ByThirdAxiom).
+Hence $\Pr(\emptyset) = 0$.
+:::
+
+While this may have seemed obvious, *all* probability formulae can be developed just from assuming the three axioms of probability.
+
+
+
+
+## Rules of probability
+
+Many useful results can be deduced from the axioms.
 They allow probabilities to be computed in more complicated situations.
 
 ::: {.theorem #CompRule name="Complementary rule of probability"}
@@ -757,6 +755,15 @@ For any event $A$, the probability of 'not $A$' is
 \]
 :::
 
+:::{.proof}
+By the definition of the *complement* of an event (XREF), $\overline{A}$ and $A$ are mutually exclusive.
+Hence, by the [third axiom](#defThreeAxioms), $\Pr(\overline{A} \cup A) = \Pr(\overline{A}) + \Pr(A).
+
+AND SO ON
+:::
+
+
+
 
 :::{.theorem #ProbAddition name="Addition rule of probability"}
 For *any* two events $A$ and $B$, the probability of either $A$ **or** $B$ occurring is 
@@ -764,6 +771,11 @@ For *any* two events $A$ and $B$, the probability of either $A$ **or** $B$ occur
    \Pr(A\cup B) = \Pr(A) + \Pr(B) - \Pr(A\cap B).
 \]
 :::
+
+:::{.proof}
+See Exercise ???
+:::
+
 
 If the two events are *mutually exclusive*, we have a corollary of Theorem \@ref(thm:ProbAddition).
 
@@ -775,6 +787,11 @@ If the two events $A$ and $B$ are *mutually exclusive*, then the probability of 
 \]
 :::
 
+:::{.proof}
+See Exercise ???
+:::
+
+
 Some other results that follow from the axioms are the following.
 
 * $\Pr(\emptyset) = 0$.
@@ -783,10 +800,19 @@ Some other results that follow from the axioms are the following.
 * For events $A$ and $B$, if $A\subseteq B$ then $\Pr(B\cap \overline{A}) = \Pr(B) - \Pr(A)$.
 * For events $A$ and $B$, if $A\subseteq B$ then $\Pr(A) \leq \Pr(B)$.
 
+:::{.proof}
+See Exercises ???
+:::
+
+
+
 
 ## Equally-likely outcomes
 
+CANT THIS INFO BE MOVED TO CLASSICAL PROB SECTION???
+
 For the calculation of probabilities for events in a finite sample space, sometimes sample points can be described so that we have equally-likely outcomes (and hence the classical approach to the assignment of probabilities is appropriate).
+
 Associating probabilities with events in this situation is essentially counting sample points.
 Example \@ref(exm:TossingDice) is a simple demonstration of the principle which we now formalise.
 
@@ -801,7 +827,7 @@ Then
 :::
 
 This method of calculating the probability of an event is sometimes called the *sample-point method*.
-Be careful: errors are frequently made by failing to list all the sample points in $S$.
+Take care: errors are frequently made by failing to list all the sample points in $S$.
 
 Methods of counting the points in a sample space are discussed in Section \@ref(Counting).
 
@@ -814,20 +840,37 @@ Assume that a sample space $S$ for the experiment has been constructed, an event
 We then receive additional information that some event $B$ has occurred.
 Possibly, this new information can change the value of $\Pr(A)$.
 
+
 We now need to determine the probability that $A$ will occur, given that $B$ has already occurred.
 We call this probability the *conditional probability of $A$ given $B$*, and denote it by $\Pr(A \mid B)$.
+
+
+:::{.example #ConditionalPrinIntro name="The idea of conditional probability"}
+Suppose I roll a die.
+Define event $A$ as 'rolling a 6'.
+Then, you could determine that $\Pr(A) = 1/6$ (using the classical approach).
+
+However, suppose I provide you with extra information.
+I tell you that event $B$ has already occurred, where $B$ is the event 'the number rolled is even'.
+
+With this extra information, you know only three number could possibly have been rolled; the *reduced sample space* is now
+\[
+   S_R= \{2, 4, 6 \}.
+\]
+All of these outcomes are equally likely.
+The probability that the number is a six is now $\Pr(A|B) = 1/3$.
+:::
+
 
 ::: {.example #Rainfall name="Rainfall"}
 In Example~\ref{EG:prob:assigning:chrain}, the chance of obtaining rain during April in Charleville was computed to be $0.85$ using the empirical approach.
 
 However, research suggested that the chance of rainfall may depend on the value of the Southern Oscillation Index (SOI).
-Stone and Auliciems [@climate:stone:1992] defined five phases of the SOI that can be attributed to any given month.
+@climate:stone:1992 defined five phases of the SOI that can be attributed to any given month.
 
 For the month of April, the empirical probabilities of observing rainfall in Charleville for various SOI Phases are shown in Table \@ref(tab:CharlevilleRain).
 
-DEFINE EMPIRICAL PROB?!
-
-The chance of observing rain changes depending on the SOI phase during that month:
+The probability of observing rain depends on the SOI phase that month:
 \begin{align*}
    \text{For SOI Phase 1:}
    & \Pr(\text{rain} \mid \text{Phase 1}) = 0.56\\
@@ -858,47 +901,32 @@ knitr::kable(RainTable,
 ```
 
 
-::: {.example #RollingDice name="Rolling dice"}
-Suppose I throw a standard six-sided die, but I cover the die so you cannot see what is rolled.
-I tell you that I have rolled an even number.
-What is the probability that the number is a {2}?
-
-Without the extra information, the chance of obtaining a {2} is $1/6$ as the sample space here has six (equally likely) outcomes:
-$S = \{ {1}, {2}, {3}, {4}, {5}, {6}\}$.
-
-But since there *is* extra information---that the number is even---this probability can be refined.
-If the number is even, there are only three possibly outcomes in the sample space: 
-\[
-   S_R = \{ {2}, {4}, {6}\},
-\]
-where $S_R$ is called the *reduced sample space*.
-
-Since each of these outcomes in the reduced sample space are equally likely, $\Pr(\text{Roll a 2}) = 1/3$.
-We write $\Pr({2} \mid \text{even number rolled}) = 1/3$.
-:::
-
 
 
 ::: {.example #Planes name="Planes"}
 Consider the difference between these two probabilities:
 
-1. $\Pr(\text{a person dies} \mid \text{person falls out of a plane})$; and
-2. $\Pr(\text{person falls out of a plane} \mid \text{a person dies})$.
+1. $\Pr(\text{a person dies} \mid \text{person falls out of an airborne plane with no parachute})$; and
+2. $\Pr(\text{person falls out of an airborne plane with no parachute} \mid \text{a person dies})$.
 
-In the first, the probability that a person dies is very high given that they fall from an (airborne) plane. LINK TO THAT FUNNY STUDY?
+Consider the first.
+If you are told that somepone falls out of an airborne plane with no parachute, the probability that they die is very high.
 
-In the second, given that a person has died, the probability is very small that the cause was falling from a plane, as very few people die in this manner.
+Consider the second.
+If you are told that some has died, it is very unlikely the the cause is a fall from a plane.
+
 Thus, the first probability is very close to one, and the second is very close to zero.
 :::
 
 
 Two methods exist for computing conditional probability: first principles, or a formal definition of $\Pr(A \mid B)$.
 
-For the first, we simply consider the original sample space $S$, remove the sample points inconsistent with the new information that $B$ has occurred, form a new sample space, $S^*$ say, and recompute the probability of event $A$ relative to $S^*$.
-$S^*$ is called the *reduced sample space*.
-This method is appropriate when the number of outcomes is relatively small.
+For the first, we simply consider the original sample space $S$, remove the sample points inconsistent with the new information that $B$ has occurred, form a new sample space, say $S^*$, and recompute the probability of event $A$ relative to $S^*$.
 
-The following definition allows us to handle more general problems.
+$S^*$ is called the *reduced sample space*.
+
+This method is appropriate when the number of outcomes is relatively small.
+The following definition applies more generally.
 
 ::: {.definition #ConditionalProb name="Conditional probability"}
 Let $A$ and $B$ be events in $S$ with $\Pr(B) > 0$. 
@@ -907,8 +935,12 @@ Then
    \Pr(A \mid B) = \frac{\Pr(A\cap B)}{\Pr(B)}
 \]
 :::
-The definition automatically takes care of the sample space reduction we noted earlier.
+The definition automatically takes care of the sample space reduction noted earlier.
 
+
+:::{.example}
+COND PROB exame. REUSE above, with notation.
+:::
 
 
 ### Multiplication rule
@@ -934,7 +966,7 @@ For example, for three events $A, B, C$,
 
 ### Independent events {#Independence}
 
-To avoid the conditions $\Pr(A) > 0$ (WHERE IS THIS ANYWAY???) and $\Pr(B) > 0$ we define independence as follows.
+The important idea of *independence* can now be defined.
 
 ::: {.definition #Independence name="Independence"}
 Two events $A$ and $B$ are said to be *independent* if
@@ -945,21 +977,27 @@ Otherwise the events are said to be *dependent*.
 :::
 
 
+:::{.proof}
+???
+:::
+
+
+
 Provided $\Pr(B) > 0$, we see from Definitions \@ref(def:ConditionalProb) and \@ref(def:Independence) that $A$ and $B$ are independent if, and only if, $\Pr(A \mid B) = \Pr(A)$.
 This statement of independence is sensible in that the first probability is the probability of $A$ occurring if $B$ has already occurred.
-The second is the probability of $A$ occurring without any knoweldge of whether $B$ has occurred or not. 
-If these are equal, then the fact that $B$ has occurred has made no difference to the probability that $A$ has occurred, which is precisely what is meant by independence.
+The second is the probability of $A$ occurring without any knowledge of whether $B$ has occurred or not. 
+If these are equal, then the fact that $B$ has occurred has made no difference to the probability that $A$ has occurred, which is precisely what is meant by *independence*.
 
 The idea of independence can be generalised to more than two events.
-For three events we have the following definition and this naturally extends to any number of events.
+For three events, the following definition of *mutual independence* applies, which naturally extends to any number of events.
 
 ::: {.definition #MutualIndependence name="Mutual independence"}
 Three events $A$, $B$ and $C$ are *mutually independent* if, and only if,
 \begin{align*}
-     \Pr(A\cap B) & = \Pr(A)\Pr(B)\\
-     \Pr(A\cap C) & = \Pr(A)\Pr(C)\\
-     \Pr(B\cap C) & = \Pr(B)\Pr(C)\\
-     \Pr(A\cap B\cap C) & = \Pr(A) \Pr(B) \Pr(C)
+     \Pr(A\cap B) & = \Pr(A)\Pr(B).\\
+     \Pr(A\cap C) & = \Pr(A)\Pr(C).\\
+     \Pr(B\cap C) & = \Pr(B)\Pr(C).\\
+     \Pr(A\cap B\cap C) & = \Pr(A) \Pr(B) \Pr(C).
      \end{align*}
 :::
 Three events can be *pairwise* independent in the sense of Definition  \@ref(def:Independence), but not are not *mutually independent*.
@@ -967,7 +1005,7 @@ Three events can be *pairwise* independent in the sense of Definition  \@ref(def
 The following theorem concerning independent events is sometimes useful.
 
 :::{.theorem #Independence name="Independent events"}
-If $A$ and $B$ are independent events then
+If $A$ and $B$ are independent events, then
 
 * $A$ and $\overline{B}$ are independent.
 * $\overline{A}$ and $B$ are independent.
@@ -977,18 +1015,19 @@ If $A$ and $B$ are independent events then
 
 ### Independence and mutually exclusive events
 
-Mutually exclusive and independent events sometimes get confused.
+[Mutually exclusive](def:MutuallyExclusive) and [independent](def:Independence) events sometimes get confused.
 
-The simple events defined by the outcomes in a sample space are mutually exclusive, since only one can occur in any realisation of the experiment.
-Mutually exclusive events have no common outcomes: you cannot, for example, get both an A grade and a C grade for this course.
-Obtaining one excludes the possibility of the other.
+The simple events defined by the outcomes in a sample space are mutually exclusive, since only one can occur in any realisation of the random process.
+Mutually exclusive events have no common outcomes: for example, achieving both an A grade and a C grade for this course is not possible.
+Obtaining one excludes the possibility of the other... so whether one occurs *depen ds* on whetehr the other has occurred.
 
-In contrast, if two events are independent then whether or not the one occurs does not affect the chance of the other happening.
+In contrast, if two events are independent, then whether or not one occurs does not affect the chance of the other happening.
 If event $A$ can occur, then $B$ happening will not influence the chance of $A$ happening if they are independent, so it certainly does not exclude the possibility of the other occurring.
 
 
 ::: {.example #Independence name="Independence"}
 Independent events refer to events that have no impact on each other.
+
 For example, *how* I get to work tomorrow (walk or ride my bicycle) has no bearing on whether or not I have a busy day at work.
 They are independent.
 
@@ -997,10 +1036,9 @@ If I walk, this does *not* exclude the possibility of having a busy day at work;
 :::
 
 
-
 Confusion between mutual exclusiveness and independence arises sometimes because the sample space is not clearly identified.
 
-Consider an experiment involving tossing a coin twice.
+Consider a random process involving tossing a coin twice. (POINT TO EARLIER EX)
 We have the sample space 
 \[
    S_2 = \{(H, H), (H, T), (T, H), (T, T)\}
@@ -1008,7 +1046,7 @@ We have the sample space
 and these outcomes are mutually exclusive, each with probability 1/4 (using the classical approach).
 For example, $\Pr(H, H) = 1/4$.
 
-An alternative way of looking at this experiment is to think of repeating the experiment of tossing a coin once.
+An alternative way of looking at this random process is to think of repeating the process of tossing a coin once.
 For one toss of a coin, the sample space 
 \[
    S_1 = \{H, T\}
@@ -1017,7 +1055,7 @@ and $\Pr(H) = 1/2$ is the probability of getting a head on the *first* toss.
 This is also the probability of getting a head on the *second* toss.
 
 The events 'getting a head on the first toss' and 'getting a head on the second toss' are **not mutually exclusive**, because both events can occur together: the event $(H, H)$ is an outcome in $S_2$.
-Whether or not the outcomes $H, H$ occurred *simultaneously*, because the two coins were tossed at the one time, or *sequentially*, in that one coin was tossed twice, is irrelevant.
+Whether or not the outcomes $(H, H)$ occurred *simultaneously*, because the two coins were tossed at the one time, or *sequentially*, in that one coin was tossed twice, is irrelevant.
 
 Our interest is in the *joint* outcomes from two tosses.
 It is best to think of getting a head on the 'first' toss as the event
@@ -1026,13 +1064,14 @@ It is best to think of getting a head on the 'first' toss as the event
 \]
 and of getting a head on the 'second' toss as the event 
 \[
-   E_1 = \{ (H, H), (H, T) \}
+   E_2 = \{ (H, H), (H, T) \}
 \]
 where $E_1$ and $E_2$ are events defined on $S_2$.
 This makes it clear that $E_1$ and $E_2$ are not mutually exclusive because $E_1\cap E_2 \ne \emptyset$.
 
 The two events $E_1$ and $E_2$ are *independent* because, regardless of whether or not a head occurs on one of the tosses, the probability of a head occurring on the other is still 1/2... otherwise coins must have memories or can talk to each other...
-Seeing that the events are independent provides another way of calculating the probability of the two heads occurring 'together': $1/2\times 1/2 = 1/4$ since the probabilities of independent events multiply.
+
+Seeing that the events are independent provides another way of calculating the probability of the two heads occurring 'together': $1/2\times 1/2 = 1/4$, since the probabilities of independent events multiply.
 
 
 ::: {.example #Mendell name="Mendell"}
@@ -1074,29 +1113,32 @@ From Table \@ref(tab:PeaTable):
 \end{align*}
 
 These two probabilities are very close.
-Given that the data in the Table is only a *sample* (from the population of all peas), there is little evidence suggesting colour and shape of the peas are not independent.
+Given that the data in the Table is only a *sample* (from the population of all peas), it seems reasonable that the colour and shape of the peas are independent.
 :::
 
 
 ### Partitioning the sample space {#SSPartitions}
 
-The concepts introduced in this section allow us to determine the probability of an event using the *event-decomposition approach*.
+The concepts introduced in this section allow us to determine the probability of an event using the *event-decomposition approach*, which we now discuss.
 To do so, express the event of interest, say event $A$, as a composition (unions and/or intersections), then apply the laws of probability to find $\Pr(A)$.
 We first need some definitions.
 
 ::: {.definition #Partitioning name="Partitioning"}
 The events $B_1, B_2, \ldots , B_k$ are said to represent a *partition* of the sample space $S$ if
 
-1. $B_i \cap B_j =\emptyset$ for all $i \neq j$.
+1. $B_i \cap B_j = \emptyset$ for all $i \neq j$.
 2. $B_1 \cup B_2 \cup \ldots \cup B_k = S$.
 3. $\Pr(B_i) > 0$ for all $i$.
 :::
+In simple terms, these state:
 
-In other words, the events $B_1, B_2, \ldots , B_k$ are *mutually exclusive* and *exhaustive*.
+1. The events are mutually exclusive (have no common elements).
+2. The events consider together comprise the entire sample space (that is, no outcome is left out).
+3. No event has zero probability of occurring.
 
-DEFINE EXHAUSTAIVE
+The second of these is often referred to as the events being *exhaustive*.
 
-That is, when the experiment is performed, one and only one of the events $B_i$ ($i=1, \ldots k)$ occurs.
+The implication is that when the random process is performed, one and only one of the events $B_i$ ($i = 1, \ldots, k)$ occurs.
 
 We use this concept in the following theorem.
 
@@ -1105,27 +1147,28 @@ Let $A$ be an event in $S$ and $\{B_1, B_2, \ldots , B_k\}$ a partition of $S$.
 Then
 \begin{align*}
    \Pr(A) 
-   &= \Pr(A \mid B_1) \Pr(B_1) + \Pr(A \mid B_2)\Pr(B_2) + 
-   &\qquad \ldots +\Pr(A \mid B_k)\Pr(B_k)
+   &= \Pr(A \mid B_1) \Pr(B_1) + \Pr(A \mid B_2)\Pr(B_2) + {}\\
+   &\qquad \ldots +\Pr(A \mid B_k)\Pr(B_k).
 \end{align*}
 :::
 
 :::{.proof}
 The proof follows from writing $A = (A\cap B_1) \cup (A\cap B_2) \cup \ldots \cup (A\cap B_k)$, where the events on the RHS are mutually exclusive.
-The third axiom of probability together with the multiplication rule yield the result.
+The [third axiom](#def:ThreeAxioms) of probability together with the multiplication rule yield the result.
 :::
 
 
-### Bayes' theorem {#Bayes}
+### Bayes' theorem {#BayesTheorem}
 
-If an event is known to have occurred and the sample space is partitioned, a result known as *Bayes' theorem* enables us to determine the probabilities associated with each of the partitioned events.
+If an event is known to have occurred, and the sample space is partitioned, a result known as *Bayes' theorem* enables us to determine the probabilities associated with each of the partitioned events.
 
 
 :::{.theorem #Bayes name="Bayes' theorem"}
 Let $A$ be an event in $S$ such that $\Pr(A) > 0$ and $\{ B_1, B_2, \ldots , B_k\}$ a partition of $S$.
 Then
 \[
-   \Pr(B_i \mid A) = \frac{\Pr(B_i) \Pr(A \mid B_i)}{\sum_{j = 1}^k \Pr(B_j)\Pr(A \mid B_j)}
+   \Pr(B_i \mid A) = \frac{\Pr(B_i) \Pr(A \mid B_i)}
+                          {\displaystyle \sum_{j = 1}^k \Pr(B_j)\Pr(A \mid B_j)}
 \]
 for $i = 1, 2, \dots, k$.
 :::
@@ -1134,8 +1177,7 @@ for $i = 1, 2, \dots, k$.
 This is a direct application of Definition \@ref(def:ConditionalProb), the multiplication rule and Theorem \@ref(thm:TotalProb).
 :::
 
-Bayes' theorem has many uses in many disciplines (including finance, medicine and in legal matters).
-It uses a conditional probabilities that are easy to find or estimate ($\Pr()A \mid B_j$), to compute a probability that is *not* easy to find or estimate ($\Pr()A \mid B_j)$.
+Bayes' theorem has many uses in many disciplines, as it uses conditional probabilities that are easy to find or estimate ($\Pr(A \mid B_j$), to compute a probability that is *not* easy to find or estimate ($\Pr(B_i \mid A)$.
 
 The theorem is the basis of a branch of statistics known as *Bayesian statistics* which involves using pre-existing evidence in drawing conclusions from data.
 
