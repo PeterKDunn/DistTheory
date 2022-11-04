@@ -47,6 +47,7 @@ plot(x = x,
      axes = FALSE,
      lty = 3,
      col = "grey",
+     main = "A discrete uniform distribution",
      xlab = expression(italic(x)),
      ylab = expression(
         paste(italic(f)[italic(X)](italic(x)))
@@ -68,7 +69,7 @@ points( x = c(5.3, 5.5, 5.7),
 
 axis(side = 2,
      at = c(0, 1),
-     labels = expression(0, 1/(b - a + 1) ) )
+     labels = expression(0, 1/(italic(b) - italic(a) + 1) ) )
 axis(side = 1,
      at = c(1, 2, 3, 4, 7),
      labels = expression(
@@ -94,7 +95,7 @@ The following are the basic properties of the discrete uniform distribution.
 :::{.theorem #DiscreteUniform name="Discrete uniform"}
 If $X\sim \text{Unif}(a, b)$ then
 
-1. $\text{E}(X) = \frac{a + b}{2}$.
+1. $\displaystyle \text{E}(X) = \frac{a + b}{2}$.
 2. $\displaystyle \text{var}(X) = \frac{(b - a)(b - a + 2)}{12}$.
 :::
 
@@ -218,20 +219,22 @@ par( mfrow = c(2, 2))
 
 n <- c(8, 8, 
        15, 15)
-p <- c(0.2, 0.6, 
-       0.2, 0.6)
+prob <- c(0.2, 0.6, 
+          0.2, 0.6)
 
 for (i in (1:4)) {
-  x <-  0:n[i]
+  ni <- n[i]
+  probi <- prob[i]
+  x <-  0:ni
   y <- dbinom(x, 
-              size = n[i],
-              prob = p[i])
+              size = ni,
+              prob = probi)
   
    plot( x = x,
          y = y,
-         xlab = "x",
+         xlab = expression(italic(x)),
          ylab = "Probability function",
-         main = paste("Binomial: n =", n[i], "and p =", p[i]),
+         main = bquote("Binomial: " ~ italic(n) == .(ni) ~ " and " ~ italic(p) == .(probi)),
          las = 1,
          lty = 3,
          col = "grey",
@@ -544,7 +547,7 @@ for (i in (1:4)) {
          pch = 1)
 
   muPoisson <- nValue * pValue
-  xValues <- 1:xmax[i]
+  xValues <- 0:xmax[i]
   points( x = xValues,
           y = dpois(xValues,
                     lambda = muPoisson),
@@ -595,7 +598,7 @@ We write $X\sim\text{Geom}(p)$.
 
 The pf for a geometric distribution for various values of $p$ is shown in Fig. \@ref(fig:Geometric).
 
-```{r Geometric, echo=FALSE, fig.align="center", fig.cap="The pf for the geometric distribution for $p = 0.2$, $0.3$, $0.5$ and $0.8$"}
+```{r Geometric, echo=FALSE, fig.height = 6.5, fig.align="center", fig.cap="The pf for the geometric distribution for $p = 0.2$, $0.3$, $0.5$ and $0.8$"}
 par( mfrow = c(2, 2))
 
 xmax <- c(10, 15, 15, 15)
@@ -612,7 +615,7 @@ for (i in (1:4)) {
          y = y,
          xlim = c(0, xmax[i]),
          xlab = expression(italic(x)),
-         ylab = "Probability",
+         ylab = "Probability function",
          main = bquote("Geometric: " ~ italic(p) == .(pValue) ),
                   las = 1,
          col = "grey",
