@@ -138,13 +138,13 @@ An event $A$ *occurs* on a particular trial of an experiment if the outcome of t
 The relationship between different sets, say sets $A$ and $B$, can be described also.
 
 
-:::{.definition #IntersectionUnionSubset name="Intersection, union and subset"}
+:::{.definition #IntersectionUnionSubset name="Intersection, union, subset, complement"}
 Consider two sets $A$ and $B$ defined on the same sample space $S$.
 Then:
 
 * the **intersection** of sets $A$ and $B$, written as $A\cap B$, is the set of points in both $A$ and $B$.
 * the **union** of sets $A$ and $B$, written as $A\cup B$, is the combined set of all the points in either $A$ or $B$, or both. 
-  (Usually we just say that $A\cup B$ is the points in '$A$ or $B$'.)
+  (Usually we just say that $A\cup B$ comprises the points in '$A$ or $B$'.)
 * $A$ is a **subset** of B, written as $A\subset B$, if all the elements of $A$ are in $B$. (Set $B$ may have other elements that are not in $A$.)
 * the **complement** of $A$ is the set of points that are in $S$, but are *not* in $A$.
 :::
@@ -341,9 +341,9 @@ The term *disjoint* is used for *sets*, whereas *mutually exclusive* is used whe
 :::{.example #TwoCoinToss2 name="Tossing a coin twice"}
 Consider the simple random process of tossing a coin twice (Example \@ref(exm:TwoCoinToss), and define these two events:
 \begin{align*}
-   M: \text{'Obtain a head on Toss 1'}
-   &= \{ {T, T), (H, H)\}\\
-   N: \text{'Obtain a tail on Toss 1'} 
+   M: \text{Obtain a Head on Toss 1}
+   &= \{ (T, T), (H, H)\}\\
+   N: \text{Obtain a Tail on Toss 1} 
    &= \{ (T, T), (T, H)\}
 \end{align*}
 The two sets are *disjoint*, as there are no sample points in common.
@@ -605,14 +605,16 @@ set.seed(966141)                     # For repeatability
 
 ```{r SimTosses, echo=TRUE, fig.cap = "A simulation of tossing a fair coin $1000$ times. The probability of getting a head is computed from the data after each toss."}
 NumTosses <- 500 # Simulated tossing a coin 500 times
-Tosses <- sample(x = c("H", "T"),    # Choose either  "H"  or  "T"...
+Tosses <- sample(x = c("H", "T"),    # Choose either  "H"  or  "T"
                  size = NumTosses,   # Do this 500 times
                  replace = TRUE)     # H and T can be reselected 
 Tosses[1 : 10]                       # Show the first 10 results
-TossNunber <- 1:NumTosses)           # Sequence: toss number
-PropHeads <- cumsum(Tosses) / RunningTosses  # P(Heads) after each toss
+TossNumber <- 1:NumTosses            # Sequence: toss number
+PropHeads <- cumsum(Tosses == "H") / TossNumber
+                                     # P(Heads) after each toss
 
 plot(PropHeads,
+     main = "The proportion of heads after so many tosses",
      xlab = "Toss number",          # Label on x-axis
      ylab = "Proportion of heads",  # Label on y-axis
      type = "l",       # Draw a "l'ine rather than just "p"oints
@@ -620,7 +622,7 @@ plot(PropHeads,
      ylim = c(0, 1),   # y-axis limits
      las = 1,          # Make axes labels horizontal
      col = "blue")     # Line colour: blue
-abline( h = 0.5,       # Draw horizontal line at y = 0
+abline( h = 0.5,       # Draw horizontal line at y = 0.5
         col = "grey")  # Make line grey in colour
 ```
 
@@ -678,7 +680,7 @@ In a game of Oz Lotto, [seven numbered balls are drawn from balls numbered 1 to 
 There is no reason to suspect that any one number should be more or less likely to occur than any other number.
 Any set of seven numbers is just a likely to occur as any other set of seven numbers.
 
-Listing the sample space is difficult as there are a very arge number of options for selecting seven numbers from 47.s
+Listing the sample space is difficult as there are a very arge number of options for selecting seven numbers from 47.
 :::
 
 
@@ -884,7 +886,7 @@ The probability of observing rain depends on the SOI phase that month:
 RainTable <-  array( dim = c(3, 5))
 RainTable[1, ] <- c(9, 24, 12, 27, 24)
 RainTable[2, ] <- c(16, 25, 15, 28, 29)
-RainTable[3, ] <- round(RainTable[1, ] / RainTable[2, ], 2)
+RainTable[3, ] <- as.character( round(RainTable[1, ] / RainTable[2, ], 2) )
 
 colnames(RainTable) <- c("Phase 1",
                          "Phase 2",
@@ -941,6 +943,44 @@ The definition automatically takes care of the sample space reduction noted earl
 COND PROB exame. REUSE above, with notation.
 :::
 
+
+:::{.example #MumpsIndpendence name="Independence"}
+@data:Soud2009:Mumps discusses the response of students to a mumps outbreaks in Kansas in 2006.
+Students were asked to isolate; Table \@ref(tab:MumpsIsolation) shows the behaviour of male and female student in the studied sample.
+
+For females, the probability of complying with the isolation request is:
+\[
+   \Pr(\text{Compiled} | \text{Females}) = 63/(63 + 21) = 0.75.
+\]
+
+For males, the probability of complying with the isolation request is
+\[
+   \Pr(\text{Compiled} | \text{Males}) = 36/(36 + 12) = 0.75.
+\]
+
+Whether we look at only females or only males, the probability of selecting a student in the sample that complied with the isolation request is the same: 0.75.
+
+Also, the probability that a student isolated (ignoring their sex) is:
+\[
+   \Pr(\text{Student isolated}) = \frac{99}{132} = 0.75.
+\]
+Complying with the isolation request is independent of the sex of the student.
+:::
+
+```{r MumpsIsolation, echo=FALSE}
+MumpsTable <- array( dim = c(2, 2))
+
+MumpsTable[1, ] <- c(63, 21)
+MumpsTable[2, ]<- c(36, 12)
+
+rownames(MumpsTable) <- c("Females",
+                          "Males")
+colnames(MumpsTable) <- c("Complied with isolation",
+                          "Did not comply with isolation")
+
+knitr::kable(MumpsTable,
+             caption = "Students response to isolation request at a Kansas university") 
+```
 
 ### Multiplication rule
 
@@ -1036,7 +1076,7 @@ If I walk, this does *not* exclude the possibility of having a busy day at work;
 
 Confusion between mutual exclusiveness and independence arises sometimes because the sample space is not clearly identified.
 
-Consider a random process involving tossing two coins at the same time.
+Consider a random process involving tossing two coins *at the same time*.
 The sample space is 
 \[
    S_2 = \{(H, H), (H, T), (T, H), (T, T)\}
@@ -1044,7 +1084,7 @@ The sample space is
 and these outcomes are mutually exclusive, each with probability 1/4 (using the classical approach).
 For example, $\Pr(H, H) = 1/4$.
 
-An alternative view of this random process is to think of *repeating* the process of tossing a coin once.
+An alternative view of this random process is to think of *repeating the process of tossing a coin once*.
 For one toss of a coin, the sample space 
 \[
    S_1 = \{H, T\}
@@ -1182,6 +1222,7 @@ Bayes' theorem has many uses in many disciplines, as it uses conditional probabi
 The theorem is the basis of a branch of statistics known as *Bayesian statistics* which involves using pre-existing evidence in drawing conclusions from data.
 
 
+
 ::: {.example #Cancer name="Cancer"}
 BETTER EG??
 
@@ -1251,41 +1292,6 @@ Then the probability of a woman in the study being under 25 at first pregnancy i
    &= 0.1148 + 0.5542 = 0.6690.
 \end{align*}
 
-\begin{figure}
-\begin{center}
-\setlength{\unitlength}{0.7mm}
-\begin{picture}(100,100)
-% Lines
-\put(0,50){\line(1,1){20}}
-\put(0,50){\line(1,-1){20}}
-\put(40,70){\line(2,1){30}}
-\put(40,70){\line(2,-1){30}}
-\put(40,30){\line(2,1){30}}
-\put(40,30){\line(2,-1){30}}
-% Labels/text
-\put(30,100){\makebox(0,0){\small Cervical}}
-\put(30,94){\makebox(0,0){\small cancer}}
-\put(85,100){\makebox(0,0){\small Age at}}
-\put(85,94){\makebox(0,0){\small first pregnancy}}
-\put(30,70){\makebox(0,0){\small $CC$}}
-\put(30,30){\makebox(0,0){\small $CC'$}}
-\put(75,85){\makebox(0,0)[l]{\small Aged $\le 25$}}
-\put(75,55){\makebox(0,0)[l]{\small Aged $>25$}}
-\put(75,45){\makebox(0,0)[l]{\small Aged $\le 25$}}
-\put(75,15){\makebox(0,0)[l]{\small Aged $>25$}}
-% Probs
-\put(7,67){\makebox(0,0){\small 0.134}}
-\put(7,33){\makebox(0,0){\small 0.866}}
-\put(55,83){\makebox(0,0){\small 0.857}}
-\put(55,57){\makebox(0,0){\small 0.143}}
-\put(55,43){\makebox(0,0){\small 0.640}}
-\put(55,17){\makebox(0,0){\small 0.360}}
-\end{picture}
-\caption{A tree diagram for Example~\ref{EG:prob:bayes:ccancer}.}
-\label{FG:prob:bayes:ccancer:tree}
-\end{center}
-\end{figure}
-
 
 Then, using Bayes' theorem again,
 \begin{align*}
@@ -1299,7 +1305,7 @@ Then, using Bayes' theorem again,
 
 ## Computing probabilities {#SC:compprobs}
 
-A tree diagram (see Figure~\ref{FG:prob:bayes:ccancer:tree}) is just one of several tools that can assist in calculating and manipulating probabilities.
+A tree diagram (see Fig. \@ref()) is just one of several tools that can assist in calculating and manipulating probabilities.
 Typically there is more than one way of arriving at a correct answer and as experience grows you will become adept at selecting the best method for a particular problem.
 Some examples are given below to illustrate the various approaches.
 
@@ -1311,76 +1317,116 @@ WE JUST USED A TREE BEFORE. REARRANGE ORDER??
 Tree diagrams are useful when an experiment can be seen, or thought of, as occurring in steps or stages.
 
 
-CHANGE THIS EXAMPLE, it is ODD
+:::{.example #HatData name="Wearing hats"}
+Researchers [@data:Dexter2019:SunProtection] observed the behaviour of pedestrians in Brisbane, Queensland, around midday in summer.
 
-::: {.example #MathsStudent name="Mathematics students"}
-In an article by Anderson~\cite{BIB:Anderson:gender}, 124 first year Honours mathematics students at a university in the UK were asked the question:
-
-> The point $z$ lies in the fourth quadrant (i.e., $-\pi/2 < \text{arg}(z) < 0$) of the complex plane.
-> $z^*$ denotes the complex conjugate of $z$.
-> Prove or disprove $\text{arg}(z + z^*) = 0$.
-
-The expectation was that most should have been able to correctly answer the question.
-The data from the last table on page~499 of the article has been used to construct a tree diagram,
-where the first stage or step can be considered the gender of the person to whom the test is given, and the next step is how the given person answers the question; see Figure~\ref{FG:prob:mathstree}.
-
-\begin{figure}
-\begin{center}
-\setlength{\unitlength}{0.7mm}
-\begin{picture}(130,100)
-% Lines
-\put(0,50){\line(1,1){20}}
-\put(0,50){\line(1,-1){20}}
-\put(40,70){\line(2,1){30}}
-\put(40,70){\line(2,-1){30}}
-\put(40,70){\line(1,0){30}}
-\put(40,30){\line(2,1){30}}
-\put(40,30){\line(2,-1){30}}
-\put(40,30){\line(1,0){30}}
-% Labels/text
-\put(30,70){\makebox(0,0){\small Male}}
-\put(30,30){\makebox(0,0){\small Female}}
-\put(75,85){\makebox(0,0)[l]{\small $0.76\times0.82=0.6232$}}
-\put(125,85){\makebox(0,0)[l]{\small Correct}}
-\put(75,70){\makebox(0,0)[l]{\small $0.76\times 0.11= 0.0836$}}
-\put(125,70){\makebox(0,0)[l]{\small Not answered}}
-\put(75,55){\makebox(0,0)[l]{\small $0.76\times0.07=0.0532$}}
-\put(125,55){\makebox(0,0)[l]{\small Incorrect}}
-\put(75,45){\makebox(0,0)[l]{\small $0.24\times 0.70=0.1680$}}
-\put(125,45){\makebox(0,0)[l]{\small Correct}}
-\put(75,30){\makebox(0,0)[l]{\small $0.24\times0.17 = 0.0408$}}
-\put(125,30){\makebox(0,0)[l]{\small Not answered}}
-\put(75,15){\makebox(0,0)[l]{\small $0.24\times0.13 = 0.0312$}}
-\put(125,15){\makebox(0,0)[l]{\small Incorrect}}
-\put(30,100){\makebox(0,0){\small \textbf{Gender}}}
-\put(75,100){\makebox(0,0)[l]{\small \textbf{Probability}}}
-\put(125,100){\makebox(0,0)[l]{\small \textbf{Answer}}}
-
-% Probs
-\put(7,67){\makebox(0,0){\small 0.76}}
-\put(7,33){\makebox(0,0){\small 0.24}}
-\put(57,83){\makebox(0,0){\small 0.82}}
-\put(60,73){\makebox(0,0){\small 0.11}}
-\put(57,57){\makebox(0,0){\small 0.07}}
-\put(57,43){\makebox(0,0){\small 0.70}}
-\put(60,33){\makebox(0,0){\small 0.17}}
-\put(57,17){\makebox(0,0){\small 0.13}}
-\end{picture}
-%\includegraphics[scale=0.50]{../pics/prob/mathstree.eps}
-\caption{The tree diagram for the data in
-Example~\ref{EG:prob:computing:tree}.}
-\label{FG:prob:mathstree}
-\end{center}
-\end{figure}
-
-
-So, for example, $\Pr(\text{correct} \mid \text{male}) = 0.82$, and $\Pr(\text{not answered} \mid \text{female}) = 0.17$.
-Note that the probabilities are usually given *on* the branches and the events at the *end* of the branches.
-Apart from the initial probabilities, the probabilities given are *conditional*, depending on which branch the probabilities are placed.
-
-Now, the probability $\Pr(\text{male} \mid \text{correct})$ can be computed as
-$(0.76 \times 0.82)/(0.76 \times 0.82 + 0.24\times 0.70) = 0.788$.
+A **tree diagram** (Fig. \@ref(fig:HatTree)) can be used to summarise the situation.
+'Step 1' is identifying the sex of the person.
+'Step 2' is then identifying whether they are wearing a hat. 
+Here:
+\begin{align*}
+   \Pr(\text{Wear hat} | \text{Male}) 
+   &= 0.205\\
+   \Pr(\text{Wear hat} | \text{Female}) 
+   &= 0.060
+\end{align*}
+The probability that a person wears a hat depends on the sex of the person.
 :::
+
+
+```{r HatTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the the hat-wearing data"}
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      main = "Tree diagram for the hat data",
+      xlab = "",
+      ylab = "",
+      axes = FALSE)
+#STEP 1
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.75),
+       lwd = 2)
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.25),
+       lwd = 2)
+# STEP 2
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.90),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.60),
+       lwd = 2)
+
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.40),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.10),
+       lwd = 2)
+
+# TEXT
+text(x = 0.50,
+     y = 0.75,
+     labels = "Males")
+text(x = 0.50,
+     y = 0.25,
+     labels = "Females")
+
+text(x = 0.90,
+     y = 0.90,
+     labels = "Hat")
+text(x = 0.90,
+     y = 0.60,
+     labels = "No hat")
+
+text(x = 0.90,
+     y = 0.40,
+     labels = "Hat")
+text(x = 0.90,
+     y = 0.10,
+     labels = "No hat")
+
+# ADD PROBS
+text(x = 0.38,
+     y = 0.63,
+     cex = 0.9,
+     labels = "0.513")
+text(x = 0.38,
+     y = 0.37,
+     cex = 0.9,
+     labels = "0.487")
+
+text(x = 0.65,
+     y = 0.84,
+     cex = 0.9,
+     labels = "0.205")
+text(x = 0.65,
+     y = 0.66,
+     cex = 0.9,
+     labels = "0.795")
+
+text(x = 0.65,
+     y = 0.34,
+     cex = 0.9,
+     labels = "0.060")
+text(x = 0.65,
+     y = 0.16,
+     cex = 0.9,
+     labels = "0.940")
+
+## STEPS
+text(x = 0.50,
+     y = 0.01,
+     label = expression(bold("Step 1"))
+     )
+text(x = 0.90,
+     y = 0.01,
+     label = expression(bold("Step 2"))
+     )
+```
+
+
 
 
 ### Tables
@@ -1389,32 +1435,38 @@ When there are two variables of interest, tables are a convenient way of summari
 Although tables can be used to represent experiments using conditional probabilities, it is usual to use the table to represent the whole sample space.
 
 
-AGAIN, GET BETTER EXAMPLE!!!
+:::{.example #HatData2 name="Wearing hats"}
+The data used in Example \@ref(exm:HatData) can also be compiled into a table (Table \@ref(tab:HatTable)).
 
-::: {.example #PublicService name="Public service"}
-The following table summarizes the number of men and women in the Senior Executive Service of the Australian Public Service in 1994.
-The data is from Townsend and McLennan~\cite{BIB:Townsend:women}.
-Band~1 is the lowest of the three Bands.
-
-
-\begin{center}
-\begin{tabular}{lcc}
- & \textbf{Women} & \textbf{Men} \\
-\hline
-Band~1 & 231 & 1031 \\
-Band~2 & 47 & 332 \\
-Band~3 & 7 & 79
-\\
-\hline
-\textbf{Total} & 285 & 1442
-\end{tabular}
-\end{center}
-
-The counts can be turned into probabilities (by dividing by the total number, $285 + 1442 = 1727$), or left as they are.
-
-Then, for example, the probability that a randomly chosen Senior Executive is female is $285/1727 = 0.16$.
-Likewise, the probability that a randomly chosen male Senior Executive is higher than Band~1 is $(332 + 79)/1442 = 0.29$.
+Using the table:
+\begin{align*}
+   \Pr(\text{Wear hat} | \text{Male}) 
+   &= \frac{79}{386} = 0.205\\
+   \Pr(\text{Wear hat} | \text{Female}) 
+   &= \frac{22}{366} = 0.060
+\end{align*}
 :::
+
+
+```{r HatTable, echo=FALSE}
+BRIS <- read.csv("Data/sunglasses.csv")
+BRIS$Gender <- factor(BRIS$Gender,
+                      levels = c(1, 2),
+                      labels = c("Males", 
+                                 "Females"))
+BRIS$Hat <- factor(BRIS$Hat,
+                   levels = c(0, 1),
+                   labels = c("Not Hat",
+                              "Hat"))
+
+HatTable <- xtabs( Count ~ Gender + Hat,
+                   data = BRIS)
+HatTable <- cbind( HatTable,
+                   "Total" = rowSums(HatTable) )
+knitr::kable(HatTable,
+             caption = "The numbers of males and females wearing a hat in the middle of the day in Brisbane")
+```
+
 
 
 
@@ -1424,55 +1476,165 @@ Venn diagrams can be useful when there are two events, sometimes three, but beco
 Often, tables can be used to better represent situations that have been shown in Venn diagrams.
 
 
-AGAIN: NEW EXAMPLE!
+::: {.example}
+Consider again the hat data (Example \@ref(exm:HatData); Example \@ref(exm:HatData2)).
 
-
-::: {.example #LabourForce name="Labour force"}
-Townsend and McLennan~\cite[p~84]{BIB:Townsend:women} report on the Australian Labour Force in 1995.
-They infer that the proportion of the work force that is male is $0.568$; the proportion that is under~25 is $0.218$; and that $0.113$ are males *and* under 25.
-This information can be used to construct Venn diagrams to summarise the sample space as there are two variables, gender (either Male or Female) and age (either under 25, or 25 and over).
-See Figure~\ref{FG:prob:labourvd}.
-The same information can be compiled into a Table; see Table~\ref{TB:prob:labourtab}.
-
-\begin{figure}
-\begin{center}
-%\includegraphics[scale=0.65]{../pics/prob/labourvd.eps}
-\caption{The Venn diagram for Example~\ref{EG:prob:Venn}.}
-\label{FG:prob:labourvd}
-\end{center}
-\end{figure}
-
-What proportion of the labour force were males over 25 in 1995?
-This can be answered using numerous methods: The Venn diagram, the table, or formulae.
-The answer can be taken directly from the Table to give $0.455$.
-Using the Venn diagram, the Male set consists of $0.133$ that belong in the Under 25 set, so the remainder must be over 25, so the probability is again $0.455$.
-
-To use the formula, define $M$ to be Male, and $Y$ to be Under 25.
-Then, $\Pr(M) = 0.568$, $\Pr(Y) = 0.218$ and $\Pr(M \cap Y) = 0.113$.
-Now, $\Pr(M \cap \overline{Y}) + \Pr(M\cap Y) = \Pr)M)$ (the Theorem of Total Probability), so that $\Pr(M \cap \overline{Y}) = 0.568 - 0.113 = 0.455$.
-
-
-\begin{table}
-\begin{center}
-\begin{tabular}{cccc}
-& \multicolumn{2}{c}{\textbf{Gender}} & \\
-\cline{2-3}
-\textbf{Age} & Male & Female & Total \\
-\hline
-$<25$ & \textbf{0.113} & 0.104 & \textbf{0.218} \\
-$\ge 25$ & 0.455 & 0.327 & 0.782 \\
-\hline
-Total & \textbf{0.568} & 0.432 & 1.000
-\end{tabular}
-\caption{The table for Example~\ref{EG:prob:Venn}.
-The numbers in bold are given with the data;
-the rest were deduced.}
-\label{TB:prob:labourtab}
-\end{center}
-\end{table}
-
-Try the three methods to compute the proportion of females over 25.
+Define these events:
+\begin{align*}
+   M:{} &\text{The person is male};\\
+   H:{} &\text{The person is wearing a hat}
+\end{align*}
+A Venn diagram could be constructed to show the sample space (???????) (Fig. \@ref(fig:HatVenn)).
 :::
+
+```{r HatVenn, echo=FALSE, fig.height=7, out.width = '95%', fig.align="center", fig.cap="The hat-wearing data as a Venn diagram"}
+par( mfrow = c(2, 2))
+colourMale <- rgb(0, 0, 255, 
+                  max = 255, 
+                  alpha = 125)
+colourHat  <- rgb(0, 255, 0, 
+                  max = 255, 
+                  alpha = 125)
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(M), " and ", bar(italic(M)))),
+      axes = FALSE)
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourMale)
+text(x = 0.4,
+     y = 0.5,
+     labels = expression(paste(italic(M), ": 307")))
+text(x = 0.8,
+     y = 0.5,
+     labels = expression(paste(bar(italic(M)), ": 366")))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+###############
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(H), " and ", bar(italic(H)))) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourHat)
+
+text(x = 0.6,
+     y = 0.5,
+     labels = expression(paste(italic(H), ": 101")))
+text(x = 0.2,
+     y = 0.5,
+     labels = expression(paste( bar(italic(H)), ": 651")))
+
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+####################
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(M), " and ", italic(H))) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourMale)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourHat)
+text(x = 0.3,
+     y = 0.5,
+     labels = expression(italic(M)))
+text(x = 0.7,
+     y = 0.5,
+     labels = expression(italic(H)))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+#################
+
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = "The numbers in each section",
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourMale)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourHat)
+text(x = 0.3,
+     y = 0.5,
+     labels = "307")
+text(x = 0.7,
+     y = 0.5,
+     labels = "22")
+text(x = 0.7,
+     y = 0.85,
+     labels = expression(bar(italic(M)) ~ intersect() ~ bar(italic(H)) ~ ": 344") )
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+# Intersection
+text(x = 0.5, 
+     y = 0.5, 
+     label = "79")
+
+
+
+
+
+
+
+
+```
 
 
 ### Sample spaces
@@ -1514,7 +1676,7 @@ knitr::kable(DieSum,
 \end{tabular}
 \end{center}
 
-Then, $\Pr(\text{sum is {7}}) = 6/36$ is found by counting the equally likely outcomes that sum to seven.
+Then, $\Pr(\text{sum is 7}) = 6/36$ is found by counting the equally likely outcomes that sum to seven.
 :::
 
 When the number of elements in the sample space is large, principles and formulae exist which facilitate counting.
@@ -1564,9 +1726,10 @@ In some cases, it is necessary to know the number of ways in which the first $r$
 For this problem, the first element in the ordering may be chosen in $n$ different ways, the second in $(n -1)$ ways, the third in $(n - 2)$ ways, and so on... down to the $rth$, which may be chosen in $(n -r + 1)$ ways. 
 
 This number is denoted by $^nP_r$, and we write
-\[
+\begin{equation}
    ^nP_r = n(n-1)(n-2)\ldots (n - r + 1) = \frac{n!}{(n - r)!}.
-\]
+    (\#eq:Permutation)
+\end{equation}]
 This expression is referred to as *the number of permutations of $r$ elements from a set with $n$ elements*.
 
 
@@ -1576,7 +1739,7 @@ In some cases, order is not important when choosing a subset.
 A *combination* of $r$ elements from a set $S$ is a subset of $S$ with exactly $r$ elements.
 
 Now we need to find the number of combinations of $r$ elements from a set with $n$ distinct elements, and we will denote it by $^nC_r$.
-The number of permutations is given by~(\ref{EQN:perms}), but of course the number of combinations must be smaller, since each combination gives rise to several permutations.
+The number of permutations is given by \@ref(eq:Permutation), but of course the number of combinations must be smaller, since each combination gives rise to several permutations.
 In fact, each combination of $r$ elements can be ordered in $r!$ different ways, and so gives rise to $r!$ permutations.
 Hence, the number of permutations must be $r!$ times the number of combinations.
 We have then,
