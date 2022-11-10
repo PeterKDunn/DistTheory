@@ -916,12 +916,10 @@ The probability of observing rain depends on the SOI phase that month:
 
 ```{r CharlevilleRain, echo=FALSE}
 RainTable <-  array( dim = c(3, 5))
-RainTable[1, ] <- as.character(c(9, 24, 12, 27, 24)
+RainTable[1, ] <- c(9, 24, 12, 27, 24)
 RainTable[2, ] <- c(16, 25, 15, 28, 29)
 RainTable[3, ] <- as.character( round(RainTable[1, ] / RainTable[2, ], 2) )
-# Turn numbers to text to retain as integers
-RainTable[1, ] <- as.character( round(RainTable[1, ]) )
-RainTable[2, ] <- as.character( round(RainTable[2, ]) )
+# This turn all integers to text to retain as integers
 
 colnames(RainTable) <- c("Phase 1",
                          "Phase 2",
@@ -957,7 +955,7 @@ Consider the first.
 If you are told that someone falls out of an airborne plane with no parachute, the probability that they die is very high.
 
 Consider the second.
-If you are told that some has died, it is very unlikely the the cause is a fall from aa airborne plane.
+If you are told that some has died, it is very unlikely the the cause is a fall from an airborne plane.
 
 Thus, the first probability is very close to one, and the second is very close to zero.
 :::
@@ -1233,7 +1231,7 @@ In simple terms, these state:
 2. The events consider together comprise the entire sample space (that is, no outcome is left out).
 3. No event has zero probability of occurring.
 
-The second of these is often referred to as the events $Bi$ being *exhaustive*.
+The second of these is often referred to as the events $B_i$ being *exhaustive*.
 
 The implication is that when the random process is performed, one and only one of the events $B_i$ ($i = 1, \ldots, k)$ occurs.
 
@@ -1355,14 +1353,15 @@ Using [Bayes' Theorem](#Bayes):
 Consider what this says: Given that a mammogram returns a *positive test*, the probability that the woman really has breast cancer is only about 6%...
 
 This partly explains why mammograms for women under 40 are not commonplace: most women who get a positive test results actually do not have breast cancer.
-The reason for this is explained LATER (TREE).
+
+The reason for this surprising result is explained in Example \@ref(exm:BreastCancerTree).
 :::
 
 
 
 
 
-## Computing probabilities {#SC:compprobs}
+## Computing probabilities {#ComputingProbs}
 
 Different schemes can be used to help compute probabilities, such as tree diagrams, tables and Venn diagrams.
 Typically. the correct answer canbe found using many different methods.
@@ -1374,7 +1373,7 @@ Tree diagrams are useful when a [random process](#RandomProcess) can be seen, or
 The branches in the 'second stage' are *conditional probabilities*, conditional of the branch on the first step. 
 
 
-:::{.example}
+:::{.example #BreastCancerTree name="Breast cancer"}
 Consider using a tree diagram to describe the breast cancer information from Example \@ref(exm:BreastCancer), as shown in Fig. \@ref(fig:BreastTree).
 By following each 'branch' of the tree, we can compute, for example:
 \[
@@ -1387,7 +1386,7 @@ But compare:
 \]
 that is, the probability that a woman has a positive test **and no** breast cancer (that is, a *false* positive) is about 0.098.
 
-This explains the surprisingly result in Example \@ref(exm:BreastCancer): Because breast cancer is so uncommon in younger women, the number of *false* positives overwhelms the number of *true* positives.
+This explains the surprisingly result in Example \@ref(exm:BreastCancer): Because breast cancer is so uncommon in younger women, the *false* positives (0.098) overwhelms the *true* positives (0.015).
 :::
 
 
@@ -1693,7 +1692,7 @@ Often, tables can be used to better represent situations that have been shown in
 
 
 
-::: {.example}
+::: {.example #BreastCancerVenn name="Breast cancer"}
 Consider again the breast cancer data (Example \@ref(exm:BreastCancer)).
 
 The events $C$ and $D$ were defined [earlier](#exm:BreastCancer)).
@@ -2042,7 +2041,7 @@ Some of these are described in the next section.
 The number of elements in a set is often large, and a complete enumeration of the set is unnecessary if all we want to do is to count the number of elements in it.
 
 
-### Multiplication principle
+### Multiplication principle {#MultiplicationPrinciple}
 
 If we have $m$ ways to perform act $A$ and if, for each of these, there are $n$ ways to perform act $B$, then there are $m\times n$ ways to perform the acts $A$ *and* $B$. 
 This is called the *multiplication principle*.
@@ -2112,7 +2111,7 @@ This expression is referred to as *the number of permutations of $r$ elements fr
 
 
 
-### Combinations
+### Combinations {#Combinations}
 
 In some cases, order is not important when choosing a subset (i.e., when dealing a hand of cards). 
 A *combination* of $r$ elements from a set $S$ is a subset of $S$ with exactly $r$ elements.
@@ -2211,7 +2210,9 @@ The remaining case of the number of ways $r$ objects can be chosen from $n$ *wit
 (The number of ways is actually ${n + r - 1 \choose r}$.)
 
 
-### Binomial theorem
+### Binomial theorem {#BinomialTheorem}
+
+WHERE USED? POINT TO APPENDIX?
 
 The binomial expansion
 \[
@@ -2229,7 +2230,7 @@ Some of these properties are stated below.
 
 
 
-## Introducing statistical computing
+## Introducing statistical computing {#StatisticalComputing}
 
 Computers and computer packages are essential tools in the application of statistics to real problems. 
 In this book, you will be introduced to the statistical package **R**. 
@@ -2282,20 +2283,26 @@ These estimates could be expected to improve for larger sample sizes.)
 
 ```{r echo=TRUE}
 set.seed(93671) # For reproducability
-CarDoor <- sample(1:3, 
-                  size = 1000,
+
+# Choose the door where the car is hiding:
+CarDoor <- sample(1:3,         # Could be behind Door1, 2 or 3
+                  size = 1000, # Repeat 1000 times
                   replace = TRUE)
-FirstChoice <- sample(1:3,
-                  size = 1000,
+# Choose the contestants initial choice:
+FirstChoice <- sample(1:3,     # Could guess Door 1, 2 or 3
+                  size = 1000, # Repeat 1000 times
                   replace = TRUE)
 
-WinFirstChoice <- sum( CarDoor == FirstChoice)
-WinSecondChoice <- sum( CarDoor != FirstChoice)
+# Compute the chances of winning the car:
+WinByNotSwitching  <- sum( CarDoor == FirstChoice)
+WinBySwitching     <- sum( CarDoor != FirstChoice)
 
-c(WinFirstChoice, WinSecondChoice) / 1000
+c(WinByNotSwitching, WinBySwitching) / 1000
 ```
 
 ## Looking ahead
+
+DELETE THIS SECTION??
 
 The study of probability is basic to the study of modern statistics.
 Consider the following example, the data coming from the Journal of Applied Physiology (1984), 1020--1023.
