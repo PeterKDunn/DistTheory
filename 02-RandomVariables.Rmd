@@ -3,23 +3,29 @@
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
 Upon completion of this chapter, you should be able to:
 
-* distinguish between discrete, continuous and mixed random variables both for discrete and continuous cases.
-* determine the probability function of random variables defined for an experiment.
-* determine the distribution function of a random variable from its probability function and apply it to the computation of probabilities of defined events.
+* distinguish between discrete, continuous and mixed random variables.
+* determine the probability function of random variables defined for a random process, and apply it to the computation of probabilities of defined events.
+* determine the distribution function of a random variable from its probability function, and apply it to the computation of probabilities of defined events.
 * plot the probability function and distribution function of a random variable.
-* understand the concept of a mixed random variable and manipulate its probability function.
 :::
 
+
+## Introduction
+
+While some random processes have a limited number of outcomes (e.g., tossing a die), some have an unlimited number of discrete outcomes (e.g., the number of attempts needed to win a lottery), and some have a range of possible outcomes over some interval (e.g., tomorrow's maximum temperature).
+The differences amongst these types of sample spaces lead to thinking in terms of discrete numbers (such as integers) and continuous numbers (such as the reals).
+
+To do this, we define a *random variable* on the sample space.
 
 
 ## Random variables {#RandomVariables}
 
 Chap. \@ref(Probability) introduced the language and tools of probability to describe uncertainty.
 The concepts of the [*sample space*](#def:SampleSpace) was introduced, which lists all the possible outcomes of a [*random process*](#def:Process).
-Often, however, the elements of the sample space are often not of direct interest... especially if the sample space contains many elements.
-Often, combinations of these sample space elements are of greater interest and more convenient to work with.
+Often, however, the elements of the sample space are not of direct interest... especially if the sample space contains many elements.
+Combinations of these sample space elements are usually of greater interest and more convenient to work with.
 
-For example, the sample space for the observing the rolls of two dice (Example \@ref(exm:TwoDice) contains 36 elements.
+For example, the sample space for the observing the rolls of two dice (Example \@ref(exm:TwoDice)) contains 36 elements.
 We may be interested in the *sum* of the two rolls anyway, rather than which elements in the sample space gave rise to the sum.
 That is, we may be more interested in *whether* we roll a sum of 5 than *how* that sum of 5 was obtained.
 We can 'collect' various elements of the sample space together and treat them as a collective of what we are interested in.
@@ -31,27 +37,54 @@ This leads to the idea of a *random variable*.
 
 
 :::{.definition #RandomVariable name="Random variable"}
-A *random variable* is some function that assigns a real number to each value in the sample space.
+A *random variable* is some function that assigns a real number (say, $X(s)$) to each outcome $s$ in the sample space $S$.
 
-That is, its domain (i.e., input) is elements of the sample space of a random process, and the results is a real value. 
+That is, its *domain* (i.e., input) is elements of the sample space of a random process, and the results is a real value. 
 :::
+
+Since $X$ is a function, every $s\in S$ is assigned to exactly one value $X(s)$.
+(The converse is not true: many values of $s\in S$ may be assigned to the same value of $X(s)$.)
+
+*Random variable* may be abbreviated to rv.
+
+:::{.definition #DomainRange name="Domain and range"}
+The *domain* of a random variable is the sample space, and the *range space* or *value set* is the set of real numbers taken by function.
+:::
+
+The domain of $X$ is the set $S$ and the range space is the set $\{X(s)\mid s\in S\}$.
+
+
+
 
 The variable is *random* since its value depends upon the outcome of the random process.
 
 
 
+A capital letter (such as $Y$) is usually used to denote the *description* of the random variable, while lower-case letters (such as $y$) are used to describe the *values* of the random variable.
+For example, if we write $Y = 3$, this could mean:
+
+* 'The sum of the roll of two dice...' (that is, $Y$)
+* '...is equal to...' (that is, the ${} = {}$ sign)
+* '... the value 3.' (that is, $y = 3$)
+
+
+
 :::{.example #TwoDiceRV name="Sum of two dice rolls"}
-For the example above (the sum of rolling two dice), the sample space cold be defined as $\{r_1, r_2\}$, where $r_1$ and $r_2$ are the results of roll 1 and 2 respectively. 
+Consider observing the rolls of two dice.
+The sample space contains 36 elements (Example \@ref(exm:TwoDice)), and could be denoted as $(r_1, r_2)$, where $r_1$ and $r_2$ are the results of roll 1 and 2 respectively. 
 The sample space is listed in Table \@ref(tab:TwoDice).
 
 Then, we could define the random variable $Y$ on this sample space as:
 \[
    Y = r_1 + r_2.
 \]
-Then, for example, the elements of $S$ that are associated with $Y = 4$ are
+In this way, every outcome in the sample space is assigned a real value.
+Then, for example, the elements of $S$ assigned to $Y = 4$ are
 \[ 
    (1, 3), (2, 2), (3, 1).
 \]
+Notice that many elements of the sample space can be assigned to the same value of the random variable.
+
 The (real) values that $Y$ can take are $2, 3, \dots 12$.
 :::
 
@@ -60,7 +93,8 @@ Sample space elements   | Value of random variable
 (1, 1)                  |  2
 (1, 2), (2, 1)          |  3
 (1, 3), (2, 2), (3, 1)  |  4
-
+$\vdots$                | $\vdots$
+(6, 6)                  | 12
 
 
 :::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -69,35 +103,49 @@ In algebra, a "variable" is the value of an unknown quantity.
 :::
 
 
-:::{.example}
-Consider the random process 'observing the outcome of tossing a coin three times'.
+:::{.example #DrawTwoCards name="Drawing two cards"}
+Consider drawing two cards from a standard, well-shuffled pack of cards, and observing the colour of the card (B: Black; R: Red).
+The sample space $\Omega$ is:
+\[
+   \Omega = \{ (B, B), (B, R), (R, R), (R, B)\}.
+\]
+Many random variable coud be defined on this sample space; for example:
+\begin{align*}
+   T&: \text{The number of black cards drawn};\\
+   M&: \text{The number of red cards drawn on the first draw};\\
+   D&: \text{The number of black cards drawn, minus the number of red cards drawn}.
+\end{align*}
+All of these assign a real number to each element of $\Omega$.
+The random variable $D$, for instance, is defined as:
 
-The sample space is
-\begin{align*}
-   \Omega 
-   &= \{(H, H, H), (H, H, T), (H, T, H), (H, T, T)\\
-   &\phantom{{}= \}}(T, H, H), (T, H, T), (T, T, H), (T, T, T) \}.
-\end{align*}
-We could then define the random variable $F$ as 'the number of heads of the *first two* tosses'.
-Then each element of the sample space can be assigned to a real number:
-\begin{align*}
-   (T, T, T), (T, T, H)\quad&\text{are assigned to}\quad F = 0;\\
-   (H, T, T), (H, T, H), (T, H, H), (T, H, T) \quad&\text{are assigned to}\quad F = 1;\\
-   (H, H, T), (H, H, H)\quad&\text{are assigned to}\quad F = 2.
-\end{align*}
-Writing $F = 0$ means 'the number of heads in the first two tosses has the value $0$'.
+Sample space elements | Value of $D$
+----------------------|-----------------
+$(B, R)$ and $(R, B)$ | $D = 0$
+$(B, B)$              | $D = 2$
+$(R, R)$              | $D = -2$
+
 :::
 
 
+:::{.example #TossCoinTillHead name="Tossing a coin till a head appears"}
+Consider the random process 'tossing a coin until a Head is observed'.
 
-NOTATION BOX?
+The sample space is
+\[
+   \Omega = \{(H), (T, H), (T, T, H), (T, T, T, H), \dots \}.
+\]
+We could then define the random variable $N$ as 'the number of tosses until the first head is thrown'.
+Then each element of the sample space can be assigned to a real number:
+\begin{align*}
+   (H)\quad&\text{is assigned to}\quad N = 1;\\
+   (T, H)\quad&\text{is assigned to}\quad N = 2\\
+   (T, T, H)\quad&\text{is assigned to}\quad N = 3,
+\end{align*}
+and so on.
+Writing $N = 2$ means 'the number of tosses to observe the first head is two'.
+:::
 
-A capital letter is usually used to describe the random variable (such as $Y$), while lower-case letters are used to describe the *value* of the random variable (such as $y$).
-For example, if we write $Y = 3$, this means:
 
-* 'The sum of the roll of two dice...' (that is, $Y$)
-* '...is equal to...'
-* '... the value 3.' (that is, $y = 3$)
 
 
 
@@ -106,21 +154,29 @@ For example, if we write $Y = 3$, this means:
 Random variables can be discrete, continuous, or a mixture of both.
 
 
+### Discrete random variables
+
 :::{.definition #DiscreteRV name="Discrete random variable"}
-A **discrete random variable** contains a finite of countably infinite number of values.
+A **discrete random variable** contains a finite or countably infinite number of values.
 :::
 
-NEED YO CONNECT THESE EXAMPLES TO THE DEFINITION ABOVE.
-See older text below.
+
+:::{.example}
+In Example \@ref(exm:TwoDiceRV), exactly 11 values of the random variable $Y$ are possible: $2, 3, \dots 12$.
+
+In Example \@ref(exm:DrawTwoCards), the random variable $D$ can take one of three possible values: $-2, 0\text{ or }2$.
+
+In Example \@ref(exm:TossCoinTillHead), the random variable $N$ takes a *countably infinite* number of possible values: $1, 2, 3, \dots$
+:::
+
 
 Notice that this definition refers to the values of random variable, not to the [sample space](#def:SDiscreteSampleSpace) (i.e., the inputs to the function).
 
 
-:::{.example}
-???
-:::
 
+### Continuous random variables
 
+**CONT NEEDS LOTSA WORK**
 
 :::{.definition #ContinuousRF name="Continuous random variable"}
 A **continuous random variable** can take on any value within any given interval.
@@ -135,157 +191,7 @@ Better measuring instruments may be able to record height to one or more decimal
 :::
 
 
-
-:::{.definition #MixedRF name="Mixed random variable"}
-A **mixed random variable** has regions where the random variable is [discrete](#def:DiscreteRF) and regions where it is [continuous](#def:ContinuousRF).
-:::
-
-
-:::{.example}
-Consider the time spent by vehicles waiting at a set of traffic lights before proceeding.
-
-If the light is green on arrival, the wait tune is exactly zero (i.e., discrete): the vehicle can drive straight through the intersection.
-
-However, if the light is red on arrival, the vehicle needs to  wait a continuous amount of time before it turns green.
-
-The time spent waiting is a *mixed* random variable.
-:::
-
----
-
-The sample space was defined as the set of all possible outcomes and an event was defined as a subset of the sample space.
-Probabilities were associated with events.
-The outcomes themselves could be numeric, as in tossing a die, or non-numeric, as in tossing a coin.
-
-Interestingly, it is advantageous to restrict ourselves to *numerical* outcomes from random processes.
-This may sound unnecessarily restrictive, but is not.
-After all, we could number all the outcomes in the sample space, thereby converting non-numeric elements to numeric ones.
-So, for example, heads could be denoted 1 and tails 2 in the sample space associated with tossing a coin.
-
-This might sounds a bit unnecessary and, in the simple case of coin tossing, it probably is.
-However using numeric outcomes means we can make use of the powerful concepts that are associated with numbers.
-In particular the concepts of discreteness, continuousness, types of infinity, limits, etc. are available.
-So what might appear to be restrictive is really the key to unlocking some powerful ideas and results that make probability theory and in turn, statistical theory, incredibly useful.
-
-Of course, in most scientific, engineering and business applications, our interests are in assigning probabilities to numeric outcomes.
-For example,
-
-* Probabilities can be assigned to different amounts of money made by an investment
-* Probabilities can be assigned to the proportion of people that contract a given disease
-* Probabilities can be assigned to observing different water levels at a certain river crossing
-* Probabilities can be assigned to matching DNA sequences when their genome sequences are almost identical
-* Probabilities can be assigned to recording certain rainfall amounts.
-
-While some experiments give rise to just a limited number of outcomes (e.g., tossing a die), some give rise to an unlimited number of discrete outcomes (e.g., the number of attempts needed to win a lottery), and some give rise to a range of possible outcomes over some interval (e.g., water levels in a dam, rainfall, tomorrow's maximum temperature).
-The differences amongst these types of sample spaces is what drives us to thinking in terms of discrete numbers (such as integers) and continuous numbers (such as the reals).
-
-To do this, we define a *random variable* on the sample space, which is a way of converting the elements of the sample space into numbers.
-Depending on the type of sample space, this random variable can be discrete, continuous, or a mixture of both.
-Regardless, it is useful and important to be able to describe the possible values of the random variable and the probability associated with these values.
-This is called the *distribution of the random variable*.
-
-
-CHECK THE ORDER ON CONCEPTS IN HERE...
-
-
-:::{.example #DieToss name="Rolling dice"}
-When a fair die is rolled, the classical approach to probability can be used to determine the theoretical probabilities 
-\begin{align*}
-     & \Pr(\text{roll a 1}) = \Pr(\text{roll a 2}) \\
-   = &\cdots = \Pr(\text{roll a 6}) = 1/6.
-\end{align*}
-Define the random variable $X$ as the number of pips showing on the die.
-Then, $X = 1$ for the outcome ${1}$. 
-Consequently:
-\[
-   \Pr(X = 1) = \Pr(X = 2) = \dots = \Pr(X = 6) = 1/6
-\]
-and this is a *model* for describing the distribution of the random variable $X$ for this experiment.
-:::
-
-
-NEED FORMAL DEFN OF *MODEL*?
-
-The idea of a *model* is a theoretical concept.
-In practice, when a die is rolled repeatedly, the number of times that each face is observed will not always be 1/6.
-The distribution given above is the ideal situation, or the situation as the number of rolls approaches infinity.
-
-The theoretical distribution is said to *model* the experiment.
-The classical approach to assignment of probabilities gives us a model in this case.
-For other experiments, other models will be appropriate.
-
-This chapter discusses the concept of the *random variable* and the *distribution* of probabilities amongst the values of a random variable.
-Later chapters describe specific distributions useful for modelling.
-
-
-## Random variables {#RandomVariablesa}
-
-Colloquially, a random variable is a numerical-valued variable. 
-A random variable may be *continuous*, *discrete* or a combination of the two.
-
-
-:::{.definition #DomainRange name="Domain and range"}
-A random variable $X$ is a *real-valued function* mapping each element of the sample space onto a real number. 
-
-The *domain* of a random variable is the sample space, and the *range space* or *value set* is the set of real numbers taken by function.
-:::
-
-The random variable $X$ can be seen as a rule assigning a number to each and every outcome in the sample space.
-
-Using functional notation, a function $X$ is a random variable if it assigns a real number $X(s)$ to every sample point $s\in S$.
-Further, since $X$ is a function, to every $s\in S$ there corresponds exactly one value $X(s)$.
-The domain of $X$ is the set $S$ and the range space is the set $\{X(s)\mid s\in S\}$.
-
-Commonly, *random variable* is abbreviated to rv.
-
-
-### Discrete random variables {#DiscreteRVs}
-
-A *discrete* random variable (rv) is defined on a *discrete* sample space.
-Examples of discrete random variables include:
-
-* The number of mice in a cohort of twenty that develop an illness.
-* The number of rain events occurring during a week.
-* The amount of money in a person's pocket.
-* The shoe size of a person.
-* The number of attempts needed to win Lotto.
-* The number of offspring successfully reared by an endangered species of bird.
-* The gender (after coding) of the next customer.
-
-The last example might need explaining.
-The sample space for the associated experiment contains two points 'female' and 'male'; i.e., 
-\[
-   S = \{\text{female}, \text{male}\}.
-\]
-A random variable, though, must be numeric.
-So to be a random variable, 'Gender' must associate the outcomes in the sample space with numerical values.
-This can be achieved using an arbitrary coding, such as 0 for 'female' and 1 for 'male'.
-
-We can then write $X(\text{female}) = 0$ and $X(\text{male}) = 1$, where $X$ denotes the random variable 'Gender'.
-Notice the range space or value set of $X$ is $\{0,1\}$ which we might denote as $R_X$.
-
-NOTE CODING IS ARBITRARY!
-
-Often we dispense with formal functional notation when defining random variables and write, for example,
-\[
-   X = 
-   \begin{cases} 
-      0 & \text{if Gender is female}\\
-      1 & \text{if Gender is male}
-    \end{cases}.
-\]
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Don't confuse the *definition* of a random variable with the *values* of the random variable.
-
-In the last example, the rv 'Gender' can have two values: 'Female' (codeds as 0) or 'Male' (coded as 1). 
-'Male', or 0, is not a rv; it is one *value* of the rv 'Gender'.
-:::
-
-
-### Continuous random variables {#ContinuousRVs}
-
+**OLD**:
 Loosely speaking, a *continuous* random variable is one that can never be measured exactly. 
 If a random variable can assume any value, or a set of values, in an interval, then it is called *continuous*. 
 
@@ -311,7 +217,33 @@ Examples of continuous random variables include:
 * The time taken to perform a psychological test.
 
 
-### Mixed random variables {#MixedRVs}
+
+
+
+### Mixed random variables
+
+
+**THIS NEEDS RETHINKING, DEPENDING ON HOW CONT DEFINED**
+
+:::{.definition #MixedRF name="Mixed random variable"}
+A **mixed random variable** has regions where the random variable is [discrete](#def:DiscreteRF) and regions where it is [continuous](#def:ContinuousRF).
+:::
+
+
+:::{.example}
+Consider the time spent by vehicles waiting at a set of traffic lights before proceeding.
+
+If the light is green on arrival, the wait time is exactly zero (i.e., discrete): the vehicle can drive straight through the intersection.
+
+However, if the light is red on arrival, the vehicle needs to  wait a continuous amount of time before it turns green.
+
+The time spent waiting is a *mixed* random variable.
+:::
+
+
+
+
+**OLD**:
 
 Mixed random variables are less common. 
 
@@ -321,6 +253,38 @@ For example, consider the time spent waiting at a set of traffic lights before p
 If the light is green when you arrive, you can drive straight through; the wait time is exactly zero seconds (this is the discrete component). 
 If the light is red when you arrive, you have to wait a continuous amount of time before it turns green.
 Hence, the time spent waiting is a mixed random variable.
+
+---
+
+**PLACE SOMEWHERE:**
+
+The idea of a *model* is a theoretical concept of the long-term patterns.
+In practice, when a die is rolled repeatedly, the number of times that each face is observed will not always be 1/6.
+The distribution given above is the ideal situation, or the situation as the number of rolls approaches infinity.
+
+The theoretical distribution is said to *model* the experiment.
+The classical approach to assignment of probabilities gives us a model in this case.
+For other experiments, other models will be appropriate.
+
+This chapter discusses the concept of the *random variable* and the *distribution* of probabilities amongst the values of a random variable.
+Later chapters describe specific distributions useful for modelling.
+
+---
+
+## Probability functions
+
+### Discrete random variables: Probability mass functions
+
+### Continuous random variables: Probability density functions
+
+### Mixed random variables
+
+
+
+---
+
+
+
 
 
 ::: {.example #BabyBoom name="Baby Boom data"}
