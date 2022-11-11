@@ -9,6 +9,8 @@ knitr::opts_chunk$set(
 
 
 
-plotColour <- rgb(47, 105, 113, 
-                  alpha = 0.2, 
-                  maxColorValue = 256)
+plotColour <- rgb(red = 47/256, 
+                  green = 105/256, 
+                  blue = 113/256, 
+                  alpha = 0.9, 
+                  maxColorValue = 1)
