@@ -17,12 +17,12 @@ Upon completion of this module students should be able to:
 
 ## Introduction
 
-Not all random experiments are sufficiently simple to have the outcome denoted by a single number $x$. 
+Not all random processes are sufficiently simple to have the outcome denoted by a single number $x$. 
 In many situations we are interested in observing two or more numerical characteristics simultaneously.
 
 This section only discusses the two-variable, or bivariate, case.
 
-Let $\cal E$ be an experiment and $S$ a sample space associated with $\cal E$.
+Let $\cal E$ be a random process and $S$ a sample space associated with $\cal E$.
 
 :::{.definition #RandomVector name="Random vector"}
 Let $X = X(s)$ and $Y = Y(s)$ be two functions, each assigning a real number to each sample point $s \in S$. 
@@ -64,11 +64,11 @@ The *joint probability density function*, $f_{X,Y}$, is a function satisfying
 \end{align}
 :::
 
-Note that the second of these indicates that the volume under the
-surface $f_{X,Y}(x,y)$ is one. Also, for $\Delta x, \Delta y$
+Note that the second of these indicates that the volume under the surface $f_{X,Y}(x,y)$ is one. 
+Also, for $\Delta x, \Delta y$
 sufficiently small,
 \begin{equation}
-   f_{X, Y}(x, y) \, \Delta x \Delta y \approx \Pr{x \leq X \leq x + \Delta x, y \leq Y \leq y+\Delta y}.
+   f_{X, Y}(x, y) \, \Delta x \Delta y \approx \Pr(x \leq X \leq x + \Delta x, y \leq Y \leq y+\Delta y).
 \end{equation}
 Probabilities of events can be determined by the probability function or the probability density function as follows.
 
@@ -120,30 +120,84 @@ So the sample space for the random vector $(X_1, X_2)$ is
 
 
 :::{.example #BVDiscrete2 name="Bivariate discrete"}
-Consider the following discrete distribution where probabilities $\Pr(X = x, Y = y)$ are shown as a graph in Fig.~\ref{FG:discbiv} and as a Table in Table~\ref{TB:discbiv}. 
+Consider the following discrete distribution where probabilities $\Pr(X = x, Y = y)$ are shown as a graph in Fig. \@ref(fig:Bivar1graph) and as a Table in Table \@ref(tab:Bivar1). 
 Find $\Pr(X + Y \geq 2)$.
 
 
+```{r, setup, echo=FALSE, message=FALSE, warning=FALSE}
+### Needed to add the rgl plot to bookdown
+library(rgl)
+knitr::knit_hooks$set(webgl = hook_webgl)
+```
 
-% 
-% \begin{figure}[h]
-% \hspace*{25mm}\includegraphics[bb=180 600 400 800
-% ]{../pics/rvs/c4f1ex.ps} \caption{A bivariate probability
-% function}\label{FG:discbiv}
-% \end{figure}
+```{r Bivar1graph, echo=FALSE, warning=FALSE, message=FALSE, webgl=TRUE, fig.cap="The bivariate probability function", fig.align="center"}
+library(rgl)
 
-\begin{table}[h]
-\begin{center}
-\begin{tabular}{cc|ccc}
-\multicolumn{2}{c}{}&\multicolumn{3}{c}{$x$}\\
-&&0&1&2 \\ \cline{2-5}
-&0&1/36&1/6&1/4\\
-$y$&1&1/9&1/3&0\\
-&2&1/9&0&0\\
-\end{tabular}
-\caption{A bivariate probability function}\label{TB:discbiv}
-\end{center}
-\end{table}
+# This is to output a rgl plot in a rmarkdown document.
+# setupKnitr()
+
+pmf1 <- data.frame(
+  x = c(0, 0, 0, 1, 1, 1, 2, 2, 2),
+  y = c(0, 1, 2, 0, 1, 2, 0, 1, 2),
+  f = c(1, 4, 4, 6, 12, 0, 9, 0, 0) / 36
+)
+
+# Add a new column with color
+
+# Plot
+plot3d( 
+  x = pmf1$x,
+  y = pmf1$y, 
+  z = pmf1$f, 
+  xlim = c(-0.5, 2.5),
+  ylim = c(-0.5, 2.5),
+  zlim = c(0, 0.4),
+  col = plotColour, 
+  type = "s", # Plot the points
+  radius = 0.05,
+  xlab = "X", 
+  ylab = "Y", 
+  zlab = "pmf")
+plot3d( 
+  add = TRUE,
+  x = pmf1$x,
+  y = pmf1$y, 
+  z = pmf1$f, 
+  col = plotColour, 
+  type = "h") # Plot the line segments from z = 0 
+
+# To display in an R Markdown document:
+# rglwidget()
+
+# To save to a file:
+
+#htmlwidgets::saveWidget(rglwidget(width = 520, height = 520), 
+#                        file = "Widgets/BivarPMF1.html",
+#                        libdir = "libs",
+#                        selfcontained = FALSE
+#                        )
+```
+
+
+```{r Bivar1, echo=FALSE}
+Bivar1Table <- array( dim = c(3, 3))
+
+Bivar1Table[1, ] <- c(1, 4, 12) / 36
+Bivar1Table[2, ] <- c(4, 12, 0) / 36
+Bivar1Table[3, ] <- c(9, 0, 0) / 36
+
+rownames(Bivar1Table) <- c("y = 0",
+                           "y = 1",
+                           "y = 2")
+colnames(Bivar1Table) <- c("x = 0",
+                           "x = 1",
+                           "x = 2")
+
+knitr::kable(Bivar1Table,
+             caption = "The bivariate probability function")
+```
+
+
 
 Note that the probabilities in the table add to one.
 
@@ -170,12 +224,6 @@ Note that the *volume* under the surface is one.
 
 Now the probability of the event above is the volume above the square with vertices $(0, 0), (0, \frac{1}{2}), (\frac{1}{2}, 0), (\frac{1}{2},\frac{1}{2})$ and is thus $\frac{1}{4}$.
 
-% \begin{figure}[h]
-% \hspace*{20mm}\includegraphics[bb=150 600 430 800
-% ]{../pics/rvs/c4f2unb.ps} \caption{Bivariate uniform
-% distribution}\label{FG:3:bivunif}
-% \end{figure}
-:::
 
 
 
@@ -191,6 +239,7 @@ As an example, the joint df at $(1, 2)$ would be computed as follows:
 \end{align*}
 The complete joint df is give below. 
 It is reasonably complicated even for this simple example.
+:::
 
 \begin{center}
 \footnotesize
@@ -245,10 +294,10 @@ Example~\ref{EG:3:2dice} is a special case of the *multinomial distribution* (a 
 Consider Example~\ref{EG:rvs:bivariate:discreteDC}. 
 Since the toss of the coin and the roll of the die are independent, the probabilities are computed as follows:
 \begin{align*}
-   \Pr{X_1 = 0, X_2 = 1} 
-   &= \Pr{X_1=0} \times \Pr{X_2=1} = \frac{1}{4}\times\frac{1}{6} = \frac{1}{24}\\
-   \Pr{X_1 = 1, X_2 = 1} 
-   &= \Pr{X_1=1} \times \Pr{X_2=2} = \frac{1}{2}\times\frac{1}{6} = \frac{1}{12}\\
+   \Pr(X_1 = 0, X_2 = 1) 
+   &= \Pr(X_1 = 0) \times \Pr(X_2 = 1) = \frac{1}{4}\times\frac{1}{6} = \frac{1}{24}\\
+   \Pr(X_1 = 1, X_2 = 1) 
+   &= \Pr(X_1 = 1) \times \Pr(X_2 = 2) = \frac{1}{2}\times\frac{1}{6} = \frac{1}{12}\\
 \end{align*}
 and so on. 
 The complete joint pf can be displayed in a graph (often tricky), a function, or a table. 
@@ -321,7 +370,7 @@ Hence,
 \end{align*}
 and so $c = 6/5$.
 
-The question is asking to find $\Pr{ 0\le X_1\le0.5, 0\le X_2\le 0.5}$; call this event $A$.
+The question is asking to find $\Pr() 0\le X_1\le 0.5, 0\le X_2\le 0.5)$; call this event $A$.
 Then,
 \begin{align*}
    \Pr(A)
@@ -366,7 +415,7 @@ In the case of a discrete random vector $(X, Y)$, the event $X = x_i$ should be 
 \]
 Thus,
 \begin{align*}
-   \Pr(X = x_i(
+   \Pr(X = x_i)
    &= \Pr(X = x_i, Y = y_1) + \Pr(X = x_i, Y = y_2) + \dots \\
    &= \sum_jp_{X, Y}(x_i, y_j)
 \end{align*}
@@ -424,7 +473,7 @@ Now
 so $k$ must be $\frac{1}{3}$.
 
 $\displaystyle f_X(x)=\int_0^2\left(x^2+\frac{xy}{3}\right) dy = \left[x^2y+\frac{xy^2}{6}\right]_{y=0}^2$.
-So $\displaystyle f_X(x)=2x^2+\frac{2x}{3}, \, 0 \leq x \leq 1$.\\
+So $\displaystyle f_X(x)=2x^2+\frac{2x}{3}, \, 0 \leq x \leq 1$.
 Also $\displaystyle f_Y(y)=\int_0^1\left(x^2+\frac{xy}{3}\right)dx=\left[\frac{1}{3}x^3 + \frac{1}{6}x^2y\right]_{x=0}^1.$
 
 So $f_Y(y) = \frac{1}{6}(2+y)$, $0 \leq y \leq 2$.
@@ -449,11 +498,11 @@ Similarly, for the other rows.
 \begin{center}
 \begin{tabular}{cc|ccc|c}
 \multicolumn{2}{c}{}&\multicolumn{3}{c}{x}&\multicolumn{1}{c}{}\\
-&&0&1&2&$\Pr{Y=y}$ \\ \cline{2-6}
+&&0&1&2&$\Pr(Y = y)$ \\ \cline{2-6}
 &0&4/9&2/9&1/36&25/36\\
 y&1&2/9&1/18&0&10/36\\
 &2&1/36&0&0&1/36 \\ \cline{2-6}
-&$\Pr{X=x}$&25/36&10/36&1/36&1\\
+&$\Pr(X = x)$&25/36&10/36&1/36&1\\
 \end{tabular}
 \end{center}
 
@@ -499,11 +548,11 @@ Consider $(X, Y)$ with joint probability function as in Example~\ref{EG:discbiv}
 \begin{center}
 \begin{tabular}{cc|ccc|c}
 \multicolumn{2}{c}{}&\multicolumn{3}{c}{x}&\multicolumn{1}{c}{}\\
-&&0&1&2&$\Pr{Y=y}$ \\ \cline{2-6}
+&&0&1&2&$\Pr(Y = y)$ \\ \cline{2-6}
 &0&1/36&1/6&1/4&4/9\\
 y&1&1/9&1/3&0&4/9\\
 &2&1/9&0&0&1/9\\ \cline{2-6}
-&$\Pr{X=x}$&1/4&1/2&1/4&1\\
+&$\Pr(X = x)$&1/4&1/2&1/4&1\\
 \end{tabular}
 \caption{Joint distribution for
 Example~\ref{EG:discbiv}}\label{TB:3:marg}
@@ -591,12 +640,6 @@ This is $f_{X, Y}(x, c)$, which will not, in general, be a density function sinc
 Dividing by the constant $f_Y(c)$ ensures the area under $\displaystyle\frac{f_{X,Y}(x,c)}{f_Y(c)}$ is one. 
 This is a 1-dimensional pdf, namely that of $X$ given $Y = c$; that is $f_{X \mid Y = c}(x\mid c)$.
 
-\begin{figure}[h]
-%\includegraphics[bb=30 160 570 450 ]{../pics/rvs/cond.ps} 540x290
-%\includegraphics[bb=40 160 418 363 ]{../pics/rvs/cond.ps}
-%\includegraphics[scale=0.75]{../pics/rvs/cond.eps}
-\caption{$f_{X,Y}(x,y)$ sliced by the plane $Y=c$.}\label{FG:5.3}
-\end{figure}
 
 :::{.example #BVDiscreteMarginal name="Bivariate discrete marginal distributions"}
 Consider again the experiment in Examples~\ref{EG:rvs:bivariate:discreteDC} and~\ref{EG:rvs:bivariate:discreteDCpmf}. 
@@ -635,7 +678,7 @@ Recall that events $A$ and $B$ are independent if and only if
 An analogous definition applies for rvs.
 
 
-:::{.definition #Independent name="Independentrvs"}
+:::{.definition #Independent name="Independent randim variables"}
 The random variables $X$ and $Y$ with joint df $F_{X, Y}$ and marginal df's $F_X$ and $F_Y$ are *independent* if and only if
 \begin{equation}
    F_{X, Y}(x, y) = F_X(x) \times F_Y(y)
@@ -682,8 +725,8 @@ Find the marginal distributions and determine whether or not $X$ and $Y$ are ind
 Summing across the rows we obtain the marginal probability function of $Y$. 
 That is, 
 \[
-   \Pr(Y = ) = 1/6, 
-   \Pr(Y = 2) = 1/3, 
+   \Pr(Y = 1) = 1/6, \quad
+   \Pr(Y = 2) = 1/3, \quad
    \Pr(Y = 3) = 1/2.
 \] 
 Summing each column, we obtain the marginal probability function of $X$. 
@@ -845,7 +888,7 @@ plot( x = c(0, 1),
       las = 1)
 polygon( x = c(0, 1, 0, 0),
          y = c(0, 1, 1, 0),
-         col = "blue")
+         col = plotColour)
 lines( x = c(0, 1, 0, 0),
        y = c(1, 1, 0, 1),
        lwd = 2)
@@ -1158,7 +1201,7 @@ Conditional expectations are simply expectations computed from a conditional dis
 
 The conditional mean is the expected value computed from a conditional distribution.
 
-:::{.definition #ConditionalExpectation name="Conditiopnal expectation"}
+:::{.definition #ConditionalExpectation name="Conditional expectation"}
 The *conditional expected value* or *conditional mean* of a random variable $X$ for given $Y = y$ is denoted by $\text{E}(X \mid Y = y)$ and is defined as
 \begin{align*}
    \text{E}(X \mid Y = y)
@@ -1382,7 +1425,7 @@ Exercise!
 :::
 
 
-### Vector formulation #{Vectors}
+### Vector formulation {#Vectors}
 
 Linear combinations of rvs are most elegantly dealt with using the methods and notation of vectors and matrices.
 
@@ -1545,7 +1588,8 @@ Finally we have
       1&0&6\end{array} \right]\left[\begin{array}{c}
       -1\\0\\1
   \end{array}\right] 
-  = -12$$
+  = -12
+\]
 :::
 
 
@@ -1626,7 +1670,7 @@ Suppose that the four basic blood groups O, A, B and AB are known to occur in th
 
 The probabilities are $p_1 = 0.45$, $p_2 = 0.4$, $p_3 = 0.1$, $p_4 = 0.05$, and
 \begin{align*}
-   \Pr(X_O = 3, X_A = 3, X_B = 1, X_{AB} = 1}
+   \Pr(X_O = 3, X_A = 3, X_B = 1, X_{AB} = 1)
    &= \frac{8!}{3!3!1!1!}(0.45)^3 (0.4)^3 (0.1)(.05)\\
    &= 0.033
 \end{align*}
@@ -1675,10 +1719,6 @@ For notational convenience with the *bivariate* normal distribution we often use
 
 A typical graph of the bivariate normal surface above the $x$--$y$ plane is shown below.
 
-\begin{figure}[h]
-   \includegraphics[scale=0.75]{../pics/speccontinuous/c5f4bnm.eps}
-\caption{The bivariate normal density function.}\label{FG:binorm}
-\end{figure}
 
 It can be shown that $\int^\infty_{-\infty}\!\int^\infty_{-\infty}f_{X,Y}(x,y)\,dx\,dy = 1$.
 
@@ -1903,7 +1943,7 @@ We find $X\sim N(60, 11.18^2)$.
 
 :::{.example #Exprain name="Vehicle accidents"}
 Let $X$ be the number of notifiable motor vehicle accidents in a day.
-Then $X \sim \Pois(M)$ where parameter $M$ has distribution defined by $\Pr(M = 10) = 0.9$ and $\Pr(M = 20) = 0.1$.
+Then $X \sim \text{Pois}(M)$ where parameter $M$ has distribution defined by $\Pr(M = 10) = 0.9$ and $\Pr(M = 20) = 0.1$.
 From (\ref{EQ:marg2}), the marginal pf of $X$ is
 \begin{equation}
   p_X(x)
@@ -1935,19 +1975,19 @@ Then
 \begin{equation}
   \Pr(H_n | E ) 
   = \frac{\Pr(H_n) \Pr(E|H_n) }{\Pr(E)}
-  = \frac{\Pr(H_n) \Pr(E|H_n) }{ \sum_m \Pr(H_m ) \Pr(E|H_m )}
+  = \frac{\Pr(H_n) \Pr(E|H_n) }{\sum_m \Pr(H_m ) \Pr(E|H_m )}
 \end{equation}
-assuming that $\Pr(E) \neq 0 $.
+assuming that $\Pr(E) \neq 0$.
 
 Bayes' theorem extends directly to random variables.
 
 Suppose that $X$ and $Y$ are discrete rv's such that $p_Y(y)$ is the pf for $Y$ and $p_{X|Y}(x,y)$ is the conditional pf for $X$ given $Y$.
 Then the conditional pf of $Y$ given $X$ is
-\begin{equation}
+\begin{align}
   p_{Y | X}(y, x)
   &= \frac{p_{X, Y}(x, y)}{p_X(x)} \\
   &= \frac{p_{X | Y}(x, y)p_Y(y)}{\sum_y p_{X|Y}(x,y)p_Y(y)}\label{EQ:Bayesdis}
-\end{equation}
+\end{align}
 Analogously, for the various combinations of continuous and discrete random variables,
 
 \begin{equation}

@@ -3,161 +3,204 @@
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
 Upon completion of this chapter, you should be able to:
 
-* distinguish between discrete, continuous and mixed random variables both for discrete and continuous cases.
-* determine the probability function of random variables defined for an experiment.
-* determine the distribution function of a random variable from its probability function and apply it to the computation of probabilities of defined events.
+* distinguish between discrete, continuous and mixed random variables.
+* determine the probability function of random variables defined for a random process, and apply it to the computation of probabilities of defined events.
+* determine the distribution function of a random variable from its probability function, and apply it to the computation of probabilities of defined events.
 * plot the probability function and distribution function of a random variable.
-* understand the concept of a mixed random variable and manipulate its probability function.
 :::
+
 
 ## Introduction
 
-In Chap. \@ref(Probability), the tools of probability were used to assist in answering questions about phenomena involving uncertainty.
-The sample space was defined as the set of all possible outcomes and an event was defined as a subset of the sample space.
-Probabilities were associated with events.
-The outcomes themselves could be numeric, as in tossing a die, or non-numeric, as in tossing a coin.
+While some random processes have a limited number of outcomes (e.g., tossing a die), some have an unlimited number of discrete outcomes (e.g., the number of attempts needed to win a lottery), and some have a range of possible outcomes over some interval (e.g., tomorrow's maximum temperature).
+The differences amongst these types of sample spaces lead to thinking in terms of discrete numbers (such as integers) and continuous numbers (such as the reals).
 
-Interestingly, it is advantageous to restrict ourselves to *numerical* outcomes from random processes.
-This may sound unnecessarily restrictive, but is not.
-After all, we could number all the outcomes in the sample space, thereby converting non-numeric elements to numeric ones.
-So, for example, heads could be denoted 1 and tails 2 in the sample space associated with tossing a coin.
-
-This might sounds a bit unnecessary and, in the simple case of coin tossing, it probably is.
-However using numeric outcomes means we can make use of the powerful concepts that are associated with numbers.
-In particular the concepts of discreteness, continuousness, types of infinity, limits, etc. are available.
-So what might appear to be restrictive is really the key to unlocking some powerful ideas and results that make probability theory and in turn, statistical theory, incredibly useful.
-
-Of course, in most scientific, engineering and business applications, our interests are in assigning probabilities to numeric outcomes.
-For example,
-
-* Probabilities can be assigned to different amounts of money made by an investment
-* Probabilities can be assigned to the proportion of people that contract a given disease
-* Probabilities can be assigned to observing different water levels at a certain river crossing
-* Probabilities can be assigned to matching DNA sequences when their genome sequences are almost identical
-* Probabilities can be assigned to recording certain rainfall amounts.
-
-While some experiments give rise to just a limited number of outcomes (e.g., tossing a die), some give rise to an unlimited number of discrete outcomes (e.g., the number of attempts needed to win a lottery), and some give rise to a range of possible outcomes over some interval (e.g., water levels in a dam, rainfall, tomorrow's maximum temperature).
-The differences amongst these types of sample spaces is what drives us to thinking in terms of discrete numbers (such as integers) and continuous numbers (such as the reals).
-
-To do this, we define a *random variable* on the sample space, which is a way of converting the elements of the sample space into numbers.
-Depending on the type of sample space, this random variable can be discrete, continuous, or a mixture of both.
-Regardless, it is useful and important to be able to describe the possible values of the random variable and the probability associated with these values.
-This is called the *distribution of the random variable*.
-
-
-CHECK THE ORDER ON CONCEPTS IN HERE...
-
-
-:::{.example #DieToss name="Rolling dice"}
-When a fair die is rolled, the classical approach to probability can be used to determine the theoretical probabilities 
-\begin{align*}
-     & \Pr(\text{roll a 1}) = \Pr(\text{roll a 2}) \\
-   = &\cdots = \Pr(\text{roll a 6}) = 1/6.
-\end{align*}
-Define the random variable $X$ as the number of pips showing on the die.
-Then, $X = 1$ for the outcome ${1}$. 
-Consequently:
-\[
-   \Pr(X = 1) = \Pr(X = 2) = \dots = \Pr(X = 6) = 1/6
-\]
-and this is a *model* for describing the distribution of the random variable $X$ for this experiment.
-:::
-
-
-NEED FORMAL DEFN OF *MODEL*?
-
-The idea of a *model* is a theoretical concept.
-In practice, when a die is rolled repeatedly, the number of times that each face is observed will not always be 1/6.
-The distribution given above is the ideal situation, or the situation as the number of rolls approaches infinity.
-
-The theoretical distribution is said to *model* the experiment.
-The classical approach to assignment of probabilities gives us a model in this case.
-For other experiments, other models will be appropriate.
-
-This chapter discusses the concept of the *random variable* and the *distribution* of probabilities amongst the values of a random variable.
-Later chapters describe specific distributions useful for modelling.
+To do this, we define a *random variable* on the sample space.
 
 
 ## Random variables {#RandomVariables}
 
-Colloquially, a random variable is a numerical-valued variable. 
-A random variable may be *continuous*, *discrete* or a combination of the two.
+Chap. \@ref(Probability) introduced the language and tools of probability to describe uncertainty.
+The concepts of the [*sample space*](#def:SampleSpace) was introduced, which lists all the possible outcomes of a [*random process*](#def:Process).
+Often, however, the elements of the sample space are not of direct interest... especially if the sample space contains many elements.
+Combinations of these sample space elements are usually of greater interest and more convenient to work with.
 
+For example, the sample space for the observing the rolls of two dice (Example \@ref(exm:TwoDice)) contains 36 elements.
+We may be interested in the *sum* of the two rolls anyway, rather than which elements in the sample space gave rise to the sum.
+That is, we may be more interested in *whether* we roll a sum of 5 than *how* that sum of 5 was obtained.
+We can 'collect' various elements of the sample space together and treat them as a collective of what we are interested in.
+
+More generally, it proves useful to collect elements of the sample space together and assign a real number to that collection.
+This leads to the idea of a *random variable*.
+
+**NOT SURE THAT IS ALL CORRECT SO CHECK**
+
+
+:::{.definition #RandomVariable name="Random variable"}
+A *random variable* is some function that assigns a real number (say, $X(s)$) to each outcome $s$ in the sample space $S$.
+
+That is, its *domain* (i.e., input) is elements of the sample space of a random process, and the results is a real value. 
+:::
+
+Since $X$ is a function, every $s\in S$ is assigned to exactly one value $X(s)$.
+(The converse is not true: many values of $s\in S$ may be assigned to the same value of $X(s)$.)
+
+*Random variable* may be abbreviated to rv.
 
 :::{.definition #DomainRange name="Domain and range"}
-A random variable $X$ is a *real-valued function* mapping each element of the sample space onto a real number. 
-
 The *domain* of a random variable is the sample space, and the *range space* or *value set* is the set of real numbers taken by function.
 :::
 
-The random variable $X$ can be seen as a rule assigning a number to each and every outcome in the sample space.
-
-Using functional notation, a function $X$ is a random variable if it assigns a real number $X(s)$ to every sample point $s\in S$.
-Further, since $X$ is a function, to every $s\in S$ there corresponds exactly one value $X(s)$.
 The domain of $X$ is the set $S$ and the range space is the set $\{X(s)\mid s\in S\}$.
 
-Commonly, *random variable* is abbreviated to rv.
 
 
-### Discrete random variables {#DiscreteRVs}
 
-A *discrete* random variable (rv) is defined on a *discrete* sample space.
-Examples of discrete random variables include:
+The variable is *random* since its value depends upon the outcome of the random process.
 
-* The number of mice in a cohort of twenty that develop an illness.
-* The number of rain events occurring during a week.
-* The amount of money in a person's pocket.
-* The shoe size of a person.
-* The number of attempts needed to win Lotto.
-* The number of offspring successfully reared by an endangered species of bird.
-* The gender (after coding) of the next customer.
 
-The last example might need explaining.
-The sample space for the associated experiment contains two points 'female' and 'male'; i.e., 
+
+A capital letter (such as $Y$) is usually used to denote the *description* of the random variable, while lower-case letters (such as $y$) are used to describe the *values* of the random variable.
+For example, if we write $Y = 3$, this could mean:
+
+* 'The sum of the roll of two dice...' (that is, $Y$)
+* '...is equal to...' (that is, the ${} = {}$ sign)
+* '... the value 3.' (that is, $y = 3$)
+
+
+
+:::{.example #TwoDiceRV name="Sum of two dice rolls"}
+Consider observing the rolls of two dice.
+The sample space contains 36 elements (Example \@ref(exm:TwoDice)), and could be denoted as $(r_1, r_2)$, where $r_1$ and $r_2$ are the results of roll 1 and 2 respectively. 
+The sample space is listed in Table \@ref(tab:TwoDice).
+
+Then, we could define the random variable $Y$ on this sample space as:
 \[
-   S = \{\text{female}, \text{male}\}.
+   Y = r_1 + r_2.
 \]
-A random variable, though, must be numeric.
-So to be a random variable, 'Gender' must associate the outcomes in the sample space with numerical values.
-This can be achieved using an arbitrary coding, such as 0 for 'female' and 1 for 'male'.
-
-We can then write $X(\text{female}) = 0$ and $X(\text{male}) = 1$, where $X$ denotes the random variable 'Gender'.
-Notice the range space or value set of $X$ is $\{0,1\}$ which we might denote as $R_X$.
-
-NOTE CODING IS ARBITRARY!
-
-Often we dispense with formal functional notation when defining random variables and write, for example,
-\[
-   X = 
-   \begin{cases} 
-      0 & \text{if Gender is female}\\
-      1 & \text{if Gender is male}
-    \end{cases}.
+In this way, every outcome in the sample space is assigned a real value.
+Then, for example, the elements of $S$ assigned to $Y = 4$ are
+\[ 
+   (1, 3), (2, 2), (3, 1).
 \]
+Notice that many elements of the sample space can be assigned to the same value of the random variable.
+
+The (real) values that $Y$ can take are $2, 3, \dots 12$.
+:::
+
+Sample space elements   | Value of random variable
+------------------------|---------------
+(1, 1)                  |  2
+(1, 2), (2, 1)          |  3
+(1, 3), (2, 2), (3, 1)  |  4
+$\vdots$                | $\vdots$
+(6, 6)                  | 12
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Don't confuse the *definition* of a random variable with the *values* of the random variable.
-
-In the last example, the rv 'Gender' can have two values: 'Female' (codeds as 0) or 'Male' (coded as 1). 
-'Male', or 0, is not a rv; it is one *value* of the rv 'Gender'.
+:::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+*Random variables* are different than *variables* used in (for example) algebra.
+In algebra, a "variable" is the value of an unknown quantity.
 :::
 
 
-### Continuous random variables {#ContinuousRVs}
+:::{.example #DrawTwoCards name="Drawing two cards"}
+Consider drawing two cards from a standard, well-shuffled pack of cards, and observing the colour of the card (B: Black; R: Red).
+The sample space $\Omega$ is:
+\[
+   \Omega = \{ (BB), (BR), (RR), (RB)\}.
+\]
+Many random variables could be defined on this sample space; for example:
+\begin{align*}
+   T&: \text{The number of black cards drawn};\\
+   M&: \text{The number of red cards drawn on the first draw};\\
+   D&: \text{The number of black cards drawn,}\\
+    &\quad \text{minus the number of red cards drawn}.
+\end{align*}
+All of these assign a real number to each element of $\Omega$.
+The random variable $D$, for instance, is defined as:
 
-Loosely speaking, a *continuous* random variable is one that can never be measured exactly. 
-If a random variable can assume any value, or a set of values, in an interval, then it is called *continuous*. 
+Sample space elements | Value of $D$
+----------------------|-----------------
+$(BR)$ and $(RB)$     | $D = 0$
+$(BB)$                | $D = 2$
+$(RR)$                | $D = -2$
 
-For example, consider your height. 
-Your height could be recorded as 174\,cm, but with better measuring instruments it may be 174.023\,451\,006\,cm... and even more decimals are possible with even better instruments! 
-
-Even though height may be written down to the nearest centimetre or even millimetre, height itself is still a continuous measure. 
-In addition, height does not vary by a distinct amount. 
-My baby daughter grows continually; she doesn't grow in jumps of 1cm, for example! 
+:::
 
 
-ADD THING ABOUT MY HIEGHT THE SAME... BUT HT VARIES FROM INDIVIDUAL TO INDIVIDUAL
+:::{.example #TossCoinTillHead name="Tossing a coin till a head appears"}
+Consider the random process 'tossing a coin until a Head is observed'.
+
+The sample space is
+\[
+   \Omega = \{(H), (TH), (TTH), (TTTH), \dots \}.
+\]
+We could then define the random variable $N$ as 'the number of tosses until the first head is thrown'.
+Then each element of the sample space can be assigned to a real number:
+\begin{align*}
+   (H)\quad&\text{is assigned to}\quad N = 1;\\
+   (TH)\quad&\text{is assigned to}\quad N = 2\\
+   (TTH)\quad&\text{is assigned to}\quad N = 3,
+\end{align*}
+and so on.
+Writing $N = 2$ means 'the number of tosses to observe the first head is two'.
+:::
+
+
+
+
+
+## Discrete, continuous and mixed random variables {#DiscreteContMixed}
+
+Random variables can be discrete, continuous, or a mixture of both.
+
+
+### Discrete random variables
+
+:::{.definition #DiscreteRV name="Discrete random variable"}
+A **discrete random variable** contains a finite or countably infinite number of values.
+:::
+
+
+:::{.example}
+In Example \@ref(exm:TwoDiceRV), exactly 11 values of the random variable $Y$ are possible: $2, 3, \dots 12$.
+
+In Example \@ref(exm:DrawTwoCards), the random variable $D$ can take one of three possible values: $-2, 0\text{ or }2$.
+
+In Example \@ref(exm:TossCoinTillHead), the random variable $N$ takes a *countably infinite* number of possible values: $1, 2, 3, \dots$
+:::
+
+
+Notice that this definition refers to the values of random variable, not to the [sample space](#def:SDiscreteSampleSpace) (i.e., the inputs to the function).
+
+
+
+### Continuous random variables
+
+For a [continuous sample space](#def:ContinuousSampleSpace), the random variable is usually the *identity function* $Y(s) = s$.
+
+For example, in Example \@ref(exm:ContinuousSampleSpaceThrow) the sample space that describes how far a cricket ball can be thrown is already numerical.
+Hence, we can define the random variable as $T(s) = s$, where $s$ is the distance specified in the sample space.
+
+**IS that correct? Do we need to work with an *interval* in there?**
+
+
+:::{.definition #ContinuousRF name="Continuous random variable"}
+A **continuous random variable** can take on any value within any given interval.
+:::
+
+A continuous random variable can never, in principle, be measured exactly... so in practice needs to be rounded.
+If a random variable can assume any value, or a set of values, in an interval, then it is *continuous*. 
+
+
+:::{.example #ContinuousRVHeight name="Heights"}
+Height is often recorded to the nearest centimetre (e.g., 179cm), but that is for convenience and practicality. 
+Better measuring instruments may be able to record height to one or more decimal places of a centimetre.
+:::
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Even though *your* height may not change, the notion of a *random variable* means that height varies from one realisation of the random process to another; that is, from one person to the next.
+:::
 
 Examples of continuous random variables include:
 
@@ -171,95 +214,85 @@ Examples of continuous random variables include:
 * The time taken to perform a psychological test.
 
 
-### Mixed random variables {#MixedRVs}
 
-Mixed random variables are less common. 
+### Mixed random variables
 
-Typically, they consist of a quantity that can be measured exactly (discrete) sometimes and inexactly (continuous) at other times. 
+Some sample spaces have subsets that are discrete, and some that are continuous.
+These are called *mixed random variables*.
 
-For example, consider the time spent waiting at a set of traffic lights before proceeding.
-If the light is green when you arrive, you can drive straight through; the wait time is exactly zero seconds (this is the discrete component). 
-If the light is red when you arrive, you have to wait a continuous amount of time before it turns green.
-Hence, the time spent waiting is a mixed random variable.
-
-
-::: {.example #BabyBoom name="Baby Boom data"}
-The *Sunday Mail* newspaper (Brisbane, Australia) on 21 December 1997 gave data giving the birth weight, gender, and time of birth of 44 babies born in the 24-hour period of 18 December 1997 at the Mater Mother's Hospital in Brisbane, Australia. 
-
-For these variables:
-
-* The gender of the babies is a *discrete* random variable; 
-* The birth weight is a continuous random variable; and
-* The time of birth is a continuous random variable.
-
-The data can be used to determine other random variables, such as:
-
-* The number of births each hour (discrete); and 
-* The time between births (continuous).
+:::{.definition #MixedRF name="Mixed random variable"}
+A **mixed random variable** has regions where the random variable is [discrete](#def:DiscreteRF) and regions where it is [continuous](#def:ContinuousRF).
 :::
 
 
-::: {.example #TossingCoinOutcomes name="Tossing coin outcpmes"}
+:::{.example #MixeVehicleWait name="Vehicle wait times"}
+Consider the time spent by vehicles waiting at a set of traffic lights before proceeding through the intersection.
+
+If the light is green on arrival, the wait time is exactly zero (i.e., discrete): the vehicle can drive straight through the intersection.
+
+However, if the light is red on arrival, the vehicle needs to  wait a continuous amount of time before it turns green.
+
+The time spent waiting is a *mixed* random variable.
+:::
+
+
+
+
+## Univariate probability functions {#UnivariateProbabilityFunctions}
+
+The previous section introduced *random variables*: real values assigned to outcomes in the sample space.
+Often, many elements of the sample space were assigned to the same value of the random variable.
+Therefore, we can assign *probabilities* to various values of the random variable., and develop a *probability model* for the random variable.
+
+A *model* describes theoretical long-term patterns.
+On any single roll of a die, a **4** may or may not occur, but theoretically (and in the long term) we expect a **4** to appear about 1/6 of the time.
+A *probability model* describes the probability that various values of the random variable will appear on any one realisation in theory.
+
+This probability model is called the *probability function*.
+
+::: {.example #TossingCoinOutcomes name="Tossing coin outcomes"}
+**WE PROB AVE THIS ELSEWHERE, SO ONLY REFER TO IT**
+
 Consider tossing a coin twice and observing the outcome of the two tosses. 
 
 Since a random variable is a *real-valued function*, simply observing the outcome as $\{H, T\}$, for example, is not a rv. 
 
-We could define the rv of interest, say $H$, as the *number* of heads on the two tosses of the coin.
+We could define the random variable of interest, say $H$, as the *number* of heads on the two tosses of the coin.
 The *sample space* for the experiment is 
 \[
    S = \{ (TT), (TH), (HT), (HH)\}.
 \]
-The connection between the sample space and $H$ is shown in Table \@ref(tab:CoinsSampleSpace).
-
+The connection between the sample space and $H$ is shown in the table below.
 In this case, the range of $H$ is $R_H = \{0, 1, 2\}$.
+
+
+Element of $S$ | Function $H()$                          | Value of $H$  | $\Pr(H = s_i)$
+---------------|-----------------------------------------|---------------------
+$TT$           | $H(s_1)$: The number of heads in $s_1$  | 0             | $1/4$
+$TH$           | $H(s_2)$: The number of heads in $s_2$  | 1             | $1/4$
+$HT$           | $H(s_3)$: The number of heads in $s_3$  | 1             | $1/4$
+$HH$           | $H(s_4)$: The number of heads in $s_4$  | 2             | $1/4$
+
+The *probability function* $p_H(h)$ could be defined as
+\[
+   p_H(h) = 
+   \begin{cases}
+      1/4 & \text{for $h = 0$}\\
+      1/2 & \text{for $h = 1$}\\
+      1/4 & \text{for $h = 2$}\\
+      0   & \text{for all other values of $h$}.
+   \end{cases}
+\]
 :::
 
 
-```{r CoinsSampleSpace, echo=FALSE}
-rvTable <- array( dim = c(4, 3))
-colnames(rvTable) <- c("Elements of $S$",
-                       "Function $H$",
-                       "Value of $H$")
-
-rvTable [1, ] <- c("$(TT) = s_1$",
-                   "$H(s_1)$, the number of heads in $s_1$",
-                   "0")
-rvTable [2, ] <- c("$(TH) = s_2$",
-                   "$H(s_2)$, the number of heads in $s_2$",
-                   "1")
-rvTable [3, ] <- c("$(HT) = s_3$",
-                   "$H(s_3)$, the number of heads in $s_3$",
-                   "1")
-rvTable [4, ] <- c("$(HH) = s_4$",
-                   "$H(s_4)$, the number of heads in $s_4$",
-                   "2")
-knitr::kable(rvTable,
-             align = "c",
-             caption = "The random variable $H$ maps each element in the sample space $S$ to a real number")
-```
+Distinguishing between discrete, continuous and mixed random variables is useful, as the probability functions depend on the distinction.
 
 
-Methods for describing random variables, and how probabilities are assigned or distributed amongst the values of a random variable, occupies much of this book.
+### Discrete random variables: Probability mass functions {#ProbabilityFunctionsDiscrete}
 
-One reasons for distinguishing between discrete, continuous and mixed random variables is that the ways we can describe the distribution of probabilities depend to some extent on this distinction.
-
-
-
-## Univariate distributions {#Univariate}
-
-This section focuses on methods of describing the distribution of probabilities amongst the values of one random variable.
-Discrete and continuous rvs are considered separately.
-
-ADD MIXED?
-
-* Tweedie
-* OTHER? 
-
-
-### The probability function {#ProbabilityFunction}
-
-The *probability function* is a function that indicates how probabilities are assigned to the values of a discrete rv; that is, a rv with range space that is finite or countably infinite.
-
+For a discrete random variable, the *probability function* indicates how probabilities are assigned to the values of the discrete random variable.
+For a discrete random variable, the probability function often called the *probability mass function* (or pmf).
 
 ::: {.definition #ProbabilityFunction name="Probability function"}
 Let the range space of the discrete rv $X$ be $R_X$.
@@ -272,7 +305,16 @@ The function $p_X$ is called the *probability function* of $X$.
 :::
 
 
-The probability function for discrete rvs is often called the *probability mass function*.
+
+The following properties of the probability function are implied by the definition.
+
+1. $p_X(t) \ge 0$ for all values of $t$; that is, probabilities are never negative.
+2. $\displaystyle \sum_{t \in R_X}  p_X(t) = 1$ where $R_X$ is the range of $X$; that is, the probability function accounts for all possible sample points in the sample space.
+3. $p_X(t) = 0$ if $t \notin R_X$.
+4. For an event $A$ defined on a sample space $S$, the probability of event $A$ is computed using
+   \[
+      \Pr(A) = \sum_{t\in A} p_X(t).
+   \]
 
 
 ::: {.definition #ProbabilityDistribution name="Probability distribution"}
@@ -287,26 +329,27 @@ the set
 is called the *probability distribution* of the discrete rv $X$.
 :::
 
+The probability distribution of a discrete rv $X$ can be represented by a formula, a table or a graph which displays the probabilities $p(x)$ corresponding to each $x\in R_X$.
+
 Sometimes the probability function is denoted $p(x)$ rather than $p_X(x)$.
-Using the subscript is recommended to avoid confusion in situations where a number of random variables are considered at once; if we are dealing with the discrete rv's $X$ and $Y$, the respective probability distributions can be denoted by $p_X$ and $p_Y$ respectively.
-We use this subscript idea where appropriate throughout this course.
+Using the subscript is recommended to avoid confusion in situations where many random variables are considered at once.
+The subscript is used throughout this book.
 
 The probability distribution of a random variable is a description of the range space, or value set, of the variable and the associated assignment of probabilities.
 
-The probability distribution of a discrete rv $X$ can be represented by a formula, a table or a graph which displays the probabilities $p(x)$ corresponding to each $x\in R_X$.
 
 
 ::: {.example #Independence name="Independence"}
 Five balls numbered 1, 2, 3, 4, 5 are in a box.
 Two balls are selected at random.
-
-To find the probability distribution of the *larger* of the two numbers, first list the sample space:
+Consider finding the probability distribution of the *larger* of the two numbers.
+The sample space is:
 \[ 
     S =\{ (1, 2), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5), (4, 5)\},
 \]
-and all 10 points are equally likely.
+where all 10 elements are equally likely.
 
-Let rv $X$ be the *larger* of the two numbers chosen.
+Let $X$ be the random variable 'the *larger* of the two numbers chosen'.
 Then $R_X = \{2, 3, 4, 5\}$ and
 \begin{align*}
      \Pr(X = 2) &= \Pr((1,2)) = 1/10\\
@@ -314,13 +357,15 @@ Then $R_X = \{2, 3, 4, 5\}$ and
      \Pr(X = 4) &= \Pr((1,4) \text{ or } (2,4) \text{ or } (3,4)) = 3/10\\
      \Pr(X = 5) &= \Pr((1,5) \text{ or } (2,5) \text{ or } (3,5)\text{ or } (4,5)) = 4/10.
 \end{align*}
-This is the probability distribution of $X$, which can be also expressed as a formula:
+This is the probability distribution of $X$, which could be given as a formula:
 \[ 
-   \Pr(X = x) = (x - 1)/10, \quad x = 2, 3, 4, 5, 
+   \Pr(X = x) = 
+   \begin{cases}
+      (x - 1)/10 & \text{for $x = 2, 3, 4, 5$}\\
+      0 & \text{elsewhere}.
+  \end{cases}
 \]
-or shown in a table (Table \@ref(tab:LargestDie)) or as a graph as in Fig. \@ref(fig:ProbDist1).
-For discrete distributions, the pf can be displayed using the 'stick'. REWORD!!!
-
+The probability function could also be given in a table (Table \@ref(tab:LargestDie)) or as a graph as in Fig. \@ref(fig:ProbDist1).
 :::
 
 ```{r LargestDie, echo=FALSE}
@@ -329,7 +374,7 @@ LargestDieTable <- array( dim = c(2, 4))
 rownames(LargestDieTable) <- c("$x$",
                                "$\\Pr(X = x)$")
 
-LargestDieTable[1, ] <- 2:5
+LargestDieTable[1, ] <- as.character(2:5)
 LargestDieTable[2, ] <- ( (2:5) - 1 ) / 10
 
 knitr::kable(LargestDieTable,
@@ -338,7 +383,7 @@ knitr::kable(LargestDieTable,
 
 
 
-```{r ProbDist1, echo=FALSE, fig.align="center", fig.cap="CAPTION"}
+```{r ProbDist1, echo=FALSE, fig.align="center", fig.cap="The probability function for the larger of two numbers drawn"}
 plot( x = 2:5,
       y = c(0.1, 0.2, 0.3, 0.4),
       xlim = c(1.75, 5.25),
@@ -347,7 +392,8 @@ plot( x = 2:5,
       las = 1,
       lty = 3,
       lwd = 1,
-      col = "grey",
+      axes = FALSE,
+      col = plotColour,
       main = expression( 
         paste( "The probability distribution of ", italic(X)) 
         ),
@@ -358,17 +404,21 @@ plot( x = 2:5,
         paste( "The probability function ", italic(p)[italic(X)](italic(x)) )
       )
 )
+axis(side = 1,
+     at = 2:5)
+axis(side = 2,
+     at = seq(0, 0.4, by = 0.1),
+     las = 1)
+box()
+
 points( x = 2:5,
         y = c(0.1, 0.2, 0.3, 0.4),
-        pch = 19)
+        pch = 19,
+        col = plotColour)
 
 ```
  
-
-MOVE TO EXERCISES??
-*Computer exercise* Write an R function to allow you to simulate the distribution in this example.
-
-
+ 
 ::: {.example #TossingHeads name="Tossing heads"}
 Suppose a fair coin is tossed twice.
 Then the *sample space* is 
@@ -416,7 +466,7 @@ TwoDieTable <- array( dim = c(2, 3))
 rownames(TwoDieTable) <- c("$h$",
                            "$\\Pr(H = h)$")
 
-TwoDieTable[1, ] <- 0:2
+TwoDieTable[1, ] <- as.character(0:2)
 TwoDieTable[2, ] <- c(0.25, 0.50, 0.25)
 
 knitr::kable(TwoDieTable,
@@ -432,7 +482,7 @@ plot( x = 0:2,
       type = "h",
       las = 1,
       lty = 3,
-      col = "grey",
+      col = plotColour,
       main = expression(
         paste("The probability distribution of ", italic(H))
         ),
@@ -446,50 +496,14 @@ plot( x = 0:2,
 
 points( x = 0:2,
         y = c(0.25, 0.5, 0.25),
-        pch = 19)
+        pch = 19,
+        col = plotColour)
 
 ```
 
+### Continuous random variables: Probability density functions {#ProbabilityFunctionsContinuous}
 
-The following properties of the probability function are implied by the definition.
-
-1. $p_X(t) \ge 0$ for all values of $t$; that is, probabilities are never negative.
-2. $\displaystyle \sum_{t \in R_X}  p_X(t) = 1$ where $R_X$ is the range of $X$; that is, the probability function accounts for all possible sample points in the sample space.
-3. $p_X(t) = 0$ if $t \notin R_X$.
-4. For an event $A$ defined on a sample space $S$, the probability of event $A$ is computed using
-   \[
-      \Pr{A} = \sum_{t\in A} p_X(t).
-   \]
-
-Don't be put off by the use of $t$ in these properties; $x$, $y$ or any other letter could also have been used.The letter simply represents a particular value of the rv.
-
-THIS SHOULD BE EARLIER:
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The distinction between upper and lower case letters though when discussing rv's is worth noting.
-Consider the notation $p_X(x)$ used to define the probability function.
-The upper case $X$ is the *name* of the random variable; the lower case $x$ is a *particular value* that the random variable $X$ may take.
-For example, if I roll a standard die, the random variable of interest may be 'the number on the top face', which may be called $X$.
-Then, the *values* that this random variable can take are $x = 1$, $x = 2$ through to $x = 6$.
-So the notation $\Pr(X = 1)$ means:
-
-> the 'probability that the number of the top face' (that is, $X$) will be equal (that is, the equal to sign ${}={}$) to 'the particular value $1$'.
-
-In general, upper case (usually Roman, not Greek) letters refer to the *name* of a random variable; lower case Roman letters refer to the values the variable can take.
-
-There are times when it's difficult to know whether its the rv itself or a value of the rv that is being referred to.
-Don't lose any sleep over it.
-:::
-
-
-
-### The probability density function {#ProbabilityDensityFunction}
-
-
-FIX INTRO!
-
-
+**FIX INTRO!**
 
 Using probability functions to describe the distribution of a continuous rv is tricky, because probability behaves like mass.
 In the discrete case, we imagine mass can be distributed over a number (possibly countably infinite) of distinct points where each point has non-zero mass.
@@ -530,7 +544,11 @@ The following properties of the probability density function are implied by the 
    \[
       \Pr(E) = \int_{E} f_X(x)\, dx
    \]
-4. $\Pr(a < X \le b) = \Pr(a < X < b) = \Pr(a \le X < b) = \Pr(a \le X \le b) = \int_a^b f_X(x)\,dx$
+4. Since exact values are not possible:
+   \begin{align*}
+      \Pr(a < X \le b) &= \Pr(a < X < b) = {}\\
+      \Pr(a \le X < b) &= \Pr(a \le X \le b) = \int_a^b f_X(x)\,dx
+    \end{align*}
 5. From the *Mean Value Theorem* in calculus,
    \[ 
       \Pr(x < X < x + \Delta x) = \int ^{x + \Delta x}_x f(t)\, dt = \Delta xf(\xi ), \quad x < \xi < x + \Delta x.
@@ -545,7 +563,8 @@ Properties 1 and 2 are sufficient to prove that a function is a pdf; ie if we're
 Property 4 results from noting that if $X$ is a continuous rv, $\Pr(X = a ) = 0$ for any and every value $a$ for the same reason that a point has mass zero.
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-It's important to remember that the value of a pdf at some point $x$ does not represent a probability, but rather a probability density, and as such can have any non-negative value of arbitrary size.
+The value of a pdf at some point $x$ does not represent a probability, but rather a *probability density*.
+Hence, the pdf can have any non-negative value of arbitrary size at a specific value of $X$.
 :::
 
 Properties 5 and 6 directly relate the idea of a density to that of a probability.
@@ -561,7 +580,6 @@ There are two ways to compute the probability $\Pr(0 < W < 0.5)$.
 One is to use the pdf:
 \begin{align*}
    \Pr(0 < W < 0.5)
-   &= \int_0^{0.5} 2w\, dw\\
    &= w^2\Big|_0^{0.5}\\
    &= 0.25
 \end{align*}
@@ -578,12 +596,12 @@ and the answer is the same as before.
 
 
 ```{r ContinuousPDF, echo=FALSE, fig.align="center", fig.cap="The probability function for $W$"}
-plot( x = c(-0.5, 1.5),
+plot( x = c(-1, 2),
       y = c(0, 2),
       type = "n",
       las = 1,
       main = expression(
-        paste("The proability distribution of ", italic(W))
+        paste("The probability distribution of ", italic(W))
         ),
       xlab = expression(
         paste("Values of the rv ", italic(W))
@@ -595,13 +613,21 @@ plot( x = c(-0.5, 1.5),
 
 polygon( x = c(0, 0.5, 0.5, 0),
          y = c(0, 1, 0, 0),
-         col = "grey")
+         col = plotColour)
 lines( x = c(-0.5, 0, 1),
        y = c(0, 0, 2),
        lwd = 2)
+lines( x = c(-1, -0.5),
+       y = c(0, 0),
+       lwd = 2,
+       lty = 2)
 lines( x = c(1, 1.5),
        y = c(0, 0),
        lwd = 2)
+lines( x = c(1, 2),
+       y = c(0, 0),
+       lwd = 2,
+       lty = 2)
 points(1, 2, 
        pch = 1)
 points(1, 0, 
@@ -611,12 +637,22 @@ points(1, 0,
 
 
 
-### The distribution function {#DistributionFunction}
+
+### Mixed random variables {#ProbabilityFunctionsMixed}
+
+
+### Bivariate probability functions {#BivariateProbabilityFunctions}
+
+
+
+
+
+## The distribution function {#DistributionFunction}
 
 Another way of describing rvs is using a *distribution function* (df), also called a *cumulative distribution function* (cdf).
-We will use the df description in this course.
+We will use the df description in this book.
 
-The df gives the probability that a random variable $X$ is less than or equal to a given value $t$.
+The df gives the probability that a random variable $X$ is less than *or equal to* a given value $t$.
 
 ::: {.definition #DistributionFunction name="Distribution function"}
 For any rv $X$ the *distribution function*, $F_X(x)$, is given by
@@ -629,7 +665,7 @@ Note that the distribution function applies to discrete or continuous or mixed (
 Two important points to note:
 
 1. The definition includes a less than *or equal to* sign.
-2. The distribution function is defined for *all* values of $x$.
+2. The distribution function is defined on the entire real line.
 
 
 If $X$ is a discrete rv with range space $R_x$, the df,
@@ -835,7 +871,7 @@ The distribution of the lifetime (in hundred of days), say $Y$, if the diodes is
 as required.)
 
 Consider a diode for which $p = 0.4$.
-The probability distribution is displayed in Figure \@ref(fig:Diode) (left panel) where a solid dot is included to show the discrete part.
+The probability distribution is displayed in Fig. \@ref(fig:Diode) (left panel) where a solid dot is included to show the discrete part.
 
 ```{r Diode, echo=FALSE, fig.align="center", fig.cap="The probability function and distribution function for the diodes example"}
 par( mfrow = c(1, 2))
@@ -883,7 +919,7 @@ points( x = 0,
 
 We see there are difficulties representing the probability distribution in this mixed case because we need to combine a probability distribution and a pdf.
 These difficulties are circumvented by using the distribution function.
-The df of $Y$ is
+The df of $Y$ is  (Fig. \@ref(fig:Diode), right panel):
 \[
    F_Y(y) = \begin{cases}
                0 & \text{if $y < 0$}\\
