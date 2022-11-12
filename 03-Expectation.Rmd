@@ -128,7 +128,7 @@ If $Y = g(X)$, we would write $\mu_Y = \text{E}(Y) = \text{E}(g(X))$.
 
 Before considering a particular function of interest, we prove an important property of the expectation operator.
 
-:::{.theorem}
+:::{.theorem #ExpectationLinear name="Expectation properties"}
 For any rv $X$ and constants $a$ and $b$,
 \[
    \text{E}(aX + b) = a\text{E}(X) + b
@@ -148,23 +148,35 @@ where we have used the fact that $\sum_x p_X(x) = 1$.
 
 :::{.example #ExpectationFunction name="Expectation of a function of a random variable"}
 Consider the random variable $Y = 2x$ where $X$ is defined in Example \@ref(exm:ExpectationContinuous).
-Using Theorem~\ref{TM:3.1} with $a = 2$ and $b = 0$, the value of $\text{E}(Y)$ is
+Using Theorem \@ref(thm:ExpectationLinear) with $a = 2$ and $b = 0$, the value of $\text{E}(Y)$ is
 \[
       \text{E}(2X) = 2\text{E}(X) = 2 \times 13/6 = 13/3.
 \]
 :::
 
+INFINITE MEAN?
+
+* Cauchy: $f = \frac{1}{\pi(1+ x^2$ for $x\in\mathbb{R}$
+* Cont: $f = x^{-2}$.
+* Pareto distn: $f = \frac{\alpha}{x^{\alpha + 1}}$ for $\alpha > 0$. $E[X]$ DNE when $) < \alpha < 1$.
+* Discrete $p = \frac{6}{\pi^2}\frac{1}{(n + 1)^2}$ for $n\ge 0)
+* Or St Peterburg paradox (https://math.stackexchange.com/questions/239288/infinite-expected-value-of-a-random-variable): 
+  * Throw a coin until it lands tails.
+  * You win $2n$ dollars, where $n$ is the number of heads.
+  * The expected value funcion of your payment (let's name it $X$): $E[X] = \infty$
+
 
 ## The variance and standard deviation {#Variance}
 
-An important special case of a  function of a random variable is the *variance* of a random variable (or, if you like, of the distribution of the rv).
+An important special case of a  function of a random variable is the *variance* of a random variable.
+(More correctly, we should say "the variance of the distribution of the random variable").
 
 The variance is a measure of how variable or dispersed the values of a random variable are.
 A small variance means the observations are nearly the same; a large variance means they are quite different.
 The variance of a random variable $X$ can be defined using the expectation operator.
 
 :::{.definition #Variance name="Variance"}
-The *variance* of a rv $X$ (or of the distribution of $X$)
+The *variance* of a random variable $X$ (or of the distribution of $X$) is
 \[
    \text{var}(X)  = \text{E}((X - \mu)^2)
 \]
@@ -172,15 +184,21 @@ where $\mu = \text{E}(X)$.
 :::
 
 The variance of $X$ is commonly denoted by $\sigma^2$, or $\sigma^2_X$ if it is necessary to distinguish amongst variables.
-The unit of measurement for variance is the original ($x$) unit *squared*. 
-It is often more meaningful to describe the 'spread' in terms of the original units by taking the square root of the variance.
+The unit of measurement for variance is the original ($x$) unit *squared*.
+Describing the 'spread' in terms of the original units is more natural,  by taking the square root of the variance.
 
 :::{.definition #StandardDeviation name="Standard deviation"}
-The *standard deviation* of a rv $X$ is defined as the *positive* square root of the variance (and is thus denoted by $\sigma$); i.e.,
+The *standard deviation* of a random variable $X$ is defined as the *positive* square root of the variance (denoted by $\sigma$); i.e.,
 \[
-   \text{sd}(X) = +\sqrt{\text{var}(X)}
+   \text{sd}(X) = \sigma = +\sqrt{\text{var}(X)}
 \]
 :::
+
+The units of the variance are the square of the units of $X$.
+That is, if $X$ is measured in metres, the variance of $X$ is in $\text{metres}^2$.
+Because of this, using the variance is less popular than the standard deviation in practice to describing spread.
+In theoretical work however, because of the square root function, the variance is easier to work with than standard deviation, and you will find the variance rather than standard deviation featuring in many results throughout the study of statistics.
+
 
 
 :::{.example #VarianceDice name="Variance for a die toss"}
@@ -239,7 +257,7 @@ The expected value of $X$ is
 \begin{align*}
    \text{E}(X)
    &= \int_0^2 x(-x^2 + 2x - 1/6)\, dx\\
-   &= -\frac{x^4}{4} + \frac{2x^3}{3} - \frac{x^2}{12}\Big|_0^2 = 1.
+   &= \left.-\frac{x^4}{4} + \frac{2x^3}{3} - \frac{x^2}{12}\right|_0^2 = 1.
 \end{align*}
 To use the computational formula,
 \begin{align*}
@@ -265,19 +283,13 @@ Both methods give the same answer of course, and both methods require initial co
 The computational formula requires less work.
 :::
 
-NOTES ABOUT USE IN COMPUTING AMD ROUND OFF
+NOTES ABOUT USE OF COMP FORMULA IN COMPUTING AMD ROUND OFF
 
-The variance represents the mean of the squared distance of the values of the rv from the mean.
+The variance represents the expected value of the squared distance of the values of the random variable from the mean.
+The variance can never be negative, and is only zero when all the values of the random variable are identical (that is, there *is* no variation).
 
-The variance can never be negative. 
-It is only ever zero in the uninteresting case where all the values of the random variable are identical (that is, there *is* no variation).
+GIVE SOME ITEMIZED FACTS ABOUT VAR? SOME REPETED:
 
-GIVE SOME ITEMIZED FACTS ABOUT VAR? SOME REPETAED:
-
-The units of the variance are the square of the units of $X$.
-That is, if $X$ is measured in metres the variance of $X$ is in $\text{metres}^2$.
-Because of this, the variance is less popular than the standard deviation, which has the same units as the rv, in describing spread numerically.
-In theoretical work however, because of the square root function, variance is easier to work with than standard deviation and you will therefore find it rather than standard deviation featuring in many results throughout the study of statistics.
 
 
 
@@ -319,12 +331,11 @@ For $X$ discrete, the median is not necessarily unique.
 
 
 :::{.example #ModeDiscrete name="Mode for discrete distributions"}
-If $X$ is a discrete random variable with probability function defined in Table \@ref(tab:ProbDeg1r).
+If $X$ is a discrete random variable with probability function defined in Table \@ref(tab:ProbDeg1r) (and shown in Fig. \@ref(fig:DiscreteMedian)).
 We see this distribution is bimodal with modes at 3 and 4.
 
-The median, $\nu$, is any value of $X$ in the range $3 < x < 4$ since *any* number in this range satifies $\Pr(X \le x) = 0.5$ and $\Pr(X \ge x) = 0.5)$. 
-That is, the median is not unique.
-The probability function and its df are shown in Fig. \@ref(fig:DiscreteMedian). NEED TO SHOW WHERE MEDIAN IS
+The median, $\nu$, is any value of $X$ in the range $3 < x < 4$, since *any* number in this range satifies $\Pr(X \le x) = 0.5$ and $\Pr(X \ge x) = 0.5$. 
+The median is not unique.
 :::
 
 ```{r ProbDeg1r, echo=FALSE}
@@ -361,11 +372,11 @@ plot(x = x,
      ),
      main = "Probability mass function")
 polygon( x = c(-10, -10, 3.5, 3.5),
-         y = c(0, 0.3, 0.3, 0),
+         y = c(0, 1, 1, 0),
          col = gray(0.9) )
 
 polygon( x = c(3.5, 3.5,10, 10),
-         y = c(0, 0.3, 0.3, 0),
+         y = c(0, 1, 1, 0),
          col = gray(0.95) )
 
 points( x = x,
@@ -441,12 +452,11 @@ lines( x = c(-10, 3),
 
 
 :::{.example #ExpectationContinuous name="Expectation for continuous variables"}
-Let $X$ be a discrete random variable with probability function (Table \@ref(tab:ProbDeg2r)).
+Let $X$ be a discrete random variable with the probability function shiown in Table \@ref(tab:ProbDeg2r) (and Fig. \@ref(fig:DiscreteMedian2)).
 
 The mode of this distribution is 3.
 
 The median is $\nu = 3$ since this is the only value of $X$ that will satisfy Definition \@ref(def:Median).
-The probability function and distribution function are shown in  Fig. \@ref(fig:DiscreteMedian2).
 :::
 
 
@@ -577,7 +587,7 @@ The *mean absolute difference* (MAD) is defined as:
 :::
 Like the median, the MAD is difficult to use in theoretical work.
 
-The most-used measure of location is the mean while for dispersion it is the variance (or standard deviation).
+The most-used measure of dispersion is the variance (or standard deviation).
 
 :::{.example #VarianceDie name="Variance of die toss"}
 Consider the fair die described in Example \@ref(exm:VarianceDice).
@@ -676,6 +686,44 @@ The *skewness* of a distribution is defined as
 \end{equation*}
 :::
 
+:::{.example #Skewness nane="Skewness"}
+Consider the rabdom variable $X$ with probability function
+\[
+   f_X(x) = 
+   \begin{cases}
+      \frac{2x}{5} - \frac{2}{5} & \text{for $1 \le x < 2$}\\
+      \frac{x}{10} + \frac{3}{5} & \text{for $2 \le x < 6$}\\
+      0                          & \text{elsewhere}.
+\]
+To compute the skewness, we first compute the necessary moments
+\[
+   x.
+\]
+
+:::
+
+```{r ProbFunSkewRight, echo=FALSE, fig.align="center", fig.cap="The probability function"}
+plot( x = c(-1, 8),
+      y = c(0, 0.5),
+      type = "n",
+      las = 1,
+      main = "The probability function",
+      xlab = expression(italic(x)),
+      ylab = expression(italic(f)(italic(x))) )
+lines( x = c(0, 1, 2, 6, 7),
+       y = c(0, 0, 0.4, 0, 0),
+       lwd = 2)
+lines( x = c(-1, 0),
+       y = c(0, 0),
+       lwd = 2,
+       lty = 2)
+lines( x = c(7, 8),
+       y = c(0, 0),
+       lwd = 2,
+       lty = 2)
+
+```
+
 
 If $\gamma_1 >0$ we say the distribution is positively (or right) skewed, and it is 'drawn out' in the positive (negative) direction.
 Similarly, if $\gamma_1 <0$ we say the distribution is negatively (or left) skewed.
@@ -705,10 +753,10 @@ Consider the discrete random variable $U$ from Example \@ref(exm:ExpectationDisc
 The raw moments are
 \begin{align*}
    \mu'_r = \text{E}(U^r)
-   &= \sum_{u=-1, 0, 1} u^r \frac{u^2+1}{5} \\
-   &= (-1)^r \frac{ (-1)^2 +1}{5} +
-       (0)^r \frac{ (0)^2 +1}{5} +
-       (1)^r \frac{ (1)^2 +1}{5} \\
+   &= \sum_{u = -1, 0, 1} u^r \frac{u^2 + 1}{5} \\
+   &= (-1)^r \frac{ (-1)^2 + 1}{5} +
+       (0)^r \frac{ (0)^2 + 1}{5} +
+       (1)^r \frac{ (1)^2 + 1}{5} \\
    &= \frac{2(-1)^r}{5} + 0 + \frac{2}{5} \\
    &= \frac{2}{5}[ (-1)^r + 1]
 \end{align*}
@@ -763,8 +811,8 @@ Consider the random variable $Y$ with pdf
 \[
    f_Y(y) =
    \begin{cases}
-      \exp(-y) & \text{for $y>0$} \\
-      0   & \text{elsewhere.}
+      \exp(-y) & \text{for $y > 0$} \\
+      0        & \text{elsewhere.}
    \end{cases}
 \]
 The mgf is
@@ -776,12 +824,12 @@ The mgf is
    &= \frac{1}{t-1} \exp\{y(t-1)\}\Big|_{y = 0}^{y = \infty}\\
    &= (1-t)^{-1}
 \end{align*}
-provided $t - 1 < 0$; that is, $t<1$.
+provided $t - 1 < 0$; that is, $t < 1$.
 
 If $t>1$, the integral does not converge. 
-For example, if $t = 2$, we would have
+For example, if $t = 2$,
 \[
-   \frac{1}{2-1} \exp(y)\Big|_{y=0}^{y=\infty} = \exp(0) - \exp(\infty)
+   \frac{1}{2 - 1} \exp(y)\Big|_{y = 0}^{y = \infty} = \exp(0) - \exp(\infty)
 \]
 which does not converge.
 :::
@@ -805,7 +853,7 @@ which exists for all values of $t$.
 Replacing $e^{xt}$ by its series expansion (see Sect. \@ref(UsefulSeries)) in the definition of the mgf gives
 \begin{align*}
      M_X(t) 
-     & = {\sum_x} (1+xt+\frac{x^2t^2}{2!} + \dots) \Pr(X = x)\\
+     & = {\sum_x} (1 + xt + \frac{x^2t^2}{2!} + \dots) \Pr(X = x)\\
      & = 1 + \mu'_1t + \mu'_2 \frac{t^2}{2!} +\mu'_3 \frac{t^3}{3!} + \dots
 \end{align*}
 To obtain the result, the order of summations has been interchanged, and in cases where this interchange is permitted, the $r$th moment of a distribution about the origin is the coefficient of $t^r/r!$ in the series expansion of $M_X(t)$:
@@ -819,7 +867,7 @@ and for each positive integer $r$,
 \[ 
    M_X^{(r)}(t) = \sum_x x^re^{xt}\Pr(X = x). 
 \]
-On setting $t = 0$ we find $M'_X(0) = \text{E}(X)$, $M''_X(0)=\text{E}(X^2)$, and for each positive integer $r$,
+On setting $t = 0$ we find $M'_X(0) = \text{E}(X)$, $M''_X(0) = \text{E}(X^2)$, and for each positive integer $r$,
 \begin{equation}
      M^{(r)}_X (0) = \text{E}(X^r).
 \end{equation}
@@ -830,7 +878,7 @@ This result is summarised in the following theorem.
 The $r$th moment $\mu'_r$ of the distribution of the rv $X$ about the origin is given by either
 
 1. the coefficient of $t^r/r!,  r = 1, 2, 3,\dots$ in the power series expansion of $M_X(t)$; or
-2. $\displaystyle \mu'_r = M^{(r)}(0) = \left[\frac{d^rM(t)}{dt^r}\right]_{t = 0}$ where $M_X(t)$ is the mgf of $X$.
+2. $\displaystyle \mu'_r = M^{(r)}(0) = \left.\frac{d^rM(t)}{dt^r}\right|_{t = 0}$ where $M_X(t)$ is the mgf of $X$.
 :::
 
 
@@ -843,14 +891,14 @@ To find the mean, first find
 Setting $t = 0$ gives the mean as $\text{E}(Y) = 1$. 
 Likewise,
 \[
-   \frac{d^2}{dt^2}M_Y(t) = 2(1-t)^{-3}.
+   \frac{d^2}{dt^2}M_Y(t) = 2(1 - t)^{-3}.
 \]
 Setting $t = 0$ gives $\text{E}(Y^2) = 2$.
 The variance is therefore $\text{var}[Y] = 2 - 1^2 = 1$.
 
 Once the moment generating function has been computed, raw moments can be computed using
 \[
-   \text{E}(Y^r) = \mu'_r = \frac{d^r}{dt^r} M_Y(t)\Big|_{t = 0}.
+   \text{E}(Y^r) = \mu'_r = \left.\frac{d^r}{dt^r} M_Y(t)\right g|_{t = 0}.
 \]
 :::
 
@@ -878,8 +926,10 @@ If $X_1$, $X_2$, $\dots$, $X_n$ are $n$ independent random variables, where $X_i
 \]
 :::
 
-
+:::{.proof}
 The proofs are left as an exercise.
+:::
+
 
 Note that in the special case when all the rvs are independently and identically distributed in Theorem \@ref(thm:MGFLinear),
 \[
@@ -917,7 +967,7 @@ From Theorem \@ref(thm:MGFLinear) with $a = 1/3$ and $b = -2/3$,
 In practice, rather than identify $a$ and $b$ and remember Theorem \@ref(thm:MGFLinear), problems like this are best solved directly from the definition of the mgf:
 \begin{align*}
    M_Y(t) 
-   =\text{E}(\exp(tY))
+   & =\text{E}(\exp(tY))
    &= \text{E}(\exp\{t(X - 2)/3\})\\
    &= \text{E}(\exp\{tX/3 - 2t/3\})\\
    &= \exp(-2t/3) M_X(t/3) \\
@@ -976,6 +1026,9 @@ So the pf is
 \]
 (Of course, it is easy to check by computing the mgf for $D$ from the pf found above; you should get the original mgf.)
 :::
+
+
+CONTINUIUS CASE???
 
 
 ## Tchebysheff's inequality {#Tchebysheff}
