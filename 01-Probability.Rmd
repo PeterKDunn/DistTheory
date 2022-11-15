@@ -689,7 +689,7 @@ Four methods are discussed here.
 Sometimes, the chances of an event occurring are expressed as *odds*, which are *not* the same as probabilities.
 Odds compare how often an event is likely to occur, to how often the event is likely to *not occur*.
 
-Using odds, an impossible event is assigned $0$, a certain event is assigned $\infty$, and an event that will happen just as often as not happen is assigned $1$.
+Using odds, an impossible event is assigned 0, a certain event is assigned $\infty$, and an event that will happen just as often as not happen is assigned 1.
 
 We will only use the system with probabilities between $0$ and $1$ in this book.
 :::
@@ -864,6 +864,21 @@ Some examples include:
 * How likely is it that Auckland will have above average rainfall next year?
 
 
+
+```{r echo=FALSE}
+# http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_nccObsCode=139&p_display_type=dataFile&p_startYear=&p_c=&p_stn_num=044021
+CR <- read.csv("./Data/IDCJAC0001_044021/IDCJAC0001_044021_Data12.csv")
+
+numAprils <- length(CR$Apr)
+numZeros <- sum(CR$Apr == 0)
+probZero <- numZeros/numAprils
+probRain <- 1 - probZero
+
+minYear <- min(CR$Year)
+maxYear <- max(CR$Year)
+numYears <- maxYear - minYear + 1
+```
+
 ::: {.example #ChanceRain name="The chance of rain"}
 What is the likelihood of rain in Charleville (a town in Queensland) during April?
 Many farmers could give a subjective estimate of the probability based on their experience and the conditions.
@@ -872,8 +887,8 @@ Using the classical approach to determine the probability is not possible.
 While two outcomes are possible---it *will* rain, or it *will not* rain---these are almost certainly not *equally likely*.
 
 A relative frequency approach can be adopted.
-Using data supplied by the DPI\footnote{The Department of Primary Industries.} from 1882 to 1994 (113 years), rain fell in 96 years during April.
-An *approximation* to the probability is therefore $96/113 = 0.85$, or $85$\%.
+Data from the [Bureau of Meterology](http://www.bom.gov.au), from `r minYear` to `r maxYear` (`r numYears` years), shows rain fell in `r numAprils - numZeros` years during April.
+An *approximation* to the probability is therefore $`r numAprils - numZeros` / `r numAprils` = `r round(probRain, 3)`$, or $`r round((probRain) * 100, 1)`$\%.
 :::
 
 
@@ -961,12 +976,79 @@ This implies that $f_X(x) > 1$ may be true for some values of $x$.
 :::
 
 
-:::{.example}
-???
+:::{.example #ContinuousProbs name="Assigning probabilities"}
+Suppose I throw a cricket ball 100 times, and record the distance thrown.
+About 10% of the time, the distance is between 50m and 60m; 20% further than 40m; 50% of the time further than 30m; and 100% of the time further than 20m.
 
-Toss a cricket ball 100 times, and about 10% of the time it goes further than 50m; 20% further than 40m; and 50% of the times fiurther than 30m; and 100% of the time further than 20m.
+With this information we have some idea of the probabilities that my throw goes for certain ranges of distance (Fig. \@ref(fig:BallThrow), left panel)).
+
+For these areas to represent probabilities, though, the *total* area must sum to one.
+Each rectangle has a width of 10m, and we can define the vertical-axis steps as shown as a distance of $k$ apart.
+Then, so that the total area is one, we find that $k = 1/1000$.
+With this information, we can create a rough (and coarse) probability model (Fig. \@ref(fig:BallThrow), right panel)).
 :::
 
+```{r BallThrow, echo=FALSE, fig.align="center", fig.cap="A rough probability model for throwing distance"}
+par( mfrow = c(1, 2))
+
+Heights <- c(0, 0, 50, 30, 10, 10)
+
+barplot(height = Heights,
+        width = 10,
+        space = 0,
+        xlab = "Throwing distance (in m)",
+        main = "Throwing distance regions",
+        col = plotColour,
+        axes = FALSE)
+axis(side = 1,
+     at = seq(0, 60,
+              by = 10) )
+axis(side = 2,
+     las = 1,
+     at = seq(0, 50,
+              by = 10),
+     labels = c("0", 
+                expression(italic(k)),
+                expression(2*italic(k)),
+                expression(3*italic(k)),
+                expression(4~italic(k)),
+                expression(5~italic(k)) ) )
+text(25, 20,
+     cex = 0.8,
+     labels = "50%")
+text(35, 20,
+     cex = 0.8,
+     labels = "30%")
+text(45, 5,
+     cex = 0.8,
+     labels = "10%")
+text(55, 5,
+     cex = 0.8,
+     labels = "10%")
+
+
+barplot(height = Heights,
+        width = 10,
+        space = 0,
+        xlab = "Throwing distance (in m)",
+        main = "Throwing distance regions:\n rough probability model",
+        col = plotColour,
+        axes = FALSE)
+axis(side = 1,
+     at = seq(0, 60,
+              by = 10) )
+axis(side = 2,
+     las = 1,
+     at = seq(0, 50,
+              by = 10),
+     labels = c("0", 
+                "1/1000",
+                "2/1000",
+                "3/1000",
+                "4/1000",
+                "5/1000") )
+
+```
 
 
 
@@ -1071,48 +1153,58 @@ The probability that the number is a six is now $\Pr(A|B) = 1/3$.
 Knowing the extra information in event $B$ has changed your calculation of $\Pr(A)$.
 :::
 
+```{r echo=FALSE}
+#https://data.longpaddock.qld.gov.au/SeasonalClimateOutlook/SouthernOscillationIndex/SOIDataFiles/MonthlySOIPhase1887-1989Base.txt
+
+SOIPhases <- read.table("./Data/MonthlySOIPhase1887-1989Base.txt",
+                        header = TRUE)
+SOIPhasesApril <- subset(SOIPhases,
+                         Month == 4)
+CRApril <- data.frame(Year = CR$Year,
+                      Apr = CR$Apr)
+ChApril <- merge(CRApril, SOIPhasesApril, "Year")
+
+ChAprilTable <- xtabs( ~ (Apr > 0) + Phase, 
+                       data = ChApril)
+
+rownames(ChAprilTable) <- c("No rain",
+                            "Rain")
+colnames(ChAprilTable) <- c("Phase 1",
+                            "Phase 2",
+                            "Phase 3",
+                            "Phase 4",
+                            "Phase 5")
+```
+
+```{r echo=FALSE}
+L <- sum(ChApril$Apr > 30)
+R <- sum(ChApril$Apr > 0) 
+Number <- length(ChApril$Apr)
+
+Prob30 <- L / Number
+Prob0 <- R / Number
+
+CProb30 <- Prob30 / Prob0
+```
 
 ::: {.example #Rainfall name="Rainfall"}
-In Example \@ref(exm:ChanceRain), the chance of obtaining rain during April in Charleville was computed to be $0.85$ using the empirical approach.
+Consider again the rainfall at Charlevill in April (Example \@ref(exm:ChanceRain)).
 
-However, the probability of April rainfall may depend on the value of the Southern Oscillation Index (SOI).
-@climate:stone:1992 defined five phases of the SOI that can be attributed to any given month.
+Define $L$ as the event 'receiving *more than* 30mm in April', and $R$ as the event 'receiving *any* rainfall in April'.
+Event $L$ occurs `r L` times in the `r numYears` years of data, while event $R$ occurs `r R` times.
 
-For the month of April, the empirical probabilities of observing rainfall in Charleville for various SOI Phases are shown in Table \@ref(tab:CharlevilleRain).
-
-The probability of observing rain depends on the SOI phase that month:
-\begin{align*}
-   \text{For SOI Phase 1:}\quad
-   & \Pr(\text{rain} \mid \text{Phase 1}) = 0.56;\\
-   \text{For SOI Phase 2:}\quad
-   & \Pr(\text{rain} \mid \text{Phase 2}) = 0.96.
-\end{align*}
+Then, using the relative frequency approach with the [BoM](http://www.bom.gov.au) data, the probability of obtaining *more than* 30mm in April is
+\[
+   \Pr(L) = \frac{`r L`}{`r Number`} = `r round(Prob30, 3)`. 
+\]
+We could also consider the *conditional probability* of receiving more than 30mm, *given* that some rainfall was recorded.
+That is:
+\[
+   \Pr(L | R) = \frac{\Pr(L \cap R)}{\Pr(R)} = \frac{\Pr(L)}{\Pr(R)} = \frac{`r round(Prob30, 4)`}{`r round(Prob0, 4)`} = `r round(CProb30, 3)`.  
+\]
+If we know rain has been received, the probability that the amount was greater than 30mm is `r round(CProb30, 3)`.
+Without this prior knowledge, the probability is `r round(Prob30, 3)`.
 :::
-
-:::{.example}
-Need continuous example.COuld use ainfall $R$.
-eg $\Pr(R>20 | R >0$ compared to $\Pr(R>20)$.
-:::
-
-```{r CharlevilleRain, echo=FALSE}
-RainTable <-  array( dim = c(3, 5))
-RainTable[1, ] <- c(9, 24, 12, 27, 24)
-RainTable[2, ] <- c(16, 25, 15, 28, 29)
-RainTable[3, ] <- as.character( round(RainTable[1, ] / RainTable[2, ], 2) )
-# This turn all integers to text to retain as integers
-
-colnames(RainTable) <- c("Phase 1",
-                         "Phase 2",
-                         "Phase 3",
-                         "Phase 4",
-                         "Phase 5")
-rownames(RainTable) <- c("Days of rain",
-                         "Number of days",
-                         "Probability of rain")
-
-knitr::kable(RainTable,
-             caption = "The (empirical) probabilities of rainfall at Charleville during April, conditional on the SOI phases during that month.")
-```
 
 
 
@@ -1254,8 +1346,7 @@ If these are equal, then the fact that $B$ has occurred has made no difference t
 In Example \@ref(exm:MumpsIndependence), the probability of males isolating was the *same* as the probability of females isolating.
 
 The sex of the student is *independent* of whether they isolate.
-
-EXPLAIN MORE.
+That is, whether we look at females or males, the probability that they isolated is the same.
 :::
 
 
