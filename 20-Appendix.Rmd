@@ -267,6 +267,270 @@ Answer to Exercise \@ref(exr:Quadratic).
 For two equal roots, $b^2 - 4ac = 0$, so event $A$ is defined as $A = \{ (a,b,c) \mid b^2 - 4ac = 0\}$.
 :::
 
+:::{.answer}
+Answer to Exercise \@ref(exr:HatData).
+
+Tree diagram: Fig, \@ref(fig:HatTree); table: Table \@ref(tab:HatTable); Venn diagram: Fig. \@ref(fig:HatVenn).
+:::
+
+
+```{r HatTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the hat-wearing example"}
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      main = "Tree diagram for the hat data",
+      xlab = "",
+      ylab = "",
+      axes = FALSE)
+#STEP 1
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.75),
+       lwd = 2)
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.25),
+       lwd = 2)
+# STEP 2
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.90),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.60),
+       lwd = 2)
+
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.40),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.10),
+       lwd = 2)
+
+# TEXT
+text(x = 0.50,
+     y = 0.75,
+     labels = "Males")
+text(x = 0.50,
+     y = 0.25,
+     labels = "Females")
+
+text(x = 0.90,
+     y = 0.90,
+     labels = "Hat")
+text(x = 0.90,
+     y = 0.60,
+     labels = "No hat")
+
+text(x = 0.90,
+     y = 0.40,
+     labels = "Hat")
+text(x = 0.90,
+     y = 0.10,
+     labels = "No hat")
+
+# ADD PROBS
+text(x = 0.38,
+     y = 0.63,
+     cex = 0.9,
+     labels = "0.513")
+text(x = 0.38,
+     y = 0.37,
+     cex = 0.9,
+     labels = "0.487")
+
+text(x = 0.65,
+     y = 0.84,
+     cex = 0.9,
+     labels = "0.205")
+text(x = 0.65,
+     y = 0.66,
+     cex = 0.9,
+     labels = "0.795")
+
+text(x = 0.65,
+     y = 0.34,
+     cex = 0.9,
+     labels = "0.060")
+text(x = 0.65,
+     y = 0.16,
+     cex = 0.9,
+     labels = "0.940")
+
+## STEPS
+text(x = 0.50,
+     y = 0.01,
+     label = expression(bold("Step 1"))
+     )
+text(x = 0.90,
+     y = 0.01,
+     label = expression(bold("Step 2"))
+     )
+```
+
+
+```{r HatTable, echo=FALSE}
+BRIS <- read.csv("Data/sunglasses.csv")
+BRIS$Gender <- factor(BRIS$Gender,
+                      levels = c(1, 2),
+                      labels = c("Males", 
+                                 "Females"))
+BRIS$Hat <- factor(BRIS$Hat,
+                   levels = c(0, 1),
+                   labels = c("Not Hat",
+                              "Hat"))
+
+HatTable <- xtabs( Count ~ Gender + Hat,
+                   data = BRIS)
+HatTable <- cbind( HatTable,
+                   "Total" = rowSums(HatTable) )
+knitr::kable(HatTable,
+             caption = "The numbers of males and females wearing a hat in the middle of the day in Brisbane")
+```
+
+
+
+```{r HatVenn, echo=FALSE, fig.height=7, out.width = '95%', fig.align="center", fig.cap="The hat-wearing data as a Venn diagram"}
+par( mfrow = c(2, 2))
+colourMale <- rgb(0, 0, 255, 
+                  max = 255, 
+                  alpha = 125)
+colourHat  <- rgb(0, 255, 0, 
+                  max = 255, 
+                  alpha = 125)
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(M), " and ", bar(italic(M)))),
+      axes = FALSE)
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourMale)
+text(x = 0.4,
+     y = 0.5,
+     labels = expression(paste(italic(M), ": 307")))
+text(x = 0.8,
+     y = 0.5,
+     labels = expression(paste(bar(italic(M)), ": 366")))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+###############
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(H), " and ", bar(italic(H)))) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourHat)
+
+text(x = 0.6,
+     y = 0.5,
+     labels = expression(paste(italic(H), ": 101")))
+text(x = 0.2,
+     y = 0.5,
+     labels = expression(paste( bar(italic(H)), ": 651")))
+
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+####################
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(M), " and ", italic(H))) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourMale)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourHat)
+text(x = 0.3,
+     y = 0.5,
+     labels = expression(italic(M)))
+text(x = 0.7,
+     y = 0.5,
+     labels = expression(italic(H)))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+#################
+
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = "The numbers in each section",
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourMale)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourHat)
+text(x = 0.3,
+     y = 0.5,
+     labels = "307")
+text(x = 0.7,
+     y = 0.5,
+     labels = "22")
+text(x = 0.7,
+     y = 0.85,
+     labels = expression(bar(italic(M)) ~ intersect() ~ bar(italic(H)) ~ ": 344") )
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+# Intersection
+text(x = 0.5, 
+     y = 0.5, 
+     label = "79")
+
+```
+
+
 
 
 
