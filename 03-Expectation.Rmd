@@ -27,12 +27,12 @@ The definition looks different in detail for discrete and continuous random vari
 :::{.definition #Expectation name="Expectation"}
 The *expectation* or *expected value* (or *mean*) of a random variable $X$ is defined as
 
-* For a discrete random variable $X$ with pmf $p_X(x)$:
+* For a discrete rv $X$ with pmf $p_X(x)$:
   \[
    \text{E}(X) = 
         \sum_{x\in R_X} x p_X(x).
   \]
-*  For a continuous random variable $X$ with pdf $f_X(x)$:
+*  For a continuous rv $X$ with pdf $f_X(x)$:
   \[
    \text{E}(X) = 
         \int_{-\infty}^\infty x f_X(x).
@@ -54,7 +54,8 @@ Consider a continuous random variable $X$ with pdf
                0 & \text{elsewhere}.
             \end{cases}
 \]
-The expected value of $X$ is, by definition,
+The expected value of $X$ is,
+by definition,
 \begin{align*}
    \text{E}(X)
    &= \int_{-\infty}^\infty x f_X(x) \, dx \\
@@ -100,7 +101,7 @@ The expected value of $T$ is, by definition
 \begin{align*}
    \text{E}(T) 
    &= \sum_{i = 1}^2 t p_T(t)\\
-   &= \Pr(T = 0) \times 0 + \Pr(T = 1) \times 1\\
+   &= \Pr(T = 0) \times 0 \quad + \quad \Pr(T = 1) \times 1\\
    &= (0.5 \times 0) + (0.5 \times 1) = 0.5.
 \end{align*}
 Note that $0.5$ tails can never actually be observed in practice.
@@ -109,44 +110,40 @@ The expected value of $0.5$ simply means that over a large number of repeats of 
 :::
 
 
-:::{.example #InfiniteMean name="Mean not defined"}
+:::{.example #InfiniteMean name="Mean not defined (OR INFINITE?")}
 Consider the distribution of $Z$, with the probability density function
 \[
    f_Z(z) = 
    \begin{cases}
       z^{-2} & \text{for $z \ge 1$}\\
       0      & \text{elsewhere}
-   \end{cases}
 \]
 as shown in Fig. \@ref(fig:NoMean).
 The expected value of $Z$ is
 \[
-   \text{E}[Z] = \int_1^{-\infty} z \frac{1}{z^2}\, dz 
-   = \int_1^\infty \frac{1}{z} =  -\log z \Big|_1^\infty.
+   \text{E}[Z] = \int_1^{-\infty} z \frac{1}{z^2}\, dz = \int_1^\infty \frac{1}{z} = \left. -\log z \right_1^\infty.
 \]
-However, $\displaystyle\lim_{z\to\infty} \log z \to \infty$.
-This expected value is not defined.
+However, $\displaystyle\lim_{z\to\infty} -\log z \to \infty$.
+This expected value is not finite.
+
+**NOT DEFINED**?
 :::
 
-```{r NoMean, echo=FALSE, fig.align="center", fig.cap="The probabilityfunction for the random variable Z"}
-z <- seq(1, 5, 
-         length = 100)
-z2 <- seq(5, 6, 
+```{r NoMean, fig.align="center", fig.cap="The probabilityfunction for the random variable Z"}
+z <- seq(1, 6, 
          length = 100)
 plot(x = z,
      y = z^(-2),
+CONTINUOUS.
+TWEEDIE ONLY KOWN BY MGF
+
      type = "l",
      lwd = 2,
      xlim = c(0, 6),
-     ylim = c(0, 1),
      las = 1,
      xlab = expression( italic(z)),
      ylab = "Probability density",
      main = "The probability function for Z")
-lines(x = z2,
-      y = z2^(-2),
-      lwd = 2,
-      lty = 2)
 lines( x = c(-1, 1),
        y = c(0, 0),
        lwd = 2)
@@ -194,7 +191,7 @@ For any random variable $X$ and constants $a$ and $b$,
 :::
 
 :::{.proof}
-Assume $X$ is a discrete random variable with probability function $p_X(x)$.
+Assume $X$ is a discrete rv with probability function $p_X(x)$.
 (The proof in the continuous case replaces the probability function with a pdf, and summations with integrals.)
 By Definition \@ref(def:ExpectationFunction) with $g(X) = aX + b$,
 \[
@@ -214,10 +211,10 @@ Using Theorem \@ref(thm:ExpectationLinear) with $a = 2$ and $b = 0$, the value o
 
 INFINITE MEAN?
 
-* Cauchy: $f = \frac{1}{\pi(1+ x^2}$ for $x\in\mathbb{R}$
+* Cauchy: $f = \frac{1}{\pi(1+ x^2$ for $x\in\mathbb{R}$
 * Cont: $f = x^{-2}$. USED ABOVE
 * Pareto distn: $f = \frac{\alpha}{x^{\alpha + 1}}$ for $\alpha > 0$. $E[X]$ DNE when $) < \alpha < 1$.
-* Discrete $p = \frac{6}{\pi^2}\frac{1}{(n + 1)^2}$ for $n\ge 0$)
+* Discrete $p = \frac{6}{\pi^2}\frac{1}{(n + 1)^2}$ for $n\ge 0)
 * Or St Peterburg paradox (https://math.stackexchange.com/questions/239288/infinite-expected-value-of-a-random-variable): 
   * Throw a coin until it lands tails.
   * You win $2n$ dollars, where $n$ is the number of heads.
@@ -571,7 +568,7 @@ The standard deviation is then $\sigma = \sqrt{\frac{70}{24}} = 1.71$.
 An important result is known as the  *computational formula for variance*.
 
 :::{.theorem #VarianceComputational name="Computational formula for variance"}
-For any random variable $X$,
+For any rv $X$,
 \[
    \text{var}(X) = \text{E}(X^2) - [\text{E}(X)]^2
 \]
@@ -614,7 +611,7 @@ To use the computational formula,
 \begin{align*}
    \text{E}(X^2)
    &= \int_0^2 x^2(-x^2 + 2x - 1/6)\, dx \\
-   &= \left.-\frac{x^5}{5} + \frac{x^4}{2} - \frac{x^3}{18}\right|_0^2 = \frac{52}{45},
+   &= -\frac{x^5}{5} + \frac{x^4}{2} - \frac{x^3}{18}\Big|_0^2 = \frac{52}{45},
 \end{align*}
 and so
 \[
@@ -627,7 +624,7 @@ Using the definition,
    &= \text{E}((X-1)^2)\\
    &= \int_0^2 (x-1)^2(-x^2+2x-1/6)^2\,dx \\
    &= \int_0^2 -x^4 + 4x^3 - \frac{31}{6}x^2 + \frac{7}{3}x - \frac{1}{6}\, dx\\
-   &= \left.-\frac{x^5}{5} + x^4 - \frac{31}{18}x^3 + \frac{7}{6}x^2 - \frac{1}{6}x\right|_0^2 = 7/45.
+   &= -\frac{x^5}{5} + x^4 - \frac{31}{18}x^3 + \frac{7}{6}x^2 - \frac{1}{6}x\Big|_0^2 = 7/45.
 \end{align*}
 
 Both methods give the same answer of course, and both methods require initial computation of $\text{E}(X)$.
@@ -645,7 +642,7 @@ GIVE SOME ITEMIZED FACTS ABOUT VAR? SOME REPEATED:
 
 :::{.example #InfiniteVar name="Infinite variance"}
 In Example \@ref(exm:InfiniteMean), we found $\text{E}(X)$ was not defined.
-For that reason, the variance is also undefined, since computing the variance relies on having a finite value for $\text{E}(X)$.
+For that reason, the variance is also UNDEFINDED, since computing the variance relies on having a finite value for $\text{E}(X)$.
 :::
 
 
@@ -662,12 +659,12 @@ Another alternative is the following.
 :::{.definition #MAD name="Mean absolute difference (OR: deviation??)"}
 The *mean absolute difference* (MAD) is defined as:
 
-* For a discrete random variable $X$:
+* For a discrete rv $X$:
 \[
       \text{E}(|X - \mu|) 
       = \sum_x |x - \mu| p_X(x).
 \]
-* For a continuous random variable $X$:
+* For a continuous rv $X$:
 \[
       \text{E}(|X - \mu|) 
       = 
@@ -764,7 +761,7 @@ From these definitions:
 * the mean $\mu'_1 = \mu$ is the *first moment about the origin*, or the *first raw moment*; and
 * the variance $\mu_2 = \sigma^2$ is the *second moment about the mean* or the *second central moment*.
 
-Higher moments also exist that describe other features of a random variable.
+Higher moments also exist that describe other features of a rv.
 
 It can be shown that for a symmetric distribution the odd central moments are zero (EASY TO SHOW IT HERE??).
 This suggests that odd central moments can be used to measure the *asymmetry* of a distribution.
@@ -787,7 +784,6 @@ Consider the random variable $X$ with probability function
       \frac{2x}{5} - \frac{2}{5} & \text{for $1 \le x < 2$}\\
       \frac{x}{10} + \frac{3}{5} & \text{for $2 \le x < 6$}\\
       0                          & \text{elsewhere}.
-   \end{cases}
 \]
 To compute the skewness, we first compute the necessary moments
 \[
@@ -876,7 +872,7 @@ This leads to the idea of a *moment generating function.
 
 ## Moment generating function {#MGF}
 
-So far, the distribution of a random variable has been described using a probability function, pdf or a distribution function.
+So far, the distribution of a rv has been described using a probability function, pdf or a distribution function.
 Sometimes, however, it is convenient to work with a different representation. 
 
 In this section, the *moment generating function* is used to represent the distribution of the probabilities of a random variable.
@@ -919,7 +915,7 @@ The mgf is
    &= \text{E}[\exp(tY)] \\
    &= \int_0^\infty \exp(ty)\exp(-y)\, dy \\
    &= \int_0^\infty \exp\{ y(t-1) \}\, dy \\
-   &= \left.\frac{1}{t-1} \exp\{y(t-1)\}\right|_{y = 0}^{y = \infty}\\
+   &= \frac{1}{t-1} \exp\{y(t-1)\}\Big|_{y = 0}^{y = \infty}\\
    &= (1-t)^{-1}
 \end{align*}
 provided $t - 1 < 0$; that is, $t < 1$.
@@ -973,7 +969,7 @@ This result is summarised in the following theorem.
 
 
 :::{.theorem #Moments name="Moments???"}
-The $r$th moment $\mu'_r$ of the distribution of the random variable $X$ about the origin is given by either
+The $r$th moment $\mu'_r$ of the distribution of the rv $X$ about the origin is given by either
 
 1. the coefficient of $t^r/r!,  r = 1, 2, 3,\dots$ in the power series expansion of $M_X(t)$; or
 2. $\displaystyle \mu'_r = M^{(r)}(0) = \left.\frac{d^rM(t)}{dt^r}\right|_{t = 0}$ where $M_X(t)$ is the mgf of $X$.
@@ -996,7 +992,7 @@ The variance is therefore $\text{var}[Y] = 2 - 1^2 = 1$.
 
 Once the moment generating function has been computed, raw moments can be computed using
 \[
-   \text{E}(Y^r) = \mu'_r = \left.\frac{d^r}{dt^r} M_Y(t)\right|_{t = 0}.
+   \text{E}(Y^r) = \mu'_r = \left.\frac{d^r}{dt^r} M_Y(t)\right g|_{t = 0}.
 \]
 :::
 
@@ -1004,12 +1000,12 @@ Once the moment generating function has been computed, raw moments can be comput
 
 ### Some useful results
 
-The moment generating function can be used to derive the distribution of a function of a random variable (see Sect. \@ref(SEC:transforms:mgf)).
+The moment generating function can be used to derive the distribution of a function of a rv (see Sect. \@ref(SEC:transforms:mgf)).
 The following theorems are valuable for this task.
 
 
 :::{.theorem #MGFLinear name="MGF of linear combinations"}
-If the random variable $X$ has mgf $M_X(t)$ and $Y = aX + b$ where $a$ and $b$ are constants, then the mgf of $Y$ is
+If the rv $X$ has mgf $M_X(t)$ and $Y = aX + b$ where $a$ and $b$ are constants, then the mgf of $Y$ is
 \[
    M_Y(t) = \text{E}(\exp\{t(aX + b)\}) = \exp(bt) M_X(at).
 \]
@@ -1017,7 +1013,7 @@ If the random variable $X$ has mgf $M_X(t)$ and $Y = aX + b$ where $a$ and $b$ a
 
 
 
-:::{.theorem #MGFIndependent name="MGF of independent random variables"}
+:::{.theorem #MGFIndependent name="MGF of independent rvs"}
 If $X_1$, $X_2$, $\dots$, $X_n$ are $n$ independent random variables, where $X_i$ has mgf $M_{X_i}(t)$, then the mgf of $Y = X_1 + X_2 + \cdots X_n$ is
 \[
    M_Y(t) = \prod_{i = 1}^n M_{X_i}(t).
@@ -1076,7 +1072,7 @@ In practice, rather than identify $a$ and $b$ and remember Theorem \@ref(thm:MGF
 
 ### Determining the distribution from the mgf {#DistributionFromMGF}
 
-It can be proven that the mgf (if it exists) completely determines the distribution of a random variable.
+It can be proven that the mgf (if it exists) completely determines the distribution of a rv.
 Hence it should be possible, given a mgf, to deduce the probability function.
 For some distributions, the pdf cannot be written in closed form, but the mgf is relatively simple to write down.
 
@@ -1137,7 +1133,7 @@ An inequality that applies to any probability distribution is sometimes useful i
 
 
 :::{.theorem #Tchebysheff name="Tchebysheff's theorem"}
-Let $X$ be a random variable with finite mean $\mu$ and variance $\sigma^2$.
+Let $X$ be a rv with finite mean $\mu$ and variance $\sigma^2$.
 Then for any positive $k$,
 \begin{equation}
    \Pr(|X - \mu| \geq k\sigma )\leq \frac{1}{k^2}
@@ -1181,6 +1177,7 @@ Nonetheless, using Tchebysheff's inequality we can find a useful *bound* to eith
 
 
 
+<<<<<<< HEAD
 ## Exercises
 
 
@@ -1311,3 +1308,5 @@ Hence prove that for such a random variable, all odd moments about the origin ar
 
 
 
+=======
+>>>>>>> fdc16f85d371e454a0612ba1b66f9c8ef2eff1b5
