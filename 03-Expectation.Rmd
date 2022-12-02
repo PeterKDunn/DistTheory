@@ -46,7 +46,7 @@ Effectively $\text{E}(X)$ is a weighted average of the points in $R_X$, the weig
 
 
 
-:::{.example #ExpectationContinuous name="Expectation for continuous variables"}
+:::{.example #ExpectationContinuousX name="Expectation for continuous variables"}
 Consider a continuous random variable $X$ with pdf
 \[
    f_X(x) = \begin{cases}
@@ -110,18 +110,19 @@ The expected value of $0.5$ simply means that over a large number of repeats of 
 :::
 
 
-:::{.example #InfiniteMean name="Mean not defined (OR INFINITE?")}
+:::{.example #InfiniteMean name="Mean not defined (OR INFINITE?)"}
 Consider the distribution of $Z$, with the probability density function
 \[
    f_Z(z) = 
    \begin{cases}
       z^{-2} & \text{for $z \ge 1$}\\
       0      & \text{elsewhere}
+   \end{cases}
 \]
 as shown in Fig. \@ref(fig:NoMean).
 The expected value of $Z$ is
 \[
-   \text{E}[Z] = \int_1^{-\infty} z \frac{1}{z^2}\, dz = \int_1^\infty \frac{1}{z} = \left. -\log z \right_1^\infty.
+   \text{E}[Z] = \int_1^{-\infty} z \frac{1}{z^2}\, dz = \int_1^\infty \frac{1}{z} = \left. -\log z \right|_1^\infty.
 \]
 However, $\displaystyle\lim_{z\to\infty} -\log z \to \infty$.
 This expected value is not finite.
@@ -129,21 +130,24 @@ This expected value is not finite.
 **NOT DEFINED**?
 :::
 
-```{r NoMean, fig.align="center", fig.cap="The probabilityfunction for the random variable Z"}
+CONTINUOUS.
+TWEEDIE ONLY KOWN BY MGF
+
+
+
+
+```{r NoMean, fig.align="center", fig.cap="The probability function for the random variable Z", fig.height = 3.5, fig.width=4}
 z <- seq(1, 6, 
          length = 100)
 plot(x = z,
      y = z^(-2),
-CONTINUOUS.
-TWEEDIE ONLY KOWN BY MGF
-
      type = "l",
      lwd = 2,
      xlim = c(0, 6),
      las = 1,
      xlab = expression( italic(z)),
      ylab = "Probability density",
-     main = "The probability function for Z")
+     main = expression(paste("The probability function for"~italic(Z))))
 lines( x = c(-1, 1),
        y = c(0, 0),
        lwd = 2)
@@ -201,7 +205,7 @@ where we have used that $\sum_x p_X(x) = 1$.
 :::
 
 
-:::{.example #ExpectationFunction name="Expectation of a function of a random variable"}
+:::{.example #ExpectationFunctionY name="Expectation of a function of a random variable"}
 Consider the random variable $Y = 2x$ where $X$ is defined in Example \@ref(exm:ExpectationContinuous).
 Using Theorem \@ref(thm:ExpectationLinear) with $a = 2$ and $b = 0$, the value of $\text{E}(Y)$ is
 \[
@@ -211,10 +215,10 @@ Using Theorem \@ref(thm:ExpectationLinear) with $a = 2$ and $b = 0$, the value o
 
 INFINITE MEAN?
 
-* Cauchy: $f = \frac{1}{\pi(1+ x^2$ for $x\in\mathbb{R}$
+* Cauchy: $f = \frac{1}{\pi(1+ x^2}$ for $x\in\mathbb{R}$
 * Cont: $f = x^{-2}$. USED ABOVE
 * Pareto distn: $f = \frac{\alpha}{x^{\alpha + 1}}$ for $\alpha > 0$. $E[X]$ DNE when $) < \alpha < 1$.
-* Discrete $p = \frac{6}{\pi^2}\frac{1}{(n + 1)^2}$ for $n\ge 0)
+* Discrete $p = \frac{6}{\pi^2}\frac{1}{(n + 1)^2}$ for $n\ge 0$)
 * Or St Peterburg paradox (https://math.stackexchange.com/questions/239288/infinite-expected-value-of-a-random-variable): 
   * Throw a coin until it lands tails.
   * You win $2n$ dollars, where $n$ is the number of heads.
@@ -292,7 +296,7 @@ knitr::kable(eg1Table,
 ```
 
 
-```{r DiscreteMedian, echo=FALSE, fig.cap="Finding the median, when it is not unique", fig.align="center", fig.height = 8}
+```{r DiscreteMedian, echo=FALSE, fig.cap="Finding the median, when it is not unique", fig.align="center", fig.height = 8,out.width='70%'}
 par( mfrow = c(2, 1))
 
 x <- 0:7
@@ -414,7 +418,7 @@ knitr::kable(eg2Table,
              caption = "A probability distribution")
 ```
 
-```{r DiscreteMedian2, echo=FALSE, fig.align="center", fig.cap="The probability function and distribution function for $H$", fig.height = 8}
+```{r DiscreteMedian2, echo=FALSE, fig.align="center", fig.cap="The probability function and distribution function for $H$", fig.height = 8, out.width='70%'}
 par( mfrow = c(2, 1))
 
 x <- 0:6
@@ -423,6 +427,7 @@ fx <- c(1, 6, 15, 20, 15, 6, 1) / 64
 plot(x = x,
      y = fx,
      las = 1,
+     xlim = c(-2, 8),
      type = "h",
      col = "grey",
      xlab = expression(italic(X)),
@@ -687,7 +692,7 @@ Then $\mu = \text{E}(X) = 7/2$ and thus
        \dots + \left(6 - \frac{7}{2}\right)^2\right]\\
    &= \frac{70}{24}.
 \end{align*}
-The standard deviation is then given by $\sigma = \sqrt{\frac{70}{24}} = 1.71$.
+The standard deviation is then given by $\sigma = \sqrt{\frac{70}{24}} \approx 1.71$.
 
 The MAD of $X$ is
 \begin{align*}
@@ -705,14 +710,8 @@ The MAD of $X$ is
 :::{.definition #Symmetry name="Symmetry"}
 The distribution of $X$ is said to be *symmetric* if for all $x\in R_X$,
 
-* Discrete case: 
-\[
-   \Pr(X = \mu + x) = \Pr(X = \mu - x).
-\]
-* Continuous case:
-\[
-   \Pr(X = \mu + x) = f_X(\mu - x).
-\]
+* Discrete case: $\Pr(X = \mu + x) = \Pr(X = \mu - x)$.
+* Continuous case: $\Pr(X = \mu + x) = f_X(\mu - x)$.
 :::
 
 For a symmetric distribution, the mean is also a median of the distribution, as these results show.
@@ -763,7 +762,7 @@ From these definitions:
 
 Higher moments also exist that describe other features of a rv.
 
-It can be shown that for a symmetric distribution the odd central moments are zero (EASY TO SHOW IT HERE??).
+For a symmetric distribution, the odd central moments are zero (Exercise ???).
 This suggests that odd central moments can be used to measure the *asymmetry* of a distribution.
 It is convenient to use, instead of central moments themselves, expressions that are unaffected by a linear transformation of the type $Y = AX + b$.
 
@@ -784,15 +783,16 @@ Consider the random variable $X$ with probability function
       \frac{2x}{5} - \frac{2}{5} & \text{for $1 \le x < 2$}\\
       \frac{x}{10} + \frac{3}{5} & \text{for $2 \le x < 6$}\\
       0                          & \text{elsewhere}.
+   \end{cases}
 \]
-To compute the skewness, we first compute the necessary moments
+To compute the skewness, we first compute the necessary moments:
 \[
-   x.
+   x... y...
 \]
 
 :::
 
-```{r ProbFunSkewRight, echo=FALSE, fig.align="center", fig.cap="The probability function"}
+```{r ProbFunSkewRight, echo=FALSE, fig.align="center", fig.cap="The probability function", fig.width=4, fig.height=3.5}
 plot( x = c(-1, 8),
       y = c(0, 0.5),
       type = "n",
@@ -833,12 +833,12 @@ WAIT!!!     The interpretation of 'peakedness' is somewhat vague apparently.
 
 
 :::{.example #SkewWind name="Uses of skewness and kurtosis"}
-Monypenny and Middleton~\cite{BIB:Monypenny:winds,BIB:Monypenny:gust} use the skewness and kurtosis to analyse wind gusts at Sydney airport.
+Monypenny and Middleton (@monypenny1998analysiswinds, @monypenny1998analysisgust) use the skewness and kurtosis to analyse wind gusts at Sydney airport.
 :::
 
 
 :::{.example #SkewPricing name="Uses of skewness and kurtosis"}
-Galagedera, Henry and Silvapulle~\cite{BIB:Galagedera:stocks} used higher moments in a capital analysis pricing model for Australian stock returns.
+@galagedera2002conditional used higher moments in a capital analysis pricing model for Australian stock returns.
 :::
 
 
@@ -992,7 +992,7 @@ The variance is therefore $\text{var}[Y] = 2 - 1^2 = 1$.
 
 Once the moment generating function has been computed, raw moments can be computed using
 \[
-   \text{E}(Y^r) = \mu'_r = \left.\frac{d^r}{dt^r} M_Y(t)\right g|_{t = 0}.
+   \text{E}(Y^r) = \mu'_r = \left.\frac{d^r}{dt^r} M_Y(t)\right|_{t = 0}.
 \]
 :::
 
@@ -1000,7 +1000,7 @@ Once the moment generating function has been computed, raw moments can be comput
 
 ### Some useful results
 
-The moment generating function can be used to derive the distribution of a function of a rv (see Sect. \@ref(SEC:transforms:mgf)).
+The moment generating function can be used to derive the distribution of a function of a rv (see Sect. \@ref(TransformationMoments)).
 The following theorems are valuable for this task.
 
 
@@ -1177,7 +1177,6 @@ Nonetheless, using Tchebysheff's inequality we can find a useful *bound* to eith
 
 
 
-<<<<<<< HEAD
 ## Exercises
 
 
@@ -1308,5 +1307,3 @@ Hence prove that for such a random variable, all odd moments about the origin ar
 
 
 
-=======
->>>>>>> fdc16f85d371e454a0612ba1b66f9c8ef2eff1b5
