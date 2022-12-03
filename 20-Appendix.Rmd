@@ -532,6 +532,128 @@ text(x = 0.5,
 
 
 
+:::{.answer}
+**Answer to Exercise \@ref(exr:CompareMeansStress).**
+
+```{r}
+PreHours <- c(10.0,6.5,8.0,12.0,5.0,11.5,5.0,3.5,7.5,5.8,
+             4.7,8.0,7.0,17.0,8.8,17.0,15.0,4.4,2.0)
+             
+PreMins <- c(6.5,14.0,13.5,18.0,14.5,9.0,18.0,42.0,7.5,6.0,
+             25.0,12.0,52.0,20.0,16.0,15.0,11.5,2.5,2.0)
+
+MeanAll <- mean( c(PreHours, PreMins))
+MeanHours <- mean( PreHours )
+MeanMins <- mean( PreMins )
+
+# The difference in the sample:
+MeanMins - MeanHours
+
+```
+
+The data show that 12 patients had beta-endorphin concentrations higher *minutes* before surgery rather than *hours* before surgery.
+
+Is this evidence that the beta-endorphine concentrations are higher in the minutes before surgery rather than the hours before surgery?
+No, it is not.
+Even if there was *no difference* between the beta-endorphin concentrations between the two times, random variation means that some patients would have the higher reading in the *minutes* before, and some would have the higher reading in the *hours* before.
+
+We can use computer simulation to study the situation.
+Assume there is no difference between the beta-endorphin concentrations between the two time points.
+Using **R**, we can randomly allocate each of the 19 people in the study to have higher concentrations in one of the two time points: 
+
+
+```{r echo=FALSE}
+set.seed(869812)
+```
+
+
+```{r}
+HigherMins <- array(dim = 19)  # Store info 
+
+
+#For each patient:
+for (i in 1:19){ 
+  # Select 1 option from either "Hours" or "Mins to be higher, 
+  # with 0.5 prob for each option:
+  WhichHigher <- sample(x = c("Hours", "Mins"), 
+                        size = 1, 
+                        prob = c(0.5, 0.5) )
+  # Record keeping: 1 means higher for "Mins"
+  HigherMins[i] <- WhichHigher == "Mins"
+}
+```
+
+So for this simulated outcome, we find:
+```{r}
+# So for this simulation:
+HigherMins
+```
+That is,
+```{r}
+# For this simulation, how many higher for "Mins"?
+sum(HigherMins)
+```
+... of the 19 patients had a beta-endorphin concentration *minutes* before surgery.
+
+We can repeat this process many times, say 1000 times:
+
+```{r}
+numSims <- 1000   # 1000 simulations
+# Record the outcome for each simulation:
+NumHigherMins <- array( dim = numSims)
+
+for (n in 1:numSims){
+  #For each patient:
+  for (i in 1:19){ 
+    # Select 1 option from either "Hours" or "Mins to be higher, 
+    # with 0.5 prob for each option:
+    WhichHigher <- sample(x = c("Hours", "Mins"), 
+                          size = 1, 
+                          prob = c(0.5, 0.5) )
+    # Record keeping: 1 means higher for "Mins"
+    HigherMins[i] <- WhichHigher == "Mins"
+  }
+  # So for this simulation:
+  HigherMins
+  # For this simulation, how many higher for "Mins"?
+  NumHigherMins[n] <- sum(HigherMins)
+}
+```
+
+```{r}
+# Percentage of times when this many have Mins as the higher:
+SummaryTable <- table(NumHigherMins) / numSims * 100
+SummaryTable
+```
+
+This table shows us how often we find the given number of patients having a beta-endorphin concentration higher in the *minutes* before surgery compared to *hours* before surgery, just by chance, if there really was no difference.
+
+What we found in the data was that this occurred 12 times for 19 patients.
+The simulation shows that this is not at all unusual, even when there is no difference between the two time points.
+In fact, 12 people---or even more than 12 people---having a higher concentration minutes before is 
+
+```{r}
+nums <- as.character(12:19) # 12 to 19, as characters
+SummaryTable[nums]
+sum(SummaryTable[nums], na.rm = TRUE)
+```
+
+```{ echo=FALSE}
+PC.hi <- sum(SummaryTable[nums], na.rm=TRUE)
+
+nums.lo <- as.character(1:7) # 1:7, as characters
+PC.lo <- sum(SummaryTable[nums.lo], na.rm = TRUE)
+```
+
+
+That is, the chance of seeing 12 patients or more with a higher reading *minutes* before is about `r PC.lo`%. 
+In addition, the chance of seeing 12 patients or more with a lower reading *minutes* before is about `r PC.hi`%.
+So the chance that we would see something as extreme as we did---or even more extreme---is about `r PC.hi + PC.lo`%, just by chance alone.
+
+This is hardly convincing evidence of a difference in beta-endorphin concentrations in the minutes and the hours before surgery.
+
+
+:::
 
 
 ## Answers for Chap. 2

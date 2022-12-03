@@ -659,7 +659,7 @@ For sets $A$, $B$ and $C$ defined on the same sample space.
 These may be proved using the rules of probability ([given later](#ProbabilityRules)), or using Venn diagrams.
 :::
 
-:::.{.example}
+:::{.example}
 ???
 :::
 
@@ -2217,128 +2217,131 @@ WinBySwitching     <- sum( CarDoor != FirstChoice)
 c(WinByNotSwitching, WinBySwitching) / NumSims
 ```
 
-## Looking ahead
-
-DELETE THIS SECTION??
-
-The study of probability is basic to the study of modern statistics.
-Consider the following example, the data coming from the Journal of Applied Physiology (1984), 1020--1023.
-(Source: Devore, Jay and Peck, Roxy (1993) *Statistics: The Exploration
-and Analysis of Data*,(2nd ed).)
 
 
-### The experiment {#CAO}
+## Using computer simulation {#CompSimulation}
 
-REEXPRESS AS HTEST: USE "BALL BEARING on two lines" example?
+Probability is essential in statistics, and hence in making decisions.
+Even without a knowledge of formal hypothesis testing, probability and computer simulation can be used to guide decision making.
 
-Chronic airflow obstruction (CAO) severely limits the exercise capability of sufferers. 
-Maximum exercise ventilation for each of 21 CAO patients was determined under two different experimental conditions. 
-Fifteen patients recorded their best ventilation under experimental Condition 1.
+Consider this study about beta-endorphins in the blood, which are a sign of stress.
+Researchers (@data:hand:handbook, Dataset 232; @hoaglin2011exploring) measured the beta-endorphin concentration twice for 19 patients about to undergo surgery: In the hours before surgery, and also in the minutes before surgery.
+They wanted to see if there was a difference in the mean beta-endorphins at these two time points:
 
-Does this mean that one of the experimental condition gives better results than the other?
+```{r}
+PreHours <- c(10.0,6.5,8.0,12.0,5.0,11.5,5.0,3.5,7.5,5.8,
+             4.7,8.0,7.0,17.0,8.8,17.0,15.0,4.4,2.0)
+             
+PreMins <- c(6.5,14.0,13.5,18.0,14.5,9.0,18.0,42.0,7.5,6.0,
+             25.0,12.0,52.0,20.0,16.0,15.0,11.5,2.5,2.0)
 
-We might be tempted to say that *clearly* experimental Condition 1 is better since 15 of 21 did better. 
-What is wrong with this reasoning? 
+sum( PreMins > PreHours)
+```
 
-Let us suppose that a patient actually performs equally well under either experimental condition. 
-Then it is a matter of chance under which experimental condition a patient is recorded as performing best.
-The original question can now be restated as:
+The data show that 12 patients had beta-endorphin concentrations higher *minutes* before surgery rather than *hours* before surgery.
 
-> Is it likely that 15 (or more) CAO patients will appear to do better under experimental Condition 1 (or 2), if in fact there is no difference between the effect of the two?}
+Is this evidence that the beta-endorphine concentrations are higher in the minutes before surgery rather than the hours before surgery?
+No, it is not.
+Even if there was *no difference* between the beta-endorphin concentrations between the two times, random variation means that some patients would have the higher reading in the *minutes* before, and some would have the higher reading in the *hours* before.
 
-Let us tackle the problem experimentally. 
-The problem above is similar to that of tossing a coin: we could let a head represent a patient doing better under Condition 1, a tail as better under Condition 2. 
-Tossing the coin 21 times then gives us one possible outcome for our experiment. 
-
-If we repeat this a large number of times, then we can observe how many times we get 15 or more *patients* doing better on Condition 1 (or Condition 2) just by chance. 
-(**Note**: If there is really no difference the results could go in either direction, not just the direction observed in the ONE experiment described above.) 
-Suppose we carried out the experiment 1000 times, we should be able to make some definite conclusion. 
-However, it is of course not really feasible to actually throw a coin this number of times.
-We get around this problem by simulating the experiment on a computer using R. 
-
-We let 0 represent a patient doing better on experimental Condition 1, and by a 1 a patient doing better on Condition 2. 
-We can then generate a sequence of 1's and 0's representing the results of 21 patients. 
-This can be repeated 1000 times.
-The results of one such *simulation* experiment are given below:
-
-FIX!!!!
+We can use computer simulation to study the situation.
+Assume there is no difference between the beta-endorphin concentrations between the two time points.
+Using **R**, we can randomly allocate each of the 19 people in the study to have higher concentrations in one of the two time points: 
 
 
-```{r echo=TRUE}
-set.seed(416893) # For reproducibility
+```{r echo=FALSE}
+set.seed(869812)
+```
 
-numSimulations <- 1000 # The number of simulations
-recordResults <- array( dim = numSimulations)
 
-for (i in 1:1000){   # Do 1000 simulations, of:
-   Results <- rbinom(21,       # 21 patients
-                     size = 1, # Two outcomes: 0 (Cond 1 better) and 1 (Cond 2 better)
-                     p = 0.5)
-   recordResults[i] <- sum(Results)   
+```{r}
+HigherMins <- array(dim = 19)  # Store info 
+
+
+#For each patient:
+for (i in 1:19){ 
+  # Select 1 option from either "Hours" or "Mins to be higher, 
+  # with 0.5 prob for each option:
+  WhichHigher <- sample(x = c("Hours", "Mins"), 
+                        size = 1, 
+                        prob = c(0.5, 0.5) )
+  # Record keeping: 1 means higher for "Mins"
+  HigherMins[i] <- WhichHigher == "Mins"
 }
-
-table(recordResults)
 ```
 
-Let $X$ represent the number of times (out of 21) that CAO patients under Condition 1 do better than under Condition 2.
-In Table \@ref(tab:CAOTable), the `Count` column then gives the number of trials (out of 1000) in which there were exactly $x$ CAO patients doing better under Condition 1.
-This is given as a percentage in the third column.
-
-```{r CAOTable, echo=FALSE}
-tabResults <- table(recordResults)
-
-CAOTable <- array( dim = c(7, 7))
-
-colnames(CAOTable) <- c("Number",
-                        "Count",
-                        "Percentage",
-                        " ", # Spacer
-                        "Number",
-                        "Count",
-                        "Percentage")
-                        
-CAOTable[, 1] <- names(tabResults)[1:7]
-CAOTable[, 5] <- names(tabResults)[8:14]
-
-CAOTable[, 2] <- tabResults[1:7]
-CAOTable[, 6] <- tabResults[8:14]
-
-CAOTable[, 3] <- round( as.numeric(CAOTable[, 2]) / numSimulations * 100, 1)
-CAOTable[, 7] <- round( as.numeric(CAOTable[, 6]) / numSimulations * 100, 1)
-
-knitr::kable(CAOTable,
-             caption = "The results of the CAO simulation")
-                       
+So for this simulated outcome, we find:
+```{r}
+# So for this simulation:
+HigherMins
 ```
-We can now make an informed answer to the original question.
+That is,
+```{r}
+# For this simulation, how many higher for "Mins"?
+sum(HigherMins)
+```
+... of the 19 patients had a beta-endorphin concentration *minutes* before surgery.
 
-Notice that $29 + 9 = 38$ (or 0.038) of the result in 15 or more CAO patients doing better on Condition 1, while $22 + 10 + 3 + 2 = 37$ (or 0.037) of the experiments result in 6 or fewer of the CAO patients doing better on Condition 2.
-That is, $38 + 37 = 75$ out of the 1000 experiments resulted in an outcome as extreme as the one observed in the actual experiment, an estimated probability of 0.075 that a result this extreme would occur purely by chance if there is in fact NO DIFFERENCE in effect of the two experimental conditions.
+We can repeat this process many times, say 1000 times:
 
-If the probability is above 0.05 (that is 5\%), we usually say the case of a difference in effect has not been shown on the grounds that we can't be sure it has not occurred by chance alone. 
-(5\% would mean we expect it to occur by chance 1 out of 20 times, a rate which is not unreasonable to expect to happen.)
+```{r}
+numSims <- 1000   # 1000 simulations
+# Record the outcome for each simulation:
+NumHigherMins <- array( dim = numSims)
 
-Our conclusion here would be that there is insufficient evidence to conclude a difference in effect of the two experimental conditions.
+for (n in 1:numSims){
+  #For each patient:
+  for (i in 1:19){ 
+    # Select 1 option from either "Hours" or "Mins to be higher, 
+    # with 0.5 prob for each option:
+    WhichHigher <- sample(x = c("Hours", "Mins"), 
+                          size = 1, 
+                          prob = c(0.5, 0.5) )
+    # Record keeping: 1 means higher for "Mins"
+    HigherMins[i] <- WhichHigher == "Mins"
+  }
+  # So for this simulation:
+  HigherMins
+  # For this simulation, how many higher for "Mins"?
+  NumHigherMins[n] <- sum(HigherMins)
+}
+```
+
+```{r}
+# Percentage of times when this many have Mins as the higher:
+SummaryTable <- table(NumHigherMins) / numSims * 100
+SummaryTable
+```
+
+This table shows us how often we find the given number of patients having a beta-endorphin concentration higher in the *minutes* before surgery compared to *hours* before surgery, just by chance, if there really was no difference.
+
+What we found in the data was that this occurred 12 times for 19 patients.
+The simulation shows that this is not at all unusual, even when there is no difference between the two time points.
+In fact, 12 people---or even more than 12 people---having a higher concentration minutes before is 
+
+```{r}
+nums <- as.character(12:19) # 12 to 19, as characters
+SummaryTable[nums]
+sum(SummaryTable[nums], na.rm = TRUE)
+```
+
+```{ echo=FALSE}
+PC.hi <- sum(SummaryTable[nums], na.rm=TRUE)
+
+nums.lo <- as.character(1:7) # 1:7, as characters
+PC.lo <- sum(SummaryTable[nums.lo], na.rm = TRUE)
+```
 
 
-**Comments**
+That is, the chance of seeing 12 patients or more with a higher reading *minutes* before is about `r PC.lo`%. 
+In addition, the chance of seeing 12 patients or more with a lower reading *minutes* before is about `r PC.hi`%.
+So the chance that we would see something as extreme as we did---or even more extreme---is about `r PC.hi + PC.lo`%, just by chance alone.
 
-1. The above conclusion relies on estimating an appropriate probability.
-2. The calculations involved using a computer to simulate the problem.
-3. Very little theoretical knowledge of probability was necessary although we did assume that the probability of getting a head on each toss of a fair coin was 0.5.
-4. In this case if we had known more about probability modelling simulation would not have been necessary, as a satisfactory theoretical model can be found for this problem. 
-   (This could then be applied in many other similar situations.)
-   A knowledge of probability theory would have made our task much simpler here.
-5. One of the aims in this course is to provide the tools for you to model different experimental situations.
-6. **Final note:** Simulation is a very powerful tool. 
-   In many complex situations, it may either provide the only method of proceeding or may be used to gain insight into the problem that allows some progress to be made by more conventional means. 
-   It is also used to verify theoretical results.
+This is hardly convincing evidence of a difference in beta-endorphin concentrations in the minutes and the hours before surgery.
 
-
-We will return to this example later when we have the tools to find the probability model.
-
-
-
+Simulation is a very powerful tool. 
+For many complex situations, insight into the problem can be found by simulation, either in place of conventional means or to gain an initial insight into the situation.
+Theoretical results can also be verified using computer simulation.
 
 
 
@@ -2368,7 +2371,7 @@ Suppose real values are chosen at random for the constants $a$, $b$ and $c$.
 
 
 :::{.exercise #WalkScore}
-Use @mypapers:dunnsmyth:glms Exercise 12.9 (redone of course).
+Use @mypapers:dunnsmyth:glms Exercise 12.9 about Walk Score (mixed), redone of course.
 :::
 
 
@@ -2442,4 +2445,16 @@ According to Wikipedia:
 The first Catalan numbers for n = 0, 1, 2, 3, ... are
 1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 587.
 Also see: https://brilliant.org/wiki/catalan-numbers/
+:::
+
+
+
+:::{.exercise #CompareMeansStress}
+Consider the study in Sect. \@ref(CompSimulation), where the *number* of patients with a higher beta-endorphin concentration were compared at the two time points.
+
+Use a computer simulation to compare the *means* at the two time points.
+First, compute the overall mean of the two groups combined, and each group separately.
+Then, using similar idea to those used in Sect. \@ref(CompSimulation), compare how often the two means will differ by such an amount by chance alone.
+
+NOT SURE HOW THAT WORKS WITH JUST PROB., DIFFERENT STUDY??
 :::
