@@ -256,6 +256,22 @@ Answer to Exercise \@ref(exr:BasicProbs)
 5. $\Pr(A) \times \Pr(B) = 0.44\times 0.35 = 0.154 \ne \Pr(A\cap B) = 0.11$; not independent.
 :::
 
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:DrawNumbers).**
+
+1. $\displaystyle{\frac{188}{3201}}$
+1. $\displaystyle{\frac{1225}{3201}}$
+1. $\Pr(\text{2 odd before 1st even}) = \Pr(\text{odd, odd, even, odd or even}) + \Pr(\text{odd, odd, odd, even)} =\displaystyle{\frac{3625}{19206}}$.
+1. $\Pr(\text{sum odd}) = \Pr(\text{1 odd number drawn, OR 3 odd numbers drawn}) = \displaystyle{\frac{1600}{3201}}$
+:::
+
+
+
+
 :::{.answer}
 Answer to Exercise \@ref(exr:Quadratic).
 
@@ -267,6 +283,7 @@ Answer to Exercise \@ref(exr:Quadratic).
 For two equal roots, $b^2 - 4ac = 0$, so event $A$ is defined as $A = \{ (a,b,c) \mid b^2 - 4ac = 0\}$.
 :::
 
+
 :::{.answer}
 Answer to Exercise \@ref(exr:HatData).
 
@@ -274,7 +291,7 @@ Tree diagram: Fig, \@ref(fig:HatTree); table: Table \@ref(tab:HatTable); Venn di
 :::
 
 
-```{r HatTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the hat-wearing example"}
+```{r HatTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the hat-wearing example", fig.width=4, fig.height=4, out.width='70%'}
 
 plot( x = c(0, 1),
       y = c(0, 1),
@@ -388,7 +405,7 @@ knitr::kable(HatTable,
 
 
 
-```{r HatVenn, echo=FALSE, fig.height=7, out.width = '95%', fig.align="center", fig.cap="The hat-wearing data as a Venn diagram"}
+```{r HatVenn, echo=FALSE, fig.width=7, fig.height=4, out.width='70%', fig.align="center", fig.cap="The hat-wearing data as a Venn diagram"}
 par( mfrow = c(2, 2))
 colourMale <- rgb(0, 0, 255, 
                   max = 255, 
@@ -533,7 +550,7 @@ text(x = 0.5,
 
 
 :::{.answer}
-**QAnswer to Exercise \@ref(MatchingBrackets).**
+**Answer to Exercise \@ref(exr:MatchingBrackets).**
 
 Many document processors help users match brackets.
 Bracket matching is an interesting mathematical problem!
@@ -545,7 +562,8 @@ For instance, the string `(())` is syntactically valid, whereas `())(` is not, e
 1. `()()()` and `(())()` and `()(())` and `((()))` and `(()())`. 
    There are five ways.
 1. $\displaystyle \frac{1}{n + 1} {2n \choose n} = \frac{1}{n + 1}\frac{(2n)!}{n!n!}  = \frac{1}{(n + 1)!} \frac{(2n)!}{n!}$ as to be shown.
-1. The first nine Catalan numbers for $n = 0, \dots 8$ are $1, 1, 2, 5, 14, 42, 132, 429, 1430$
+1. ANSWER: Show that another expression for $C_n$ is $\displaystyle {2n \choose n} - {2n \choose n + 1}$ for $n\geq 0$.
+1. The first nine Catalan numbers, for $n = 0, \dots 8$, are $1, 1, 2, 5, 14, 42, 132, 429, 1430$
 :::
 
 
@@ -553,124 +571,61 @@ For instance, the string `(())` is syntactically valid, whereas `())(` is not, e
 :::{.answer}
 **Answer to Exercise \@ref(exr:CompareMeansStress).**
 
+????
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:GreenLights).**
+
+1. The length of time (in seconds) between green lights at the intersection, say $G$.
+2. $S = \{G \mid 15 \le G \le 150\}$.
+3. No---no equally likely events are defined
+4. The probability can be *approximated*---observe the lights many times, and count how often there is less than 90 seconds between green
+lights.
+:::
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:WorldCup).**
+
+1. $C^7_5 \times C5_4 \times C^2_1 \times C^1_1$; $11^2 + (2\times 22) = 1 65$.
+2. ???
+:::
+
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:Stirling).**
+
 ```{r}
-PreHours <- c(10.0,6.5,8.0,12.0,5.0,11.5,5.0,3.5,7.5,5.8,
-             4.7,8.0,7.0,17.0,8.8,17.0,15.0,4.4,2.0)
-             
-PreMins <- c(6.5,14.0,13.5,18.0,14.5,9.0,18.0,42.0,7.5,6.0,
-             25.0,12.0,52.0,20.0,16.0,15.0,11.5,2.5,2.0)
-
-MeanAll <- mean( c(PreHours, PreMins))
-MeanHours <- mean( PreHours )
-MeanMins <- mean( PreMins )
-
-# The difference in the sample:
-MeanMins - MeanHours
-
-```
-
-The data show that 12 patients had beta-endorphin concentrations higher *minutes* before surgery rather than *hours* before surgery.
-
-Is this evidence that the beta-endorphine concentrations are higher in the minutes before surgery rather than the hours before surgery?
-No, it is not.
-Even if there was *no difference* between the beta-endorphin concentrations between the two times, random variation means that some patients would have the higher reading in the *minutes* before, and some would have the higher reading in the *hours* before.
-
-We can use computer simulation to study the situation.
-Assume there is no difference between the beta-endorphin concentrations between the two time points.
-Using **R**, we can randomly allocate each of the 19 people in the study to have higher concentrations in one of the two time points: 
-
-
-```{r echo=FALSE}
-set.seed(869812)
-```
-
-
-```{r}
-HigherMins <- array(dim = 19)  # Store info 
-
-
-#For each patient:
-for (i in 1:19){ 
-  # Select 1 option from either "Hours" or "Mins to be higher, 
-  # with 0.5 prob for each option:
-  WhichHigher <- sample(x = c("Hours", "Mins"), 
-                        size = 1, 
-                        prob = c(0.5, 0.5) )
-  # Record keeping: 1 means higher for "Mins"
-  HigherMins[i] <- WhichHigher == "Mins"
+# Define a function to compute Stirling numbers:
+stirling <- function(n){ 
+  sqrt(2 * pi *( n)) * (n/exp(1))^n
 }
+
+n <- 1:10
+Actual <- factorial(n) 
+Approx <- stirling(n)
+RelError <- (Actual - Approx)/Actual * 100
+
+cbind(Actual, Approx, RelError)
+
+plot(RelError ~ n,
+     ylim = c(0, 8),
+     las = 1, 
+     type = "b",
+     pch = 19,
+     lwd = 2,
+     xlab = expression(italic(n)),
+     ylab = "Relative error (%)",
+     main = "Relative error of\nStirling's approximation")
 ```
-
-So for this simulated outcome, we find:
-```{r}
-# So for this simulation:
-HigherMins
-```
-That is,
-```{r}
-# For this simulation, how many higher for "Mins"?
-sum(HigherMins)
-```
-... of the 19 patients had a beta-endorphin concentration *minutes* before surgery.
-
-We can repeat this process many times, say 1000 times:
-
-```{r}
-numSims <- 1000   # 1000 simulations
-# Record the outcome for each simulation:
-NumHigherMins <- array( dim = numSims)
-
-for (n in 1:numSims){
-  #For each patient:
-  for (i in 1:19){ 
-    # Select 1 option from either "Hours" or "Mins to be higher, 
-    # with 0.5 prob for each option:
-    WhichHigher <- sample(x = c("Hours", "Mins"), 
-                          size = 1, 
-                          prob = c(0.5, 0.5) )
-    # Record keeping: 1 means higher for "Mins"
-    HigherMins[i] <- WhichHigher == "Mins"
-  }
-  # So for this simulation:
-  HigherMins
-  # For this simulation, how many higher for "Mins"?
-  NumHigherMins[n] <- sum(HigherMins)
-}
-```
-
-```{r}
-# Percentage of times when this many have Mins as the higher:
-SummaryTable <- table(NumHigherMins) / numSims * 100
-SummaryTable
-```
-
-This table shows us how often we find the given number of patients having a beta-endorphin concentration higher in the *minutes* before surgery compared to *hours* before surgery, just by chance, if there really was no difference.
-
-What we found in the data was that this occurred 12 times for 19 patients.
-The simulation shows that this is not at all unusual, even when there is no difference between the two time points.
-In fact, 12 people---or even more than 12 people---having a higher concentration minutes before is 
-
-```{r}
-nums <- as.character(12:19) # 12 to 19, as characters
-SummaryTable[nums]
-sum(SummaryTable[nums], na.rm = TRUE)
-```
-
-```{ echo=FALSE}
-PC.hi <- sum(SummaryTable[nums], na.rm=TRUE)
-
-nums.lo <- as.character(1:7) # 1:7, as characters
-PC.lo <- sum(SummaryTable[nums.lo], na.rm = TRUE)
-```
-
-
-That is, the chance of seeing 12 patients or more with a higher reading *minutes* before is about `r PC.lo`%. 
-In addition, the chance of seeing 12 patients or more with a lower reading *minutes* before is about `r PC.hi`%.
-So the chance that we would see something as extreme as we did---or even more extreme---is about `r PC.hi + PC.lo`%, just by chance alone.
-
-This is hardly convincing evidence of a difference in beta-endorphin concentrations in the minutes and the hours before surgery.
-
-
 :::
 
 
@@ -732,7 +687,7 @@ Answer to Exercise \@ref(exr:C3Cauchy).
 1. $\displaystyle \text{E}(X) =  \int_{-\infty}^t \frac{x}{\pi(1 + x^2)}\,dx = ...$, which is not defined.
 :::
 
-```{r Cauchy, fig.align="center", fig.cap="The Cauchy distribution"}
+```{r Cauchy, fig.align="center", fig.cap="The Cauchy distribution", fig.height=4, fig.width=7,out.width='70%'}
 par( mfrow = c(1, 2))
 x <- seq(-5, 5,
          length = 100)

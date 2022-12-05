@@ -1,5 +1,12 @@
+# Load libraries
+library(plot3D)
+library(rgl)
+library(kableExtra)
+library(plotrix)
+
+
 # example R options set globally
-options(width = 60)
+options(width = 50)
 
 # example chunk options set globally
 knitr::opts_chunk$set(

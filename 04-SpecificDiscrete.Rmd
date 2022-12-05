@@ -26,7 +26,6 @@ If a random variable $X$ with range space $\{a, a + 1, a + 2, \dots, b\}$ where 
    p_X(x) = \frac{1}{b - a + 1}\text{ for $x = a, a + 1, \dots, b$}
 \]
 then $X$ has a *discrete uniform distribution*.
-
 We write $X\sim U(a, b)$ or $X\sim \text{Unif}(a, b)$.
 :::
 
@@ -175,9 +174,18 @@ Using this approach, the pmf for the binomial distribution can be developed.
 Formally, situations giving rise to a binomial distribution are defined in terms of *Bernoulli trials*.
 
 :::{.definition #BernoulliTrials name="Bernoulli trials"}
-A *Bernoulli trial* is an experiment with only two possible outcomes, usually labelled 'success' and 'failure'.
+A *Bernoulli trial* is an experiment with only two possible outcomes, usually labelled 'success' $s$ and 'failure' $f$.
 The sample space can be denoted by $S = \{ s, f\}$.
 :::
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The terms 'success' and 'failure' are not literal.
+\smallskip
+
+'Success' simply means that the event is of interest.
+If the event of interest is the number of damaging tornadoes, this is still called a 'success'.
+:::
+
 
 A binomial situation arises if a *sequence* of Bernoulli trials is observed, in each of which $\Pr(\{ s\} ) = p$ and $\Pr(\{ f\} ) = q = 1 - p$.
 If $n$ such trials are conducted, consider the random variable $X$, where $X$ is the number of successes in $n$ trials. 
@@ -210,7 +218,6 @@ So we have the following:
 :::{.definition #BinomialDistribution name="Binomial distribution"}
 Let $X$ be the number of successes in $n$ independent Bernoulli trials with $\Pr(\text{Success}) = p$ ($0\le p\le 1$) constant in each trial.
 Then $X$ is said to have a *binomial probability distribution* with parameters $n$, $p$ and pf given by \@ref(eq:BinomialPMF).
-
 We write $X\sim\text{Bin}(n, p)$.
 :::
 
@@ -317,9 +324,9 @@ The mgf of $X$ is given by
    &= \text{E}(\exp(tX))\\
    &= \sum^n_{x = 0} e^{tx}{n\choose x} p^x q^{n - x}\\
    &= \sum^n_{x = 0}{n\choose x} (pe^t)^x q^{n - x}\\
-   &= (pe^t + q)^n
+   &= (pe^t + q)^n.
 \end{align*}
-Prove the third result first, and then using it to prove the others, is easier (using of the methods in \@ref(MGFMoments)---try this as an exercise.)
+Proving the third result first, and then using it to prove the others, is easier (using of the methods in Sect. \@ref(MGFMoments)---try this as an exercise.)
 :::
 
 
@@ -350,13 +357,6 @@ Tables of binomial probabilities are commonly available, but computers (e.g., us
 If the number of 'successes' has a binomial distribution, so does the number of 'failures'.
 Specifically if $X\sim \text{Bin}(n,p)$, then $Y = (n - X) \sim \text{Bin}(n, 1 - p)$.
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The terms 'success' and 'failure' are not literal.
-
-'Success' simply means that the event is of interest.
-If the event of interest is the number of damaging tornadoes, this is still called a 'success'.
-:::
-
 Binomial probabilities can sometimes be approximated using the normal distribution (Sect. \@ref(NormalApproxBinomial)) or the Poisson distribution (Sect. \@ref(PoissonBinomial)).
 
 
@@ -368,18 +368,17 @@ The Poisson distribution is commonly used to model the number of occurrences of 
 The Poisson distribution arises as a result of assumptions that are made about a random experiment, and roughly these are:
 
 * Events that occur in one time-interval (or region) are independent of those occurring in any other non-overlapping time-interval (or region)
-* for a small time-interval the probability that an event occurs in it is proportional to the length of the interval
-* the probability that 2 or more events occur in a very small time-interval is so small that it can be neglected.
+* For a small time-interval, the probability that an event occurs in it is proportional to the length of the interval
+* The probability that 2 or more events occur in a very small time-interval is so small that it can be neglected.
 
 Whenever these assumptions are valid, or approximately so, the Poisson distribution is appropriate, and quite a number of natural phenomena fall into this category.
 
 :::{.definition #PoissonDistribution name="Poisson distribution"}
 A random variable $X$ is said to have a *Poisson distribution* if its pmf is
 \[
-   p_X(x) = \frac{e^{-\mu} \mu^x}{x!}\quad   \text{for $x=0$, $1$, $2$, $\dots$}
+   p_X(x) = \frac{\exp(-\mu) \mu^x}{x!}\quad   \text{for $x=0$, $1$, $2$, $\dots$}
 \]
 where the parameter is $\mu > 0$.
-
 We write $X\sim\text{Pois}(\mu)$.
 :::
 
@@ -492,8 +491,35 @@ BombTable[, 4] <- dpois(0:7,
 BombTable[, 4] <- round( BombTable[, 4], 4)
 BombTable[ 8, 4] <- 1 - sum( BombTable[1:7, 4])
 
-knitr::kable(BombTable,
-             caption = "The number of flying bomb hits on London during World War II in a 36 square kilometre area of South London. The proportion of the 576 grid squares receiving 0, 1, ...hits was also computed. The observed and empirical probabilities are shown. The Poisson distribution fits the data  well.")
+BombTable.caption <- "The number of flying bomb hits on London during World War II in a 36 square kilometre area of South London. The proportion of the 576 grid squares receiving 0, 1, ...hits was also computed. The observed and empirical probabilities are shown. The Poisson distribution fits the data  well."
+
+if( knitr::is_latex_output() ) {
+  knitr::kable( BombTable,
+                format = "latex",
+                booktabs = TRUE,
+                longtable = FALSE,
+                col.names = c("Hits",
+                              "Number bombs", 
+                              "Proportion bombs", 
+                              "Poisson proportion"),
+                caption = BombTable.caption) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  knitr::kable( BombTable,
+                format = "html",
+                booktabs = TRUE,
+                longtable = FALSE,
+                col.names = c("Hits",
+                              "Number bombs", 
+                              "Proportion bombs", 
+                              "Poisson proportion"),
+                caption = BombTable.caption) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+
 ```
 
 
@@ -598,10 +624,8 @@ The distribution is easy to derive.
 To observe the first success on the $y$th trial, there must be $y - 1$ failures followed by one success.
 Since the probability of failure is $q$ and the probability of success is $p$, the probability of the first success on trial $y$ is
 \begin{align*}
-   \text{$(y - 1)$ failures} 
-   &\times \text{first success} \\
-   q^{y - 1}
-   &\times  p.
+   \text{$(y - 1)$ failures}    &\times \text{first success} \\
+   q^{y - 1}                    &\times  p.
 \end{align*}
 This derivation assumes the events are independent.
 
@@ -612,7 +636,6 @@ A random variable $X$ has a *geometric distribution* if the pf of $X$ is given b
    p_X(x) =  q^{x-1} p\quad\text{for $x = 1,2,\dots$}
 \]
 where $q = 1 - p$ and $0 < p < 1$ is the parameter of the distribution.
-
 We write $X\sim\text{Geom}(p)$.
 :::
 
@@ -675,11 +698,11 @@ Then $Y \sim\text{Geom}(0.02)$.
 Suppose we wish to find the probability that the system will first fail before day $20$.
 We seek $\Pr(Y < 20) = \Pr(Y \le 19)$.
 This can be done by hand, or using a computer.
-In R, the command `dgeom()` gives the probability mass function for the gempetric distribution, and `pgeom()` gives values from the distribution function of the geometric distribution: FIX!!!
+In R, the command `dgeom()` gives the probability mass function for the geometric distribution, and `pgeom()` gives values from the distribution function of the geometric distribution:
 ```{r echo=TRUE}
 sum( dgeom( x = 1:19, 
             prob = 0.02))
-pgeom(q = 18, 
+pgeom(q = 19, 
       prob = 0.02) # i.e., up to 18 failures at p=0.02
 ```
 The probability is $0.32$ that the system will fail before day $20$.
@@ -749,9 +772,9 @@ might be needed. "
 
 ## Negative binomial distribution {#NegativeBinomialDistribution}
 
-Consider now an experiment where independent Bernoulli trials are repeated until the $r$th success occurs. 
-What is the distribution of the number of trials required?
+### Standard parameterisation
 
+Consider a random process where independent Bernoulli trials are repeated until the $r$th success occurs. 
 Let random variable $Y$ be the number of trials necessary to obtain $r$ successes.
 Clearly $Y$ will be at least $r$ and the range space for $Y$ is $\{ r, r + 1, r + 2,\dots \}$.
 
@@ -775,7 +798,6 @@ A random variable $X$ with pf
    (\#eq:NegativeBinomialPMF)
 \end{equation}
 has a *negative binomial distribution* with parameters $r$ (an integer $\ge 1$) and $p$ ($0\le p\le1$).
-
 We write $X\sim\text{NB}(r, p)$.
 :::
 
@@ -834,38 +856,24 @@ If $X\sim \text{NB}(r,p)$ with pf \@ref(eq:NegativeBinomialPMF) then
 :::
 
 :::{.proof}
-Once again it makes sense to prove the third statement initially, and this is left as an exercise.
+Again, proving the third statement initially is sensible, which is left as an exercise.
 :::
 
 
 :::{.example #Demonstration name="Negative binomial"}
-A company employs a telephone marketer to invite customers, over the telephone, to a product demonstration.
-The marketer must obtain ten people for the demonstration. 
+A telephone marketer invites customers, over the phone, to a product demonstration.
+Ten people are needed for the demonstration. 
 The probability that a randomly chosen person accepts the invitation is only $0.15$.
 
-   
-   How likely is it that the marketer will need to make
-   more than $100$ calls to secure ten acceptances?
+* How likely is it that the marketer will need to make more than $100$ calls to secure ten acceptances?
 
-   Each call take an average of 5 minutes.
-   How long is the marketer expected to be calling
-   to find ten acceptances?
-
-   Each call costs $25$ cents.
-   If the company pays the marketer \$30 per hour,
-   what is the average cost of securing ten acceptances?
-
-How many calls must the marketer expect to make before obtaining ten acceptances?
-In this problem, a 'success' is an acceptance to attend the demonstration.
+In this situation, a 'success' is an acceptance to attend the demonstration.
 Let $Y$ be the number of calls necessary to secure ten acceptances.
 Then $Y$ has a negative binomial distribution such that $Y\sim\text{NBin}(p = 0.15, r = 10)$.
 The mean number of calls to be made will be $\text{E}(Y) = r/p = 10/0.15 \approx 66.7$.
 
-Suppose each call take an average of 5 minutes. How long is the marketer expected to be calling to find ten acceptances?
-   
-To determine $\Pr(Y > 100) = 1 - \Pr(Y\le 100$, using a computer is the wisest approach. 
-In R, the command `dnbinom()` returns probabilities from the density function of the negative binomial distribution. 
-One answer to the problem is
+To determine $\Pr(Y > 100) = 1 - \Pr(Y\le 100)$, using a computer is the easiest approach. 
+In **R**, the command `dnbinom()` returns probabilities from the probability function of the negative binomial distribution, and `pnbinom()` returns the cumulative distribution probabilities:
 
 ```{r}
 x.values <- seq(1, 100, 
@@ -873,60 +881,70 @@ x.values <- seq(1, 100,
 1 - sum(dnbinom( x.values, 
                  size = 10, 
                  prob = 0.15))
+# Alternatively:
+1 - pnbinom(100, 10, 0.15)
+
 ```
+
 The probability is about $0.0244$.
 
-Alternatively use `1 - pnbinom(100, 10, 0.15)` to access the probability directly from the distribution function.
+* Suppose each call take an average of 5 minutes.
+  How long is the marketer expected to be calling to find ten acceptances?
+
 
 Let $T$ be the time to make the calls in minutes.
 Then $T = 5Y$.
 Hence, $\text{E}(T) = 5\text{E}(Y) = 5 \times 66.7 = 333.5$, or about 5.56 hours.
 
-Suppose each cal costs 25 cents.
+
+* Suppose each call costs $25$ cents.
+  If the company pays the marketer \$30 per hour, what is the average cost of securing ten acceptances?
+
 Let $C$ be the total cost in dollars.
 The cost of employing the marketer is, on average, $30\times 5.56 = \$166.75$.
-Then $C = 0.25 Y + 166.75$, so that $\text{E}(C) = 0.25 \text{E}(Y) + 166.75 = C = 0.25 \times 66.7 + 166.75 = \$183.43$.
+Then $C = 0.25 Y + 166.75$, so $\text{E}(C) = 0.25 \text{E}(Y) + 166.75 = C = 0.25 \times 66.7 + 166.75 = \$183.43$.
 :::
 
 
-### Alternative parameterization
+### Alternative parameterisation
 
-Often the negative binomial distribution is used in a different parameterization. 
+Often the negative binomial distribution is used in a different parameterisation. 
 This form can be seen as the number of *failures* which occur in a sequence of independent trials until $r$ successes are reached. 
-The pf is this reparameterized form in
+The pf is this reparameterised form in
 \begin{equation}
-   p_X(x) = {x+r-1 \choose x} p^r (1-p)^x
+   p_X(x) = {x + r - 1 \choose x} p^r (1 - p)^x
    (\#eq:NegativeBinomialPMFAlternative)
 \end{equation}
 where $X$ is the number of *failures* until the $r$th success is observed. 
 Note that the variables $X$ and $Y$ are related by $Y = X + r$ for constant $r$. 
 Hence, this pf is defined for $x = 0$, $1$, $2$, $\dots$.
 
-It is also possible to allow $r$ to be any positive number, not just an integer.
-This is true for the form above or for the parameterization in \@ref(eq:NegativeBinomialPMFAlternative).
-It is, however, most common to relax this restriction with the alternative parameterization of \@ref(eq:NegativeBinomialPMFAlternative).
+$r$ can be any positive number, not just an integer, in either parameterisation.
+Setting $r$ as non-integer, however, is most common with the alternative parameterisation in \@ref(eq:NegativeBinomialPMFAlternative).
 
-When $r$ is permitted to be non-integer, the interpretations given above are lost, but the distribution is then more flexible.
+When $r$ is non-integer, the above interpretations are lost, but the distribution is more flexible.
 Relaxing the restriction on $r$ in the form of \@ref(eq:NegativeBinomialPMFAlternative) gives the pf as
 \begin{equation}
-   p_X(x) = \frac{\Gamma(x+r)}{\Gamma(r) x!} p^r (1-p)^x,
+   p_X(x) = \frac{\Gamma(x + r)}{\Gamma(r) x!} p^r (1 - p)^x,
    (\#eq:NegativeBinomialPMFAlternative2)
 \end{equation}
-for $x = 0$, $1$, $2$, $\dots$ and $r>0$.
+for $x = 0$, $1$, $2$, $\dots$ and $r > 0$.
 In this expression, $\Gamma(r)$ is the *gamma function* (see below), and is like a factorial;
-indeed, $\Gamma(r) = (r-1)!$ if $r$ is a positive integer.
+indeed, $\Gamma(r) = (r - 1)!$ if $r$ is a positive integer.
 See Sect. \@ref(GammaFunction).
 
 This form of the negative binomial distribution is sometimes used in place of the Poisson distribution used to model count data (they are both defined on $\{0, 1, 2, \dots\}$).
 Since the negative binomial distribution has two parameters and the Poison only one, the negative binomial distribution often produces a better fit.
 
-For the reparameterised version of the negative binomial distribution, Theorem \@ref(thm:NegBinomialProperties) becomes:
+For the reparameterised version of the negative binomial distribution, Theorem \@ref(thm:NegBinomialProperties) is restated.
 
-If $X\sim \text{NB}(r, p)$ with pf (\@ref(eq:NegativeBinomialPMFAlternative)) then
+:::{.theorem #NegBinomialProperties2}
+If $X\sim \text{NB}(r, p)$ with pf (\@ref(eq:NegativeBinomialPMFAlternative)), then
 
 1. $\text{E}(X) = r(1 - p)/p$
 2. $\text{var}(X) = r(1 - p)/p^2$
 3. $M_X(t) = \left[ p/\{1 - (1 - p)e^t\} \right]^r$
+:::
 
 
 ### The gamma function {#GammaFunction}
@@ -934,20 +952,22 @@ If $X\sim \text{NB}(r, p)$ with pf (\@ref(eq:NegativeBinomialPMFAlternative)) th
 :::{.definition #GammaFunction name="Gamma function"}
 The function $\Gamma(\cdot)$ is called the *gamma function* and is defined as
 \[
-   \Gamma(r) = \int_0^\infty x^{r-1}\exp(-x)\, dx
+   \Gamma(r) = \int_0^\infty x^{r - 1}\exp(-x)\, dx
 \]
-for $r>0$.
+for $r > 0$.
 :::
 
-The gamma function has the special property that
+The gamma function has the property that
 \begin{equation}
-   \Gamma(r) = (r-1)!\label{EQN:gammaprop}
+   \Gamma(r) = (r - 1)!
+   (\#eq:gammaprop)
 \end{equation}
-if $r$ is a positive integer (see Fig. \@ref(fig:GammaFunction)).
+if $r$ is a positive integer (Fig. \@ref(fig:GammaFunction)).
 
-Here are important properties of the gamma function
+Important properties of the gamma function are given below.
 
-:::{.theorem #GammaProperties name="Gamma function properties"}
+
+:::{.theorem #GammaFunctionProperties name="Gamma function properties"}
 For the gamma function $\Gamma(\cdot)$,
 
 1. $\Gamma(r) = (r - 1)\Gamma(r - 1)$ if $r > 0$.
@@ -957,9 +977,10 @@ For the gamma function $\Gamma(\cdot)$,
 :::{.proof}
 Integration by parts gives
 \begin{align*}
-   \Gamma(r)&=\int_0^{\infty}-x^{r-1} \, d(e^{-x})\\
-   &= 0 \ + \ (r-1) \int_0^{\infty}  e^{-x}  x^{r-2} \, dx\\
-   &= ( r -1) \Gamma(r - 1).
+   \Gamma(r)
+   &= \int_0^{\infty}-x^{r - 1} \, d(e^{-x})\\
+   &= 0 + \ (r - 1) \int_0^{\infty}  e^{-x}  x^{r - 2} \, dx\\
+   &= ( r - 1) \Gamma(r - 1).
 \end{align*}
 The second property follows directly from this result (Exercise!).
 
@@ -967,16 +988,14 @@ Putting $r = 1/2$ in the first part of this theorem gives
 \begin{align*}
    \Gamma(1/2)
    &= \int_0^{\infty}e^{-x}  x^{-\frac{1}{2}}\,dx\\
-   &= \sqrt{2}\int_0^{\infty}e^{-\frac{1}{2}z^2}\,dz, \text { putting }
-   x=z^2/2,\quad z \geq 0\\
-   &= \sqrt{2}  \sqrt{2 \pi} \underbrace{\int_0^{\infty}\frac{1}{\sqrt{2 \pi}}
-   e^{-\frac{1}{2}z^2}\,dz}_{1/2}.
+   &= \sqrt{2}\int_0^{\infty}e^{-\frac{1}{2}z^2}\,dz, \text { putting $x = z^2/2\quad z \geq 0$}\\
+   &= \sqrt{2}  \sqrt{2 \pi} \underbrace{\int_0^{\infty}\frac{1}{\sqrt{2 \pi}} e^{-\frac{1}{2}z^2}\,dz}_{1/2}.
 \end{align*}
-Note that the integral is $\frac{1}{2}$, being half the area under a normal curve. 
+The integral is $\frac{1}{2}$, being half the area under a normal curve. 
 So
-\begin{equation*}
-   \Gamma(1/2)=\sqrt{\pi}.
-\end{equation*}
+\[
+   \Gamma(1/2) = \sqrt{\pi}.
+\]
 :::
 
 
@@ -1011,14 +1030,13 @@ legend("top",
 Consider the computer system in Example \@ref(exm:GeometricComputerFail). 
 Suppose after five failures, the system is upgraded.
 
-1. What is the probability that an upgrade will happen within one year?
-2. What is the expected number of days between upgrades?
+* What is the probability that an upgrade will happen within one year?
 
 Let $D$ be the days on which the system fails for the fifth time.
-Then $D\sim \text{NBin}(p=0.02, r=5)$. Note that $D = \{5, 6, 7, \dots\}$.
+Then $D\sim \text{NBin}(p = 0.02, r = 5)$, and $D = \{5, 6, 7, \dots\}$.
 
-1. We seek $\Pr(D < 365)$ or if using the alternate parameterization where $X = D - r$ we seek $\Pr(X < 360)$.
-   This is best done using a computer:
+We seek $\Pr(D < 365)$ or, if using the alternate parameterisation where $X = D - r$, we seek $\Pr(X < 360)$.
+Using **R**:
 
 ```{r echo=TRUE}
 pnbinom(360, 
@@ -1027,12 +1045,15 @@ pnbinom(360,
 ```
 So the probability of upgrading within one year is about $85$\%.
 
-2. $\text{E}(D) = 5/0.02 = 250$. 
-   About $250$ days should elapse between upgrades, on average,
+* What is the expected number of days between upgrades?
+
+$\text{E}(D) = 5/0.02 = 250$. 
+About $250$ days should elapse between upgrades, on average,
 :::
 
+
 :::{.example #NBMites name="Mites"}
-@BIB:Bliss:negbin gives data from the counts of adult European red mites on leaves selected at random from six similar apple trees; see Table \@ref(tab:specdiscrete:negbintrees).
+@BIB:Bliss:negbin gives data from the counts of adult European red mites on leaves selected at random from six similar apple trees; see Table \@ref(tab:MitesTable).
 From the data, the mean mites per leaf is
 \[
    \text{E}(X) = (0.467 \times 0) + (0.253 \times 1) +\cdots \approx 1.14667.
@@ -1044,33 +1065,59 @@ To compute the variance,
 so that $\text{var}(X) = 3.573333 - (1.146667)^2 =  2.258489$.
 The Poisson distribution has an equal mean and variance; the Poisson distribution may not model the data well.
 
-For the second parameterization of the negative binomial distribution, the expression for the mean and variance can be set to the
+For the second parameterisation of the negative binomial distribution, the expression for the mean and variance can be set to the
 computed values above and solved for $p$ and $r$; then $p\approx 0.5077$ and $r\approx 1.1826$.
-Using these values, the estimated probability function for both the Poisson and negative binomial distributions are given in Table~\ref{TB:specdiscrete:negbintrees}; the negative binomial distribution fits better as expected.
+Using these values, the estimated probability function for both the Poisson and negative binomial distributions are given in Table \@ref(tabMitesTable); the negative binomial distribution fits better as expected.
 :::
 
 
-\begin{table}
-   \begin{center}
-      \begin{tabular}{ccccc}
-         Number    & Count of & Empirical & Poisson & Neg Bin \\
-         of leaves & of mites & Prob.    & Prob.  & Prob.  \\
-         \hline
-0 & 70 & 0.467 & 0.318 & 0.449\\
-1 & 38 & 0.253 & 0.364 & 0.261\\
-2 & 17 & 0.113 & 0.209 & 0.140\\
-3 & 10 & 0.067 & 0.080 & 0.073\\
-4 & 9 & 0.060 & 0.023 & 0.038\\
-5 & 3 & 0.020 & 0.005 & 0.019\\
-6 & 2 & 0.013 & 0.001 & 0.010\\
-7 & 1 & 0.007 & 0.000 & 0.005\\
-8+ & 0 & 0 & 0 & 0
-\end{tabular}
-\caption{Counts of mites on leaves selected at random
-      from six similar apple trees.}
-      \label{TB:specdiscrete:negbintrees}
-\end{center}
-\end{table}
+```{r MitesTable, echo=FALSE}
+MitesTab <- array( dim = c(9, 5))
+
+MitesTab[1, ] <- c(0 ,  70 ,  0.467 ,  0.318 ,  0.449)
+MitesTab[2, ] <- c(1 ,  38 ,  0.253 ,  0.364 ,  0.261)
+MitesTab[3, ] <- c(2 ,  17 ,  0.113 ,  0.209 ,  "0.140")
+MitesTab[4, ] <- c(3 ,  10 ,  0.067 ,  "0.080" ,  0.073)
+MitesTab[5, ] <- c(4 ,  9 ,  "0.060" ,  0.023 ,  0.038)
+MitesTab[6, ] <- c(5 ,  3 ,  "0.020" ,  0.005 ,  0.019)
+MitesTab[7, ] <- c(6 ,  2 ,  0.013 ,  0.001 ,  "0.010")
+MitesTab[8, ] <- c(7 ,  1 ,  0.007 ,  "0.000" ,  0.005)
+MitesTab[9, ] <- c("8+" ,  0 ,  "0.000" ,  "0.000" ,  "0.000")
+
+MitesTab.caption <- "Counts of mites on leaves selected at random from six similar apple trees"
+
+if( knitr::is_latex_output() ) {
+   knitr::kable(MitesTab,
+                format = "latex",
+                booktabs = TRUE,
+                longtable = FALSE,
+                align = "r",
+                col.names = c("No. leaves", 
+                              "No. mites",
+                              "Emp. prob",
+                              "Poisson prob",
+                              "Neg. bin. prob"),
+                caption = MitesTab.caption) %>%
+  kable_styling(font_size = 10) %>%
+  row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+   knitr::kable(MitesTab,
+                format = "html",
+                booktabs = TRUE,
+                longtable = FALSE,
+                align = "r",
+                col.names = c("No. leaves", 
+                              "No. mites",
+                              "Emp. prob",
+                              "Poisson prob",
+                              "Neg. bin. prob"),
+                caption = MitesTab.caption) %>%
+  kable_styling(font_size = 10) %>%
+  row_spec(0, bold = TRUE) 
+}
+```
+
 
 
 ### Applications: Car crashes
@@ -1102,18 +1149,19 @@ an approximation if the number of trapping occa-
 sions is large, with a small probability of a sighting
 occurring within each trappin
 
+Neg bin regression.
+
 
 
 ## Hypergeometric distribution {#HypergeometricDistribution}
 
 When the selection of items a fixed number of times is done *with* replacement, the probability of an item being selected stays the same and the binomial distribution can be used.
 However, when the selection of items is done *without* replacement, the trials are not independent, making the binomial model unsuitable.
-In such a situation is the hypergeometric model.
+In these situations, a hypergeometric distribution is appropriate.
 
-Consider first a simple example.
-A bag containing six red balls and four blue balls.
+Consider a simple example: A bag containing six red balls and four blue balls.
 The variable of interest, say $X$, is the number of red balls drawn in three random selections from the bag, without replacing the balls.
-Since the balls are not replaced, $\Pr(\text{draw a red ball})$ is not constant and so the binomial distribution cannot be used.
+Since the balls are not replaced, $\Pr(\text{draw a red ball})$ is not constant, and so the binomial distribution cannot be used.
 
 The probabilities can be computed, however, using probabilistic ideas from Chap. \@ref(Probability).
 There are a total of ${10\choose 3}$ ways of selecting a sample of size 3 from the bag.
@@ -1138,11 +1186,12 @@ In general, if there are $N$ balls in total in the bag, and $r$ of them are red,
 \]
 where $X$ is the number of red balls in sample of size $n$.
 (In the example, $n = 3$, $r = 6$ and $N = 10$.)
-In the formula, note that ${r\choose x}$ is the number of ways of selecting $x$ red balls from the $r$ red balls in the bag; ${N - r\choose n - x}$ is the number of ways of selecting all the remaining $n - x$ to be the other colour (and there are $N - r$ of those in the bag); and ${N \choose n}$ is the number of ways of selecting a sample of size $n$ if there are $N$ balls in the bag in total.
+
+In the formula, ${r\choose x}$ is the number of ways of selecting $x$ red balls from the $r$ red balls in the bag; ${N - r\choose n - x}$ is the number of ways of selecting all the remaining $n - x$ to be the other colour (and there are $N - r$ of those in the bag); and ${N \choose n}$ is the number of ways of selecting a sample of size $n$ if there are $N$ balls in the bag in total.
 
 
 :::{.definition #HypergeometricDistribution name="Hypergeometric distribution"}
-Consider a set of $N$ items of which $r$ are of one kind (call them successes) and other $N - r$ are of another kind (call them failures).
+Consider a set of $N$ items of which $r$ are of one kind (call them 'successes') and other $N - r$ are of another kind (call them 'failures').
 We are interested in the probability of $x$ successes in $n$ trials, when the selection (or drawing) is made *without* replacement. 
 Then the random variable $X$ is said to have a *hypergeometric distribution* with pf
 \begin{equation}
@@ -1165,10 +1214,9 @@ The moment generating function is far too difficult and will not be considered h
 If the population is much larger than the sample size (that is, $N$ is much larger than $n$), then the probability of a success will be approximately constant.
 
 Consider the example at the start of this section.
-The probability of drawing a red ball initially is $6/10 = 0.6$.
-The probability that the next ball is red is $5/9 = 0.556$.
-But suppose there are 10000 balls in the (very big!) bag, of which 6000 are red.
-The probability of drawing a red ball initially is $6000 / 10000 = 0.6$ and the probability that the next ball is red becomes $5999/9999 = 0.59996$; the probability is almost the same.
+The probability of drawing a red ball initially is $6/10 = 0.6$, and the probability that the next ball is red is $5/9 = 0.556$.
+But suppose there are 10000 balls in the bag, of which 6000 are red.
+The probability of drawing a red ball initially is $6000 / 10000 = 0.6$, and the probability that the next ball is red becomes $5999/9999 = 0.59996$; the probability is almost the same.
 In this case, we might consider using the binomial distribution with $p\approx 0.6$.
 
 In general, if $N$ is much larger than $n$, the population proportion then will be approximately $p\approx r/N$, and so $1 - p \approx (N - r)/N$.
@@ -1179,9 +1227,9 @@ Using this information,
 and
 \begin{align*}
    \text{var}(X)
-   &=n\left(\frac{r}{N}\right)\left(\frac{N-r}{N}\right)\left(\frac{N-n}{N-1}\right)\\
-   &\approx n\left( p \right ) \left( 1-p \right) \left( 1 \right ) \\
-   &=n p (1-p),
+   &= n\left(\frac{r}{N}\right)\left(\frac{N - r}{N}\right)\left(\frac{N - n}{N - 1}\right)\\
+   &\approx n\left( p \right ) \left( 1 - p \right) \left(1 \right ) \\
+   &= n p (1 - p),
 \end{align*}
 which correspond to the mean and variance of the binomial distribution.
 
