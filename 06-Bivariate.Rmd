@@ -1,17 +1,17 @@
-# Bivariate distributions {#Bivariate}
+# Multivariate distributions {#Bivariate}
 
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
 Upon completion of this module students should be able to:
 
-* understand the concept of bivariate random variables
-* understand the concept of the joint probability function and the distribution function of two random variables
-* find the marginal and conditional probability functions of random variables in both discrete and continuous cases
-* understand and apply the concept of independence of two random variables
-* compute the expectation and variance of linear combinations of random variables
-* interpret and compute the covariance and the coefficient of correlation between two random variables
-* compute the conditional mean and conditional variance of a random variable for some given value of another random variable
-* be familiar with the multinomial and bivariate normal distributions
-* know the computation of conditional mean and variance for a bivariate normal distribution
+* understand the concept of bivariate random variables.
+* understand the concept of the joint probability function and the distribution function of two random variables.
+* find the marginal and conditional probability functions of random variables in both discrete and continuous cases.
+* understand and apply the concept of independence of two random variables.
+* compute the expectation and variance of linear combinations of random variables.
+* interpret and compute the covariance and the coefficient of correlation between two random variables.
+* compute the conditional mean and conditional variance of a random variable for some given value of another random variable.
+* be familiar with the multinomial and bivariate normal distributions.
+* know the computation of conditional mean and variance for a bivariate normal distribution.
 :::
 
 
@@ -27,99 +27,111 @@ knitr::knit_hooks$set(webgl = hook_webgl)
 
 ## Introduction
 
-Not all random processes are sufficiently simple to have the outcome denoted by a single number  $x$. 
+Not all random processes are sufficiently simple to have the outcome denoted by a single number $x$. 
 In many situations we are interested in observing two or more numerical characteristics simultaneously.
+This chapter begins discussing the two-variable, or bivariate, case.
 
-This section only discusses the two-variable, or bivariate, case.
-
-Let  $\cal E$ be a random process and  $S$ a sample space associated with  $\cal E$.
 
 :::{.definition #RandomVector name="Random vector"}
-Let  $X = X(s)$ and  $Y = Y(s)$ be two functions, each assigning a real number to each sample point  $s \in S$. 
-Then  $(X,Y)$ is called a *two-dimensional random variable*, or a *random vector*.
+Let $X = X(s)$ and $Y = Y(s)$ be two functions, each assigning a real number to each sample point $s \in S$. 
+Then $(X,Y)$ is called a *two-dimensional random variable*, or a *random vector*.
 :::
 
-The range space of  $(X, Y)$,  $R_{X \times Y}$, will be a subset of the Euclidean plane. 
-Each outcome  $X(s)$,  $Y(s)$ may be represented as a point  $(x, y)$ in the plane. 
-As in the 1-dimensional case, it is necessary to distinguish between discrete and continuous random variables.
+The range space of $(X, Y)$, $R_{X \times Y}$, will be a subset of the Euclidean plane. 
+Each outcome $X(s)$, $Y(s)$ may be represented as a point $(x, y)$ in the plane. 
+As in the 1-dimensional case, distinguish between discrete and continuous random variables is necessary.
+
 
 :::{.definition #DiscreteBV name="Bivariate probability function"}
-$(X,Y)$ is a 2-dimensional *discrete* random variable if the range space  $R_{X \times Y}$ is finite or countably infinite. 
-That is, if values of  $(X, Y)$ may be represented as  $(x_i, y_i)$,  $i = 1,2,\ldots, j=1,2,\ldots$.
+$(X,Y)$ is a 2-dimensional *discrete* random variable if the range space $R_{X \times Y}$ is finite or countably infinite. 
+That is, if values of $(X, Y)$ may be represented as $(x_i, y_i)$, $i = 1,2,\ldots, j=1,2,\ldots$.
 
-$(X,Y)$ is a 2-dimensional *continuous* random variable if the range space  $R_{X \times Y}$ is a non-denumerable set of the Euclidean plane; for example,  $R_{X \times Y} = \{(x,y): a \leq x \leq b, c \leq y \leq d\}$.
+$(X,Y)$ is a 2-dimensional *continuous* random variable if the range space $R_{X \times Y}$ is a non-denumerable set of the Euclidean plane; for example, $R_{X \times Y} = \{(x, y): a \leq x \leq b, c \leq y \leq d\}$.
 :::
 
+
+:::{.example #BVDiscreteEG name="Bivariate discrete"}
+Consider a random process where, simultaneously, *two* coins are tossed, and *one* die is rolled. 
+Let $X$ be the number of heads that show on the two coins, and $Z$ the number of rolls needed to roll a `r knitr::include_graphics("Dice/die6.png", dpi=2000)`. 
+
+$X$ is discrete with $R_X = \{0, 1, 2\}$.
+$Z$ is discrete with a countably infinite range space $R_Z = \{ 1, 2, 3, \dots\}$.
+
+The range space is $R_{X\times Z} = \{ (x, z): 0 \le x \le 2, z = 1, 2, 3, \dots\}$
+:::
+
+
 :::{.definition #BivariateProbFunction name="Bivariate distribution function"}
-Let  $(X,Y)$ be a 2-dimensional discrete random variable. 
-With each  $(x_i, y_j)$ we associate a number  $p_{X,Y}(x_i, y_j)$ representing  $\Pr(X = x_i, Y = y_j)$ and satisfying
+Let $(X,Y)$ be a 2-dimensional discrete random variable. 
+With each $(x_i, y_j)$ we associate a number $p_{X,Y}(x_i, y_j)$ representing $\Pr(X = x_i, Y = y_j)$ and satisfying
 \begin{align*}
-   p_{X, Y}(x_i, y_j) &\geq 0, \text{ for all } (x_i,y_j)  \\
-   \sum_{j = 1}^{\infty} \sum_{i = 1}^{\infty} p_{X,Y}(x_i,y_j)
-   &=1.
+   p_{X, Y}(x_i, y_j) &\geq 0, \text{ for all } (x_i, y_j)  \\
+   \sum_{j = 1}^{\infty} \sum_{i = 1}^{\infty} p_{X, Y}(x_i, y_j)
+   &= 1.
 \end{align*}
-Then the function  $p_{X,Y}(x, y)$, defined for all  $(x_i, y_j) \in R$ is called the *probability function* of  $(X,Y)$. 
+Then the function $p_{X,Y}(x, y)$, defined for all $(x_i, y_j) \in R$ is called the *probability function* of $(X,Y)$. 
 Also, 
 \[
    \{x_i, y_j, p_{X,Y}(x_i, y_j); i, j = 1, 2, \ldots\} 
 \]
-is called the *probability distribution* of  $(X,Y)$.
+is called the *probability distribution* of $(X,Y)$.
 
-Let  $(X,Y)$ be a continuous random variable assuming values in a 2-dimensional set  $R$.
-The *joint probability density function*,  $f_{X,Y}$, is a function satisfying
+Let $(X,Y)$ be a continuous random variable assuming values in a 2-dimensional set $R$.
+The *joint probability density function*, $f_{X,Y}$, is a function satisfying
 \begin{align}
-   f_{X, Y}(x, y) 
-   &\geq 0, \text{ for all } (x,y) \in R, \\
-   \int \!\! \int_{R} f_{X,Y}(x,y) \, dx \, dy &= 1.
+   f_{X, Y}(x, y) &\geq 0, \text{ for all } (x, y) \in R, \\
+   \int \!\! \int_{R} f_{X, Y}(x, y) \, dx \, dy &= 1.
 \end{align}
 :::
 
-Note that the second of these indicates that the volume under the surface  $f_{X,Y}(x,y)$ is one. 
-Also, for  $\Delta x, \Delta y$
-sufficiently small,
+Note that the second of these indicates that the volume under the surface $f_{X,Y}(x,y)$ is one. 
+Also, for $\Delta x, \Delta y$ sufficiently small,
 \begin{equation}
-   f_{X, Y}(x, y) \, \Delta x \Delta y \approx \Pr(x \leq X \leq x + \Delta x, y \leq Y \leq y+\Delta y).
+   f_{X, Y}(x, y) \, \Delta x \Delta y \approx \Pr(x \leq X \leq x + \Delta x, y \leq Y \leq y +\Delta y).
 \end{equation}
 Probabilities of events can be determined by the probability function or the probability density function as follows.
 
-:::{.definition #BVDistributionFn name="Bivariate distribution function"}
-For any event  $A$, *the probability of  $A$* is given by
-\begin{align}
+
+:::{.definition #BVProbabilities name="Bivariate distribution probabilities"}
+For any event $A$, *the probability of $A$* is given by
+\begin{align*}
    \Pr(A) 
-   &= \sum_{(x,y) \in A} p(x,y),\quad \quad \quad \quad \quad \text{ for  $(X, Y)$ discrete;}\\
+   &= \sum_{(x, y) \in A} p(x, y),                       &\text{ for $(X, Y)$ discrete;}\\
    \Pr(A)
-   &= \int \!\! \int_{(x,y) \in A}f(x,y) \, dx \, dy \quad \text{for  $(X, Y)$ continuous.}
-\end{align}
+   &= \int \!\! \int_{(x, y) \in A}f(x, y) \, dx \, dy   & \text{for $(X, Y)$ continuous.}
+\end{align*}
 :::
 
-As in the univariate case, the (cumulative) distribution function can be used  to represent a sum of probabilities or a volume under a surface. 
-It is denoted by  $F_{X, Y}(x, y)$ and defined as follows.
+
+The (cumulative) distribution function represents a sum of probabilities, or a volume under a surface. 
+It is denoted by $F_{X, Y}(x, y)$ and defined as follows.
+
 
 :::{.example #BVDistributionFN name="Bivariate distribution function"}
 The *bivariate distribution function* is
 \begin{align}
    F(x, y)
-   &= \Pr(X \leq x, \, Y \leq y), \text{ for  $(X,Y)$ discrete;}\\
+   &= \Pr(X \leq x, \, Y \leq y),                           & \text{for $(X,Y)$ discrete;}\\
    F(x, y)
-   &= \int_{-\infty}^y \int_{-\infty}^x f(u,v) \, du \, dv, \text{for  $(X,Y)$ continuous.}
+   &= \int_{-\infty}^y \int_{-\infty}^x f(u,v) \, du \, dv, & \text{for $(X,Y)$ continuous.}
 \end{align}
 :::
 
-As in the univariate case, a bivariate distribution can be expressed in various ways:
+
+As in the univariate case, a bivariate distribution can be given in various ways:
 
 * by enumerating the range space and corresponding probabilities;
 * by a formula; or
 * by a table.
 
-The following examples illustrate these concepts.
 
 :::{.example #BVDiscrete name="Bivariate discrete"}
-Consider an experiment where, simultaneously, *two* coins are tossed, and *one* die is rolled. 
-Let  $X_1$ be the number of heads that show on the two coins, and  $X_2$ the number on the top face of the die. 
-Then  $(X_1, X_2)$ is a discrete, bivariate random variable.
+Consider a random process where, simultaneously, *two* coins are tossed, and *one* die is rolled. 
+Let $X_1$ be the number of heads that show on the two coins, and $X_2$ the number on the top face of the die. 
+Then $(X_1, X_2)$ is a discrete, bivariate random variable.
 
-Note the possible values of  $X_1$ are  $R_{X_1}=\{0, 1, 2\}$ and the possible values of  $X_2$ are  $R_{X_2}=\{1, 2, 3, 4, 5, 6\}$. 
-So the sample space for the random vector  $(X_1, X_2)$ is
+Note the possible values of $X_1$ are $R_{X_1} = \{0, 1, 2\}$ and the possible values of $X_2$ are $R_{X_2}=\{1, 2, 3, 4, 5, 6\}$. 
+So the sample space for the random vector $(X_1, X_2)$ is
 \begin{align*}
    S
    &=\left\{ (0, 1), (0, 2), \dots, (0, 6);  \right. \\
@@ -130,14 +142,10 @@ So the sample space for the random vector  $(X_1, X_2)$ is
 
 
 :::{.example #BVDiscrete2 name="Bivariate discrete"}
-Consider the following discrete distribution where probabilities  $\Pr(X = x, Y = y)$ are shown as a graph in Fig. \@ref(fig:Bivar1graph) and as a Table in Table \@ref(tab:Bivar1). 
-Find  $\Pr(X + Y \geq 2)$.
+Consider the following discrete distribution where probabilities $\Pr(X = x, Y = y)$ are shown as a graph (Fig. \@ref(fig:Bivar1graph)) and a table (Table \@ref(tab:Bivar1)).
 
 
-```{r Bivar1graph, echo=FALSE, warning=FALSE, message=FALSE, webgl=TRUE, fig.cap="The bivariate probability function", fig.align="center", out.width='80%'}
-# This is to output a rgl plot in a rmarkdown document.
-# setupKnitr()
-
+```{r Bivar1graph, echo=FALSE, warning=FALSE, message=FALSE, webgl=TRUE, fig.cap="A bivariate probability function", fig.align="center", out.width='80%'}
 pmf1 <- data.frame(
   x = c(0, 0, 0, 1, 1, 1, 2, 2, 2),
   y = c(0, 1, 2, 0, 1, 2, 0, 1, 2),
@@ -201,7 +209,7 @@ colnames(Bivar1Table) <- c( "$x = 0$",
                             "$x = 2$")
 
 
-Bivar1Table.caption <- "The bivariate probability function"
+Bivar1Table.caption <- "A bivariate probability function"
 if( knitr::is_latex_output() ) {
   knitr::kable(Bivar1Table,
                format = "latex",
@@ -227,15 +235,12 @@ if( knitr::is_html_output() ) {
 ```
 
 
-
-Note that the probabilities in the table add to one, as they should.
-Treating  $X + Y \geq 2$ as an event  $A$, we have:
+To find $\Pr(X + Y \geq 2)$, define event $A$ as $X + Y \geq 2$; then:
 \begin{align*}
    \Pr(X + Y \geq 2)
-   &=\Pr(\{X = 2, Y = 0\} \text{ or } \{X = 1, Y = 1\} \text{ or } \{X = 0, Y = 2\})\\
+   &=\Pr\big(\{X = 2, Y = 0\} \text{ or } \{X = 1, Y = 1\} \text{ or } \{X = 0, Y = 2\}\big)\\
    &= \Pr(X = 2, Y = 0) \, + \, \Pr(X = 1, Y = 1) \, + \, \Pr(X = 0, Y = 2)\\
-   &= \frac{1}{9} \ + \ \frac{1}{4} \ + \ \frac{1}{3}\\
-   &= \frac{25}{36}
+   &= \frac{1}{9} \ + \ \frac{1}{4} \ + \ \frac{1}{3} = \frac{25}{36}
 \end{align*}
 :::
 
@@ -245,12 +250,14 @@ Consider the following continuous bivariate distribution with joint pdf
 \[
    f_{X, Y}(x, y) = 1, \quad 0 \leq x \leq 1, \ 0 \leq y \leq 1,
 \]
-and find  $\Pr(0 \leq x \leq \frac{1}{2}, \,  0 \leq y \leq \frac{1}{2})$. 
 This is sometimes called the *bivariate uniform distribution* (Fig. \@ref(fig:BVDiscrete3)). 
-Note that the *volume* under the surface is one.
+The *volume* under the surface is one.
 
-Now the probability of the event above is the volume above the square with vertices  $(0, 0), (0, \frac{1}{2}), (\frac{1}{2}, 0), (\frac{1}{2},\frac{1}{2})$ and is thus  $\frac{1}{4}$.
+
+To find $\Pr(0 \leq x \leq \frac{1}{2}, \,  0 \leq y \leq \frac{1}{2})$, we find the volume above the square with vertices $(0, 0), (0, 1/2), (1/2, 0), (1/2, 1/2)$.
+Hence the probability is $1/4$.
 :::
+
 
 ```{r, BVDiscrete3, echo=FALSE, fig.align='center', fig.width=4, fig.height=4.5, out.width='60%',fig.cap="The bivariate uniform distribution"}
   M <- plot3D::mesh( x = seq(-0.25, 1.25,
@@ -288,12 +295,11 @@ if (knitr::is_html_output()) {
 
 :::{.example #BVDiscrete3 name="Bivariate discrete"}
 Consider again the experiment in Example \@ref(exm:BVDiscrete). 
-As an example, the joint df at  $(1, 2)$ would be computed as follows:
+As an example, the joint df at $(1, 2)$ would be computed as follows:
 \begin{align*}
    F_{X_1, X_2}(1, 2)
-   &= \displaystyle \sum_{x_1\le1} \sum_{x_2\le2} p_{X_1, X_2}(x_1, x_2)\\
-   &= p_{X_1, X_2}(0, 1) + p_{X_1, X_2}(0, 2)+
-   p_{X_1, X_2}(1, 1) + p_{X_1, X_2}(1, 2) \\
+   &= \displaystyle \sum_{x_1\le1} \sum_{x_2\le 2} p_{X_1, X_2}(x_1, x_2)\\
+   &= p_{X_1, X_2}(0, 1) + p_{X_1, X_2}(0, 2) +  p_{X_1, X_2}(1, 1) + p_{X_1, X_2}(1, 2) \\
    &= 1/24 + 1/24 + 1/12 + 1/12 = 6/24.
 \end{align*}
 The complete joint df is give below, and complicated even for this simple example.
@@ -308,8 +314,6 @@ Bivar2Table[3, ] <- c( "$3 \\le x_2 < 4$" ,  "$0$" ,  "$3/24$" ,  "$9/24$" ,  "$
 Bivar2Table[4, ] <- c( "$4 \\le x_2 < 5$" ,  "$0$" ,  "$4/24$" ,  "$12/24$" ,  "$16/24$")
 Bivar2Table[5, ] <- c( "$5 \\le x_2 < 6$" ,  "$0$" ,  "$5/24$" ,  "$15/24$" ,  "$20/24$")
 Bivar2Table[6, ] <- c( "$x_2 \\ge 6$"     ,  "$0$" ,  "$6/24$" ,  "$18/24$" ,  "$24/24$")
-
-
 
 
 Bivar2Table.caption <- "The bivariate probability function"
@@ -352,9 +356,8 @@ if( knitr::is_html_output() ) {
 :::{.example #BVDiscreteTwoDice name="Two dice"}
 Consider the bivariate discrete distribution which results when two dice are thrown. 
 
-Let $X$ be the number of $5$'s and $Y$ the number of 6's that result. 
-Now range spaces of $X$ and $Y$ are $R_X = \{0, 1 ,2 \}$, $R_Y = \{0, 1, 2\}$ and the range space for the experiment is the Cartesian product of $R_X$ and $R_Y$, with the interpretation that some of the resulting points may have
-probability zero. 
+Let $X$ be the number of times a `r knitr::include_graphics("Dice/die5.png", dpi=2000)` appears, and $Y$ the number of times a `r knitr::include_graphics("Dice/die6.png", dpi=2000)` appears. 
+Now range spaces of $X$ and $Y$ are $R_X = \{0, 1 ,2 \}$, $R_Y = \{0, 1, 2\}$ and the range space for the experiment is the Cartesian product of $R_X$ and $R_Y$, with the interpretation that some of the resulting points may have probability zero. 
 The probabilities in Table \@ref(tab:TwoDice) are $\Pr(X = x, Y = y)$ for the $(x, y)$ pairs in the range space.
 
 ```{r, TwoDice, echo=FALSE}
@@ -364,7 +367,10 @@ TwoDice[1, ] <- c("$y = 0$", "$(2/3)^2$", "$2(1/6)(2/3)$", "$(1/6)^2$")
 TwoDice[2, ] <- c("$y = 1$", "$2(1/6)(2/3)$", "$2(1/6)(1/6)$", "$0$")
 TwoDice[3, ] <- c("$y = 2$", "$(1/6)^2$", "$0$", "$0$")
 
-TwoDice.caption <- "Joint probability distribution for Example \\@ref(exm:BVDiscreteTwoDice)"
+TwoDice.caption <- ifelse(knitr::is_latex_output(),
+                          "Joint probability distribution for Example \\ref{exm:BVDiscreteTwoDice}",
+                          "Joint probability distribution for Example \\@ref(exm:BVDiscreteTwoDice)")
+
 if( knitr::is_latex_output() ) {
   knitr::kable(TwoDice,
                format = "latex",
@@ -400,11 +406,12 @@ if( knitr::is_html_output() ) {
 ```
 
 
-The probabilities in the table are found by considering that we really have two repetitions of a simple experiment with 3 possible outcomes, $\{5, 6,\overline{5 \text{ or }6}\}$, with probabilities  $\frac{1}{6}, \frac{1}{6}, \frac{2}{3}$, the same on each repetition.
-Of course the event  $X = 2, Y = 1$ cannot occur in two trials, so has probability zero.
+The probabilities are found by realising we really have two repetitions of a simple random process with three possible outcomes, $\{5, 6,\overline{5 \text{ or }6}\}$, with probabilities $\frac{1}{6}, \frac{1}{6}, \frac{2}{3}$, the same for each repetition.
+Of course the event $X = 2, Y = 1$ cannot occur in two trials, so has probability zero.
 :::
 
-Example \@ref(exm:BVDiscreteTwoDice) is a special case of the *multinomial distribution* (a generalisation of the binomial distribution) which will be described later (WHERE).
+
+Example \@ref(exm:BVDiscreteTwoDice) is a special case of the *multinomial distribution* (a generalisation of the binomial distribution) which will be described later (Sect. \@ref(MultinomialDistribution)).
 
 
 :::{.example #BVDiscreteTossRoll name="Tossing and rolling"}
@@ -422,11 +429,11 @@ Here, the joint pf could be given (but is not obvious) as the function
 \[
    p_{X_1, X_2}(x_1, x_2) =
       \begin{cases}
-         \left(\frac{1}{12}\right) 0.5^{|x_1 - 1|} & \text{for  $(x_1, x_2)\in S$ defined earlier}\\
+         \left(\frac{1}{12}\right) 0.5^{|x_1 - 1|} & \text{for $(x_1, x_2)\in S$ defined earlier}\\
          0                                         & \text{elsewhere.}
       \end{cases}
 \]
-In tabular form (probably clearer in this example), see Table \@ref(tab:JointPF).
+The joint pf can also be given as a table (Table \@ref(tab:JointPF)), which is probably easiest here.
 :::
 
 
@@ -439,7 +446,10 @@ JointPF[3, ] <- c("$X_1 = 2$", "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/24$",
 JointPF[4, ] <- c("Total", "$1/6$", "$1/6$", "$1/6$", "$1/6$", "$1/6$", "$1/6$", "$1$")
 
 
-JointPF.caption <- "The joint pf for Example \\@ref(exm:BVDiscreteTossRoll)"
+JointPF.caption <- ifelse(knitr::is_latex_output(),
+                          "The joint pf for Example \\ref{exm:BVDiscreteTossRoll}",
+                          "The joint pf for Example \\@ref(exm:BVDiscreteTossRoll)")
+
 if( knitr::is_latex_output() ) {
   knitr::kable(JointPF,
                format = "latex",
@@ -449,9 +459,9 @@ if( knitr::is_latex_output() ) {
                escape = FALSE,
                col.names = c("",
                              "$X_2 = 1$",
-                             "$X_2 = 2$" ,
-                             "$X_2 = 3$" ,
-                             "$X_2 = 4$" ,
+                             "$X_2 = 2$",
+                             "$X_2 = 3$",
+                             "$X_2 = 4$",
                              "$X_2 = 5$",
                              "$X_2 = 6$",
                              "Total"),
@@ -486,23 +496,22 @@ if( knitr::is_html_output() ) {
 
 
 :::{.example #BVDiscreteBank name="Banks"}
-A bank operates both a drive-up and a walk-up window. 
-On a randomly selected day, let  $X_1$ be the proportion of time the drive-up facility is in use (at least one customer is being served or waiting to be served), and  $X_2$ is the proportion of time the walk-up window is in use. 
+A bank operates both an ATM and a walk-up window. 
+On a randomly selected day, let $X_1$ be the proportion of time the ATM is in use (at least one customer is being served or waiting to be served), and $X_2$ is the proportion of time the walk-up window is in use. 
 
-Then the set of possible values for  $X_1$ and  $X_2$ is the rectangle  $R = \{(x_1, x_2)\mid 0 \le x_1 \le 1, 0 \le
-x_2 \le 1\}$.
-From experience, the joint pdf of  $(X_1, X_2)$ is given by
+The set of possible values for $X_1$ and $X_2$ is the rectangle $R = \{(x_1, x_2)\mid 0 \le x_1 \le 1, 0 \le x_2 \le 1\}$.
+From experience, the joint pdf of $(X_1, X_2)$ is
 \[
    f_{X_1, X_2}(x_1, x_2) =
       \begin{cases}
-        c(x_1 + x_2^2) & \text{for  $0\le x_1\le 1$;  $0\le x_2\le 1$}\\
+        c(x_1 + x_2^2) & \text{for $0\le x_1\le 1$; $0\le x_2\le 1$}\\
         0 & \text{elsewhere.}
     \end{cases}
 \]
 
-* Determine a value for  $c$.
+* Determine a value for $c$.
 
-Obviously,  $f_{X_1, X_2}(x_1, x_2) \ge 0$ for all  $x_1$ and  $x_2$ from the definition provided  $c > 0$. 
+Obviously, $f_{X_1, X_2}(x_1, x_2) \ge 0$ for all $x_1$ and $x_2$, then $c > 0$. 
 Secondly, we need
 \[
    \int_{-\infty}^{\infty}\!\!\!\int_{-\infty}^{\infty} f_{X_1, X_2}(x_1, x_2)\, dx_1\,dx_2 = 1.
@@ -516,21 +525,21 @@ Hence,
     &= c \int_{x_2 = 0}^{1} (1/2 + x_2^2) \, dx_2\\
     &= c (1/2 + 1/3) = 5c/6,
 \end{align*}
-and so  $c = 6/5$.
+and so $c = 6/5$.
 
 
 * Compute the probability *neither* facility is busy more than half the time.
 
-The question is asking to find  $\Pr( 0\le X_1\le 0.5, 0\le X_2\le 0.5)$; call this event  $A$.
+The question is asking to find $\Pr( 0\le X_1\le 0.5, 0\le X_2\le 0.5)$; call this event $A$.
 Then,
 \begin{align*}
    \Pr(A)
    &= \int_{0}^{0.5}\,\,\, \int_{0}^{0.5} f_{X_1, X_2}(x_1, x_2)\, dx_1\, dx_2 \\
    &= \frac{6}{5} \int_{0}^{0.5}\left\{\int_{0}^{0.5} x_1 + x_2^2\, dx_1\right\} dx_2 \\
-   &= \frac{6}{5} \int_{0}^{0.5} (1/8 + x_2^2/2) \, dx_2 \\
-   &= 1/10.
+   &= \frac{6}{5} \int_{0}^{0.5} (1/8 + x_2^2/2) \, dx_2 = 1/10.
 \end{align*}
 :::
+
 
 :::{.example #BVCont name="Bivariate continuous"}
 From Example \@ref(exm:BVDiscreteBank),
@@ -541,14 +550,14 @@ From Example \@ref(exm:BVDiscreteBank),
    &= \frac{6}{5} \int_0^{x_1} (t_1 x_2 + x_2^3/3)\, dt_1 \\
    &= \frac{6}{5} \left( \frac{x_1 x_2}{2} + \frac{x_1 x_2^3}{3}\right)
 \end{align*}
-for  $0 < x_1 < 1$ and  $0 < x_2 < 1$. 
+for $0 < x_1 < 1$ and $0 < x_2 < 1$. 
 So
 \[
    F_{X_1, X_2}(x_1, x_2)
    = \begin{cases}
-      0 & \text{if  $x_1<0$ or  $x_2<0$}\\
-      \frac{6}{5} \left( x_1 x_2/2 + x_1 x_2^3/3\right) & \text{if  $0 \le x_1 \le 1$ and  $0 \le x_2 \le 1$}\\
-      1 & \text{if  $x_1 > 1$ and  $x_2 > 1$.}
+      0 & \text{if $x_1<0$ or $x_2<0$}\\
+      \frac{6}{5} \left( x_1 x_2/2 + x_1 x_2^3/3\right) & \text{if $0 \le x_1 \le 1$ and $0 \le x_2 \le 1$}\\
+      1 & \text{if $x_1 > 1$ and $x_2 > 1$.}
      \end{cases}
 \]
 :::
@@ -557,10 +566,10 @@ So
 
 ### Marginal distributions {#MarginalDistributions}
 
-With each two-dimensional random variable  $(X,Y)$ we associate two one-dimensional random variables, namely  $X$ and  $Y$. 
-We now find the probability distributions of each of  $X$ and  $Y$ separately.
+With each two-dimensional random variable $(X, Y)$ two one-dimensional random variables, namely $X$ and $Y$, can be described. 
+We now find the probability distributions of each of $X$ and $Y$ separately.
 
-In the case of a discrete random vector  $(X, Y)$, the event  $X = x_i$ should be thought of as the union of the mutually exclusive events
+In the case of a discrete random vector $(X, Y)$, the event $X = x_i$ is the union of the mutually exclusive events
 \[
    \{X = x_i, Y = y_1\}, \{\ X = x_i, Y = y_2\}, \{X = x_i, Y = y_3\}, \dots
 \]
@@ -570,34 +579,34 @@ Thus,
    &= \Pr(X = x_i, Y = y_1) + \Pr(X = x_i, Y = y_2) + \dots \\
    &= \sum_jp_{X, Y}(x_i, y_j)
 \end{align*}
-Hence, when  $(X, Y)$ is a discrete random vector we have:
+Hence, we can define the marginal distributions when $(X, Y)$ is a discrete random vector.
+
 
 :::{.definition #BVDiscreteMarginal name="Bivariate discrete marginal distributions"}
-Given  $(X, Y)$ with joint probability function  $p(x, y)$, the *marginal probability functions* of  $X$ and  $Y$ are, respectively
-\begin{equation}
-   \Pr(X = x)
-   = \sum_{y}p_{X, Y}(x, y)
+Given $(X, Y)$ with joint discrete probability function $p(x, y)$, the *marginal probability functions* of $X$ and $Y$ are, respectively
+\[
+   \Pr(X = x) = \sum_{y}p_{X, Y}(x, y)  
    \quad\text{and}\quad
-   \Pr(Y = y) 
-   = \sum_{x}p_{X, Y}(x, y).
-\end{equation}
+   \Pr(Y = y) = \sum_{x}p_{X, Y}(x, y).
+\]
 :::
 
-Analogously, when the random vector,  $(X,Y)$, is continuous:
+
+An analogous definition exists when the random vector $(X,Y)$ is continuous.
+
 
 :::{.definition #BVConteMarginal name="Bivariate continuous marginal distributions"}
-If  $(X, Y)$ has joint pdf  $f(x, y)$, the *marginal pdfs* of  $X$ and  $Y$, denoted by  $f_X(x)$,  $f_Y(y)$ respectively, are
-\begin{equation}
-   f_X(x)
-   = \int_{-\infty}^{\infty}f(x,y) \, dy\quad\text{and}\quad
-   f_Y(y)
-   = \int_{-\infty}^{\infty}f(x,y) \, dx.
-\end{equation}
+If $(X, Y)$ has joint continuous pdf $f(x, y)$, the *marginal pdfs* of $X$ and $Y$, denoted by $f_X(x)$, $f_Y(y)$ respectively, are
+\[
+   f_X(x) = \int_{-\infty}^{\infty}f(x,y) \, dy 
+   \quad\text{and}\quad
+   f_Y(y) = \int_{-\infty}^{\infty}f(x,y) \, dx.
+\]
 :::
 
 
 :::{.example #BVDiscreteMarginal name="Bivariate discrete marginal distributions"}
-The joint pdf of  $X$ and  $Y$ is
+The joint pdf of $X$ and $Y$ is
 \[
    f(x, y) = 
    \left\{
@@ -607,54 +616,51 @@ The joint pdf of  $X$ and  $Y$ is
    \end{array} 
    \right.
 \] 
-
-Consider finding the value of  $k$.
-Clearly,  $f(x, y) \ge 0$ for all values of  $x$ and  $y$.
+Consider finding the value of $k$.
+Clearly, $f(x, y) \ge 0$ for all values of $x$ and $y$.
 Now
 \begin{align*}
    k \int_0^2 \int_0^1(3x^2 + xy) \, dx \, dy
-   &= k \int_0^2 \left[x^3 \, + \, \frac{x^2y}{2}\right]_0^1 \, dy\\
+   &= k \int_0^2 \left[x^3  + \frac{x^2 y}{2}\right]_0^1 \, dy\\
    &= k \int_0^2(1 + \frac{y}{2}) \, dy\\
-   &= k \left[y + \frac{1}{4}y^2\right]_0^2\\
-   &= 3k
+   &= k \left.y + \frac{1}{4}y^2\right|_0^2  = 3k,
 \end{align*}
-so  $k$ must be  $\frac{1}{3}$.
+so $k$ must be $\frac{1}{3}$.
 
-The marginal PDF for  $X$ is
+The marginal PDF for $X$ is
 \[
    f_X(x)
    = \int_0^2\left(x^2 + \frac{xy}{3}\right) dy 
-   = \left[x^2y + \frac{xy^2}{6}\right]_{y = 0}^2.
+   = \left.x^2y + \frac{xy^2}{6}\right|_{y = 0}^2.
 \]
 So,
 \[
-   f_X(x) = 2x^2 + \frac{2x}{3}\quad\text{for  $0 \leq x \leq 1$}.
+   f_X(x) = 2x^2 + \frac{2x}{3}\quad\text{for $0 \leq x \leq 1$}.
 \]
 Also,
 \[
    f_Y(y)
    = \int_0^1\left(x^2 + \frac{xy}{3}\right)dx
-   = \left[\frac{1}{3}x^3 + \frac{1}{6}x^2y\right]_{x = 0}^1.
+   = \left.\frac{1}{3}x^3 + \frac{1}{6}x^2y\right|_{x = 0}^1.
 \]
-So  $\displaystyle f_Y(y) = \frac{1}{6}(2 + y)$, for  $0 \leq y \leq 2$.
+So $\displaystyle f_Y(y) = \frac{1}{6}(2 + y)$, for $0 \leq y \leq 2$.
 
-Consider computing  $\Pr(Y < X)$.
-If  $A = \{(x, y):0 \leq x \leq 1,\ 0 \leq y \leq 2\}$ then
+Consider computing $\Pr(Y < X)$.
+If $A = \{(x, y):0 \leq x \leq 1,\ 0 \leq y \leq 2\}$ then
 \begin{align*}
    \Pr(Y < X)
    &= \int \!\!\int_{\substack{(x,y) \in A\\ y < x}} f(x,y) \, dx \, dy \\
    &= \frac{1}{3}\int_0^1 \int_y^1(3x^2 + xy) \, dx \, dy\\
-   &= \frac{1}{3} \int_0^1\left[x^3 + \frac{1}{2}x^2y\right]_y^1 dy\\
-   &= \frac{1}{3}\int_0^1(1 + \frac{1}{2}y - \frac{3}{2}y^3) \, dy\\
-   &= \frac{7}{24}
+   &= \frac{1}{3} \int_0^1\left.x^3 + \frac{1}{2}x^2y\right|_y^1 dy\\
+   &= \frac{1}{3} \int_0^1(1 + \frac{1}{2}y - \frac{3}{2}y^3) \, dy = \frac{7}{24}.
 \end{align*}
 :::
 
 
 :::{.example #BVDiscreteMarginal name="Bivariate discrete marginal distributions"}
 Recall Example \@ref(exm:BVDiscreteTwoDice), where two dice are rolled.
-we can find the marginal distributions of $X$ and $Y$ (Table \@ref(tab:Marginals)).
-The probabilities in the first row (where $Y = 0$), for instance, are summed and appear as the first term in the final column; this is the margin distribution for  $Y = 0$. 
+We can find the marginal distributions of $X$ and $Y$ (Table \@ref(tab:Marginals)).
+The probabilities in the first row (where $Y = 0$), for instance, are summed and appear as the first term in the final column; this is the margin distribution for $Y = 0$. 
 Similarly, for the other rows.
 
 
@@ -705,49 +711,45 @@ if( knitr::is_html_output() ) {
 ```
 
 
-
-
-Recalling that  $X$ is the number of  $5$'s resulting from two dice being thrown, the distribution of  $X$ should be  $\text{Bin}(2,  1/6$); the probabilities given in the last row of the table agree with this. 
-That is,  $\Pr(X = x) = {2 \choose x}\left(\frac{1}{6}\right)^x \left(\frac{5}{6}\right)^{2 - x}$ for  $x = 0, 1, 2$. 
-Of course, the distribution of  $Y$ is the same.
+Recalling that $X$ is the number of times a `r knitr::include_graphics("Dice/die1.png", dpi=2000)` is rolled when two dice are thrown, the distribution of $X$ should be $\text{Bin}(2,  1/6$); the probabilities given in the last row of the table agree with this. 
+That is, $\Pr(X = x) = {2 \choose x}\left(\frac{1}{6}\right)^x \left(\frac{5}{6}\right)^{2 - x}$ for $x = 0, 1, 2$. 
+Of course, the distribution of $Y$ is the same.
 :::
 
 
 :::{.definition #BVDiscreteMarginal name="Bivariate discrete marginal distributions"}
-Consider again the random process in Examples \@ref(exm:rvs:bivariate:discreteDC) and \@ref(exm:rvs:bivariate:discreteDCpmf).
-From Table \@ref(tab:rvs:joint:eg), the marginal distribution for  $X_1$ is found simply by summing over the values for  $X_2$ in the table. 
-When  $x_1 = 0$,
+Consider again the random process in Example \@ref(exm:BVDiscreteTossRoll).
+From Table \@ref(tab:JointPF), the marginal distribution for $X_1$ is found simply by summing over the values for $X_2$ in the table. 
+When $x_1 = 0$,
 \[
    p_{X_1}(0) = \sum_{x_2} p_{X_1, X_2}(0,x_2) = 1/24 + 1/24 + 1/24 +\dots = 6/24.
 \]
 Likewise,
 \begin{align*}
-   p_{X_1}(1) 
-   &= \sum_{x_2} p_{X_1, X_2}(1,x_2) = 6/12\\
-   p_{X_1}(2) 
-   &= \sum_{x_2} p_{X_1, X_2}(2,x_2) = 6/24.
+   p_{X_1}(1) &= \sum_{x_2} p_{X_1, X_2}(1,x_2) = 6/12\\
+   p_{X_1}(2) &= \sum_{x_2} p_{X_1, X_2}(2,x_2) = 6/24.
 \end{align*}
-So the marginal distribution of  $X_1$ is
+So the marginal distribution of $X_1$ is
 \[
    p_{X_1}(x_1) = \begin{cases}
-            1/4 & \text{if  $x_1 = 0$}\\
-            1/2 & \text{if  $x_1 = 1$}\\
-            1/4 & \text{if  $x_1 = 2$}\\
+            1/4 & \text{if $x_1 = 0$}\\
+            1/2 & \text{if $x_1 = 1$}\\
+            1/4 & \text{if $x_1 = 2$}\\
             0 & \text{otherwise.}\\
            \end{cases}
 \]
-This is equivalent to adding the row probabilities in Table \ref{TB:rvs:joint:eg}. 
-In this example, the marginal distribution is easily found from the total column of Table \ref{TB:rvs:joint:eg}.
+This is equivalent to adding the row probabilities in Table \@ref(tab:JointPF). 
+In this example, the marginal distribution is easily found from the total column of Table \@ref(tab:JointPF).
 :::
 
 
 ### Conditional distributions {#ConditionalDistributions}
 
-Consider  $(X, Y)$ with joint probability function as in Example~\ref{EG:discbiv}, with marginal distributions of  $X$ and  $Y$ as shown in Table \@ref(tab:Conditionals).
+Consider $(X, Y)$ with joint probability function as in Example \@ref(exm:BVDiscrete2), with marginal distributions of $X$ and $Y$ as shown in Table \@ref(tab:JointPFmarginals).
 
 
 
-```{r Conditionals, echo=FALSE}
+```{r JointPFmarginals, echo=FALSE}
 Conditionals <- array( dim = c(4, 5))
 
 Conditionals[1, ] <- c("$y = 0$", "$1/36$", "$1/6$", "$1/4$", "$4/9$")
@@ -756,7 +758,7 @@ Conditionals[3, ] <- c("$y = 2$", "$1/9$", "$0$", "$0$", "$1/9$")
 Conditionals[4, ] <- c("$\\Pr(X = x)$", "$1/4$", "$1/2$", "$1/4$", "$1$")
 
 
-Conditionals.caption <- "NOT SURE wHAT THIS IS!!"
+Conditionals.caption <- "A joint distribution with the marginal distributions"
 if( knitr::is_latex_output() ) {
   knitr::kable(Conditionals,
                format = "latex",
@@ -794,8 +796,8 @@ if( knitr::is_html_output() ) {
 ```
 
 
-Suppose we want to evaluate the conditional probability  $\Pr(X = 1 \mid Y=1)$. 
-We use the fact that  $\Pr(A \mid B) = \Pr(A \cap B)/\Pr(B)$. 
+Suppose we want to evaluate the conditional probability $\Pr(X = 1 \mid Y = 1)$. 
+We use that $\Pr(A \mid B) = \Pr(A \cap B)/\Pr(B)$. 
 So
 \[
    \Pr(X = 1 \mid Y = 1) 
@@ -803,37 +805,39 @@ So
    = \frac{1/3}{4/9}
    = \frac{3}{4}.
 \]
-So, for each  $x\in R_X$ we could find  $\Pr(X = x, Y = 1)$ and this is then the conditional distribution of  $X$ given that  $Y = 1$.
+So, for each $x\in R_X$ we could find $\Pr(X = x, Y = 1)$ and this is then the conditional distribution of $X$ given that $Y = 1$.
 
 
 :::{.definition #BVDiscreteMarginal name="Bivariate discrete marginal distributions"}
-For a discrete random vector  $(X, Y)$ with probability function  $p_{X, Y}(x, y)$ the *conditional probability distribution* of  $X$ given  $Y = y$ is defined by
+For a discrete random vector $(X, Y)$ with probability function $p_{X, Y}(x, y)$ the *conditional probability distribution* of $X$ given $Y = y$ is defined by
 \begin{align}
    p_{X \mid Y = y}(x \mid y)
    &= \Pr(X = x \mid Y = y)\\
    &= \frac{\Pr(X = x, Y = y)}{\Pr(Y = y)}\\
-   &= \frac{p_{X,Y}(x,y)}{p_Y(y)}
+   &= \frac{p_{X, Y}(x, y)}{p_Y(y)}
 \end{align}
-for  $x \in R_X$ and provided  $p_Y(y) > 0$.
+for $x \in R_X$ and provided $p_Y(y) > 0$.
 :::
 
 
-Similarly, in the continuous case we have:
+The continuous case is analagous.
+
 
 :::{.definition #BVDiscreteMarginal name="Bivariate discrete marginal distributions"}
-If  $(X, Y)$ is a continuous 2-dimensional random variable with joint pdf  $f_{X, Y}(x, y)$ and respective marginal pdfs  $f_X(x)$,  $f_Y(y)$, then the *conditional probability distribution* of  $X$ given  $Y = y$ is defined by
+If $(X, Y)$ is a continuous 2-dimensional random variable with joint pdf $f_{X, Y}(x, y)$ and respective marginal pdfs $f_X(x)$, $f_Y(y)$, then the *conditional probability distribution* of $X$ given $Y = y$ is defined by
 \begin{equation}
    f_{X \mid Y = y}(x \mid y)
    = \frac{f_{X, Y}(x, y)}{f_Y(y)}
 \end{equation}
-for  $x \in R_X$ and provided  $f_Y(y) > 0$.
+for $x \in R_X$ and provided $f_Y(y) > 0$.
 :::
 
 
-Note that the above conditional pdfs satisfy the requirements for a univariate pdf; that is,  $f_{X \mid Y}(x \mid y) \ge 0$ for all  $x$ and  $\int_0^\infty f_{X\mid Y}(x\mid y)\,dx=1$.
+The above conditional pdfs satisfy the requirements for a univariate pdf; that is, $f_{X \mid Y}(x \mid y) \ge 0$ for all $x$ and $\int_0^\infty f_{X\mid Y}(x\mid y)\,dx = 1$.
+
 
 :::{.example #BVDiscreteMarginal name="Bivariate discrete marginal distributions"}
-It was shown in Example~\ref{EG:5.4} that if the joint pdf of  $X$ and  $Y$ was
+In Example \@ref(BVDiscreteMarginal), the joint pdf of $X$ and $Y$ considered was
 \[
    f_{X,Y}(x,y) = 
    \left\{
@@ -841,9 +845,9 @@ It was shown in Example~\ref{EG:5.4} that if the joint pdf of  $X$ and  $Y$ was
       \frac{1}{3}(3x^2 + xy), & 0 < x <1, \, 0 < y < 2\\
       0 & \text{ elsewhere}, 
       \end{array} 
-      \right.
+      \right. .
 \] 
-then the marginal pdfs of  $X$ and  $Y$ were
+The marginal pdfs of $X$ and $Y$ were
 \[ 
    f_X(x) = 2x^2 + \frac{2}{3}x, \quad0,x,1,
 \]
@@ -851,35 +855,35 @@ and that
 \[
    f_Y(y) = \frac{1}{6}(2 + y), \quad 0 < y < 2).
 \]
-Hence, the conditional distribution of  $X \mid Y = y$ is
+Hence, the conditional distribution of $X \mid Y = y$ is
 \[
    f_{X\mid Y = y}(x \mid y) 
    = \frac{(3x^2 + xy)/3}{(2 + y)/6}
    = \frac{2x(3x + y)}{2 + y},  0 < x < 1,
 \]
-and the conditional distribution of  $Y \mid X = x$ is 
+and the conditional distribution of $Y \mid X = x$ is 
 \[ 
    f_{Y \mid X = x}(y \mid x) 
    = \frac{3x + y}{2(3x + 1)},\quad  0 < y < 2.
 \]
-It is easy to verify that both these conditional density functions are in fact density functions.
+Both these conditional density functions are density functions (verify!).
 :::
 
 
 
 #### Interpretation of a conditional pdf
 
-To interpret for example,  $f_{X \mid Y = y}(x \mid y)$, consider slicing through the surface  $f_{X, Y}(x, y)$ with the plane  $y = c$ say, for  $c$ a constant (see Fig~\ref{FG:5.3}). 
+To interpret for example, $f_{X \mid Y = y}(x \mid y)$, consider slicing through the surface $f_{X, Y}(x, y)$ with the plane $y = c$ say, for $c$ a constant (see Fig~\ref{FG:5.3}). 
 The intersection of the plane with the surface, will be proportional to a 1-dimensional pdf. 
-This is  $f_{X, Y}(x, c)$, which will not, in general, be a density function since the area under this curve will be  $f_Y(c)$. 
-Dividing by the constant  $f_Y(c)$ ensures the area under  $\displaystyle\frac{f_{X,Y}(x,c)}{f_Y(c)}$ is one. 
-This is a 1-dimensional pdf, namely that of  $X$ given  $Y = c$; that is  $f_{X \mid Y = c}(x\mid c)$.
+This is $f_{X, Y}(x, c)$, which will not, in general, be a density function since the area under this curve will be $f_Y(c)$. 
+Dividing by the constant $f_Y(c)$ ensures the area under $\displaystyle\frac{f_{X,Y}(x,c)}{f_Y(c)}$ is one. 
+This is a 1-dimensional pdf, namely that of $X$ given $Y = c$; that is $f_{X \mid Y = c}(x\mid c)$.
 
 
 :::{.example #BVDiscreteMarginal name="Bivariate discrete marginal distributions"}
-Consider again the experiment in Examples~\ref{EG:rvs:bivariate:discreteDC} and~\ref{EG:rvs:bivariate:discreteDCpmf}. 
-From Table~\ref{TB:rvs:joint:eg}, the conditional distribution for  $X_2$ given  $X_1 = 0$ can be found. 
-Note we need to first find  $p_{X_1}(x_1)$, which was done in Example~\ref{EG:rvs:bivariate:discreteconditional}. 
+Consider again the random process in Example \@ref(exm:BVDiscrete3). 
+From Table~\ref{TB:rvs:joint:eg}, the conditional distribution for $X_2$ given $X_1 = 0$ can be found. 
+Note we need to first find $p_{X_1}(x_1)$, which was done in Example~\ref{EG:rvs:bivariate:discreteconditional}. 
 Then,
 \begin{align*}
    p_{X_2\mid X_1 = 0}(x_2\mid 0)
@@ -890,15 +894,15 @@ from which we can deduce
 \[
    p_{X_2 \mid X_1 = 0}(x_2 \mid 0) =
    \begin{cases}
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 1$}\\
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 2$}\\
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 3$}\\
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 4$}\\
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 5$}\\
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 6$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 1$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 2$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 3$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 4$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 5$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 6$}\\
    \end{cases}
 \]
-Note the conditional distribution  $p_{X_2\mid X_1=x_1}(x_2\mid x_1)$ is a probability function for  $X_2$.
+The conditional distribution $p_{X_2\mid X_1 = x_1}(x_2\mid x_1)$ is a probability function for $X_2$ (verify!).
 :::
 
 
@@ -906,43 +910,46 @@ Note the conditional distribution  $p_{X_2\mid X_1=x_1}(x_2\mid x_1)$ is a proba
 
 ## Independent random variables {#IndependentRVs}
 
-Recall that events  $A$ and  $B$ are independent if and only if 
+Recall that events $A$ and $B$ are independent if, and only if, 
 \[
    \Pr(A \cap B) = \Pr(A)\Pr(B).
 \]
 An analogous definition applies for random variables.
 
 
-:::{.definition #Independent name="Independent randim variables"}
-The random variables  $X$ and  $Y$ with joint df  $F_{X, Y}$ and marginal df's  $F_X$ and  $F_Y$ are *independent* if and only if
+:::{.definition #Independent name="Independent random variables"}
+The random variables $X$ and $Y$ with joint df $F_{X, Y}$ and marginal df's $F_X$ and $F_Y$ are *independent* if, and only if,
 \begin{equation}
    F_{X, Y}(x, y) = F_X(x) \times F_Y(y)
 \end{equation}
-for all  $x$ and  $y$.
+for all $x$ and $y$.
 
-If  $X$ and  $Y$ are not independent they are said to be *dependent*.
+If $X$ and $Y$ are not independent they are *dependent* or *not independent*.
 :::
+
 
 The following theorem is often used to establish independence or dependence of random variables. 
 The proof is omitted.
 
+
 :::{.theorem}
-The discrete random variables  $X$ and  $Y$ with joint probability function  $p_{X, Y}$ and marginals  $p_X$ and  $p_Y$ are *independent* if, and only if,
+The discrete random variables $X$ and $Y$ with joint probability function $p_{X, Y}(x, y)$ and marginals $p_X(x)$ and $p_Y(y)$ are *independent* if, and only if,
 \begin{equation}
    p_{X, Y}(x, y) = p_X(x) \times p_Y(y) \text{ for every }(x, y) \in R_{X \times Y}.
+      (\#eq:IndependentDiscretervs)
 \end{equation}
-The continuous random variables  $(X, Y)$ with joint pdf  $f_{X, Y}$ and marginal pdfs  $f_X$ and  $f_Y$ are *independent* if, and only if,
+The continuous random variables $(X, Y)$ with joint pdf $f_{X, Y}$ and marginal pdfs $f_X$ and $f_Y$ are *independent* if, and only if,
 \begin{equation}
    f_{X, Y}(x, y) = f_X(x)\times f_Y(y)
 \end{equation}
-for all  $x$ and  $y$.
+for all $x$ and $y$.
 :::
 
-To show independence for continuous random variables (and analogously for discrete random variables) we must show  $f_{X, Y}(x, y) = f_X(x)\times f_Y(y)$ for *all* pairs  $(x, y)$.
-If  $f_{X, Y}(x, y)\neq f_X(x)\times f_Y(y)$ for any one particular pair of  $(x, y)$, then  $X$ and  $Y$ are dependent.
+To show independence for continuous random variables (and analogously for discrete random variables) we must show $f_{X, Y}(x, y) = f_X(x)\times f_Y(y)$ for *all* pairs $(x, y)$.
+If $f_{X, Y}(x, y)\neq f_X(x)\times f_Y(y)$ for any one particular pair of $(x, y)$, then $X$ and $Y$ are dependent.
 
-:::{.example #BVDiscrete name="Bivariate discrete"}
-The random variables  $X$ and  $Y$ have the joint probability distribution shown in Table \@ref(tab:Joint2).
+:::{.example #BVDiscreteIndependence name="Bivariate discrete: Independence"}
+The random variables $X$ and $Y$ have the joint probability distribution shown in Table \@ref(tab:Joint2).
 
 
 ```{r Joint2, echo=FALSE}
@@ -953,7 +960,7 @@ Joint2[2, ] <- c("$y = 2$", "$2/30$", "$2/30$", "$4/30$", "$2/30$")
 Joint2[3, ] <- c("$y = 3$", "$3/30$", "$3/30$", "$6/30$", "$3/30$")
 
 
-Joint2.caption <- "NOT SURE wHAT THIS IS!!"
+Joint2.caption <- "A joint pf"
 if( knitr::is_latex_output() ) {
   knitr::kable(Joint2,
                format = "latex",
@@ -991,67 +998,61 @@ if( knitr::is_html_output() ) {
 ```
 
 
-* Find the marginal distributions.
-* Determine whether or not  $X$ and  $Y$ are independent. 
-
-Summing across the rows we obtain the marginal probability function of  $Y$. 
-That is, 
+Summing across rows, the marginal probability function of $Y$ is: 
 \[
    \Pr(Y = 1) = 1/6, \quad
    \Pr(Y = 2) = 1/3, \quad
    \Pr(Y = 3) = 1/2.
 \] 
-Summing each column, we obtain the marginal probability function of  $X$. 
-That is, 
+
+To determine if $X$ and $Y$ are independent, the marginal probability function of $X$ is also needed: 
 \[
    \Pr(X = 1) = 1/5, 
    \Pr(X = 2) = 1/5,
    \Pr(X = 3) = 2/5, 
    \Pr(X = 4) = 1/5.
 \] 
-Clearly (5.16) is satisfied for all pairs  $(x, y)$, so  $X$ and  $Y$ are independent.
+Clearly \ref(eq:IndependentDiscretervs) is satisfied for all pairs $(x, y)$, so $X$ and $Y$ are independent.
 :::
 
 
-:::{.example #BVDiscrete name="Bivariate discrete"}
-Given random variables  $X$ and  $Y$ with joint pdf
+:::{.example #BVContinuousIndependence name="Bivariate continuous: Independence"}
+Consider tge random variables $X$ and $Y$ with joint pdf
 \[
    f(x, y)
    = \left
    \{\begin{array}{ll}
-      4xy & \text{for  $0<x<1, \, 0<y<1$}\\
+      4xy & \text{for $0<x<1, \, 0<y<1$}\\
       0 & \text{elsewhere}\\ 
    \end{array}
-   \right.
-\]
-show that  $X$ and  $Y$ are independent.
-
-We need to find the marginal distributions of  $X$ and  $Y$. 
+   \right..
+\] 
+To show that $X$ and $Y$ are independent, the marginal distributions of $X$ and $Y$ are needed. 
 Now
 \[
    f_X(x)
    = \int_0^1 4xy \, dy = 2x, \ x \in (0, 1).
 \]
-Similarly   $f_Y(y) = 2y, \ y \in (0,1)$.
-Thus we have  $f_X(x) \, f_Y(y) = f(x,y)$ and  $X$ and  $Y$ are independent.
+Similarly  $f_Y(y) = 2y, \ y \in (0, 1)$.
+Thus we have $f_X(x) \, f_Y(y) = f(x,y)$ and $X$ and $Y$ are independent.
 :::
 
 
-:::{.example #BVDiscrete name="Bivariate discrete"}
-Consider again the experiment in Examples~\ref{EG:rvs:bivariate:discreteDC} and~\ref{EG:rvs:bivariate:discreteDCpmf}. The marginal distribution of  $X_1$ was found in Example~\ref{EG:rvs:bivariate:discreteconditional}. 
-The marginal distribution of  $X_2$ is (check!)
+:::{.example #BVDiscreteIndependence2 name="Bivariate discrete: Independence"}
+Consider again the experiment in Examples~\ref{EG:rvs:bivariate:discreteDC} and~\ref{EG:rvs:bivariate:discreteDCpmf}. The marginal distribution of $X_1$ was found in Example~\ref{EG:rvs:bivariate:discreteconditional}. 
+The marginal distribution of $X_2$ is (check!)
 \[
    p_{X_2}(x_2) =
    \begin{cases}
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 1$}\\
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 2$}\\
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 3$}\\
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 4$}\\
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 5$}\\
-      \frac{1/24}{1/4} = 1/6 & \text{for  $x_2 = 6$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 1$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 2$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 3$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 4$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 5$}\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 6$}\\
    \end{cases}
 \]
-To determine if  $X_1$ and  $X_2$ are independent, *each*  $x_1$ and  $x_2$  pair must be considered. 
+To determine if $X_1$ and $X_2$ are independent, *each* $x_1$ and $x_2$  pair must be considered. 
 As an example, we see
 \begin{align*}
    p_{X_1}(0) \times p_{X_2}(1) = 1/4 \times 1/6 = 1/24 &= p_{X_1, X_2}(0, 1)\\
@@ -1059,98 +1060,98 @@ As an example, we see
    p_{X_1}(1) \times p_{X_2}(1) = 1/2 \times 1/6 = 1/12 &= p_{X_1, X_2}(1, 1)\\
    p_{X_1}(2) \times p_{X_2}(1) = 1/4 \times 1/6 = 1/24 &= p_{X_1, X_2}(2, 1)
 \end{align*}
-In fact, this is true for all pairs, and so  $X_1$ and  $X_2$ are independent random variables. 
+In fact, this is true for all pairs, and so $X_1$ and $X_2$ are independent random variables. 
 Independence is, however, obvious from the description of the experiment (see Example~\ref{EG:rvs:bivariate:discreteDC}). 
 This can be most easily seen from Table~\ref{TB:rvs:joint:eg}.
 :::
 
 
 
-:::{.example #BVDiscrete name="Bivariate discrete"}
-Consider the continuous random variables  $X_1$ and  $X_2$ with joint pdf
+:::{.example #BVContinuousIndependence2 name="Bivariate continuous: Independence"}
+Consider the continuous random variables $X_1$ and $X_2$ with joint pdf
 \[
    f_{X_1, X_2}(x_1, x_2)  =
    \begin{cases}
-      \frac{2}{7}(x_1 + 2x_2) & \text{for  $0<x_1<1$,  $1<x_2<2$}\\
-      0 & \text{elsewhere}
+      \frac{2}{7}(x_1 + 2x_2) & \text{for $0<x_1<1$, $1<x_2<2$}\\
+      0 & \text{elsewhere.}
    \end{cases}
 \]
-The marginal distribution of  $X_1$ is
+The marginal distribution of $X_1$ is
 \begin{align*}
    f_{X_1}(x_1)
    &= \int_1^2 \frac{2}{7}(x_1 + 2x_2)\,dx_2\\
    &= \frac{2}{7}(x_1 x_2 + x_2^2)\Big|_{x_2=1}^2 =
    \frac{2}{7}(x_1+3)
 \end{align*}
-for  $0 < x_1 < 1$ (and zero elsewhere). Likewise, the marginal distribution of  $X_2$ is
+for $0 < x_1 < 1$ (and zero elsewhere). Likewise, the marginal distribution of $X_2$ is
 \begin{align*}
    f_{X_2}(x_2)
    &= \int_0^1 \frac{2}{7}(x_1 + 2x_2^2)\,dx_1\\
    &= \frac{2}{7}(x_1^2/2 + 2 x_1 x_2)\Big|_{x_1=0}^1
    = \frac{1}{7}(1+4x_2)
 \end{align*}
-for  $1 < x_2 < 2$ (and zero elsewhere). 
-(Note  both the marginal distributions must be valid density functions, and so you should check  $\int_0^1 f_{X_1}(x_1)\, dx_1 = 1$ and  $\int_1^2 f_{X_2}(x_2)\, dx_2 = 1$.)
-
-
+for $1 < x_2 < 2$ (and zero elsewhere). 
+(Both the marginal distributions must be valid density functions; verify!)
 Since
 \[
    f_{X_1}(x_1) \times f_{X_2}(x_2) = \frac{2}{49}(x_1+3)(1+4x_2) \ne f_{X_1, X_2}(x_1, x_2),
 \]
-the random variables  $X_1$ and  $X_2$ are *not independent*.
+the random variables $X_1$ and $X_2$ are *not independent*.
 
-The conditional distribution of  $X_1$ given  $X_2 = x_2$ is
+The conditional distribution of $X_1$ given $X_2 = x_2$ is
 \begin{align*}
    f_{X_1 \mid X_2 = x_2}(x_1 \mid x_2)
    &= \frac{ f_{X_1, X_2}(x_1, x_2)}{ f_{X_2}(x_2)} \\
    &= \frac{ (2/7) (x_1 + 2x_2)}{ (1/7)(1+4x_2)}
 \end{align*}
-for  $0 < x_1 < 1$ and any given value of  $1 < x_2 < 2$. 
-(Since the conditional density must be a valid pdf, you should check  $\int_0^1 \frac{ (2/7) (x_1 + 2x_2)}{ (1/7)(1+4x_2)}\, dx_1 = 1$.) 
+for $0 < x_1 < 1$ and any given value of $1 < x_2 < 2$. 
+(Again, this conditional density must be a valid pdf.) 
 So, for example,
 \[
-   f_{X_1 \mid X_2 = 1.5}(x_1\mid 1.5)
+   f_{X_1 \mid X_2 = 1.5}(x_1\mid x_2 = 1.5)
    = \frac{ (2/7) (x_1 + 2\times 1.5)}{ (1/7)(1+4\times 1.5)}
    = \frac{2}{7}(x_1 + 3)
 \]
-for  $0 < x_1 < 1$ and is zero elsewhere. 
+for $0 < x_1 < 1$ and is zero elsewhere. 
 And,
 \[
    f_{X_1\mid X_2=1}(x_1\mid 1)
    = \frac{ (2/7) (x_1 + 2\times 1)}{ (1/7)(1+4\times 1)}
    = \frac{2}{5}(x_1 + 2)
 \]
-for  $0 < x_1 < 1$ and is zero elsewhere. 
-Since the distribution of  $X_1$ depends on the given value of  $X_2$,  $X_1$ and  $X_2$ are *not* independent.
+for $0 < x_1 < 1$ and is zero elsewhere. 
+Since the distribution of $X_1$ depends on the given value of $X_2$, $X_1$ and $X_2$ are *not* independent.
 :::
 
 
 
-:::{.example #BVDiscrete name="Bivariate discrete"}
-Consider the two continuous random variables  $Y_1$ and  $Y_2$ with joint pf
+:::{.example #BVContinuousIndependence3 name="Bivariate continuous: Independence"}
+Consider the two continuous random variables $Y_1$ and $Y_2$ with joint pf
 \[
    f_{Y_1, Y_2}(y_1, y_2)=
    \begin{cases}
-      k(y_1 + y_2) & \text{for  $0 < y_1 < y_2 < 1$}\\
+      k(y_1 + y_2) & \text{for $0 < y_1 < y_2 < 1$}\\
       0 & \text{elsewhere}
    \end{cases}
 \]
 
-* Find a value for  $k$.
-* Determine if  $Y_1$ and  $Y_2$ are independent.
 
-A diagram of the region over which  $Y_1$ and  $Y_2$ are defined is shown in Fig. \@ref(fig:FG:rvs:bvregion).
-To find  $k$, proceed as follows (being careful with the integration limits).
+A diagram of the region over which $Y_1$ and $Y_2$ are defined is shown in Fig. \@ref(fig:FG:rvs:bvregion).
+To find $k$, take care with the integration limits:
 \begin{align*}
    k\int_0^1\left\{ \int_0^{y_2} y_1 + y_2\,dy_1\right\}dy_2
    &= k \int_0^1 y_1^2/2 + y_1 y_2\Big|_{y_1=0}^{y_2} dy_2 \\
    &= 3k/2 \int_0^1 y_2^2\, dy_2 \\
    &= k/2,
 \end{align*}
-and so  $k = 2$.
+and so $k = 2$.
+
+To determine if $Y_1$ and $Y_2$ are independent, the two...
+
+**COMPLETE**
 :::
 
-```{r BVRegion, echo=FALSE, fig.align="center", fig.width=4, fig.height=4,fig.cap="The region over which  $f_{Y_1, Y_2}(y_1, y_2)$ is defined"}
+```{r BVRegion, echo=FALSE, fig.align="center", fig.width=4, fig.height=4,fig.cap="The region over which $f_{Y_1, Y_2}(y_1, y_2)$ is defined"}
 plot( x = c(0, 1),
       y = c(0, 1),
       xlab = expression(italic(y)[1]),
@@ -1169,32 +1170,37 @@ lines( x = c(0, 1, 0, 0),
 
 ## Expectations involving bivariate distributions
 
-In a manner analogous to the univariate case, we make the following definition concerning expectation of functions of two random variables.
+In a manner analogous to the univariate case, the expectation of functions of two random variables can be given.
+
 
 :::{.definition #BVExpectation name="Expectation for bivariate distributions"}
-Let  $(X, Y)$ be a 2-dimensional random variable and let  $u(X, Y)$ be a function of  $X$ and  $Y$. 
-Then the *expectation* or *expected value* of  $\text{E}(u(X, Y))$ is
+Let $(X, Y)$ be a 2-dimensional random variable and let $u(X, Y)$ be a function of $X$ and $Y$. 
+Then the *expectation* or *expected value* of $\text{E}[u(X, Y)]$ is
 
-* for  $(X, Y)$ discrete with probability function  $p_{X, Y}(x, y)$,  $(x, y) \in R$,
+* for $(X, Y)$ discrete with probability function $p_{X, Y}(x, y)$, $(x, y) \in R$,
    \begin{equation}
       \text{E}[u(X,Y)]
       = \sum\sum_{(x, y)\in R}u(x, y) p_{X, Y}(x, y),
+      (\#eq:Expectation2Discrete)
    \end{equation}
 
-* for  $(X, Y)$ continuous with pdf  $f_{X, Y}(x, y)>0, \, (x,y) \in R$
+* for $(X, Y)$ continuous with pdf $f_{X, Y}(x, y)>0, \, (x,y) \in R$
    \begin{equation}
       \text{E}[(u(X,Y)]
       =\int \!\!\int_R u(x, y) f_{X, Y}(x, y) \, dx \, dy.
+      (\#eq:Expectation2Continuous)
    \end{equation}
 :::
 
-Although we don't give it here, this definition can obviously be extended to the expectation of a function of any number of random variables.
 
-:::{.example #CorrCoefDiscrete name="Correlation coefficients (discrete)"}
-Consider the joint distribution of  $X$ and  $Y$ in Example~\ref{EG:rvs:bivariate:discreteDCpmf}. 
-Determine  $\text{E}(X + Y)$; i.e., the mean of the number of heads plus the number showing on the die.
+This definition can be extended to the expectation of a function of any number of random variables.
 
-From the Definition~\ref{DF:5.15} we have  $u(X, Y) = X + Y$ and so
+
+:::{.example #ExpectationFunctionTwoDiscrete name="Expectation of function of two rvs (discrete)"}
+Consider the joint distribution of $X$ and $Y$ in Example~\ref{EG:rvs:bivariate:discreteDCpmf}. 
+Determine $\text{E}(X + Y)$; i.e., the mean of the number of heads plus the number showing on the die.
+
+From the Definition \@ref(def:BVExpectation), write $u(X, Y) = X + Y$ and so
 \begin{align*}
    \text{E}(X + Y) 
    &= \sum_{x = 0}^2 \sum_{y = 1}^6 (x + y) p_{X, Y}(x, y)\\
@@ -1204,40 +1210,37 @@ From the Definition~\ref{DF:5.15} we have  $u(X, Y) = X + Y$ and so
    &= 21/24 + 27/12 + 33/24\\
    &= 4.5
 \end{align*}
-Notice the answer is just  $\text{E}(X) + \text{E}(Y) = 1 + 3.5 = 4.5$.
-This is no coincidence as we see from Theorem~\ref{TM:5.15} below.
+The answer is just $\text{E}(X) + \text{E}(Y) = 1 + 3.5 = 4.5$.
+This is no coincidence as we see from Theorem \@ref(thm:ExpTwoRV).
 :::
 
 
-:::{.example #Exprain name="Exponential distributions"}
+:::{.example #ExpectationFunctionTwoContinuous name="Expectation of function of two rvs (continuous)"}
 Consider Example~\ref{EG:rvs:bivar:cont}.
-Determine  $\text{E}(XY)$.
-
-Now  $u(X, Y) = XY$ and we have
+To determine $\text{E}(XY)$, write $u(X, Y) = XY$ and proceed:
 \begin{align*}
    \text{E}(XY)
    &= \frac65 \int_0^1\int_0^1 xy(x + y^2)\,dx\,dy\\
    &= \frac65\int_0^1 \frac{x^3y}3 + \frac{x^2 y^3}2\biggm|_{x = 0}^{x = 1}\,dy\\
    &= \frac65\int_0^1 \frac y3+\frac{y^3}2\,dy\\
    &= \frac65\left(\frac{y^2}6 + \frac{y^4}8\right)\biggm|_0^1\\
-   &= \frac65\left(\frac16 + \frac18\right)\\
-   &= \frac7{20}
+   &= \frac65\left(\frac16 + \frac18\right) = \frac7{20}.
 \end{align*}
-For this example, unlike the previous one, we cannot find an alternative simple calculation based on  $\text{E}(X)$ and  $\text{E}(Y)$ because  $\text{E}(XY)\neq\text{E}(X) \text{E}(Y)$ in general.
+Unlike the previous example, an alternative simple calculation based on $\text{E}(X)$ and $\text{E}(Y)$ is not possible, since $\text{E}(XY)\neq\text{E}(X) \text{E}(Y)$ in general.
 :::
 
 
 :::{.theorem #ExpTwoRV name="Expectations of two rvs"}
-If  $X$ and  $Y$ are any random variables and  $a$ and  $b$ are any constants then 
+If $X$ and $Y$ are any random variables and $a$ and $b$ are any constants then 
 \[
    \text{E}(aX + bY) = a\text{E}(X) + b\text{E}(Y).
 \]
 :::
 
-This theorem won't surprise after seeing Theorem~\ref{TM:3.1} but it is a very powerful and useful result. 
-The proof given here is for the discrete case but the continuous case is analogous.
+This theorem won't surprise after seeing Theorem \@ref(thm:ExpectationLinear) (CORRRECT XR?) but powerful and useful. 
+The proof given here is for the discrete case; the continuous case is analogous.
 
-:::[.proof}
+:::{.proof}
 \begin{align*}
    E(aX + bY)
    &= \sum\sum_{(x, y) \in R}(ax + by) \, p_{X, Y}(x, y), \text{ by definition}\\
@@ -1249,12 +1252,11 @@ The proof given here is for the discrete case but the continuous case is analogo
 :::
 
 
-Note that this result is true whether or not  $X$ and  $Y$ are independent.
-
+This result is true whether or not $X$ and $Y$ are independent.
 Theorem \@ref(thm:ExpTwoRV) naturally generalises to the expected value of a *linear combination of random variables* as follows.
 
 :::{.theorem #ExpLinear name="Expectation of linear combinations"}
-If  $X_1, X_2,\dots, X_n$ are random variables and  $a_1, a_2,\ldots a_n$ are any constants then
+If $X_1, X_2,\dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any constants then
 \[
    \text{E}\left(\sum_{i = 1}^n a_i X_i \right)
    =\sum_{i = 1}^n a_i \, \text{E}(X_i)
@@ -1270,31 +1272,31 @@ The proof follows directly from Theorem \@ref(thm:ExpTwoRV) by induction.
 ### Moments of a bivariate distribution
 
 The idea of a moment in the univariate case naturally extends to the bivariate case. 
-Hence we can define  $\mu'_{rs} = \text{E}(X^r Y^s)$ or  $\mu_{rs} = \text{E}((X - \mu_X)^r (Y - \mu_Y)^s)$ as raw and central moments for a bivariate distribution.
+Hence we can define $\mu'_{rs} = \text{E}(X^r Y^s)$ or $\mu_{rs} = \text{E}((X - \mu_X)^r (Y - \mu_Y)^s)$ as raw and central moments for a bivariate distribution.
 
 The most important of these moments is the covariance.
 
 :::{.definition #BVDiscreteMarginal name="Bivariate discrete marginal distributions"}
-The *covariance* of  $X$ and  $Y$ is defined as
+The *covariance* of $X$ and $Y$ is defined as
 \begin{align*}
    \text{Cov}(X, Y) 
    &= \text{E}[(X - \mu_X)(Y - \mu_Y)]\\
    &= \begin{cases}
       \displaystyle
-         \sum_{x} \sum_{y} (x - \mu_X)(y - \mu_Y) p_{X, Y}(x, y) & \text{for  $X, Y$ discrete}\\[6pt]
+         \sum_{x} \sum_{y} (x - \mu_X)(y - \mu_Y) p_{X, Y}(x, y) & \text{for $X, Y$ discrete}\\[6pt]
          \displaystyle
-         \int_{-\infty}^\infty\!\int_{-\infty}^\infty (x - \mu_X)(y - \mu_Y) f_{X, Y}(x, y)\, dx\, dy & \text{for  $X, Y$ continuous}
+         \int_{-\infty}^\infty\!\int_{-\infty}^\infty (x - \mu_X)(y - \mu_Y) f_{X, Y}(x, y)\, dx\, dy & \text{for $X, Y$ continuous}
        \end{cases}
 \end{align*}
 :::
 
-The covariance is a measure of how  $X$ and  $Y$ vary jointly in the sense that a positive covariance indicates that 'on average'  $X$ and  $Y$ increase (or decrease) together whereas a negative covariance indicates that `on average' as  $X$ increases and  $Y$ decreases (and vice versa). 
+The covariance is a measure of how $X$ and $Y$ vary jointly in the sense that a positive covariance indicates that 'on average' $X$ and $Y$ increase (or decrease) together whereas a negative covariance indicates that `on average' as $X$ increases and $Y$ decreases (and vice versa). 
 We say that covariance is a measure of *linear dependence*.
 
 Covariance is best evaluated from the computational formula:
 
-:::{.theorem name="Covariance"}
-For any random variables  $X$ and  $Y$, 
+:::{.theorem #Covariance name="Covariance"}
+For any random variables $X$ and $Y$, 
 \[
    \text{Cov}(X, Y)
    =
@@ -1303,7 +1305,7 @@ For any random variables  $X$ and  $Y$,
 :::
 
 :::{.proof}
-The proof is a lovely application of Theorems~\ref{TM:5.15} and~\ref{TM:3.1}.
+The proof uses Theorems~\ref{TM:5.15} and~\ref{TM:3.1}.
 \begin{align*}
    \text{Cov}(X, Y)
    &= \text{E}( (X - \mu_X)(Y-\mu_Y)) \\
@@ -1315,16 +1317,17 @@ The proof is a lovely application of Theorems~\ref{TM:5.15} and~\ref{TM:3.1}.
 :::
 
 
-Notice to compute the covariance,  $\text{E}(X)$,  $\text{E}(Y)$,  $\text{E}(X Y)$ need to be computed, and so the joint and marginal distributions of  $X$ and  $Y$ are needed.
+Computing the covariance in involved: $\text{E}(X)$, $\text{E}(Y)$, $\text{E}(X Y)$ need to be computed, and so the joint and marginal distributions of $X$ and $Y$ are needed.
 
-Covariance has units given by the product of the units of  $X$ and  $Y$. 
-For example, if  $X$ is in metres and  $Y$ is in seconds then  $\text{Cov}(XY)$ has the units metre-seconds.
+Covariance has units given by the product of the units of $X$ and $Y$. 
+For example, if $X$ is in metres and $Y$ is in seconds then $\text{Cov}(XY)$ has the units metre-seconds.
 
-In order to compare the strength of covariation amongst pairs of random variables it is desirable to eliminate the effect of the units. 
-Correlation does this by scaling the covariance in terms of the standard deviations.
+To compare the strength of covariation amongst pairs of random variables, a unitless measure is useful.
+Correlation does this by scaling the covariance in terms of the standard deviations of the individual variables.
+
 
 :::{.definition #Correlation name="Correlation"}
-The *correlation coefficient* between the random variables  $X$ and  $Y$ is denoted by  $\text{Corr}(X, Y)$ or  $\rho_{X, Y}$ and is defined as
+The *correlation coefficient* between the random variables $X$ and $Y$ is denoted by $\text{Corr}(X, Y)$ or $\rho_{X, Y}$ and is defined as
 \[
    \rho_{X, Y} 
    = \frac{\text{Cov}(X, Y)}{\sqrt{ \text{var}(X)\text{var}(Y)}}
@@ -1332,8 +1335,8 @@ The *correlation coefficient* between the random variables  $X$ and  $Y$ is deno
 \]
 :::
 
-If there is no confusion over which random variables are involved, we can write  $\rho$ rather than  $\rho_{XY}$.
-It can be shown that  $-1 \leq \rho \leq 1$.
+If there is no confusion over which random variables are involved, we write $\rho$ rather than $\rho_{XY}$.
+It can be shown that $-1 \leq \rho \leq 1$.
 
 
 :::{.example #CorrCoefDiscrete name="Correlation coefficient (discrete rvs)"}
@@ -1389,16 +1392,16 @@ if( knitr::is_html_output() ) {
 
 To compute the correlation coefficient, the following steps are required.
 
-*  $\text{Corr}(X, Y) = \text{Cov}(X, Y)/\sqrt{ \text{var}(X)\text{var}(Y) }$, so  $\text{var}(X)$,  $\text{var}(Y)$ and are needed;
-* To find  $\text{var}(X)$ and  $\text{var}(Y)$,   $\text{E}(X)$ and  $\text{E}(X^2)$,  $\text{E}(Y)$ and  $\text{E}(Y^2)$ are needed, so the marginal pfs of  $X$ and  $Y$ are required.
+* $\text{Corr}(X, Y) = \text{Cov}(X, Y)/\sqrt{ \text{var}(X)\text{var}(Y) }$, so $\text{var}(X)$, $\text{var}(Y)$ are computed;
+* To find $\text{var}(X)$ and $\text{var}(Y)$,  $\text{E}(X)$ and $\text{E}(X^2)$, $\text{E}(Y)$ and $\text{E}(Y^2)$ are computed, so the marginal pfs of $X$ and $Y$ are needed.
 
 So first, the marginal pfs are
 \[
    p_X(x) = \sum_{y = -1, 1} p_{X, Y}(x, y) =
       \begin{cases}
-          7/24 & \text{for  $x = 0$}\\
-          8/24 & \text{for  $x = 1$}\\
-          9/24 & \text{for  $x = 2$}\\
+          7/24 & \text{for $x = 0$}\\
+          8/24 & \text{for $x = 1$}\\
+          9/24 & \text{for $x = 2$}\\
           0 & \text{otherwise}
       \end{cases}
 \]
@@ -1406,19 +1409,19 @@ and
 \[
    p_Y(y) = \sum_{x = 0}^2 p_{X, Y}(x, y) =
       \begin{cases}
-          1/2 & \text{for  $y = -1$}\\
-          1/2 & \text{for  $y = 1$}\\
-          0 & \text{otherwise}
+          1/2 & \text{for $y = -1$}\\
+          1/2 & \text{for $y = 1$}\\
+          0 & \text{otherwise.}
       \end{cases}
 \]
-So then,
+Then,
 \begin{align*}
-   \text{E}(X) &= (7/24 \times 0) + (8/24 \times 1) + (9/24\times 2) = 26/24\\
+   \text{E}(X)   &= (7/24 \times 0) + (8/24 \times 1) + (9/24\times 2) = 26/24\\
    \text{E}(X^2) &= (7/24 \times 0^2) + (8/24 \times 1^2) + (9/24\times 2^2) = 44/24\\
-   \text{E}(Y) &= (1/2 \times -1) + (1/2 \times 1) = 0\\
+   \text{E}(Y)   &= (1/2 \times -1) + (1/2 \times 1) = 0\\
    \text{E}(Y^2) &= (1/2 \times (-1)^2) + (1/2 \times 1^2) = 1
 \end{align*}
-giving  $\text{var}(X) = 44/24 - (26/24)^2 = 0.6597222$ and  $\text{var}(Y) = 1 - 0^2 = 1$. 
+giving $\text{var}(X) = 44/24 - (26/24)^2 = 0.6597222$ and $\text{var}(Y) = 1 - 0^2 = 1$. 
 Then,
 \begin{align*}
    \text{E}(XY) &= \sum_x\sum_y xy\,p_{X,Y}(x,y) \\
@@ -1436,37 +1439,37 @@ and
    &= \frac{1/12}{\sqrt{0.6597222 \times 1}}\\
    &= 0.1025978,
 \end{align*}
-so the correlation coefficient is about  $0.10$, and therefore there is a small positive linear association between  $X$ and  $Y$.
+so the correlation coefficient is about $0.10$, and therefore there is a small positive linear association between $X$ and $Y$.
 :::
 
 
 ### Properties of covariance and correlation
 
 * The correlation has no units.
-* The covariance has units; if  $X_1$ is measured in kilograms and  $X_2$ in centimetres, then the units of the covariance are kg-cm.
-* If the units of measurements change, the numerical value of the covariance will change, but the numerical value of the correlation will stay the same.
-   (For example, if  $X_1$ is changed from kilograms to grams, the correlation will not change in value, but the covariance will.)
-* The correlation is a number between  $-1$ and  $1$ (inclusive).
-  When the correlation coefficient (or covariance) is negative, a *negative linear relationship* is said to exist
-   between the two variables; likewise, when the correlation coefficient (or covariance) is positive, a *positive linear relationship* is said to exist between the two variables.
+* The covariance has units; if $X_1$ is measured in kilograms and $X_2$ in centimetres, then the units of the covariance are kg-cm.
+* If the units of measurements change, the numerical value of the covariance changes, but the numerical value of the correlation stays the same.
+   (For example, if $X_1$ is changed from kilograms to grams, the correlation will not change in value, but the covariance will.)
+* The correlation is a number between $-1$ and $1$ (inclusive).
+  When the correlation coefficient (or covariance) is negative, a *negative linear relationship* is said to exist between the two variables.
+  Likewise, when the correlation coefficient (or covariance) is positive, a *positive linear relationship* is said to exist between the two variables.
 * When the correlation coefficient (or covariance) is zero, no *linear* dependence is said to exist.
 
 
-:::{.theorem}
-For random variables  $X$,  $X$ and  $Z$, and constants  $a$ and  $b$
+:::{.theorem #CovarianceProperties name="Properties of the covariance"}
+For random variables $X$, $X$ and $Z$, and constants $a$ and $b$
 
-*  $\text{Cov}(X, Y) = \text{Cov}(Y, X)$
-*  $\text{Cov}(aX,bY) = ab\,\text{Cov}(X, Y)$
-*  $\text{var}(aX + bY) = a^2\text{var}(X) + b^2\text{var}(Y) + ab\,\text{Cov}(X,Y)$
-* If  $X$ and  $Y$ are independent, then  $\text{E}(X Y) = \text{E}(X)\text{E}(Y)$ and hence  $\text{Cov}(X,Y) = 0$
-*  $\text{Cov}(X, Y) = 0$ does not imply  $X$ and  $Y$ are independent, except for the special case of the bivariate normal distribution.
+* $\text{Cov}(X, Y) = \text{Cov}(Y, X)$
+* $\text{Cov}(aX,bY) = ab\,\text{Cov}(X, Y)$
+* $\text{var}(aX + bY) = a^2\text{var}(X) + b^2\text{var}(Y) + ab\,\text{Cov}(X,Y)$
+* If $X$ and $Y$ are independent, then $\text{E}(X Y) = \text{E}(X)\text{E}(Y)$ and hence $\text{Cov}(X,Y) = 0$
+* $\text{Cov}(X, Y) = 0$ does not imply $X$ and $Y$ are independent, except for the special case of the bivariate normal distribution.
 :::
 
 A zero correlation coefficient in an indication of no *linear* dependence only.
 
 
-:::{.example #Exprain name="Exponential distributions"}
-Consider  $X_1$ with the pf:
+:::{.example #LinearDependence name="Linear dependence and correlation"}
+Consider $X_1$ with the pf:
 
 
 | $x_1$   | $-1$  | $0$   | $1$
@@ -1474,12 +1477,9 @@ Consider  $X_1$ with the pf:
 | $p_{X_1}(x_1)$ | $1/3$ | $1/3$ | $1/3$
 
 
-Then, define  $X_2$ to be explicitly related to $X_1$:
-\[
-   X_2 = X_1^2
-\]
-So, we *know* there is a relationship between $X_1$ and  $X_2$ (but it is  not linear). 
-The joint pf for  $(X_1, X_2)$ is
+Then, define $X_2$ to be explicitly related to $X_1$: $X_2 = X_1^2$.
+So, we *know* a relationship exists between $X_1$ and $X_2$ (but it is  not linear). 
+The joint pf for $(X_1, X_2)$ is shown in Table \@ref(tab:JointRship).
 
 
 ```{r JointRship, echo=FALSE}
@@ -1534,9 +1534,9 @@ Then
    = \text{E}(X_1 X_2) - \text{E}(X_1)\text{E}(X_2)
    = 0 - 0\times 2/3 = 0
 \end{equation*}
-so  $\text{Corr}(X_1, X_2) = 0$. 
-But  $X_1$ and  $X_2$ *are certainly related* as  $X_2$ was explicitly defined as a function of  $X_1$.
-Since the correlation is a measure of the strength of the *linear* relationship between two random variables, a correlation of zero simply is indication of no *linear* relationship between  $X_1$ and  $X_2$. 
+so $\text{Corr}(X_1, X_2) = 0$. 
+But $X_1$ and $X_2$ *are certainly related* as $X_2$ was explicitly defined as a function of $X_1$.
+Since the correlation is a measure of the strength of the *linear* relationship between two random variables, a correlation of zero simply is indication of no *linear* relationship between $X_1$ and $X_2$. 
 (As is the case in this example, there may be a different relationship between the variables, but no linear relationship.)
 :::
 
@@ -1550,33 +1550,34 @@ Conditional expectations are simply expectations computed from a conditional dis
 The conditional mean is the expected value computed from a conditional distribution.
 
 :::{.definition #ConditionalExpectation name="Conditional expectation"}
-The *conditional expected value* or *conditional mean* of a random variable  $X$ for given  $Y = y$ is denoted by  $\text{E}(X \mid Y = y)$ and is defined as
+The *conditional expected value* or *conditional mean* of a random variable $X$ for given $Y = y$ is denoted by $\text{E}(X \mid Y = y)$ and is defined as
 \begin{align*}
    \text{E}(X \mid Y = y)
    &=
    \begin{cases}
-      \sum_{x} x p_{X\mid Y}(x\mid y) & \text{if  $p_{X\mid Y}(x\mid y)$ is the conditional pf}\\
-      \int_{-\infty}^\infty x f_{X\mid Y}(x\mid y)\, dx & \text{if  $f_{X\mid Y}(x\mid y)$ is the conditional pdf}\\
+      \displaystyle \sum_{x} x p_{X\mid Y}(x\mid y) & \text{if $p_{X\mid Y}(x\mid y)$ is the conditional pf.}\\[6pt]
+      \displaystyle \int_{-\infty}^\infty x f_{X\mid Y}(x\mid y)\, dx & \text{if $f_{X\mid Y}(x\mid y)$ is the conditional pdf.}\\
    \end{cases}
 \end{align*}
 :::
 
-$\text{E}(X \mid Y = y)$ is typically denoted  $\mu_{X \mid Y = y}$.
+$\text{E}(X \mid Y = y)$ is typically denoted $\mu_{X \mid Y = y}$.
 
-:::{.example #Exprain name="Exponential distributions"}
-Consider the two random variables  $X$ and  $Y$ with joint pdf
+
+:::{.example #ConditionalMean name="Conditional mean (continuous)"}
+Consider the two random variables $X$ and $Y$ with joint pdf
 \[
    f_{X, Y}(x, y) =
       \begin{cases}
-         \frac{3}{5}(x + xy + y^2) & \text{for  $0 < x < 1$ and  $-1 < y < 1$}\\
-         0 & \text{otherwise}
+         \frac{3}{5}(x + xy + y^2) & \text{for $0 < x < 1$ and $-1 < y < 1$}\\
+         0 & \text{otherwise.}
       \end{cases}
 \]
-To find  $f_{Y \mid X = x}(y\mid x)$, we first need  $f_X(x)$.
+To find $f_{Y \mid X = x}(y\mid x)$, we first need $f_X(x)$:
 \[
    f_X(x) = \int_{-1}^1 f_{X,Y}(x,y) dy = \frac{3}{15}(6x + 2)
 \]
-for  $0 < x < 1$. 
+for $0 < x < 1$. 
 Then,
 \begin{align*}
    f_{Y \mid X = x}(y \mid x)
@@ -1584,8 +1585,8 @@ Then,
    &= \frac{ (3/5)(x + xy + y^2) }{ (3/15)(6x + 2) } \\
    &= \frac{3(x + xy + y^2)}{6x + 2}
 \end{align*}
-for  $-1 < y < 1$ and given  $0 < x < 1$. 
-The expected value of  $Y$ given  $X = x$ is then
+for $-1 < y < 1$ and given $0 < x < 1$. 
+The expected value of $Y$ given $X = x$ is then
 \begin{align*}
    \text{E}(Y\mid X=x)
    &= \int_{-1}^1 y f_{Y\mid X=x}(y\mid x)\, dy\\
@@ -1593,13 +1594,13 @@ The expected value of  $Y$ given  $X = x$ is then
    &= \frac{3}{6x+2} \int_{-1}^1 y(x+xy+y^2) \, dy\\
    &= \frac{x}{3x+1}.
 \end{align*}
-This expression indicates that the condiitonal expected value of  $Y$ depends on the given value of  $X$; for example,
+This expression indicates that the conditional expected value of $Y$ depends on the given value of $X$; for example,
 \begin{align*}
    \text{E}(Y\mid X=0) &= 0/1 = 0\\
    \text{E}(Y\mid X=0.5) &= \frac{0.5}{3\times 0.5 + 1} = 0.2\\
-   \text{E}(Y\mid X=1) &= 1/4
+   \text{E}(Y\mid X=1) &= 1/4.
 \end{align*}
-Since  $\text{E}(Y\mid X=x)$ depends on the value of  $X$,  $X$ and  $Y$ are *not* independent.
+Since $\text{E}(Y\mid X=x)$ depends on the value of $X$, $X$ and $Y$ are *not* independent.
 :::
 
 
@@ -1608,30 +1609,29 @@ Since  $\text{E}(Y\mid X=x)$ depends on the value of  $X$,  $X$ and  $Y$ are *no
 The conditional variance is the variance computed from a conditional distribution.
 
 :::{.definition #ConditionalVariance name="Conditional variance"}
-The *conditional variance* of a random variable  $X$ for given  $Y = y$ is denoted by  $\text{var}(X \mid Y = y)$ and is defined as
+The *conditional variance* of a random variable $X$ for given $Y = y$ is denoted by $\text{var}(X \mid Y = y)$ and is defined as
 \begin{align*}
    \text{var}(X \mid Y = y)
    &=
    \begin{cases}
       \displaystyle
-      \sum_{x} (x-\mu_{X\mid y})^2 p(x\mid y) & \text{if  $p(x\mid y)$ is the conditional pf}\\[6pt]
+      \sum_{x} (x-\mu_{X\mid y})^2 p(x\mid y) & \text{if $p(x\mid y)$ is the conditional pf.}\\[6pt]
       \displaystyle
-      \int_{-\infty}^\infty (x-\mu_{X\mid y})^2 f(x\mid y)\, dx & \text{if  $f(x\mid y)$ is the conditional pdf}\\
+      \int_{-\infty}^\infty (x-\mu_{X\mid y})^2 f(x\mid y)\, dx & \text{if $f(x\mid y)$ is the conditional pdf.}\\
    \end{cases}
 \end{align*}
-where  $\mu_{X \mid y}$ is the *conditional mean* of  $X$ given  $Y = y$.
+where $\mu_{X \mid y}$ is the *conditional mean* of $X$ given $Y = y$.
 :::
 
-$\text{var}(X \mid Y = y)$ is typically denoted  $\sigma^2_{X \mid Y = y}$.
+$\text{var}(X \mid Y = y)$ is typically denoted $\sigma^2_{X \mid Y = y}$.
 
-:::{.example #Exprain name="Exponential distributions"}
-Refer to Example~\ref{EG:expect:condmean}. 
-The conditional variance of  $Y$ given  $X = x$ can be found by first computing  $\text{E}(Y^2\mid X = x)$.
+:::{.example #ConditionVariance name="Conditional variance (continuous)"}
+Refer to Example \@ref(exm:ConditionalMean). 
+The conditional variance of $Y$ given $X = x$ can be found by first computing $\text{E}(Y^2\mid X = x)$.
 \begin{align*}
    \text{E}(Y^2\mid X = x)
    &= \int_{-1}^1 y^2 f_{Y\mid X=x}(y\mid x)\,dy \\
    &= \frac{3}{6x+2} \int_{-1}^1 y^2 (x+xy+y^2)\, dy \\
-   &= \frac{3}{6x+2} \times \frac{10x+6}{15}\\
    &= \frac{5x+3}{5(3x+1)}.
 \end{align*}
 So the conditional variance is
@@ -1641,31 +1641,29 @@ So the conditional variance is
    &= \frac{5x+3}{5(3x+1)} - \left( \frac{x}{3x+1}\right)^2 \\
    &= \frac{10x^2 + 14x + 3}{5(3x+1)^2}
 \end{align*}
-for given  $0 < x < 1$. 
-Hence the variance of  $Y$ depends on the value of  $X$ that is given; for example,
+for given $0 < x < 1$. 
+Hence the variance of $Y$ depends on the value of $X$ that is given; for example,
 \begin{align*}
    \text{var}(Y\mid X=0) &= 3/5 = 0.6\\
    \text{var}(Y\mid X=0.5) &= \frac{10\times (0.5)^2
    + (14\times0.5) + 3}{5(3\times0.5 + 1)^2} = 0.4\\
-   \text{var}(Y\mid X=1) &= 27/80 = 0.3375
+   \text{var}(Y\mid X=1) &= 27/80 = 0.3375.
 \end{align*}
 :::
 
 
 
-In general, to compute the conditional variance of  $X\mid Y = y$ given a joint probability function, the following steps are required.
+In general, to compute the conditional variance of $X\mid Y = y$ given a joint probability function, the following steps are required.
 
-* Find the marginal distribution of  $Y$.
-* Use this to compute the conditional probability function  $f_{X \mid Y = y}(x \mid y) = f_{X, Y}(x, y)/f_{X}(x)$.
-* Find the conditional mean  $\text{E}(X \mid Y = y)$.
-* Find the conditional second raw moment  $\text{E}(X^2 \mid Y = y)$.
-* Finally, compute  $\text{var}(X\mid Y=y) = \text{E}(X^2\mid Y=y) - (\text{E}(X\mid Y=y))^2$.
+* Find the marginal distribution of $Y$.
+* Use this to compute the conditional probability function $f_{X \mid Y = y}(x \mid y) = f_{X, Y}(x, y)/f_{X}(x)$.
+* Find the conditional mean $\text{E}(X \mid Y = y)$.
+* Find the conditional second raw moment $\text{E}(X^2 \mid Y = y)$.
+* Finally, compute $\text{var}(X\mid Y=y) = \text{E}(X^2\mid Y=y) - (\text{E}(X\mid Y=y))^2$.
 
 
-:::{.example #ConditionalVar name="Conditional variance"}
-Two discrete random variables $U$ and  $V$ have the joint pf given in Table \@ref(tab:CondVar).
-Find the conditional variance of  $V$ given  $U = 11$.
-
+:::{.example #ConditionalVar name="Conditional variance (discrete)"}
+Two discrete random variables $U$ and $V$ have the joint pf given in Table \@ref(tab:CondVar).
 
 
 ```{r CondVar, echo=FALSE}
@@ -1714,47 +1712,45 @@ if( knitr::is_html_output() ) {
 ```
 
 
+To find the conditional variance of $V$ given $U = 11$, use the steps above.
 
-Using the steps outlined above:
-
-1.First, find the marginal distribution of  $U$.
-  From the joint pf table,
+1. First, find the marginal distribution of $U$:
    \[
       p_U(u) = \begin{cases}
-         4/9 & \text{for  $u = 10$}\\
-         7/18 & \text{for  $u = 11$}\\
-         1/6 & \text{for  $u = 12$}\\
+         4/9 & \text{for $u = 10$}\\
+         7/18 & \text{for $u = 11$}\\
+         1/6 & \text{for $u = 12$}\\
          0 & \text{otherwise}\\
          \end{cases}
    \]
-2. Secondly, compute the conditional probability function
+2. Secondly, compute the conditional probability function:
    \begin{align*}
       p_{V\mid U = 11}(v \mid u = 11)
       &= p_{U, V}(u,v)/p_{U}(u = 11) \\
       &= \begin{cases}
-             \frac{1/18}{7/18} = 1/7 & \text{if  $v=0$}\\
-             \frac{1/3}{7/18}  = 6/7 & \text{if  $v=1$}
+             \frac{1/18}{7/18} = 1/7 & \text{if $v = 0$}\\
+             \frac{1/3}{7/18}  = 6/7 & \text{if $v = 1$}
           \end{cases}
    \end{align*}
-   using  $p_U(u = 11) = 7/18$ from the Step 1.
+   using $p_U(u = 11) = 7/18$ from the Step 1.
 
-3. Thirdly, find the conditional mean
+3. Thirdly, find the conditional mean:
      \[
-      \text{E}(V\mid U=11) = \sum_v v p_{V\mid U=11}(v\mid u) =
+      \text{E}(V\mid U = 11) = \sum_v v p_{V\mid U = 11}(v\mid u) =
          \left(\frac{1}{7}\times 0\right) + \left(\frac{6}{7}\times 1\right)  = 6/7
    \]
-4. Fourthly, find the conditional second raw moment
+4. Fourthly, find the conditional second raw moment:
      \[
-      \text{E}(V^2\mid U=11) = \sum_v v^2 p_{V\mid U=11}(v\mid u) =
+      \text{E}(V^2\mid U = 11) = \sum_v v^2 p_{V\mid U = 11}(v\mid u) =
          \left(\frac{1}{7}\times 0^2\right) + \left(\frac{6}{7}\times 1^2\right)  = 6/7
    \]
-5. Finally, compute
+5. Finally, compute:
    \begin{align*}
-   \text{var}(V\mid U=11) &= \text{E}(V\mid U=11) - (\text{E}(V\mid U=11))^2\\
-   &= (6/7) - (6/7)^2\\
-   &\approx  0.1224
+      \text{var}(V\mid U = 11) 
+      &= \text{E}(V\mid U = 11) - (\text{E}(V\mid U = 11))^2\\
+      &= (6/7) - (6/7)^2\\
+      &\approx  0.1224
    \end{align*}
-
 :::
 
 
@@ -1762,47 +1758,43 @@ Using the steps outlined above:
 ## The multivariate extension {#MultivariateExtensions}
 
 Results involving expectations naturally generalise from the bivariate to the multivariate case.
-
-We have already seen the expectation of a linear combination of random variables in Theorem~\ref{TM:5.16}. 
+We have already seen the expectation of a linear combination of random variables in Theorem \@ref(thm:ExpLinear). 
 The variance of a linear combination of random variables is given in the following theorem.
 
-:::{.theroem}
-If  $X_1, X_2, \dots, X_n$ are random variables and  $a_1, a_2,\ldots a_n$ are any constants then
+:::{.theroem #LinearCombVariance name="Variance of a linear combvination"}
+If $X_1, X_2, \dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any constants then
 \[
-   \text{var}\left(\sum_{i = 1}^n a_iX_i \right)
+   \text{var}\left(\sum_{i = 1}^n a_i X_i \right)
    =
-   \sum^n_{i = 1}a^2_i\text{var}(X_i) + 2{\sum\sum}_{i<j}a_ia_j\text{Cov}(X_i,X_j)
+   \sum^n_{i = 1}a^2_i\text{var}(X_i) + 2{\sum\sum}_{i<j}a_i a_j\text{Cov}(X_i, X_j)
 \]
 :::
 
 :::{.proof}
-For convenience, put  $Y = \sum_{i = 1}^n a_iX_i$.
+For convenience, put $Y = \sum_{i = 1}^n a_iX_i$.
 Then by definition of variance
 \begin{align*}
      \text{var}(Y) & = \text{E}(Y-\text{E}(Y))^2\\
-     & = \text{E}[a_1X_1+\dots +a_nX_n-a_1\mu_1- \dots a_n\mu_n]^2\\
-     & = \text{E}[a_1(X_1-\mu_1)+\dots +a_n(X_n -\mu_n)]^2\\
-     & = \text{E}\left[ \sum_ia^2_i(X_i-\mu_i)^2+2\sum\sum_{i<j}a_ia_j(X_i-
-\mu_i)X_j-\mu_j)\right]\\
-     & = \sum_ia^2_i\text{E}(X_i-\mu_i)^2 +2{\sum\sum}_{i<j}a_ia_j\text{E}(X_i-
-\mu_i)X_j-\mu_j)\quad\text{using Theorem~\ref{TM:5.16}}\\
-     & = \sum_ia^2_i\sigma^2_i
-+2{\sum\sum}_{i<j}a_ia_j\text{Cov}(X_i,\,X_j).
+     & = \text{E}[a_1X_1+\dots + a_nX_n - a_1\mu_1- \dots a_n\mu_n]^2\\
+     & = \text{E}[a_1(X_1-\mu_1)+\dots + a_n(X_n - \mu_n)]^2\\
+     & = \text{E}\left[ \sum_i a^2_i(X_i - \mu_i)^2 + 2\sum\sum_{i < j}a_i a_j(X_i - \mu_i)X_j - \mu_j)\right]\\
+     & = \sum_i a^2_i\text{E}(X_i-\mu_i)^2 + 2{\sum\sum}_{i < j}a_i a_j\text{E}(X_i - \mu_i)X_j - \mu_j)\quad\text{using Theorem \@ref(thm:ExpLinear}\\
+     & = \sum_i a^2_i\sigma^2_i + 2{\sum\sum}_{i<j}a_i a_j\text{Cov}(X_i, X_j).
      \end{align*}
 :::
 
-In statistical theory, an important special case of Theorem~\ref{TM:varlincomb} occurs when the  $X_i$ are independently and identically distributed. 
-That is, each of  $X_1, X_2, \dots, X_n$ has got the same distribution and are independent of each other. 
+In statistical theory, an important special case of Theorem \@ref(thm:LinearCombVariance) occurs when the $X_i$ are independently and identically distributed. 
+That is, each of $X_1, X_2, \dots, X_n$ has the same distribution and are independent of each other. 
 (We see the relevance of this in Chap. \@ref(SamplingDistributions).)
-Because of its importance this special case is called a corollary of Theorems~\ref{TM:5.16} and~\ref{TM:varlincomb}.
+Because of its importance this special case is called a corollary of Theorems \@ref(thm:ExpLinear) and \@ref(LinearCombVariance).
 
-:::{.corollary}
-If  $X_1, X_2, \dots, X_n$ are independently distributed random variables, each with mean  $\mu$ and variance  $\sigma^2$, and  $a_1, a_2,\ldots a_n$ are any constants, then
+:::{.corollary #IID name="IID rvs"}
+If $X_1, X_2, \dots, X_n$ are independently distributed random variables, each with mean $\mu$ and variance $\sigma^2$, and $a_1, a_2,\ldots a_n$ are any constants, then
 \begin{align*}
-   \text{E}\left(\sum_{i=1}^n a_iX_i \right)
-   &=\mu\sum_{i=1}^n a_i\\
-   \text{var}\left(\sum_{i=1}^n a_iX_i \right)
-   &=\sigma^2\sum^n_{i=1}a^2_i
+   \text{E}\left(\sum_{i = 1}^n a_i X_i \right)
+   &= \mu\sum_{i=1}^n a_i\\ 
+   \text{var}\left(\sum_{i = 1}^n a_i X_i \right)
+   &= \sigma^2\sum^n_{i = 1}a^2_i.
 \end{align*}
 :::
 
@@ -1813,28 +1805,27 @@ Exercise!
 
 ### Vector formulation {#Vectors}
 
-Linear combinations of random variables are most elegantly dealt with using the methods and notation of vectors and matrices.
-
+Linear combinations of random variables are most elegantly dealt with using the methods and notation of vectors and matrices, especially as the dimension grows beyond the bivariate case.
 In the bivariate case we define
 \begin{align}
    \mathbf{X} 
    &= \left[ \begin{array}{c} X_1 \\ X_2 \end{array} \right]
-  \label{EQN:matrix1} \\
+  \label{EQN:matrix1} \\;
   \text{E}(\mathbf{X}) & =  \text{E} \left( \left[ \begin{array}{c} X_1 \\ X_2
   \end{array} \right] \right) =  \left[ \begin{array}{c} \mu_1 \\
   \mu_2 \end{array} \right] =
-  \mathbf{\mu}\label{EQN:matrix2} \\
+  \mathbf{\mu};\label{EQN:matrix2} \\
   \text{var}(\mathbf{X}) & = \text{var}\left( \left[ \begin{array}{c} X_1 \\ X_2
   \end{array} \right] \right)
   = \left[ \begin{array}{cc} \sigma^2_1 & \sigma_{12} \\
                               \sigma_{21}& \sigma^2_2 \end{array} \right]
-  = \mathbf{\Sigma}\label{EQN:matrix3}
+  = \mathbf{\Sigma}.\label{EQN:matrix3}
 \end{align}
 
-The matrix  $\mathbf{\Sigma}$ is called the *variance-covariance* matrix. 
-Notice that this matrix is square and symmetric since  $\sigma_{12} = \sigma_{21}$.
+The matrix $\mathbf{\Sigma}$ is called the *variance-covariance* matrix. 
+Notice that this matrix is square and symmetric since $\sigma_{12} = \sigma_{21}$.
 
-The linear combination  $Y = a_1 X_1 + a_2 X_2$ can be expressed 
+The linear combination $Y = a_1 X_1 + a_2 X_2$ can be expressed 
 \begin{equation}
    Y 
    = a_1 X_1 + a_2 X_2 
@@ -1845,10 +1836,11 @@ The linear combination  $Y = a_1 X_1 + a_2 X_2$ can be expressed
    \end{array} 
    \right] 
    =\mathbf{a}^T\mathbf{X}
+   (\#eq:BivarCombination)
 \end{equation}
-where the (column) vector  $\mathbf{a}=\left[ \begin{array}{c} a_1 \\ a_2 \end{array} \right]$.
+where the (column) vector $\mathbf{a}=\left[ \begin{array}{c} a_1 \\ a_2 \end{array} \right]$.
 
-With the standard rules of matrix multiplication, Theorems~\ref{TM:5.16} and~\ref{TM:varlincomb} applied to~\ref{EQN:bivsum} then give respectively (check the details for yourself)
+With the standard rules of matrix multiplication, Theorems \@ref(thm:ExpLinear) and \@ref(LinearCombVariance) applied to \@ref(   (eq:BivarCombination) then give respectively (check!)
 \begin{equation}
    \text{E}(Y)
    = \text{E}(\mathbf{a}^T\mathbf{X})
@@ -1864,7 +1856,7 @@ With the standard rules of matrix multiplication, Theorems~\ref{TM:5.16} and~\re
 and
 \begin{align}
   \text{var}(Y)
-  &= \text{var}(\mathbf{a}^T\mathbf{X})\nonumber\\
+  &= \text{var}(\mathbf{a}^T\mathbf{X}\mathbf{a})\nonumber\\
   &= [a_1,a_2]
   \left[ \begin{array}{cc} 
      \sigma^2_1 & \sigma_{12} \\
@@ -1878,7 +1870,6 @@ and
 \end{align}
 
 The vector formulation of these results apply directly in the multivariate case as described below.
-
 Write
 \begin{align*}
   \mathbf{X} 
@@ -1887,35 +1878,34 @@ Write
   & =(\mu_1, \ldots, \mu_n)' = \mathbf{\mu}^T \\
   \text{var}(\mathbf{X}) 
   & = \mathbf{\Sigma} \\
-   \mathbf{a}^T & = \left[a_1,a_2,\ldots, a_n \right] \\
+   \mathbf{a}^T & = \left[a_1,a_2,\ldots, a_n \right].
 \end{align*}
-
-Now Theorems~\ref{TM:5.16} and~\ref{TM:varlincomb} can be expressed in vector form.
+Now Theorems \@ref(thm:ExpLinear) and \@ref(LinearCombVariance) can be expressed in vector form.
 
 
 :::{.theorem #MeanVarVector name="Bivariate mean and variance (vector form)"}
-If  $\mathbf{X}$ is a random vector of length  $n$ with mean  $\mathbf{\mu}$ and variance  $\mathbf{\Sigma}$ and  $\mathbf{a}$ is any constant vector of length  $n$ then
+If $\mathbf{X}$ is a random vector of length $n$ with mean $\mathbf{\mu}$ and variance $\mathbf{\Sigma}$ and $\mathbf{a}$ is any constant vector of length $n$ then
 \begin{align*}
    \text{E}(\mathbf{a}^T\mathbf{X})
    &= \mathbf{a}^T\mathbf{\mu} \\
    \text{var}(\mathbf{a}^T\mathbf{X}) 
-   &= \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}
+   &= \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}.
 \end{align*}
 :::
 
 :::{.proof}
-Exercise!
+Exercise.
 :::
 
 
 These elegant statements concerning linear combinations are a feature of vector formulations that extend to many statistical results in the theory of statistics.
 One obvious advantage of this formulation is the implementation in vector-based computer programming used by packages such as **R**.
 
-As a further example we finish this module by providing without proof (although the proof is relatively straightforward) one further result, this time involving two linear combinations.
+One further result is presented (without proof) ]involving two linear combinations.
 
 
-:::{.theorem #LinearCombVector name="Linear combination (vector form)"}
-If $\mathbf{X}$ is a random vector of length  $n$ with mean  $\mathbf{\mu}$ and variance  $\mathbf{\Sigma}$ and  $\mathbf{a}$ and  $\mathbf{b}$ are any constant vectors, each of length  $n$, then
+:::{.theorem #LinearCombCovar name="Covariance of combinations"}
+If $\mathbf{X}$ is a random vector of length $n$ with mean $\mathbf{\mu}$ and variance $\mathbf{\Sigma}$ and $\mathbf{a}$ and $\mathbf{b}$ are any constant vectors, each of length $n$, then
 \[
    \text{Cov}(\mathbf{a}^T\mathbf{X},\mathbf{b}^T\mathbf{X}) 
    = 
@@ -1926,28 +1916,27 @@ If $\mathbf{X}$ is a random vector of length  $n$ with mean  $\mathbf{\mu}$ and 
 
 
 :::{.example #VecorExp name="Expectations using vectors"}
-Suppose the random variables  $X_1, X_2, X_3$ have respective means 1, 2, and 3, respective variances 4, 5, and 6, and covariances $\text{Cov}(X_1, X_2) = -1$,  $\text{Cov}(X_1, X_3) = 1$ and  $\text{Cov}(X_2, X_3) = 0$.
+Suppose the random variables $X_1, X_2, X_3$ have respective means 1, 2, and 3, respective variances 4, 5, and 6, and covariances $\text{Cov}(X_1, X_2) = -1$, $\text{Cov}(X_1, X_3) = 1$ and $\text{Cov}(X_2, X_3) = 0$.
 
-Consider the random variables  $Y_1 = 3X_1 + 2X_2 - X_3$ and  $Y_2 = X_3 - X_1$. 
-Determine  $\text{E}(Y_1)$,  $\text{E}(Y_2)$,  $\text{var}(Y_1)$,  $\text{var}(Y_2)$ and  $\text{Cov}(Y_1,Y_2)$
+Consider the random variables $Y_1 = 3X_1 + 2X_2 - X_3$ and $Y_2 = X_3 - X_1$. 
+Determine $\text{E}(Y_1)$, $\text{E}(Y_2)$, $\text{var}(Y_1)$, $\text{var}(Y_2)$ and $\text{Cov}(Y_1,Y_2)$
 
 A vector formulation of this problem allows us to use Theorems \@ref(thm:MeanVarVector) and \@ref(thm:LinearCombVector) directly. 
-Putting  $\mathbf{a}^T = (3, 2, -1)$ and  $\mathbf{b}^T = (-1, 0, 1)$:
+Putting $\mathbf{a}^T = (3, 2, -1)$ and $\mathbf{b}^T = (-1, 0, 1)$:
 \[
    Y_1 = \mathbf{a}^T\mathbf{X}
    \quad\text{and}\quad 
    Y_2 = \mathbf{b}^T\mathbf{X}
 \]
-where  $\mathbf{X}^T=(X_1, X_2, X_3)$.
-
-We also define  $\mathbf{\mu}^T=(1,2,3)$ and 
+where $\mathbf{X}^T=(X_1, X_2, X_3)$.
+Also define $\mathbf{\mu}^T=(1,2,3)$ and 
 $\mathbf{\Sigma} = 
 \left[\begin{array}{ccc} 
 4 & -1 & 1\\
 -1 & 5 & 0\\
 1 & 0 & 6
 \end{array}\right]$ 
-as the mean and variance-covariance matrix respectively of  $\mathbf{X}$.
+as the mean and variance-covariance matrix respectively of $\mathbf{X}$.
 Then
 \[
    \text{E}(Y_1)
@@ -1976,9 +1965,9 @@ and
       -1
    \end{array}
    \right] 
-   = 44
+   = 44.
 \]
-Similarly  $\text{E}(Y_2) = 2$ and  $\text{var}(Y_2) = 8$.
+Similarly $\text{E}(Y_2) = 2$ and $\text{var}(Y_2) = 8$.
 Finally:
 \[
    \text{Cov}(Y_1, Y_2)
@@ -1994,7 +1983,7 @@ Finally:
         0\\
         1
       \end{array}\right] 
-  = -12
+  = -12.
 \]
 :::
 
@@ -2007,26 +1996,26 @@ The *multinomial distribution* is a generalization of the binomial distribution 
 
 
 :::{.definition #MultinomialDistribution name="Multinomial distribution"}
-Consider an experiment with the the sample space partitioned as   $S = \{B_1, B_2, \ldots, B_k\}$. 
-Let  $p_i = \Pr(B_i), \ i = 1, 2,\ldots k$ where  $\sum_{i = 1}^k p_i = 1$. 
-Suppose there are  $n$ repetitions of the experiment in which  $p_i$ is constant. 
-Let the random variable  $X_i$ be the number of times (in the  $n$ repetitions) that the event  $B_i$ occurs. 
-In this situation, the random vector  $(X_1, X_2, \dots, X_k)$ is said to have a *multinomial distribution* with probability function
+Consider an experiment with the the sample space partitioned as  $S = \{B_1, B_2, \ldots, B_k\}$. 
+Let $p_i = \Pr(B_i), \ i = 1, 2,\ldots k$ where $\sum_{i = 1}^k p_i = 1$. 
+Suppose there are $n$ repetitions of the experiment in which $p_i$ is constant. 
+Let the random variable $X_i$ be the number of times (in the $n$ repetitions) that the event $B_i$ occurs. 
+In this situation, the random vector $(X_1, X_2, \dots, X_k)$ is said to have a *multinomial distribution* with probability function
 \begin{equation}
    \Pr(X_1 = x_1, X_2 = x_2, \ldots, X_k = x_k)
    = \frac{n!}{x_1! x_2! \ldots x_k!} 
       p_1^{x_1} p_2^{x_2} \ldots p_k^{x_k},
    (\#eq:Multinomial)
 \end{equation}
-where  $R_X = \{(x_1, \ldots x_k) : x_i = 0,1,\ldots,n, \, i = 1, 2, \ldots k, \, \sum_{i = 1}^k x_i = n\}$.
+where $R_X = \{(x_1, \ldots x_k) : x_i = 0,1,\ldots,n, \, i = 1, 2, \ldots k, \, \sum_{i = 1}^k x_i = n\}$.
 :::
 
-The part of \@ref(eq:Multinomial involving factorials arises as the number of ways of arranging  $n$ objects,  $x_1$ of which are of the first kind,  $x_2$ of which are of the second kind, etc. 
-The above distribution is really  $(k - 1)$-variate since  $x_k = n-\sum_{i = 1}^{k - 1}x_i$.
-In particular if  $k = 2$, the multinomial distribution reduces to the binomial distribution which is a univariate distribution.
+The part of \@ref(eq:Multinomial) involving factorials arises as the number of ways of arranging $n$ objects, $x_1$ of which are of the first kind, $x_2$ of which are of the second kind, etc. 
+The above distribution is really $(k - 1)$-variate since $x_k = n-\sum_{i = 1}^{k - 1}x_i$.
+In particular if $k = 2$, the multinomial distribution reduces to the binomial distribution which is a univariate distribution.
 
-If we consider  $X_i$, it is the number of times (out of  $n$) that the event  $B_i$, which has probability  $p_i$, occurs. 
-So the random variable  $X_i$ clearly has a binomial distribution with parameters  $n$,  $p_i$.
+If we consider $X_i$, it is the number of times (out of $n$) that the event $B_i$, which has probability $p_i$, occurs. 
+So the random variable $X_i$ clearly has a binomial distribution with parameters $n$ and $p_i$.
 We see then that the marginal probability distribution of one of the components of a multinomial distribution is a binomial distribution.
 
 Notice that the distribution in Example~\ref{EG:3:2dice} is an example of a *trinomial distribution*. 
@@ -2036,63 +2025,70 @@ The probabilities shown in Table~\ref{TB:2dice} can be expressed algebraically a
    = \frac{2!}{x!y!(2 - x - y)!}
       \left(\frac{1}{6}\right)^x\left(\frac{1}{6}\right)^y\left(\frac{2}{3}\right)^ {2 - x - y}
 \]
-for  $x, y= 0 , 1 , 2; x + y \leq 2$.
+for $x, y= 0 , 1 , 2; x + y \leq 2$.
 
 The following are the basic properties of the multinomial distribution.
 
 
-:::{.theroem}
-Suppose  $(X_1, X_2, \ldots, X_k)$ has the multinomial distribution given in Definition \@ref(def:MultinomialDistribution). 
-Then for  $i = 1, 2, \ldots, k$:
+:::{.theorem #MultinomialProperties name="Properties of the multinomial distribution"}
+Suppose $(X_1, X_2, \ldots, X_k)$ has the multinomial distribution given in Definition \@ref(def:MultinomialDistribution). 
+Then for $i = 1, 2, \ldots, k$:
 
-*  $\text{E}(X_i) = np_i$
-*  $\text{var}(X_i) = n p_i(1 - p_i)$
-*  $\text{Cov}(X_i, X_j) = -n p_i p_j$ for  $i \neq j$
+* $\text{E}(X_i) = np_i$.
+* $\text{var}(X_i) = n p_i(1 - p_i)$.
+* $\text{Cov}(X_i, X_j) = -n p_i p_j$ for $i \neq j$.
 :::
 
 
 :::{.proof}
-We will use  $x$ for  $x_1$ and  $y$ for  $x_2$ in 3.\ for convenience.
+1. and 2. follow from the fact that $X_i \sim \text{Bin}(n, p_i)$.
 
-1 and 2 follow from the fact that  $X_i \sim \text{bin}(n, p_i)$.
-Consider only the case  $k=3$, and note that
+We will use $x$ for $x_1$ and $y$ for $x_2$ in 3.\ for convenience.
+Consider only the case $k = 3$, and note that
 \[
    \sum_{(x, y) \in R} 
-   \frac{n!}{x! y! (n - x - y)!} p_1^x p_2^y (1 - p_1 - p_2)^{n - x -y} = 1.
+   \frac{n!}{x! y! (n - x - y)!} p_1^x p_2^y (1 - p_1 - p_2)^{n - x - y} = 1.
 \]
-Then, putting  $p_3 = 1 - p_1 - p_2$,
+Then, putting $p_3 = 1 - p_1 - p_2$,
 \begin{align*}
   E(XY)
   &= \sum_{(x, y)}xy \Pr(X = x, Y = y)\\
   &= \sum_{(x, y)}\frac{n!}{(x - 1)!(y - 1)!(n - x - y)!} p_1^x  p_2^y p_3^{n - x - y}\\
   &= n(n - 1) p_1 p_2\underbrace{\sum_{(x,y)}\frac{(n - 2)!}{(x - 1)!(y - 1)!(n - x - y)!} p_1^{x - 1} p_2^{y - 1}p_3^{n - x - y}}_{ = 1}
 \end{align*}
-So  $\text{Cov}(X, Y) = n^2 p_1 p_2 - n p_1 p_2 - (n p_1)(n p_2) = -n p_1 p_2$.
+So $\text{Cov}(X, Y) = n^2 p_1 p_2 - n p_1 p_2 - (n p_1)(n p_2) = -n p_1 p_2$.
 :::
 
 
 
 :::{.example #Multinomial name="Multinomial distribution"}
-Suppose that the four basic blood groups O, A, B and AB are known to occur in the following proportions  $9:8:2:1$. 
-Given a random sample of $8$ individuals, what is the probability that there will be  $3$ each of types O and A and  $1$ each of types B and AB?
+Suppose that the four basic blood groups O, A, B and AB are known to occur in the following proportions $9:8:2:1$. 
+Given a random sample of $8$ individuals, what is the probability that there will be $3$ each of types O and A and $1$ each of types B and AB?
 
-The probabilities are  $p_1 = 0.45$,  $p_2 = 0.4$,  $p_3 = 0.1$,  $p_4 = 0.05$, and
+The probabilities are $p_1 = 0.45$, $p_2 = 0.4$, $p_3 = 0.1$, $p_4 = 0.05$, and
 \begin{align*}
    \Pr(X_O = 3, X_A = 3, X_B = 1, X_{AB} = 1)
    &= \frac{8!}{3!3!1!1!}(0.45)^3 (0.4)^3 (0.1)(.05)\\
-   &= 0.033
+   &= 0.033.
 \end{align*}
+In **R**:
+
+```{r echo=TRUE}
+dmultinom(x = c(3, 3, 1, 1), 
+          size = 8, 
+          prob = c(0.45, 0.4, 0.1, 0.05))
+```
 :::
 
 
 ## The bivariate normal distribution {#BVNormalDistribution}
 
 :::{.definition #BVNormalDistribution name="The bivariate normal distribution"}
-If a pair of random variables  $X$ and  $Y$ have the joint pdf
+If a pair of random variables $X$ and $Y$ have the joint pdf
 \begin{equation}
    f_{X, Y}(x, y) =
    \frac{1}{2\pi\sigma_X\sigma_Y\sqrt{1 - \rho^2}}\exp(-Q/2)
-   \label{EQN:speccontinuous:bivarnormalpdf}
+   (\#eq:bivarnormalpdf)
 \end{equation}
 where
 \[
@@ -2101,49 +2097,45 @@ where
                 2\rho\left( \frac{x-\mu_X}{\sigma_X}\right)\left(\frac{y-\mu_Y}{\sigma_Y}\right)
                 +     \left(\frac{y-\mu_Y}{\sigma_Y}\right)^2 \right],
 \]
-then  $X$ and  $Y$ have a *bivariate normal distribution*.
+then $X$ and $Y$ have a *bivariate normal distribution*.
 We write 
 \[ 
    (X, Y) \sim N_2(\mu_X, \mu_Y, \sigma^2_X, \sigma^2_Y, \rho ).
 \]
 :::
 
-For notational convenience with the *bivariate* normal distribution we often use  $X_1$,  $X_2$ instead of  $X$,  $Y$.
 
-A typical graph of the bivariate normal surface above the  $x$--$y$ plane is shown below.
-
-
-It can be shown that  $\int^\infty_{-\infty}\!\int^\infty_{-\infty}f_{X,Y}(x,y)\,dx\,dy = 1$.
+A typical graph of the bivariate normal surface above the $x$--$y$ plane is shown below.
+Showing $\int^\infty_{-\infty}\!\int^\infty_{-\infty}f_{X,Y}(x,y)\,dx\,dy = 1$ is not straightfoward and involves writing \@ref(eq:bivarnormalpdf)) using polar coordinates.
 
 Some important facts about the bivariate normal distribution are contained in the theorem below.
 
-:::{.theorem}
-For  $(X, Y)$ with pdf given in (\ref{EQN:speccontinuous:bivarnormalpdf}),
+:::{.theorem #BivarNormalProperties name="Properties of the bivariate normal distribution"}
+For $(X, Y)$ with pdf given in (\ref{EQN:speccontinuous:bivarnormalpdf}),
 
-* the marginal distributions of  $X$ and of  $Y$ are  $N(\mu_X, \sigma^2_X)$ and  $N(\mu_Y, \sigma^2_Y)$ respectively
-* the parameter  $\rho$ appearing in (\ref{EQN:speccontinuous:bivarnormalpdf}) is the correlation coefficient between  $X$ and  $Y$
-* the conditional distributions of  $X$ given  $Y = y$, and of  $Y$ given  $X = x$, are respectively
-  \[ 
-     N\left[ \mu_X + \rho\frac{\sigma_X}{\sigma_Y}(y-\mu_Y),\sigma\ ^2_X(1-\rho^2)\right],\,
-     N\left[\mu_Y+\rho\frac{\sigma_Y}{\sigma_X}(x- \mu_X),\quad \sigma^2_Y(1-\rho^2)\right]. 
-\]
+1. the marginal distributions of $X$ and of $Y$ are $N(\mu_X, \sigma^2_X)$ and $N(\mu_Y, \sigma^2_Y)$ respectively
+2. the parameter $\rho$ appearing in (\ref{EQN:speccontinuous:bivarnormalpdf}) is the correlation coefficient between $X$ and $Y$
+3. the conditional distributions of $X$ given $Y = y$, and of $Y$ given $X = x$, are respectively
+  \begin{align*} 
+     &N\left[ \mu_X + \rho\frac{\sigma_X}{\sigma_Y}(y - \mu_Y), \sigma^2_X(1 - \rho^2)\right]; \\
+     &N\left[ \mu_Y + \rho\frac{\sigma_Y}{\sigma_X}(x - \mu_X), \sigma^2_Y(1 - \rho^2)\right]. 
+  \end{align*}
 :::
 
 
 :::{.proof}
-Recall that the marginal pdf of  $X$ is  $f_X(x) = \int^\infty_{-\infty} f_{X, Y}(x, y)\,dy$. 
-In the integral, put  $u = (x - \mu_X)/\sigma_X, v = (y - \mu_Y)/\sigma_Y,\, dy = \sigma_Y\,dv$ and complete the
-square (in the exponent) on  $v$.
+Recall that the marginal pdf of $X$ is $f_X(x) = \int^\infty_{-\infty} f_{X, Y}(x, y)\,dy$. 
+In the integral, put $u = (x - \mu_X)/\sigma_X, v = (y - \mu_Y)/\sigma_Y,\, dy = \sigma_Y\,dv$ and complete the square in the exponent on $v$:
 \begin{align*}
      g(x) 
      &= \frac{1}{2\pi\sigma_X\sqrt{1-\rho^2}\sigma_Y}\int^\infty_{- \infty}\exp\left\{ -\frac{1}{2(1-\rho^2)}\left[ u^2-2\rho uv+v^2\right]\right\} \sigma_Y\,dv\\[2mm]
      &= \frac{1}{2\pi \sigma_X\sqrt{1-\rho^2}}\int^\infty_{-\infty} \exp\left\{ -\frac{1}{2(1-\rho^2)}\left[ (v-\rho u)^2+ u^2 - \rho^2u^2\right]\right\}\,dv\\[2mm]
      &= \frac{e^{-u^2/2}}{\sqrt{2\pi} \sigma_X} \ \underbrace{\int^\infty_{-\infty} \frac{1}{\sqrt{2\pi (1-\rho^2)}} \exp\left\{ -\frac{1}{2(1-\rho^2)}(v-\rho u)^2\right\}\,dv}_{=1}
 \end{align*}
-Replacing  $u$ by  $(x - \mu_X )/\sigma_X$, we see from the pdf that  $X \sim N(\mu_X, \sigma^2_X)$. 
-Similarly for the marginal pdf of  $Y$,  $f_Y(y)$.
+Replacing $u$ by $(x - \mu_X )/\sigma_X$, we see from the pdf that $X \sim N(\mu_X, \sigma^2_X)$. 
+Similarly for the marginal pdf of $Y$, $f_Y(y)$.
 
-To show that  $\rho$ in (\ref{EQN:speccontinuous:bivarnormalpdf}) is actually the correlation coefficient of  $X$ and  $Y$, recall that
+To show that $\rho$ in (\ref{EQN:speccontinuous:bivarnormalpdf}) is actually the correlation coefficient of $X$ and $Y$, recall that
 \begin{align*}
      \rho_{X,Y} 
      &= \text{Cov}(X,Y)/\sigma_X\sigma_Y=\text{E}[(X-\mu_X)(Y - \mu_Y)]/\sigma_X\sigma_Y   \\[2mm]
@@ -2163,10 +2155,10 @@ Then:
   (1-\rho^2)}}\exp\{ -(u-\rho v)^2/2(1- \rho^2)\}\,du}_{\displaystyle{=\text{E}(U)\text{ where } u \sim N(\rho
   v,1-\rho^2)\atop =\rho v}}\,dv \\[2mm]
    &= \rho \int^\infty_{-\infty} \frac{v^2}{\sqrt{2\pi}}e^{-v^2/2}\,dv\\[2mm]
-   &= \rho\quad \text{since the integral is  $\text{E}(V^2)$ where  $V \sim N(0,1)$.}
+   &= \rho\quad \text{since the integral is $\text{E}(V^2)$ where $V \sim N(0,1)$.}
 \end{align*}
 
-In finding the conditional pdf of  $X$ given  $Y = y$, we use 
+In finding the conditional pdf of $X$ given $Y = y$, we use 
 \[ 
    f_{X \mid Y = y}(x) = f_{X, Y}(x, y)/f_Y(y). 
 \]
@@ -2190,53 +2182,49 @@ The exponent is
        &= \exp \left\{ - \frac{1}{2(1-\rho^2)\sigma^2_X} \left[ x-
   \mu_X-\rho\frac{\sigma_X}{\sigma_Y}(y-\mu_Y)\right]^2\right\}.
 \end{align*}
-So the conditional distribution of  $X$ given  $Y=y$ is
+So the conditional distribution of $X$ given $Y=y$ is
 \[ 
    N\left( \mu_X+\rho\frac{\sigma_X}{\sigma_Y}(y-\mu_Y), \
    \sigma^2_X(1-\rho^2)\right).
 \]
-Recall the interpretation of the conditional distribution of  $X$ given  $Y = y$ (Section~\ref{SS:conddist}) and note the shape of this density in Figure~\ref{FG:binorm}.
+Recall the interpretation of the conditional distribution of $X$ given $Y = y$ (Section~\ref{SS:conddist}) and note the shape of this density in Figure~\ref{FG:binorm}.
 :::
 
 
-A couple of comments are worth noting about Theorem~\ref{TM:binorm}.
+Comments about Theorem \@ref(thm:BivarNormalProperties):
 
-* From (a) and (c) we have  $\text{E}(X) = \mu_X$ and  $\text{E}(X \mid Y = y) = \mu_X + \rho \sigma_X (y - \mu_Y)/\sigma_Y$ (and similarly for  $Y$). 
-  Notice that  $\text{E}(X \mid Y = y)$ is a linear function of  $y$; ie if  $(X, Y)$ is bivariate normal, the regression line of  $Y$ on  $X$ (and  $X$ on  $Y$) is linear.
-*  An important result follows from (b). If  $X$ and  $Y$ are uncorrelated (i.e., if  $\rho = 0$) then  $f_{X, Y}(x, y) = f_X(x) f_Y(y)$ and thus  $X$ and  $Y$ are independent. 
+* From 1. and 3. we have $\text{E}(X) = \mu_X$ and $\text{E}(X \mid Y = y) = \mu_X + \rho \sigma_X (y - \mu_Y)/\sigma_Y$ (and similarly for $Y$). 
+  Notice that $\text{E}(X \mid Y = y)$ is a linear function of $y$; i.e., if $(X, Y)$ is bivariate normal, the regression line of $Y$ on $X$ (and $X$ on $Y$) is linear.
+*  An important result follows from 2. 
+   If $X$ and $Y$ are uncorrelated (i.e., if $\rho = 0$) then $f_{X, Y}(x, y) = f_X(x) f_Y(y)$ and thus $X$ and $Y$ are independent. 
    That is, if two normally distributed random variables are uncorrelated, they are also independent.
 
 
 
 :::{.example #Exprain name="Exponential distributions"}
-Marsh~\cite{BIB:Marsh:exploring} gives data from 200 married men and their wives from the OPCS study of heights and weights of adults in Great Britain in 1980.
+[@{data:Marsh1988:ExploringData] gives data from 200 married men and their wives from the OPCS study of heights and weights of adults in Great Britain in 1980.
 Histograms of the husbands' and wives' heights are given in Figure~\ref{FG:speccontinuous:bvnormh}; the marginal distributions are approximately normal.
 The scatterplot of the heights is shown in Figure~\ref{FG:speccontinuous:bvnorms}.
 
 From the histograms, there is reason to suspect that a bivariate normal distribution would be appropriate.
+Using $H$ to refer to heights of husbands and $W$ to the heights of wives, the sample statistics are shown below (and where the estimate f the correlation is $+0.364$):
+:
 
-Using  $H$ to refer to heights of husbands and  $W$ to the heights of wives, the sample statistics are:
+| Statistic       |  Husbands |  Wives
+|-----------------|-----------|----------
+| Sample mean:    | 1732      | 1602
+| Sample std dev: | 68.8      | 62.4 
 
-\begin{tabular}{lcc}
-Statistic & Husbands & Wives
-\\
-\hline
-Sample mean: & 1732 & 1602 \\
-Sample std dev:& 68.8 & 62.4 \\[3pt]
-Correlation: & \multicolumn{2}{c}{+0.364}
-\end{tabular}
+Note that $\rho$ is positive; this implies taller men marry taller women on average.
+Using this sample information, the bivariate normal distribution can be estimated.
+This 3-dimensional density function can be difficult to plot on a two-dimensional page, but see Figure~\ref{FG:speccontinuous:bvnorm2}.
 
-Note that  $\rho$ is positive; this implies taller men marry taller women on average.
+The pdf for the bivariate normal distribution for the heights of the husbands and wives could be written down in the form of \@ref(eq:bivarnormalpdf) for the values of $\mu_H$, $\mu_W$, $\sigma^2_H$, $\sigma^2_W$ and $\rho$ above; but this is tedious.
 
-Using this sample information, the bivariate normal distribution can be computed.
-This 3-dimensional density function can be difficult to plot on a two-dimensional page; but see Figure~\ref{FG:speccontinuous:bvnorm2}.
+Given the information, what is the probability that a randomly chosen man in the UK in 1980 who is $173$ centimetres tall had married a woman taller than himself?
 
-The pdf for the bivariate normal distribution for the heights of the husbands and wives could be written down in the form of Equation~(\ref{EQN:speccontinuous:bivarnormalpdf}) for the values of  $\mu_H$,  $\mu_W$,  $\sigma^2_H$,  $\sigma^2_W$ and  $\rho$ above; but this is tedious.
-
-Given the information, what is the probability that a randomly chosen man in the UK in 1980 who is  $173$ centimetres tall had married a woman taller than himself?
-
-The information implies that  $H = 1730$ is given (remembering the data are given in millimetres).
-So we need the *conditional distribution* of  $W \mid H = 1730$.
+The information implies that $H = 1730$ is given (remembering the data are given in millimetres).
+So we need the *conditional distribution* of $W \mid H = 1730$.
 Using the results above, this conditional distribution will have mean
 \begin{align*}
    b
@@ -2250,8 +2238,8 @@ and variance
    &= 62.4^2(1-0.364^2) \\
    &= 3377.85.
 \end{align*}
-In summary,  $W \mid  (H = 1730) \sim \text{N}(1601.34, 3377.85)$.
-Note that this conditional distribution has a univariate normal distribution, and so probabilities such as  $W > 1730$ are easily determined.
+In summary, $W \mid  (H = 1730) \sim \text{N}(1601.34, 3377.85)$.
+Note that this conditional distribution has a univariate normal distribution, and so probabilities such as $W > 1730$ are easily determined.
 Then,
 \begin{align*}
    \Pr(W > 1730 \mid H = 1730)
@@ -2263,6 +2251,72 @@ i.e., approximately 1\% of males 173cm tall had married women taller than themse
 :::
 
 
+```{r}
+
+library(mnormt)
+
+x     <- seq(-5, 5, 0.25) 
+y     <- seq(-5, 5, 0.25)
+mu    <- c(0, 0)
+sigma <- matrix(c(2, -1, -1, 2), nrow = 2)
+f     <- function(x, y) dmnorm(cbind(x, y), mu, sigma)
+z     <- outer(x, y, f)
+
+#contour(x, y, z)
+persp(x, y, z, theta = -30, phi = 25, 
+      shade = 0.75, col = "gold", expand = 0.5, r = 2, 
+      ltheta = 25, ticktype = "detailed")
+
+
+
+
+pmf1 <- data.frame(
+  x = c(0, 0, 0, 1, 1, 1, 2, 2, 2),
+  y = c(0, 1, 2, 0, 1, 2, 0, 1, 2),
+  f = c(1, 4, 4, 6, 12, 0, 9, 0, 0) / 36
+)
+
+# Add a new column with color
+
+# Plot
+if (knitr::is_html_output()) {
+  rgl::plot3d( # Plot the points
+    x = pmf1$x,
+    y = pmf1$y, 
+    z = pmf1$f, 
+    xlim = c(-0.5, 2.5),
+    ylim = c(-0.5, 2.5),
+    zlim = c(0, 0.4),
+    col = plotColour, 
+    type = "s", # Plot the points
+    radius = 0.05,
+    xlab = "X", 
+    ylab = "Y", 
+    zlab = "pmf")
+  rgl::plot3d( # Plots the sticks from z=0 to the points
+    add = TRUE,
+    x = pmf1$x,
+    y = pmf1$y, 
+    z = pmf1$f, 
+    col = plotColour, 
+    type = "h") # Plot the line segments from z = 0 
+} else {
+  plot3D::scatter3D(x = pmf1$x,
+                 y = pmf1$y, 
+                 z = pmf1$f, 
+                 xlim = c(-0.5, 2.5),
+                 ylim = c(-0.5, 2.5),
+                 zlim = c(0, 0.4),
+                 col = plotColour, 
+                 type = "h", # Plot the points and sticks
+                 radius = 0.05,
+                 pch = 19,
+                 xlab = "X", 
+                 ylab = "Y", 
+                 zlab = "pmf") 
+}
+```
+
 
 ## Random parameters {#RandomParameters}
 
@@ -2272,7 +2326,7 @@ In some applications it might be more realistic or convenient to assume paramete
 This idea is best introduced with some examples.
 
 :::{.example #Exprain name="Exam scores"}
-The score achieved by a student on an exam is approximately normal with mean  $\mu$ where  $\mu$ is dependent on the amount of study completed and has an approximately normal distribution amongst the population of students.
+The score achieved by a student on an exam is approximately normal with mean $\mu$ where $\mu$ is dependent on the amount of study completed and has an approximately normal distribution amongst the population of students.
 :::
 
 
@@ -2283,20 +2337,20 @@ It's wet on 10% of days.
 :::
 
 :::{.example #Exprain name="Goal kicking"}
-Let  $\theta$ be the probability that Jake, a local rugby league star, kicks a goal.
-The distribution of  $\theta$ depends on where the kick is taken from amongst other factors, but can be well approximated by a beta distribution.
+Let $\theta$ be the probability that Jake, a local rugby league star, kicks a goal.
+The distribution of $\theta$ depends on where the kick is taken from amongst other factors, but can be well approximated by a beta distribution.
 :::
 
 
 
-In each of these examples, there's a distribution,  $f_X(x;\Theta)$ say, which depends on a parameter  $\Theta$ where  $\Theta$ itself has a distribution,  $f_\Theta(\theta)$ say.
-The distribution  $f_X(x;\theta)$ therefore is effectively a *conditional* distribution and  $\Theta$ is effectively a random variable.
-Consequently the marginal distribution of  $X$ can be found from (\ref{DF:marginalcont}) and (\ref{DF:condcont}) provided  $X$ and  $\Theta$ are continuous; ie
+In each of these examples, there's a distribution, $f_X(x;\Theta)$ say, which depends on a parameter $\Theta$ where $\Theta$ itself has a distribution, $f_\Theta(\theta)$ say.
+The distribution $f_X(x;\theta)$ therefore is effectively a *conditional* distribution and $\Theta$ is effectively a random variable.
+Consequently the marginal distribution of $X$ can be found from (\ref{DF:marginalcont}) and (\ref{DF:condcont}) provided $X$ and $\Theta$ are continuous; ie
 \begin{equation}
    f_X(x)
    = \int f_{X|\Theta}(x,\theta)f_\Theta(\theta)\,d\theta\label{EQ:marg1}
 \end{equation}
-For  $X$ and  $\Theta$ discrete, (\ref{DF:marginaldisc}) and (\ref{DF:conddisc}) yield
+For $X$ and $\Theta$ discrete, (\ref{DF:marginaldisc}) and (\ref{DF:conddisc}) yield
 \begin{equation}
    p_X(x) 
    = \sum_\theta p_{X|\Theta}(x,\theta)p_\Theta(\theta)\label{EQ:marg2}.
@@ -2306,18 +2360,18 @@ The mixed cases can similarly be dealt with; viz
    f_X(x) 
    = \sum_\theta f_{X|\Theta}(x,\theta)p_\Theta(\theta)\label{EQ:marg3}
 \end{equation}
-for  $X$ continuous and  $\Theta$ discrete, and
+for $X$ continuous and $\Theta$ discrete, and
 \begin{equation}
    p_X(x)
    = \int p_{X|\Theta}(x,\theta)f_\Theta(\theta)\,d\theta\label{EQ:marg4}
 \end{equation}
-for  $X$ discrete and  $\Theta$ continuous.
+for $X$ discrete and $\Theta$ continuous.
 
 Only in special cases will these marginal distributions be of a standard or closed form.
 
 :::{.example #Exprain name="Exam scores"}
-The score  $X$ achieved by a student on an exam is normal with mean  $\Theta$ and standard deviation 5 where  $\Theta$ is normal with mean 60 and standard deviation 10. 
-From (\ref{EQ:marg1}), the marginal pdf of  $X$ is
+The score $X$ achieved by a student on an exam is normal with mean $\Theta$ and standard deviation 5 where $\Theta$ is normal with mean 60 and standard deviation 10. 
+From (\ref{EQ:marg1}), the marginal pdf of $X$ is
 \begin{align}
   f_X(x)
   &=\int_{-\infty}^\infty \frac{1}{5\sqrt{2\pi}}
@@ -2328,27 +2382,27 @@ From (\ref{EQ:marg1}), the marginal pdf of  $X$ is
      \exp\left[-\frac12\left(\frac{x-60}{11.18}\right)^2\right]\label{EQ:exam2}
 \end{align}
 after considerable algebra involving completing the square.
-We find  $X\sim N(60, 11.18^2)$. 
-(Note that the  $11.18 = \sqrt(5^2 + 10^2)$.)
+We find $X\sim N(60, 11.18^2)$. 
+(Note that the $11.18 = \sqrt(5^2 + 10^2)$.)
 :::
 
 
 
 :::{.example #Exprain name="Vehicle accidents"}
-Let  $X$ be the number of notifiable motor vehicle accidents in a day.
-Then  $X \sim \text{Pois}(M)$ where parameter  $M$ has distribution defined by  $\Pr(M = 10) = 0.9$ and  $\Pr(M = 20) = 0.1$.
-From (\ref{EQ:marg2}), the marginal pf of  $X$ is
+Let $X$ be the number of notifiable motor vehicle accidents in a day.
+Then $X \sim \text{Pois}(M)$ where parameter $M$ has distribution defined by $\Pr(M = 10) = 0.9$ and $\Pr(M = 20) = 0.1$.
+From (\ref{EQ:marg2}), the marginal pf of $X$ is
 \begin{equation}
   p_X(x)
-  = 0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}\quad\hbox{for  $x=0,1,2,\dots$}
+  = 0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}\quad\hbox{for $x=0,1,2,\dots$}
 \end{equation}
 :::
 
 
 
 :::{.example #GoalKicking name="Goal kicking"}
-Suppose Jake has 10 kicks at goal in a match and the number of successful kicks  $X$ can be be modelled by a binomial distribution with parameter  $\Theta$, where  $\Theta$ has a Beta(4,4) distribution. 
-From (\ref{EQ:marg4}), the marginal pf of  $X$ is
+Suppose Jake has 10 kicks at goal in a match and the number of successful kicks $X$ can be be modelled by a binomial distribution with parameter $\Theta$, where $\Theta$ has a Beta(4,4) distribution. 
+From (\ref{EQ:marg4}), the marginal pf of $X$ is
 \begin{align}
   p_X(x)
   &= \int_0^1 {10\choose x}\theta^x(1 - \theta)^{10 - x}
@@ -2363,19 +2417,19 @@ From (\ref{EQ:marg4}), the marginal pf of  $X$ is
 ### Bayes' theorem revisited {#BayesTheoremRevisited}
 
 Recall Bayes' theorem in (\S\ref{SS:Bayes}). 
-In particular, let  $E$ be an event, with  $H_1, \ldots, H_n$ a sequence of mutually exclusive and exhaustive events partitioning the sample space. 
+In particular, let $E$ be an event, with $H_1, \ldots, H_n$ a sequence of mutually exclusive and exhaustive events partitioning the sample space. 
 Then
 \begin{equation}
   \Pr(H_n | E ) 
   = \frac{\Pr(H_n) \Pr(E|H_n) }{\Pr(E)}
   = \frac{\Pr(H_n) \Pr(E|H_n) }{\sum_m \Pr(H_m ) \Pr(E|H_m )}
 \end{equation}
-assuming that  $\Pr(E) \neq 0$.
+assuming that $\Pr(E) \neq 0$.
 
 Bayes' theorem extends directly to random variables.
 
-Suppose that  $X$ and  $Y$ are discrete random variable's such that  $p_Y(y)$ is the pf for  $Y$ and  $p_{X|Y}(x,y)$ is the conditional pf for  $X$ given  $Y$.
-Then the conditional pf of  $Y$ given  $X$ is
+Suppose that $X$ and $Y$ are discrete random variable's such that $p_Y(y)$ is the pf for $Y$ and $p_{X|Y}(x,y)$ is the conditional pf for $X$ given $Y$.
+Then the conditional pf of $Y$ given $X$ is
 \begin{align}
   p_{Y | X}(y, x)
   &= \frac{p_{X, Y}(x, y)}{p_X(x)} \\
@@ -2400,13 +2454,13 @@ and
   = \frac{f_{X,Y}(x,y)}{p_X(x)}
   = \frac{p_{X|Y}(x,y)f_Y(y)}{\int_y p_{X|Y}(x,y)f_Y(y)\,dy}\label{EQ:Bayesctsdis}
 \end{equation}
-The concept in Bayes' theorem of determining the probability of  $B$ given  $A$ from that of  $A$ given  $B$ finds important and interesting applications in random parameters.
+The concept in Bayes' theorem of determining the probability of $B$ given $A$ from that of $A$ given $B$ finds important and interesting applications in random parameters.
 
-Let's look at some examples using (\ref{EQ:Bayesdis}), (\ref{EQ:Bayescts}), (\ref{EQ:Bayesdiscts}) or (\ref{EQ:Bayesctsdis}) in which  $Y$ is now interpreted as a random parameter.
+Let's look at some examples using (\ref{EQ:Bayesdis}), (\ref{EQ:Bayescts}), (\ref{EQ:Bayesdiscts}) or (\ref{EQ:Bayesctsdis}) in which $Y$ is now interpreted as a random parameter.
 
 
 :::{.example #ExamScores3 name="Exam scores"}
-The conditional pdf of the mean  $\Theta$ given  $X = x$ follows directly from (\ref{EQ:Bayescts}) on substituting (\ref{EQ:exam2}):
+The conditional pdf of the mean $\Theta$ given $X = x$ follows directly from (\ref{EQ:Bayescts}) on substituting (\ref{EQ:exam2}):
 \begin{align}
   f_{\Theta | X}(\theta, x)
   &= \frac{f_{X|\Theta}(x,\theta)f_\Theta(\theta)}{f_X(x)}\notag\\
@@ -2424,21 +2478,21 @@ after some algebraic manipulation; i.e. ,$\Theta | (X = x)\sim N(0.8x + 12, 4.47
 
 
 :::{.example #Accidents3 name="Vehicle accidents"}
-From (\ref{EQ:Bayescts}) and (\ref{EQ:accidents2}), the conditional pf of  $M$ given  $X$ is 
+From (\ref{EQ:Bayescts}) and (\ref{EQ:accidents2}), the conditional pf of $M$ given $X$ is 
 \begin{align}
   p_{M|X}(\mu,x)
   &= \frac{f_{X|M}(x,\mu)f_M(\mu)}{p_X(x)}\notag\\
   &= \begin{cases}\frac{0.9\frac{e^{-\mu}\mu^x}{x!}}
-  {0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}}&\hbox{for  $\mu=10$}\\
+  {0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}}&\hbox{for $\mu=10$}\\
   \frac{0.1\frac{e^{-\mu}\mu^x}{x!}}
-  {0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}}&\hbox{for  $\mu=20$}\label{EQ:accidents3}
+  {0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}}&\hbox{for $\mu=20$}\label{EQ:accidents3}
   \end{cases}
 \end{align}
 :::
 
 
 :::{.example #GoalKicking3 name="Goal kicking"}
-From (\ref{EQ:marg4}), the conditional pdf of  $\Theta$ given  $X$ is
+From (\ref{EQ:marg4}), the conditional pdf of $\Theta$ given $X$ is
 \begin{align}
   f_{\Theta|X}(\theta,x)
   &= \frac{p_{X|\Theta}(x,\theta) f_\Theta(\theta)}{p_X(x)}\notag\\
@@ -2454,8 +2508,8 @@ However the idea of being able to modify the distribution of a parameter based o
 known as *Bayesian statistics*.
 
 If, for example, we think of the distribution of means in the exam scores example as a model of our beliefs describing the population of students, then we can think of the conditional distribution of means given the actual exam scores as an updated model of our beliefs concerning the distribution of means. 
-In this context it makes sense to talk of the original or unconditional distribution  $f_\Theta(\theta)$ as the *prior*
-distribution and the resultant conditional distribution  $f_{\Theta|X}(\theta,x)$ as the *posterior* distribution.
+In this context it makes sense to talk of the original or unconditional distribution $f_\Theta(\theta)$ as the *prior*
+distribution and the resultant conditional distribution $f_{\Theta|X}(\theta,x)$ as the *posterior* distribution.
 
 This notion of updating knowledge of parameter values based on new information is the basis of Bayesian statistics. 
 It is pertinent to note that the algebra involved in deriving posterior distributions is, except in special cases, practically intractable. 
