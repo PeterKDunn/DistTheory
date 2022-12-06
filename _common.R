@@ -3,7 +3,7 @@ library(plot3D)
 library(rgl)
 library(kableExtra)
 library(plotrix)
-
+library(mnormt) # Multivariate normal
 
 # example R options set globally
 options(width = 50)

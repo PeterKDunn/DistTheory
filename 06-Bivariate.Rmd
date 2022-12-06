@@ -1761,7 +1761,7 @@ Results involving expectations naturally generalise from the bivariate to the mu
 We have already seen the expectation of a linear combination of random variables in Theorem \@ref(thm:ExpLinear). 
 The variance of a linear combination of random variables is given in the following theorem.
 
-:::{.theroem #LinearCombVariance name="Variance of a linear combvination"}
+:::{.theorem #LinearCombVariance name="Variance of a linear combvination"}
 If $X_1, X_2, \dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any constants then
 \[
    \text{var}\left(\sum_{i = 1}^n a_i X_i \right)
@@ -1774,19 +1774,21 @@ If $X_1, X_2, \dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any
 For convenience, put $Y = \sum_{i = 1}^n a_iX_i$.
 Then by definition of variance
 \begin{align*}
-     \text{var}(Y) & = \text{E}(Y-\text{E}(Y))^2\\
-     & = \text{E}[a_1X_1+\dots + a_nX_n - a_1\mu_1- \dots a_n\mu_n]^2\\
-     & = \text{E}[a_1(X_1-\mu_1)+\dots + a_n(X_n - \mu_n)]^2\\
-     & = \text{E}\left[ \sum_i a^2_i(X_i - \mu_i)^2 + 2\sum\sum_{i < j}a_i a_j(X_i - \mu_i)X_j - \mu_j)\right]\\
-     & = \sum_i a^2_i\text{E}(X_i-\mu_i)^2 + 2{\sum\sum}_{i < j}a_i a_j\text{E}(X_i - \mu_i)X_j - \mu_j)\quad\text{using Theorem \@ref(thm:ExpLinear}\\
-     & = \sum_i a^2_i\sigma^2_i + 2{\sum\sum}_{i<j}a_i a_j\text{Cov}(X_i, X_j).
-     \end{align*}
+     \text{var}(Y) 
+     &= \text{E}(Y - \text{E}(Y))^2\\
+     &= \text{E}[a_1 X_1 + \dots + a_n X_n - a_1\mu_1 - \dots a_n\mu_n]^2\\
+     &= \text{E}[a_1(X_1 - \mu_1) + \dots + a_n(X_n - \mu_n)]^2\\
+     &= \text{E}\left[ \sum_i a^2_i(X_i - \mu_i)^2 + 2\sum\sum_{i < j}a_i a_j(X_i - \mu_i)X_j - \mu_j)\right]\\
+     &= \sum_i a^2_i\text{E}(X_i - \mu_i)^2 + 2{\sum\sum}_{i < j}a_i a_j\text{E}(X_i - \mu_i) (X_j - \mu_j)\\
+        %\quad \text{using Theorem \@ref(thm:ExpLinear)}\\
+     &= \sum_i a^2_i\sigma^2_i + 2{\sum\sum}_{i<j}a_i a_j\text{Cov}(X_i, X_j).
+\end{align*}
 :::
 
 In statistical theory, an important special case of Theorem \@ref(thm:LinearCombVariance) occurs when the $X_i$ are independently and identically distributed. 
 That is, each of $X_1, X_2, \dots, X_n$ has the same distribution and are independent of each other. 
 (We see the relevance of this in Chap. \@ref(SamplingDistributions).)
-Because of its importance this special case is called a corollary of Theorems \@ref(thm:ExpLinear) and \@ref(LinearCombVariance).
+Because of its importance this special case is called a corollary of Theorems \@ref(thm:ExpLinear) and \@ref(thm:LinearCombVariance).
 
 :::{.corollary #IID name="IID rvs"}
 If $X_1, X_2, \dots, X_n$ are independently distributed random variables, each with mean $\mu$ and variance $\sigma^2$, and $a_1, a_2,\ldots a_n$ are any constants, then
@@ -1880,7 +1882,7 @@ Write
   & = \mathbf{\Sigma} \\
    \mathbf{a}^T & = \left[a_1,a_2,\ldots, a_n \right].
 \end{align*}
-Now Theorems \@ref(thm:ExpLinear) and \@ref(LinearCombVariance) can be expressed in vector form.
+Now Theorems \@ref(thm:ExpLinear) and \@ref(thm:LinearCombVariance) can be expressed in vector form.
 
 
 :::{.theorem #MeanVarVector name="Bivariate mean and variance (vector form)"}
@@ -2184,8 +2186,8 @@ The exponent is
 \end{align*}
 So the conditional distribution of $X$ given $Y=y$ is
 \[ 
-   N\left( \mu_X+\rho\frac{\sigma_X}{\sigma_Y}(y-\mu_Y), \
-   \sigma^2_X(1-\rho^2)\right).
+   N\left( \mu_X + \rho\frac{\sigma_X}{\sigma_Y}(y - \mu_Y), \
+   \sigma^2_X(1 - \rho^2)\right).
 \]
 Recall the interpretation of the conditional distribution of $X$ given $Y = y$ (Section~\ref{SS:conddist}) and note the shape of this density in Figure~\ref{FG:binorm}.
 :::
@@ -2201,14 +2203,135 @@ Comments about Theorem \@ref(thm:BivarNormalProperties):
 
 
 
-:::{.example #Exprain name="Exponential distributions"}
-[@{data:Marsh1988:ExploringData] gives data from 200 married men and their wives from the OPCS study of heights and weights of adults in Great Britain in 1980.
-Histograms of the husbands' and wives' heights are given in Figure~\ref{FG:speccontinuous:bvnormh}; the marginal distributions are approximately normal.
-The scatterplot of the heights is shown in Figure~\ref{FG:speccontinuous:bvnorms}.
+:::{.example #BivariateHeights name="Bivariate normal: Heights"}
+[@data:Marsh1988:ExploringData] gives data from 200 married men and their wives from the OPCS study of heights and weights of adults in Great Britain in 1980.
+Histograms of the husbands' and wives' heights are given in Fig. \@ref(fig:HtsPlots) (left and centre panels); the marginal distributions are approximately normal.
+The scatterplot of the heights is shown in Fig. \@ref(fig:HtsPlots) (right panel).
+
+
+```{r HtsPlots, echo=FALSE, out.width='100%', fig.height=3, fig.width=7, fig.cap="Plots of the heights data"}
+hts <- 
+structure(list(Hage = c(49L, 25L, 40L, 52L, 58L, 32L, 43L, 42L, 
+47L, 31L, 26L, 40L, 35L, 45L, 35L, 35L, 47L, 38L, 33L, 32L, 38L, 
+45L, 29L, 59L, 26L, 50L, 49L, 42L, 33L, 31L, 27L, 57L, 34L, 28L, 
+46L, 37L, 56L, 27L, 36L, 31L, 57L, 55L, 47L, 64L, 60L, 31L, 35L, 
+36L, 40L, 30L, 32L, 27L, 20L, 45L, 59L, 43L, 29L, 48L, 39L, 47L, 
+54L, 43L, 54L, 61L, 27L, 51L, 27L, 32L, 54L, 37L, 55L, 36L, 32L, 
+57L, 51L, 62L, 57L, 51L, 50L, 32L, 54L, 34L, 45L, 64L, 55L, 27L, 
+55L, 27L, 41L, 44L, 22L, 30L, 53L, 42L, 31L, 36L, 56L, 46L, 34L, 
+55L, 44L, 45L, 48L, 44L, 59L, 64L, 34L, 37L, 54L, 49L, 63L, 48L, 
+64L, 33L, 52L, 27L, 33L, 46L, 54L, 27L, 50L, 42L, 54L, 49L, 62L, 
+34L, 23L, 36L, 53L, 32L, 59L, 53L, 55L, 62L, 42L, 50L, 37L, 51L, 
+25L, 54L, 34L, 43L, 43L, 58L, 28L, 45L, 47L, 57L, 27L, 34L, 57L, 
+27L, 54L, 24L, 48L, 37L, 25L, 57L, 40L, 61L, 25L, 32L, 37L, 45L, 
+24L, 47L, 44L, 52L, 45L, 20L, 60L, 36L, 25L, 25L, 35L, 35L, 49L, 
+33L, 50L, 63L, 57L, 41L, 38L, 30L, 52L, 51L, 46L, 50L, 32L, 52L, 
+30L, 33L, 20L, 32L, 51L, 64L, 44L, 40L, 59L), Hht = c(1809L, 
+1841L, 1659L, 1779L, 1616L, 1695L, 1730L, 1753L, 1740L, 1685L, 
+1735L, 1713L, 1736L, 1715L, 1799L, 1785L, 1758L, 1729L, 1720L, 
+1810L, 1725L, 1764L, 1683L, 1585L, 1684L, 1674L, 1724L, 1630L, 
+1855L, 1796L, 1700L, 1765L, 1700L, 1721L, 1823L, 1829L, 1710L, 
+1745L, 1698L, 1853L, 1610L, 1680L, 1809L, 1580L, 1600L, 1585L, 
+1705L, 1675L, 1735L, 1686L, 1768L, 1721L, 1754L, 1739L, 1699L, 
+1825L, 1740L, 1704L, 1719L, 1731L, 1679L, 1755L, 1713L, 1723L, 
+1783L, 1585L, 1749L, 1710L, 1724L, 1620L, 1764L, 1791L, 1795L, 
+1738L, 1639L, 1734L, 1695L, 1666L, 1745L, 1775L, 1669L, 1700L, 
+1804L, 1700L, 1664L, 1753L, 1788L, 1765L, 1680L, 1715L, 1755L, 
+1764L, 1793L, 1731L, 1713L, 1725L, 1828L, 1735L, 1760L, 1685L, 
+1685L, 1559L, 1705L, 1723L, 1700L, 1660L, 1681L, 1803L, 1866L, 
+1884L, 1705L, 1780L, 1801L, 1795L, 1669L, 1708L, 1691L, 1825L, 
+1760L, 1949L, 1685L, 1806L, 1905L, 1739L, 1736L, 1845L, 1868L, 
+1765L, 1736L, 1741L, 1720L, 1871L, 1720L, 1629L, 1624L, 1653L, 
+1786L, 1620L, 1695L, 1674L, 1864L, 1643L, 1705L, 1736L, 1691L, 
+1753L, 1680L, 1724L, 1710L, 1638L, 1725L, 1725L, 1630L, 1810L, 
+1774L, 1771L, 1815L, 1575L, 1729L, 1749L, 1705L, 1875L, 1784L, 
+1584L, 1774L, 1658L, 1790L, 1798L, 1824L, 1796L, 1725L, 1685L, 
+1769L, 1749L, 1716L, 1664L, 1773L, 1760L, 1725L, 1645L, 1694L, 
+1851L, 1691L, 1880L, 1835L, 1730L, 1644L, 1723L, 1758L, 1718L, 
+1723L, 1708L, 1786L, 1764L, 1675L, 1641L, 1743L, 1823L, 1720L
+), Wage = c(43L, 28L, 30L, 57L, 52L, 27L, 52L, NA, 43L, 23L, 
+25L, 39L, 32L, NA, 35L, 33L, 43L, 35L, 32L, 30L, 40L, NA, 29L, 
+55L, 25L, 45L, 44L, 40L, 31L, NA, 25L, 51L, 31L, 25L, NA, 35L, 
+55L, 23L, 35L, 28L, 52L, 53L, 43L, 61L, NA, 23L, 35L, 35L, 39L, 
+24L, 29L, NA, 21L, 39L, 52L, 52L, 26L, NA, NA, 48L, 53L, 42L, 
+50L, 64L, 26L, NA, 32L, 31L, 53L, 39L, 45L, 33L, 32L, 55L, NA, 
+NA, NA, 52L, 50L, 32L, 54L, 32L, 41L, 61L, 43L, 28L, 51L, NA, 
+41L, 41L, 21L, 28L, 47L, 37L, 28L, 35L, 55L, 45L, 34L, 51L, 39L, 
+35L, 45L, 44L, 47L, 57L, 33L, 38L, 59L, 46L, 60L, 47L, 55L, 45L, 
+47L, 24L, 32L, 47L, 57L, NA, NA, NA, 46L, 42L, 63L, 32L, 24L, 
+32L, NA, NA, 56L, 50L, 55L, 58L, 38L, 44L, 35L, 44L, 25L, 43L, 
+31L, 35L, 41L, 50L, 23L, 43L, 49L, 59L, NA, 38L, 42L, 21L, NA, 
+NA, 42L, 35L, 26L, 57L, 34L, 63L, 23L, NA, NA, NA, 23L, 46L, 
+40L, 53L, 40L, 22L, 60L, 32L, 24L, 28L, 40L, NA, 48L, 33L, 49L, 
+64L, 55L, 41L, 38L, 31L, 52L, 43L, 51L, 47L, NA, 32L, 33L, NA, 
+18L, NA, 45L, 64L, 43L, 39L, 56L), Wht = c(1590L, 1560L, 1620L, 
+1540L, 1420L, 1660L, 1610L, 1635L, 1580L, 1610L, 1590L, 1610L, 
+1700L, 1522L, 1680L, 1680L, 1630L, 1570L, 1720L, 1740L, 1600L, 
+1689L, 1600L, 1550L, 1540L, 1640L, 1640L, 1630L, 1560L, 1652L, 
+1580L, 1570L, 1590L, 1650L, 1591L, 1670L, 1600L, 1610L, 1610L, 
+1670L, 1510L, 1520L, 1620L, 1530L, 1451L, 1570L, 1580L, 1590L, 
+1670L, 1630L, 1510L, 1560L, 1660L, 1610L, 1440L, 1570L, 1670L, 
+1635L, 1670L, 1730L, 1560L, 1590L, 1600L, 1490L, 1660L, 1504L, 
+1580L, 1500L, 1640L, 1650L, 1620L, 1550L, 1640L, 1560L, 1552L, 
+1600L, 1545L, 1570L, 1550L, 1600L, 1660L, 1640L, 1670L, 1560L, 
+1760L, 1640L, 1600L, 1571L, 1550L, 1570L, 1590L, 1650L, 1690L, 
+1580L, 1590L, 1510L, 1600L, 1660L, 1700L, 1530L, 1490L, 1580L, 
+1500L, 1600L, 1570L, 1620L, 1410L, 1560L, 1590L, 1710L, 1580L, 
+1690L, 1610L, 1660L, 1610L, 1590L, 1530L, 1690L, 1600L, 1693L, 
+1580L, 1636L, 1670L, 1600L, 1570L, 1700L, 1740L, 1540L, 1555L, 
+1614L, 1530L, 1690L, 1590L, 1610L, 1670L, 1690L, 1550L, 1650L, 
+1540L, 1660L, 1620L, 1630L, 1610L, 1540L, 1610L, 1630L, 1530L, 
+1520L, 1544L, 1570L, 1580L, 1550L, 1570L, 1521L, 1580L, 1630L, 
+1650L, 1640L, 1650L, 1520L, 1620L, 1744L, 1647L, 1615L, 1680L, 
+1670L, 1620L, 1570L, 1660L, 1550L, 1590L, 1620L, 1560L, 1670L, 
+1650L, 1539L, 1470L, 1580L, 1670L, 1520L, 1620L, 1710L, 1530L, 
+1630L, 1720L, 1570L, 1560L, 1650L, 1635L, 1590L, 1590L, 1566L, 
+1590L, 1662L, 1550L, 1570L, 1560L, 1630L, 1530L), Hmarried = c(25L, 
+19L, 38L, 26L, 30L, 23L, 33L, 30L, 26L, 26L, 23L, 23L, 31L, 41L, 
+19L, 24L, 24L, 27L, 28L, 22L, 31L, 24L, 25L, 23L, 18L, 25L, 27L, 
+28L, 22L, 25L, 21L, 32L, 28L, 23L, NA, 22L, 44L, 25L, 22L, 20L, 
+25L, 21L, 25L, 21L, 26L, 28L, 25L, 22L, 23L, 27L, 21L, 26L, 19L, 
+25L, 27L, 25L, 24L, 27L, 25L, 21L, NA, 20L, 23L, 26L, 20L, 50L, 
+24L, 31L, 20L, 21L, 29L, 30L, 25L, 24L, 25L, 33L, 22L, 24L, 22L, 
+20L, 20L, 22L, 27L, 24L, 31L, 23L, 26L, NA, 22L, 24L, 21L, 29L, 
+31L, 23L, 28L, 26L, 30L, 22L, 23L, 34L, 27L, 34L, 28L, 41L, 39L, 
+32L, 22L, 23L, 49L, 25L, 27L, 22L, 37L, 17L, 23L, 26L, 21L, 23L, 
+23L, 25L, 21L, 22L, 32L, 28L, 22L, 24L, 19L, 27L, 30L, 22L, 24L, 
+25L, 21L, 23L, 22L, 35L, 21L, 30L, 19L, 35L, 23L, 29L, 22L, 32L, 
+23L, 21L, 20L, 24L, 20L, 33L, 52L, 24L, 34L, 16L, 30L, 28L, 20L, 
+20L, 26L, 21L, 24L, 22L, 22L, 29L, 22L, 24L, 24L, 25L, 23L, 19L, 
+21L, 25L, 18L, 21L, 17L, 22L, 21L, 20L, 23L, 28L, 24L, 23L, 20L, 
+22L, 30L, 22L, 27L, 25L, 24L, 25L, 22L, 21L, 19L, NA, 25L, 30L, 
+25L, 23L, 24L)), .Names = c("Hage", "Hht", "Wage", "Wht", "Hmarried"
+), class = "data.frame", row.names = c(NA, -199L))
+
+par(mfrow = c(1, 3))
+
+hist(hts$Hht,
+     las = 1,
+     main = "Husband's heights",
+     xlab = "Heights (in mm)",
+     ylab = "Frequency",
+     col = plotColour)
+hist(hts$Wht,
+     las = 1,
+     main = "Wive's heights",
+     xlab = "Heights (in mm)",
+     ylab = "Frequency",
+     col = plotColour)
+plot(x = hts$Hht,
+     y = hts$Wht,
+     las = 1,
+     main = "Husband's and wive's heights",
+     xlab = "Husband's heights (in mm)",
+     ylab = "Wive's heights (in mm)",
+     pch = 19,
+     col = plotColour)
+```
 
 From the histograms, there is reason to suspect that a bivariate normal distribution would be appropriate.
-Using $H$ to refer to heights of husbands and $W$ to the heights of wives, the sample statistics are shown below (and where the estimate f the correlation is $+0.364$):
-:
+Using $H$ to refer to heights of husbands and $W$ to the heights of wives, the sample statistics are shown below (and where the estimate of the correlation is $+0.364$):
+
 
 | Statistic       |  Husbands |  Wives
 |-----------------|-----------|----------
@@ -2217,7 +2340,12 @@ Using $H$ to refer to heights of husbands and $W$ to the heights of wives, the s
 
 Note that $\rho$ is positive; this implies taller men marry taller women on average.
 Using this sample information, the bivariate normal distribution can be estimated.
-This 3-dimensional density function can be difficult to plot on a two-dimensional page, but see Figure~\ref{FG:speccontinuous:bvnorm2}.
+This 3-dimensional density function can be difficult to plot on a two-dimensional page, but see 
+`r if( knitr::is_latex_output() ) {
+   'Figs. \\@ref(fig:BivarNormalHts-1) and \\@ref(fig:BivarNormalHts-2).'
+} else {
+   'Fig. \\@ref(fig:BivarNormalHts).'
+}`
 
 The pdf for the bivariate normal distribution for the heights of the husbands and wives could be written down in the form of \@ref(eq:bivarnormalpdf) for the values of $\mu_H$, $\mu_W$, $\sigma^2_H$, $\sigma^2_W$ and $\rho$ above; but this is tedious.
 
@@ -2233,11 +2361,9 @@ Using the results above, this conditional distribution will have mean
    &= 1601.34
 \end{align*}
 and variance
-\begin{align*}
-   \sigma_2^2(1-\rho^2)
-   &= 62.4^2(1-0.364^2) \\
-   &= 3377.85.
-\end{align*}
+\[
+   \sigma_2^2(1 - \rho^2) = 62.4^2(1 - 0.364^2) \\ = 377.85.
+\]
 In summary, $W \mid  (H = 1730) \sim \text{N}(1601.34, 3377.85)$.
 Note that this conditional distribution has a univariate normal distribution, and so probabilities such as $W > 1730$ are easily determined.
 Then,
@@ -2251,164 +2377,183 @@ i.e., approximately 1\% of males 173cm tall had married women taller than themse
 :::
 
 
-```{r}
+```{r BivarNormalHts, echo=FALSE, fig.cap="Bivariate normal distribution for heights", fig.align="center", out.width='80%'}
 
-library(mnormt)
+mu <- c(1732, 1602)
 
-x     <- seq(-5, 5, 0.25) 
-y     <- seq(-5, 5, 0.25)
-mu    <- c(0, 0)
-sigma <- matrix(c(2, -1, -1, 2), nrow = 2)
-f     <- function(x, y) dmnorm(cbind(x, y), mu, sigma)
-z     <- outer(x, y, f)
+sigma <- matrix(c(68.8^2, 0, 
+                  0, 62.4^2), 
+                nrow = 2)
+corr <- 0.364
+cov <- corr * sqrt(sigma[1, 1] * sigma[2, 2] )
 
-#contour(x, y, z)
-persp(x, y, z, theta = -30, phi = 25, 
-      shade = 0.75, col = "gold", expand = 0.5, r = 2, 
-      ltheta = 25, ticktype = "detailed")
+sigma[1, 2] <- sigma[2, 1] <- cov
+
+f <- function(x, y, mn, sigma) {
+  dmnorm(cbind(x, y), 
+         mean = mn, 
+         varcov = sigma)
+}
 
 
 
 
-pmf1 <- data.frame(
-  x = c(0, 0, 0, 1, 1, 1, 2, 2, 2),
-  y = c(0, 1, 2, 0, 1, 2, 0, 1, 2),
-  f = c(1, 4, 4, 6, 12, 0, 9, 0, 0) / 36
-)
+if( knitr::is_latex_output() ) {
 
-# Add a new column with color
+zz <- seq(-4, 4, 
+          length = 50)
+x <- mu[1] + zz * sqrt(sigma[1, 1])
+y <- mu[2] + zz * sqrt(sigma[2, 2]) 
 
-# Plot
-if (knitr::is_html_output()) {
-  rgl::plot3d( # Plot the points
-    x = pmf1$x,
-    y = pmf1$y, 
-    z = pmf1$f, 
-    xlim = c(-0.5, 2.5),
-    ylim = c(-0.5, 2.5),
-    zlim = c(0, 0.4),
-    col = plotColour, 
-    type = "s", # Plot the points
-    radius = 0.05,
-    xlab = "X", 
-    ylab = "Y", 
-    zlab = "pmf")
-  rgl::plot3d( # Plots the sticks from z=0 to the points
-    add = TRUE,
-    x = pmf1$x,
-    y = pmf1$y, 
-    z = pmf1$f, 
-    col = plotColour, 
-    type = "h") # Plot the line segments from z = 0 
-} else {
-  plot3D::scatter3D(x = pmf1$x,
-                 y = pmf1$y, 
-                 z = pmf1$f, 
-                 xlim = c(-0.5, 2.5),
-                 ylim = c(-0.5, 2.5),
-                 zlim = c(0, 0.4),
-                 col = plotColour, 
-                 type = "h", # Plot the points and sticks
-                 radius = 0.05,
-                 pch = 19,
-                 xlab = "X", 
-                 ylab = "Y", 
-                 zlab = "pmf") 
+z <- outer(x, y, f,
+           mn = mu,
+           sigma = sigma)
+
+contour(x, y, z,
+        asp = 1,
+        xlim = c(1550, 1900),
+        ylim = c(1450, 1750),
+        xlab = "Husband heights (in mm)",
+        ylab = "Wife heights (in mm)")
+
+persp(x, y, z, 
+      theta = -30, 
+      phi = 45, 
+      shade = 0.75, 
+      col = plotColour, 
+      expand = 0.5, 
+      r = 2, 
+      ltheta = 25, 
+      xlab = "Husband heights (in mm)",
+      ylab = "Wife heights (in mm)",
+      ticktype = "simple")
+}
+if( knitr::is_html_output() ) {
+  zz <- seq(-4, 4, 
+            length = 40)
+  x <- mu[1] + zz * sqrt(sigma[1, 1])
+  y <- mu[2] + zz * sqrt(sigma[2, 2]) 
+
+
+  M <- plot3D::mesh(x = x,
+                   y = y)
+  
+  z <- outer(x, y, f,
+             mn = mu,
+             sigma = sigma)
+
+
+rgl::persp3d(x = M$x, 
+            y = M$y, 
+            z = z,
+            col = plotColour,
+            colkey = FALSE,
+            phi = 40,
+            xlab = "Husband heights (in mm)",
+            ylab = "Wife heights (in mm)",
+            theta = 30,
+            main = "Bivariate normal")
 }
 ```
 
 
 ## Random parameters {#RandomParameters}
 
-So far we've assumed the parameters describing a model or population are fixed numbers.
-In some applications it might be more realistic or convenient to assume parameters themselves have distributions.
-
+So far, parameters describing a model or population have been assumed to be fixed numbers.
+In some applications, though, the parameters themselves may be assumed to have distributions.
 This idea is best introduced with some examples.
 
-:::{.example #Exprain name="Exam scores"}
-The score achieved by a student on an exam is approximately normal with mean $\mu$ where $\mu$ is dependent on the amount of study completed and has an approximately normal distribution amongst the population of students.
+
+:::{.example #RandomPar1 name="Exam scores"}
+The score achieved by a student on an exam is approximately normal with mean $\mu$, where $\mu$ varies by student according to the amount of study completed.
+The value of $\mu_i$ varies among students with an approximately normal distribution.
 :::
 
 
 
-:::{.example #Exprain name="Vehicle accidents"}
-Notifiable motor vehicle accidents occur in a town according to a Poisson distribution at the mean rate of 10 per day when it's fine and 20 per day when it's wet.
-It's wet on 10% of days.
+:::{.example #RandomPar2 name="Vehicle accidents"}
+Notifiable motor vehicle accidents occur in a town according to a Poisson distribution at the mean rate of 10 per day when it's fine, and 20 per day when it's wet.
+About 10% of days are wet.
 :::
 
-:::{.example #Exprain name="Goal kicking"}
-Let $\theta$ be the probability that Jake, a local rugby league star, kicks a goal.
-The distribution of $\theta$ depends on where the kick is taken from amongst other factors, but can be well approximated by a beta distribution.
+:::{.example #RandomPar3 name="Goal kicking"}
+Let $\theta$ be the probability that Shelley, a local rugby league star, kicks a goal.
+The distribution of $\theta$ depends on where the kick is taken from (among other things),0 but can be well approximated by a beta distribution.
 :::
-
 
 
 In each of these examples, there's a distribution, $f_X(x;\Theta)$ say, which depends on a parameter $\Theta$ where $\Theta$ itself has a distribution, $f_\Theta(\theta)$ say.
 The distribution $f_X(x;\theta)$ therefore is effectively a *conditional* distribution and $\Theta$ is effectively a random variable.
-Consequently the marginal distribution of $X$ can be found from (\ref{DF:marginalcont}) and (\ref{DF:condcont}) provided $X$ and $\Theta$ are continuous; ie
+Consequently the marginal distribution of $X$ can be found from (\ref{DF:marginalcont}) and (\ref{DF:condcont}) provided $X$ and $\Theta$ are continuous; i.e.,
 \begin{equation}
    f_X(x)
-   = \int f_{X|\Theta}(x,\theta)f_\Theta(\theta)\,d\theta\label{EQ:marg1}
+   = \int f_{X|\Theta}(x,\theta)f_\Theta(\theta)\,d\theta.
+   (\#eq:marg1)
 \end{equation}
 For $X$ and $\Theta$ discrete, (\ref{DF:marginaldisc}) and (\ref{DF:conddisc}) yield
 \begin{equation}
    p_X(x) 
-   = \sum_\theta p_{X|\Theta}(x,\theta)p_\Theta(\theta)\label{EQ:marg2}.
+   = \sum_\theta p_{X|\Theta}(x,\theta)p_\Theta(\theta)
+   (\#eq:marg2)
 \end{equation}
-The mixed cases can similarly be dealt with; viz
+The mixed cases can be dealt with similarly: 
 \begin{equation}
    f_X(x) 
-   = \sum_\theta f_{X|\Theta}(x,\theta)p_\Theta(\theta)\label{EQ:marg3}
+   = \sum_\theta f_{X|\Theta}(x,\theta)p_\Theta(\theta)
+   (\#eq:marg3)
 \end{equation}
 for $X$ continuous and $\Theta$ discrete, and
 \begin{equation}
    p_X(x)
-   = \int p_{X|\Theta}(x,\theta)f_\Theta(\theta)\,d\theta\label{EQ:marg4}
+   = \int p_{X|\Theta}(x,\theta)f_\Theta(\theta)\,d\theta
+   (\#eq:marg4)
 \end{equation}
 for $X$ discrete and $\Theta$ continuous.
 
 Only in special cases will these marginal distributions be of a standard or closed form.
 
-:::{.example #Exprain name="Exam scores"}
-The score $X$ achieved by a student on an exam is normal with mean $\Theta$ and standard deviation 5 where $\Theta$ is normal with mean 60 and standard deviation 10. 
-From (\ref{EQ:marg1}), the marginal pdf of $X$ is
+:::{.example #RandomParExam name="Exam scores"}
+The score $X$ achieved by a student on an exam is normal with mean $\Theta$ and standard deviation $\sigma = 5$, where $\Theta$ is normal with mean 60 and standard deviation 10. 
+From \@ref(eq:marg1), the marginal pdf of $X$ is
 \begin{align}
   f_X(x)
   &=\int_{-\infty}^\infty \frac{1}{5\sqrt{2\pi}}
-     \exp\left[-\frac12\left(\frac{x-\theta}{5}\right)^2\right]
+     \exp\left[-\frac12\left(\frac{x - \theta}{5}\right)^2\right]
      \frac{1}{10\sqrt{2\pi}}
   \exp\left[-\frac12\left(\frac{\theta-60}{10}\right)^2\right]\,d\theta\notag\\
   &= \frac{1}{11.18\sqrt{2\pi}}
-     \exp\left[-\frac12\left(\frac{x-60}{11.18}\right)^2\right]\label{EQ:exam2}
+     \exp\left[-\frac12\left(\frac{x-60}{11.18}\right)^2\right]
+     (\#eq:exam2)
 \end{align}
 after considerable algebra involving completing the square.
-We find $X\sim N(60, 11.18^2)$. 
-(Note that the $11.18 = \sqrt(5^2 + 10^2)$.)
+Then, $X\sim N(60, 11.18^2)$. 
+(Note that $11.18 = \sqrt(5^2 + 10^2)$.)
 :::
 
 
 
-:::{.example #Exprain name="Vehicle accidents"}
+:::{.example #RandomParAccidents name="Vehicle accidents"}
 Let $X$ be the number of notifiable motor vehicle accidents in a day.
 Then $X \sim \text{Pois}(M)$ where parameter $M$ has distribution defined by $\Pr(M = 10) = 0.9$ and $\Pr(M = 20) = 0.1$.
-From (\ref{EQ:marg2}), the marginal pf of $X$ is
+From \@ref(eq:marg2), the marginal pf of $X$ is
 \begin{equation}
   p_X(x)
-  = 0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}\quad\hbox{for $x=0,1,2,\dots$}
+  = 0.9 \frac{e^{-10}10^x}{x!} + 0.1 \frac{e^{-20}{20^x}}{x!}\quad\text{for $x = 0,1,2,\dots$}.
 \end{equation}
 :::
 
 
 
-:::{.example #GoalKicking name="Goal kicking"}
-Suppose Jake has 10 kicks at goal in a match and the number of successful kicks $X$ can be be modelled by a binomial distribution with parameter $\Theta$, where $\Theta$ has a Beta(4,4) distribution. 
-From (\ref{EQ:marg4}), the marginal pf of $X$ is
+:::{.example #RandomParGoalKicking name="Goal kicking"}
+Suppose Shelley has 10 kicks at goal in a match and the number of successful kicks $X$ can be be modelled by a binomial distribution with parameter $\Theta$, where $\Theta$ has a $\text{Beta}(4, 4)$ distribution. 
+From \@ref(eq:marg4), the marginal pf of $X$ is
 \begin{align}
   p_X(x)
   &= \int_0^1 {10\choose x}\theta^x(1 - \theta)^{10 - x}
      \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)} \theta^3(1 - \theta)^3\,d\theta\notag\\
   &= \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)}{10\choose x}\int_0^1 \theta^{x + 3}(1 - \theta)^{n - x + 3}\,d\theta\notag\\
-  &= \frac{7!10!(x + 3)!(13-x)!}{3!^217!x!(10-x)!}\quad\hbox{for $x = 0 , 1 , 2,\dots, 10$}\label{EQ:goal2}
+  &= \frac{7!10!(x + 3)!(13-x)!}{3!^217!x!(10 - x)!}\quad\hbox{for $x = 0 , 1 , 2,\dots, 10$}.
+     \label{EQ:goal2}
 \end{align}
 :::
 
@@ -2416,7 +2561,7 @@ From (\ref{EQ:marg4}), the marginal pf of $X$ is
 
 ### Bayes' theorem revisited {#BayesTheoremRevisited}
 
-Recall Bayes' theorem in (\S\ref{SS:Bayes}). 
+Recall Bayes' theorem in Sect. \@ref(BayesTheorem). 
 In particular, let $E$ be an event, with $H_1, \ldots, H_n$ a sequence of mutually exclusive and exhaustive events partitioning the sample space. 
 Then
 \begin{equation}
@@ -2425,7 +2570,6 @@ Then
   = \frac{\Pr(H_n) \Pr(E|H_n) }{\sum_m \Pr(H_m ) \Pr(E|H_m )}
 \end{equation}
 assuming that $\Pr(E) \neq 0$.
-
 Bayes' theorem extends directly to random variables.
 
 Suppose that $X$ and $Y$ are discrete random variable's such that $p_Y(y)$ is the pf for $Y$ and $p_{X|Y}(x,y)$ is the conditional pf for $X$ given $Y$.
@@ -2433,34 +2577,38 @@ Then the conditional pf of $Y$ given $X$ is
 \begin{align}
   p_{Y | X}(y, x)
   &= \frac{p_{X, Y}(x, y)}{p_X(x)} \\
-  &= \frac{p_{X | Y}(x, y)p_Y(y)}{\sum_y p_{X|Y}(x,y)p_Y(y)}\label{EQ:Bayesdis}
+  &= \frac{p_{X | Y}(x, y)p_Y(y)}{\sum_y p_{X|Y}(x,y)p_Y(y)}
+  (\#eq:Bayesdis)
 \end{align}
 Analogously, for the various combinations of continuous and discrete random variables,
 
 \begin{equation}
    f_{Y|X}(y,x)
    = \frac{f_{X,Y}(x,y)}{f_X(x)}
-   = \frac{f_{X|Y}(x,y)f_Y(y)}{\int_y f_{X|Y}(x,y)f_Y(y)\,dy},\label{EQ:Bayescts}
+   = \frac{f_{X|Y}(x,y)f_Y(y)}{\int_y f_{X|Y}(x,y)f_Y(y)\,dy},
+   (\#eq:Bayescts)
 \end{equation}
 
 \begin{equation}
   p_{Y|X}(y,x)
   = \frac{f_{X,Y}(x,y)}{p_X(x)}
-  = \frac{f_{X|Y}(x,y)p_Y(y)}{\sum_y f_{X|Y}(x,y)p_Y(y)},\label{EQ:Bayesdiscts}
+  = \frac{f_{X|Y}(x,y)p_Y(y)}{\sum_y f_{X|Y}(x,y)p_Y(y)},
+  (\#eq:Bayesdiscts)
 \end{equation}
 and
 \begin{equation}
   f_{Y|X}(y,x)
   = \frac{f_{X,Y}(x,y)}{p_X(x)}
-  = \frac{p_{X|Y}(x,y)f_Y(y)}{\int_y p_{X|Y}(x,y)f_Y(y)\,dy}\label{EQ:Bayesctsdis}
+  = \frac{p_{X|Y}(x,y)f_Y(y)}{\int_y p_{X|Y}(x,y)f_Y(y)\,dy}
+  (\#eq:Bayesctsdis)
 \end{equation}
 The concept in Bayes' theorem of determining the probability of $B$ given $A$ from that of $A$ given $B$ finds important and interesting applications in random parameters.
 
-Let's look at some examples using (\ref{EQ:Bayesdis}), (\ref{EQ:Bayescts}), (\ref{EQ:Bayesdiscts}) or (\ref{EQ:Bayesctsdis}) in which $Y$ is now interpreted as a random parameter.
+Let's look at some examples using \@ref(eq:Bayesdis)-- \@ref(eq:Bayesctsdis) in which $Y$ is now interpreted as a random parameter.
 
 
 :::{.example #ExamScores3 name="Exam scores"}
-The conditional pdf of the mean $\Theta$ given $X = x$ follows directly from (\ref{EQ:Bayescts}) on substituting (\ref{EQ:exam2}):
+The conditional pdf of the mean $\Theta$ given $X = x$ follows directly from \@ref(eq:Bayescts) on substituting \@ref(eq:exam2):
 \begin{align}
   f_{\Theta | X}(\theta, x)
   &= \frac{f_{X|\Theta}(x,\theta)f_\Theta(\theta)}{f_X(x)}\notag\\
@@ -2471,14 +2619,15 @@ The conditional pdf of the mean $\Theta$ given $X = x$ follows directly from (\r
   {\frac{1}{11.18\sqrt{2\pi}}
   \exp\left[-\frac12\left(\frac{x-60}{11.18}\right)^2\right]}\notag\\
   &=\frac{1}{4.472\sqrt{2\pi}}
-  \exp\left[-\frac12\left(\frac{\theta-(0.8x+12)}{4.472}\right)^2\right]\label{EQ:exam3}
+  \exp\left[-\frac12\left(\frac{\theta-(0.8x+12)}{4.472}\right)^2\right]
+  \label{EQ:exam3}
 \end{align}
 after some algebraic manipulation; i.e. ,$\Theta | (X = x)\sim N(0.8x + 12, 4.472^2)$
 :::
 
 
 :::{.example #Accidents3 name="Vehicle accidents"}
-From (\ref{EQ:Bayescts}) and (\ref{EQ:accidents2}), the conditional pf of $M$ given $X$ is 
+From \@ref(eq:Bayescts) and \@ref(eq:accidents2), the conditional pf of $M$ given $X$ is 
 \begin{align}
   p_{M|X}(\mu,x)
   &= \frac{f_{X|M}(x,\mu)f_M(\mu)}{p_X(x)}\notag\\
@@ -2492,7 +2641,7 @@ From (\ref{EQ:Bayescts}) and (\ref{EQ:accidents2}), the conditional pf of $M$ gi
 
 
 :::{.example #GoalKicking3 name="Goal kicking"}
-From (\ref{EQ:marg4}), the conditional pdf of $\Theta$ given $X$ is
+From \@ref(eq:marg4), the conditional pdf of $\Theta$ given $X$ is
 \begin{align}
   f_{\Theta|X}(\theta,x)
   &= \frac{p_{X|\Theta}(x,\theta) f_\Theta(\theta)}{p_X(x)}\notag\\

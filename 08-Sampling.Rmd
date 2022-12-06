@@ -74,22 +74,24 @@ In terms of distribution theory we should see Table \@ref(tab:DistSampMeanIntro)
 From a statistical viewpoint this distribution tells us what we can expect for the mean when we randomly sample from a population. 
 This sort of knowledge is essential in extracting information from samples. 
 In particular notice that the mean of the sampling distribution in the example is the same as the mean of the population itself $\mu = (2 + 3 + 3 + 6 + 8 )/5 = 4.4$ and the variance of the sampling distribution is *smaller* than the variance of the population ($\sigma^2 = 5.04$). 
-(The exact relationship between $\sigma^2_{\bar{X}}$ and $\sigma^2$ is expanded on in Theorem \@ref(thm:meandist) below.)
+(The exact relationship between $\sigma^2_{\bar{X}}$ and $\sigma^2$ is expanded on in Theorem \@ref(thm:SamplingDistMean) below.)
 
 
 ## Sampling distributions {#SamplingDistributionsIntro}
 
+
 :::{.definition #Statistic name="Statistic"}
-A *statistic* is a real-valued function of the observations in a sample.
+A *statistic* is a real-valued function of the observations in a *sample*.
 :::
 
-In general terms, if $X_1,X_2,\dots,X_n$ represents a numerical sample of size $n$ from some population, then $T = g(X_1, X_2, \dots, X_n)$ represents a statistic.
+In general terms, if $X_1, X_2,\dots, X_n$ represents a numerical sample of size $n$ from some population, then $T = g(X_1, X_2, \dots, X_n)$ represents a statistic.
 Examples of statistics are the sample mean, standard deviation, variance and proportion.
 The individual observations in a sample are also statistics.
 Hence, for example, the minimum (usually denoted $\min$ or $X_{[1]}$), maximum, and the range $\max - \min$ are statistics. 
 In fact, so is the first observation $X_1$ or even just the number 2 (or any other number), which can be thought of as a degenerate function of the observations.
 
 The point is, a random variable is a numeric variable which is fully determined by the values of all, some or even no members of the sample.
+
 
 :::{.example #SamplingDistributionStatistic name="Sampling distribution of a statistic"}
 The *sampling distribution of a statistic* is the theoretical probability distribution of the statistic associated with all possible samples of a particular size drawn from a particular population.
@@ -149,7 +151,7 @@ Consequently sampling at random in this situation is assumed to produce a random
 
 Some powerful results exist describing the sampling distribution of the mean of a random sample.
 
-:::{.theorem #CLT name="Central limit theorem"}
+:::{.theorem #SamplingDistMean name="Sampling distribution of the mean"}
 If $X_1, X_2, \dots, X_n$ is a *random sample* of size $n$ from a population with mean $\mu$ and variance $\sigma^2$, then the sample mean $\bar{X}$ has a sampling distribution with mean $\mu$ and variance $\sigma^2 / n$.
 :::
 
@@ -181,7 +183,7 @@ If sampling is done *with* replacement we see $\mu_{\bar{X}} = \mu = 4.4$ and $\
 
 
 Theorem \@ref(thm:CLT) describes the location and spread of the sampling distribution of the mean.
-Can we say anything about its shape?   
+Can we say anything about its shape?
 Wouldn't that depend on the shape of the population distribution?
 
 Well, yes, but surprisingly *only when the sample is small*.
@@ -231,9 +233,9 @@ The sampling distribution of the sum and mean of a random sample from a normal p
 Theorem \@ref(thm:LinearComb).
 
 
-:::{.corollary}
+:::{.corollary #SumMean name="Sum and mean of a random sample"}
 Let $X_1, X_2, \dots, X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$. 
-Define the sum $S$ and mean respectively as
+Define the sum $S$ and mean $\bar{X}$ respectively as
 \begin{align*}
    S
    &= X_1 + X_2 + \dots + X_n\\
@@ -249,17 +251,17 @@ The proof is left as an exercise.
 
 
 
-Corollary~\ref{CR:normmeasum} relies only on the population from which the sample is drawn being normally distributed and on the properties of expectation.
+Corollary \@ref(cor:SumMean) relies only on the population from which the sample is drawn being normally distributed and on the properties of expectation.
 It forms the basis for inference about the population mean of a normal distribution with known variance.
 
 
 :::{.example #CLTEnvelopes name="Sums of rvs"}
-Suppose that envelopes are counted out in packets of 25 by weighing them, and that the weight of an envelope is distributed normally with mean 3\,gm and standard deviation 0.6\,gm. 
-Any weighed pile of envelopes is 'counted' as 25 if it weighs between 70 and 80\,gm.
+Suppose that envelopes are counted out in packets of 25 by weighing them, and that the weight of an envelope is distributed normally with mean 3g and standard deviation 0.6g. 
+Any weighed pile of envelopes is 'counted' as 25 if it weighs between 70 and 80g.
 What is the probability that a pile of 25 will not be counted as such?
 
 Let random variable $X_i$ be the weight of the $i$th envelope. 
-Then $X_i$ is distributed $N(3,0.36)$. 
+Then $X_i$ is distributed $N(3, 0.36)$. 
 Let $Y = X_1 + X_2 + \dots + X_{25}$. 
 Then $Y$ is distributed $N(75, 9)$. 
 We require
@@ -267,8 +269,7 @@ We require
      1 - \Pr(70 < Y < 80)   
        &= 1 - \Pr\left(\frac{70 - 75}{\sqrt{9}}< Z < \frac{80 - 75}{\sqrt{9}}\right)\\
        &= 1 - [\Phi(1.667) - \Phi(-1.667)]\\
-       &= 1 - 2\times .4522\\
-       &= 0.10
+       &= 1 - 2\times .4522 = 0.10
      \end{align*}
 :::
 
@@ -288,23 +289,30 @@ We have
 \]
 That is
 \[ 
-   \Pr\left(\frac{|\bar{X}-110|\sqrt{n}}{12} \leq \frac{5\sqrt{n}}{12}\right) = 0.90 . 
+   \Pr\left(\frac{|\bar{X} - 110|\sqrt{n}}{12} \leq \frac{5\sqrt{n}}{12}\right) = 0.90
 \]
-That is,
+hence
 \[ 
    \Pr(Z \leq 5\sqrt{n} /12) = 0.90. 
 \]
 From tables, $5\sqrt{n}/12 = 1.645$, so $n = 16$.
+
+<!-- Using **R**: -->
+<!-- ```{r ech0=TRUE} -->
+<!-- qnorm(0.95) -->
+<!-- ``` -->
+
 :::
 
 
 
 :::{.example #CLTPlunger name="CLT"}
-A certain product involves a plunger fitting into a cylindrical tube and the 2 items are manufactured in such a way that the diameter of the plunger can be considered a normal random variable with mean 2.1\,cm and s.d. $0.1$\,cm while the inside diameter of the cylindrical tube is a normal random variable with mean 2.3\,cm and s.d. $0.05$\,cm. 
+A certain product involves a plunger fitting into a cylindrical tube.
+The two items are manufactured so that the diameter of the plunger can be considered a normal random variable with mean 2.1cm and s.d. $0.1$cm, while the inside diameter of the cylindrical tube is a normal random variable with mean 2.3cm and s.d. $0.05$cm. 
 For a plunger and tube chosen randomly from a day's production run, find the probability that the plunger will not fit
 into the cylinder.
 
-Let $X,Y$ be the diameter of the plunger and cylinder respectively.
+Let $X, Y$ be the diameter of the plunger and cylinder respectively.
 Then $X\sim N(2.1, 0.01)$, $Y\sim N(2.3, 0.0025)$ and we want $\Pr(Y < X)$.
 
 The distribution of $Y - X$ is $N(2.3 - 2.1, 0.0025 + 0.01)$ so that,
@@ -317,22 +325,22 @@ The distribution of $Y - X$ is $N(2.3 - 2.1, 0.0025 + 0.01)$ so that,
 :::
 
 
-We now turn our interest to the sampling distribution of the variance in a normal population.
+We now turn our interest to the sampling distribution of the *variance* in a normal population.
 Firstly a preliminary result which is little more than a rewording of Theorem~\ref{TM:chin}.
 
 :::{.theorem #ChiSquare name="Chi-square distribution"}
 Let $X_1,X_2,\dots,X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$.
-Then $\sum_{i=1}^n \left(\displaystyle{\frac{X_i-\mu}{\sigma}}\right)^2$ has a chi-square distribution with $n$ degrees of freedom.
+Then $\sum_{i = 1}^n \left(\displaystyle{\frac{X_i - \mu}{\sigma}}\right)^2$ has a chi-square distribution with $n$ degrees of freedom.
 :::
 
 
 :::{.proof}
-Putting $Z_i = \displaystyle{\frac{X_i-\mu}{\sigma}}$ we have
+Putting $Z_i = \displaystyle{\frac{X_i - \mu}{\sigma}}$ we have
 \[
-   \sum_{i=1}^n \left(\frac{X_i-\mu}{\sigma}\right)^2=\sum_{i=1}^n Z_i^2.
+   \sum_{i = 1}^n \left(\frac{X_i - \mu}{\sigma}\right)^2 = \sum_{i = 1}^n Z_i^2.
 \]
-But $Z_i$ is the standardised version of $X_i$ and has a standard normal $N(0,1)$ distribution.  
-Also the random variables $Z_i$ are independent because the $X_i$ are independent ($i = 1,2,\dots,n$).
+But $Z_i$ is the standardised version of $X_i$ and has a standard normal $N(0, 1)$ distribution.  
+Also the random variables $Z_i$ are independent because the $X_i$ are independent ($i = 1, 2, \dots, n$).
 The required result follows directly from Theorem \@ref(thm:chin).
 :::
 
@@ -345,17 +353,16 @@ The key result describing the distribution of the sample variance
 follows.
 
 
-:::{.theorem}
-Let $X_1, X_2, \dots, X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$.
+:::{.theorem #SampleVarDist name="Distribution of the sample variance"}
+Let $X_1, X_2, \dots, X_n$ be a random sample of size $n$ from $N(\mu, \sigma^2)$.
 Then
 \[
-   \frac{(n - 1)S^2}{\sigma^2} \sim \chi^2(n-1).
+   \frac{(n - 1)S^2}{\sigma^2} \sim \chi^2(n - 1).
 \]
 :::
 
 :::{.proof}
 We provide only a **partial proof**.
-
 We have, using \@ref(eqn:sampvar),
 \[
    \frac{(n - 1)S^2}{\sigma^2}
@@ -370,7 +377,7 @@ We can write
     &= \sum_{i=1}^n \left(\frac{X_i-\bar{X}+\mu-\mu}{\sigma}\right)^2\\
     &= \sum_{i=1}^n \left(\frac{X_i-\mu}{\sigma}\right)^2-n\frac{(\bar{X}-\mu)^2}{\sigma^2}
 \end{align*}
-(Check the algebra for yourself.)
+(Check the algebra!)
 This expression can be rewritten $T = U + V$, where
 \begin{align*}
    T
@@ -378,7 +385,7 @@ This expression can be rewritten $T = U + V$, where
    U
      &= n\frac{(\bar{X}-\mu)^2}{\sigma^2}, \\
    V
-     &= \sum_{i=1}^n \left(\frac{X_i-\bar{X}}{\sigma}\right)^2
+     &= \sum_{i=1}^n \left(\frac{X_i-\bar{X}}{\sigma}\right)^2.
 \end{align*}
 Now $T\sim\chi^2(n)$ (by Theorem~\ref{TM:chin2}) and $V\sim\chi^2(1)$ because $V$ is the square of a standard normal random variable (since $\bar{X}\sim N(\mu,\sigma^2/n)$.
 Therefore the mgf of $T$ is $(1 - 2t)^{-n}$ and the mgf of $V$ is $(1-2t)^{-1}$.
@@ -394,11 +401,11 @@ which is the mgf of the chi-square distribution with $n-1$ df.
 :::
 
 
-:::{.example #Exprain name="Exponential distributions"}
-A random sample of size 10 is selected from the $N(20,5)$ distribution.
+:::{.example #SampleVar name="Distribution of sample variance"}
+A random sample of size 10 is selected from the $N(20, 5)$ distribution.
 What is the probability that the variance of this sample exceeds 10?
 
-By Theorem~\ref{TM:variancedist},
+By Theorem \@ref(thm:SampleVarDist),
 \[
    \frac{(n - 1)S^2}{\sigma^2}
    = \frac{9S^2}{5}\sim\chi^2(9).
@@ -420,11 +427,10 @@ Using **R**, for example, we find $\Pr(S^2 > 10) = 0.03517$:
 
 ### The $t$ distribution {#TDistribution}
 
-The basis of the independence assumed in the proof of Theorem~\ref{TM:variancedist} is the rather surprising result that the mean and variance of a random sample from a normal population are independent random variables as stated in the following
-theorem.
+The basis of the independence assumed in the proof of Theorem \@ref(thm:SampleVarDist) is the rather surprising result that the mean and variance of a random sample from a normal population are independent random variables as stated in the following theorem.
 
-:::{.theorem}
-Let $X_1, X_2,\dots, X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$.
+:::{.theorem #MeanVarInd name="Sample mean and variance: Independent"}
+Let $X_1, X_2,\dots, X_n$ be a random sample of size $n$ from $N(\mu, \sigma^2)$.
 Then the sample mean
 \[
    \bar{X}
@@ -434,7 +440,7 @@ Then the sample mean
 and sample variance
 \[
    S^2
-   = \frac{1}{n-1}\sum_{i=1}^n (X_i-\bar{X})^2
+   = \frac{1}{n - 1}\sum_{i=1}^n (X_i - \bar{X})^2
 \]
 are independent.
 :::
@@ -444,7 +450,9 @@ See DGS, Section 7.3 or WMS, Exercise~13.83.
 This proof is not examinable.
 :::
 
+
 A further distribution that derives from sampling a normal population is the $t$-distribution.
+
 
 :::{.definition #TDistribution name="T-Distribution"}
 A continuous random variable $X$ with probability density function
@@ -452,21 +460,76 @@ A continuous random variable $X$ with probability density function
    f_X(x)
    = \frac{\Gamma((\nu+1)/2)}{\sqrt{\pi \nu}\Gamma(\nu/2)}\left(1+\frac{x^2}{\nu}\right)^{-(\nu+1)/2}\quad\text{for all $x$}
 \end{equation}
-is said to have a *$t$ distribution* with parameter $\nu >0$).
+is said to have a *$t$ distribution* with parameter $\nu > 0$.
 The parameter $\nu$ is known as the *degrees of freedom*. 
 We write $X \sim t(\nu)$ (or $t_\nu$).
 :::
 
 
-The pdf of the $t$ distribution is very similar to the standard normal distribution, being bell-shaped and symmetric about zero. 
+The pdf of the $t$ distribution is very similar to the standard normal distribution (Fig. \@ref(fig:TPlots)), being bell-shaped and symmetric about zero. 
 The variance is greater than one however and is dependent on $\nu$ as shown in the following theorem.
 
-:::{.theorem}
+
+```{r TPlots, echo=FALSE, out.width='100%', fig.height=3, fig.width=6.5, fig.cap="Some $t$-distributions (with normal distributions in grey), with mean 0 and variance 1"}
+par( mfrow = c(1, 3))
+
+xx <- seq(-4, 4,
+          length = 100)
+
+plot( x = xx,
+      y = dt(xx, df = 2),
+      ylim = c(0, 0.4),
+      lwd = 2,
+      col = plotColour1,
+      type = "l",
+      xlab = expression(italic(x)),
+      ylab = "Density",
+      las = 1,
+      main = expression( paste("The"~italic(t)*"-distribution: df"==2)))
+lines( x = xx,
+       y = dnorm(x = xx),
+       lwd = 2,
+       lty = 2,
+       col = "grey")
+
+plot( x = xx,
+      y = dt(xx, df = 10),
+      lwd = 2,
+      type = "l",
+      col = plotColour1,
+      xlab = expression(italic(x)),
+      ylab = "Density",
+      las = 1,
+      main = expression( paste("The"~italic(t)*"-distribution: df"==10)))
+lines( x = xx,
+       y = dnorm(x = xx),
+       lwd = 2,
+       lty = 2,
+       col = "grey")
+
+plot( x = xx,
+      y = dt(xx, df = 30),
+      lwd = 2,
+      type = "l",
+      col = plotColour1,
+      xlab = expression(italic(x)),
+      ylab = "Density",
+      las = 1,
+      main = expression( paste("The"~italic(t)*"-distribution: df"==30)))
+lines( x = xx,
+       y = dnorm(x = xx),
+       lwd = 2,
+       lty = 2,
+       col = "grey")
+```
+
+
+:::{.theorem #TDistProperties name="Properties of the $T$-distribution"}
 If $X\sim t(\nu)$ then
 
-* For $\nu > 1$, $\text{E}(X) = 0$
-* For $\nu > 2$, $\text{Var}(X) = \displaystyle{\frac{\nu}{\nu - 2}}$
-The mgf does not exist because only the first $\nu - 1$ moments exist. 
+* For $\nu > 1$, $\text{E}(X) = 0$.
+* For $\nu > 2$, $\text{Var}(X) = \displaystyle{\frac{\nu}{\nu - 2}}$.
+* The mgf does not exist because only the first $\nu - 1$ moments exist. 
 :::
 
 
@@ -476,13 +539,12 @@ This proof is not examinable.
 :::
 
 
-It can be shown, although we won't prove it, that as $\nu\to\infty$, the $t$ distribution converges to the standard normal.
-
+It can be shown, although we won't prove it, that as $\nu\to\infty$, the $t$ distribution converges to the standard normal (which can be seen in Fig. \@ref(fig:TPlots)).
 The usefulness of the $t$-distribution derives from the following result.
 
 
-:::{.theorem}
-Let $X_1, X_2, \dots, X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$.
+:::{.theorem #Tscores name="$T$-scores"}
+Let $X_1, X_2, \dots, X_n$ be a random sample of size $n$ from $N(\mu, \sigma^2)$.
 Then the random variable
 \[
    T = \frac{\bar{X} - \mu}{S/\sqrt{n}}
@@ -503,18 +565,18 @@ The statistic $T$ can be re-expressed as
 \end{align*}
 where $Z$ is a $N(0, 1)$ variable and $Y$ is a chi-square variable with $(n - 1)$ df.
 
-The derivation of the pdf of $\displaystyle{\frac{Z}{Y/(n - 1)}}$ is addressed in DGS, Section~7.4 and WMS, Exercise~7.56. 
+The derivation of the pdf of $\displaystyle{\frac{Z}{Y/(n - 1)}}$ is addressed in DGS, Section~7.4 and WMS, Exercise 7.56. 
 This proof is not examinable.
 :::
 
 Notice that $T$ represents a standardised version of the sample mean and because of this is an important statistic in statistical inference.
 You will have seen it's use in examples such as the following where the behaviour of a sample mean from a normal population (or one that approximates it) is of interest.
 
-:::{.example #CLTnorm name="CLT"}
+:::{.example #CalcaltingT name="Calculating $T$"}
 A random sample $21, 18, 16, 24, 16$ is drawn from a normal population with mean of 20.
 
 1. What is the value of $T$ for this sample.
-2. In random samples from this population, what is the probability that $T$ is less than the value found in~(a)?
+2. In random samples from this population, what is the probability that $T$ is less than the value found above?
 
 From the sample $\overline{x} = 19.0$ and $s^2 = 12.0$. 
 Therefore $t = \frac{19.0 - 20}{\sqrt{12.0/5}} = -0.645$.
@@ -531,7 +593,8 @@ pt(-0.645, df = 4)
 ### The $F$-distribution {#FDistribution}
 
 Definition \@ref(def:FDistribution) introduces a distribution which describes the ratio of two sample variances from normal populations and is used in inferences concerning the comparison of two variances.
-This distribution is also used in *analysis of variance*, a technique used to test the equality of several means.
+This distribution is also used in *analysis of variance*, a common technique used to test the equality of several means.
+
 
 :::{.definition #FDistribution name="$F$-distribution"}
 A continuous random variable $X$ with probability density function
@@ -545,6 +608,8 @@ The parameters are known respectively as the numerator and denominator degrees o
 We write $X \sim F(\nu_1,\nu_2)$.
 :::
 
+
+Some $F$-distributions are shown in Fig. \@ref(fig:FPlots).
 The basic properties of the $F$ distribution are as follows.
 
 :::{.theorem #FProperties name="Properties of $F$-distribution"}
@@ -558,6 +623,52 @@ If $X\sim F(\nu_1, \nu_2)$ then
 :::{.proof}
 Not covered.
 :::
+
+
+
+
+```{r FPlots, echo=FALSE, out.width='100%', fig.height=3, fig.width=6.5, fig.cap="Some $F$-distributions"}
+par( mfrow = c(1, 3))
+
+xx <- seq(0.001, 6,
+          length = 100)
+
+plot( x = xx,
+      y = df(xx, df1 = 1, df = 4),
+#      ylim = c(0, 0.4),
+      lwd = 2,
+      col = plotColour1,
+      type = "l",
+      xlab = expression(italic(x)),
+      ylab = "Density",
+      las = 1,
+      main = expression( paste("The"~italic(F)*"-distribution: df"==1*", "*4)))
+
+
+plot( x = xx,
+      y = df(xx, df1 = 6, df2 = 1),
+      lwd = 2,
+      type = "l",
+      col = plotColour1,
+      xlab = expression(italic(x)),
+      ylab = "Density",
+      las = 1,
+      main = expression( paste("The"~italic(F)*"-distribution: df"==6*", "*1)))
+
+
+plot( x = xx,
+      y = df(xx, df1 = 30, df2 = 5),
+      lwd = 2,
+      type = "l",
+      col = plotColour1,
+      xlab = expression(italic(x)),
+      ylab = "Density",
+      las = 1,
+      main = expression( paste("The"~italic(F)*"-distribution: df"==30*", "*5)))
+```
+
+
+
 
 
 :::{.theorem #FGenerate name="$F$-distribution"}
@@ -586,7 +697,7 @@ where
    \nu_1 
      &= n_1 - 1, \\
    U_2 
-     &= \displaystyle{\frac{(n_2-1)S_2^2}{\sigma_2^2}}, 
+     &= \displaystyle{\frac{(n_2-1)S_2^2}{\sigma_2^2}}, \\
    \nu_2 
      &= n_2 - 1.
 \end{align*}
@@ -601,6 +712,7 @@ $F$ probabilities are available in **R**.
 
 :::{.example #FProbs name="$F$-distribution probabilities"}
 Suppose $X\sim F(2, 10)$. 
+Find:
 
 *  $\Pr(X < 1)$
 *  $x$ such that $\Pr(X > x) = 0.01$
@@ -624,16 +736,16 @@ qf(0.99,
 SHOW, USING **R**, THAT MATLAB-LIKE THING: A distibution of X, sample... and x-bar is normal.
 
 Sampling distributions for various statistics of interest are well developed when sampling is from a normal distribution as shown in Sect. \@ref(normsamp).
-Although these results are important, the question remains, what say we don't know, as is usually the case, the distribution of the population from which the random sample is drawn?
+Although these results are important, the question remains:
+What if we do not know the distribution of the population from which the random sample is drawn (as is usually the case)?
 
 In Sect. \@ref(meandist) general results are given describing the mean and variance of the sample mean which hold for any population distribution.
 Can we say more than this about the sampling distribution of the mean in general?
 
-The answer is yes of course---why else would we mention it!  
 The main result is contained in the following theorem which is so important that it is given the grand title *The Central Limit Theorem* or *CLT* for short.
 
 
-:::{.theorem #CLT name-="Central Limit Theorem (CLT)"}
+:::{.theorem #CLT name="Central Limit Theorem (CLT)"}
 Let $X_1, X_2, \dots, X_n$ be a random sample from a distribution with mean $\mu$ and variance $\sigma^2$.
 Then the random variable $Z_n$ defined by
 \[ 
@@ -693,7 +805,7 @@ So $Z_n$ converges in distribution to a standard normal.
 
 Strictly this is a partial proof in that the concept of convergence in distribution has not been defined and it's assumed that the mgf of $X_i$ exists, which does not need to be the case.
 However, the arguments used in the proof are powerful and worth understanding.
-The 'convergence in distribution' bit is saying that $Z_n$ approaches normality as $n\to \infty$. 
+'Convergence in distribution' means that $Z_n$ approaches normality as $n\to \infty$. 
 So when $n$ is 'large' we can expect $Z_n$ to approximate a standard normal distribution and, transforming $Z_n$ back to the sample mean, we can expect the $\bar{X}$ to approximate a $N(\mu, \sigma^2/n)$ distribution.
 
 
@@ -727,27 +839,28 @@ For $n = 12$, find the probability that the sum of the faces is at least 52.
 Let the random variable $X_i$ be the number showing on the $i$th throw and define $Y = X_1 + \dots + X_{12}$. 
 We want $\Pr(Y\geq 52)$.
 
-In order to use Theorem~\ref{TM:CLT} note that the event '$Y\geq 52$' is equivalent to '$\bar{X}\geq 52/12$' where $\bar{X} = Y/12$ is the mean number showing from the 12 tosses. 
+In order to use Theorem \@ref(thm:CLT), note that the event '$Y\geq 52$' is equivalent to '$\bar{X}\geq 52/12$' where $\bar{X} = Y/12$ is the mean number showing from the 12 tosses. 
 Now the distribution of each $X_i$ is rectangular with $\Pr(X_i = x) = 1/6$, $x = 1, 2, \dots, 6$ and $\text{E}(X_i) = 7/2$, $\text{Var}(X_i) = 35/12$.
+
 It follows that $\text{E}(\bar{X}) = 7/2$ and $\text{Var}(\bar{X}) = 35/(12\times12)$. 
-Then from Theorem~\ref{TM:CLT},
+Then from Theorem \@ref(thm:CLT),
 \begin{align*}
   \Pr(Y\geq 52) 
     & \simeq \Pr(\bar{X}\geq 52/12)\\
-    &= P_N \left(Z\geq \frac{52/12-7/2}{\sqrt{35/144}}\right)\\
+    &= P_N \left(Z\geq \frac{52/12 - 7/2}{\sqrt{35/144}}\right)\\
     &= 1 -\Phi(1.690)\\
     &= 0.0455
 \end{align*}
 :::
 
 
-Example~\@ref(exm:FairDiceSum) can also be solved using a generalisation of the Central Limit Theorem.
+Example \@ref(exm:FairDiceSum) can also be solved using a generalisation of the Central Limit Theorem.
 This generalisation indicates why the normal distribution plays such an important role in statistical theory. 
 It says that a large class of random variable's converge in distribution to the standardized normal.
 
-:::{.theorem}
+:::{.theorem #ConvergeToN name="Convergence to standard normal distribution"}
 Let $X_1, X_2, \dots, X_n$ be a sequence of independent random variable's with $\text{E}(X_i) = \mu_i$, $\text{Var}(X_i) = \sigma^2_i$.
-Define $Y=a_1X_1+a_2X_2+\dots + a_nX_n$.
+Define $Y = a_1X_1 + a_2X_2 + \dots + a_nX_n$.
 
 Then under certain general conditions, including $n$ large, $Y$ is distributed approximately $N(\sum_ia_i\mu_i, \ \sum_i a^2_i\sigma^2_i)$.
 :::
@@ -757,6 +870,7 @@ Not part of the course.
 :::
 
 
+Theorem \@ref(thm:ConvergeToN) has made no assumptions about the distribution of $X_i$.
 Note that if the $X_i$ are normally distributed then $Y = \sum_{i = 1}^n a_iX_i$ will have a normal distribution for any $n$, large or small.
 
 
@@ -765,9 +879,10 @@ Suppose we have a number of independent noise voltages, say $V_i$, $i = 1, 2, \d
 Let $V$ be the sum of the voltages and suppose each $V_i$ is distributed $U(0, 10)$.
 For $n = 20$ find $\Pr(V > 105)$.
 
-This is clearly an example of Theorem \@ref(thm:CLTgen) with each $a_i = 1$. 
+This is clearly an example of Theorem \@ref(thm:ConvergeToN) with each $a_i = 1$. 
 In order to find $\Pr(V > 105)$ we need to know the distribution of $V$. 
-We have $\text{E}(V_i) = 5$ and $\text{Var}(V_i) = 100/12$ so that from Theorem \@ref(thm:CLTgen), we can say that $V$ is distributed approximately normal with mean $20\times 5 = 100$ and variance $20\times 100/12$.
+
+We have $\text{E}(V_i) = 5$ and $\text{Var}(V_i) = 100/12$ so that from Theorem \@ref(thm:ConvergeToN), then $V$ is distributed approximately normal with mean $20\times 5 = 100$ and variance $20\times 100/12$.
 That is, $\displaystyle{\frac{V - 100}{10\sqrt{5/3}}}$ is distributed $N(0, 1)$ approximately. 
 So
 \[ 
@@ -823,7 +938,7 @@ and
    \quad\text{and}\quad
    \text{Var}(\bar{X}) = \frac{p(1 - p)}{n}.
 \]
-Theorems \@ref(thm:CLT) and \@ref(thm:CLTgen) are applicable to $\bar{X}$ and $Y$ respectively. 
+Theorems \@ref(thm:CLT) and \@ref(thm:ConvergeToN) are applicable to $\bar{X}$ and $Y$ respectively. 
 Hence
 \[
    \bar{X} = \widehat{p}\sim N\left(p,\frac{p(1-p)}{n}\right)\text{ approx}

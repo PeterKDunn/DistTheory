@@ -143,11 +143,13 @@ plot(x = z,
      lwd = 2,
      xlim = c(0, 6),
      las = 1,
+     col = plotColour1,
      xlab = expression( italic(z)),
      ylab = "Probability density",
      main = expression(paste("The probability function for"~italic(Z))))
 lines( x = c(-1, 1),
        y = c(0, 0),
+       col = plotColour1,
        lwd = 2)
 abline(v = 1,
        lwd = 1,
@@ -291,9 +293,32 @@ eg1Table[2, ] <- paste0(c("1", "7", "21", "35", "35", "21", "7", "1"),
 
 rownames(eg1Table) <- c("$x$",
                         "$\\Pr(X = x)$")
-knitr::kable(eg1Table,
-             escape = FALSE,
-             caption = "A probability distribution")
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(eg1Table,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "A probability distribution") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(eg1Table,
+               escape = TRUE,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "A probability distribution") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+
+
 ```
 
 
@@ -318,7 +343,8 @@ plot(x = x,
      main = "Probability mass function")
 polygon( x = c(-10, -10, 3.5, 3.5),
          y = c(0, 1, 1, 0),
-         col = gray(0.9) )
+         col = plotColour)
+         #col = gray(0.9) )
 
 polygon( x = c(3.5, 3.5,10, 10),
          y = c(0, 1, 1, 0),
@@ -349,7 +375,8 @@ plot( x = x,
       type = "n")
 polygon( x = c(3, 3, 4, 4),
          y = c(0, 0.5, 0.5, 0),
-         col = gray(0.9))
+      col = plotColour)
+#         col = gray(0.9))
 abline( h = c(0, 1),
         col = "grey")
 axis(side = 1,
@@ -414,9 +441,31 @@ eg2Table[2, ] <- paste0(c("1", "6", "15", "20", "15", "6", "1"),
 
 rownames(eg2Table) <- c("$x$",
                         "$\\Pr(X = x)$")
-knitr::kable(eg2Table,
-             escape = FALSE,
-             caption = "A probability distribution")
+eg2Table.caption <- "A probability distribution"
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(eg2Table,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = eg2Table.caption ) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(eg2Table,
+               escape = TRUE,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = eg2Table.caption) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
 ```
 
 ```{r DiscreteMedian2, echo=FALSE, fig.align="center", fig.cap="The probability function and distribution function for $H$", fig.height = 8, out.width='70%'}
@@ -438,6 +487,7 @@ plot(x = x,
      main = "Probability mass function")
 points( x = x,
         y = fx,
+        col = plotColour1,
         pch = 19)
 
 
@@ -466,42 +516,52 @@ box()
 #         border = NA) # Omits borders
 lines( x = c(-10, 3),
        y = c(0.5, 0.5),
+       col = plotColour1,
        lty = 3)
 lines( x = c(3, 3),
        y = c(42/64, 0),
+       col = plotColour1,
        lty = 3)
 
 abline( h = c(0, 1),
         col = "grey")
 points( x = x,
         y = cumsum(fx),
+        col = plotColour1,
         pch = 19)
 points( x = x[2: length(x)],
         y = cumsum(fx)[1:(length(x) - 1)],
+       col = plotColour1,
         pch = 1)
 
 for (i in (1 : (length(x) - 1)) ){
    lines( x = x[i:(i + 1)],
           y = c(cumsum(fx)[i],
                 cumsum(fx)[i]),
+          col = plotColour1,
           lwd = 2)
 }
 
 # Now add edge cases
 lines( x = c(-1, 0),
        y = c(0, 0),
-      lwd = 2)
+       col = plotColour1,
+       lwd = 2)
 lines(x = c(-2, -1),
       y = c(0, 0),
+      col = plotColour1,
       lty = 2,
       lwd = 2)
 points(0, 0, 
+       col = plotColour1,
        pch = 1)
 lines(x = c(6, 7),
       y = c(1, 1),
+      col = plotColour1,
       lwd = 2)
 lines(x = c(7, 8),
       y = c(1, 1),
+      col = plotColour1,
       lty = 2,
       lwd = 2)
 
@@ -802,13 +862,16 @@ plot( x = c(-1, 8),
       ylab = expression(italic(f)(italic(x))) )
 lines( x = c(0, 1, 2, 6, 7),
        y = c(0, 0, 0.4, 0, 0),
+       col = plotColour1,
        lwd = 2)
 lines( x = c(-1, 0),
        y = c(0, 0),
+       col = plotColour1,
        lwd = 2,
        lty = 2)
 lines( x = c(7, 8),
        y = c(0, 0),
+       col = plotColour1,
        lwd = 2,
        lty = 2)
 
