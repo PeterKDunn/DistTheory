@@ -164,12 +164,12 @@ The same experiment is repeated (tossing the coin), there are only two outcomes 
 
 Consider tossing a die five times and observing the number of times a `r knitr::include_graphics("Dice/die1.png", dpi=2000)` is rolled.
 The probability of observing three `r knitr::include_graphics("Dice/die1.png", dpi=2000)` can be found as follows:
-In the five tosses, a `r knitr::include_graphics("Dice/die1.png", dpi=2000)` must appear three times; there are ${5\choose 3}$ ways of allocating on which of the five rolls they will appear.
+In the five tosses, a `r knitr::include_graphics("Dice/die1.png", dpi=2000)` must appear three times; there are $binom{5}{3}$ ways of allocating on which of the five rolls they will appear.
 In the five rolls, `r knitr::include_graphics("Dice/die1.png", dpi=2000)` must appear three times with probability $1/6$; the other two rolls must produce another number with probability $5/6$.
 
 So the probability will be
 \[
-   \Pr(\text{3 ones}) = {5\choose 3} (1/6)^3 (5/6)^2 = 0.032,
+   \Pr(\text{3 ones}) = \binom{5}{3} (1/6)^3 (5/6)^2 = 0.032,
 \]
 assuming independence of the events.
 Using this approach, the pmf for the binomial distribution can be developed.
@@ -205,15 +205,15 @@ which is the intersection of $n$ independent events consisting of $r$ successes 
 
 Every other sample point in the event $X = r$ will appear as a rearrangement of the $S$'s and $F$'s in the sample point described above and will therefore have the same probability. 
 
-Now the number of distinct arrangements of the $r\,S$'s and $(n - r)$ $F$'s is ${n\choose r}$, so
+Now the number of distinct arrangements of the $r\,S$'s and $(n - r)$ $F$'s is $\binom{n}{r}$, so
 \begin{equation}
-     \Pr(X = r) = {n\choose r} p^r q^{n - r},\quad r = 0,1,\dots,n.
+     \Pr(X = r) = binom{n}{r} p^r q^{n - r},\quad r = 0,1,\dots,n.
         (\#eq:BinomialPMF)
 \end{equation}
 
 Note that the sum of the probabilities is 1 as the binomial expansion of $(p + q)^n$ \@ref(eq:BinomialSeries) is just
 \begin{equation}
-   \sum_{r = 0}^n {n\choose r} p^r q^{n - r} = (p + q)^n = 1\label{EQN:sumbin}
+   \sum_{r = 0}^n \binom{n}{r} p^r q^{n - r} = (p + q)^n = 1\label{EQN:sumbin}
 \end{equation}
 since $p + q = 1$. 
 So we have the following:
@@ -269,7 +269,7 @@ Let the random variable $X$ be the  number of 6's in 4 tosses.
 Then
 \[ 
   \Pr(X = 2) = 
-  {4\choose 2} \left(\frac16\right)^2\left(\frac56\right)^2 = 150/1296.
+  \binom{4}{2} \left(\frac{1}{6}\right)^2\left(\frac{5}{6}\right)^2 = 150/1296.
 \]
 :::
 
@@ -287,27 +287,26 @@ If $X\sim\text{Bin}(n,p)$ then
 We make use of \@ref(eq:BinomialSeries) in the following:
 \begin{align*}
      \text{E}(X) 
-     & = \sum^n_{x = 0} x{n\choose x} p^xq^{n - x}\\
-     & = \sum^n_{x = 1} x \frac nx {n - 1\choose x - 1} p^xq^{n - x}\\
-     & = np\sum^n_{x = 1} {n-1\choose x-1} p^{x - 1}q^{n - x}\\
-     & = np \sum^{n - 1}_{y = 0} {n - 1\choose y}p^yq^{n - 1 - y}\quad
-\text{putting }y = x - 1.
+     & = \sum^n_{x = 0} x\binom{n}{x} p^x q^{n - x}\\
+     & = \sum^n_{x = 1} x \frac{n}{x} \binom{n - 1}{x - 1} p^x q^{n - x}\\
+     & = np\sum^n_{x = 1} \binom{n - 1}{x - 1} p^{x - 1} q^{n - x}\\
+     & = np \sum^{n - 1}_{y = 0} \binom{n - 1}{y}p^y q^{n - 1 - y}\quad \text{putting $y = x - 1$}.
 \end{align*}
 Now the sum is 1 since a term in the sum is the probability of $y$ successes in $(n - 1)$ Bernoulli trials and the sum is over all values in $R_X$.
-Note also that in the second line the sum is over $x$ from $1$ to $n$ because for $x = 0$ we have a binomial coefficient of the form ${b\choose a}$ with $a < 0$, which is defined to be zero. 
+Note also that in the second line the sum is over $x$ from $1$ to $n$ because for $x = 0$ we have a binomial coefficient of the form $\binom{b}{a}$ with $a < 0$, which is defined to be zero. 
 Thus,
 \[ 
    \text{E}(X) = np.
 \]
 
-To find the variance, we use the computational formula $\text{var}(X)=\text{E}(X^2)-\text{E}(X)^2$.
-Firstly, to find $\text{E}(X^2)$, write $\text{E}(X^2)$ as $\text{E}[X(X-1)+X]$ then write it as $\text{E}[X(X-1)]+\text{E}(X)$.
+To find the variance, we use the computational formula $\text{var}(X) = \text{E}(X^2) - \text{E}(X)^2$.
+Firstly, to find $\text{E}(X^2)$, write $\text{E}(X^2)$ as $\text{E}[X(X - 1) + X]$ then write it as $\text{E}[X(X - 1)] + \text{E}(X)$.
 \begin{align*}
      \text{E}(X^2) 
      &= \sum^n_{x = 0} x(x - 1)\Pr(X = x) + np\\
-     &= \sum^n_{x = 2} x(x  -1)\frac{n(n - 1)}{x(x - 1)} {n - 2\choose x - 2} p^xq^{n - x} + np\\
-     &= \sum^n_{x = 2} n(n - 1){n - 2\choose x - 2} p^x q^{n - x} + np\\
-     &= n(n - 1)p^2 \sum^{n - 2}_{y = 0} {n - 2\choose y} p^yq^{n - 2 - y} + np,
+     &= \sum^n_{x = 2} x(x  -1)\frac{n(n - 1)}{x(x - 1)} \binom{n - 2}{x - 2} p^x q^{n - x} + np\\
+     &= \sum^n_{x = 2} n(n - 1)\binom{n - 2}{x - 2} p^x q^{n - x} + np\\
+     &= n(n - 1)p^2 \sum^{n - 2}_{y = 0} \binom{n - 2}{y} p^yq^{n - 2 - y} + np,
 \end{align*}
 putting $y = x - 2$.
 For the same reason as before, the sum is 1, so
@@ -326,8 +325,8 @@ The mgf of $X$ is given by
 \begin{align*}
    M_X(t)
    &= \text{E}(\exp(tX))\\
-   &= \sum^n_{x = 0} e^{tx}{n\choose x} p^x q^{n - x}\\
-   &= \sum^n_{x = 0}{n\choose x} (pe^t)^x q^{n - x}\\
+   &= \sum^n_{x = 0} e^{tx}\binom{n}{x} p^x q^{n - x}\\
+   &= \sum^n_{x = 0}\binom{n}{x} (pe^t)^x q^{n - x}\\
    &= (pe^t + q)^n.
 \end{align*}
 Proving the third result first, and then using it to prove the others, is easier (using of the methods in Sect. \@ref(MGFMoments)---try this as an exercise.)
@@ -351,7 +350,7 @@ Since the lake is deep, it will only freeze during exceptionally cold weather.
 The probability the lake freezes during any one year can be estimated as $p = 10/200 = 0.05$.
 
 Using this information, the number of times the lake will *not* freeze in ten randomly chosen years in given by the random variable $X$ where $X \sim \text{Bin}(10, 0.95)$.
-The probability that the lake will not freeze in these ten years is $\Pr(X = 10) = {10\choose 10} 0.95^{10} 0.05^{0} \approx 0.599$, or about 60%.
+The probability that the lake will not freeze in these ten years is $\Pr(X = 10) = \binom{10}{10} 0.95^{10} 0.05^{0} \approx 0.599$, or about 60%.
 
 Note we could define the random variable $Y$ as the number of times the lake *will* freeze in the ten randomly chosen years.
 Then, $Y\sim\text{Bin}(10, 0.05)$ and we would compute $\Pr(Y = 0)$ and get the same answer.
@@ -445,7 +444,7 @@ The first two results follow from differentiating the mgf.
 
 :::{.example #Queues name="Queuing"}
 Customers enter a waiting line 'at random' at a rate of 4 per minute.
-Assuming that the number entering the line in any given time interval has a Poisson distribution, determine the probability that at least one customer enters the line in a given $\frac 12$-minute interval, we have (since $\mu = 2$):
+Assuming that the number entering the line in any given time interval has a Poisson distribution, determine the probability that at least one customer enters the line in a given $\frac{1}{2}$-minute interval, we have (since $\mu = 2$):
 \[ 
    \Pr(X\geq 1) = 1 - \Pr(X = 0) = 1 - e^{-2} = 0.865.
 \]
@@ -535,11 +534,11 @@ If the number of trials is very large and the probability of success in a single
 For example, consider $X\sim \text{Bin}(n = 2000, p = 0.005)$. 
 Then, the pf is
 \[
-   p_X(x) = {2000\choose x}(0.005)^x 0.995^{2000 - x}.
+   p_X(x) = \binom{2000}{x}(0.005)^x 0.995^{2000 - x}.
 \]
 
 Using the pmf, computing some probabilities, such as $\Pr(X > 101)$, is very tedious.
-(Try computing ${2000\choose 102}$ on your calculator, for example.)
+(Try computing $\binom{2000}{102}$ on your calculator, for example.)
 However, the Poisson distribution can be used to approximate this probability.
 
 We could set the Poisson mean to equal the binomial mean (that is, $\mu = np$).
@@ -788,14 +787,14 @@ Let random variable $Y$ be the number of trials necessary to obtain $r$ successe
 Clearly $Y$ will be at least $r$ and the range space for $Y$ is $\{ r, r + 1, r + 2,\dots \}$.
 
 To observe the $r$th success in the $y$th trial, there must have been $y - r$ failures and $r - 1$ successes in the first $y - 1$ trials; the $r$th success then happens on the $y$th trial.
-There are ${y - 1\choose r - 1}$ ways in which to allocate these successes to the first $y - 1$ trials.
+There are $\binom{y - 1}{r - 1}$ ways in which to allocate these successes to the first $y - 1$ trials.
 Each of the $r - 1$ successes occur with probability $p$, and the $y - r$ failures with probability $1 - p$ (assuming events are independent).
 
 Hence the probability of observing the $r$th success in trial $y$ is
 \begin{align*}
    \text{No. ways}
    &\times \text{$(y - r)$ failures} \times \text{$r$ successes} \\
-   {y - 1 \choose r - 1} 
+   \binom{y - 1}{r - 1} 
    &\times (1 - p)^{y - r} \times p^r.
 \end{align*}
 
@@ -803,7 +802,7 @@ Hence the probability of observing the $r$th success in trial $y$ is
 :::{.definition #NegativeBinomialDistribution name="Negative binomial distribution"}
 A random variable $X$ with pf
 \begin{equation}
-   p_X(x) = {x - 1\choose r - 1}(1 - p)^{x - r} p^r
+   p_X(x) = \binom{x - 1}{r - 1}(1 - p)^{x - r} p^r
    (\#eq:NegativeBinomialPMF)
 \end{equation}
 has a *negative binomial distribution* with parameters $r$ (an integer $\ge 1$) and $p$ ($0\le p\le1$).
@@ -922,7 +921,7 @@ Often the negative binomial distribution is used in a different parameterisation
 This form can be seen as the number of *failures* which occur in a sequence of independent trials until $r$ successes are reached. 
 The pf is this reparameterised form in
 \begin{equation}
-   p_X(x) = {x + r - 1 \choose x} p^r (1 - p)^x
+   p_X(x) = \binom{x + r - 1}{x} p^r (1 - p)^x
    (\#eq:NegativeBinomialPMFAlternative)
 \end{equation}
 where $X$ is the number of *failures* until the $r$th success is observed. 
@@ -1081,7 +1080,7 @@ The Poisson distribution has an equal mean and variance; the Poisson distributio
 
 For the second parameterisation of the negative binomial distribution, the expression for the mean and variance can be set to the
 computed values above and solved for $p$ and $r$; then $p\approx 0.5077$ and $r\approx 1.1826$.
-Using these values, the estimated probability function for both the Poisson and negative binomial distributions are given in Table \@ref(tabMitesTable); the negative binomial distribution fits better as expected.
+Using these values, the estimated probability function for both the Poisson and negative binomial distributions are given in Table \@ref(tab:MitesTable); the negative binomial distribution fits better as expected.
 :::
 
 
@@ -1178,30 +1177,30 @@ The variable of interest, say $X$, is the number of red balls drawn in three ran
 Since the balls are not replaced, $\Pr(\text{draw a red ball})$ is not constant, and so the binomial distribution cannot be used.
 
 The probabilities can be computed, however, using probabilistic ideas from Chap. \@ref(Probability).
-There are a total of ${10\choose 3}$ ways of selecting a sample of size 3 from the bag.
+There are a total of $\binom{10}{3}$ ways of selecting a sample of size 3 from the bag.
 Consider the case $X = 0$.
-The number of ways of drawing no red balls is ${6\choose 0}$ and the number of ways of drawing the three blue balls in ${4\choose 3}$, so the probability is
+The number of ways of drawing no red balls is $\binom{6}{0}$ and the number of ways of drawing the three blue balls in $\binom{4}{3}$, so the probability is
 \[
-   \Pr(X = 0) = \frac{{6\choose 0}{4\choose 3}}{{10 \choose 3}} \approx 0.00833.
+   \Pr(X = 0) = \frac{\binom{6}{0}\binom{4}{3}}{\binom{10}{3}} \approx 0.00833.
 \]
-Likewise, the number of ways to draw one red ball (and hence two blue balls) is ${6\choose 1}\times {4\choose 2}$, so
+Likewise, the number of ways to draw one red ball (and hence two blue balls) is $binom{6}{1}\times \binom{4}{2}$, so
 \[
-   \Pr(X = 1) = \frac{ {6\choose 1}\times {4\choose 2} }{{10 \choose 3}}.
+   \Pr(X = 1) = \frac{ \binom{6}{1}\times \binom{4}{2} }{\binom{10}{3}}.
 \]
 Similarly,
 \begin{align*}
-   \Pr(X = 2) &=\frac{ {6\choose 2}\times {4\choose 1} }{{10 \choose 3}}\\
-   \Pr(X = 3) &=\frac{ {6\choose 3}\times {4\choose 0} }{{10 \choose 3}}
+   \Pr(X = 2) &=\frac{ \binom{6}{2}\times \binom{4}{1} }{\binom{10}{3}}\\
+   \Pr(X = 3) &=\frac{ \binom{6}{3}\times \binom{4}{0} }{\binom{10}{3}}
 \end{align*}
 
 In general, if there are $N$ balls in total in the bag, and $r$ of them are red, and we select a sample of size $n$ from the bag *without replacement*, then the probability of finding $x$ red balls in the sample of size $n$ is
 \[
-   \Pr(X = x) = \frac{{r\choose x}{N - r\choose n - x}}{{N\choose n}}
+   \Pr(X = x) = \frac{ \binom{r}{x}{ \binom{N - r}{n - x}}}{\binom{N}{n}}
 \]
 where $X$ is the number of red balls in sample of size $n$.
 (In the example, $n = 3$, $r = 6$ and $N = 10$.)
 
-In the formula, ${r\choose x}$ is the number of ways of selecting $x$ red balls from the $r$ red balls in the bag; ${N - r\choose n - x}$ is the number of ways of selecting all the remaining $n - x$ to be the other colour (and there are $N - r$ of those in the bag); and ${N \choose n}$ is the number of ways of selecting a sample of size $n$ if there are $N$ balls in the bag in total.
+In the formula, $\binom{r}{x}$ is the number of ways of selecting $x$ red balls from the $r$ red balls in the bag; $\binom{N - r}{n - x}$ is the number of ways of selecting all the remaining $n - x$ to be the other colour (and there are $N - r$ of those in the bag); and $\binom{N}{n}$ is the number of ways of selecting a sample of size $n$ if there are $N$ balls in the bag in total.
 
 
 :::{.definition #HypergeometricDistribution name="Hypergeometric distribution"}
@@ -1209,7 +1208,7 @@ Consider a set of $N$ items of which $r$ are of one kind (call them 'successes')
 We are interested in the probability of $x$ successes in $n$ trials, when the selection (or drawing) is made *without* replacement. 
 Then the random variable $X$ is said to have a *hypergeometric distribution* with pf
 \begin{equation}
-   p_X(x) = \frac{ {r\choose x}{N - r\choose n - x}}{{N\choose n}}
+   p_X(x) = \frac{ \binom{r}{x}\binom{N - r}{n - x}}{\binom{N}{n}}
    (\#eq:HypergeometricPMF)
 \end{equation}
 where $x = 0$, $1$, $\dots$, $n$; $x \le r$, and $n - x \le N - r$.
@@ -1258,8 +1257,8 @@ Then $X$ has  a hypergeometric distribution (since mice are chosen without repla
 \begin{align*}
    \Pr(X > 3)
    &= \Pr(X = 4) + \Pr(X = 5) \\
-   &= \frac{ {13\choose 4} {7\choose 1}}{ {20\choose 5} } +
-       \frac{ {13\choose 5} {7\choose 0}}{ {20\choose 5} } \\
+   &= \frac{ \binom{13}{4} \binom{7}{1}}{ \binom{20}{5} } +
+       \frac{ \binom{13}{5} \binom{7}{0}}{ \binom{20}{5} } \\
    & \approx  0.3228 + 0.0830 = 0.4058
 \end{align*}
 The probability is about 41%.
