@@ -30,8 +30,8 @@ For demonstration purposes however suppose the population contains only $N = 5$ 
 and assume that the sample is of size $n = 2$ and sampling is without replacement.
 
 By simple random sampling, we mean all possible samples of size $n$ are equally likely. 
-But there are ${N\choose n}$ samples of size $n$ sampling without replacement from $N$ objects. 
-Hence in our example there are ${5\choose 2} = 10$ equally likely possible samples.
+But there are $\binom{N}{n}$ samples of size $n$ sampling without replacement from $N$ objects. 
+Hence in our example there are $\binom{5}{2} = 10$ equally likely possible samples.
 For example, the sample $\{2,6\}$ has a probability of 1/10 of being selected. 
 Further, the mean of this sample, is 4.0.
 
@@ -53,15 +53,40 @@ Sample  |  Mean  |  Probability
 From this table we can obtain the distribution of the mean itself---see the table below.
 This distribution is known as the sampling distribution of the mean in recognition that it's based on sampling data.
 
+```{r SamplingDistMean, echo=FALSE}
 
-Mean         |  2.5  |  3.0  |  4.0  |  4.5  |  5.0  |  5.5  |  7.0
--------------|------|--------|-------|-------|-------|-------|------
-Probability  |  0.2  |  0.1  |  0.1  |  0.2  |  0.1  |  0.2  |  0.1
+SampDist <- array( dim = c(2, 8))
+SampDist[1, ] <- c("Mean", "2.5", "3.0", "4.0", "4.5", "5.0", "5.5", "7.0")
+SampDist[2, ] <- c("Probability", "0.2", "0.1", "0.1", "0.2", "0.1", "0.2", "0.1")
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(SampDist,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "Sampling distribution of the mean") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(SampDist,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "Sampling distribution of the mean") %>%
+    row_spec(1, bold = TRUE) 
+}
+
+```
 
 
-Notice we can determine the mean and variance of the distribution as $\mu_{\bar{X}} = 4.4$ and $\sigma^2_{\bar{X}} = 1.89$.
+The mean and variance of the distribution can be found as $\mu_{\bar{X}} = 4.4$ and $\sigma^2_{\bar{X}} = 1.89$.
 
-This example can be repated, but *sampling randomly with replacement*.
+This example can be repeated, but *sampling randomly with replacement*.
 Then there are 25 equally-likely samples possible. 
 You should show that the mean and variance of the sampling distribution in this case are respectively $\mu_{\bar{X}} = 4.4$ and $\sigma^2_{\bar{X}} = 2.52$.
 :::
@@ -70,7 +95,7 @@ You should show that the mean and variance of the sampling distribution in this 
 In principle we could obtain the distribution of any statistic, whether it be a mean, median, variance, range or whatever, using the approach in Example \@ref(exm:DistSampMeanIntro).
 In practice, the number of possible samples may be astronomical or infinite and the exact elements of the population difficult or impossible to list.
 
-In terms of distribution theory we should see Table \@ref(tab:DistSampMeanIntro) as just the distribution of a random variable, since a sample mean is a random variable. 
+In terms of distribution theory we should see Table \@ref(tab:SamplingDistMean) as just the distribution of a random variable, since a sample mean is a random variable. 
 From a statistical viewpoint this distribution tells us what we can expect for the mean when we randomly sample from a population. 
 This sort of knowledge is essential in extracting information from samples. 
 In particular notice that the mean of the sampling distribution in the example is the same as the mean of the population itself $\mu = (2 + 3 + 3 + 6 + 8 )/5 = 4.4$ and the variance of the sampling distribution is *smaller* than the variance of the population ($\sigma^2 = 5.04$). 
@@ -156,14 +181,14 @@ If $X_1, X_2, \dots, X_n$ is a *random sample* of size $n$ from a population wit
 :::
 
 :::{.proof}
-This is a direct application of Corollary \@ref(cor:varlincomb) with $a_i = 1/n$.
+This is a direct application of Corollary \@ref(cor:IID) with $a_i = 1/n$.
 :::
 
 
-Theorem \@ref(thm:CLT) applies to a random sample as defined in Def. \@ref(def:randomsample). 
+Theorem \@ref(thm:CLT) applies to a random sample as defined in Sect. \@ref(RandomSamples). 
 The distribution of the population from which the sample is drawn is irrelevant.
 
-It is interesting to note what happens if a sample is randomly selected *without replacement* from a finite population as described in \@ref(def:randomsampling).
+It is interesting to note what happens if a sample is randomly selected *without replacement* from a finite population as described in \@ref(def:RandomSample).
 
 It turns out in this situation that $\mu_{\bar{X}}$ still equals $\mu$ (because this result does not depend on the observations being independent) but
 \begin{equation}
@@ -187,10 +212,10 @@ Can we say anything about its shape?
 Wouldn't that depend on the shape of the population distribution?
 
 Well, yes, but surprisingly *only when the sample is small*.
-For large samples it turns out that it doesn't as we see in Sect.~\ref{CLT}.
+For large samples it turns out that it doesn't as we see in Sect. \ref{CentralLimitTheorem}.
 
 
-## Sampling distributions related to the normal distribution
+## Sampling distributions related to the normal distribution {#SamplingDistributionsRelatedToNormal}
 
 The normal distribution is a model of many naturally occurring phenomena. 
 Consequently it is particularly useful to study the sampling distributions of statistics of random samples from normal populations.
@@ -207,15 +232,15 @@ Then $Y$ is distributed $N(\Sigma a_i\mu_i, \Sigma a^2_i\sigma^2_i)$.
 :::
 
 :::{.proof}
-In Theorem \@ref(thm:normal) we showed the mgf of the random variable $X_i$ to be
+In Theorem \@ref(thm:NormalProperties) we showed the mgf of the random variable $X_i$ to be
 \[ 
    M_{X_i} (t)
    =\exp\{\mu_it+\frac 12 \sigma^2_it^2\}\quad i=1,2,\dots,n.
 \]
-So, for a constant $a_i$,
+So, for a constant $a_i$ (using Theorem \@ref(thm:ExpectationLinear) with $\beta = 0$, $\alpha = a_i$):
 \begin{align*}
      M_{a_iX_i}(t)   
-       &= M_{X_i}(a_it)\quad\text{(using Theorem 3.3 with} \quad\beta = 0, \ \alpha = a_i)\\
+       &= M_{X_i}(a_it)\\
        &= \exp\{\mu_ia_it+\frac 12 \sigma^2_ia^2_it^2\}.
 \end{align*}
 Since the mgf of a sum of independent random variable's is equal to the product of their mgf's we have
@@ -326,7 +351,7 @@ The distribution of $Y - X$ is $N(2.3 - 2.1, 0.0025 + 0.01)$ so that,
 
 
 We now turn our interest to the sampling distribution of the *variance* in a normal population.
-Firstly a preliminary result which is little more than a rewording of Theorem~\ref{TM:chin}.
+Firstly a preliminary result which is little more than a rewording of Theorem \@ref(thm:SumSquaredNormals).
 
 :::{.theorem #ChiSquare name="Chi-square distribution"}
 Let $X_1,X_2,\dots,X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$.
@@ -341,7 +366,7 @@ Putting $Z_i = \displaystyle{\frac{X_i - \mu}{\sigma}}$ we have
 \]
 But $Z_i$ is the standardised version of $X_i$ and has a standard normal $N(0, 1)$ distribution.  
 Also the random variables $Z_i$ are independent because the $X_i$ are independent ($i = 1, 2, \dots, n$).
-The required result follows directly from Theorem \@ref(thm:chin).
+The required result follows directly from Theorem \@ref(thm:SumSquaredNormals).
 :::
 
 
@@ -349,6 +374,7 @@ The key result describing the distribution of the sample variance
 \begin{equation}
    S^2
    = \frac{1}{n - 1}\sum_{i = 1}^n (X_i - \bar{X})^2
+   (\#eq:SampleVarDist)
 \end{equation}
 follows.
 
@@ -363,12 +389,12 @@ Then
 
 :::{.proof}
 We provide only a **partial proof**.
-We have, using \@ref(eqn:sampvar),
+We have, using \@ref(eq:SampleVarDist),
 \[
    \frac{(n - 1)S^2}{\sigma^2}
    = \sum_{i = 1}^n \left(\frac{X_i - \bar{X}}{\sigma}\right)^2
 \]
-which looks much like the conditions for Theorem~\ref{TM:chin2}. 
+which looks much like the conditions for Theorem \@ref(thm:ChiSquare). 
 The difference is that $\bar{X}$ replaces $\mu$. 
 *This difference is important.*
 We can write
@@ -387,7 +413,7 @@ This expression can be rewritten $T = U + V$, where
    V
      &= \sum_{i=1}^n \left(\frac{X_i-\bar{X}}{\sigma}\right)^2.
 \end{align*}
-Now $T\sim\chi^2(n)$ (by Theorem~\ref{TM:chin2}) and $V\sim\chi^2(1)$ because $V$ is the square of a standard normal random variable (since $\bar{X}\sim N(\mu,\sigma^2/n)$.
+Now $T\sim\chi^2(n)$ (by Theorem \@ref(thm:ChiSquare)) and $V\sim\chi^2(1)$ because $V$ is the square of a standard normal random variable (since $\bar{X}\sim N(\mu,\sigma^2/n)$.
 Therefore the mgf of $T$ is $(1 - 2t)^{-n}$ and the mgf of $V$ is $(1-2t)^{-1}$.
 
 It follows that, provided $T$ and $V$ are independent, the mgf of $T$ is the product of the mgfs of $U$ and $V$. 
@@ -549,7 +575,7 @@ Then the random variable
 \[
    T = \frac{\bar{X} - \mu}{S/\sqrt{n}}
 \]
-follows a $t(n - 1)$ distribution where $\bar{X}$ is the sample variance and $S^2$ is the sample variance as defined in (\ref{EQN:sampvar}).
+follows a $t(n - 1)$ distribution where $\bar{X}$ is the sample variance and $S^2$ is the sample variance as defined in \@ref(eq:SampleVarDist).
 :::
 
 
@@ -735,11 +761,11 @@ qf(0.99,
 
 SHOW, USING **R**, THAT MATLAB-LIKE THING: A distibution of X, sample... and x-bar is normal.
 
-Sampling distributions for various statistics of interest are well developed when sampling is from a normal distribution as shown in Sect. \@ref(normsamp).
+Sampling distributions for various statistics of interest are well developed when sampling is from a normal distribution as shown in Sect. \@ref(SamplingDistributionsRelatedToNormal).
 Although these results are important, the question remains:
 What if we do not know the distribution of the population from which the random sample is drawn (as is usually the case)?
 
-In Sect. \@ref(meandist) general results are given describing the mean and variance of the sample mean which hold for any population distribution.
+In Sect. \@ref(SamplingDistributionMean) general results are given describing the mean and variance of the sample mean which hold for any population distribution.
 Can we say more than this about the sampling distribution of the mean in general?
 
 The main result is contained in the following theorem which is so important that it is given the grand title *The Central Limit Theorem* or *CLT* for short.

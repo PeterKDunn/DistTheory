@@ -683,9 +683,10 @@ First note that the situation is binomial; if $X$ is the number of mice from the
 This could be *approximated* by the normal distribution $Y\sim N(30, 21)$.
 (Note that the variance is $np(1 - p) = 100\times 0.3\times 0.7 = 21$.)
 Since $np = 30$ and $n(1 - p) = 70$ are both much larger than 5, this approximation is expected to be quite good.
-Figure~\ref{FG:BinomialCC} shows the upper tail of the distribution near $X = 35$.
-Note that if we use the normal approximation from only $Y = 35$, only *half* of the original bar in the binomial pf is included; but since the number of mice is discrete, we want the *entire* bar corresponding to $X = 35$.
-So to compute the correct answer, we need to use the normal distribution to find $\Pr(Y > 34.5)$.
+Figure \@ref(fig:ContCorrBoxes) shows the upper tail of the distribution near $X = 35$:
+using the normal approximation from $Y = 35$, only *half* of the original bar in the binomial pf is included.
+However, since the number of mice is discrete, we want the *entire* bar corresponding to $X = 35$.
+So to compute the correct answer, the normal distribution must be evaluated for $\Pr(Y > 34.5)$.
 This change from the $X \ge 34.5$ to $Y > 34.5$ is called using the *continuity correction*.
 
 The exact answer (using the binomial distribution) is $0.1629$ (rounded to four decimal places).
@@ -713,6 +714,98 @@ c("Exact:" = round(ExactP, 6),
 ```
 
 
+```{r ContCorrBoxes, echo=FALSE, fig.width=7, fig.height=4, out.width='70%', fig.align="center", fig.cap="The normal distribution approximating the binomial distribution when $n = 100$, $p = 0.3$ and finding the probability that $X > 35$."}
+n <- 100
+p <- 0.3
+
+xx <- 33 : 37
+pdf.binomial <- dbinom(x = xx,
+                       size = n,
+                       prob = p)
+
+
+par( mfrow = c(1, 2))
+
+barplot(pdf.binomial,
+        space = 0, #Put bars together to make histogram
+        las = 1,
+        names = as.character(xx),
+        col = "white",
+        ylim = c(0, 0.08),
+        main = "Without continuity correction",
+        xlab = expression(italic(X)),
+        ylab = "Prob. function")
+# Now, this is plotted with x = 1, 2, 3, 4, 5... so make such normal pdf matches
+
+
+xx.normal <- seq( min(xx) - 0.5, # Go to left of box
+                  max(xx) + 1.0, # Go to right of box
+                  by = 0.01)
+pdf.normal <- dnorm(x = xx.normal,
+                    mean = n * p,
+                    sd = sqrt(n * p * (1 - p) ) )
+
+# SO: 0.5 on the barplot is equivalent to 33 
+# SO: 4.5 on the barplot is equivalent to 37
+# NOTE: Diff as alway 32.5
+x.normal.rescaled <- xx.normal - 32.5 # Rescale to barchart scale
+shading <- (x.normal.rescaled > 2.4999)
+
+lines( x =  x.normal.rescaled,
+       y = pdf.normal,
+       lwd = 2)
+# Shade
+polygon( x = c(2.5, 
+               x.normal.rescaled[shading], 
+               5.5),
+         y = c(0, 
+               pdf.normal[shading], 
+               0),
+         col = plotColour)
+
+
+
+
+
+barplot(pdf.binomial,
+        space = 0, #Put bars together to make histogram
+        las = 1,
+        names = as.character(xx),
+        col = "white",
+        ylim = c(0, 0.08),
+        main = "With continuity correction",
+        xlab = expression(italic(X)),
+        ylab = "Prob. function")
+# Now, this is plotted with x = 1, 2, 3, 4, 5... so make such normal pdf matches
+
+
+xx.normal <- seq( min(xx) - 0.5, # Go to left of box
+                  max(xx) + 1.0, # Go to right of box
+                  by = 0.01)
+pdf.normal <- dnorm(x = xx.normal,
+                    mean = n * p,
+                    sd = sqrt(n * p * (1 - p) ) )
+
+# SO: 0.5 on the barplot is equivalent to 33 
+# SO: 4.5 on the barplot is equivalent to 37
+# NOTE: Diff as alway 32.5
+x.normal.rescaled <- xx.normal - 32.5 # Rescale to barchart scale
+shading <- (x.normal.rescaled > 1.9999)
+
+lines( x =  x.normal.rescaled,
+       y = pdf.normal,
+       lwd = 2)
+# Shade
+polygon( x = c(2, 
+               x.normal.rescaled[shading], 
+               5.5),
+         y = c(0, 
+               pdf.normal[shading], 
+               0),
+         col = plotColour)
+
+
+```
 
 :::{.example #ContCorrectionDice name="Continuity correction"}
 Consider rolling a standard die 100 times, and counting the number of {1}'s that appear uppermost.
@@ -760,12 +853,11 @@ if( knitr::is_latex_output() ) {
 if( knitr::is_html_output() ) {
   knitr::kable(CCTable,
                escape = TRUE,
-               format = "latex",
+               format = "html",
                booktabs = TRUE,
                align = "r",
                longtable = FALSE,                
                caption = CCTable.caption) %>%
-    kable_styling(font_size = 10) %>%
     row_spec(0, bold = TRUE) 
 }
 ```
@@ -884,7 +976,7 @@ Consequently we have that $N\sim\text{Pois}(\mu = 120)$ and  $X\sim\text{Exp}(\b
 There are 799 observations which we do not give here.
 The mean time between pulses is $\beta = 0.2186$ seconds. 
 An exponential distribution might be expected to model the data well.
-This is indeed the case; see Fig. \@ref(FG:speccont:expon).
+This is indeed the case (Fig. \@ref(fig:ExpNerves)).
 What proportion of time intervals can be expected to be longer than 1 second?
 
 If $X$ is the time between successive nerve pulses (in seconds), then $X\sim \text{Exp}(\beta = 0.2186)$.
@@ -900,11 +992,35 @@ There is about a 1% chance of a nerve pulse exceeding one second.
 :::
 
 
+```{r ExpNerves, echo=FALSE, fig.align="center", fig.width=4, fig.height=3.5, fig.cap="The time between successive nerve pulses. An exponential distribution fits well."}
+NP <- read.csv("Data/NervePulses.csv")
+
+hist(NP$WaitTime,
+     xlab = "Time between pulses (seconds)",
+     ylab = "Density",
+     main = "Nerve pulse wait times",
+     col = "white",
+     freq = FALSE,
+     ylim = c(0, 4),
+     las = 1,
+     breaks = seq(0, 1.4, by = 0.1) )
+
+beta <- mean(NP$WaitTime)
+xx <- seq(0, 1.4, 
+          by = 0.01)
+
+lines( x = xx,
+       y = dexp(xx, rate = 1/beta),
+       lwd = 2,
+       col = plotColour)
+
+
+```
+
 ### Relationship between the Poisson and exponential distributions {#PoiussonExponential}
 
 Events occurring according to a Poisson process are characterised by an exponential distribution describing the interval between consecutive events.
 This relationship is captured in the following theorem.
-
 
 :::{.theorem #PoissonProcess name="Poisson process"}
 Consider a Poisson process at rate $\lambda$ and suppose observation starts at an arbitrary time point. 
@@ -1160,8 +1276,62 @@ A similar approach is adopted by [@climate:wilks:1990].
 :::{.example #Rainfall2 name="Rainfall"}
 @larsen1986introduction (Case Study 4.6.1) use the gamma distribution to model daily rainfall in Sydney, Australia using the parameter estimates $\alpha = 0.105$ and $\beta = 76.9$.
 (Their example is based on @climate:das:1955.)
-The comparison between the data and the model is given in Table \@ref(TB:speccontinuous:gamma:rainfall) indicating a good correspondence between the data and the theoretical distribution.
+The comparison between the data and the model (Table \@ref(tab:GammaRain)) indicates a good agreement between the data and the theoretical distribution.
 :::
+
+
+```{r GammaRain, echo=FALSE}
+RainTable <- array(dim = c(9, 7))
+
+RainTable[1, ] <- c("0--5", 1631, 1639, "",  "46--50", 18, 12)
+RainTable[2, ] <- c("6--10", 115, 106, "", "51--60", 18, 20)
+RainTable[3, ] <- c("11--15", 67, 62, "", "61--70", 13, 15)
+RainTable[4, ] <- c("16--20", 42, 44, "", " 71--80", 13, 12)
+RainTable[5, ] <- c("21--25", 27, 32, "", "81-90", 8, 9)
+RainTable[6, ] <- c("26--30", 26, 26, "", "91--100", 8, 7)
+RainTable[7, ] <- c("31--35", 19, 21, "", "101--125", 16, 12)
+RainTable[8, ] <- c("36--40", 14, 17, "", "126--150", 7, 7)
+RainTable[9, ] <- c("41--45", 12, 14, "", "151--425",  14, 13)
+
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(RainTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = c("c", "r", "r", "c", "c", "r", "r"),
+               col.names = c("Rainfall (mm)",
+                             "Observed",
+                             "Modelled",
+                             " ",
+                             "Rainfall (mm)",
+                             "Observed",
+                             "Modelled"),
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "The gamma distribution used to model Sydney daily rainfall") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(RainTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = c("c", "r", "r", "c", "c", "r", "r"),
+               col.names = c("Rainfall (mm)",
+                             "Observed",
+                             "Modelled",
+                             " ",
+                             "Rainfall (mm)",
+                             "Observed",
+                             "Modelled"),
+               longtable = FALSE,                
+               caption = "The gamma distribution used to model Sydney daily rainfall") %>%
+    row_spec(0, bold = TRUE) 
+}
+
+```
 
 <!-- \begin{table} -->
 <!-- \begin{center} -->
