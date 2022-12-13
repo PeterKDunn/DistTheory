@@ -1869,7 +1869,7 @@ if( knitr::is_html_output() ) {
 ### Venn diagrams
 
 Venn diagrams can be useful when there are two events, sometimes three, but become unworkable for more than three.
-Often, tables can be used to better represent situations that have been shown in Venn diagrams.
+Often, tables can be used to better represent situations shown in Venn diagrams.
 
 
 
@@ -1880,7 +1880,7 @@ The events $C$ and $D$ were defined [earlier](#exm:BreastCancer)).
 A Venn diagram could be constructed to show the sample space (Fig. \@ref(fig:BreastVenn)).
 :::
 
-```{r BreastVenn, echo=FALSE, fig.height=7, out.width = '95%', fig.align="center", fig.cap="The Venn diagram for the breast cancer example"}
+```{r BreastVenn, echo=FALSE, fig.height=7, out.width = '90%', fig.align="center", fig.cap="The Venn diagram for the breast cancer example"}
 par( mfrow = c(2, 2))
 colourCancer <- rgb(0, 0, 255, 
                     max = 255,
@@ -2025,7 +2025,7 @@ text(x = 0.5,
 
 
 
-### Sample spaces
+### Counting sample spaces {#Counting}
 
 Sometimes the most convenient way to compute probabilities is to list the sample space.
 This only works for small discrete sample spaces, and works best when each of the outcomes in the sample space are equally likely.
@@ -2034,6 +2034,7 @@ This only works for small discrete sample spaces, and works best when each of th
 ::: {.example #TwoDice name="Rolling two dice"}
 Consider rolling two standard dice and noting the *sum* of the numbers shown.
 The sample space is listed in Table \@ref(tab:TwoDice).
+Then, for example, $\Pr(\text{sum is 7}) = 6/36$ is found by counting the equally-likely outcomes that sum to seven.
 
 
 ```{r TwoDice, echo=FALSE}
@@ -2052,11 +2053,13 @@ if( knitr::is_latex_output() ) {
                format = "latex",
                booktabs = TRUE,
                align = "r",
-               longtable = FALSE,                
+               longtable = FALSE,
+               linesep = c("", "", "\\addlinespace"),
                escape = FALSE,
                caption = "The sum of rolling two dice") %>%
     kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) 
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
   knitr::kable(DieSum,
@@ -2066,21 +2069,16 @@ if( knitr::is_html_output() ) {
                align = "r",
                longtable = FALSE,                
                caption = "The sum of rolling two dice") %>%
-    row_spec(0, bold = TRUE) 
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE)
 }
 ```
-
-Then, $\Pr(\text{sum is 7}) = 6/36$ is found by counting the equally-likely outcomes that sum to seven.
 :::
 
 
-When the number of elements in the sample space is large, principles and formulae exist which facilitate counting.
-Some of these are described in the next section.
+The number of elements in a set is often large, and a complete enumeration of the set is unnecessary if all we want to do is to count the number of elements in the set.
+When the number of elements in the sample space is large, principles and formulae exist which aid counting, some of which are described in the following sections.
 
-
-## Counting techniques {#Counting}
-
-The number of elements in a set is often large, and a complete enumeration of the set is unnecessary if all we want to do is to count the number of elements in it.
 
 
 ### Multiplication principle {#MultiplicationPrinciple}
@@ -2088,17 +2086,18 @@ The number of elements in a set is often large, and a complete enumeration of th
 If we have $m$ ways to perform act $A$ and if, for *each* of these, there are $n$ ways to perform act $B$, then there are $m\times n$ ways to perform the acts $A$ *and* $B$. 
 This is called the *multiplication principle*.
 
+
 :::{.definition #MultiplicationPrinciple name="Multiplication principle"}
-With $m$ elements $a_1, a_2, \ldots , a_m$ and $n$ elements $b_1, b_2, \ldots, b_n$ it is possible to form $mn$ pairs containing one element from each group.
+With $m$ elements $a_1, a_2, \ldots , a_m$ and $n$ elements $b_1, b_2, \ldots, b_n$ then $mn$ pairs can be made containing one element from each group.
 :::
 
+
 The principle can be extended to any number of sets.
-For example: For three sets of elements $a_1, a_2, \ldots , a_m$; $b_1, b_2, \ldots , b_n$ and $c_1, c_2, \ldots , c_p$, the number of distinct triplets containing one element from each set is equal to $mnp$.
+For example: For three sets of elements $a_1, a_2, \ldots , a_m$, $b_1, b_2, \ldots , b_n$ and $c_1, c_2, \ldots , c_p$, the number of distinct triplets containing one element from each set is $mnp$.
 
 
 :::{.example #MultiplicationPrinciple name="Multiplication principle"}
 Suppose a restaurants offers five main courses and three desserts.
-
 If a 'meal' consists of one main plus one dessert, a total of $5\times 3 = 15$ meal combinations are possible.
 :::
 
@@ -2106,7 +2105,7 @@ If a 'meal' consists of one main plus one dessert, a total of $5\times 3 = 15$ m
 ### Permutations
 
 Another important counting problem deals with different permutations of a finite set.
-The word *permutation* in this context is simply an ordering of the set: selecting elements when the *selection order is important*.
+The word *permutation* in this context means an *ordering* of the set: selecting elements when the *selection order is important*.
 
 
 #### Selecting without replacement
@@ -2117,15 +2116,15 @@ The second element must then be chosen, which can be done in $(n - 1)$ ways (sin
 There are then $(n - 2)$ ways for the third, and so on. 
 
 We find (using the multiplication principle) that there are $n(n - 1)(n - 2)\ldots 2 \times 1$ different ways to order the $n$ elements. 
-This is denoted by $n!$ and called 'n factorial':
+This is denoted by $n!$ and called '$n$-factorial':
 \[
    n! = n(n - 1)(n - 2) \ldots (2)(1)
 \]
 where $n\geq 1$, and we define $0! = 1$.
 
-In some cases, it is necessary to know the number of ways in which the first $r$ elements of an ordering may be chosen. 
+In some cases, it is necessary to know the number of ways in which only the first $r$ elements of an ordering may be chosen. 
 
-For this problem, the first element in the ordering may be chosen in $n$ different ways, the second in $(n -1)$ ways, the third in $(n - 2)$ ways, and so on... down to the $rth$, which may be chosen in $(n -r + 1)$ ways. 
+For this problem, the first element in the ordering may be chosen in $n$ different ways, the second in $(n - 1)$ ways, the third in $(n - 2)$ ways, and so on... down to the $rth$, which may be chosen in $(n - r + 1)$ ways. 
 
 This number is denoted by $^nP_r$, and we write
 \begin{equation}
@@ -2137,21 +2136,19 @@ This expression is referred to as *the number of permutations of $r$ elements fr
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Notation for permutations varies.
-
 Some notation for permutations include $nPr$, $^nP_r$, $P_n^r$ or $P(n,r)$.
 :::
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 By definition, $0! = 1$.
-By making this definition, many formulas in combinatorics (that follow) remain valid for all valid choices of parameters values.
+By making this definition, many formulas in combinatorics (that follow) remain valid for all valid choices of $n$ and $r$.
 :::
 
 
 :::{.example #PasswordLowerCase name="Permutations"}
 Suppose a company requires users to select a password of 8 characters using only lower-case letters.
-
-Since the order of the letters is important in a password, we need to work with *permutations*.
+Since the order of the letters is important in a password, we work with *permutations*.
 There are 
 \[
    \displaystyle {}^{26}P_8 =  \frac{26!}{(26 - 8)!} = 62\,990\,928\,000
@@ -2176,8 +2173,8 @@ A *combination* of $r$ elements from a set $S$ is a subset of $S$ with exactly $
 
 #### Selecting without replacement
 
-The number of *combinations* of $r$ elements from a set with $n$ distinct elements id denoted by $^nC_r$.
-The number of permutations is given by \@ref(eq:Permutation), but of course the number of combinations must be smaller, since each combination gives rise to several permutations.
+The number of *combinations* of $r$ elements from a set with $n$ distinct elements is denoted by $^nC_r$.
+The number of permutations is given by \@ref(eq:Permutation), but the number of combinations must be smaller, since many permutations are equivalent to the same combination.
 In fact, each combination of $r$ elements can be ordered in $r!$ different ways, and so gives rise to $r!$ permutations.
 Hence, the number of permutations must be $r!$ times the number of combinations.
 We have then,
@@ -2197,25 +2194,23 @@ Notation for combinations include $nCr$, $^nC_r$, $C_n^r$, $\binom{n}{r}$ or $C(
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The difference between *permutations* and *combinations* is important!
 With permutations, the *selection order* is important, whereas *selection order is not important* with combinations.
-
 In addition, both formulae apply when *there is no replacement* of the items.
 :::
 
 
 ::: {.example #ChooseDigits name="Selecting digits"}
 Consider the set of integers ${1, 3, 5, 7}$.
-Choose two numbers, *without replacement*, and call the first $a$ and the second $b$.
+Choose two numbers, *without replacement*; call the first $a$ and the second $b$.
 If we then compute $a\times b$, then $^4C_2 = 6$ answers are possible since the *selection order is not important* (e.g., $3 \times 7$ gives the *same* answer as $7 \times 3$).
 
-However, if we compute $a\div b$, there are $^4P_2 = 12$ possible answers, since the *selection order is important* (e.g., $3 \div 7$ gives a *different* answer than $7 \div 3$).
+However, if we compute $a\div b$, then $^4P_2 = 12$ answers are possible, since the *selection order is important* (e.g., $3 \div 7$ gives a *different* answer than $7 \div 3$).
 :::
-
-
 
 
 :::{.example #CombinationOzLotto name="Oz Lotto combinations"}
 In [Oz Lotto](#exm:Lotto), players select seven numbers from 47, and try to match these with seven randomly selected numbers.
 The order in which the seven numbers are selected in not important, so *combinations* (not permutations) are appropriate.
+That is, winning numbers drawn,m in the order, as $\{1, 2, 3, 4, 5, 6, 7\}$ are effectively the same as if they were drawn in the order $\{7, 2, 1, 3, 4, 6, 5\}$.
 
 The number of options for players to choose from is
 \[
@@ -2223,7 +2218,7 @@ The number of options for players to choose from is
 \]
 that is, almost 63 million combinations are possible.
 
-The probability of picking the correct seven numbers in a simgle guess is
+The probability of picking the correct seven numbers in a single guess is
 \[
    \frac{1}{62\,891\,499} = 1.59\times 10^{-8} = 0.000\,000\,015\,9.
 \]
@@ -2235,9 +2230,8 @@ The binomial expansion
   (a + b)^n = \sum^{n}_{r = 0} \binom{n}{r} a^r b^{n - r}
 \]
 for $n$ a positive integer, is often referred to as the *Binomial Theorem* and hence $\binom{n}{r}$ is referred to as a *binomial coefficient*.
-
 This series, and associated properties, is sometimes useful in counting.
-Some of these properties are stated below.
+Some of the properties of combinations are stated below.
 
 1. $\binom{n}{r} = \binom{n}{n - r}$, for $r = 0, 1, \ldots, n$.
 2. As a special case of the above, $\binom{n}{0} = 1 = \binom{n}{n}$.
@@ -2252,21 +2246,19 @@ The number of ways is actually $\binom{n + r - 1}{r}$.
 
 
 
-
 ## Introducing statistical computing {#StatisticalComputing}
 
 Computers and computer packages are essential tools in the application of statistics to real problems. 
-In this book, you will be introduced to the statistical package **R**. 
-It will be used to illustrate various concepts and should help you understand the theory (Example \@ref(exm:CoinToss)).
+In this book, the statistical package **R** is used, and will be used to illustrate various concepts to help you understand the theory (Example \@ref(exm:CoinToss)).
 
-In particular, **R** will be used to verify theoretical results obtained.
+In particular, **R** can be used to verify theoretical results obtained.
 To do this, a technique called *computer simulation* can be used. 
 
 Simulation can also be used to solve problems for which it may be difficult (or impossible) to obtain a theoretical result. 
 Sometimes these numerical solutions to intractable analytical problems is termed *Monte Carlo simulation*.
 
 
-### The gameshow problem {#Gameshow}
+### The gameshow (Monty Hall) problem {#Gameshow}
 
 A gameshow contestant is told there is a car behind one of three doors, and a goat behind each of the other doors. 
 The contestant is asked to select a door. 
@@ -2280,17 +2272,21 @@ What is the contestants best strategy?
 3. Choose either unopened door at random.
 
 
-Only a brief outline of the method is given here. 
-A more complete solution is given later (see Exercise ???Somewhere!).
 
-1. Generate a random sequence of length 1000 consisting of the integers 1, 2 and 3. 
-  (These numbers represent the door that the car is behind on each of 1000 nights, assumed chosen at random.)
+::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
+What strategy do you think would be best?
+:::
+
+
+Only a brief outline of the method is given here. 
+A more complete solution is given later (see Exercise ???Somewhere???).
+
+1. Generate a random sequence of length 1000 of the digits 1, 2 and 3 to represent the door hiding the car on each of 1000 nights. 
 2. Generate another such sequence to represent the contestants *first* choice on each of the 1000 nights (assumed chosen at random).
-3. The number of times the numbers in the two lists of trandom numbers *do* agree represents the number of times the contestant will win *if the contestant doesn't change doors*.
+3. The number of times the numbers in the two lists of random numbers *do* agree represents the number of times the contestant will win *if the contestant doesn't change doors*.
    If the numbers in the two columns *don't* agree then the contestant will win *only if the contestant decides to change doors*.
 
-
-For the 1000 nights simulated, contestants would have won the car 30 times if they retained their first choice which means they would have won 70 times if they had changed. 
+For the 1000 nights simulated, contestants would have won the car 303 times if they retained their first choice which means they would have won 697 times if they had changed. 
 (Does this agree with your intuition?) 
 This implies (correctly!) that the best strategy is to change. 
 You might like to try doing the simulation for yourself.
@@ -2327,20 +2323,22 @@ Probability is essential in statistics, and hence in making decisions.
 Even without a knowledge of formal hypothesis testing, probability and computer simulation can be used to guide decision making.
 
 Consider this study about beta-endorphins in the blood, which are a sign of stress.
-Researchers (@data:hand:handbook, Dataset 232; @hoaglin2011exploring) measured the beta-endorphin concentration twice for 19 patients about to undergo surgery: In the hours before surgery, and also in the minutes before surgery.
+Researchers (@data:hand:handbook, Dataset 232; @hoaglin2011exploring) measured the beta-endorphin concentration twice for 19 patients about to undergo surgery: In the *hours* before surgery, and also in the *minutes* before surgery.
 They wanted to see if there was a difference in the mean beta-endorphins at these two time points:
 
 ```{r}
-PreHours <- c(10.0,6.5,8.0,12.0,5.0,11.5,5.0,3.5,7.5,5.8,
-             4.7,8.0,7.0,17.0,8.8,17.0,15.0,4.4,2.0)
+PreHours <- c(10.0, 6.5, 8.0, 12.0, 5.0, 11.5, 
+              5.0, 3.5, 7.5, 5.8, 4.7, 8.0, 7.0,
+              17.0, 8.8, 17.0, 15.0, 4.4, 2.0)
              
-PreMins <- c(6.5,14.0,13.5,18.0,14.5,9.0,18.0,42.0,7.5,6.0,
-             25.0,12.0,52.0,20.0,16.0,15.0,11.5,2.5,2.0)
+PreMins <- c(6.5, 14.0, 13.5, 18.0, 14.5, 9.0,
+             18.0, 42.0, 7.5, 6.0, 25.0, 12.0, 
+             52.0, 20.0, 16.0, 15.0, 11.5, 2.5, 2.0)
 
 sum( PreMins > PreHours)
 ```
 
-The data show that 12 patients had beta-endorphin concentrations higher *minutes* before surgery rather than *hours* before surgery.
+The data show that 12 patients had beta-endorphin concentrations higher in the *minutes* before surgery rather than in the *hours* before surgery.
 
 Is this evidence that the beta-endorphine concentrations are higher in the minutes before surgery rather than the hours before surgery?
 The answer is not obvious: Even if there was *no difference* between the beta-endorphin concentrations between the two times, random variation means that some patients would have the higher reading in the *minutes* before, and some would have the higher reading in the *hours* before.
@@ -2356,7 +2354,7 @@ set.seed(869812)
 
 
 ```{r}
-HigherMins <- array(dim = 19)  # Store info 
+HigherMins <- array(dim = 19)  # For storing the info 
 
 #For each patient:
 for (i in 1:19){ 
@@ -2370,19 +2368,22 @@ for (i in 1:19){
 }
 ```
 
-So for this simulated outcome, we find:
+So for this single simulated outcome, we find:
 ```{r}
 # So for this simulation:
 HigherMins
 ```
-That is,
+That is, for this single simulation, 8 of the 19 patients had higher beta-endorphin concentrations in the *minutes* before surgery compared to the *hours* before surgery:
 ```{r}
 # For this simulation, how many higher for "Mins"?
 sum(HigherMins)
 ```
-... of the 19 patients had a beta-endorphin concentration *minutes* before surgery.
-
 We can repeat this process many times, say 1000 times:
+
+
+```{r echo=FALSE}
+set.seed(869812)
+```
 
 ```{r}
 numSims <- 1000   # 1000 simulations
@@ -2415,7 +2416,7 @@ SummaryTable
 
 This table shows us how often we find the given number of patients having a beta-endorphin concentration higher in the *minutes* before surgery compared to *hours* before surgery, just by chance, if there really was no difference.
 
-What we found in the data was that this occurred 12 times for 19 patients.
+In the study data, this occurred 12 times among the 19 patients.
 The simulation shows that this is not at all unusual, even when there is no difference between the two time points.
 In fact, 12 people---or even more than 12 people---having a higher concentration minutes before is 
 
@@ -2449,14 +2450,15 @@ Theoretical results can also be verified using computer simulation.
 
 
 :::{.exercise #BasicProbs}
-Suppose $\Pr(A) = 0.44$, $\Pr(B) = 0.35$ and $\Pr(A\cap B) = 0.11$.
-Find:
+Suppose $\Pr(A) = 0.53$, $\Pr(B) = 0.24$ and $\Pr(A\cap B) = 0.11$.
 
-1. $\Pr(A\cup B)$.
-2. $\Pr(\overline{A}\cap B)$.
-3. $\Pr(\overline{A} \cup \overline{B})$.
-4. $\Pr(A \mid B)$.
-5. Are events $A$ and $B$ independent?
+1. Display the situation using a Venn diagram, tree diagram and a table.
+   Which is easier in this situation?
+2. Find $\Pr(A\cup B)$.
+3. Find $\Pr(\overline{A}\cap B)$.
+4. Find $\Pr(\overline{A} \cup \overline{B})$.
+5. Find $\Pr(A \mid B)$.
+6. Are events $A$ and $B$ independent?
 :::
 
 
@@ -2479,6 +2481,7 @@ Suppose real values are chosen at random for the constants $a$, $b$ and $c$.
 
 1. Define the sample space $S$ for the experiment.
 2. Define the event $R$: 'the equation has two equal real roots'.
+2. Define the event $Z$: 'the equation has no real roots'.
 :::
 
 
