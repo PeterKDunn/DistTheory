@@ -1207,42 +1207,40 @@ Knowing the extra information in event $B$ has changed the calculation of $\Pr(A
 
 
 ::: {.example #Planes name="Planes"}
-USE REAL DATA??
-
-Define these two events:
+Consider these two events:
 \begin{align*}
    D:&\quad \text{A person dies};\\
    F:&\quad \text{A person falls from an airborne plane with no parachute}.
 \end{align*}
 
-Consider the difference between two probabilities $\Pr(D \mid F)$ and $\Pr(F\mid D)$.
 
-Consider the first.
+Consider the probability $\Pr(D \mid F)$ 
 If you are told that someone falls out of an airborne plane with no parachute, the probability that they die is very high.
 
-Consider the second.
-If you are told that some has died, it is very unlikely the the cause is a fall from an airborne plane.
+Then, consider the probability $\Pr(F\mid D)$.
+If you are told that some has died, the cause is very unlikely to be a fall from an airborne plane.
 
 Thus, the first probability is very close to one, and the second is very close to zero.
 :::
 
 
 Two methods exist for computing conditional probability: first principles, or a formal definition of $\Pr(A \mid B)$.
-
-For the first, we simply consider the original sample space $S$, remove the sample points inconsistent with the new information that $B$ has occurred, form a new sample space, say $S^*$, and recompute the probability of event $A$ relative to $S^*$.
-
+Using first principles, consider the original sample space $S$, remove the sample points inconsistent with the new information that $B$ has provided, form a new sample space, say $S^*$, and recompute the probability of event $A$ relative to $S^*$.
 $S^*$ is called the *reduced sample space*.
 
 This method is appropriate when the number of outcomes is relatively small.
-The following definition applies more generally.
+The following formal definition applies more generally.
+
 
 ::: {.definition #ConditionalProb name="Conditional probability"}
 Let $A$ and $B$ be events in $S$ with $\Pr(B) > 0$. 
 Then
 \[
-   \Pr(A \mid B) = \frac{\Pr(A\cap B)}{\Pr(B)}
+   \Pr(A \mid B) = \frac{\Pr(A\cap B)}{\Pr(B)}.
 \]
 :::
+
+
 The definition automatically takes care of the sample space reduction noted earlier.
 
 
@@ -1280,26 +1278,23 @@ Prob0 <- R / Number
 CProb30 <- Prob30 / Prob0
 ```
 
-::: {.example #RainfallDF name="Rainfall"}
-Consider again the rainfall at Charlevill in April (Example \@ref(exm:ChanceRain)).
 
+::: {.example #RainfallDF name="Rainfall"}
+Consider again the rainfall at Charleville in April (Example \@ref(exm:ChanceRain)).
 Define $L$ as the event 'receiving *more than* 30mm in April', and $R$ as the event 'receiving *any* rainfall in April'.
 Event $L$ occurs `r L` times in the `r numYears` years of data, while event $R$ occurs `r R` times.
 
-Then, using the relative frequency approach with the [BoM](http://www.bom.gov.au) data, the probability of obtaining *more than* 30mm in April is
+Using the relative frequency approach with the [BoM](http://www.bom.gov.au) data, the probability of obtaining *more than* 30mm in April is
 \[
    \Pr(L) = \frac{`r L`}{`r Number`} = `r round(Prob30, 3)`. 
 \]
-We could also consider the *conditional probability* of receiving more than 30mm, *given* that some rainfall was recorded.
-That is:
+However, the *conditional probability* of receiving more than 30mm, *given* that some rainfall was recorded, is:
 \[
    \Pr(L \mid  R) = \frac{\Pr(L \cap R)}{\Pr(R)} = \frac{\Pr(L)}{\Pr(R)} = \frac{`r round(Prob30, 4)`}{`r round(Prob0, 4)`} = `r round(CProb30, 3)`.  
 \]
-If we know rain has been received, the probability that the amount was greater than 30mm is `r round(CProb30, 3)`.
+If we know rain has fallen, the probability that the amount was greater than 30mm is `r round(CProb30, 3)`.
 Without this prior knowledge, the probability is `r round(Prob30, 3)`.
 :::
-
-
 
 
 :::{.example #MumpsIndependence name="Conditional probability"}
@@ -1310,14 +1305,12 @@ For females, the probability of complying with the isolation request is:
 \[
    \Pr(\text{Compiled} \mid  \text{Females}) = 63/84 = 0.75.
 \]
-
 For males, the probability of complying with the isolation request is
 \[
    \Pr(\text{Compiled} \mid  \text{Males}) = 36/48 = 0.75.
 \]
 
 Whether we look at only females or only males, the probability of selecting a student in the sample that complied with the isolation request is the same: 0.75.
-
 Also, the *non-conditional* probability that a student isolated (ignoring their sex) is:
 \[
    \Pr(\text{Student isolated}) = \frac{99}{132} = 0.75.
@@ -1361,9 +1354,11 @@ if( knitr::is_html_output() ) {
 }
 ```
 
+
 ### Multiplication rule
 
-As a consequence of Definition \@ref(def:ConditionalProb), we have the following theorem.
+A consequence of Definition \@ref(def:ConditionalProb) is the following theorem.
+
 
 :::{.theorem #MultRule name="Multiplication rule for probabilities"}
 For any events $A$ and $B$, the probability of $A$ and $B$ is
@@ -1402,15 +1397,13 @@ Otherwise the events *dependent* (or *not independent*).
 
 
 Provided $\Pr(B) > 0$, Definitions \@ref(def:ConditionalProb) and \@ref(def:Independence) show that $A$ and $B$ are independent if, and only if, $\Pr(A \mid B) = \Pr(A)$.
-
-This statement of independence is sensible in that $\Pr(A \mid B)$ is the probability of $A$ occurring if $B$ has already occurred, while $\Pr(A)$ is the probability of $A$ occurring without any knowledge of whether $B$ has occurred or not. 
-If these are equal, then the fact that $B$ has occurred has made no difference to the probability that $A$ has occurred, which is precisely what is meant by *independence*.
+This statement of independence makes sense: $\Pr(A \mid B)$ is the probability of $A$ occurring if $B$ has already occurred, while $\Pr(A)$ is the probability that $A$ occurs without any knowledge of whether $B$ has occurred or not. 
+If these are equal, then $B$ has occurring has made no difference to the probability that $A$ occurs, which is what *independence* means.
 
 
 
 :::{.example}
 In Example \@ref(exm:MumpsIndependence), the probability of males isolating was the *same* as the probability of females isolating.
-
 The sex of the student is *independent* of whether they isolate.
 That is, whether we look at females or males, the probability that they isolated is the same.
 :::
@@ -1418,6 +1411,7 @@ That is, whether we look at females or males, the probability that they isolated
 
 The idea of independence can be generalised to more than two events.
 For three events, the following definition of *mutual independence* applies, which naturally extends to any number of events.
+
 
 ::: {.definition #MutualIndependence name="Mutual independence"}
 Three events $A$, $B$ and $C$ are *mutually independent* if, and only if,
@@ -1450,20 +1444,11 @@ Exercise.
 [Mutually exclusive](def:MutuallyExclusive) and [independent](def:Independence) events sometimes get confused.
 
 The simple events defined by the outcomes in a sample space are mutually exclusive, since only one can occur in any realisation of the random process.
-Mutually exclusive events have no common outcomes: for example, achieving both an A grade and a C grade for this course is not possible.
+Mutually exclusive events have no common outcomes: for example, both passing and failing this course is not possible in the one semester.
 Obtaining one excludes the possibility of the other... so *whether one occurs depends on whether the other has occurred*.
 
 In contrast, if two events are *independent*, then whether or not one occurs does not affect the chance of the other happening.
-If event $A$ can occur, then $B$ happening will not influence the chance of $A$ happening if they are independent, so *it certainly does not exclude the possibility of the other occurring*.
-
-
-::: {.example #IndependentEvents name="Independence"}
-Independent events refer to events that have no impact on each other.
-
-For example, *how* I get to work tomorrow (walk or ride my bicycle) does not change whether or not I have a busy day at work.
-They are independent.
-:::
-
+If event $A$ can occur, then $B$ happening will not influence the chance of $A$ happening if they are independent, so *it does not exclude the possibility of the other occurring*.
 
 Confusion between mutual exclusiveness and independence arises sometimes because the sample space is not clearly identified.
 
@@ -1478,7 +1463,7 @@ For example, $\Pr\big( (HH) \big) = 1/4$.
 An alternative view of this random process is to think of *repeating the process of tossing a coin once*.
 For one toss of a coin, the sample space 
 \[
-   S_1 = \{HT\}
+   S_1 = \{ H, T \}
 \]
 and $\Pr(H) = 1/2$ is the probability of getting a head on the *first* toss.
 This is also the probability of getting a head on the *second* toss.
@@ -1498,18 +1483,17 @@ and 'getting a head on the "second" toss' is
 where $E_1$ and $E_2$ are events defined on $S_2$.
 This makes it clear that $E_1$ and $E_2$ are not mutually exclusive because $E_1\cap E_2 \ne \emptyset$.
 
-The two events $E_1$ and $E_2$ are *independent* because,  whether or not a head occurs on one of the tosses, the probability of a head occurring on the other is still $1/2$... otherwise coins must have memories or can communicate...
-
+The two events $E_1$ and $E_2$ are *independent* because,  whether or not a head occurs on one of the tosses, the probability of a head occurring on the other is still $1/2$.
 Seeing that the events are independent provides another way of calculating the probability of the two heads occurring 'together': $1/2\times 1/2 = 1/4$, since the probabilities of *independent* events can be multiplied
 
 
-::: {.example #Mendell name="Mendell"}
+::: {.example #Mendell name="Mendell's peas"}
 @BIB:Mendel:hybrids conducted famous experiments in genetics.
-
 In one study, Mendel crossed a pure line of round yellow peas with a pure line of wrinkled green peas.
 Table \@ref(tab:PeaTable) shows what happened in the *second* generation.
 For example, $\Pr(\text{round peas}) = 0.7608$.
-Biologically, we would expect about $75$% to be round; the data appear reasonably sound in this respect.
+Biologically, about $75$% of peas are expected to be round; the data appear reasonably sound in this respect.
+
 
 ```{r PeaTable, echo=FALSE}
 PeaTable <- array(dim = c(2, 2) )
@@ -1548,22 +1532,22 @@ if( knitr::is_html_output() ) {
 
 ```
 
-Is the type of pea (round or wrinkled) independent of the colour?
-That is, if the pea is round, does it have any effect in the colour of the pea?
+Is the type of pea (rounded or wrinkled) *independent* of the colour?
+That is, if the pea is rounded, does it impact the colour of the pea?
 
-To test independence, one form of the formula is $\Pr(\text{round} \mid \text{yellow}) = \Pr(\text{round})$.
-In other words, the fact that the pea is yellow does not affect that probability that the pea is round.
+Independence can be evaluated using the formula is $\Pr(\text{round} \mid \text{yellow}) = \Pr(\text{round})$.
+In other words, the fact that the pea is yellow does not affect that probability that the pea is rounded.
 From Table \@ref(tab:PeaTable):
 
 \begin{align*}
-   \Pr(\text{round}) 
-   &= 0.7608,\\
+   \Pr(\text{rounded}) 
+   &= 0.5665 + 0.1942 = 0.7608,\\
    \Pr(\text{round} \mid \text{yellow}) 
-   &= 0.5665/0.7482 = 0.757.
+   &= 0.5665/(0.5665 + 0.1817) = 0.757.
 \end{align*}
 
 These two probabilities are very close.
-Given that the data in the Table is only a *sample* (from the population of all peas), it seems reasonable that the colour and shape of the peas are independent.
+The data in the table are just a *sample* (from the population of all peas), so assuming the colour and shape of the peas are independent is reasonable.
 :::
 
 
@@ -1582,8 +1566,8 @@ The events $B_1, B_2, \ldots , B_k$ are said to represent a *partition* of the s
 
 
 The implication is that when the random process is performed, one and only one of the events $B_i$ ($i = 1, \ldots, k)$ occurs.
-
 We use this concept in the following theorem.
+
 
 :::{.theorem #TotalProb name="Theorem of total probability"}
 Let $A$ be an event in $S$ and $\{B_1, B_2, \ldots , B_k\}$ a partition of $S$.
@@ -1602,8 +1586,7 @@ The [third axiom](#def:ThreeAxioms) of probability together with the multiplicat
 
 
 :::{.example}
-Consider the event 'rolling an even number on a die'.
-We could also define the events
+Consider event $A$: 'rolling an even number on a die', and also define the events
 \[
    B_i:\quad\text{The number $i$ is rolled on a die}
 \]
@@ -1621,7 +1604,7 @@ Then, using the [*Theorem of total probability*](#TotalProb):
    &\quad \left(0\times \frac{1}{6}\right) + \left(1\times \frac{1}{6}\right) 
     = \frac{1}{2}.
 \end{align*}
-This the same answer we would obtain using the classical approach.
+This the same answer obtained using the classical approach.
 :::
 
 
@@ -1631,7 +1614,7 @@ If an event is known to have occurred (i.e., non-zero probability), and the samp
 
 
 :::{.theorem #Bayes name="Bayes' theorem"}
-Let $A$ be an event in $S$ such that $\Pr(A) > 0$ and $\{ B_1, B_2, \ldots , B_k\}$, a [partition](#Partitioning) of $S$.
+Let $A$ be an event in $S$ such that $\Pr(A) > 0$, and $\{ B_1, B_2, \ldots , B_k\}$ is a [partition](#Partitioning) of $S$.
 Then
 \[
    \Pr(B_i \mid A) = \frac{\Pr(B_i) \Pr(A \mid B_i)}
@@ -1647,14 +1630,13 @@ This is a direct application of Definition \@ref(def:ConditionalProb), the multi
 Notice that the right-hand side includes conditional probabilities of the form $\Pr(A\mid B_i)$, while the left-hand side contains the probability $\Pr(B_i\mid A)$.
 In effect, the theorem takes a conditional probability and can 'reverse' the conditioning.
 
-Bayes' theorem has many uses, as it uses conditional probabilities that are easy to find or estimate (such as $\Pr(A \mid B_j$), to compute a probability that is *not* easy to find or estimate (such as $\Pr(B_i \mid A)$).
-
+Bayes' theorem has many uses, as it uses conditional probabilities that are easy to find or estimate to compute a conditional probability that is *not* easy to find or estimate.
 The theorem is the basis of a branch of statistics known as *Bayesian statistics* which involves using pre-existing evidence in drawing conclusions from data.
 
 
 ::: {.example #BreastCancer name="Breast cancer"}
-The success of mammograms for detecting breast cancer has been well documented. 
-Mammograms are generally conducted on women over 40, though breast cancer is not unknown in women under 40. 
+The success of mammograms for detecting breast cancer has been well documented [@white1993mammography]. 
+Mammograms are generally conducted on women over 40, though breast cancer rarely occurs in women under 40. 
 
 We can define two events of interest:
 \begin{align*}
@@ -1695,9 +1677,8 @@ Using [Bayes' Theorem](#Bayes):
             {(0.02\times 0.75) + (0.98\times 0.10)}\\
    &= \frac{0.015}{0.15 + 0.098} =  0.0604.         
 \end{align*}
-Consider what this says: Given that a mammogram returns a *positive test*, the probability that the woman really has breast cancer is only about 6%...
-
-This partly explains why mammograms for women under 40 are not commonplace: most women who return a positive test results actually do not have breast cancer.
+Consider what this says: Given that a mammogram returns a *positive test* (for a woman under 40), the probability that the woman really has breast cancer is only about 6%...
+This partly explains why mammograms for women under 40 are not commonplace: most women who return a positive test result actually do not have breast cancer.
 
 The reason for this surprising result is explained in Example \@ref(exm:BreastCancerTree).
 :::
@@ -1708,7 +1689,7 @@ The reason for this surprising result is explained in Example \@ref(exm:BreastCa
 
 ## Computing probabilities for discrete sample spaces {#ComputingProbs}
 
-Different schemes can be used to help compute probabilities, such as tree diagrams, tables and Venn diagrams.
+Different schemes can be used to help compute probabilities, such as tree diagrams, tables, Venn diagrams and counting.
 Typically, multiple methods may be applied to a given situation, but one method is often easier to apply.
 
 
@@ -1716,6 +1697,7 @@ Typically, multiple methods may be applied to a given situation, but one method 
 
 Tree diagrams are useful when a [random process](#RandomProcess) can be seen, or thought of, as occurring in steps or stages.
 The branches in the 'second stage' are *conditional probabilities*, conditional of the branch on the first step. 
+Of course, the ideas extend to multiple steps.
 
 
 :::{.example #BreastCancerTree name="Breast cancer"}
@@ -1735,7 +1717,8 @@ This explains the surprisingly result in Example \@ref(exm:BreastCancer): Becaus
 :::
 
 
-```{r BreastTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the breast-cancer example", out.width='70%'}
+```{r BreastTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the breast-cancer example", out.width='67%'}
+par(mar = c(1, 0.5, 0.5, 0.5) + 0.1)
 
 plot( x = c(0, 1),
       y = c(0, 1),
