@@ -4,7 +4,7 @@
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
 Upon completion of this chapter, you should be able to:
 
-* be familiar with the probability functions and underlying parameters of uniform, binomial, geometric, negative binomial, Poisson, and hypergeometric random variables.
+* recognise the probability functions and underlying parameters of uniform, binomial, geometric, negative binomial, Poisson, and hypergeometric random variables.
 * know the basic properties of the above discrete distributions.
 * apply these discrete distributions as appropriate to problem solving.
 :::
@@ -30,7 +30,6 @@ We write $X\sim U(a, b)$ or $X\sim \text{Unif}(a, b)$.
 :::
 
 This distribution is also called the *rectangular distribution*.
-
 A plot of the probability function for a discrete uniform distribution is shown in Fig. \@ref(fig:DiscreteUnform).
 
 
@@ -55,7 +54,6 @@ plot(x = x,
      las = 1)
 points(x = x,
        y = y,
-       col = plotColour1,
        pch = 19)
        
 # Ellipses
@@ -76,12 +74,13 @@ axis(side = 2,
      at = c(0, 1),
      labels = expression(0, 1/(italic(b) - italic(a) + 1) ) )
 axis(side = 1,
-     at = c(1, 2, 3, 4, 7),
+     at = c(1, 2, 3, 4, 5.5, 7),
      labels = expression(
                  italic(a),
                  italic(a) + 1,
                  italic(a) + 2,
                  italic(a) + 3,
+                 cdots,
                  italic(b) )
                  )
 box()
@@ -100,36 +99,33 @@ The following are the basic properties of the discrete uniform distribution.
 :::{.theorem #DiscreteUniform name="Discrete uniform"}
 If $X\sim \text{Unif}(a, b)$ then
 
-1. $\displaystyle \text{E}(X) = \frac{a + b}{2}$.
+1. $\displaystyle \text{E}(X) = (a + b)/2$.
 2. $\displaystyle \text{var}(X) = \frac{(b - a)(b - a + 2)}{12}$.
 :::
 
 :::{.proof}
-Working with  $Y = X - a$ rather than $X$ itself is easier.
-Since $\text{E}(X) = \text{E}(Y) + a$ and $\text{var}(Y) = \text{var}(X)$, it is easier to find $\text{E}(Y)$ and $\text{var}(Y)$ directly than $\text{E}(X)$ and $\text{var}(X)$.
+Working with  $Y = X - a$ rather than $X$ itself is easier (as $Y$ is defined on $[0, b - a]$), using that $\text{E}(X) = \text{E}(Y) + a$ and $\text{var}(Y) = \text{var}(X)$.
 
 Since $Y\sim\text{Unif}(0, b - a)$, then using \@ref(eq:SumNaturalNumbers)
 \begin{align*}
   \text{E}(Y)
   & =\sum_{i = 0}^{b - a} i\frac1{b - a + 1}\\
   & =\frac1{b - a + 1}(0 + 1 + 2 + \dots + (b - a))\\
-  & =\frac{(b - a)(b - a + 1)}{2(b - a + 1)}\\
-  & =\frac{b - a}{2}.
+  & =\frac{(b - a)(b - a + 1)}{2(b - a + 1)} = (b - a)/2.
 \end{align*}
 Therefore,
 \[
-   \text{E}(X) = \text{E}(Y) + a = \frac{b - a}{2 + a} = \frac{a + b}{2}.
+   \text{E}(X) = \text{E}(Y) + a = \frac{b - a}{2} + a = \frac{a + b}{2}.
 \]
 
-Now $\text{var}(Y) = \text{E}(Y^2) - \text{E}(Y)^2$; so:
+Since $\text{var}(Y) = \text{E}(Y^2) - \text{E}(Y)^2$, continue (using \@ref(eq:SumSquaredNaturalNumbers)):
 \begin{align*}
   \text{E}(Y^2)
   &= \sum_{i = 0}^{b - a} i^2\frac1{b - a + 1}\\
   &= \frac1{b - a + 1}(0^2 + 1^2 + 2^2 + \dots  +(b - a)^2)\\
   &= \frac1{b - a + 1}\frac{(b - a)(b - a + 1)(2(b - a) + 1)}{6}\\
-  &= \frac{(b - a)(2(b - a) + 1)}{6}
+  &= \frac{(b - a)(2(b - a) + 1)}{6}.
 \end{align*}
-using \@ref(eq:SumSquaredNaturalNumbers). 
 Therefore
 \begin{align*}
    \text{var}(X)
@@ -154,11 +150,84 @@ Using the sample data, the sample mean is computed to be ??? and the sample vari
 FIG HERE. get the Oz Lotto data...
 
 
+## Bernoulli distribution {#BernoulliDistribution}
+
+A Bernoulli distribution is used in a situation where a single trial of a random process has two possible outcomes.
+A simple example is tossing a coin and observing if a head falls. 
+The probability of each outcome remains constant on each trial.
+
+The probability function is simple:
+\[
+   p_X(x) = 
+   \begin{cases}
+      1 - p & \text{if $x = 0$};\\
+      p     & \text{if $x = 1$},
+    \end{cases}
+\]
+so that $p$ represents the probability of $x = 1$, called a 'success' (while $x = 0$ is called a 'failure').
+More succinctly:
+\[
+   p_X(x) = p^x (1 - p)^{1 - x} \quad\text{for $x = 0, 1$}.
+\]
+We write $X\sim\text{Bern}(p)$.
+
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The terms 'success' and 'failure' are not literal.
+\smallskip
+
+'Success' simply means that the event is of interest.
+If the event of interest is whether a cyclone causes damage, this is still called a 'success'.
+:::
+
+
+The following are the basic properties of the Bernoulli distribution.
+
+:::{.theorem #BernoulliProperties name="Properties of the Bernoulli distribution"}
+If $X\sim\text{Brn}(p)$ then
+
+1. $\text{E}(X) = p$.
+2. $\text{var}(X) = p(1 - p) = pq$ where $q = 1 - p$s.
+3. $M_X(t) = pe^t + q$.
+:::
+
+:::{.proof}
+We make use of \@ref(eq:BinomialSeries) in the following:
+\[
+     \text{E}(X) = \sum^1_{x = 0} x p_X(x) = 0\times (1 - p) + 1\times p = p.
+\]
+To find the variance, we use the computational formula $\text{var}(X) = \text{E}(X^2) - \text{E}(X)^2$.
+Then,
+\[
+     \text{E}(X^2) = \sum^1_{x = 0} x^2 p_X(x) = 0^2\times (1 - p) + 1^2\times p = p,
+\]
+and so 
+\[ 
+   \text{var}(X) 
+   = \text{E}(X^2) - [\text{E}(X)]^2 
+   = p - p^2
+   = p (1- p). 
+\]
+
+The mgf of $X$ is given by
+\begin{align*}
+   M_X(t)
+   &= \text{E}(\exp(tX))\\
+   &= \sum^1_{x = 0} e^{tx} p^x q^{1 - x}\\
+   &= \sum^1_{x = 0}(pe^t)^x q^{1 - x}\\
+   &= pe^t + q.
+\end{align*}
+Proving the third result first, and then using it to prove the others, is easier (using of the methods in Sect. \@ref(MGFMoments)---try this as an exercise.)
+:::
+
+
+
 
 ## Binomial distribution {#BinomialDistribution}
 
-A binomial distribution is used in a situation where the same 'experiment' is repeated a number of times, and one of two outcomes is observed.
-A simple example is tossing a coin ten times and observing if a head falls. 
+A binomial distribution is used in a situation where the same random process is repeated many times, and one of two outcomes is observed.
+A simple example is tossing a coin ten times and observing how often a head falls. 
 
 The same experiment is repeated (tossing the coin), there are only two outcomes on each trial (a head or a tail), and the probability of a head remains constant on each trial.
 
@@ -180,6 +249,7 @@ Formally, situations giving rise to a binomial distribution are defined in terms
 A *Bernoulli trial* is an experiment with only two possible outcomes, usually labelled 'success' $s$ and 'failure' $f$.
 The sample space can be denoted by $S = \{ s, f\}$.
 :::
+
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The terms 'success' and 'failure' are not literal.
@@ -217,6 +287,7 @@ Note that the sum of the probabilities is 1 as the binomial expansion of $(p + q
 \end{equation}
 since $p + q = 1$. 
 So we have the following:
+
 
 :::{.definition #BinomialDistribution name="Binomial distribution"}
 Let $X$ be the number of successes in $n$ independent Bernoulli trials with $\Pr(\text{Success}) = p$ ($0\le p\le 1$) constant in each trial.
