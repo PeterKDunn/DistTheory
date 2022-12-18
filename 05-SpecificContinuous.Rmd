@@ -209,6 +209,7 @@ In **R**, the normal distribution functions have the form `[dpqr]norm(mean, sd)`
 
 A special case of the normal distribution is the *standard normal* distribution, when the normal distribution has mean zero and variance one.
 
+
 :::{.definition #StandardNormal name="Standardard normal distribution"}
 The pdf for a random variable $Z$ with a *standard normal distribution* is
 \[
@@ -219,58 +220,73 @@ where $-\infty < z < \infty$.
 We write $Z\sim N(0, 1)$.
 :::
 
-It's useful to note that
+Since $f_Z(z)$ is a pdf, then
 \begin{equation}
-   \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty} e^{-\frac 12 z^2}\,dz = 1
+   \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty} e^{-\frac 12 z^2}\,dz = 1,
    (\#eq:ZDistribution)
 \end{equation}
-since $f_Z(z)$ is a pdf. 
-The proof of \@ref(eq:ZDistribution) is given... WHERE?
+a result which proves useful in many contexts (as in the proof of \@ref(thm:GammaFunctionProperties), and in the proof below).
 
 The following are the basic properties of the standard normal distribution.
+
 
 :::{.theorem #StandardNormalProperties name="Properties of the standard normal distribution"}
 If $Z\sim N(0, 1)$ then
 
-1. $\text{E}(Z) = 0$
-2. $\text{var}(Z) = 1$
-3. $M_Z(t) = \displaystyle \exp\left(\frac{t^2}{2}\right)$
+1. $\text{E}(Z) = 0$.
+2. $\text{var}(Z) = 1$.
+3. $M_Z(t) = \displaystyle \exp\left(\frac{t^2}{2}\right)$.
 :::
 
 :::{.proof}
-As usual, Part 3 could be proven first, and used to prove Parts 1 and 2.
+Part 3 could be proven first, and used to prove Parts 1 and 2.
 However, proving Parts 1 and 2 directly is constructive.
-
+For the expected value:
 \begin{align*}
-    \text{E}(Z)&=\frac 1{\sqrt{2\pi }} \int^\infty_{-\infty} z e^{-\frac 12 z^2}\,dz\\
-&= \int^\infty_{-\infty} -d(e^{-\frac 12z^2})\\
-&= \left[ -e^{-\frac 12z^2}\right]^\infty_{-\infty} = 0
+    \text{E}(Z)
+    &= \frac {1}{\sqrt{2\pi}} 
+       \int^\infty_{-\infty} z e^{-\frac{1}{2}z^2}\,dz\\
+    &= \int^\infty_{-\infty} -\frac{d}{dz} \left(e^{-\frac{1}{2}z^2} \right)\, dz\\
+    &= \left[ -e^{-\frac{1}{2}z^2}\right]^\infty_{-\infty} = 0,
 \end{align*}
+since the integrand is symmetric about $0$.
 
-\begin{align*}
-   \text{var}(Z) & = \text{E}(Z^2) - \text{E}(Z)^2 = \text{E}(Z^2)\\
-   &= \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty}z^2e^{-\frac 12z^2}\,dz\\
-   &= \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty}-zd(e^{-\frac 12z^2})\\
-   &= \frac 1{\sqrt{2\pi}}\left[ -z\,e^{-\frac12 z^2}\right]^\infty_{-\infty} + \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty} e^{-\frac 12 z^2}\,dz\\
-   &= 1
-\end{align*}
-since the first term is zero and the second term makes use of \@ref(eq:ZDistribution).
-Also:
-\[ 
-   M_Z(t) = \text{E}(e^{tZ}) =\int^\infty_{-\infty}e^{tz} \frac 1{\sqrt{2\pi}}e^{-\frac 12z^2}\,dz.
+For the variance, first see that $\text{var}(Z) = \text{E}(Z^2) - \text{E}(Z)^2 = \text{E}(Z^2)$ since $\text{E}(Z) = 0$.
+So:
+\[
+   \text{var}(X) = \text{E}(Z^2)
+   = \frac {1}{\sqrt{2\pi}}\int^\infty_{-\infty}z^2e^{-\frac{1}{2}z^2}\,dz.
 \]
-Collecting together the terms in the exponent and completing the square, we have
+To integrate by parts (i.e., $\int u\,dv = uv - \int v\, du$), set $u = z$ (so that $du = 1$) and set
+\[
+   dv = ze^{-\frac{1}{2}z^2}
+   \quad\text{so that}\quad
+   v = -e^{-\frac{1}{2}z^2}.
+\]
+Hence,
+\begin{align*}
+   \text{var}(X)
+   &= \frac {1}{\sqrt{2\pi}} \left\{ -e^{-\frac{1}{2}z^2} - \int^\infty_{-\infty}-e^{-\frac{1}{2}z^2}\, dz \right \}\\
+   &= \frac {1}{\sqrt{2\pi}}\left(\left. -z\,e^{-\frac{1}{2} z^2}\right|^\infty_{-\infty}\right) + \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty} e^{-\frac 12 z^2}\,dz = 1
+\end{align*}
+since the first term is zero (due to symmetry), and the second term uses \@ref(eq:ZDistribution).
+
+For the mgf:
+\[ 
+   M_Z(t) = \text{E}(e^{tZ}) =\int^\infty_{-\infty}e^{tz} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}z^2}\,dz.
+\]
+Collecting together the terms in the exponent and completing the square,
 \begin{equation*}
-     -\frac{1}{2}[z^2 -2tz] = -\frac 1{2}(z - t)^2+\frac{1}{2} t^2.
+     -\frac{1}{2}[z^2 -2tz] = -\frac{1}{2}(z - t)^2+\frac{1}{2} t^2.
 \end{equation*}
-Taking the constants outside the integral, we have
+Taking the constants outside the integral:
 \[ 
-   M_Z(t) = e^{\frac12t^2}\int^\infty_{-\infty} \frac{1}{\sqrt{2\pi}}e^{-\frac 12[z-t]^2}\,dz. 
+   M_Z(t) = e^{\frac{1}{2}t^2}\int^\infty_{-\infty} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}[z - t]^2}\,dz. 
 \]
-The integral here is 1 being the area under an $N(t, 1)$ pdf curve. 
+The integral here is 1, since it is the area under an $N(t, 1)$ pdf. 
 Hence
 \[ 
-   M_Z(t) = e^{\frac{1}{2} t^2}
+   M_Z(t) = e^{\frac{1}{2} t^2}.
 \]
 :::
 
@@ -279,14 +295,7 @@ This distribution is important in practice since *any* normal distribution can b
    Z = \frac{X - \mu}{\sigma}.
    (\#eq:ConvertToZ)
 \end{equation}
-
-Equation \@ref(eq:ZDistribution) makes this proof straightforward:
-We have $Z = (X - \mu)/\sigma$. 
-Therefore
-\[
-   X = \mu + \sigma Z.
-\]  
-It follows
+Since $Z = (X - \mu)/\sigma$, then $X = \mu + \sigma Z$, and so
 \[
    \text{E}(X) = \text{E}(\mu + \sigma Z) = \mu + \sigma \text{E}(Z) = \mu
 \]
@@ -298,9 +307,9 @@ Also
 because $\text{var}(Z) = 1$.
 Finally
 \[
-   M_X(t) = \text{E}(e^{tX}) = \text{E}(\exp(t(\mu + \sigma Z))) = \exp(\mu t)\text{E}(\exp(t\sigma Z))
+   M_X(t) = \text{E}(e^{tX}) = \text{E}\big(\exp\{t(\mu + \sigma Z)\}\big) = \exp(\mu t)\text{E}\big(\exp(t\sigma Z)\big).
 \]
-but $\text{E}(\exp(t\sigma Z)) = M_Z(t\sigma) = e^{\frac12(\sigma t)^2}$ so 
+However, $\text{E}\big(\exp(t\sigma Z)\big) = M_Z(t\sigma) = e^{\frac{1}{2}(\sigma t)^2}$ so 
 \[
    M_Z(t) = \displaystyle \exp\left(\frac{t^2}{2}\right).
 \]
@@ -315,42 +324,42 @@ By default, `mean = 0` and `sd = 1`, corresponding to the standard normal distri
 
 ### Determining normal probabilities
 
-The probability $\Pr(a < X \le b)$ where $X\sim N(\mu,\sigma^2)$ can be written
+The probability $\Pr(a < X \le b)$ where $X\sim N(\mu, \sigma^2)$ can be written
 \[
-   \Pr(a < X \le b) = F_X(b) - F_X(a)
+   \Pr(a < X \le b) = F_X(b) - F_X(a).
 \]
-where the distribution function
+where $F_X(x)$ is the distribution function
 \[
    F_X(x) 
    = \Pr(X \le x) 
-   = \frac1{\sqrt{2\pi}\sigma}\int_{-\infty}^x e^{-\frac 12(u-\mu )^2 / \sigma ^2}\, du.
+   = \frac1{\sqrt{2\pi}\sigma}\int_{-\infty}^x e^{-\frac{1}{2}(u - \mu )^2 / \sigma ^2}\, du.
 \]
 This integral cannot be written in terms of standard functions and in general must be evaluated for a particular $x$ numerically (e.g., using Simpson's rule or similar).
+However, all statistical packages have a built-in procedure that evaluates $F_X(x)$ for any $z$ (such as `pnorm()` in **R**).
 
-We don't have to do this because all statistical packages have a built-in procedure that evaluates $F_X(x)$ for any $x$.
-Also there are tables (ADD TO APPENDIX; POINT TO THEM) which tabulate values for the df of the standard normal distribution
+Also, since any normal distribution can be transformed into a standard normal distribution, we can write
 \[
-   F_Z(z) = \Phi(z) = \int_{-\infty}^z \frac{1}{\sqrt{2\pi}}
-                                \exp\left\{ -\frac{z^2}{2}\right\}\, dz
+   z_1 = (a - \mu)/\sigma
+   \quad\text{and}\quad
+   z_2 = (b - \mu)/\sigma
 \]
-Tabulation of the standard normal df, commonly denoted $\Phi(z)$ (some texts use $\phi$), is sufficient to evaluate
-areas under any normal pdf because we have that $X = \mu + \sigma Z$, from which
+and hence the probability is 
 \[
-   F_X(x)
-   = \Pr(X \le x)
-   = \Pr(\mu + \sigma Z \le x)
-   = \Pr\left( Z\le\frac{x - \mu}{\sigma} \right) 
-   = \Phi\left(\frac{x - \mu}{\sigma}\right).
+   \Pr( z_1 < Z \le z_2) = \Phi(z_2) - \Phi(z_1),
 \]
-The process of converting a value $x$ into $z$ using $z = \frac{x - \mu}{\sigma}$ is called *standardising*.
-
-The standard normal tables tabulates $1 - \Phi(z) = \Pr(Z > z)$. CHECK!
+where $\Phi(z)$ is the distribution function for the standard normal distribution
+\[
+   \Phi(z) = \int_{-\infty}^z \frac{1}{\sqrt{2\pi}}
+                                \exp\left\{ -\frac{t^2}{2}\right\}\, dt.
+\]
+The process of converting a value $x$ into $z$ using $z = (x - \mu)/\sigma$ is called *standardising*.
+Tables of $\Phi(z)$ (or sometimes $1 - \Phi(z)$) are commonly available.
 These tables can be used to compute any probabilities associated with the normal distributions (see the examples below).
-The tables in the text are accurate to two decimal places; the $z$-scores are listed down the left with the second decimal place across the top of the table.
-The body of the table gives the areas (or probabilities) as indicated by the diagram at the top of the page.
 
 In addition, the tables are often used in the reverse sense, where the probability of an event is given and the value of the random variable is sought.
-In these case, the tables are used 'backwards'; the appropriate area is found in the body of the table and the corresponding $z$-value found in the table margins; this is then converted to a value of the original random variable using
+In these case, the tables are used 'backwards'; the appropriate area is found in the body of the table and the corresponding $z$-value found in the table margins.
+In **R**, the function `qnorm()` is used.
+This $z$-value is then converted to a value of the original random variable using
 \begin{equation}
    x = \mu + z\sigma.
    (\#eq:Unstandardising)
@@ -358,235 +367,152 @@ In these case, the tables are used 'backwards'; the appropriate area is found in
 This process is sometimes referred to as *unstandardising*.
 
 The following examples illustrate the use of the standard normal table.
-You might find it helpful to draw rough graphs showing the relevant areas.
+Drawing rough graphs showing the relevant areas is encouraged.
 
 
-:::{.example #ComputingNormalProbs1 name="Computing normal probabilities"}
-If the random variable $Z$ is distributed $N(0, 1)$ then,
 
-* $\Pr(Z \leq 1.3) = \Phi(1.3) = .9032$
-* $\Pr(Z > 1.6)=1-\Pr{Z\leq 1.6}=1-\Phi(1.6)=1 - .9452 = .0548$
-* $\Pr(Z < -1) = \Pr(Z>+1)$ using the symmetry property of $\phi(z)$.
-  $= 1 - \Pr(Z\leq 1) = 1-.8413 = 0.1578$
-* $\Pr(1 < Z < 1.3) = \Phi(1.3) - \Phi(1) = 0.9032 -.08413 = 0.0619$
-* $\Pr(-2 < Z < -1) = \Pr(1 < Z < 2)$ by symmetry.
-  ${} = \Phi(2) - \Phi(1) = 0.9772 - 0.8413 = 0.1359$.
-* $\Pr(-1 < Z < 1) = 2\times \Pr(0 < Z < 1)$ by symmetry.
-  ${}= 2[\Phi(1) - \Phi(0)] = 2\times 0.3413 = 0.6826$.
-* $\Pr(-.5 < Z <1.7) = \Phi(1.7) - \Phi(-0.5) = \Phi(1.7) - [1- \Phi(0.5)] = 0.9554 - 1 + 0.6915 = 0.6469$
-:::
+:::{.example #NormalWalkingSpeeds name="Walking speeds"}
+A study of stadium evacuations used a simulation to compare scenarios [@xie2017improved].
+The walking speed of people was modelled using a $N(1.15, 0.2^2)$ distribution; that is, $\mu = 1.15$ m/s with a standard deviation of 0.2m/s.
+The situation can be shown in Fig. \@ref(fig:NormalWalkingSpeed), top left panel.
+Many questions can be asked about the walking speeds, and **R** used to compute answers.
+Using this model:
 
+1. What is the probability that a person walks faster than 1.5m/s?
+1. What is the probability that a person walks slower than 1.0m/s?
+1. What is the probability that a person walks between 1.0m/s and 1.5m/s?
+1. At what speed do the quickest 15% of people walk?
+1. At what speed do the slowest 5% of people walk?
 
-:::{.example #ComputingNormalProbs2 name="Computing normal probabilities"}
-If $Z$ is distributed $N(0, 1)$ find $z$ so that
+Sketches of each of these situations are shown in Fig. \@ref(fig:NormalWalkingSpeed).
+Using **R**:
 
-* $\Pr(Z \leq z) = 0.8849$. 
-Thus, (realizing 0.8849 is an area), $z = 1.2$
+```{r}
+# Part 1
+1 - pnorm(1.5, mean = 1.15, sd = 0.2)
 
-* $\Pr(Z > z) = 0.3446$; that is, $\Pr(Z \leq z) = 0.6554$ so $z = 0.4$.
-* $\Pr(|Z| < z) = 0.950$; that is, $\Pr(-z < Z < z) = 0.950$.
-  So $\Pr(Z < z ) = 0.475$ and hence $z = 1.96$.
-:::
+# Part 2
+pnorm(1, mean = 1.15, sd = 0.2)
 
+# Part 3
+pnorm(1.5, mean = 1.15, sd = 0.2) - 
+   pnorm(1, mean = 1.15, sd = 0.2)
 
-```{r, AreaUnderNormal, echo=FALSE, fig.align="center", fig.cap="Area under standard normal curve: $z = -1.96$ to $z = 1.96$",fig.width=3.5, fig.height=3.5}
+# Part 4
+qnorm(0.15, mean= 1.15, sd = 0.2)
 
-z <- seq(-3.5, 3.5,
-         length = 100)
-fz <- dnorm( z )
-
-plot(fz ~ z,
-     type = "l",
-     lwd = 2,
-     col = plotColour1,
-     xlab = "z",
-     ylab = "",
-     axes = FALSE)
-axis(side = 1,
-     at = c(-1.96, 1.96))
-polygon( x = c(-1.96, -1.96,
-               z[ (z > -1.96) & (z < 1.96) ],
-               1.96, 1.96),
-         y = c(0, dnorm(-1.96),
-               fz[ (z > -1.96) & (z < 1.96) ],
-               dnorm(1.96), 0),
-         col = plotColour)
-box()
-
+# Part 5
+qnorm(0.95, mean = 1.15, sd = 0.2)
 ```
+So the answers are, respectively:
 
-
-:::{.example #Normal name="Normal probabilities"}
-Here, assume $X$ is distributed $N(4, 9)$.
-
-* $\Pr(X < 7) = \Pr(Z < \frac{7 - 4}{3}) = \Phi(1) = 0.8413$.
-* $\Pr(X > 2.5) = \Pr(Z > \frac{2.5 - 4}{3}) = \Pr(Z > -0.5) = \Phi(0.5) = 0.6915$.
-* $\Pr(|X - 4| < 0.3) = \Pr(\frac{|X - 4|}{3} < \frac{0.3}{3}) =\Pr(|Z| < 0.1) = \Pr(-0.1 < Z < 0.1) = 2\times [\Phi(0.1) - \Phi(0)] = 0.0796$.
-* $\Pr(-0.5 < X < 4.3) = \Pr(\frac{0.5 - 4}{3} < Z < \frac{4.3 - 4}{3}) = \Pr(-1.5 < Z < 0.1) = \Phi(0.1) - [1 - \Phi(1.5)] = 0.5398 -1 + 0.9332 = 0.4730$.
-* Find $k$ so that $\Pr(|X - 4| > k) = 0.05$; that is, $\Pr(|X - 4| \leq k) = 0.95$.
-  So $\Pr(\frac{-k}{3} < \frac{X - 4}{3} < \frac k3) = 0.95$. 
-  Therefore $\Pr(Z < \frac k3) = 0.475$.
-  Hence $k/3 = 1.96$ so $k = 5.88$.
-:::
-
-
-:::{.example #Forearms name="Using normal distributions"}
-@pearson1903laws give the forearms lengths of 140 adult males (in inches).
-The mean of the lengths is $18.80$ inches and the variance is $1.120$ (inches$^2$).
-Fitting a normal distribution with these parameters produces an excellent fitting model;
-see Fig. \@ref(fig:NormalForearms).
-
-Using these computed values, what is the probability that a forearm in a male is longer than 20.5 inches?
-
-f the men in the study, 15% have forearms shorter than what length?
-
-Let $X$ be a length of a male forearm; then $X\sim N(18.80, 1.120)$.
-
-To compute the probability $\Pr(X > 20.5)$, first transform into a standard normal distribution using \@ref(eq:ConvertToZ), and then use the tables.
-\begin{align*}
-   \Pr(X > 20.5)
-   &= \Pr(Z > (20.5 - 18.80)/\sqrt{1.120} ) \\
-   &= \Pr(Z > 1.61 ) \\
-   &= 0.0537,
-\end{align*}
-so approximately 5.4% of males in the study have a forearm longer than 20.5 inches.
-(Note that the sample is not a random sample of all males; the results can only be generalized to the population---which is unknown in this case---from which the sample was taken.)
-
-
-Drawing a picture of the situation is helpful; see Figs. \@ref(fig:NormalForearms) and \@ref(fig:NormalForearmsBackwards).
-
-The $x$-value we seek, say $x^*$, is to the *left* of the mean; it will therefore be negative.
-To use the tables in the text WHERE, and using symmetry, we need the $z$-value that cuts off the highest 15% (look in the *body* of the table for an area close to $0.15$); this is $z = -1.04$ approximately.
-To convert this into a forearm length, use \@ref(eq:Unstandardising) to get
-\begin{align*}
-   x^*
-   &= z\sigma + \mu \\
-   &= (-1.04 \times \sqrt{1.120}) + 18.80\\
-   & = 17.6
-\end{align*}
-Approximately 15% of men in the study have forearms shorter than about 17.6 inches.
+1. `r round( 1 - pnorm(1.5, mean = 1.15, sd = 0.2), 3) * 100`%;
+1. `r round( pnorm(1, mean = 1.15, sd = 0.2), 3) * 100`%;
+1. `r round( pnorm(1.5, mean = 1.15, sd = 0.2) - pnorm(1, mean = 1.15, sd = 0.2), 3) * 100`%;
+1. `r round( qnorm(0.10, mean= 1.15, sd = 0.2), 3)` m/s;
+1. `r round( qnorm(0.95, mean = 1.15, sd = 0.2), 3)`m/s.
 :::
 
 
 
-
-```{r NormalForearms, echo=FALSE, fig.align="center", fig.cap="The forearm lengths (in inches) of 140 adult males. The shaded region corresponds to the proportion of males with a forearm longer than 20.5 inches.",fig.width=7,fig.height=3.5,out.width='80%'}
-
-par( mfrow = c(1, 2))
-
-mu <- 18.80
-sigma <- sqrt(1.120)
-
-z <- seq(-3.5, 3.5,
-         length = 100)
-x <- mu + z * sigma
+```{r NormalWalkingSpeed, echo=FALSE, fig.align="center", fig.cap="The normal distribution used for modelling walking speeds. The vertical dotted lines are at the mean and $\\pm1$, $\\pm2$, $\\pm3$ and $\\pm4$ standard deviations from the mean.", fig.width=7, fig.height=4, out.width='100%'}
+plotWalking <- function(){
+  mu <- 1.15
+  sigma <- 0.2
+  zseq <- seq(-4, 4,
+              length = 500)
+  yy <- dnorm(zseq)
   
-fz <- dnorm( z )
-
-plot(fz ~ x,
-     type = "l",
-     lwd = 2,
-     las = 1,
-     xlab = "Forearm lengths (cm)",
-     ylab = "",
-     main = "Normal distribution")
-polygon( x = c(20.5, 20.5,
-               x[ (x > 20.5) ],
-               25, 25),
-         y = c(0, dnorm(20.5, mean = mu, sd = sigma),
-               fz[ (x > 20.5) ],
-               dnorm(25, mean = mu, sd = sigma), 0),
-         col = plotColour)
-box()
-
-
-
-plot(fz ~ z,
-     type = "l",
-     lwd = 2,
-     las = 1,
-     xlab = "Forearm lengths (cm)",
-     ylab = "",
-     main = "Standard normal distribution")
-polygon( x = c(1.52, 1.52,
-               z[ (z > 1.52) ],
-               5, 5),
-         y = c(0, dnorm(1.52),
-               fz[ (z > 1.52) ],
-               dnorm(5), 0),
-         col = plotColour)
-box()
-
-```
-
-
-```{r NormalForearmsBackwards, echo=FALSE, fig.align="center", fig.cap="The forearm lengths (in inches) of 140 adult males. The shaded region corresponds to the proportion of males with a forearm longer than 20.5 inches.",fig.width=7,fig.height=3.5,out.width='80%'}
-
-par( mfrow = c(1, 2))
-
-mu <- 18.80
-sigma <- sqrt(1.120)
-
-z <- seq(-3.5, 3.5,
-         length = 100)
-x <- mu + z * sigma
+  xx <- mu + sigma*zseq
   
-fz <- dnorm( z )
+  z <- seq(-4, 4, 
+           by = 1)
+  plot(yy ~ xx,
+       type = "n",
+       las = 1,
+       axes = FALSE,
+       xlab = "Walking speed (m/s)",
+       ylab = "")
+  axis(side = 1,
+       at = mu + z * sigma)
+  abline(h = 0,
+         lwd = 2,
+         col = "grey")
+  abline(v =  mu + z * sigma,
+         lwd = 1,
+         lty = 2,
+         col = "grey")
+  lines(yy ~ xx,
+       lwd = 2)
+  
+  return(list( x = xx, 
+               y = yy) )
+}
 
-plot(fz ~ x,
-     type = "l",
-     lwd = 2,
-     las = 1,
-     xlab = "Forearm lengths (cm)",
-     ylab = "",
-     main = "Normal distribution")
-polygon( x = c(10, 10,
-               x[ (x < 17.6) ],
-               17.6, 17.6),
-         y = c(0, dnorm(10, mean = mu, sd = sigma),
-               fz[ (x < 17.6) ],
-               dnorm(17.6, mean = mu, sd = sigma), 0),
-         col = plotColour)
-box()
-arrows( 18, 0.05,
-       16.75, 0.025,
-       length = 0.15)
-text(18, 0.05,
-     label = "Area: 15%",
-     pos = 4)
+shadeNormal <- function(xx, yy, lo, hi, col="blue"){
+  
+  xshade <- xx[ (xx >= lo) & ( xx <= hi ) ]
+  yshade <- yy[ (xx >= lo) & ( xx <= hi ) ]
+  y0 <- rep(0, length(yshade))
+  
+  polygon( x = c(xshade, rev(xshade) ),
+           y = c( yshade, y0),
+           col = col)
+}
 
 
-plot(fz ~ z,
-     type = "l",
-     lwd = 2,
-     las = 1,
-     xlab = "Forearm lengths (cm)",
-     ylab = "",
-     main = "Standard normal distribution")
-polygon( x = c(-4, -4,
-               z[ (x < 17.6) ],
-               -1.04, -1.04),
-         y = c(0, dnorm(-5),
-               fz[ (x < 17.6) ],
-               dnorm(-1.04), 0),
-         col = plotColour)
-box()
-arrows( 18, 0.05,
-       16.75, 0.025,
-       length = 0.15)
-text(18, 0.05,
-     label = "Area: 15%",
-     pos = 4)
+par( mfrow = c(2, 3) )
+out <- plotWalking()
+title(main = "Walking speeds")
+
+out <- plotWalking()
+title(main = "Faster than 1.5m/s")
+shadeNormal(out$x, 
+            out$y,
+            lo = 1.5, 
+            hi = 10,
+            col = plotColour1)
+
+out <- plotWalking()
+title(main = "Slower than 1.0m/s")
+shadeNormal(out$x, 
+            out$y,
+            lo = -100, 
+            hi = 1,
+            col = plotColour1)
+
+out <- plotWalking()
+title(main = "Between 1.0m/s and 1.5m/s")
+shadeNormal(out$x, 
+            out$y,
+            lo = 1, 
+            hi = 1.5,
+            col = plotColour1)
+
+out <- plotWalking()
+title(main = "Quickest 15%")
+shadeNormal(out$x, 
+            out$y,
+            hi = qnorm(0.15, mean= 1.15, sd = 0.2),
+            lo = -100, 
+            col = plotColour1)
+
+out <- plotWalking()
+title(main = "Slowest 5%")
+shadeNormal(out$x, 
+            out$y,
+            hi = 100, 
+            lo = qnorm(0.90, mean= 1.15, sd = 0.2),
+            col = plotColour1)
+
 ```
-
-
 
 
 
 :::{.example #Exam name="Using normal distributions"}
 An examination has mean score of 500 and standard deviation 100.
 The top 75% of candidates taking this examination are to be passed.
-Assuming the score has a normal distribution what is the lowest passing score?
+Assuming the score has a normal distribution, what is the lowest passing score?
 
 We have $X\sim N(500, 100^2)$. 
 Let $x_1$ be such that
@@ -596,9 +522,9 @@ Let $x_1$ be such that
    \Pr\left(Z > \frac{x_1 - 500}{100}\right) 
    &= 0.75\\
    \Pr\left(Z < \frac{500 - x_1}{100}\right) 
-   & = 0.75
+   & = 0.75.
 \end{align*}
-From tables, $0.75 = \Phi(0.675)$ so $(500 - x_1)/100 = 0.675$ and $x_1 = 432.5$.
+From tables or **R**, $0.75 = \Phi(0.675)$ so $(500 - x_1)/100 = 0.675$ and $x_1 = 432.5$.
 :::
 
 
@@ -607,17 +533,17 @@ From tables, $0.75 = \Phi(0.675)$ so $(500 - x_1)/100 = 0.675$ and $x_1 = 432.5$
 ### Normal approximation to the binomial {#NormalApproxBinomial}
 
 In Sect. \@ref(BinomialDistribution), the binomial distribution was considered.
-There are times when it is very tedious to use the binomial distribution; consider the case of a binomial random variable $X$ where $n = 1000$, $p = 0.45$ and we seek $\Pr(X > 997)$.
+Sometines using the binomial distribution is tedious; consider a binomial random variable $X$ where $n = 1000$, $p = 0.45$ and $\Pr(X > 650)$ is sought.
 
-However, sometimes the normal distribution can be used to approximate binomial probabilities.
-This is possible since, for certain parameter values, the binomial pf starts to take on a normal distribution shape; see
-Fig. \@ref(fig:NormalApprox).
+However, sometimes the normal distribution can be used to approximate binomial probabilities
+For certain parameter values, the binomial pf starts to take on a normal distribution shape (Fig. \@ref(fig:NormalApprox)).
 
 When is the binomial pf close enough to use the normal approximation?
 There is no definitive answer; a common guideline suggests that if *both* $np \ge 5$ *and* $n(1 - p) \ge 5$ the approximation is satisfactory.
 (These are only guidelines, and other texts may suggest different guidelines.)
 
 Figure \@ref(fig:NormalApprox) shows some picture of various binomial pfs overlaid with the corresponding normal distribution; the approximation is visibly better as the guidelines given above are satisfied.
+
 
 ```{r NormalApprox, echo=FALSE, , fig.height = 7, fig.width=7, out.width='80%', fig.align="center", fig.cap="The normal distribution approximating a binomial distribution. The guidelines suggest the approximation should be good when $np \\ge 5$ and $n (1 - p) \\ge 5$; this is evident from the pictures. In the top row, a significant amount of the approximating normal distribution even appears when $Y < 0$."}
 par( mfrow = c(2, 2))
@@ -671,26 +597,33 @@ for (i in (1:4)){
 
 
 The normal distribution can be used to approximate probabilities in situation that are actually binomial.
-There is a fundamental difficulty with this approach: modelling a discrete distribution with a continuous distribution.
+A fundamental difficulty with this approach is that discrete distribution is being modelled with a continuous distribution.
 This is best explained through an example.
-
 The example explains the *principle*; the idea extends to all situations where the normal distribution is used to approximate a binomial distribution.
+
+
+::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
+If the random variable $X$ has the binomial distribution $X \sim \text{Bin}(n, p)$, the probability function can be approximated by the normnal distribution $Y \sim \text{Norm}(\mu, \sigma^2)$, where $\mu = np$ and $\sigma^2 = np(1 - p)$.
+\smallskip
+
+The approximation is good if *both* $np \ge 5$ *and* $n(1 - p) \ge 5$.
+:::
+
 
 
 :::{.example #NormalApproxMice name="Normal approximation to binomial"}
 Consider *mdx* mice (which have a strain of muscular dystrophy) from a particular source for which 30% of the mice survive for at least 40 weeks.
-One particular experiment requires at least 35 mice to live beyond 40 weeks, and 100 mice have been sourced from this supplier.
-What is the probability that 35 or more  of the group will survive beyond 40 weeks?
+One particular experiment requires at least 35 of the 100 mice to live beyond 40 weeks.
+What is the probability that 35 or more of the group will survive beyond 40 weeks?
 
 First note that the situation is binomial; if $X$ is the number of mice from the group of 100 that survive, then $X \sim \text{Bin}(100, 0.3)$.
-This could be *approximated* by the normal distribution $Y\sim N(30, 21)$.
-(Note that the variance is $np(1 - p) = 100\times 0.3\times 0.7 = 21$.)
-Since $np = 30$ and $n(1 - p) = 70$ are both much larger than 5, this approximation is expected to be quite good.
+This could be *approximated* by the normal distribution $Y\sim N(30, 21)$, where the variance is $np(1 - p) = 100\times 0.3\times 0.7 = 21$.
+Both $np = 30$ and $n(1 - p) = 70$ are much larger than 5, so this approximation is expected to adequate.
 Figure \@ref(fig:ContCorrBoxes) shows the upper tail of the distribution near $X = 35$:
 using the normal approximation from $Y = 35$, only *half* of the original bar in the binomial pf is included.
 However, since the number of mice is discrete, we want the *entire* bar corresponding to $X = 35$.
 So to compute the correct answer, the normal distribution must be evaluated for $\Pr(Y > 34.5)$.
-This change from the $X \ge 34.5$ to $Y > 34.5$ is called using the *continuity correction*.
+This change from $X \ge 34.5$ to $Y > 34.5$ is called using the *continuity correction*.
 
 The exact answer (using the binomial distribution) is $0.1629$ (rounded to four decimal places).
 Using the normal distribution *with* the continuity correction gives the answer as $0.1631$; using the normal distribution *without* the continuity correction, the answer is $0.1376$.
@@ -811,16 +744,21 @@ polygon( x = c(2,
 ```
 
 :::{.example #ContCorrectionDice name="Continuity correction"}
-Consider rolling a standard die 100 times, and counting the number of {1}'s that appear uppermost.
-The random variable $X$ is the number of {1}'s; then, $X\sim \text{Bin}(n = 100, p = 1/6)$.
-Since $np = 16.667$ and $n(1 - p) = 83.333$ are both greater than $5$, a normal approximation  should be accurate, so define $Y\sim N(16.6667, 13.889)$ (the variance is $np(1 - p) = 13.889$).
-Various probabilities have been computed as shown in Table \@ref(tab:ContCorrectionTable) that indicate the accuracy of the approximation, and the way in which the continuity correction has been used.
+Consider rolling a standard die 100 times, and counting the number of times a `r knitr::include_graphics("Dice/die1.png", dpi=2000)` appear uppermost.
+The random variable $X$ is the number of times a `r knitr::include_graphics("Dice/die1.png", dpi=2000)` appears; then, $X\sim \text{Bin}(n = 100, p = 1/6)$.
+Since $np = 16.667$ and $n(1 - p) = 83.333$ are both greater than $5$, a normal approximation should be accurate, so define $Y\sim N(16.6667, 13.889)$ (where the variance is $np(1 - p) = 13.889$).
+Various probabilities (Table \@ref(tab:ContCorrectionTable)) show the accuracy of the approximation, and the way in which the continuity correction has been used.
 
-You should ensure you understand how the concept of the continuity correction has been applied in each situation, and be able to compute the probabilities for the normal approximation.
+You should understand how the concept of the continuity correction has been applied in each situation, and be able to compute the probabilities for the normal approximation.
 :::
 
 ```{r ContCorrectionTable, echo=FALSE}
-CCTable.caption <- "Some events and their probabilities for the die-rolling example, computed using the binomial distribution (exact) and the normal approximation using the continuity correction. The accuracy of the approximation is very good."
+CCTable.caption <- "Some events and their probabilities for the die-rolling example, computed using the binomial distribution (exact) and the normal approximation using the continuity correction. The accuracy of the approximation is generally very good."
+
+prob <- 1/6
+n <- 100
+mn <- n * prob
+stdev <- sqrt( n * prob * (1 - prob) )
 
 CCTable <- array( "",
                   dim = c(6, 5) )
@@ -830,17 +768,33 @@ colnames(CCTable) <- c("Event (binomial)",
                        "Event (normal)",
                        "Prob (normal)")
 CCTable[1, ] <- c("$\\Pr(X < 10)$",
-                  "",
+                  round(pbinom(9, prob = prob, size = n), 4),
                   "",
                   "$\\Pr(Y < 9.5)$",
-                  "")
-CCTable[, 1] <- c("$\\Pr(X < 10)$",
-                  "$\\Pr(X \\le 15)$",
-                  "$\\Pr(X > 17)$",
-                  "$\\Pr(X \\ge 21)$",
-                  "$\\Pr(X = 16)$",
-                  "$\\Pr(15 < X \\le 17)$")
+                  round( pnorm(10, mean = mn, sd = stdev), 4) )
+CCTable[2, ] <- c("$\\Pr(X \\le 15)$",
+                  round(pbinom(15, prob = prob, size = n), 4),
+                  "",
+                  "$\\Pr(Y < 15.5)$",
+                  round( pnorm(15.5, mean = mn, sd = stdev), 4) )
 
+CCTable[3, ] <- c("$\\Pr(X > 17)$",
+                  round(1 - pbinom(17, prob = prob, size = n), 4),
+                  "",
+                  "$\\Pr(Y > 17.5)$",
+                  round( 1 - pnorm(17.5, mean = mn, sd = stdev), 4) )
+
+CCTable[4, ] <- c("$\\Pr(X \\ge 21)$",
+                  round(1 - pbinom(20, prob = prob, size = n), 4),
+                  "",
+                  "$\\Pr(Y > 20.5)$",
+                  round( 1 - pnorm(20.5, mean = mn, sd = stdev), 4) )
+
+CCTable[5, ] <- c("$\\Pr(15 < X \\le 17)$",
+                  round(pbinom(17, prob = prob, size = n) - pbinom(16, prob = prob, size = n), 4),
+                  "",
+                  "$\\Pr(15.5 < Y < 16.5)$",
+                  round( pnorm(16.5, mean = mn, sd = stdev) - pnorm(15.5, mean = mn, sd = stdev), 4) )
 
 if( knitr::is_latex_output() ) {
   knitr::kable(CCTable,
@@ -849,6 +803,7 @@ if( knitr::is_latex_output() ) {
                align = "r",
                longtable = FALSE,                
                escape = FALSE,
+               linesep = c("", "", "\\addlinespace"),
                caption = CCTable.caption) %>%
     kable_styling(font_size = 10) %>%
     row_spec(0, bold = TRUE) 
@@ -869,12 +824,11 @@ if( knitr::is_html_output() ) {
 
 
 
-## LOG NORMAL?
+## Log normal???
 
 
 ## Exponential distribution {#ExponentialDistribution}
 
-An important distribution intimately connected with the Poisson distribution is the exponential distribution. 
 If the number of events in a process follows a Poisson distribution the space or time between two consecutive events
 has an exponential distribution (Theorem \@ref(thm:PoissonProcess)).
 Hence the exponential distribution is used to describe the interval between consecutive randomly occurring events.
@@ -906,7 +860,6 @@ for (i in (1:length(lambda))){
                    rate = 1/lambda[i]),
           xlab = expression(italic(x)),
           ylab = "Probability function",
-          col = plotColour1,
           lwd = 2,
           las = 1,
           ylim = c(0, 1.5),
@@ -916,7 +869,6 @@ for (i in (1:length(lambda))){
     lines(x = x,
           y = dexp(x,
                    rate = 1/lambda[i]),
-          col = plotColour1,
           lty = i,
           lwd = 2)
   }
@@ -925,7 +877,6 @@ for (i in (1:length(lambda))){
 legend( "topright",
         lty = 1:4,
         lwd = 2,
-        col = plotColour1,
         legend = c(bquote(lambda == 0.5),
                    bquote(lambda == 1),
                    bquote(lambda == 2),
@@ -958,6 +909,9 @@ In **R**, the exponential distribution functions have the form `[dpqr]exp(rate)`
 
 
 
+::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
+If events occur according to a Poisson distribution, then the time *between* the Poisson events can be modelled using an expeonential distribution.
+:::
 
 
 :::{.example #ExpPoisson name="Relationship between exponential and Poisson distributions"}
@@ -1161,7 +1115,7 @@ In broad terms, the *shape* parameter dictates the general shape of the distribu
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 In **R**, the gamma function $\Gamma(x)$ is evaluated using `gamma(x)`.
 
-The gamma distribution functions have the form `[dpqr]gamma(shape, rate, scale = 1/rate)`, where `shape`${}= \alpha$ and `scale`${}= \ beta$.
+The gamma distribution functions have the form `[dpqr]gamma(shape, rate, scale = 1/rate)`, where `shape`${}= \alpha$ and `scale`${}= \beta$.
 :::
 
 
@@ -1271,8 +1225,9 @@ Hence
  \, dx\\
    &=\int_0^{\infty}\frac{e^{-x(1-\beta t)/\beta}x^{\alpha-1}}{\beta^{\alpha}\Gamma(\alpha)} \, dx\\
    &=\int_0^{\infty}\frac{e^{-z}z^{\alpha-1}}{\Gamma(\alpha)(1-\beta t)^{\alpha-1}} \, \frac{dz} {1-\beta t}, \text{ putting } z=x(1-\beta t)/\beta\\ 
-   &=(1-\beta t)^{-\alpha},\ \text{ since the integral remaining is }1.
+   &=(1-\beta t)^{-\alpha},
 \end{align*}
+since the integral remaining is 1.
 :::
 
 As usual the moments can be found by expanding $M_X(t)$ in series.
