@@ -85,7 +85,7 @@ lines( x = c(7, 7),
 
 The following are the basic properties of the continuous uniform distribution.
 
-:::{.theorem}
+:::{.theorem #ContUniformProperties name="Continuous uniform distribution properties"}
 If $X\sim\text{Unif}(a,b)$ then
 
 1. $\text{E}(X)  = (a + b)/2$.
@@ -187,7 +187,7 @@ The proof relies on first squaring the integral and then changing to polar coord
 
 The following are the basic properties of the normal distribution.
 
-:::{.theorem #NormalProperties name="Properties of the normal distribution"}
+:::{.theorem #NormalProperties name="Normal distribution properties"}
 If $X\sim N(\mu,\sigma^2)$ then
 
 1. $\text{E}(X) = \mu$.
@@ -230,7 +230,7 @@ a result which proves useful in many contexts (as in the proof of \@ref(thm:Gamm
 The following are the basic properties of the standard normal distribution.
 
 
-:::{.theorem #StandardNormalProperties name="Properties of the standard normal distribution"}
+:::{.theorem #StandardNormalProperties name="Standard normal distribution properties"}
 If $Z\sim N(0, 1)$ then
 
 1. $\text{E}(Z) = 0$.
@@ -829,9 +829,12 @@ if( knitr::is_html_output() ) {
 
 ## Exponential distribution {#ExponentialDistribution}
 
-If the number of events in a process follows a Poisson distribution the space or time between two consecutive events
-has an exponential distribution (Theorem \@ref(thm:PoissonProcess)).
-Hence the exponential distribution is used to describe the interval between consecutive randomly occurring events.
+One shortcoming of using the normal distribution in modelling is that it is defined for all real values, but many quantities are not defined on the positive real numbers only.
+This is not always a problem, especially when the observations are far from zero, such as heights.
+However, many random variables have observations close to zero, and the data are often skewed to the right (positively skewed).
+
+Many distributions can be used for modelling right skewed data defined on the positive real numbers; one is the exponential distribution.
+
 
 :::{.definition #ExponentialDistribution name="Exponential distribution"}
 If a random variable $X$ has the pdf
@@ -843,14 +846,15 @@ We write $X\sim\text{Exp}(\beta)$.
 :::
 
 
-The parameter $\lambda = 1/\beta$ (or $\theta = 1/\beta$) is often used in place of $\beta$.
+The parameter $\lambda = 1/\beta$ (or $\theta = 1/\beta$) is often used in place of $\beta$, and is called the *rate* parameter.
 Plots of the pdf for various exponential distributions are given in Fig. \@ref(fig:ExponentialDistributions)}.
+
 
 ```{r ExponentialDistributions, echo=FALSE, fig.align="center", fig.cap="Exponential distributions",fig.width=4,fig.height=3.5}
 x <- seq(0, 12,
          length = 100)
 
-lambda <- c(0.5, 1, 2, 5)
+lambda <- c(0.5, 1, 2)
 
 for (i in (1:length(lambda))){
   lambdai <- lambda[i]
@@ -875,18 +879,18 @@ for (i in (1:length(lambda))){
 }
 
 legend( "topright",
-        lty = 1:4,
+        lty = 1:3,
         lwd = 2,
         legend = c(bquote(lambda == 0.5),
                    bquote(lambda == 1),
-                   bquote(lambda == 2),
-                   bquote(lambda == 5))
+                   bquote(lambda == 2) )
         )
 ```
 
+
 The following are the basic properties of the exponential distribution.
 
-:::{.theorem}
+:::{.theorem #ExponentialProperties name="Exponential distribution properties"}
 If $X\sim\text{Exp}(\beta)$ then 
 
 1. $\text{E}(X) = \beta$.
@@ -895,12 +899,13 @@ If $X\sim\text{Exp}(\beta)$ then
 :::
 
 :::{.proof}
-These proofs are left as an exercise.
+The proofs are left as an exercise.
 :::
 
 
-Notice that the parameter $\beta$ represents the *mean* of the exponential distribution or, in the context of a Poisson process, the mean interval length between consecutive events.
-Then the alternative parameter $\lambda = 1/\beta$ represents the mean *rate* at which events occur.
+The parameter $\beta$ represents the *mean* of the exponential distribution.
+The alternative parameter $\lambda = 1/\beta$ represents the mean *rate* at which events occur.
+Like the [Poisson distribution](#PoissonDistribution), once the mean is defined the variance is defined.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
@@ -908,30 +913,9 @@ In **R**, the exponential distribution functions have the form `[dpqr]exp(rate)`
 :::
 
 
-
-::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
-If events occur according to a Poisson distribution, then the time *between* the Poisson events can be modelled using an expeonential distribution.
-:::
-
-
-:::{.example #ExpPoisson name="Relationship between exponential and Poisson distributions"}
-This example reveals the relationships amongst the parameters typically used to describe the exponential and Poisson distributions.
-
-A Poisson process occurs at the mean rate of 5 events per hour.
-Describe the distribution of the time between consecutive events and the distribution of the number of events in one day (24 hours).
-
-Let $N$ represent the number of events in one day and $T$ the time between consecutive events. 
-We are given that events occur at the mean rate of $\lambda = 5$ events per hour. 
-It follows that the mean time between consecutive events, $\beta = 1/\lambda = 0.2$ hours. 
-Also, the mean number of events in one day is $\mu = 24\times 5 = 120$.
-Consequently we have that $N\sim\text{Pois}(\mu = 120)$ and  $X\sim\text{Exp}(\beta = 0.2)$ (or, equivalently, $X\sim\text{Exp}(\lambda = 5)$).
-(These parameter definitions are strongly recommended although not all texts follow them.)
-:::
-
-
-
 :::{.example #ExpRainFall name="Exponential distributions"}
 @allen1975stochastic use the exponential distribution to model rainfall.
+WHAT SCALE? WHERE?
 :::
 
 
@@ -981,19 +965,20 @@ lines( x = xx,
 
 ```
 
-### Relationship between the Poisson and exponential distributions {#PoiussonExponential}
 
-Events occurring according to a Poisson process are characterised by an exponential distribution describing the interval between consecutive events.
-This relationship is captured in the following theorem.
+
+The Poisson distribution and the exponential distribution are related.
+If the number of events in a process follows a Poisson distribution, the space or time between two consecutive events has an exponential distribution (Theorem \@ref(thm:PoissonProcess)).
+Hence the exponential distribution is used to describe the interval between consecutive randomly occurring events.
+
 
 :::{.theorem #PoissonProcess name="Poisson process"}
 Consider a Poisson process at rate $\lambda$ and suppose observation starts at an arbitrary time point. 
 Then the time $T$ to the first event has an exponential distribution with mean $\text{E}(T) = 1/\lambda$; i.e.,
 \[
-   f_T(t) = \lambda e^{-\lambda t},\quad t > 0
+   f_T(t) = \lambda e^{-\lambda t},\quad t > 0.
 \]
 :::
-
 
 :::{.proof}
 Let $t = 0$ be the arbitrary time at which observation of the Poisson process starts. 
@@ -1002,17 +987,17 @@ Now $T$ is the elapsed time after observations starts until the first event occu
 
 Clearly, if the first event takes longer than $t$ to occur, then $T > t$ and the number of events in $(0, t]$ is zero.
 Conversely, if the first event occurs at time $t$ or earlier then $T \le t$ and the number of events in $(0, t]$ is greater than zero.
-It follows that the events $\{T > t\}$ and $\{N(t) = 0\}$ are equivalent where $N(t)$ is the number of events occurring in time $(0, t]$.
+Hence, the events $\{T > t\}$ and $\{N(t) = 0\}$ are equivalent where $N(t)$ is the number of events occurring in time $(0, t]$.
 Therefore
 \[
-\Pr(T > t) = \Pr(N(t) = 0)
+   \Pr(T > t) = \Pr(N(t) = 0).
 \]
 But $N(t) \sim \text{Pois}(\lambda)$ with mean $\text{E}(N(t)) = \lambda t$.
 Hence
 \begin{equation}
    \Pr(T > t) 
    = \frac{(\lambda t)^0 e^{-\lambda t}}{0!}
-   = e^{-\lambda t}
+   = e^{-\lambda t}.
    (\#eq:ExpSurvivor)
 \end{equation}
 This shows that the df of $T$ is given by
@@ -1032,12 +1017,32 @@ which we recognise as the exponential distribution with mean $\beta = 1/\lambda$
 :::
 
 
-Although the theorem refers to 'time', the variable of interest may be distance or any other continuous variable which may be applicable in measuring the interval between events.
+Although the theorem refers to 'time', the variable of interest may be distance or any other continuous variable measuring the interval between events.
 
-An important feature of a Poisson process and hence of the exponential distribution is the *memoryless* or *Markov property*; that is, the future of the process at any time point does not depend on the history of the process.
+
+::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
+If events occur according to a Poisson distribution, then the "time" *between* the Poisson events can be modelled using an exponential distribution.
+:::
+
+
+:::{.example #ExpPoisson name="Relationship between exponential and Poisson distributions"}
+A Poisson process occurs at the mean rate of 5 events per hour.
+
+Let $N$ represent the number of events in one day and $T$ the time between consecutive events. 
+Describe the distribution of the time between consecutive events and the distribution of the number of events in one day (24 hours).
+We are given that events occur at the mean rate of $\lambda = 5$ events per hour. 
+It follows that the mean time between consecutive events is $\beta = 1/\lambda = 0.2$ hours. 
+Hence, the mean number of events in one day is $\mu = 24\times 5 = 120$.
+
+Consequently, $N\sim\text{Pois}(\mu = 120)$ and  $X\sim\text{Exp}(\beta = 0.2)$ (or, equivalently, $X\sim\text{Exp}(\lambda = 5)$).
+:::
+
+
+An important feature of a Poisson process, and hence of the exponential distribution, is the *memoryless* or *Markov property*: the future of the process at any time point does not depend on the history of the process.
 This property is captured in the following theorem.
 
-:::{.theorem}
+
+:::{.theorem #MemorylessProperty name="Memoryless property"}
 If $T \sim \text{Exp}(\lambda)$, then for $s > 0$ and $t > 0$, 
 \[
     \Pr(T > s + t \mid T > s) = \Pr(T > t)
@@ -1068,32 +1073,31 @@ This is called the *memoryless property* of the exponential distribution.
 
 :::{.example #Memoryless name="Memoryless property of exponential distribution"}
 Suppose the lifespan of component $A$ is modelled by an exponential distribution with mean 12 months.
+Then, $T \sim \text{Exp}(\beta = 6)$.
 
-1.  What is the probability that component $A$ fails in less than 6 months?
-2. Component $A$ has been in place for 12 months. 
-   What is the probability that it will fail in less than a further 6 months?
-
-By the memoryless property, the answers are the same, and are both given by $\Pr(T < 6)$ where $T \sim \text{Exp}(\beta = 6)$; i.e.,
+The probability that component $A$ fails in less than 6 months is
 \[
    \Pr(T < 6) = 1 - \exp(-6/12) = 0.3935.
 \]
+
+Now, suppose component $A$ has been in place for 12 months. 
+The probability that it will fail in less than a further 6 months is
+\[
+   \Pr(T < 18 | T > 12) = \Pr(T < 6) = 1 - \exp(-6/12) = 0.3935
+\]
+by the memoryless property.
 :::
 
-Example \@ref(exm:Memoryless) highlights the notion that an exponential process is ageless, in the sense that the risk of 'mortality' remains constant with age.
+
+Example \@ref(exm:Memoryless) highlights the notion that an exponential process is ageless: the risk of 'mortality' remains constant with age.
 In other words, the probability of such an event occurring in the next small interval, whether it be the failure of a component or the occurrence of an accident, remains constant regardless of the age of the component or the length of time since the last accident. 
 In this sense an exponential lifetime is different from a human lifetime or the lifetime of many man-made objects where the risk of 'death' in the next small interval increases with age.
 
 
-
 ## Gamma distribution {#GammaDistribution}
 
-The normal distribution is often used in modelling, but there is one significant shortcoming.
-A lot of data is only defined for non-negative values or for positive values[The phrase *non-negative* permits zero; *positive* explicitly excludes zero.]
-yet the normal distribution allows negative values of the random variable.
-This is not always a problem, especially when the observations are far from zero; see Example \@ref(exm:Forearms).
-But some data sets have observations close to zero, and the data are often skewed to the right (positively skewed).
-
-There are many distributions for modelling right skewed data; here the gamma distribution is considered.
+Once the mean of an exponential distribution is defined, the variance is defined.
+More flexibility is sometimes needed, which is provided by the gamma distribution.
 
 
 :::{.definition #GammaDistribution  name="Gamma distribution"}
@@ -1147,41 +1151,44 @@ for (i in (1:length(alpha))){
        y = dgamma(x,
                   shape = alphai,
                   scale = beta[1]),
-       xlab = "x",
+       xlab = expression(italic(x)),
        ylab = "Prob. density",
-       col = plotColour1,
        las = 1,
        lwd = 2,
        type = "l",
-       main= paste("Gamma distributions\nwith alpha =", alphai))
-  
+       main = bquote("Gamma distributions:" ~ alpha == .(alphai) ) ) 
+
   lines( x = x,
          y = dgamma(x,
                   shape = alphai,
                   scale = beta[2]),
-         col = plotColour1,
          lty = 2,
          lwd = 2)
   lines( x = x,
          y = dgamma(x,
                   shape = alphai,
                   scale = beta[3]),
-        col = plotColour1,
          lty = 3,
          lwd = 2)
   legend("topright",
          lwd = 2,
          lty = 1:3,
+         bty = "n",
          col = plotColour1,
-         legend = paste("beta = ", beta))
+         legend = c(bquote( beta == .(beta[1])),
+                    bquote( beta == .(beta[2])),
+                    bquote( beta == .(beta[3]))))
+
 }
 ```
 
+
 Notice that
 \begin{align}
-   \int_0^\infty f_X(x)\,dx&=\int_0^\infty\frac{e^{-x/\beta}x^{\alpha-1}}{\beta^\alpha\Gamma(\alpha)}\,dx\nonumber\\
-   &= \frac{1}{\Gamma(\alpha)}\int_0^\infty e^{-y} y^{\alpha-1}\,dy  \quad \text{(on putting } y=x/\beta)\nonumber \\
-   &= 1\quad \text{(because $\int_0^\infty e^{-y} y^{\alpha-1}\,dy=\Gamma(\alpha)$)}
+   \int_0^\infty f_X(x)\,dx
+   &= \int_0^\infty\frac{e^{-x/\beta}x^{\alpha - 1}}{\beta^\alpha\Gamma(\alpha)}\,dx\nonumber\\
+   &= \frac{1}{\Gamma(\alpha)} \int_0^\infty e^{-y} y^{\alpha-1}\,dy  \quad \text{(on putting $y = x/\beta$)}\nonumber \\
+   &= 1\quad \text{(because $\int_0^\infty e^{-y} y^{\alpha-1}\,dy = \Gamma(\alpha)$)}
    (\#eq:GammaStd)
 \end{align}
 as it must.
@@ -1189,7 +1196,8 @@ as it must.
 
 The following are the basic properties of the gamma distribution.
 
-:::{.theorem #GammaProperties name="Properties of gamma distribution"}
+
+:::{.theorem #GammaProperties name="Gamma distribution properties"}
 If $X\sim\text{Gam}(\alpha,\beta)$ then
 
 1. $\text{E}(X) = \alpha\beta$.
@@ -1200,37 +1208,42 @@ If $X\sim\text{Gam}(\alpha,\beta)$ then
 :::{.proof}
 \[
    \text{E}(X)
-   = \int_0^{\infty}x f_X(x)\,dx = \beta \frac{\Gamma(\alpha+1)}{\Gamma(\alpha)}
-\underbrace{\int_0^{\infty}\frac{e^{-x/\beta}x^{(\alpha+1)-1}}{\beta^{\alpha+1}\Gamma(\alpha+1)} \, dx}_{=1}
+   = \int_0^{\infty}x f_X(x)\,dx 
+   = \beta \frac{\Gamma(\alpha + 1)}{\Gamma(\alpha)}
+     \underbrace{\int_0^{\infty}\frac{e^{-x/\beta} x^{(\alpha + 1) - 1}}{\beta^{\alpha + 1}\Gamma(\alpha + 1)} \, dx}_{= 1}
    = \alpha\beta.
 \]
 This result follows from using \@ref(eq:GammaStd) and Theorem \@ref(thm:GammaProperties).
 
 \[
    \text{E}(X^2)
-   = \int_0^{\infty}x^2  f_X(x) \, dx= \beta^2\frac{\Gamma(\alpha+2)}{\Gamma(\alpha)}
-\underbrace{\int_0^{\infty}\frac{e^{-x/\beta}x^{(\alpha+2)-1}}{\beta^{\alpha+2}\Gamma(\alpha+2)}\,dx}_{=1}
-  =\alpha(\alpha+1)\beta^2
+   = \int_0^{\infty}x^2  f_X(x) \, dx 
+   = \beta^2\frac{\Gamma(\alpha + 2)}{\Gamma(\alpha)}
+     \underbrace{\int_0^{\infty}\frac{e^{-x/\beta} x^{(\alpha + 2) - 1}}{\beta^{\alpha + 2}\Gamma(\alpha + 2)}\,dx}_{= 1}
+   = \alpha(\alpha + 1)\beta^2
 \]
 where the result follows by writing $\Gamma(\alpha + 2) = (\alpha + 1)\alpha\Gamma(\alpha)$.
 Hence
 \[
    \text{var}(X)
-   = \text{E}(X^2)-[\text{E}(X)]^2=\alpha(\alpha+1)\beta^2-(\alpha\beta)^2=\alpha\beta^2
+   = \text{E}(X^2) - [\text{E}(X)]^2
+   = \alpha(\alpha + 1)\beta^2 - (\alpha\beta)^2
+   = \alpha\beta^2
 \]
-
+Also:
 \begin{align*}
    M_X(t)
-   = \text{E}(e^{Xt})&=\int_0^{\infty}e^{tx}  \frac{e^{-x/\beta}x^{\alpha-1}}{\beta^{\alpha}\Gamma(\alpha)}
- \, dx\\
-   &=\int_0^{\infty}\frac{e^{-x(1-\beta t)/\beta}x^{\alpha-1}}{\beta^{\alpha}\Gamma(\alpha)} \, dx\\
-   &=\int_0^{\infty}\frac{e^{-z}z^{\alpha-1}}{\Gamma(\alpha)(1-\beta t)^{\alpha-1}} \, \frac{dz} {1-\beta t}, \text{ putting } z=x(1-\beta t)/\beta\\ 
-   &=(1-\beta t)^{-\alpha},
+    = \text{E}(e^{Xt})
+   &= \int_0^{\infty}e^{tx} \frac{e^{-x/\beta}x^{\alpha - 1}}{\beta^{\alpha} \Gamma(\alpha)} \, dx\\
+   &= \int_0^{\infty} \frac{e^{-x(1 - \beta t)/\beta}x^{\alpha - 1}}{\beta^{\alpha}\Gamma(\alpha)} \, dx\\
+   &= \int_0^{\infty} \frac{e^{-z}z^{\alpha - 1}}{\Gamma(\alpha)(1 - \beta t)^{\alpha - 1}} \, \frac{dz} {1 - \beta t}, 
+      \text{putting $z = x(1 - \beta t)/\beta$}\\ 
+   &= (1 - \beta t)^{-\alpha},
 \end{align*}
 since the integral remaining is 1.
 :::
 
-As usual the moments can be found by expanding $M_X(t)$ in series.
+As usual the moments can be found by expanding $M_X(t)$ as a series.
 That is,
 \[
    M_X(t) = 1 \ + \ \alpha\beta t \ + \ \frac{\alpha(\alpha+1)\beta^2}{2!}  t^2 \ + \ \cdots
@@ -1241,12 +1254,14 @@ from which
    E(Y^2) &= \text{coefficient of }t^2/2!=\alpha(\alpha+1)\beta^2, \text{ as found earlier.}
 \end{align*}
 
-Like for the normal distribution, the distribution function of the gamma cannot, in general, be computed without using numerical integration or tables (although see Example \@ref(exm:ElectricalComponent)).
+As for the normal distribution, the distribution function of the gamma cannot, in general, be computed without using numerical integration, tables (although see Example \@ref(exm:ElectricalComponent)) or software.
 
 
 :::{.example #Rainfall name="Rainfall"}
 @climate:das:1955 used a (truncated) gamma distribution for modelling precipitation.
 A similar approach is adopted by [@climate:wilks:1990].
+
+WHERE???? WHAT SCALE???
 :::
 
 
@@ -1260,15 +1275,15 @@ The comparison between the data and the model (Table \@ref(tab:GammaRain)) indic
 ```{r GammaRain, echo=FALSE}
 RainTable <- array(dim = c(9, 7))
 
-RainTable[1, ] <- c("0--5", 1631, 1639, "",  "46--50", 18, 12)
-RainTable[2, ] <- c("6--10", 115, 106, "", "51--60", 18, 20)
-RainTable[3, ] <- c("11--15", 67, 62, "", "61--70", 13, 15)
-RainTable[4, ] <- c("16--20", 42, 44, "", " 71--80", 13, 12)
-RainTable[5, ] <- c("21--25", 27, 32, "", "81-90", 8, 9)
-RainTable[6, ] <- c("26--30", 26, 26, "", "91--100", 8, 7)
-RainTable[7, ] <- c("31--35", 19, 21, "", "101--125", 16, 12)
-RainTable[8, ] <- c("36--40", 14, 17, "", "126--150", 7, 7)
-RainTable[9, ] <- c("41--45", 12, 14, "", "151--425",  14, 13)
+RainTable[1, ] <- c("0--5",   1631, 1639, "", "46--50",   18, 12)
+RainTable[2, ] <- c("6--10",  115,   106, "", "51--60",   18, 20)
+RainTable[3, ] <- c("11--15",  67,    62, "", "61--70",   13, 15)
+RainTable[4, ] <- c("16--20",  42,    44, "", "71--80",   13, 12)
+RainTable[5, ] <- c("21--25",  27,    32, "", "81--90",    8, 9)
+RainTable[6, ] <- c("26--30",  26,    26, "", "91--100",   8, 7)
+RainTable[7, ] <- c("31--35",  19,    21, "", "101--125", 16, 12)
+RainTable[8, ] <- c("36--40",  14,    17, "", "126--150",  7, 7)
+RainTable[9, ] <- c("41--45",  12,    14, "", "151--425", 14, 13)
 
 
 
@@ -1310,45 +1325,21 @@ if( knitr::is_html_output() ) {
 
 ```
 
-<!-- \begin{table} -->
-<!-- \begin{center} -->
-<!-- {\small -->
-<!-- \begin{tabular}{ccccccc} -->
-<!-- Rainfall & Observed  & Expected  && Rainfall & Observed  & Expected \\ -->
-<!-- (in mm)  & Frequency & Frequency && (in mm)  & Frequency & Frequency -->
-<!-- \botnewrule \\ -->
-<!-- \cline{1-3}\cline{5-7} -->
-<!-- \topnewrule -->
-<!-- 0--5 & 1631 & 1639 && 46--50 & 18 & 12 \\ -->
-<!-- 6--10 & 115 & 106 && 51--60 & 18 & 20 \\ -->
-<!-- 11--15 & 67 & 62 && 61--70 & 13 & 15 \\ -->
-<!-- 16--20 & 42 & 44 && 71--80 & 13 & 12 \\ -->
-<!-- 21--25 & 27 & 32 && 81--90 & 8 & 9 \\ -->
-<!-- 26--30 & 26 & 26 && 91--100 & 8 & 7 \\ -->
-<!-- 31--35 & 19 & 21 && 101--125 & 16 & 12 \\ -->
-<!-- 36--40 & 14 & 17 && 126--150 & 7 & 7 \\ -->
-<!-- 41--45 & 12 & 14 && 151--425 & 14 & 13 -->
-<!-- \end{tabular} -->
-<!-- } -->
-<!-- \caption{The gamma distribution used to model Sydney daily rainfall.} -->
-<!-- \label{TB:speccontinuous:gamma:rainfall} -->
-<!-- \end{center} -->
-<!-- \end{table} -->
 
 
 :::{.example #ElectricalComponent name="Electrical components"}
-The lifetime of an electrical component in hours, say $T$, can be well modelled by the distribution $\text{Gam}(\alpha = 2, \beta = 1)$.
+The lifetime of an electrical component in hours, say $T$, can be well modelled by the distribution $\text{Gam}(2, 1)$.
 What is the probability that a component will last for more than three hours?
 
 From the information, $T\sim \text{Gam}(\alpha = 2, \beta = 1)$.
 The required probability is therefore
 \begin{align*}
    \Pr(T > 3)
-   &= \int_3^\infty \frac{1}{1^2 \Gamma(2)}t^{2-1} \exp(-t/1)\,dt \\
+   &= \int_3^\infty \frac{1}{1^2 \Gamma(2)}t^{2 - 1} \exp(-t/1)\,dt \\
    &= \int_3^\infty t \exp(-t)\,dt \\
 \end{align*}
 since $\Gamma(2) = 1! = 1$.
-This expression can be integrated using integration by parts as follows:
+This expression can be integrated using integration by parts:
 \begin{align*}
    \Pr(T > 3)
    &= \int_3^\infty t \exp(-t)\,dt \\
@@ -1358,16 +1349,12 @@ This expression can be integrated using integration by parts as follows:
    &= 0.1991
 \end{align*}
 
-Note that this is only possible since $\alpha$ is integer.
-If $\alpha$ was, for example $\alpha = 2.5$, integration by parts could not have been done. (CHECK)!
+Integration by parts is only possible since $\alpha$ is integer.
+If $\alpha$ was, for example $\alpha = 2.5$, integration by parts would not be possible.
 
-A more general approach is to use tables of the incomplete gamma function to evaluate the integral or, alternatively,
-a numerical integration technique (such as Simpson's rule or the trapezoidal rule) can be used to approximate the
-probability, where it may be easier to compute
-\[
-   \Pr(T>3) = 1 - \Pr(0 < T < 3 ).
-\]
-Software can also be used; **R** is used below:
+A more general approach is to use tables of the incomplete gamma function to evaluate the integral, numerical integration of software.
+To use **R**:
+
 
 ```{r echo=TRUE}
 # Integrate
@@ -1387,7 +1374,6 @@ Using any method, the probability is about 20%.
 :::
 
 
-
 :::{.example #Gamma name="Gamma"}
 If $X\sim \text{Gam}(\alpha, \beta)$, find the distribution of $Y = kX$ for some constant $k$.
 
@@ -1395,24 +1381,24 @@ One way to approach this question is to use moment generating functions.
 Since $X$ has a gamma distribution, $M_X(t) = (1-\beta t)^{-\alpha}$.
 Now,
 \begin{align*}
-   M_X(t)
-   &= \text{E}(\exp(tX)) \qquad\text{by definition of the mgf}\\
-   &= \text{E}(\exp(t kX)) \qquad\text{since $X=kX$}\\
-   &= \text{E}(\exp(s X)) \qquad\text{by letting $s=kt$}\\
+   M_Y(t)
+   &= \text{E}(\exp(tY)) \qquad\text{by definition of the mgf}\\
+   &= \text{E}(\exp(t kX)) \qquad\text{since $X = kX$}\\
+   &= \text{E}(\exp(s X)) \qquad\text{by letting $s = kt$}\\
    &= M_X(s) \qquad\text{by definition of the mgf}\\
    &= M_X(kt) \\
-   &= (1-\beta kt)^{-\alpha}.
+   &= (1 - \beta kt)^{-\alpha}.
 \end{align*}
-This is just the mgf for random variable $X$ with $k\beta$ in place of $\beta$, so the distribution of $X$ is $\text{Gam}(\alpha, k\beta)$.
+This is just the mgf for random variable $X$ with $k\beta$ in place of $\beta$, so the distribution of $Y$ is $\text{Gam}(\alpha, k\beta)$.
 :::
 
 
 
 ## Beta distribution {#BetaDistribution}
 
-Apart from the uniform distribution, all the continuous distributions considered so far have densities which are positive over an infinite interval.
-It is useful to have another class of distributions that can be used to model phenomena constrained to a finite interval. 
-The beta distribution fits this category.
+Apart from the uniform distribution, all the continuous distributions considered have a range space on the positive real numbers.
+However, some phenomena are constrained to a finite interval. 
+The beta distribution is useful in these situations.
 
 
 :::{.definition #BetaDistribution name="Beta distribution"}
@@ -1425,15 +1411,16 @@ where
 \begin{equation}
    B(m, n)
    = \int_0^1  x^{m - 1}(1 - x)^{n - 1} \, dx, \quad m > 0, \ n > 0
+   = \frac{\Gamma(m) \Gamma(n)}{\Gamma(m + n)}
    (\#eq:BetaFunction)
 \end{equation}
 is said to have a *beta distribution* with parameters $m$, $n$.
 We write $X \sim \text{Beta}(m, n)$.
 :::
 
-$B(m, n)$ defined by \@ref(eq:BetaFunction) is known as the *beta function* with parameters $m$ and $n$.
 
-We see from $\int_0^1 f_X(x)\,dx = 1$ that
+$B(m, n)$ defined by \@ref(eq:BetaFunction) is known as the *beta function* with parameters $m$ and $n$.
+Since $\int_0^1 f_X(x)\,dx = 1$ then
 \begin{equation}
    \int_0^1  \frac{x^{m - 1}(1 - x)^{n - 1}}{B(m, n)}\,dx = 1.
 \end{equation}
@@ -1442,26 +1429,26 @@ We see from $\int_0^1 f_X(x)\,dx = 1$ that
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 In **R**, the beta function is evaluated using `beta(a, b)`.
 
-The beta distribution functions have the form `[dpqr]beta(shape1, shape2)`.
+The beta distribution functions have the form `[dpqr]beta(shape1, shape2)`, where `shape1`$= n$ and `shape2`$= m$.
 :::
 
 
 Some properties of the beta function follow.
 
 
-:::{.theorem}
+:::{.theorem #BetaFunctionProperties name="Beta function properties"}
 The beta function \@ref(eq:BetaFunction) satisfies the following:
 
 1. The beta function is symmetric in $m$ and $n$.
-  That is, if $m$ and $n$ are interchanged, the function remains unaltered; i.e., $B(m, n) = B (n, m)$.
+   That is, if $m$ and $n$ are interchanged, the function remains unaltered; i.e., $B(m, n) = B (n, m)$.
 2. $B(1, 1) = 1$
 3. $\displaystyle B\left(\frac{1}{2}, \frac{1}{2}\right) = \pi$
 4. For positive constants $m$, $n$ (not necessarily integers) $\displaystyle B(m, n) = \frac{\Gamma(m) \Gamma(n)}{\Gamma(m + n)}$.
 :::
 
 :::{.proof}
-To prove this, put $z = 1 - x$ and hence $dz = -dx$ in \@ref(eq:BetaFunction). 
-We obtain
+To prove the first, put $z = 1 - x$ and hence $dz = -dx$ in \@ref(eq:BetaFunction). 
+Then
 \begin{align*}
    B(m, n)
    &= -\int_1^0(1 - z)^{m - 1}  z^{n - 1} \, dz\\
@@ -1469,25 +1456,29 @@ We obtain
    &= B(n, m)
 \end{align*}
 
-Put $x = \sin^2\theta$, $dx = 2\sin\theta\cos\theta\,d\theta$ in \@ref(eq:BetaFunction).
+For the second, put $x = \sin^2\theta$, and so $dx = 2\sin\theta\cos\theta\,d\theta$, in \@ref(eq:BetaFunction).
 We have
 \[
    B(m, n) = 2 \int_0^{\pi/2} \sin^{2m - 1}\theta \cos ^{2n - 1}\theta\,d\theta.
 \]
 So, for $m = n = \frac{1}{2}$,
 \[
-   B\left(\frac{1}{2},\frac{1}{2}\right) = 2\int_0^{\pi/2} d\theta = \pi.
+   B\left(\frac{1}{2}, \frac{1}{2}\right) = 2\int_0^{\pi/2} d\theta = \pi.
 \]
-The proof (not required) involves expressing $\Gamma(m)$ as
-\[
-   2 \int_0^{\infty} e^{-u^2}  u^{2m-1} \, du,
-\]
-then writing $\Gamma(m)\Gamma(n)$ as a double integral. 
-Changing to polar coordinates, the double integral is written as a repeated integral which is $\Gamma(m + n)B(m, n)$.
+
+For the third, note that $\Gamma(1/2) = \sqrt{\pi}$ from Theorem \@ref(thm:GammaProperties).
+Further, since $\Gamma(1) = 0! = 1$, and the results follows.
 :::
 
+
 Typical graphs for the beta pdf are given below. 
-Note that, if $m = n$, the distribution is symmetric about $x = \frac{1}{2}$, and in the special case where $m = n = 1$, the beta distribution becomes the uniform distribution on $(0,1)$.
+When $m = n$, the distribution is symmetric about $x = \frac{1}{2}$.
+
+
+
+::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
+When $m = n = 1$, the beta distribution becomes the uniform distribution on $(0, 1)$.
+:::
 
 
 ```{r BetaDistributions, echo=FALSE, fig.align="center", fig.cap="Various beta-distribution PDFs", fig.width=7, fig.height=3.5, out.width='80%'}
@@ -1497,8 +1488,8 @@ par(mfrow = c(1, 2))
 x <- seq(0, 1, 
          length = 100)
 
-m <- c( 3, 4, 6)
-n <- c(7, 4, 2)
+m <- c(0.5, 3, 4, 6)
+n <- c(0.5, 7, 4, 2)
 
 
 plot( x = x,
@@ -1508,7 +1499,6 @@ plot( x = x,
       xlab = expression(italic(x)),
       ylab = "Probability function",
       lwd = 2,
-      col = plotColour1,
       type = "l",
       las = 1,
       main = "Beta distributions")
@@ -1517,15 +1507,19 @@ lines( x = x,
                  shape1 = m[2],
                  shape2 = n[2]),
        lwd = 2,
-       col = plotColour1,
        lty = 2)
 lines( x = x,
        y = dbeta(x = x,
                  shape1 = m[3],
                  shape2 = n[3]),
-       col = plotColour1,
        lwd = 2,
        lty = 3)
+lines( x = x,
+       y = dbeta(x = x,
+                 shape1 = m[4],
+                 shape2 = n[4]),
+       lwd = 2,
+       lty = 4)
 
 # Now have a panel just for the legend!
 plot( x = c(1, 5),
@@ -1535,67 +1529,76 @@ plot( x = c(1, 5),
       ylab = "",
       type = "n")
 
-legend("center",
-       lty = 1:3,
+legend("right",
+       lty = 1:4,
        lwd = 2,
-       col = plotColour1,
        bty = "n",
-       legend = c( paste("m =", m[1], "and n =", n[1]),
-                   paste("m =", m[2], "and n =", n[2]),
-                   paste("m =", m[3], "and n =", n[3]) )
+       legend = c( bquote(italic(m)== .(m[1])~and~italic(n)==.(n[1])),
+                   bquote(italic(m)== .(m[2])~and~italic(n)==.(n[2])),
+                   bquote(italic(m)== .(m[3])~and~italic(n)==.(n[3])),
+                   bquote(italic(m)== .(m[4])~and~italic(n)==.(n[4])) )
 )
+
+
 
 ```
 
 
 Some basic properties of the beta distribution follow.
 
-:::{theorem}
 
-If $X \sim \text{Beta}(m,n)$ then
+:::{.theorem #BetaDistributionProperties name="Beta distributionn properties"}
+If $X \sim \text{Beta}(m, n)$ then
 
-1. $\text{E}(X) = \frac{m}{m + n}$.
+1. $\text{E}(X) = m/(m + n)$.
 2. $\text{var}(X) = \frac{mn}{(m + n)^2(m + n + 1)}$.
 3. A mode occurs at $x = \frac{m - 1}{m + n - 2}$ for $m, n > 1$.
 :::
 
 
 :::{.proof}
-Assume $X \sim \text{Beta}(m,n)$, then
+Assume $X \sim \text{Beta}(m, n)$, then
 \begin{align*}
    \mu_r'
    =\text{E}(X^r)
-   &= \int_0^1  \frac{x^r  x^{m-1}(1-x)^{n-1}}{B(m,n)}\,dx\\
-   &= \frac{B(m+r,n)}{B(m,n)}  \int_0^1 \frac{x^{m+r-1}(1-x)^{n-1}}{B(m + r,n)}\,dx\\
-   &= \frac{\Gamma(m+r)\Gamma(n)}{\Gamma(m+r+n)}\frac{\Gamma(m+n)}{\Gamma(m)\Gamma(n)}\\
+   &= \int_0^1  \frac{x^r  x^{m - 1}(1 - x)^{n - 1}} {B(m, n)}\,dx\\
+   &= \frac{B(m + r, n)}{B(m, n)}  \int_0^1 \frac{x^{m + r - 1}(1 - x)^{n - 1}}{B(m + r, n)}\,dx\\
+   &= \frac{\Gamma(m + r)\Gamma(n)}{\Gamma(m + r + n)}\frac{\Gamma(m + n)}{\Gamma(m)\Gamma(n)}\\
    &= \frac{\Gamma(m + r)\Gamma(m + n)}{\Gamma(m + r + n)\Gamma(m)}
 \end{align*}
-Putting $r = 1$ and $r = 2$ into the above expression, and using the fact that $\text{var}(X) = \text{E}(X^2) - (\text{E}(X))^2$, it is easy to verify that the mean and variance are $\text{E}(X) = \frac{m}{m + n}$ and $\text{var}(X) = \frac{mn}{(m + n)^2(m + n + 1)}$.
+Putting $r = 1$ and $r = 2$ into the above expression, and using sthat $\text{var}(X) = \text{E}(X^2) - \text{E}(X)^2$, the mean and variance are $\text{E}(X) = m/(m + n)$ and $\text{var}(X) = \frac{mn}{(m + n)^2(m + n + 1)}$.
 
 Any mode $\theta$ of the distribution for which $0 < \theta < 1$ will satisfy $f'_X(\theta) = 0$. 
 From the definition we see that for $m, n>1$ and $0 < x < 1$,
 \[
    f'_X(x) = (m - 1)x^{m - 2} (1 - x)^{n - 1} - (n - 1)x^{m - 1}(1 - x)^{n - 1}/B(m, n) = 0
 \]
-implies $(m - 1)(1 - x) = (n - 1)x$ which is satisfied by $x = (m - 1) / (m + n - 2)$.
+implying $(m - 1)(1 - x) = (n - 1)x$ which is satisfied by $x = (m - 1) / (m + n - 2)$.
 :::
 
-The mgf of the beta distribution cannot be written in terms of standard functions.
 
+The mgf of the beta distribution cannot be written in terms of standard functions.
 The distribution function of the beta must be evaluated numerically in general, except when $m$ and $n$ are integers as shown in the example below.
 
 
-:::{.example #Beta name="Beta distributions"}
+If $X\sim \text{Beta}(m, n)$, then $X$ is defined on $[0, 1]$.
+Sometimes then, the beta distribution is used to model proportions, though not proportions out of a total number (when the [binomial distribution](#BinomialDistribution) is used).
+Instead, the beta distribution is used in situations like the percentage cloud cover (and also see Example \@ref(exm:BetaTanks)).
+
+For a random variable $Y$ defined on a different closed interval $[a, b]$, define $Y = X(b - a) + a$.
+
+
+:::{.example #BetaTanks name="Beta distributions"}
 The bulk storage tanks of a fuel retailed are filled each Monday.
 The retailer has observed that over many weeks the proportion of the available fuel supply sold is well modelled by a beta distribution with $m = 4$ and $n = 2$.
-According to this model, on average what proportion of fuel is sold each week?  
-Is it likely that at least 90% of the supply will sell in a given week?
 
-If $X$ denotes the proportion of the total supply sold in a given week.
+If $X$ denotes the proportion of the total supply sold in a given week, the mean proportion of fuel sold each week is
 \[
    \text{E}(X) = m/(m + n) = 4/6 = 2/3.
 \]
-In the second part our interest is in
+
+What is the probability that at least 90% of the supply will sell in a given week?
+Compute:
 \begin{align*}
    \Pr(X > 0.9)
    &= \int_{0.9}^1\frac{\Gamma(4 + 2)}{\Gamma(4)\Gamma(2)}x^3(1 - x)dx\\
@@ -1606,3 +1609,5 @@ In the second part our interest is in
 It is unlikely that 90% of the supply will be sold in a given week.
 :::
 
+
+## Exercises
