@@ -79,7 +79,7 @@ is called the *probability distribution* of $(X, Y)$.
 :::
 
 
-:::{.definition #BivariateProbFunction name="Continuous bivariate distribution function"}
+:::{.definition #BivariateProbFunctionCont name="Continuous bivariate distribution function"}
 Let $(X, Y)$ be a continuous random variable assuming values in a 2-dimensional set $R$.
 The *joint probability density function*, $f_{X, Y}$, is a function satisfying
 \begin{align}
@@ -970,7 +970,7 @@ This is a one-dimensional pdf, of $X$ given $Y = c$; that is $f_{X \mid Y = c}(x
 
 
 
-```{r BivarConditionalInterpretation, webgl=TRUE, echo=FALSE, fig.cap="A bivariate distribution, sliced at $Y =  c$, showing the conditional distribution of $X$ when $Y = c$", fig.align="center", out.width='100%', fig.width = 7}
+```{r BivarConditionalInterpretation, webgl=TRUE, echo=FALSE, fig.cap="A bivariate distribution, sliced at $Y =  c$, showing the conditional distribution of $X$ when $Y = 0.5$", fig.align="center", out.width='100%', fig.width = 7}
 
 f <- function(x, y){
   (3 *x + y)/(2 * (3*x + 1) )
@@ -978,7 +978,8 @@ f <- function(x, y){
 
 par( mfrow = c(1,2 ))
 
-if( knitr::is_latex_output() ) {
+if
+( knitr::is_latex_output() ) {
 
 x <- seq(0, 1, 
          length = 30)
@@ -1062,7 +1063,7 @@ rgl::persp3d(x = M$x,
             ylab = "Y",
             zlab = "f(x, y)",
             theta = 30,
-            main = "Conditional distribution\n(Cut at x = 0.5)")
+            main = "Conditional distribution")
 }
 ```
 
@@ -2509,7 +2510,12 @@ So the conditional distribution of $X$ given $Y=y$ is
 \[ 
    N\left( \mu_X + \rho\frac{\sigma_X}{\sigma_Y}(y - \mu_Y), \sigma^2_X(1 - \rho^2)\right).
 \]
-Recall the interpretation of the conditional distribution of $X$ given $Y = y$ (Sect. \@ref(ConditionalInterpretation)) and note the shape of this density in Fig. \@ref(fig:BivarNormal).
+Recall the interpretation of the conditional distribution of $X$ given $Y = y$ (Sect. \@ref(ConditionalDistributions)) and note the shape of this density in Fig. 
+`r if( knitr::is_latex_output() ) {
+   'Figs. \\@ref(fig:BivarNormalPDF).'
+} else {
+   'Fig. \\@ref(fig:BivarNormalHTML).'
+}`
 :::
 
 Comments about Theorem \@ref(thm:BivarNormalProperties):
@@ -3046,7 +3052,7 @@ The conditional pdf of the mean $\Theta$ given $X = x$ follows directly from \@r
   \exp\left[ -\frac{1}{2}\left(\frac{x - 60}{11.18}\right)^2 \right]}\notag\\
   &=\frac{1}{4.472\sqrt{2\pi}}
   \exp\left[ -\frac{1}{2}\left(\frac{\theta - (0.8x + 12)}{4.472}\right)^2 \right]
-  \label{EQ:exam3}
+   (\#eq:exam3)
 \end{align}
 after some algebraic manipulation; i.e., $\Theta | (X = x)\sim N(0.8x + 12, 4.472^2)$.
 
@@ -3139,7 +3145,8 @@ From \@ref(eq:RandomParAccidents) and \@ref(eq:Bayescts), the conditional pf of 
   &= \begin{cases}
         \displaystyle \frac{0.9 e^{-10}10^x} {0.9 e^{-10}10^x + 0.1 e^{-20}{20^x}} & \text{for $\mu = 10$}\\[6pt]
         \displaystyle \frac{0.1 e^{-20}20^x}
-     {0.9 e^{-10}10^x + 0.1 e^{-20}{20^x}} & \text{for $\mu = 20$}.\label{EQ:accidents3}
+     {0.9 e^{-10}10^x + 0.1 e^{-20}{20^x}} & \text{for $\mu = 20$}.
+   (\#eq:accidents3)
   \end{cases}
 \end{align}
 
@@ -3274,7 +3281,7 @@ Putting the pieces together:
      \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)} \theta^3 (1 - \theta)^3}
           {\frac{7!\, 10!\, (x + 3)!\, (13 - x)!}{3!^2\, 17!\, x!\, (10 - x)!} } \\
   &= \frac{17!\theta^{x + 3} (1 - \theta)^{13 - x}}{(x + 3)! (13 - x)!}
-  \label{EQ:goal3}
+   (\#eq:goal3)
 \end{align}
 which corresponds to a $\text{Beta}(4 + x, 14 - x)$.
 
@@ -3346,7 +3353,7 @@ abline(v = (4 + x)/(18),
 box()
 ```
 
-Applying meaning to the conditional distribution of parameters, such as those in (\ref{EQ:exam3}), (\ref{EQ:accidents3}) and (\ref{EQ:goal3}), has historically been controversial in statistics.
+Applying meaning to the conditional distribution of parameters, such as those in \@ref(eq:exam3), \@ref(eq:accidents3) and \@ref(eq:goal3), has historically been controversial in statistics.
 However, the idea of *modifying* a parameter of a distribution based on new information has proven constructive, and is the basis of an important branch of statistics called *Bayesian statistics*.
 
 The algebra involved in deriving posterior distributions is, except in special cases (Table \@ref(tab:ConjugateTable)), intractable and so numerical methods are necessary (including simulation techniques).
@@ -3392,7 +3399,24 @@ if( knitr::is_latex_output() ) {
                      line = FALSE,
                      align = "l")
 } else {
-   'FIX ME!'
+     knitr::kable(Conjugates,
+               format = "html",
+               booktabs = TRUE,
+               align = c("l"),
+               col.names = c("distribution $f(X\\mid\\Theta)$",
+                             "distribution $f(\\Theta)$",
+                             "distribution $f(\\Theta\\mid X$)"),
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "Conjugate distributions for random parameters: The sampling distribution,  $f(X\\mid\\Theta)$; the prior distribution $f(\\Theta)$; and the posterior distribution $f(\\Theta\\mid X$)") %>%
+    kable_styling(font_size = 11) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above(c("Sampling" = 1,  # Multi-line header
+                       "Prior" = 1, 
+                       "Posterior" = 1),
+                     bold = TRUE,
+                     line = FALSE,
+                     align = "l")
 }
 ```
 
