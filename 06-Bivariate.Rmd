@@ -2312,13 +2312,18 @@ We write
 :::
 
 
-A typical graph of the bivariate normal surface above the $x$--$y$ plane is shown in Fig. \@ref(fig:BivarNormal).
-Showing $\int^\infty_{-\infty}\!\int^\infty_{-\infty}f_{X,Y}(x,y)\,dx\,dy = 1$ is not straightforward and involves writing \@ref(eq:bivarnormalpdf)) using polar coordinates.
+A typical graph of the bivariate normal surface above the $x$--$y$ plane is shown in
+`r if( knitr::is_latex_output() ) {
+   'Figs. \\@ref(fig:BivarNormalPDF).'
+} else {
+   'Fig. \\@ref(fig:BivarNormalHTML).'
+}`
+Showing $\int^\infty_{-\infty}\!\int^\infty_{-\infty}f_{X,Y}(x,y)\,dx\,dy = 1$ is not straightforward and involves writing \@ref(eq:bivarnormalpdf) using polar coordinates.
 
 
 
 
-```{r BivarNormal, webgl=TRUE, echo=FALSE, fig.cap="A bivariate normal distribution", fig.align="center", out.width='80%'}
+```{r BivarNormalPDF, webgl=TRUE, echo=FALSE, fig.cap="A bivariate normal distribution", fig.align="center", out.width='100%'}
 
 mu <- c(0, 0)
 
@@ -2332,11 +2337,10 @@ f <- function(x, y, mn, sigma) {
          varcov = sigma)
 }
 
-
-
-
 if( knitr::is_latex_output() ) {
 
+  par( mfrow = c(1, 2))
+  
 zz <- seq(-4, 4, 
           length = 50)
 x <- mu[1] + zz * sqrt(sigma[1, 1])
@@ -2345,13 +2349,24 @@ y <- mu[2] + zz * sqrt(sigma[2, 2])
 z <- outer(x, y, f,
            mn = mu,
            sigma = sigma)
-# 
-# contour(x, y, z,
-#         asp = 1,
-#         xlim = c(1550, 1900),
-#         ylim = c(1450, 1750),
-#         xlab = "Husband heights (in mm)",
-#         ylab = "Wife heights (in mm)")
+ 
+ contour(x, y, z,
+         asp = 1,
+         las = 1,
+         #xlim = c(1550, 1900),
+         #ylim = c(1450, 1750),
+         xlab = "X",
+         ylab = "Y",
+         levels = c(0.0001, 
+                    0.0005,
+                    0.0002,
+                    0.001,
+                    0.005,
+                    0.01,
+                    0.05,
+                    0.08,
+                    0.01,
+                    0.105) )
 
 persp(x, y, z, 
       theta = -30, 
@@ -2365,6 +2380,21 @@ persp(x, y, z,
       ylab = "Y",
       ticktype = "simple")
 }
+```
+
+```{r BivarNormalHTML, webgl=TRUE, echo=FALSE, fig.cap="A bivariate normal distribution", fig.align="center", out.width='80%'}
+mu <- c(0, 0)
+
+sigma <- matrix(c(1, 0.5, 
+                  0.5, 1.5), 
+                nrow = 2)
+
+f <- function(x, y, mn, sigma) {
+  dmnorm(cbind(x, y), 
+         mean = mn, 
+         varcov = sigma)
+}
+
 if( knitr::is_html_output() ) {
   zz <- seq(-4, 4, 
             length = 40)
@@ -2403,15 +2433,15 @@ rgl::persp3d(x = M$x,
 
 Some important facts about the bivariate normal distribution are contained in the theorem below.
 
-:::{.theorem #BivarNormalProperties name="Properties of the bivariate normal distribution"}
+:::{.theorem #BivarNormalProperties name="Bivariate normal distribution properties"}
 For $(X, Y)$ with pdf given in \@ref(eq:bivarnormalpdf):
 
-1. the marginal distributions of $X$ and of $Y$ are $N(\mu_X, \sigma^2_X)$ and $N(\mu_Y, \sigma^2_Y)$ respectively
-2. the parameter $\rho$ appearing in \@ref(eq:bivarnormalpdf) is the correlation coefficient between $X$ and $Y$
+1. The marginal distributions of $X$ and of $Y$ are $N(\mu_X, \sigma^2_X)$ and $N(\mu_Y, \sigma^2_Y)$ respectively.
+2. The parameter $\rho$ appearing in \@ref(eq:bivarnormalpdf) is the correlation coefficient between $X$ and $Y$.
 3. the conditional distributions of $X$ given $Y = y$, and of $Y$ given $X = x$, are respectively
   \begin{align*} 
-     &N\left[ \mu_X + \rho\frac{\sigma_X}{\sigma_Y}(y - \mu_Y), \sigma^2_X(1 - \rho^2)\right]; \\
-     &N\left[ \mu_Y + \rho\frac{\sigma_Y}{\sigma_X}(x - \mu_X), \sigma^2_Y(1 - \rho^2)\right]. 
+     &N\left( \mu_X + \rho \sigma_X(y - \mu_Y)/\sigma_Y, \sigma^2_X(1 - \rho^2)\right); \\
+     &N\left( \mu_Y + \rho \sigma_Y(x - \mu_X)/\sigma_X, \sigma^2_Y(1 - \rho^2)\right). 
   \end{align*}
 :::
 
@@ -2423,7 +2453,7 @@ In the integral, put $u = (x - \mu_X)/\sigma_X, v = (y - \mu_Y)/\sigma_Y,\, dy =
      g(x) 
      &= \frac{1}{2\pi\sigma_X\sqrt{1-\rho^2}\sigma_Y}\int^\infty_{- \infty}\exp\left\{ -\frac{1}{2(1-\rho^2)}\left[ u^2-2\rho uv+v^2\right]\right\} \sigma_Y\,dv\\[2mm]
      &= \frac{1}{2\pi \sigma_X\sqrt{1-\rho^2}}\int^\infty_{-\infty} \exp\left\{ -\frac{1}{2(1-\rho^2)}\left[ (v-\rho u)^2+ u^2 - \rho^2u^2\right]\right\}\,dv\\[2mm]
-     &= \frac{e^{-u^2/2}}{\sqrt{2\pi} \sigma_X} \ \underbrace{\int^\infty_{-\infty} \frac{1}{\sqrt{2\pi (1-\rho^2)}} \exp\left\{ -\frac{1}{2(1-\rho^2)}(v-\rho u)^2\right\}\,dv}_{=1}
+     &= \frac{e^{-u^2/2}}{\sqrt{2\pi} \sigma_X} \ \underbrace{\int^\infty_{-\infty} \frac{1}{\sqrt{2\pi (1-\rho^2)}} \exp\left\{ -\frac{1}{2(1-\rho^2)}(v-\rho u)^2\right\}\,dv}_{=1}.
 \end{align*}
 Replacing $u$ by $(x - \mu_X )/\sigma_X$, we see from the pdf that $X \sim N(\mu_X, \sigma^2_X)$. 
 Similarly for the marginal pdf of $Y$, $f_Y(y)$.
@@ -2451,14 +2481,14 @@ Then:
    &= \rho\quad \text{since the integral is $\text{E}(V^2)$ where $V \sim N(0,1)$.}
 \end{align*}
 
-In finding the conditional pdf of $X$ given $Y = y$, we use 
+In finding the conditional pdf of $X$ given $Y = y$, use 
 \[ 
    f_{X \mid Y = y}(x) = f_{X, Y}(x, y)/f_Y(y). 
 \]
 Then in this ratio, the constant is
 \[ 
   \frac{\sqrt{2\pi} \sigma_Y}{2\pi \sigma_X\sigma_Y \sqrt{1-\rho^2}}
-  =\frac{1}{\sqrt{2\pi}\sigma_X\sqrt{1-\rho^2}} 
+  =\frac{1}{\sqrt{2\pi}\sigma_X\sqrt{1-\rho^2}}.
 \]
 The exponent is
 \begin{align*}
@@ -2484,9 +2514,9 @@ Recall the interpretation of the conditional distribution of $X$ given $Y = y$ (
 
 Comments about Theorem \@ref(thm:BivarNormalProperties):
 
-* From 1. and 3. we have $\text{E}(X) = \mu_X$ and $\text{E}(X \mid Y = y) = \mu_X + \rho \sigma_X (y - \mu_Y)/\sigma_Y$ (and similarly for $Y$). 
+* From the first and third parts, $\text{E}(X) = \mu_X$ and $\text{E}(X \mid Y = y) = \mu_X + \rho \sigma_X (y - \mu_Y)/\sigma_Y$ (and similarly for $Y$). 
   Notice that $\text{E}(X \mid Y = y)$ is a linear function of $y$; i.e., if $(X, Y)$ is bivariate normal, the regression line of $Y$ on $X$ (and $X$ on $Y$) is linear.
-*  An important result follows from 2. 
+*  An important result follows from the second part. 
    If $X$ and $Y$ are uncorrelated (i.e., if $\rho = 0$) then $f_{X, Y}(x, y) = f_X(x) f_Y(y)$ and thus $X$ and $Y$ are independent. 
    That is, if two normally distributed random variables are uncorrelated, they are also independent.
 
@@ -2636,7 +2666,7 @@ This 3-dimensional density function can be difficult to plot on a two-dimensiona
    'Fig. \\@ref(fig:BivarNormalHts).'
 }`
 
-The pdf for the bivariate normal distribution for the heights of the husbands and wives could be written down in the form of \@ref(eq:bivarnormalpdf) for the values of $\mu_H$, $\mu_W$, $\sigma^2_H$, $\sigma^2_W$ and $\rho$ above; but this is tedious.
+The pdf for the bivariate normal distribution for the heights of the husbands and wives could be written down in the form of \@ref(eq:bivarnormalpdf) for the values of $\mu_H$, $\mu_W$, $\sigma^2_H$, $\sigma^2_W$ and $\rho$ above, but this is tedious.
 
 Given the information, what is the probability that a randomly chosen man in the UK in 1980 who is $173$ centimetres tall had married a woman taller than himself?
 
@@ -2653,7 +2683,7 @@ and variance
 \[
    \sigma_2^2(1 - \rho^2) = 62.4^2(1 - 0.364^2) = 377.85.
 \]
-In summary, $W \mid  (H = 1730) \sim \text{N}(1601.34, 3377.85)$.
+In summary, $W \mid  (H = 1730) \sim N(1601.34, 3377.85)$.
 Note that this conditional distribution has a univariate normal distribution, and so probabilities such as $W > 1730$ are easily determined.
 Then,
 \begin{align*}
@@ -2751,211 +2781,622 @@ rgl::persp3d(x = M$x,
 
 ## Random parameters {#RandomParameters}
 
-So far, parameters describing a model or population have been assumed to be fixed numbers.
-In some applications, though, the parameters themselves may be assumed to have distributions.
-This idea is best introduced with some examples.
+So far, parameters describing a model or population have been assumed to be fixed values.
+In some applications, though, the *parameters* themselves may be assumed to have distributions.
+This idea is best introduced using examples.
 
 
 :::{.example #RandomPar1 name="Exam scores"}
-The score achieved by a student on an exam is approximately normal with mean $\mu$, where $\mu$ varies by student according to the amount of study completed.
-The value of $\mu_i$ varies among students with an approximately normal distribution.
+The score achieved by a student on an exam is approximately normal with mean $\mu$.
+The mean $\mu$ is not constant, but varies (due to the specific questions that appear on the exam, the amount of study completed, etc.), and follows an approximately normal distribution.
 :::
 
 
 
-:::{.example #RandomPar2 name="Vehicle accidents"}
-Notifiable motor vehicle accidents occur in a town according to a Poisson distribution at the mean rate of 10 per day when it's fine, and 20 per day when it's wet.
+:::{.example #RandomPar2 name="Vehicle crashes"}
+Motor vehicle crashes occur in a town according to a Poisson distribution with a mean rate of 10 per day when fine, and 20 per day when wet.
 About 10% of days are wet.
 :::
 
+
 :::{.example #RandomPar3 name="Goal kicking"}
-Let $\theta$ be the probability that Shelley, a local rugby league star, kicks a goal.
-The distribution of $\theta$ depends on where the kick is taken from (among other things),0 but can be well approximated by a beta distribution.
+Let $\theta$ be the probability that a rugby league goal-kicker lands a goal.
+This number of kicks landed $X$ can be modelled using a binomial distribution, but the probability of a successful kick $\theta$ may vary (depending on the conditions, where the kick is taken from, and so on).
 :::
 
 
-In each of these examples, there's a distribution, $f_X(x;\Theta)$ say, which depends on a parameter $\Theta$ where $\Theta$ itself has a distribution, $f_\Theta(\theta)$ say.
-The distribution $f_X(x;\theta)$ therefore is effectively a *conditional* distribution and $\Theta$ is effectively a random variable.
-Consequently the marginal distribution of $X$ can be found from \@ref(eq:BivariateProbFunctionDiscrete) and Def. \@ref(def:BVContMarginal) provided $X$ and $\Theta$ are continuous; i.e.,
+In each of these examples, a distribution $f_{X}(x; \theta)$ describes the data, where the parameter $\Theta$ itself has a distribution, $f_\Theta(\theta)$.
+Hence, the distribution $f_X(x; \theta)$ is effectively a *conditional* distribution $f_{x|\Theta}(x \mid \Theta)$, and the parameter $\Theta$ is effectively a random variable.
+
+The *marginal* distribution of $X$ can be found from Def. \@ref(def:BVContMarginal) if $X$ and $\Theta$ are continuous:
 \begin{equation}
    f_X(x)
-   = \int f_{X|\Theta}(x,\theta)f_\Theta(\theta)\,d\theta.
+   = \int f_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta.
    (\#eq:marg1)
 \end{equation}
-For $X$ and $\Theta$ discrete, \@ref(eq:BivarXYdiscrete) and \@ref(eq:BivariateMarginal) yield
+For $X$ and $\Theta$ discrete, Def. \@ref(def:BVDiscreteMarginal) yields
 \begin{equation}
    p_X(x) 
-   = \sum_\theta p_{X|\Theta}(x,\theta)p_\Theta(\theta)
+   = \sum_\theta p_{X \mid \Theta}(x, \theta)p_\Theta(\theta).
    (\#eq:marg2)
 \end{equation}
 The mixed cases can be dealt with similarly: 
 \begin{equation}
    f_X(x) 
-   = \sum_\theta f_{X|\Theta}(x,\theta)p_\Theta(\theta)
+   = \sum_\theta f_{X \mid \Theta}(x, \theta)p_\Theta(\theta)
    (\#eq:marg3)
 \end{equation}
 for $X$ continuous and $\Theta$ discrete, and
 \begin{equation}
    p_X(x)
-   = \int p_{X|\Theta}(x,\theta)f_\Theta(\theta)\,d\theta
+   = \int p_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta
    (\#eq:marg4)
 \end{equation}
 for $X$ discrete and $\Theta$ continuous.
 
-Only in special cases will these marginal distributions be of a standard or closed form.
+
+Only in special cases will these marginal distributions have a standard distribution or closed form.
+The parameters that describe the distribution of $\Theta$ are called *hyperparameters*.
+
 
 :::{.example #RandomParExam name="Exam scores"}
-The score $X$ achieved by a student on an exam is normal with mean $\Theta$ and standard deviation $\sigma = 5$, where $\Theta$ is normal with mean 60 and standard deviation 10. 
+The score $X$ achieved by a student on an exam is normal with mean $\Theta$ and standard deviation $\sigma = 5$.
+The mean $\Theta$ varies with a normal distribution with two hyperparameters: the mean 60 and standard deviation 10. 
 From \@ref(eq:marg1), the marginal pdf of $X$ is
 \begin{align}
   f_X(x)
   &=\int_{-\infty}^\infty \frac{1}{5\sqrt{2\pi}}
-     \exp\left[-\frac12\left(\frac{x - \theta}{5}\right)^2\right]
+     \exp\left[ -\frac{1}{2}\left(\frac{x - \theta}{5}\right)^2 \right]
      \frac{1}{10\sqrt{2\pi}}
-  \exp\left[-\frac12\left(\frac{\theta-60}{10}\right)^2\right]\,d\theta\notag\\
+  \exp\left[ -\frac{1}{2}\left(\frac{\theta - 60}{10}\right)^2 \right]\,d\theta\notag\\
   &= \frac{1}{11.18\sqrt{2\pi}}
-     \exp\left[-\frac12\left(\frac{x-60}{11.18}\right)^2\right]
+     \exp\left[-\frac{1}{2}\left(\frac{x - 60}{11.18}\right)^2\right]
      (\#eq:exam2)
 \end{align}
 after considerable algebra involving completing the square.
-Then, $X\sim N(60, 11.18^2)$. 
-(Note that $11.18 = \sqrt(5^2 + 10^2)$.)
+Then, $X\sim N(60, 11.18^2)$ (see Fig. \@ref(fig:RandomMarginal), left panel). 
+(Note that $11.18 = \sqrt{5^2 + 10^2}$.)
+
+This describes the distribution of $X$, taking into account the various values of $\Theta$ that are possible (as described by $f_\Theta(\theta)$.)
 :::
 
 
-
-:::{.example #RandomParAccidents name="Vehicle accidents"}
-Let $X$ be the number of notifiable motor vehicle accidents in a day.
-Then $X \sim \text{Pois}(M)$ where parameter $M$ has distribution defined by $\Pr(M = 10) = 0.9$ and $\Pr(M = 20) = 0.1$.
+:::{.example #RandomParAccidents name="Vehicle crashes"}
+Let $X$ be the number of motor vehicle crashes per day.
+Then $X \sim \text{Pois}(M)$, where mean parameter $M$ has the distribution by $\Pr(M = 10) = 0.9$ and $\Pr(M = 20) = 0.1$, or
+\[
+   p_M(m) = 0.1^{(m - 10)/10} 0.9^{(20 - m)/10}\quad\text{for $m = 10, 20$}.
+\]
 From \@ref(eq:marg2), the marginal pf of $X$ is
 \begin{equation}
   p_X(x)
   = 0.9 \frac{e^{-10}10^x}{x!} + 0.1 \frac{e^{-20}{20^x}}{x!}\quad\text{for $x = 0,1,2,\dots$}.
   (\#eq:RandomParAccidents)
 \end{equation}
+See  Fig. \@ref(fig:RandomMarginal) (centre panel).
 :::
 
 
-
 :::{.example #RandomParGoalKicking name="Goal kicking"}
-Suppose Shelley has 10 kicks at goal in a match and the number of successful kicks $X$ can be be modelled by a binomial distribution with parameter $\Theta$, where $\Theta$ has a $\text{Beta}(4, 4)$ distribution. 
+Suppose the goal-kicker takes 10 kicks at goal in a match; the number of successful kicks $X$ can be be modelled by the binomial distribution $\text{Bin}(n = 10, p = \Theta)$, where the probability $\Theta$ has a $\text{Beta}(4, 4)$ distribution. 
 From \@ref(eq:marg4), the marginal pf of $X$ is
 \begin{align}
   p_X(x)
   &= \int_0^1 \binom{10}{x}\theta^x(1 - \theta)^{10 - x}
      \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)} \theta^3(1 - \theta)^3\,d\theta\notag\\
-  &= \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)}\binom{10}{x}\int_0^1 \theta^{x + 3}(1 - \theta)^{n - x + 3}\,d\theta\notag\\
-  &= \frac{7!10!(x + 3)!(13-x)!}{3!^217!x!(10 - x)!}\quad\hbox{for $x = 0 , 1 , 2,\dots, 10$}.
-     \label{EQ:goal2}
+  &= \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)}\binom{10}{x}\int_0^1 \theta^{x + 3}(1 - \theta)^{10 - x + 3}\,d\theta\notag\\
 \end{align}
+where the integral can be simplified by seeing it is a [Beta function](eqn:BetaFunction) with parameters $x + 4$ and $14 - x$, so that $\int_0^1 \theta^{x + 3}(1 - \theta)^{10 - x + 3}\,d\theta = \Gamma(x - 4)\Gamma(14 - x)/\Gamma(18)$.
+Then:
+\[
+  p_X(x)
+  = \frac{7!\, 10!\, (x + 3)!\, (13 - x)!}{3!^2\, 17!\, x!\, (10 - x)!}\quad\text{for $x = 0 , 1 , 2,\dots, 10$}.
+   (\#eq:goal2)
+\]
+See  Fig. \@ref(fig:RandomMarginal) (right panel).
 :::
 
+
+```{r RandomMarginal, echo=FALSE, out.width='100%', fig.width = 4.75, fig.height=2.25, fig.align="center", fig.cap="Marginal distributions"}
+par( mfrow = c(1, 3),
+     mar = c(5, 2, 4, 2) + 0.1)
+
+
+mn <- 60
+sd <- 11.18
+xx <- seq(mn - 3.5*sd, 
+          mn + 3.5*sd, 
+          length = 500)
+yy <- dnorm( xx, 
+             mean = mn, 
+             sd = sd)
+plot(yy ~ xx, 
+     type = "l",
+     axes = FALSE,
+     xlab = "Exam mark",
+     ylab = "Prob. function",
+     main = "Marginal distn\nof exam marks")
+axis(side = 1)
+box()
+
+
+
+xx <- 0:20
+yy <- 0.9 * dpois(xx,
+                  lambda = 10) + 
+      0.1 * dpois(xx,
+                  lambda = 20)
+plot(yy ~ xx,
+     type = "h",
+     las = 1,
+     axes = FALSE,
+     lty = 2,
+     xlab = "Number of accidents",
+     ylab = "Prob. function",
+     main = "Marginal distn\nfor accidents")
+axis(side = 1)
+points(yy ~ xx,
+       pch = 19)
+box()
+
+
+
+xx <- 0:10
+yy <- factorial(7) * factorial(10) * factorial(xx + 3) * factorial(13 - xx) / (factorial(3) * factorial(3) * factorial(17) * factorial(xx) * factorial(10 - xx))
+
+plot(yy ~ xx,
+     type = "h",
+     las = 1,
+     axes = FALSE,
+     lty = 2,
+     xlab = "Number of goals",
+     ylab = "Prob. function",
+     main = "Marginal distn\nfor goal kicks")
+axis(side = 1)
+points(yy ~ xx,
+       pch = 19)
+box()
+```
 
 
 ### Bayes' theorem revisited {#BayesTheoremRevisited}
 
 Recall Bayes' theorem in Sect. \@ref(BayesTheorem). 
-In particular, let $E$ be an event, with $H_1, \ldots, H_n$ a sequence of mutually exclusive and exhaustive events partitioning the sample space. 
+Let $E$ be an event, with $H_1, \ldots, H_n$ a sequence of mutually exclusive and exhaustive events partitioning the sample space. 
 Then
 \begin{equation}
-  \Pr(H_n | E ) 
-  = \frac{\Pr(H_n) \Pr(E|H_n) }{\Pr(E)}
-  = \frac{\Pr(H_n) \Pr(E|H_n) }{\sum_m \Pr(H_m ) \Pr(E|H_m )}
+  \Pr(H_n \mid E ) 
+  = \frac{\Pr(H_n) \Pr(E \mid H_n) }{\Pr(E)}
+  = \frac{\Pr(H_n) \Pr(E \mid H_n) }{\sum_m \Pr(H_m ) \Pr(E \mid H_m )}
 \end{equation}
 assuming that $\Pr(E) \neq 0$.
-Bayes' theorem extends directly to random variables.
+Bayes' theorem extends to random variables.
 
-Suppose that $X$ and $Y$ are discrete random variable's such that $p_Y(y)$ is the pf for $Y$ and $p_{X|Y}(x,y)$ is the conditional pf for $X$ given $Y$.
-Then the conditional pf of $Y$ given $X$ is
+Suppose that $X$ and $Y$ are discrete random variables, where $p_Y(y)$ is the pf for $Y$ and $p_{X \mid Y}(x,y)$ is the conditional pmf for $X$ given $Y$.
+Then the conditional pmf of $Y$ given $X$ is
 \begin{align}
-  p_{Y | X}(y, x)
+  p_{Y \mid X}(y, x)
   &= \frac{p_{X, Y}(x, y)}{p_X(x)} \\
-  &= \frac{p_{X | Y}(x, y)p_Y(y)}{\sum_y p_{X|Y}(x,y)p_Y(y)}
+  &= \frac{p_{X \mid Y}(x, y)p_Y(y)}{\sum_y p_{X \mid Y}(x, y)p_Y(y)}.
   (\#eq:Bayesdis)
 \end{align}
-Analogously, for the various combinations of continuous and discrete random variables,
 
-\begin{equation}
-   f_{Y|X}(y,x)
-   = \frac{f_{X,Y}(x,y)}{f_X(x)}
-   = \frac{f_{X|Y}(x,y)f_Y(y)}{\int_y f_{X|Y}(x,y)f_Y(y)\,dy},
-   (\#eq:Bayescts)
-\end{equation}
-
-\begin{equation}
-  p_{Y|X}(y,x)
-  = \frac{f_{X,Y}(x,y)}{p_X(x)}
-  = \frac{f_{X|Y}(x,y)p_Y(y)}{\sum_y f_{X|Y}(x,y)p_Y(y)},
-  (\#eq:Bayesdiscts)
-\end{equation}
-and
-\begin{equation}
-  f_{Y|X}(y,x)
-  = \frac{f_{X,Y}(x,y)}{p_X(x)}
-  = \frac{p_{X|Y}(x,y)f_Y(y)}{\int_y p_{X|Y}(x,y)f_Y(y)\,dy}
+In their most usual form, the above equations for the combinations of continuous and discrete random variables produce these results:
+\begin{align}
+   f_{Y \mid X}(y, x)
+   &= \frac{f_{X, Y}(x, y)}{f_X(x)}
+    = \frac{f_{X \mid Y}(x, y)f_Y(y)}{\int_y f_{X \mid Y}(x, y)f_Y(y)\,dy}
+    = \frac{f_{X \mid Y}(x, y)f_Y(y)}{f_X(x)};
+   (\#eq:Bayescts)\\
+  p_{Y \mid X}(y, x)
+  &= \frac{f_{X, Y}(x, y)}{p_X(x)}
+   = \frac{f_{X \mid Y}(x, y)p_Y(y)}{\sum_y f_{X \mid Y}(x, y)p_Y(y)}
+   = \frac{f_{X \mid Y}(x, y)p_Y(y)}{p_X(x)};
+  (\#eq:Bayesdiscts)\\
+  f_{Y \mid X}(y, x)
+  &= \frac{f_{X, Y}(x, y)}{p_X(x)}
+   = \frac{p_{X \mid Y}(x, y)f_Y(y)}{\int_y p_{X \mid Y}(x, y)f_Y(y)\,dy}
+   = \frac{p_{X \mid Y}(x, y)f_Y(y)}{p_X(x)}.
   (\#eq:Bayesctsdis)
-\end{equation}
-The concept in Bayes' theorem of determining the probability of $B$ given $A$ from that of $A$ given $B$ finds important and interesting applications in random parameters.
+\end{align}
+<!-- \begin{align} -->
+<!--    f_{Y \mid X}(y, x) -->
+<!--    &= \frac{f_{X, Y}(x, y)}{f_X(x)} -->
+<!--    = \frac{f_{X \mid Y}(x, y)f_Y(y)}{\int_y f_{X \mid Y}(x, y)f_Y(y)\,dy}; -->
+<!--    (\#eq:Bayescts)\\ -->
+<!--   p_{Y \mid X}(y, x) -->
+<!--   &= \frac{f_{X, Y}(x, y)}{p_X(x)} -->
+<!--   = \frac{f_{X \mid Y}(x, y)p_Y(y)}{\sum_y f_{X \mid Y}(x, y)p_Y(y)}, -->
+<!--   (\#eq:Bayesdiscts) -->
+<!--   \quad \text{and}\\ -->
+<!--   f_{Y \mid X}(y, x) -->
+<!--   &= \frac{f_{X, Y}(x, y)}{p_X(x)} -->
+<!--   = \frac{p_{X \mid Y}(x, y)f_Y(y)}{\int_y p_{X \mid Y}(x, y)f_Y(y)\,dy}. -->
+<!--   (\#eq:Bayesctsdis) -->
+<!-- \end{align} -->
 
-Let's look at some examples using \@ref(eq:Bayesdis)-- \@ref(eq:Bayesctsdis) in which $Y$ is now interpreted as a random parameter.
+In all cases \@ref(eq:Bayesdis) to \@ref(eq:Bayesctsdis), the left-hand side shows that the distribution is a function of $y$, given the observed data $X$.
+The denominator of the right-hand side is only a function of the observed data $X$, and contains no unknowns (so is effectively a normalising constant whose value ensures that the expression is a valid probability function).
+Because of this, sometimes these expressions in \@ref(eq:Bayesdis) to \@ref(eq:Bayesctsdis) are written as proportionalities rather than equalities by omitting the denominator (the normalising constant):
+\begin{align*}
+   f_{Y|X}(y \mid x)      &\propto f_{X|Y}(x\mid y)      \times f_Y(y)\\
+   \text{Posterior distn} &\propto \text{Sampling distn} \times \text{Prior distn}.
+\end{align*}
+This shows that a distribution for $Y$ is assumed *prior* to seeing the data (i.e., $f_Y(y)$), and is then adjusted with the knowledge of the data $X$ to produce the *conditional* (or *posterior*) distribution $f_{Y|X}(y\mid x)$.
+
+In this context:
+
+* The original, or *unconditional* distribution $f_\Theta(\theta)$ models our prior beliefs about the parameter $\theta$.
+  This is called the *prior* distribution (modelling our beliefs about the distribution of study times *prior* to seeing the data).
+* We then observe the data $X$.
+* Using this extra available information, the description of $\theta$ is updated. 
+  This is the *conditional* distribution $f_{\Theta \mid X}(\theta, x)$, called the *posterior* distribution in this context.
 
 
 :::{.example #ExamScores3 name="Exam scores"}
 The conditional pdf of the mean $\Theta$ given $X = x$ follows directly from \@ref(eq:Bayescts) on substituting \@ref(eq:exam2):
 \begin{align}
-  f_{\Theta | X}(\theta, x)
-  &= \frac{f_{X|\Theta}(x,\theta)f_\Theta(\theta)}{f_X(x)}\notag\\
+  f_{\Theta \mid X}(\theta, x)
+  &= \frac{f_{X|\Theta}(x, \theta)f_\Theta(\theta)}{f_X(x)}\notag\\
   &= \frac{\frac{1}{5\sqrt{2\pi}}
-  \exp\left[-\frac12\left(\frac{x-\theta}{5}\right)^2\right]
+  \exp\left[ -\frac{1}{2}\left(\frac{x - \theta}{5}\right)^2 \right]
   \frac{1}{10\sqrt{2\pi}}
-  \exp\left[-\frac12\left(\frac{\theta-60}{10}\right)^2\right]}
+  \exp\left[ -\frac{1}{2}\left(\frac{\theta - 60}{10}\right)^2 \right]}
   {\frac{1}{11.18\sqrt{2\pi}}
-  \exp\left[-\frac12\left(\frac{x-60}{11.18}\right)^2\right]}\notag\\
+  \exp\left[ -\frac{1}{2}\left(\frac{x - 60}{11.18}\right)^2 \right]}\notag\\
   &=\frac{1}{4.472\sqrt{2\pi}}
-  \exp\left[-\frac12\left(\frac{\theta-(0.8x+12)}{4.472}\right)^2\right]
+  \exp\left[ -\frac{1}{2}\left(\frac{\theta - (0.8x + 12)}{4.472}\right)^2 \right]
   \label{EQ:exam3}
 \end{align}
-after some algebraic manipulation; i.e. ,$\Theta | (X = x)\sim N(0.8x + 12, 4.472^2)$
+after some algebraic manipulation; i.e., $\Theta | (X = x)\sim N(0.8x + 12, 4.472^2)$.
+
+This is the distribution of the mean score, given an observed value of $x$.
+The initial (*prior*) assumption about the mean score (Example \@ref(exm:RandomParExam)) was that $\Theta \sim N(60, 10^2)$.
+After seeing an exam score, this is adjusted to $\Theta\mid X\sim N(0.8x + 12, 4.472^2)$:
+
+* If observed exam score is $x = 60$ (i.e., equal to the prior belief about the mean), then there is no change to the prior mean: $0.8\times 60 + 12 = 60$.
+* If observed exam score is less than $60$ (e.g., $x = 50$), the original expectation is adjusted down, since $0.8\times 50 + 12 = 52$.
+* If observed exam score is greater than $60$ (e.g., $x = 70$), the original expectation is adjusted up, since $0.8\times70 + 12 = 68$.
+
+See Fig. \@ref(fig:PosteriorExam).
+In other words, our *prior* belief of the mean score is adjusted in light of the observed evidence to produce the *posterior* distribution.
 :::
 
 
-:::{.example #Accidents3 name="Vehicle accidents"}
-From \@ref(eq:Bayescts) and \@ref(eq:RandomParAccidents), the conditional pf of $M$ given $X$ is 
+
+```{r PosteriorExam, echo=FALSE, fig.align="center", out.width='100%', fig.height=2.25, fig.width=4.75, fig.cap="Exam scores: The prior distribution for the mean (left panel) and the posterior distribution when $x = 50$ centre panel) and when $x = 70$ (right panel)."}
+par( mfrow = c(1, 3),
+     mar = c(5, 2, 4, 2) + 0.1)
+
+xx <- seq(0, 100,
+          length = 500)
+yy <- dnorm( xx,
+             mean = 60,
+             sd = 10)
+plot(yy ~ xx,
+     type = "l",
+     lwd = 2,
+     xlim = range(xx),
+     xlab = "Mean",
+     main = "Prior",
+     axes = FALSE)
+axis(side = 1,
+     at = seq(0, 100, 
+              by = 50))
+box()
+
+
+##
+
+yy <- dnorm( xx,
+             mean = 52,
+             sd = 4.472)
+plot(yy ~ xx,
+     type = "l",
+     lwd = 2,
+     xlim = range(xx),
+     xlab = "Mean",
+     main = expression(Posterior~distn:~italic(x)==50),
+     axes = FALSE)
+axis(side = 1,
+     at = seq(0, 100, 
+              by = 50))
+box()
+
+
+###
+yy <- dnorm( xx,
+             mean = 68,
+             sd = 4.472)
+plot(yy ~ xx,
+     type = "l",
+     lwd = 2,
+     xlim = range(xx),
+     xlab = "Mean",
+     main = expression(Posterior~distn:~italic(x)==70),
+     axes = FALSE)
+axis(side = 1,
+     at = seq(0, 100, 
+              by = 50))
+box()
+
+
+```
+
+
+
+
+:::{.example #Accidents3 name="Vehicle crashes"}
+From \@ref(eq:RandomParAccidents) and \@ref(eq:Bayescts), the conditional pf of $M$ given $X$ is 
 \begin{align}
-  p_{M|X}(\mu,x)
-  &= \frac{f_{X|M}(x,\mu)f_M(\mu)}{p_X(x)}\notag\\
+  p_{M \mid X}(\mu, x)
+  &= \frac{f_{X \mid M}(x, \mu)f_M(\mu)}{p_X(x)}\notag\\
   &= \begin{cases}
-     \frac{0.9\frac{e^{-\mu}\mu^x}{x!}} {0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}} & \text{for $\mu = 10$}\\
-     \frac{0.1\frac{e^{-\mu}\mu^x}{x!}}
-     {0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}} & \text{for $\mu = 20$}\label{EQ:accidents3}
+        \displaystyle \frac{0.9\frac{e^{-10}10^x}{x!}} {0.9 \frac{e^{-10}10^x}{x!} + 0.1 \frac{e^{-20}{20^x}}{x!}} & \text{for $\mu = 10$}\\[6pt]
+        \displaystyle \frac{0.1\frac{e^{-20}20^x}{x!}}
+     {0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}} & \text{for $\mu = 20$}.
+  \end{cases}\notag\\
+  &= \begin{cases}
+        \displaystyle \frac{0.9 e^{-10}10^x} {0.9 e^{-10}10^x + 0.1 e^{-20}{20^x}} & \text{for $\mu = 10$}\\[6pt]
+        \displaystyle \frac{0.1 e^{-20}20^x}
+     {0.9 e^{-10}10^x + 0.1 e^{-20}{20^x}} & \text{for $\mu = 20$}.\label{EQ:accidents3}
   \end{cases}
 \end{align}
+
+After observing the number of crashes, the prior belief is adjusted accordingly:
+
+* If we observe 10 crashes, the prior belief is adjusted to
+\[
+  f_{M|X}(m \mid X) = 
+  \begin{cases}
+     0.995 & \text{for $m = 10$};\\
+     0.005 & \text{for $m = 20$}.
+  \end{cases}
+\]
+* If we observe 20 crashes, the prior belief is adjusted to
+\[
+  f_{M|X}(m \mid X) = 
+  \begin{cases}
+     0.159 & \text{for $m = 10$};\\
+     0.841 & \text{for $m = 20$}.
+  \end{cases}
+\]
+See Fig. \@ref(fig:PostPosteriorAccidents).
 :::
+
+
+
+
+```{r PostPosteriorAccidents, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Vehicle crashes: The prior distribution for $M$ (left panel) and the posterior distribution when $x = 10$ (centre panel) and when $x = 20$ (right panel)."}
+
+par( mfrow = c(1, 3),
+     mar = c(5, 2, 4, 2) + 0.1)
+
+xx <- c(10, 20)
+daccidents <- function(x, mu){
+  denom <- 0.9 * exp(-10) * 10^x +
+           0.1 * exp(-20) * 20^x
+  f <-  exp(-mu) * mu^x * 0.1^((mu - 10)/10) * 0.9^((20 - mu)/10)
+  f / denom
+}
+
+yy <- c(0.1, 0.9)
+
+plot(yy ~ xx,
+     type = "h",
+     lty = 2,
+     lwd = 2,
+     las = 1,
+     col = "grey",
+     axes = FALSE,
+     xlim = c(5, 25),
+     ylim = c(0, 1),
+     xlab = expression(Mean~M),
+     ylab = "Prob. function",
+     main = expression(Prior~prob.~M) )
+points(yy ~ xx,
+       pch = 19)
+axis(side = 1,
+     at = c(10, 20))
+axis(side = 2,
+     las = 1,
+     at = c(0, 0.5, 1) )
+box()
+
+
+x <- 10
+yy <- daccidents(x, mu = c(10, 20))
+
+plot(yy ~ xx,
+     type = "h",
+     lty = 2,
+     lwd = 2,
+     las = 1,
+     col = "grey",
+     axes = FALSE,
+     xlim = c(5, 25),
+     ylim = c(0, 1),
+     xlab = expression(Mean~M),
+     ylab = "Prob. function",
+     main = expression(Posterior~prob.:~italic(x)==10 ) )
+points(yy ~ xx,
+       pch = 19)
+axis(side = 1,
+     at = c(10, 20))
+axis(side = 2,
+     las = 1,
+     at = c(0, 0.5, 1) )
+box()
+
+
+
+x <- 20
+yy <- daccidents(x, mu = c(10, 20) )
+
+plot(yy ~ xx,
+     type = "h",
+     lty = 2,
+     lwd = 2,
+     las = 1,
+     col = "grey",
+     axes = FALSE,
+     xlim = c(5, 25),
+     ylim = c(0, 1),
+     xlab = expression(Mean~M),
+     ylab = "Prob. function",
+     main = expression(Posterior~prob.:~italic(x)==20) )
+points(yy ~ xx,
+       pch = 19)
+axis(side = 1,
+     at = c(10, 20))
+axis(side = 2,
+     las = 1,
+     at = c(0, 0.5, 1) )
+box()
+```
 
 
 :::{.example #GoalKicking3 name="Goal kicking"}
 From \@ref(eq:marg4), the conditional pdf of $\Theta$ given $X$ is
+\[
+  f_{\Theta \mid X}(\theta, x)
+  = \frac{p_{X \mid \Theta}(x, \theta) f_\Theta(\theta)}{p_X(x)}
+\]
+where $X \mid \theta \sim \text{Bin}(n = 10, p = \theta)$ so that
+\[
+  p(X \mid\Theta) = \binom{10}{x}\theta^x (1 - \theta)^{10 - x},
+\]
+and where $p_X(x)$ is given in \@ref(eq:goal2), and $\Theta \sim \text{Beta}(4, 4)$.
+Putting the pieces together:
 \begin{align}
-  f_{\Theta|X}(\theta,x)
-  &= \frac{p_{X|\Theta}(x,\theta) f_\Theta(\theta)}{p_X(x)}\notag\\
-  &= \binom{10}{x}\theta^x (1 - \theta)^{10 - x}
-     \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)} \theta^3 (1 - \theta)^3\\
-     \frac{7!10!(x + 3)!(13 - x)!}{3!^217!x!(10 - x)!}\label{EQ:goal3}
+  f_{\Theta \mid X}(\theta, x)
+  &= \frac{ \binom{10}{x}\theta^x (1 - \theta)^{10 - x}
+     \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)} \theta^3 (1 - \theta)^3}
+          {\frac{7!\, 10!\, (x + 3)!\, (13 - x)!}{3!^2\, 17!\, x!\, (10 - x)!} } \\
+  &= \frac{17!\theta^{x + 3} (1 - \theta)^{13 - x}}{(x + 3)! (13 - x)!}
+  \label{EQ:goal3}
 \end{align}
-CHECK THOSE!
+which corresponds to a $\text{Beta}(4 + x, 14 - x)$.
+
+After observing the 10 kicks, the prior belief is adjusted accordingly:
+
+* If the number of kicks made is $5/10 = 0.5$, the prior belief is adjusted to $\text{Beta}(9, 9)$, but the mean remains as $9/(9 + 9) = 0.5$;
+* If the number of kicks made is $8/10 = 0.8$, the prior belief is adjusted upwards;  $\text{Beta}(12, 6)$ where the mean becomes $12/(12 + 6) = 0.67$;
+* If the number of kicks made is $1/10 = 0.1$, the prior belief is adjusted downwards: $\text{Beta}(5, 13)$ where the mean becomes $5/(5 + 13) = 0.28$.
+
+See Fig. \@ref(fig:PostPosteriorKicks).
 :::
 
-Giving meaning to conditional distribution of parameters such as those described by (\ref{EQ:exam3}), (\ref{EQ:accidents3}) and (\ref{EQ:goal3}) has historically been a source of controversy in the discipline of statistics.
-However the idea of being able to modify the distribution of a parameter based on information, which is essentially what is happening, is very worthwhile, and is the basis of a very important contemporary branch of statistics
-known as *Bayesian statistics*.
 
-If, for example, we think of the distribution of means in the exam scores example as a model of our beliefs describing the population of students, then we can think of the conditional distribution of means given the actual exam scores as an updated model of our beliefs concerning the distribution of means. 
-In this context it makes sense to talk of the original or unconditional distribution $f_\Theta(\theta)$ as the *prior*
-distribution and the resultant conditional distribution $f_{\Theta|X}(\theta,x)$ as the *posterior* distribution.
+```{r PostPosteriorKicks, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Goal kicking: The prior distribution for $\\theta$ (left panel) and the posterior distribution when $x = 8$ (centre panel) and when $x = 1$ (right panel). The grey vertical lines correspond to the distribution means."}
 
-This notion of updating knowledge of parameter values based on new information is the basis of Bayesian statistics. 
-It is pertinent to note that the algebra involved in deriving posterior distributions is, except in special cases, practically intractable. 
-Consequently numerical, especially some clever simulation techniques, are used extensively in Bayesian statistics.
+par( mfrow = c(1, 3),
+     mar = c(5, 2, 4, 2) + 0.1)
+
+xx <- seq(0, 1,
+          length = 500)
+yy <- dbeta(xx, 4, 4)
+
+plot(yy ~ xx,
+     type = "l",
+     lwd = 2,
+     axes = FALSE,
+     xlab = expression(Probability~theta),
+     ylab = "Prob. function",
+     main = expression(Prior~prob.~theta) )
+axis(side = 1,
+     at = c(0, 0.5, 1))
+abline(v = 4/(4 + 4),
+       col = "grey")
+box()
 
 
+x <- 8
+yy <- dbeta(xx, 4 + x, 14 - x)
+
+plot(yy ~ xx,
+     type = "l",
+     lwd = 2,
+     axes = FALSE,
+     xlab = expression(Probability~theta),
+     ylab = "Prob. function",
+     main = expression(Posterior~prob.:~italic(x)==8 ) )
+axis(side = 1,
+     at = c(0, 0.5, 1))
+abline(v = (4 + x)/(18),
+       col = "grey")
+box()
+
+
+
+x <- 1
+yy <- dbeta(xx, 4 + x, 14 - x)
+
+plot(yy ~ xx,
+     type = "l",
+     lwd = 2,
+     axes = FALSE,
+     xlab = expression(Probability~theta),
+     ylab = "Prob. function",
+     main = expression(Posterior~prob.:~italic(x)==1) )
+axis(side = 1,
+     at = c(0, 0.5, 1))
+abline(v = (4 + x)/(18),
+       col = "grey")
+box()
+```
+
+Applying meaning to the conditional distribution of parameters, such as those in (\ref{EQ:exam3}), (\ref{EQ:accidents3}) and (\ref{EQ:goal3}), has historically been controversial in statistics.
+However, the idea of *modifying* a parameter of a distribution based on new information has proven constructive, and is the basis of an important branch of statistics called *Bayesian statistics*.
+
+The algebra involved in deriving posterior distributions is, except in special cases (Table \@ref(tab:ConjugateTable)), intractable and so numerical methods are necessary (including simulation techniques).
+
+
+```{r ConjugateTable, echo=FALSE}
+Conjugates <- array( dim = c(4, 3))
+
+colnames(Conjugates) <- c("Sampling distribution",
+                          "Prior distribution",
+                          "Posterior distribution")
+
+Conjugates[1, ] <- c("$X \\sim \\text{Bin}(m, p)$",
+                     "$p \\sim \\text{Beta}(a, b)$",
+                     "$p \\mid X \\sim \\text{Beta}(a + \\sum x, b + mn - \\sum x)$")
+Conjugates[2, ] <- c("$X \\sim \\text{Gam}(\\alpha, \\beta)$",
+                     "$\\beta \\sim \\text{Gam}(\\alpha_0, \\beta_0)$",
+                     "$\\beta \\mid X \\sim \\text{Gam}(\\alpha_0 + n\\alpha, \\beta_0 + \\sum x)$")
+Conjugates[3, ] <- c("$X \\sim \\text{Pois}(\\lambda)$",
+                     "$\\lambda \\sim \\text{Gam}(\\alpha_0, \\beta_0)$",
+                     "$\\lambda \\mid X \\sim \\text{Gam}(\\alpha_0 + \\sum x, \\beta_0 + n)$")
+Conjugates[4, ] <- c("$X \\sim N(\\mu, \\sigma^2)$",
+                     "$\\mu \\sim N(\\mu_0, \\sigma^2_0)$",
+                     "$\\mu \\mid X \\sim N(?, ?)$")
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(Conjugates,
+               format = "latex",
+               booktabs = TRUE,
+               align = c("l"),
+               col.names = c("distribution $f(X\\mid\\Theta)$",
+                             "distribution $f(\\Theta)$",
+                             "distribution $f(\\Theta\\mid X$)"),
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "Conjugate distributions for random parameters: The sampling distribution,  $f(X\\mid\\Theta)$; the prior distribution $f(\\Theta)$; and the posterior distribution $f(\\Theta\\mid X$)") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above(c("Sampling" = 1,  # Multi-line header
+                       "Prior" = 1, 
+                       "Posterior" = 1),
+                     bold = TRUE,
+                     line = FALSE,
+                     align = "l")
+} else {
+   'FIX ME!'
+}
+```
+
+
+
+## Exercises
 
