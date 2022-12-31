@@ -586,48 +586,6 @@ The fit is reasonable (but not brilliant) for the small sample size; see Table ?
 
 
 
-### Application: Estimating population sizes
-
-Geometric distributions are simple, but have applications in estimating population sizes.
-
-Consider a population of animals of a certain species of unknown size $N$.
-We then trap a certain number of animals in an area, tag them, and then release them.
-At a later point (EQUALLY SPACED?), we capture (TEH SAME NUMBER OF) animals, and observe how many have been tagged before.
-Define $n_x$ as the number of animals captured $x$ times, in a total of $s$ trapping events (where $s$ is 'large'),
-and $p$ is the probabiiuty that ana animal is trapped zero times in the $s$ trappingf events.
-
-Then,
-\[
-   P(X = x) = p (1 - p)^x.
-\]
-Then,
-\[
-   n_x = N p (1 - p)^x
-\]
-and, after taking logarithms,
-\[
-   \log n_x = \log Np + x\log(1 - p).
-\]
-Information available is $n_x$ for various values of $x$, so that the estimates of $Np$ and $\log(1 - p)$ are found from a regression of $\log n_x$ on $x$.
-From these, estimates of $N$ and $p$ can be found.
-
-See: [@romesburg1979fitting]
-
-
-### Application Modelling hot and dry spells
-
-[@furrer2010statistical]:
-The annual frequency of hot spells was modeled by a
-Poisson distribution, and their length by a geometric distribution. 
-
-"Given its memoryless property, the geometric distri-
-bution is the simplest plausible model for spell length.
-Smith et al. (1997) used it to model the cluster length of
-low minimum daily temperatures, although they found
-some evidence that a distribution with a heavier tail
-might be needed. "
-
-
 ## Poisson distribution {#PoissonDistribution}
 
 The Poisson distribution is commonly used to model the number of occurrences of an event which occurs randomly in time or space.
@@ -889,13 +847,13 @@ for (i in (1:4)) {
 ### Extensions
 
 The Poisson distribution is commonly-used to model independent counts.
-However, sometimes these counts explicitly exclude a count of zero.
+However, sometimes these counts explicitly *exclude* a count of zero.
 Then, the probability functions can be expressed as
 \[
    p_X(x) = \frac{\exp(-\mu) \mu^{x - 1}}{(x - 1)!}\quad   \text{for $x = 1, 2, 3, \dots$}
 \]
 where the parameter is $\mu > 0$.
-???
+In this case, $\text{E}(X) = \lambda + 1$ and $\text{var}(X) = \lambda$.
 
 In some cases, the random variable is a count, but has an upper limit on the possible number of counts.
 This is the *truncated Poisson distribution*.
@@ -911,22 +869,6 @@ If the counts have a maximum of $K$, the the probability function is
 
 Other situations exist where the the proportions of zeros exceed the proportions expected by the Poisson distribution, but the Poisson distributions seems to otherwise be suitable.
 In these situations, the *zero-inflated Poisson distribution* may be suitable.
-
-???
-
-
-
-### Applications:
-
-
-
-
-@brude1993models: Accidents involving pedestrians and cyclists 
-
-@sari2009stochastic: Accidents per month in a coal mine
-
-Rain events per month??
-
 
 
 
@@ -1000,7 +942,7 @@ The mean number of calls to be made will is $\text{E}(Y) = r/p = 10/0.15 \approx
 Often, a different parameterisation for the negative binomial distribution is used (including by **R**), modelling the number of *failures* $x$ which occur in a sequence of independent trials until $r$ successes are reached.
 The pf of this reparameterisation is
 \begin{equation}
-   p_X(y) = \binom{x + r - 1}{y} p^r (1 - p)^x
+   p_X(x) = \binom{x + r - 1}{y} p^r (1 - p)^x
    \quad\text{for $x = 0, 1, 2, \dots$}
    (\#eq:NegativeBinomialPMFAlternative)
 \end{equation}
@@ -1012,7 +954,7 @@ Hence, this pf is defined for $y = 0$, $1$, $2$, $\dots$.
 For the reparameterised version of the negative binomial distribution, Theorem \@ref(thm:NegBinomialProperties) is restated.
 
 
-:::{.theorem #NegBinomialProperties2 name="Negative binomial (alternative parameterisation) properties}
+:::{.theorem #NegBinomialProperties2 name="Negative binomial (alternative parameterisation) properties"}
 If $X\sim \text{NB}(r, p)$ with pf \@ref(eq:NegativeBinomialPMFAlternative), then
 
 1. $\text{E}(X) = r(1 - p)/p$.
@@ -1314,39 +1256,6 @@ if( knitr::is_html_output() ) {
 
 
 
-### Applications: Car crashes
-
-@lord2005poisson discusses **binomial** and **Poisson approx** with some discusson of how they model the situations.
-And prob also neg bin.
-
-@white1996analysis: 
-Counts of biologuical populations: "The Poisson dis-
-tribution assumes spatial independence, whereas this
-assumption is relaxed with the negative binomial dis-
-tribution."
-
-NEED to talk about that... How neg bin can be found by not assuming mu is constant.
-And can we show it in TRANNSFORM chapter using MGFs later even?
-
-
-Estimating population sizes again:
-@boyce2001negative: 
-Assuming that the number of sightings of an
-individual comes from a Poisson distribution
-allows sightings to occur at any time during data
-collection and does not require a discrete number
-of trapping occasions as in many mark-recapture
-studies. In such studies, the number of sightings
-per animal would follow a binomial distribution;
-however, the Poisson distribution could be used as
-an approximation if the number of trapping occa-
-sions is large, with a small probability of a sighting
-occurring within each trapping
-
-Neg bin regression.
-
-
-
 ## Hypergeometric distribution {#HypergeometricDistribution}
 
 When the selection of items a fixed number of times is done *with* replacement, the probability of an item being selected stays the same and the binomial distribution can be used.
@@ -1456,3 +1365,133 @@ The probability is about 41%.
 :::
 
 
+
+## Exercises
+
+:::{.exercise #DisaggregationPoisson}
+In a study of rainfall disaggregation [@connolly1998daily] (extracting small-scale rainfall features from large-scale measurements), the number of non-overlapping rainfall events per day at Katherine was modelled using a Poisson distribution (for $x = 1, 2, 3, \dots$) with $\lambda = 2.5$ in summer and $\lambda = 1.9$ in winter.
+
+Denote the number of rainfall events in summer as $S$, and in winter as $W$.
+
+1. Plot the two distributions, and compare summer and winter.
+1. What is the probability of more than 3 rainfall events per day in winter? 
+1. What is the probability of more than 3 rainfall events per day in summer? 
+1. Describe what is meant by the statement $\Pr(S > 3 \mid S > 1)$, and compute the probability.
+1. Describe what is meant by the statement $\Pr(W > 2 \mid W > 1)$, and compute the probability.
+::: 
+
+
+:::{.exercise}
+Consider a population of animals of a certain species of unknown size $N$ [@romesburg1979fitting].
+A certain number of animals in an area are trapped and tagged, then released.
+At a later point, more animals are trapped, and the number previously tagged is noted.
+
+Define $p$ as the probability that an animal is captured zero times during the study,  and $n_x$ as the number of animals captured $x$ times (for $x = 0, 1, 2, \dots$).
+($n_0$ is unknown.)
+The study consist of $s$ trapping events, so we have $n_1$, $n_2, \dots n_s$ where $s$ is sufficiently 'large' that the truncation is negligible.
+Then,
+\begin{equation}
+   n_x = N p (1 - p)^x \quad \text{for $x = 0, 1, 2, \dots$}.
+   (\#eq:GeomCapture)
+\end{equation}
+While $p$ and $N$ are unknown, the value of $N$ is sought.
+
+1. Take logarithms of \@ref(eq:GeomCapture).
+   Write this equation in the form of a linear regression equation $\hat{y} = \beta_0 + \beta_1 x$.
+1. From the regression equation, identify how to estimate $p$ from the slope of the regression line, and then $N$ from the $y$-intercept.
+1. Use the data in Table \@ref(tab:RabbitPop), from a study of rabbits in an area Michigan [@eberhardt1963problems], to estimate the rabbit population.
+
+
+```{r RabbitPop, echo=FALSE}
+Rabbits <- array( dim = c(2, 7) )
+
+Rabbits[1, ] <- c("$x$", 1:6)
+Rabbits[2, ] <- c("$n_x$", 247, 63, 20, 4, 2, 1)
+
+knitr::kable(Rabbits, 
+             caption = "The number of rabbits $n_x$ at each trapping who had been previously trapped")
+```
+:::
+
+
+:::{.exercise}
+A Nigerian study of using solar energy to disinfect water (SODIS) modelled the number of days exposure needed to disinfect the water [@nwankwo2022solar].
+The threshold for disinfection was a day recording 4 kWh/m^2^ daily cumulative solar irradiance.
+
+1. Suppose $p = 0.5$.
+   How many days exposure would be needed, on average, to achieve disinfection?
+1. Suppose $p = 0.25$.
+   How many days exposure would be needed, on average, to achieve disinfection?
+1. AND SO ON.
+:::
+
+
+:::{.exercise}
+A negative binomial distribution was used to model the number of parasites on feral cats on on Kerguelen Island [@hwang2016estimating].
+The model used is parameterised so that $\mu = 8.7$ and $k = 0.4$, where $\text{var}(X) = \mu + \mu^2/k$.
+
+1. Use the above information to determine the negative binomial parameters used for the parameterisation in \@ref(def:GeometricDistributionALT).
+1. Determine the probability that a feral cat has more than 10 parasites.
+1. The cats with the largest 10% of parasites have how many parasites?
+:::
+
+
+:::{.exercise}
+A study investigating bacterial sample preparation procedures for single-cell studies  [@koyama2016bacterial] studied, among other bacteria, *E. coli* 110.
+The number of bacteria in 2$\mu$L samples was modelled using a Poisson distribution with $\lambda = 1.04$.
+
+1. What is the probability that a sample has more than 4 bacteria? 
+1. What is the probability that a sample has more than 4 bacteria, given it has bacteria? 1. Would you expect the negative binomial distribution to fit the data better than the Poisson?
+:::
+
+
+
+:::{.exercise}
+A study of accidents in coal mines [@sari2009stochastic] used a Poisson model with $\lambda = 12.87$.
+
+1. Plot the distribution.
+1. Compute the probability of more than one accident per day in February.
+1. AND MORE.
+:::
+
+
+:::{.exercise}
+In a study of heat spells [@furrer2010statistical] examined three cities.
+In Paris, a 'hot' day was defined as a day with a maximum over 27^$\circ$^C; in Phoenix, a 'hot' day was defined as a day with a maximum over  40.8^$\circ$^C.
+
+The length of a heat spell $X$ was modelled using a geometric distribution, with $p = 0.40$ in Paris, and $\lambda = 0.24$ in Phoenix.
+
+1. On the same graph, plot both probability functions.
+1. For each city, what is the probability that a hear spell last longer than a week?
+1. For each city, what is the probability that a hear spell last longer than a week, given it has lasted two days?
+:::
+
+
+:::{.exercise}
+A study of crashes at intersections [@lord2005poisson] examined high risk intersections, and modelled the number of crashes with a Poisson distribution using $\lambda = 11.5$.
+
+1. What proportion of such intersection would be expected to have zero crashes?
+
+:::
+
+
+:::{.exercise}
+In a study of counting birds [@white1996analysis], the parametrisation of the negative binomial distribution used by the authors is
+\begin{equation}
+   p_X(x) 
+   = \binom{k + x - 1}{k - 1} \left( \frac{m}{k} \right) 
+   \left( 1 + \frac{m}{k} \right)
+   (\#eq:NegativeBinomialPMFAlternative)
+\end{equation}
+for $x = 0, 1, 2, \dots$ and $k > 0$ and mean $m > 0$.
+
+The fitted parameters are, for orange-crowned warblers:
+
+* in ponderosa pine stand (riparian sites): $m = 0.11$ and $k = 0.275$; and
+* n lodgepole pine stands (again, riparian sites): $m = 0.04$ and $k= 0.275$.
+
+1. On the same graph, plot both distributions.
+   Comment.
+1. Compute the probability of observing fewer than 5 birds in each environment.
+1. Compute the probability of observing fewer than 5 birds in each environment, given that the bird was seen.
+:::
