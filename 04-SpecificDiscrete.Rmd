@@ -140,14 +140,10 @@ Therefore
 :::{.example #LottoStats name="Lotto"}
 Oz Lotto, like many lottery games, challenges players to match randomly chosen numbers.
 Oz Lotto randomly picks numbers between 1 and 45 (inclusive).
-Each number should have an equal chance of selection, so the discrete uniform distribution $U(1,45)$ is appropriate.
+Each number should have an equal chance of selection, so the discrete uniform distribution $U(1,45)$ is appropriate.\smallskip
 
 If the data follow a discrete uniform distribution exactly, the mean number drawn should be  $(1 + 45) / 2 = 23$, and the variance $(44 \times 46)/12 = 168.66$.
-
-Using the sample data, the sample mean is computed to be ??? and the sample variance as ???; these are both very close to what one might expect for a $U(1, 45)$ random variable.
 :::
-
-FIG HERE. get the Oz Lotto data...
 
 
 ## Bernoulli distribution {#BernoulliDistribution}
@@ -332,7 +328,7 @@ for (i in (1:4)) {
 
 :::{.example #ThrowDice name="Throwing dice"}
 A die is thrown 4 times. 
-What is the probability of exactly 2 sixes?
+What is the probability of exactly 2 sixes?\smallskip
 
 There are 4 Bernoulli trials with $p = 1/6$.
 Let the random variable $X$ be the  number of 6's in 4 tosses. 
@@ -422,10 +418,10 @@ In this case, the *hypergeometric distribution* could be used (Sect. \@ref(Hyper
 :::{.example name="Freezing lake"}
 @BIB:Wilks:statistical (p. 68) notes that in the 200 years from 1796 to 1995, Cayuga Lake has frozen only in ten of those years.
 Since the lake is deep, it will only freeze during exceptionally cold weather.
-The probability the lake freezes during any one year can be estimated as $p = 10/200 = 0.05$.
+The probability the lake freezes during any one year can be estimated as $p = 10/200 = 0.05$.\smallskip
 
 Using this information, the number of times the lake will *not* freeze in ten randomly chosen years in given by the random variable $X$ where $X \sim \text{Bin}(10, 0.95)$.
-The probability that the lake will not freeze in these ten years is $\Pr(X = 10) = \binom{10}{10} 0.95^{10} 0.05^{0} \approx 0.599$, or about 60%.
+The probability that the lake will not freeze in these ten years is $\Pr(X = 10) = \binom{10}{10} 0.95^{10} 0.05^{0} \approx 0.599$, or about 60%.\smallskip
 
 Note we could define the random variable $Y$ as the number of times the lake *will* freeze in the ten randomly chosen years.
 Then, $Y\sim\text{Bin}(10, 0.05)$ and we would compute $\Pr(Y = 0)$ and get the same answer.
@@ -470,11 +466,11 @@ The pf for a geometric distribution for various values of $p$ is shown in Fig. \
 The following are the basic properties of the geometric distribution.
 
 :::{.theorem #GeometricProperties name="Geometric distribution properties"}
-If $X\sim\text{Geom}(p)$ then
+If $X\sim\text{Geom}(p)$ as defined in Eq. \@ref(eq:GeometricPMF), then
 
 1. $\text{E}(X) = 1/p$.
 2. $\text{var}(X) = (1 - p)/p^2$.
-3. $M_X(t) = pe^t/\{1 - (1 - p)e^t\}$.
+3. $M_X(t) = pe^t/\{1 - (1 - p)e^t\}$ for $t < -\log(1 - p)$.
 :::
 
 :::{.proof}
@@ -487,9 +483,8 @@ The parameterisation above is for the *number of trials* needed for the first su
 An alternative parameterisation is for the *number of failures* before a success, when $x = 0, 1, 2, \dots$.
 Then,
 \[
-   p_X(x) =  q^{x} p\quad\text{for $x = 0, 1, 2, \dots$},
+   p_X(x) =  q^{x} p\quad\text{for $x = 0, 1, 2, \dots$}.
 \]
-and $\text{E}(X) = (1 - p)/p$, $\text{var}(X) = (1 - p)/p^2$, and $M_X(t) = ???$. (CHECK THOSE???)
 This is the parametrisation used by **R**.
 
 
@@ -502,6 +497,21 @@ A random variable $X$ has a *geometric distribution* if the pf of $X$ is given b
 where $q = 1 - p$ and $0 < p < 1$ is the parameter of the distribution.
 We write $X\sim\text{Geom}(p)$.
 :::
+
+
+:::{.theorem #GeometricPropertiesALT name="Geometric distribution properties"}
+If $X\sim\text{Geom}(p)$ as defined in Eq. \@ref(eq:GeometricPMFAlternative), then
+
+1. $\text{E}(X) = (1 - p)/p$.
+2. $\text{var}(X) = (1 - p)/p^2$.
+3. $M_X(t) = p/\{ 1 - (1 - p)e^t \}$ for $t < -\log(1 - p)$.
+:::
+
+:::{.proof}
+The first two result can be proven from Theorem \@ref(thm:GeometricProperties).
+:::
+
+
 
 
 ```{r Geometric, echo=FALSE, fig.align="center", fig.cap="The pf for the geometric distribution for $p = 0.1$, $0.3$, $0.5$ and $0.8$", fig.height = 7, fig.width=7, out.width='80%'}
@@ -546,43 +556,42 @@ In **R**, the geometric distribution functions have the form `[dpqr]geom(prob)`.
 :::{.example #GeometricComputerFail name="Computer failure"}
 A computer system fails at random with probability $0.02$ on any given day.
 Let $Y$ be the day on which the system fails, so that $Y = \{1, 2, 3, \dots\}$ using \@ref(eq:GeometricPMF).
-Then $Y \sim\text{Geom}(0.02)$.
+Then $Y \sim\text{Geom}(0.02)$.\smallskip
 
-The probability that the system will first fail before day $20$ (that is, $\Pr(Y < 20) = \Pr(Y \le 19)$) can be found by hand, or using a computer.
+The probability that the system will first fail before day $20$ (that is, $\Pr(Y < 20) = \Pr(Y \le 19)$) can be found by hand, or using a computer.\smallskip
 
 To use **R**, the alternative parameterisation \@ref(eq:GeometricPMFAlternative) is needed.
-Let $X$ be the number of days before the first system failure, so that $X = \{0, 1, 2, 3, \dots\}$ using \@ref(eq:GeometricPMFAlternative).
+Let $X$ be the number of days before the first system failure, so that $X = \{0, 1, 2, 3, \dots\}$ using \@ref(eq:GeometricPMFAlternative).\smallskip
 
 Then, the probability that the system will first fail before day $20$ means there are $19$ days with no failure (that is, $\Pr(X < 19) = \Pr(Y \le 18)$) can be found in **R**.
 The command `dgeom()` gives the probability mass function for the geometric distribution, and `pgeom()` gives values from the distribution function of the geometric distribution:
+
 ```{r echo=TRUE}
 sum( dgeom( x = 0:18, # For alt. parameterisation
             prob = 0.02))
 pgeom(q = 18, 
       prob = 0.02) # i.e., up to 18 failures at p=0.02
 ```
-The probability is $0.32$ that the system will fail before day $20$.
+The probability is $0.32$ that the system will fail before day $20$.\smallskip
 
 The number of days the system can be expected to work until failure is $\text{E}(Y) = 1/p = 1/0.02 = 50$.
 The system could be expected to last fifty days before the first failure.
-
-???FIX THOSE!!
 :::
 
 
 
 
-:::{.example #BabyBoom name="Baby Boom"}
-An article appearing in *The Sunday Mail* on 21 December 1997 give the birth weight, gender, and time of birth of 44 babies born in the 24-hour period of 18 December 1997 at the Mater Mother's Hospital in Brisbane, Australia.
+<!-- :::{.example #BabyBoom name="Baby Boom"} -->
+<!-- An article appearing in *The Sunday Mail* on 21 December 1997 give the birth weight, gender, and time of birth of 44 babies born in the 24-hour period of 18 December 1997 at the Mater Mother's Hospital in Brisbane, Australia. -->
 
-KEEP FOR EXERCISE OR ASSIGNMENT
+<!-- KEEP FOR EXERCISE OR ASSIGNMENT -->
 
 
-The gender of the births is a random process, and so the number of births observed until a boy is born should have approximately a geometric distribution.
-By counting the number of births until a boy is born (and restarting the count when a girl is born), Table ??? has been constructed.
-The theoretical probabilities have been based on the probability of a boy being born as being $0.5$.
-The fit is reasonable (but not brilliant) for the small sample size; see Table ???.
-:::
+<!-- The gender of the births is a random process, and so the number of births observed until a boy is born should have approximately a geometric distribution. -->
+<!-- By counting the number of births until a boy is born (and restarting the count when a girl is born), Table ??? has been constructed. -->
+<!-- The theoretical probabilities have been based on the probability of a boy being born as being $0.5$. -->
+<!-- The fit is reasonable (but not brilliant) for the small sample size; see Table ???. -->
+<!-- ::: -->
 
 
 
@@ -689,7 +698,7 @@ To determine the probability that at least one customer enters the line in a giv
 :::{.example #Bombs name="Bomb hits"}
 @clarke1946application (quoted in @data:hand:handbook, Dataset 289) gives the number of flying bomb hits on London during World War II in a 36 square kilometre area of South London.
 The area was gridded into 0.25 km squares and the number of bombs falling in each grid was counted (Table \@ref(tab:BombTable)).
-If the hits are random, a Poisson distribution should fit the data.
+If the hits are random, a Poisson distribution should fit the data.\smallskip
 
 Using the proportions as estimates of the true probabilities, the sample mean can be computed using the definition of the mean.
 \begin{align*}
@@ -836,7 +845,7 @@ for (i in (1:4)) {
            col = c("black",
                    plotColour),
            pch = c(1, 19),
-           legend = c("binomial",
+           legend = c("Binomial",
                       "Poisson approx."))
   }
   
@@ -877,27 +886,26 @@ In these situations, the *zero-inflated Poisson distribution* may be suitable.
 ### Standard parameterisation
 
 Consider a random process where independent Bernoulli trials are repeated until the $r$th success occurs. 
-Let random variable $Y$ be the number of trials necessary to obtain $r$ successes.
-Clearly $Y$ will be at least $r$ and the range space for $Y$ is $\{ r, r + 1, r + 2,\dots \}$.
+Let the random variable $Y$ be the number of *failures* before the $r$th success is observed, so that $Y = 0, 1, 2, \dots$.
 
-To observe the $r$th success in the $y$th trial, first $y - r$ failures and $r - 1$ successes must have occurred in the first $y - 1$ trials; the $r$th success then happens on the $y$th trial.
-There are $\binom{y - 1}{r - 1}$ ways in which to allocate these successes to the first $y - 1$ trials.
-Each of the $r - 1$ successes occur with probability $p$, and the $y - r$ failures with probability $1 - p$ (assuming events are independent).
+To observe the $r$th success after $y$ failures, we need to observe $y$ failures and $r - 1$ successes first.
+There are $\binom{y + r - 1}{r - 1}$ ways in which to allocate these successes to the first $y + r - 1$ trials.
+Each of the $r - 1$ successes occur with probability $p$, and the $y$ failures with probability $1 - p$ (assuming events are independent).
 
 Hence the probability of observing the $r$th success in trial $y$ is
 \begin{align*}
    \text{No. ways}
-   &\times \Pr\big(\text{$(y - r)$ failures}\big) \times \Pr(\text{$r$ successes}) \\
-   \binom{y - 1}{r - 1} 
-   &\times (1 - p)^{y - r} \times p^r.
+   &\times \Pr\big(\text{$y$ failures}\big) \times \Pr(\text{$r$ successes}) \\
+   \binom{y + r - 1}{r - 1} 
+   &\times (1 - p)^{y} \times p^r.
 \end{align*}
 
 
 :::{.definition #NegativeBinomialDistribution name="Negative binomial distribution"}
 A random variable $Y$ with pf
 \begin{equation}
-   p_Y(y) = \binom{y - 1}{r - 1}(1 - p)^{y - r} p^r
- \quad\text{for $y = r, r + 1, r + 2,\dots$}
+   p_Y(y) = \binom{y +r - 1}{r - 1}(1 - p)^{y} p^r
+ \quad\text{for $y = 0, 1, 2, \dots$}
    (\#eq:NegativeBinomialPMF)
 \end{equation}
 has a *negative binomial distribution* with parameters $r$ (an integer $\ge 1$) and $p$ ($0\le p\le1$).
@@ -911,9 +919,9 @@ The following are the basic properties of the negative binomial distribution.
 :::{.theorem #NegBinomialProperties name="Negative binomial properties"}
 If $X\sim \text{NB}(r,p)$ with pf \@ref(eq:NegativeBinomialPMF) then
 
-1. $\text{E}(X) = r/p$.
+1. $\text{E}(X) = \{r(1 - p)\}/p$.
 2. $\text{var}(X) = r(1 - p)/p^2$.
-3. $M_X(t) = \left[ pe^t/\{1 - (1 - p)e^t\} \right]^r$.
+3. $M_X(t) = \left[ p / \{1 - (1 - p)e^t\} \right]^r$.
 :::
 
 :::{.proof}
@@ -923,52 +931,29 @@ Then the first two are then derived from the mgf.
 
 
 :::{.example #Demonstration name="Negative binomial"}
- A telephone marketer invites customers, over the
-phone, to a product demonstration. 
+ A telephone marketer invites customers, over the phone, to a product demonstration. 
 Ten people are needed for the demonstration. 
-The probability that a randomly chosen person accepts the invitation is only 0.15.
+The probability that a randomly-chosen person accepts the invitation is only 0.15.\smallskip
 
-Consider finding the probability that the marketer will need to make more than 100
-calls to secure ten acceptances. 
-Here, a ‘success’ is an acceptance to attend
-the demonstration. 
-Let $Y$ be the number of calls necessary to secure ten acceptances.
-Then $Y$ has a negative binomial distribution 
-with $p = 0.15$ and $r = 10$.
-The mean number of calls to be made will is $\text{E}(Y) = r/p = 10/0.15 \approx 66.7$.
+Consider finding the probability that the marketer will need to make more than 100 calls to secure ten acceptances. 
+Here, a ‘success’ is an acceptance to attend the demonstration. 
+Let $Y$ be the number of *failed* calls necessary to secure ten acceptances.
+Then $Y$ has a negative binomial distribution with $p = 0.15$ and $r = 10$.
+The mean number of failures made will is $\text{E}(Y) = \{r(1 - p)\}/p = \{10 \times (1 - 0.15)\}/0.15 \approx  56.66667$.\smallskip
+
+Hence, including the ten calls that leads to a person accepting the invitation, the mean number of calls to be made will is $10 + \text{E}(Y) = 66.66\dots$.
 :::
 
 
-Often, a different parameterisation for the negative binomial distribution is used (including by **R**), modelling the number of *failures* $x$ which occur in a sequence of independent trials until $r$ successes are reached.
-The pf of this reparameterisation is
-\begin{equation}
-   p_X(x) = \binom{x + r - 1}{y} p^r (1 - p)^x
-   \quad\text{for $x = 0, 1, 2, \dots$}
-   (\#eq:NegativeBinomialPMFAlternative)
-\end{equation}
-where $X$ is the number of *failures* until the $r$th success is observed. 
-Note that the variables $X$ and $Y$ are related by $X = Y + r$ for constant $r$. 
-Hence, this pf is defined for $y = 0$, $1$, $2$, $\dots$.
+Often, a different parameterisation for the negative binomial distribution; see Exercise \@ref(exr:NegativeBinomialALT).
+However, the parameterisation presented here is used by **R**.
 
-
-For the reparameterised version of the negative binomial distribution, Theorem \@ref(thm:NegBinomialProperties) is restated.
-
-
-:::{.theorem #NegBinomialProperties2 name="Negative binomial (alternative parameterisation) properties"}
-If $X\sim \text{NB}(r, p)$ with pf \@ref(eq:NegativeBinomialPMFAlternative), then
-
-1. $\text{E}(X) = r(1 - p)/p$.
-2. $\text{var}(X) = r(1 - p)/p^2$.
-3. $M_X(t) = \left[ p/\{1 - (1 - p)e^t\} \right]^r$.
-:::
-
-
-Since the parameterisation in \@ref(eq:NegativeBinomialPMFAlternative) is defined over the non-negative integers, it is used to model count data (as an alternative to the [Poisson distribution](PoissonDistribution)).
+Since the parameterisation in \@ref(eq:NegativeBinomialPMF) is defined over the non-negative integers, it is often used to model count data (as an alternative to the [Poisson distribution](PoissonDistribution)).
 Since the negative binomial distribution has two parameters and the Poison only one, the negative binomial distribution often produces a better fit.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-In **R**, the negative binomial distribution functions are based on the paramaterisation in \@ref(eq:NegativeBinomialPMFAlternative), and have the form `[dpqr]nbinom(size, prob)`, where `prob` is $p$ and `size` is $r$.
+In **R**, the negative binomial distribution functions are based on the paramaterisation in \@ref(eq:NegativeBinomialPMF), and have the form `[dpqr]nbinom(size, prob)`, where `prob` is $p$ and `size` is $r$.
 :::
 
 
@@ -978,7 +963,7 @@ When $r = 1$, the negative binomial distribution is the same as the geometric di
 :::
 
 
-The pf for the negative binomial distribution for various values of $p$ and $r$ is shown in Fig. \@ref(fig:NegativeBinomial), using the parameterisation in \@ref(eq:NegativeBinomialPMFAlternative).
+The pf for the negative binomial distribution for various values of $p$ and $r$ is shown in Fig. \@ref(fig:NegativeBinomial).
 
 
 ```{r NegativeBinomial, echo=FALSE, fig.align="center", fig.cap="The pf for the negative binomial distribution for $p = 0.2$ and $0.7$ and $r = 1$ and $r = 3$", fig.height = 7, fig.width=7, out.width='80%'}
@@ -1021,15 +1006,13 @@ for (i in (1:4)) {
 
 :::{.example #DemonstrationNB name="Negative binomial"}
 Consider Example \@ref(exm:Demonstration), concerning a telephone marketer inviting customers, over the phone, to a product demonstration.
-
 Ten people are needed for the demonstration. 
-The probability that a randomly chosen person accepts the invitation is only $0.15$.
+The probability that a randomly chosen person accepts the invitation is only $0.15$.\smallskip
 
 Consider finding the probability that the marketer will need to make more than $100$ calls to secure ten acceptances.
 In this situation, a 'success' is an acceptance to attend the demonstration.
-Let $Y$ be the number of calls necessary to secure ten acceptances.
+Let $Y$ be the number of failed calls before securing ten acceptances.
 Then $Y$ has a negative binomial distribution such that $Y\sim\text{NBin}(p = 0.15, r = 10)$.
-The mean number of calls to be made will be $\text{E}(Y) = r/p = 10/0.15 \approx 66.7$.
 
 To determine $\Pr(Y > 100) = 1 - \Pr(Y\le 100)$, using a computer is the easiest approach. 
 In **R**, the command `dnbinom()` returns probabilities from the probability function of the negative binomial distribution, and `pnbinom()` returns the cumulative distribution probabilities:
@@ -1042,32 +1025,29 @@ x.values <- seq(1, 100,
                  size = 10, 
                  prob = 0.15))
 # Alternatively:
-1 - pnbinom(100, 10, 0.15)
-
+1 - pnbinom(100, 
+            size = 10, 
+            prob = 0.15)
 ```
 
-The probability is about $0.0244$.
+The probability is about $0.0244$.\smallskip
 
-Assuming each call take an average of 5 minutes, how long is the marketer expected to be calling to find ten acceptances?
+Assuming each call take an average of 5 minutes, we can determine how long is the marketer expected to be calling to find ten acceptances.
 Let $T$ be the time to make the calls in minutes.
 Then $T = 5Y$.
-Hence, $\text{E}(T) = 5\text{E}(Y) = 5 \times 66.7 = 333.5$, or about 5.56 hours.
-
+Hence, $\text{E}(T) = 5\text{E}(Y) = 5 \times 66.7 = 333.5$, or about 5.56 hours.\smallskip
 
 Assume that each call costs $25$ cents, and that the company pays the marketer \$30 per hour.
-what is the average cost of securing ten acceptances?
-
-Let $C$ be the total cost in dollars.
+To determine the total cost, let $C$ be the total cost in dollars.
 The cost of employing the marketer is, on average, $30\times 5.56 = \$166.75$.
 Then $C = 0.25 Y + 166.75$, so $\text{E}(C) = 0.25 \text{E}(Y) + 166.75 = C = 0.25 \times 66.7 + 166.75 = \$183.43$.
 :::
 
 
 
-In each parameterisation of the negative binomial distribution, $r$ can be any positive number, not just an integer.
-Setting $r$ as non-integer, however, is most common with the alternative parameterisation in \@ref(eq:NegativeBinomialPMFAlternative).
+The negative binomial distribution can be extended so that $r$ can be any positive number, not just an integer.
 When $r$ is non-integer, the above interpretations are lost, but the distribution is more flexible.
-Relaxing the restriction on $r$ in the form of \@ref(eq:NegativeBinomialPMFAlternative) gives the pf as
+Relaxing the restriction on $r$ gives the pf as
 \begin{equation}
    p_X(x) = \frac{\Gamma(x + r)}{\Gamma(r) x!} p^r (1 - p)^x,
    (\#eq:NegativeBinomialPMFAlternative2)
@@ -1119,7 +1099,7 @@ For the second property, put $r = 1/2$ in the first part gives
    &= \sqrt{2}\int_0^{\infty}e^{-\frac{1}{2}z^2}\,dz, \text { putting $x = z^2/2\quad z \geq 0$}\\
    &= \sqrt{2}  \sqrt{2 \pi} \underbrace{\int_0^{\infty}\frac{1}{\sqrt{2 \pi}} e^{-\frac{1}{2}z^2}\,dz}_{1/2}.
 \end{align*}
-The integral is $\frac{1}{2}$, being half the area under a normal curve (which we see later in Sect. \@ref(Normal)). 
+The integral is $1/2$, being half the area under a normal curve (which we see later in Sect. \@ref(Normal)). 
 So
 \[
    \Gamma(1/2) = \sqrt{\pi}.
@@ -1127,7 +1107,7 @@ So
 :::
 
 
-```{r GammaFunction, echo=FALSE, fig.cap="The gamma function is like the factorial function but has a continuous argument. The line corresponds to the gamma function $\\Gamma(z)$; the solid points correspond to the factorial $(z - 1)! = \\Gamma(z)$ for integer $z$.", fig.align="center", fig.width=5, fig.height=3.75, out.width='80%'}
+```{r GammaFunction, echo=FALSE, fig.cap="The gamma function is like the factorial function but has a continuous argument. The line corresponds to the gamma function $\\Gamma(z)$; the solid points correspond to the factorial $(z - 1)! = \\Gamma(z)$ for integer $z$.", fig.align="center", fig.width=5, fig.height=3.75, out.width='75%'}
 
 xPoints <- 1:5
 xCont <- seq(0.1, 5.1, 
@@ -1167,12 +1147,10 @@ text(x = xPoints,
 
 :::{.example #Computing name="Negative binomial"}
 Consider the computer system in Example \@ref(exm:GeometricComputerFail). 
-Suppose after five failures, the system is upgraded.
+Suppose after five failures, the system is upgraded.\smallskip
 
-To find the probability that an upgrade will happen within one year, let $D$ be the days on which the system fails for the fifth time.
-Then $D\sim \text{NBin}(p = 0.02, r = 5)$, and $D = \{5, 6, 7, \dots\}$.
-
-We seek $\Pr(D < 365)$ or, if using the alternate parameterisation (which is needed if we use **R**) where $X = D - r$, we seek $\Pr(X < 360)$.
+To find the probability that an upgrade will happen within one year, let $D$ be the number of days before the fifth failure.
+So, we seek $\Pr(X < 360)$.
 Using **R**:
 
 ```{r echo=TRUE}
@@ -1181,9 +1159,6 @@ pnbinom(360,
         prob = 0.02)
 ```
 So the probability of upgrading within one year is about $85$%.
-
-To find the the expected number of days between upgrades, use $\text{E}(D) = 5/0.02 = 250$. 
-About $250$ days should elapse between upgrades, on average,
 :::
 
 
@@ -1198,10 +1173,9 @@ To compute the variance,
    \text{E}(X^2) = (0.467 \times 0^2) + (0.253 \times 1^2) +\cdots \approx 3.5733,
 \]
 so that $\text{var}(X) = 3.573333 - (1.146667)^2 =  2.258489$.
-The Poisson distribution has an equal mean and variance; the Poisson distribution may not model the data well.
+The Poisson distribution has an equal mean and variance; the Poisson distribution may not model these data well.\smallskip
 
-For the second parameterisation of the negative binomial distribution, the expression for the mean and variance can be set to the
-computed values above and solved for $p$ and $r$; then $p\approx 0.5077$ and $r\approx 1.1826$.
+The expression for the mean and variance of the negative binomial distribution can be set to the computed values above, then solved for $p$ and $r$; then $p\approx 0.5077$ and $r\approx 1.1826$.
 Using these values, the estimated probability function for both the Poisson and negative binomial distributions are given in Table \@ref(tab:MitesTable); the negative binomial distribution fits better as expected.
 :::
 
@@ -1230,9 +1204,9 @@ if( knitr::is_latex_output() ) {
                 linesep = c("", "", "\\addlinespace"),
                 col.names = c("No. leaves", 
                               "No. mites",
-                              "Emp. prob",
-                              "Poisson prob",
-                              "Neg. bin. prob"),
+                              "Empirical prob.",
+                              "Poisson prob.",
+                              "Neg. bin. prob."),
                 caption = MitesTab.caption) %>%
   kable_styling(font_size = 10) %>%
   row_spec(0, bold = TRUE) 
@@ -1246,9 +1220,9 @@ if( knitr::is_html_output() ) {
                 linesep = c("", "", "\\addlinespace"),
                 col.names = c("No. leaves", 
                               "No. mites",
-                              "Emp. prob",
-                              "Poisson prob",
-                              "Neg. bin. prob"),
+                              "Empirical prob.",
+                              "Poisson prob.",
+                              "Neg. bin. prob."),
                 caption = MitesTab.caption) %>%
   row_spec(1, bold = TRUE) 
 }
@@ -1350,7 +1324,7 @@ which correspond to the mean and variance of the binomial distribution.
 :::{.example #Mice name="Mice"}
 Twenty mice are available to be used in an experiment; seven of the mice are female and $13$ are male.
 Five mice are required and will be sacrificed.
-What is the probability that more than three of the mice are males?
+What is the probability that more than three of the mice are males?\smallskip
 
 Let $X$ be the number of male mice chosen in a sample of size $5$.
 Then $X$ has  a hypergeometric distribution (since mice are chosen without replacement) where $N = 20$, $n = 5$, $r = 13$ and we seek
@@ -1408,8 +1382,30 @@ Rabbits <- array( dim = c(2, 7) )
 Rabbits[1, ] <- c("$x$", 1:6)
 Rabbits[2, ] <- c("$n_x$", 247, 63, 20, 4, 2, 1)
 
-knitr::kable(Rabbits, 
-             caption = "The number of rabbits $n_x$ at each trapping who had been previously trapped")
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(Rabbits, 
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "The number of rabbits $n_x$ at each trapping who had been previously trapped") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(Rabbits, 
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "The number of rabbits $n_x$ at each trapping who had been previously trapped") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+
 ```
 :::
 
@@ -1422,7 +1418,6 @@ The threshold for disinfection was a day recording 4 kWh/m^2^ daily cumulative s
    How many days exposure would be needed, on average, to achieve disinfection?
 1. Suppose $p = 0.25$.
    How many days exposure would be needed, on average, to achieve disinfection?
-1. AND SO ON.
 :::
 
 
@@ -1451,7 +1446,6 @@ A study of accidents in coal mines [@sari2009stochastic] used a Poisson model wi
 
 1. Plot the distribution.
 1. Compute the probability of more than one accident per day in February.
-1. AND MORE.
 :::
 
 
@@ -1471,6 +1465,7 @@ The length of a heat spell $X$ was modelled using a geometric distribution, with
 A study of crashes at intersections [@lord2005poisson] examined high risk intersections, and modelled the number of crashes with a Poisson distribution using $\lambda = 11.5$.
 
 1. What proportion of such intersection would be expected to have zero crashes?
+1. What proportion of such intersection would be expected to have more than five crashes?
 
 :::
 
@@ -1494,4 +1489,17 @@ The fitted parameters are, for orange-crowned warblers:
    Comment.
 1. Compute the probability of observing fewer than 5 birds in each environment.
 1. Compute the probability of observing fewer than 5 birds in each environment, given that the bird was seen.
+:::
+
+
+
+
+
+::: {.exercise #NegativeBinomialALT}
+The negative binomial distribution was defined in Sect \@ref(NegativeBinomialDistribution) fpr teh random variable $Y$, which represented the number of failures until the $r$th success.
+An alternative parameterisation is to define the random variable $X$ as the number of trials necessary to obtain $r$ successes.
+
+1. Define range space for $X$.
+1. Deduce the pf for $X$.
+1. Deterine the mean, variance and mgf of $X$, using the results already available for $Y$.
 :::
