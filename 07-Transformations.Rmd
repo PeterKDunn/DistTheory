@@ -166,6 +166,28 @@ is
 Let the two discrete random variables $X_1$ and $X_2$ have the joint pf shown in Table \@ref(tab:Bivar4).
 
 
+Consider the two one-to-one transformations
+\[
+   Y_1 = X_1 + X_2 \qquad\text{and}\qquad Y_2 = 2 X_1.
+\]
+The joint pf of $Y_1$ and $Y_2$ can be found by noting where the $(x_1, x_2)$ pairs are mapped to in the $y_1, y_2$ space:
+
+| $(x_1,x_2)$ | $\mapsto$ | $(y_1,y_2)$
+|:-----------:|:---------:|:----------------:
+| $(-1, 0)$   | $\mapsto$ | $(-1, -2)$ 
+| $(-1, 1)$   | $\mapsto$ | $(0, -2)$
+| $(-1, 2)$   | $\mapsto$ | $(1, -2)$
+| $(1, 0)$    | $\mapsto$ | $(1, 2)$ 
+| $(1, 1)$    | $\mapsto$ | $(2, 2)$ 
+| $(1, 2)$    | $\mapsto$ | $(3, 2)$ 
+
+
+The joint pf can then be constructed as shown in Table \@ref(tab:Bivar5).
+:::
+
+
+
+
 ```{r Bivar4, echo=FALSE}
 Bivar4Table <- array( dim = c(2, 4))
 
@@ -207,23 +229,6 @@ if( knitr::is_html_output() ) {
 
 
 
-Consider the two one-to-one transformations
-\[
-   Y_1 = X_1 + X_2 \qquad\text{and}\qquad Y_2 = 2 X_1.
-\]
-The joint pf of $Y_1$ and $Y_2$ can be found by noting where the $(x_1, x_2)$ pairs are mapped to in the $y_1, y_2$ space:
-
-| $(x_1,x_2)$ | $\mapsto$ | $(y_1,y_2)$
-|:-----------:|:---------:|:----------------:
-| $(-1, 0)$   | $\mapsto$ | $(-1, -2)$ 
-| $(-1, 1)$   | $\mapsto$ | $(0, -2)$
-| $(-1, 2)$   | $\mapsto$ | $(1, -2)$
-| $(1, 0)$    | $\mapsto$ | $(1, 2)$ 
-| $(1, 1)$    | $\mapsto$ | $(2, 2)$ 
-| $(1, 2)$    | $\mapsto$ | $(3, 2)$ 
-
-
-The joint pf can then be constructed as shown in Table \@ref(tab:Bivar5).
 
 
 ```{r Bivar5, echo=FALSE}
@@ -268,7 +273,6 @@ if( knitr::is_html_output() ) {
     row_spec(0, bold = TRUE) 
 }
 ```
-:::
 
 
 Sometimes, a joint pf of two random variables is given, but only *one* new random variable is required.
@@ -504,6 +508,17 @@ That is, $Y \sim \text{Exp}(2)$.
 Consider the random variable $X$ with pdf $f_X(x) = e^{-x}$ for $x \geq 0$.
 To find the pdf of $Y = \sqrt{X}$, first see that $y = \sqrt{x}$ is a strictly increasing function for $x \geq 0$ (Fig. \@ref(fig:SqrtRt)).
 
+The inverse relation is $x = y^2$, and $dx/dy = |2y| = 2y$.
+The pdf of $Y$ is
+\begin{align*}
+    f_Y(y)
+    &= f_X(x)\left|\frac{dx}{dy}\right|\\
+    &= 2y e^{-y^2}\quad \text{for $y\geq0$}.
+\end{align*}
+:::
+
+
+
 
 ```{r SqrtRt, echo=FALSE, fig.align="center", fig.cap="The square-root transformation", fig.width=4, fig.height=3.5}
 x <- seq(0, 20,
@@ -521,19 +536,22 @@ plot(x = x,
 
 ```
 
-The inverse relation is $x = y^2$, and $dx/dy = |2y| = 2y$.
-The pdf of $Y$ is
-\begin{align*}
-    f_Y(y)
-    &= f_X(x)\left|\frac{dx}{dy}\right|\\
-    &= 2y e^{-y^2}\quad \text{for $y\geq0$}.
-\end{align*}
-:::
-
 
 ::: {.example #TransformationTan name="Tan transformation"}
 Let random variable $X$ be uniformly distributed on $[-\pi/2, \pi/2]$. 
 Find the distribution of $Y = \tan X$ (Fig. \@ref(fig:TanXform)).
+
+For the mapping $y = \tan x$, we see that $R_Y = \{ y\mid -\infty <y<\infty\}$.
+The mapping is one-to-one, and so $x = \tan^{-1}y$, and $dx/dy = 1/(1 + y^2)$.
+Hence
+\[
+   f_Y(y)
+   = f_X(x)\left|\frac{dx}{dy}\right|
+   = \frac{1}{\pi(1 + y^2)}.
+\]
+This is the [*Cauchy distribution*](exr:C3Cauchy).
+:::
+
 
 
 ```{r TanXform, echo=FALSE, fig.align="center", fig.cap="The tan transformation", fig.width=4,fig.height=3.5}
@@ -566,18 +584,7 @@ abline(v = 0,
        lty = 1,
        col = "grey")
 box()
-
 ```
-For the mapping $y = \tan x$, we see that $R_Y = \{ y\mid -\infty <y<\infty\}$.
-The mapping is one-to-one, and so $x = \tan^{-1}y$, and $dx/dy = 1/(1 + y^2)$.
-Hence
-\[
-   f_Y(y)
-   = f_X(x)\left|\frac{dx}{dy}\right|
-   = \frac{1}{\pi(1 + y^2)}.
-\]
-This is the [*Cauchy distribution*](exr:C3Cauchy).
-:::
 
 
 A case where the function $u$ is not one-to-one is considered by an example, using a modification of Theorem \@ref(thm:ChangeOfVarCont).
@@ -585,6 +592,38 @@ A case where the function $u$ is not one-to-one is considered by an example, usi
 
 :::{.example #TransformationNon11 name="Transformation (not 1:1)"}
 Given a random variable $Z$ which follows a $N(0, 1)$ distribution, find the probability distribution of $Y = \frac{1}{2}Z^2$.
+
+The relationship $y = u(z) = \frac{1}{2}z^2$ is not increasing or strictly decreasing in $(-\infty, \infty )$ so Theorem \@ref(thm:ChangeOfVarCont) cannot be applied directly.
+Instead, subdivide the range of $z$ and $y$ so that in each portion the relationship *is* monotonic.
+Then:
+\[
+   f_Z(z) =
+   \frac{1}{\sqrt{2\pi}}\,e^{-\frac{1}{2} z^2}\quad\text{for $-\infty < z < \infty$}.
+\]
+The inverse relation, $z = u^{-1}(y)$ is $z = \pm \sqrt{2y}$. 
+For a given value of $y$, two values of $z$ are possible. 
+In the range $-\infty < z < 0$, and then $y$ and $z$ are monotonically related. 
+Similarly, for $0 < z <\infty$, $y$ and $z$ are monotonically related. 
+Thus (see Fig. \@ref(fig:Non11Xform)),
+\[
+   \Pr(a < Y <b) = \Pr(-\sqrt{2b} < Z < -\sqrt{2a}\,) + \Pr(\sqrt{2a} < Z < \sqrt{2b}\,).
+\]
+The two terms on the right are equal because the distribution of $Z$ is symmetrical about $0$.
+Thus $\Pr(a < Y < b) = 2\Pr(\sqrt{2a} < Z < \sqrt{2b}\,)$, and
+\begin{align*}
+     f_Y(y)
+     &= 2f_Z(z)\left| \frac{dz}{dy}\right|\\
+     &= 2\frac{1}{\sqrt{2\pi}}e^{-y}\frac{1}{\sqrt{2y}};
+\end{align*}
+that is,
+\[
+   f_Y(y)
+   = e^{-y}y^{-\frac{1}{2}} / \sqrt{\pi}\quad\text{for $0 < y < \infty$}.
+\]
+This pdf is a [gamma distribution](GammaDistribution) with parameters $\alpha = 1/2$ and $\beta = 1$.
+It follows that if $X$ is $N(\mu,\sigma^2)$, the pdf of $Y = \frac{1}{2} (X - \mu )^2 / \sigma^2$ is also $\text{Gamma}(\alpha = 1/2,\beta = 1)$ since then $(X - \mu)\sigma$ is distributed $N(0, 1)$.
+:::
+
 
 
 ```{r Non11Xform, echo=FALSE, fig.align="center", fig.cap="A transformation not 1:1", fig.height=3.5, fig.width=4}
@@ -641,36 +680,7 @@ abline(v = 0,
 
 ```
 
-The relationship $y = u(z) = \frac{1}{2}z^2$ is not increasing or strictly decreasing in $(-\infty, \infty )$ so Theorem \@ref(thm:ChangeOfVarCont) cannot be applied directly.
-Instead, subdivide the range of $z$ and $y$ so that in each portion the relationship *is* monotonic.
-Then:
-\[
-   f_Z(z) =
-   \frac{1}{\sqrt{2\pi}}\,e^{-\frac{1}{2} z^2}\quad\text{for $-\infty < z < \infty$}.
-\]
-The inverse relation, $z = u^{-1}(y)$ is $z = \pm \sqrt{2y}$. 
-For a given value of $y$, two values of $z$ are possible. 
-In the range $-\infty < z < 0$, and then $y$ and $z$ are monotonically related. 
-Similarly, for $0 < z <\infty$, $y$ and $z$ are monotonically related. 
-Thus (see Fig. \@ref(fig:Non11Xform)),
-\[
-   \Pr(a < Y <b) = \Pr(-\sqrt{2b} < Z < -\sqrt{2a}\,) + \Pr(\sqrt{2a} < Z < \sqrt{2b}\,).
-\]
-The two terms on the right are equal because the distribution of $Z$ is symmetrical about $0$.
-Thus $\Pr(a < Y < b) = 2\Pr(\sqrt{2a} < Z < \sqrt{2b}\,)$, and
-\begin{align*}
-     f_Y(y)
-     &= 2f_Z(z)\left| \frac{dz}{dy}\right|\\
-     &= 2\frac{1}{\sqrt{2\pi}}e^{-y}\frac{1}{\sqrt{2y}};
-\end{align*}
-that is,
-\[
-   f_Y(y)
-   = e^{-y}y^{-\frac{1}{2}} / \sqrt{\pi}\quad\text{for $0 < y < \infty$}.
-\]
-This pdf is a [gamma distribution](GammaDistribution) with parameters $\alpha = 1/2$ and $\beta = 1$.
-It follows that if $X$ is $N(\mu,\sigma^2)$, the pdf of $Y = \frac{1}{2} (X - \mu )^2 / \sigma^2$ is also $\text{Gamma}(\alpha = 1/2,\beta = 1)$ since then $(X - \mu)\sigma$ is distributed $N(0, 1)$.
-:::
+
 
 Note that the probability can only be doubled as in Example \@ref(exm:TransformationNon11) if both $Y = u(Z)$ and the pdf of $Z$ are symmetrical about the same point.
 
@@ -710,6 +720,28 @@ Sometimes, more care is needed (as in the next example).
 In this case, there is a one-to-one relationship between $X$ and $Y$ over the region of which $X$ is defined (i.e., has a positive probability); see Fig. \@ref(fig:SquaringXform).
 
 
+Then continue as follows:
+\begin{align*}
+   F_Y(y)
+   &=\Pr( X\le \sqrt{y}\,) \\
+   &= F_X\big(\sqrt{y}\,\big) \qquad\text{(by definition of $F_X(x)$)} \\
+   &= \int_1^{\sqrt{y}} (x/4) \,dx \\
+   &= (y - 1)/8
+\end{align*}
+for $1 < y < 9$, and is zero elsewhere. 
+This is the *distribution function* of $Y$; to find the pdf:
+\[
+   f_Y(y)
+   = \frac{d}{dy} (y - 1)/8
+   = \begin{cases}
+        1/8 & \text{for $1 < y < 9$};\\
+        0 & \text{elsewhere}.
+     \end{cases}
+\]
+Note the range for which $Y$ is defined; since $1 < x < 3$, then $1 < y < 9$.
+:::
+
+
 ```{r SquaringXform, echo=FALSE, fig.align="center", fig.cap="The transformation $Y = X^2$ when $X$ is defined from $1$ to $3$. The thicker line corresponds to the region where the transformation applies. Note that if $Y < y$, then $2 - \\sqrt{y - 1} < X < 2 + \\sqrt{y - 1}$.", fig.width=4.5, fig.height=4}
 
 x <- seq(-1, 4,
@@ -746,31 +778,39 @@ axis(side = 1,
 box()
 ```
 
-Then continue as follows:
-\begin{align*}
-   F_Y(y)
-   &=\Pr( X\le \sqrt{y}\,) \\
-   &= F_X\big(\sqrt{y}\,\big) \qquad\text{(by definition of $F_X(x)$)} \\
-   &= \int_1^{\sqrt{y}} (x/4) \,dx \\
-   &= (y - 1)/8
-\end{align*}
-for $1 < y < 9$, and is zero elsewhere. 
-This is the *distribution function* of $Y$; to find the pdf:
-\[
-   f_Y(y)
-   = \frac{d}{dy} (y - 1)/8
-   = \begin{cases}
-        1/8 & \text{for $1 < y < 9$};\\
-        0 & \text{elsewhere}.
-     \end{cases}
-\]
-Note the range for which $Y$ is defined; since $1 < x < 3$, then $1 < y < 9$.
-:::
-
-
 
 :::{.example #TransformA name="Transformation"}
 Consider the same random variable $X$ as in the previous example, but the transformation $Y = (X - 2)^2 + 1$ (Fig. \@ref(fig:SquaringXform2)).
+
+
+In this case, the transformation is **not** a one-to-one transform.
+Proceed as before to find the distribution function of $Y$:
+\begin{align*}
+   F_Y(y)
+   &= \Pr(Y\le y) \qquad\text{(by definition)}\\
+   &= \Pr\big( (X - 2)^2 + 1  \le y\big)
+\end{align*}
+since $Y = (X - 2)^2 + 1$.
+From Fig. \@ref(fig:SquaringXform2), whenever $(X - 2)^2 + 1 < y$ for some value $y$, then $X$ must be in the range $2 - \sqrt{y - 1}$ to $2 + \sqrt{y - 1}$. 
+So:
+\begin{align*}
+   F_Y(y)
+   &= \Pr\big( (X - 2)^2 + 1 \le y\big) \\
+   &= \Pr\left( 2 - \sqrt{y - 1} < X < 2 + \sqrt{y - 1} \right)\\
+   &= \int_{2-\sqrt{y - 1}}^{2 + \sqrt{y - 1}} x/4\,dx \\
+   &= \left.\frac{1}{8} x^2\right|_{2 - \sqrt{y - 1}}^{2 + \sqrt{y - 1}} \\
+   &= \frac{1}{8} \left[ \left(2 + \sqrt{y - 1}\right)^2 - \left(2 - \sqrt{y - 1}\right)^2\right] \\
+   &=  \sqrt{y - 1}.
+\end{align*}
+Again, this is the distribution function; so
+\[
+   f_Y(y) = \begin{cases}
+               \frac{1}{2\sqrt{y - 1}} & \text{for $1 < y < 2$};\\
+               0 & \text{elsewhere}.
+            \end{cases}
+\]
+:::
+
 
 
 
@@ -823,35 +863,6 @@ axis(side = 1,
                 expression(2+sqrt(italic(y)-1)) ))
 box()
 ```
-
-In this case, the transformation is **not** a one-to-one transform.
-Proceed as before to find the distribution function of $Y$:
-\begin{align*}
-   F_Y(y)
-   &= \Pr(Y\le y) \qquad\text{(by definition)}\\
-   &= \Pr\big( (X - 2)^2 + 1  \le y\big)
-\end{align*}
-since $Y = (X - 2)^2 + 1$.
-From Fig. \@ref(fig:SquaringXform2), whenever $(X - 2)^2 + 1 < y$ for some value $y$, then $X$ must be in the range $2 - \sqrt{y - 1}$ to $2 + \sqrt{y - 1}$. 
-So:
-\begin{align*}
-   F_Y(y)
-   &= \Pr\big( (X - 2)^2 + 1 \le y\big) \\
-   &= \Pr\left( 2 - \sqrt{y - 1} < X < 2 + \sqrt{y - 1} \right)\\
-   &= \int_{2-\sqrt{y - 1}}^{2 + \sqrt{y - 1}} x/4\,dx \\
-   &= \left.\frac{1}{8} x^2\right|_{2 - \sqrt{y - 1}}^{2 + \sqrt{y - 1}} \\
-   &= \frac{1}{8} \left[ \left(2 + \sqrt{y - 1}\right)^2 - \left(2 - \sqrt{y - 1}\right)^2\right] \\
-   &=  \sqrt{y - 1}.
-\end{align*}
-Again, this is the distribution function; so
-\[
-   f_Y(y) = \begin{cases}
-               \frac{1}{2\sqrt{y - 1}} & \text{for $1 < y < 2$};\\
-               0 & \text{elsewhere}.
-            \end{cases}
-\]
-:::
-
 
 
 :::{.example #TransformB name="Transformation"}
