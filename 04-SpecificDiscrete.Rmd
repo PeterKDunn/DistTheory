@@ -1391,10 +1391,14 @@ The probability is about 41%.
 :::
 
 
-## Simulation
+## Simulation {#SimulationDiscrete}
 
 Distributions can be used to *simulate* practical situations, using random numbers generated from the distributions.
-In **R**, these function start with the letter `r`,; for example, to generate random numbers from a Poisson distribution, use:
+In **R**, these function start with the letter `r`; for example, to generate random numbers from a Poisson distribution, use `rpois()`:
+
+```{r echo=FALSE}
+set.seed(107283)
+```
 
 ```{r echo=TRUE}
 rpois(3, # Generate three random numbers...
@@ -1403,37 +1407,80 @@ rpois(3, # Generate three random numbers...
 
 So, for example, if the Poisson distribution with mean $0.5$ was used to model the number of new cases of a disease in a given town each month, the number of cases in a *year* could be simulated in this way:
 
+```{r echo=FALSE}
+set.seed(1072908)
+```
+
 ```{r echo=TRUE}
-cases <- 0
-for (m in (1:12)){
-   cases <- cases + rpois(1, 0.5)  
+cases <- 0  # Initialise
+for (m in (1:12)){   # For each month...
+   cases <- cases + rpois(1, 0.5)  # Add new cases for each month
    cat("Month ", m, "; Number of cases so far: ", cases, "\n")
 }
 ```
 
 The code can be repeatedly run, as each run will produce different random numbers.
-If we run the above code 1000 times, we can record how many cases are recorded at the end of each year:
+If we run the above code 1000 times, we can record how many cases are recorded at the end of each year (Fig. \@ref(fig:SimA)):
 
 ```{r echo=FALSE}
 set.seed(10729083)
 ```
 
+```{r SimA, echo=TRUE, fig.cap="The number of cases per year", fig.align="center", fig.width=4}
+numberCasesEndOfYear <- array( dim = 1000)  # Array to store cases
+
+for (sim in (1:1000)) { # For every simulation...
+   cases <- 0           # Initialise afresh for each sim.
+   for (m in (1:12)){   # For each month
+      cases <- cases + rpois(1, 0.5)   # Add cases
+   }
+   numberCasesEndOfYear[sim] <- cases  # Add to the array
+}
+hist( numberCasesEndOfYear,
+      las = 1,
+      breaks = seq(0, 20, by = 2),
+      xlim = c(0, 20),
+      xlab = "Number of cases in one year",
+      main = "Histogram of number of annual cases\n over 1000 simulations")
+```
+
+Then, empirical probabilities can be computed:
+
 ```{r echo=TRUE}
-numberCasesEndOfYear <- array( dim = 100)
+sum( numberCasesEndOfYear > 10) / 1000
+```
+The chance that more than ten cases are observed is about `r round(sum( numberCasesEndOfYear > 10) / 1000*100, 1)`%.
+
+Of course, these probabilities can be computed from a knowledge of the Poisson distribution too, but simulation makes studying more complex examples easier.
+Suppose, for instance, that the number of cases of the disease has a mean of $0.5$ for most of the year, but a mean of $1.2$ over winter.
+Again, the number of new cases in a *year* could be simulated (Fig. \@ref(fig:SimB)):
+
+
+```{r SimB, echo=TRUE, fig.cap="The number of cases per year", fig.align="center", fig.width=4}
+numberCasesEndOfYear <- array( dim = 1000)
 
 for (sim in (1:1000)) {
    cases <- 0
    for (m in (1:12)){
-      cases <- cases + rpois(1, 0.5)  
+     mn <- 0.5  # The usual mean
+     if (m %in% c(6, 7, 8) ) mn <- 1.2  # Alter mean for winter
+    
+     cases <- cases + rpois(1, mn)  
    }
    numberCasesEndOfYear[sim] <- cases
 }
 hist( numberCasesEndOfYear,
       las = 1,
+      breaks = seq(0, 20, by = 2),
       xlim = c(0, 20),
       xlab = "Number of cases in one year",
       main = "Histogram of number of annual cases\n over 1000 simulations")
+
+sum( numberCasesEndOfYear > 10) / 1000
+
 ```
+
+The chance that more than ten cases are observed has increased to about `r round(sum( numberCasesEndOfYear > 10) / 1000*100, 1)`%.
 
 
 ## Exercises
