@@ -682,7 +682,103 @@ Transform the resulting integral.
 
 
 
+:::{.answer}
+**Answer to Exercise \@ref(exr:DailyRainfallSim).**
 
+```{r echo=FALSE}
+set.seed(8584444)
+```
+```{r echo=TRUE}
+annualRainfallList <- array( NA, dim = 1000)
+for (i in 1:1000){
+   rainAmounts <- array( 0, dim = 365) # Reset for each simulation
+
+    wetDays <- rbinom(365, size = 1, prob = 0.32) # 1: Wet day
+   locateWetDays <- which( wetDays == 1 )
+
+
+   rainAmounts[locateWetDays] <- rgamma( n = length(locateWetDays),
+                                         shape = 2,
+                                         scale = 20)
+   annualRainfallList[i] <- sum(rainAmounts)
+}
+# hist( annualRainfallList)
+```
+
+```{r echo=FALSE}
+set.seed(8584444)
+```
+```{r echo=TRUE}
+Days <- 1 : 365
+prob <- (1 + cos( 2 * pi * Days/365) ) / 2.2
+
+annualRainfallList2 <- array( NA, dim = 1000)
+for (i in 1:1000){
+
+  wetDays <- rbinom(365, size = 1, prob = prob) # 1: Wet day
+  
+  locateWetDays <- which( wetDays == 1 )
+  
+  rainAmounts2 <- array( 0, dim = 365)
+  
+  rainAmounts2[locateWetDays] <- rgamma( n = length(locateWetDays),
+                                         shape = 2,
+                                         scale = 20)
+   annualRainfallList2[i] <- sum(rainAmounts2)
+}
+#hist( annualRainfallList2)
+```
+
+```{r echo=FALSE}
+set.seed(8584444)
+```
+```{r echo=TRUE}
+Days <- 1 : 365
+
+probList <- array( dim = 365)
+probList[1] <- 0.32
+
+annualRainfallList3 <- array( NA, dim = 1000)
+
+for (i in 1:1000){
+  
+  rainAmounts <- array( dim = 365 )
+
+  for (day in 1:365) {
+    if ( day == 1 ) {
+      probList[1] <- 0.32
+      wetDay <- rbinom(1, 
+                       size = 1, 
+                       prob = probList[1]) # 1: Wet day
+      rainAmounts[1] <- rgamma( n = 1,
+                                shape = 2,
+                                scale = 20)
+
+    } else {
+    
+      probList[i] <- ifelse( rainAmounts[day - 1] == 0,
+                             0.15,
+                             0.55)
+      wetDay <- rbinom(1, 
+                       size = 1, 
+                       prob = probList[i]) # 1: Wet day
+
+      if (wetDay) {
+        rainAmounts[day] <- rgamma( n = 1,
+                                    shape = 2,
+                                    scale = 20)
+      } else {
+        rainAmounts[day] <- 0
+      }
+    }
+  }
+  annualRainfallList3[i] <- sum(rainAmounts)
+    
+}
+
+#hist( annualRainfallList3)
+```
+:::
 
 
 ## Answers for Chap. 7
@@ -699,6 +795,7 @@ The inverse transform is $X = Y^{1/3}$, and so $0 < y < 8$.
 Differentiate to find the pdf: 
 $\frac{d}{dy} y^{2/3}/4 = y^{-1/3}/6$. 
 The pdf of $Y$ is
+
 \[
    f_Y(y) = \begin{cases}
                y^{-1/3}/6 & \text{for $0 < y < 8$};\\
@@ -708,6 +805,7 @@ The pdf of $Y$ is
 
 2. Since $w(y) = y^{1/3}$, then $w'(y) = y^{-2/3}$.
 Then:
+
 \begin{align*}
    f_Y(y)
    &= f_X(y) |J|\\
