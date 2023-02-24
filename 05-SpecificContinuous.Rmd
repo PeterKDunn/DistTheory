@@ -1672,21 +1672,7 @@ rnorm(3, # Generate three random numbers...
       sd = 2)        # ... with sd = 2
 ```
 
-As an example, suppose the heights adult females have a mean of 163cm with standard deviation of 6cm.
-Simulation can be used to model the heights of three females:
-
-
-```{r echo=FALSE}
-set.seed(107283)
-```
-
-```{r echo=TRUE}
-rnorm(3, 
-      mean = 163,
-      sd = 5)
-```
-
-Suppose we are seeking women over 175cm tall for a study; what percentage of women re over 170cm tall?
+Suppose we are seeking women over 175cm tall for a study; what percentage of women are over 173cm tall?
 Of course, the actual percentage can be computed by working directly with normal distributions, but simulations allows us to consider more complex situations.
 For this simple question initially (Fig. \@ref(fig:HeightSimHistograms), right panel):
 
@@ -1698,47 +1684,59 @@ set.seed(17283)
 ```{r echo=TRUE}
 htW <- rnorm(1000,  # One thousand women
              mean = 163,  # Mean ht
-             sd = 5)      #Sd of height
+             sd = 5)      # Sd of height
 pcTallWomen <- sum( htW > 173 )/1000 * 100
 
 cat("Percentage tall women:", pcTallWomen, '%\n')
 ```
 
 Now consider a more complex situation.
-Suppose adult males have a mean of 175cm with standard deviation of 7cm, and constitute 48% of the population.
-Mow, we are seeking *people* over 175cm tall (Fig. \@ref(fig:HeightSimHistograms), right panel):
+Suppose adult males have heights with a mean of 175cm with standard deviation of 7cm, and constitute 48% of the population.
+Now, we are seeking women *or* men over 173cm tall (Fig. \@ref(fig:HeightSimHistograms), right panel):
 
 
 ```{r echo=FALSE}
-set.seed(10723)
+set.seed(107423)
 ```
 
 ```{r echo=TRUE}
-personSex <- rbinom(1000, 
+personSex <- rbinom(1000,  # Select sex of each person
                     1,
                     0.48) # So 0 = Male; 1 = Female
 
-htP <- rnorm(1000,  # One thousand women
+htP <- rnorm(1000,  # change ht parameters according to sex
              mean = ifelse(personSex == 0,
                            175,
                            163),
              sd = ifelse(personSex == 0,
                          7, 
-                         5))      
+                         5))
+
 pcTallPeople <- sum( htP > 173 )/1000 * 100
 pcFemales <- sum( personSex == 1 ) / 1000 * 100
-cat("Percentage tall people:", pcTallPeople, '%\n')
-cat("Percentage females:", pcFemales, '%\n')
+
+cat("Percentage tall people:", pcTallPeople, '%\n\n')
+cat("Percentage females:", pcFemales, '%\n\n')
 cat("Percentage of tall people that are female:", 
     round( sum(htP > 173 & personSex == 1) / sum(htP > 173) * 100, 1),
-    '%\n')
+    '%\n\n')
 ```
 
-```{r HeightSimHistograms, fig.width=7, out.width='100%', fig.cap="kukudq"}
+```{r HeightSimHistograms, echo=FALSE, fig.width=6.5, out.width='100%', fig.height = 3.5, fig.cap="The distribution of heights of women (left panel) and men and women combined (right panel)"}
 par( mfrow = c(1, 2))
 
-hist( htW)
-hist( htP)
+hist( htW, 
+      xlab = "Heights (in cm)",
+      main = "Heights: women",
+      xlim = c(140, 200),
+      ylim = c(0, 400),
+      las = 1)
+hist( htP, 
+      xlab = "Heights (in cm)",
+      main = "Heights: women and men",
+      xlim = c(140, 200),
+      ylim = c(0, 400),
+      las = 1)
 ```
 
 ## Exercises
