@@ -521,7 +521,7 @@ RainDec <- Rain12$Dec
 RainJun <- Rain12$Jun
 
 breaks <- c( 0, 0.01, 20,
-             seq(20, 220, by = 20) )
+             seq(40, 220, by = 20) )
 outDec <- hist(RainDec,
                breaks = breaks,
                plot = FALSE)
@@ -540,12 +540,36 @@ Buckets <- c("Zero",
            "140 <= R < 160",
            "160 <= R < 180",
            "180 <= R < 200",
-           "200 <= R < 220",
-           "220 <= R < 240")
+           "200 <= R < 220")
 
 cbind("Buckets" = Buckets,
       "Jun" = outJun$counts,
       "Dec" = outDec$counts)
+
+exceedanceJun <-  ( sum(outJun$counts) - cumsum(outJun$counts) ) / sum(outJun$counts)
+exceedanceDec <-  ( sum(outDec$counts) - cumsum(outDec$counts) ) / sum(outDec$counts)
+
+plot( exceedanceJun ~ breaks[1:12], 
+      type = "b",
+      xlab = "Rainfall (in mm)",
+      ylab = "Exceedance probability",
+      main = "Charleville",
+      ylim = c(0, 1.1),
+      lwd = 2,
+      lty = 1,
+      pch = 19,
+      las = 1)
+lines( exceedanceDec ~ breaks[1:12], 
+       type = "b",
+      pch = 1,
+      lty = 2,
+      las = 1)
+legend("topright",
+       lwd = 2,
+       pch = c(19, 1),
+       lty = c(1, 2),
+       legend = c("June",
+                  "December"))
 ```
 
 
