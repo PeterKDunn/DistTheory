@@ -1057,7 +1057,7 @@ The random variable $X$ has the pf
             \end{cases}
 \]
 
-1. Find the distribution function for $X$.
+1. Find and plot the distribution function for $X$.
 1. Compute $\Pr(X > 13)$.
 1. Compute $\Pr(X \le 10 \mid  X\le 15)$.
 :::
@@ -1073,7 +1073,7 @@ Consider the continuous random variable $Z$ with pdf
             \end{cases}
 \]
 
-1. Find the df of $Z$.
+1. Find and plot the df of $Z$.
 1. Find $\Pr(Z < 0)$.
 :::
 
@@ -1092,7 +1092,7 @@ Consider the continuous random variable $W$ with df
             \end{cases}
 \]
 
-1. Find the pdf of $Y$.
+1. Find and plot the pdf of $Y$.
 1. Compute $\Pr(W < 25)$ using the pdf, and using the df.
 :::
 
@@ -1108,7 +1108,7 @@ Consider the continuous random variable $Y$ with df
             \end{cases}
 \]
 
-1. Find the pdf of $Y$.
+1. Find and plot the pdf of $Y$.
 1. Compute $\Pr(Y < 0.5)$ using the pdf and using the df.
 :::
 
@@ -1155,13 +1155,13 @@ For 'Yellow' patients, the service time of doctors are modelled using a triangul
 
 
 :::{.exercise #Exceedance}
-In meteorological studies, rainfall is often graphed using rainfall *exceedance* charts: the plotted function is $1 - F_X(x)$, where $X$ represents the rainfall.
+In meteorological studies, rainfall is often graphed using rainfall *exceedance* charts [@dunn2001bootstrap]: the plotted function is $1 - F_X(x)$ (also called the *survivor function* in other contexts), where $X$ represents the rainfall.
 
 1. Explain what is measured by $1 - F_X(x)$ in this context, and explain why it may be more useful than just $F_X(x)$ when studying rainfall.
-1. The data in the table below is total monthly rainfall at Charleville, Queensland, from 1882 until 1995 for the months of June and December. (Data supplied by the Queensland DPI.)
-   Plot $1 - F_X(x)$ for this rainfall data for each month
-      on the same graph.
-1. Suppose a producer requires at least 800 mm of rain in June to plant a crop.Find the probability of this occurring from the plot above.
+1. The data in Table \@ref(tab:RainArray) shows the total monthly rainfall at Charleville, Queensland, from 1942 until 2022 for the months of June and December. (Data supplied by the Queensland DPI.)
+   Plot $1 - F_X(x)$ for this rainfall data for each month on the same graph.
+1. Suppose a producer requires at least 800 mm of rain in June to plant a crop.
+   Find the probability of this occurring from the plot above.
 1. Determine the median monthly rainfall in Charleville in June and December.
 1. Decide if the mean or the median is an appropriate measure of central tendency, giving reasons for your answer.
 1. Compare the probabilities of obtaining 300mm, 500mm, 1000mm and 1500mm of rain in the months of June and December.
@@ -1170,6 +1170,67 @@ In meteorological studies, rainfall is often graphed using rainfall *exceedance*
   Use diagrams if necessary.
 :::
 
+
+```{r RainArray, echo=FALSE}
+RainArray <- array( dim = c(12, 2) )
+
+Rain12 <- read.csv("Data\\IDCJAC0001_044021\\IDCJAC0001_044021_Data12.csv", 
+                   na.strings = "null")
+RainDec <- Rain12$Dec
+RainJun <- Rain12$Jun
+
+breaks <- c( 0, 0.01, 20,
+             seq(40, 220, by = 20) )
+outDec <- hist(RainDec,
+               breaks = breaks,
+               plot = FALSE)
+outJun <- hist(RainJun, 
+               breaks = breaks,
+               plot = FALSE)
+
+RainArray[, 1] <- outJun$counts
+RainArray[, 2] <- outDec$counts
+colnames(RainArray) <- c("June",
+                         "December")
+rownames(RainArray) <- c("Zero rainfall", 
+           "$0 < R < 20$",
+           "$20 \\le R < 40$",
+           "$40 \\le R < 60$",
+           "$60 \\le R < 80$",
+           "$80 \\le R < 100$",
+           "$100 \\le R < 120$",
+           "$120 \\le R < 140$",
+           "$140 \\le R < 160$",
+           "$160 \\le R < 180$",
+           "$180 \\le R < 200$",
+           "$200 \\le R < 220$")
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(RainArray,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "The monthly rainfall in Charleville, in mm, from 1942 to 2022: The number of months with the indicated rainfall") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(RainArray,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "The monthly rainfall in Charleville, in mm, from 1942 to 2022: The number of months with the indicated rainfall") %>%
+    row_spec(0, bold = TRUE) 
+}
+
+
+
+```
 
 :::{.exercise}
 Five people, including you and a friend, line up at random. 
@@ -1184,7 +1245,7 @@ Determine the probability function of $X$.
 Let $Y$ be a continuous random variable with pdf
 
 \[
-   f_Y(y) = a(1 - y)^2,\quad 0\le y\le1.
+   f_Y(y) = a(1 - y)^2,\quad \text{for $0\le y\le 1$}.
 \]
 
 1. Show that $a = 3$.
@@ -1234,7 +1295,7 @@ The density function for the random variable $X$ is given as
 
 1. Determine that moment generating function (mgf) of $X$.
 1. Use the mgf to verify that $\text{E}(X) = \text{var}(X)$.
-1. Suppose that $Y = 1 - X^2$.
+1. Suppose that $Y = 1 - X$.
    Determine $\text{E}(Y)$.
 :::
 
@@ -1258,18 +1319,16 @@ Numbers are said to satisfy *Benford's law* if the *leading digit*, say $d$ (for
 :::
 
 
-:::{.exercise}
-Consider the random variable $X$ with pdf
-
-\[ <!-- arcsine distribution -->
+:::{.exercise #Arcsine} 
+Consider the random variable $X$ with pdf\smallskip <!-- arcsine distribution -->
+\[ 
    f(x) =
    \begin{cases} 
-      \frac{k}{\sqrt{x(1 - x)}} & \text{for $0 < x < 1$};
+      \frac{k}{\sqrt{x(1 - x)}} & \text{for $0 < x < 1$};\\
       0                         & \text{elsewhere}.
    \end{cases}
 \]
 
 1. Plot the density function.
 1. Determine, and then plot, the distribution function.
-1. 
 :::
