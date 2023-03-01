@@ -3784,8 +3784,23 @@ $p$ is usually considered constant for each couple, but can vary between couple 
 :::
 
 
-:::{.exercise}
-Generate Tweedie from $N\sim\text{Pois}(\lambda$) and so on.
+:::{.exercise #PoissonGammaRainfall}
+The *Poisson-gamma distributions* (e.g., see @mypapers:Hasan:simplePG), used for modelling rainfall, can be developed as follows:
+
+* Let $N$ be the number of rainfall events in a month, where $N\sim \text{Pois}(\lambda)$.
+  If no rainfall events are recorded in any month, then the monthly rainfall is $Z = 0$.
+* For each rainfall event, say $i$ for $i = 1, 2, \dots N$, the *amount* of rain in event $i$, say $Y_i$, is modelled using a gamma distribution with parameter $\alpha$ and $\beta$.
+* The total monthly rainfall is then $Z = \sum_{i = 1}^N Y_i$.
+
+Suppose the monthly rainfall station at a particular station can be modelled using $\lambda = 0.78$, $\alpha = 0.5$ and $\beta = 6$.
+
+1. Use simulation to produce one month of rainfall.
+1. Repeat for 1000 simulations, and ploit the distribution.
+1. What type of random variable is the monthly rainfall: discrete, continuous, or mixed? 
+   Explain.
+1. How often does the month have exactly zero rainfall?
+1. What is the mean monthly rainfall?
+1. What is the mean monthly rainfall in months where rain is recorded?
 :::
 
 
@@ -3814,7 +3829,7 @@ for $x = 0, 1, 2$ and $y = 1, 2, 3$.
 For what value of $k$ is $f(x,y) = kxy$ (for $0 \le x \le 1$; $0 \le y \le 1$, a joint pdf?
                                            
 1. Then, find $\Pr(X \le x_0, Y\le y_0)$.
-1. Hence evaluate $\Pr(X \le (3/8), Y \le (5/8) )$.
+1. Hence evaluate $\Pr\left(X \le (3/8), Y \le (5/8) \right)$.
 :::
 
   
@@ -4090,4 +4105,72 @@ Then, for days on which rain falls, model the amount of rainfall using a gamma d
 1. Revise the *initial* model (where the probability of rain of day 1 is still 0.32), so that the value of $p$ depends on what happened the day before:
    If day $i$ receives rain, then the probability that the following day receives rain is $p = 0.55$; if day $i$ does *not* receive rain, then the probability that the following day receives rain is just $p = 0.15$.
    Produce a histogram of the distribution of *annual* rainfall after 1000 simulations.
+:::
+
+
+
+:::{.exercise}
+Consider the joint pdf
+
+\[
+   f_{X, Y}(x, y) = 
+   \begin{cases}
+      c x(y + 1) & \text{where $x + y = 2$ with $x > 0$ and $y > 0$};\\
+      0           & \text{elsewhere}.
+   \end{cases}
+\]
+
+1. Draw the region over which the joint pdf is defined.
+1. Compute the value of $c$.
+1. Compute $P(Y < 1 \mid X > 1)$.
+1. Compute $P(X < 1 \mid X > 0.25)$.
+1. Compute $\Pr(Y < 1)$
+:::
+
+
+:::{.exercise}
+Consider the joint pdf
+
+\[
+   f_{X, Y}(x, y) = 
+   \begin{cases}
+      k ( 1 - x) y & \text{for the region $R$ below};\\
+      0            & \text{elsewhere},
+   \end{cases}
+\]
+where the region $R$ is shown in Fig. \@ref(fig:RegionR).
+
+1. Determine the value of $k$.
+1. Compute $\Pr(X > Y)$.
+1. Compute $\Pr(X > 0.5)$.
+
+
+```{r RegionR, echo=FALSE, fig.align="center", fig.cap = "The region $R$", out.width = '50%', fig.width=5}
+x <- seq(0, 1, 
+         length = 500)
+y <- x^2
+
+plot(x = x,
+     y = y,
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y)),
+     type = "l",
+     las = 1,
+     lwd = 3)
+polygon( x = c(x, rev(x)),
+         y = c(y, rep(1, length(y))) ,
+         col = "grey")
+text(0.4, 0.6, 
+     expression(italic(R)),
+     cex = 2)
+text(0.8, 0.3, 
+     expression( italic(y) == italic(x)^2),
+     cex = 1.2)
+arrows(x0 = 0.74, 
+       x1 = 0.6,
+       y0 = 0.30,
+       y1 = 0.36,
+       angle = 15,
+       length = 0.2)
+```
 :::

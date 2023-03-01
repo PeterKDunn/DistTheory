@@ -840,6 +840,49 @@ for (i in 1:1000){
 :::
 
 
+:::{.answer}
+**Answer to Exercise \@ref(exr:PoissonGamma).**
+
+For one month:
+
+```{r}
+set.seed(932649)
+N <- rpois(1, lambda = 0.78)
+Rain <- 0
+if (N > 0 ){
+  Amount <- sum( rgamma(N,
+                        shape = 0.5,
+                        scale = 6) )
+  Rain <- Rain + Amount
+}
+```
+
+For 1000 simulations:
+
+```{r}
+set.seed(932649)
+
+Rain <- array(0,  dim = 1000)
+
+for (i in 1:1000){
+  N <- rpois(1, lambda = 0.78)
+  if (N > 0 ){
+    Amount <- sum( rgamma(N,
+                          shape = 0.5,
+                          scale = 6) )
+    Rain[i] <- Rain[i] + Amount
+  }
+}
+
+# Exact zeros:
+sum(Rain == 0) / 1000
+mean(Rain)
+mean(Rain[Rain > 0])
+```
+
+:::
+
+
 ## Answers for Chap. 7
 
 :::{.answer}
