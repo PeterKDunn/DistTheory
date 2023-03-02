@@ -62,7 +62,7 @@ For example, writing $Y = 3$ means:
 Consider observing the rolls of two dice.
 The sample space contains 36 elements (Example \@ref(exm:TwoDice)), and could be denoted as $(r_1, r_2)$, where $r_1$ and $r_2$ are the results of roll 1 and 2 respectively. 
 The sample space is listed in Table \@ref(tab:TwoDice).
-For example, we could define $s_1$ as the sample point $(1, 1)$.
+For example, we could define $s_1$ as the sample point $(1, 1)$.\smallskip
 
 Then, we could define the random variable $Y$ on this sample space as:
 \[
@@ -211,6 +211,7 @@ Examples of continuous random variables include:
 ### Mixed random variables {#RVsMixed}
 
 Some random variables are not completely discrete or continuous; these are called *mixed random variables*.
+The most commonly-occuring mixed random variable is continuous for the positive real numbers, plus a discrete component at zero.
 
 
 ::: {.definition #MixedRF name="Mixed random variable"}
@@ -257,7 +258,7 @@ In this case, the range space of $H$ is $R_H = \{0, 1, 2\}$.
 
 
 *Element of $S$* | *Function $H(s)$*                     | *Value of $H$*   | *$\Pr(H = s_i)$*
------------------|---------------------------------------|------------------|------
+-----------------|---------------------------------------|------------------|------------------
 $TT$             | $H(s_1)$: Number of heads in $s_1$    | 0                | $1/4$
 $TH$             | $H(s_2)$: Number of heads in $s_2$    | 1                | $1/4$
 $HT$             | $H(s_3)$: Number of heads in $s_3$    | 1                | $1/4$
@@ -279,7 +280,7 @@ Distinguishing between discrete, continuous and mixed random variables is useful
 ### Discrete random variables: Probability mass functions {#ProbabilityFunctionsDiscrete}
 
 For a discrete random variable, the *probability function* indicates how probabilities are assigned to the values of the discrete random variable.
-For a discrete random variable, the probability function often called the *probability mass function* (or pmf).
+For a discrete random variable, the probability function is often called the *probability mass function* (or pmf).
 
 ::: {.definition #ProbabilityFunction name="Probability function"}
 Let the range space of the discrete random variable $X$ be $R_X$.
@@ -330,7 +331,6 @@ Five balls numbered 1, 2, 3, 4, 5 are in an urn.
 Two balls are selected at random.
 Consider finding the probability distribution of the *larger* of the two numbers.
 The sample space is:
-
 \[ 
     S =\{ (1, 2), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5), (4, 5)\},
 \]
@@ -339,7 +339,6 @@ where all 10 elements are equally likely.\smallskip
 Let $X$ be the random variable 'the *larger* of the two numbers chosen'.
 Then $R_X = \{2, 3, 4, 5\}$.
 Listing the probabilities:
-
 \begin{align*}
      \Pr(X = 2) &= \Pr\big((1, 2)\big) &= 1/10;\\
      \Pr(X = 3) &= \Pr\big((1, 3) \text{ or }  (2, 3)\big) &= 2/10;\\
@@ -470,7 +469,7 @@ More succinctly,
               \end{cases}
 \]
 This information can also be presented as a table (Table \@ref(tab:TwoDieRV)) or graph (Fig. \@ref(fig:ProbDistributionCoin)).
-Note that $\sum_{t \in \{0, 1, 2\}} p_H(t) = 1$ and $p_H(h)\ge0$ for all $h$ as required of a pf.
+Note that $\sum_{t \in \{0, 1, 2\}} p_H(t) = 1$ and $p_H(h)\ge0$ for all $h$, as required of a pf.
 :::
 
 
@@ -699,7 +698,7 @@ These difficulties are overcome by using the distribution function (Sect. \@ref(
 
 
 
-```{r Diode, echo=FALSE, fig.align="center", fig.cap="The probability function for the diodes example", fig.width=5, fig.height=4}
+```{r Diode, echo=FALSE, fig.align="center", fig.cap="The probability function for the diodes example", fig.width=4.5, fig.height=4}
 p <- 0.4
 x <- seq(0, 4, 
          length = 100)
@@ -875,7 +874,29 @@ A picture of the df is shown in Fig. \@ref(fig:DFCont).
 :::
 
 
-```{r DFCont, echo=FALSE, fig.align="center", fig.cap="The distribution function of $V$", fig.width=4, fig.height=3.5}
+```{r DFCont, echo=FALSE, fig.align="center", fig.cap="The probability function (left) and the distribution function (right) for $V$", fig.width=7, out.width='100%', fig.height=3.5}
+par(mfrow = c(1, 2))
+
+fv <- function(v){
+  y <- array( 0, dim = length(v))
+  fy <- ifelse( (v > 0) & ( v < 2 ),
+                v/2,
+                0)
+  fy
+}
+
+v <- seq(-2, 4, 
+         length = 100)
+plot(fv(v) ~ v,
+     type = "l",
+     lwd = 2,
+     las = 1,
+     xlab = expression(italic(v)),
+     ylab = "Probability function",
+      main = expression(paste("The probability function for"~italic(V))),
+)
+
+
 vb <- seq(0, 2,
          length = 100)
 vbDF <- ( vb ^ 2 ) / 4
@@ -883,7 +904,7 @@ vbDF <- ( vb ^ 2 ) / 4
 plot( x = c(-2, 4),
       y = c(0, 1),
       type = "n",
-      main = expression(paste("The probability function for"~italic(V))),
+      main = expression(paste("The distribution function for"~italic(V))),
       xlab = expression(italic(v)),
       ylab = "Distribution function",
       las = 1)
@@ -941,6 +962,7 @@ That is,
 \end{equation}
 
 For $X$ continuous, from the Fundamental Theorem of Calculus,
+
 \begin{equation}
      f_X(x) = \frac{dF_X(x)}{dx} \quad \text{where the derivative exists.}
         (\#eq:DFtoPDF)
@@ -1050,9 +1072,9 @@ The random variable $X$ has the pf
 
 \[
    p_X(x) = \begin{cases}
-               0.3 & \text{for $x=10$};\\
-               0.2 & \text{for $x=15$};\\
-               0.5 & \text{for $x=20$};\\
+               0.3 & \text{for $x = 10$};\\
+               0.2 & \text{for $x = 15$};\\
+               0.5 & \text{for $x = 20$};\\
                0 & \text{elsewhere}.
             \end{cases}
 \]
@@ -1242,7 +1264,7 @@ Determine the probability function of $X$.
 
 
 
-:::{.exercise}
+:::{.exercise #Continuous1}
 Let $Y$ be a continuous random variable with pdf
 
 \[
@@ -1255,7 +1277,7 @@ Let $Y$ be a continuous random variable with pdf
 :::
 
 
-:::{.exercise}
+:::{.exercise #Discrete1}
 Consider the function
 
 \[
@@ -1272,8 +1294,9 @@ Consider the function
 
 
 
-:::{.exercise}
-The quartic polynomial model
+:::{.exercise #Quartic}
+Quartic polynomials are sometimes used to model mortality (e.g., @fitzpatrick2018mortality).
+Suppose the model
 
 \[
    f_Y(y) = 3\times 10^{-9} y^2 (100 - y)^2\quad \text{for $0 \le y \le 100$}
@@ -1287,7 +1310,7 @@ is used for describing mortality where $Y$ denotes age at death in years.
 
 
 
-:::{.exercise}
+:::{.exercise #Continuous2}
 The density function for the random variable $X$ is given as 
 
 \[
@@ -1298,7 +1321,8 @@ The density function for the random variable $X$ is given as
 1. Verify that $\text{E}(X) = \text{var}(X)$.
 :::
 
-:::{.exercise}
+
+:::{.exercise #CardDistance}
 In a deck of cards, consider an **Ace** as low (i.e., value of one), and all picture cards (i.e., **Jack**, **Queens** and **Kings**) as tens.
 
 Deduce the probability distribution of the absolute difference between the value two cards drawn at random from a well-shuffled deck of 52 cards.
@@ -1320,6 +1344,7 @@ Numbers are said to satisfy *Benford's law* if the *leading digit*, say $d$ (for
 
 :::{.exercise #Arcsine} 
 Consider the random variable $X$ with pdf\smallskip <!-- arcsine distribution -->
+
 \[ 
    f(x) =
    \begin{cases} 
@@ -1331,3 +1356,21 @@ Consider the random variable $X$ with pdf\smallskip <!-- arcsine distribution --
 1. Plot the density function.
 1. Determine, and then plot, the distribution function.
 :::
+
+
+:::{.exercise #DFExpInverse}
+Consider the distribution function
+
+\[
+   F_X(x) = 
+   \begin{cases}
+        0          & \text{for $x < 0$};\\
+        \exp(-1/x) & \text{$x \ge 0$}.
+   \end{cases}
+\]
+
+1. Show that this is a valid df.
+1. Compute the pdf.
+1. Plot the df and pdf.
+:::
+
