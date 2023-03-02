@@ -601,6 +601,88 @@ legend("topright",
                   "December"))
 ```
 
+:::{answer}
+**Answer for Exercise \@ref(exr:YouFriendInLine).**
+
+Suppose I stand at Position 1; my friend can be at Positions 2 to 5, with distances 1, 2, 3 4.
+Similar if I stand at Position 5.
+
+Suppose I stand at Position 2; my friend can be at Positions 1, 3 to 5, with distances 1, 1, 2, 3.
+Similar if I stand at Position 4.
+
+Suppose I stand at Position 3; my friend can be at Positions 1, 2, 4, 5, with distances 1, 2, 2, 1.
+
+So counting, the pdf for the distance $D$ is:
+\[
+   f_D(d) = 
+   \begin{cases}
+      4/10 & \text{for $d = 1$};\\
+      3/10 & \text{for $d = 2$};\\
+      2/10 & \text{for $d = 3$};\\
+      1/10 & \text{for $d = 4$};\\
+         0 & \text{elsewhere}.
+   \end{cases}
+\]
+:::
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:DFExpInverse).**
+
+The pdf is
+\[
+   f_X(x) 
+   = \frac{d}{dx} exp(-1/x) 
+   = \frac{\exp(-1/x)}{x^2}
+\]
+for $x > 0$.
+See Fig. \@ref(fig:PlotDFExpInverse).
+:::
+
+```{r PlotDFExpInverse}
+par( mfrow = c(1, 2))
+
+f1 <- function(x){
+  fy <- array(0, dim = length(x))
+  fy <- ifelse(x > 0,
+               exp(-1/x) / x^2,
+               0)
+  fy
+}
+
+x <- seq(-0.5, 5, length = 100)
+
+plot( f1(x) ~ x,
+      type = "l",
+      lwd = 2,
+      xlab = expression(italic(x)),
+      ylab = expression(italic(f)(italic(x))),
+      las = 1)
+
+
+
+F1 <- function(x){
+  fy <- array(0, dim = length(x))
+  fy <- ifelse(x > 0,
+               exp(-1/x),
+               0)
+  fy
+}
+
+x <- seq(-0.5, 8, length = 100)
+
+plot( F1(x) ~ x,
+      type = "l",
+      lwd = 2,
+      ylim = c(0, 1),
+      xlab = expression(italic(x)),
+      ylab = expression(italic(F)(italic(x))),
+      las = 1)
+
+
+```
+
+
 
 
 
@@ -646,6 +728,34 @@ plot(x = xx,
 1. $\text{E}(D) = 1.75$, $\text{var}(D) 0.6875$.
 1. $M_D(t) = \exp(t)/2 + \exp(2t)/4 + \exp(3t)/4$.
 :::
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:YouFriendInLine).**
+
+Using the pmf from Exercise \@ref(exr:YouFriendInLine):
+\[
+   \text{E}(X) = 
+   \left(1\times\frac{4}{10}\right) + 
+   \left(2\times\frac{3}{10}\right) + 
+   \left(3\times\frac{2}{10}\right) + 
+   \left(4\times\frac{1}{10}\right) = 2.
+\]
+In **R**:
+```{r echo=TRUE}
+set.seed(777023)
+
+dist <- array(NA, dim = 1000)
+for (i in (1:1000)){
+  positions <- sample(1:5, 
+                      size = 2, 
+                      replace = FALSE)
+  dist[i] = abs(diff(positions))
+}
+mean(dist)
+```
+:::
+
 
 
 :::{.answer}
