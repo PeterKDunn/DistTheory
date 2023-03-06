@@ -901,6 +901,14 @@ Transform the resulting integral.
 
 ## Answers for Chap. 4
 
+:::{.answer}
+**Answer to Exercise \@ref(exr:BinChange).**
+From what is given: $p_X(x) = \binom{n}{x} (1 - p)^x p^{n - x}$.
+Then, define $Y = n - X$ and hence 
+$f_Y(y) = \binom{n}{y} p^y (1 - p)^{n - y}$, which is $f_Y(y) = \binom{n}{n - x} p^{n - x} (1 - p)^{n}$.
+It is easy to show that $\binom{n}{x} = \binom{n}{n - x}$ and hence $f_X(x)$ and $f_Y(y)$ are equivalent.
+:::
+
 
 :::{.answer}
 **Answer to Exercise \@ref(exr:SaltIntake).**
@@ -919,6 +927,11 @@ dgeom(x  = 6,
       prob = 0.30)
 sum( dgeom(x  = 8:50,
            prob = 0.30) )
+
+# This means 5 fails, before 3rd successses
+dnbinom(x = 5,
+        prob = 0.30,
+        size = 3)
 ```
 
 Assumes independence of people, and a *constant* probability.
@@ -937,7 +950,10 @@ sum( dbinom( 12:81,
              prob = 0.20) )
 dgeom(x = 3,
       prob = 0.20)
-# NEGBIN
+
+dnbinom(x = 5,
+        prob = 0.20,
+        size = 5)
 sum( dbinom(50:81,
             size = 81,
             prob = 0.2) )
@@ -957,6 +973,117 @@ dpois( 2,
        lambda = 6)
 ```
 :::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:DisaggregationPoisson).**
+
+See Fig. \@ref(fig:RainEventsPlotA).
+
+```{r RainEventsPlot, fig.show="hide"}
+x <- 0:10
+pSummer <- dpois(x,
+                 lambda = 2.5)
+pWinter <- dpois(x,
+                 lambda = 1.9)
+
+plot( pWinter ~ x,
+      las = 1,
+      pch = 19,
+      ylab = "Probability",
+      xlab = "Number of rainfall events")
+points( pSummer ~ x,
+        pch = 0)
+lines( ifelse(pWinter > pSummer, pWinter, pSummer) ~ x,
+       type = "h", # Add vertical lines
+       lty = 2,
+       col = "grey")
+ 
+legend("topright",
+       pch = c(19, 0),
+       legend = c("Winter", "Summer"))
+
+sum( dpois(4:10,
+     lambda = 1.9) )
+sum( dpois(4:10,
+     lambda = 2.5) )
+
+sum( dpois(4:10, lambda = 2.5) ) /
+   sum( dpois(2:10, lambda = 2.5) )
+
+sum( dpois(3:10, lambda = 1.9) ) /
+   sum( dpois(2:10, lambda = 1.9) )
+```
+:::
+
+```{r, RainEventsPlotA, fig.width=5, echo=FALSE, results='hide', fig.cap="The number of rainfall events in summer and winter", fig.align="center"}
+<<RainEventsPlot>>
+```
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:UnknownSize).**
+
+1. $\log n_x = \log N + \log p + x\log (1 - p)$, which is a linear regression model of $\log n_x$ regressed on $x$, with intercept $\beta_0 = \log N + \log p$ and slope $\beta_1 = \log (1 - p)$.
+1. So from the fitted slope, we can estimate $p$; then, using the estimated intercept, we can estimate $N$.
+More specifically, the estimate of $p$ is $1 - \exp( \hat{\beta}_1)$, and the estimate of $N$ is then $\exp(\beta_0 - \log p)$.
+The population size is estimate as about 894:
+:::
+
+```{r echo=TRUE}
+x <- 1:6
+nx <- c(247, 63, 20, 4, 2, 1)
+
+m1 <- lm( log(nx) ~ x); coef(m1)
+beta0 <- coef(m1)[1]
+beta1 <- coef(m1)[2]
+
+p <- 1 - exp(beta1); p
+N <- exp(beta0 - log(p) ); N
+```
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:QueuingPois).**
+
+```{r}
+queueLength <- 0
+for (i in 1:60){
+   queueLength <- queueLength + rpois(1, lambda = 0.5)
+   cat("After ", i, " minutes past 8AM, queue length: ", queueLength, "\n")
+   
+}
+
+queueLength <- 0
+for (i in 1:60){
+   if (i == 30) cat(" --- Server begins ---\n")
+   queueLength <- queueLength + rpois(1, lambda = 0.5)
+   if ( i > 30) {
+      queueLength <- queueLength - rpois(1, lambda = 0.75)
+      if (queueLength < 0 ) queueLength <- 0
+   }
+   cat("After ", i, " minutes, queue length: ", queueLength, "\n")
+   
+}
+
+queueLength <- 0
+for (i in 1:60){
+   if (i == 30) cat("--- Server begins ---\n")
+   queueLength <- queueLength + rpois(1, lambda = 0.5)
+   if ( i > 30) {
+      queueLength <- max( queueLength - rpois(1, lambda = 1.5), 0)
+      if (queueLength < 0 ) queueLength <- 0
+   }
+   cat("After ", i, " minutes, queue length: ", queueLength, "\n")
+   
+}
+```
+
+:::
+
 
 ## Answers for Chap. 5
 
