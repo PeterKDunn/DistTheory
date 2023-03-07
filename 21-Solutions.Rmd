@@ -745,6 +745,26 @@ plot( F1(x) ~ x,
 ```
 
 
+:::{answer}
+**Answer for Exercise \@ref(exr:PooledTest).**
+
+$\Pr(\text{Pooled test is positive})$ 
+${}={}$
+$1 - \Pr(\text{Pooled test is negative})$ 
+${}={}$
+$1 - \Pr(\text{All individuals are negative})$ 
+${}={}$
+$1 -(0.9)^ 4 = 0.3439$.
+So the pmf of $X$, whether the pooled test returns negative (i.e., $x = 0$) or positive (i.e., $x = 1$), is
+
+\[
+  p_X(x) = 
+  \begin{cases}
+     0.6561 & \text{for $x = 0$ (i.e., the pooled test is negative)};\\
+     0.3439 & \text{for $x = 1$ (i.e., the pooled test is positive)}.
+  \end{cases}
+\]
+:::
 
 
 
@@ -895,8 +915,64 @@ Transform the resulting integral.
 :::
 
 
+:::{.answer}
+**Answer to Exercise \@ref(exr:PooledTest2_.**
 
+$\Pr(\text{Need individual tests})$ 
+${}={}$
+$\Pr(\text{Pooled test is positive})$ 
+${}={}$
+$1 - \Pr(\text{Pooled test is negative})$ 
+${}={}$
+$1 - \Pr(\text{All individuals are negative})$ 
+${}={}$
+$1 -(0.9)^ 4 = 0.3439$.
+So the pmf of $N$, the number if tests needed, is
 
+\[
+  p_N(n) = 
+  \begin{cases}
+     0.6561 & \text{for $n = 1$ (i.e., pooled test only)};\\
+     0.3439 & \text{for $n = 5$ (i.e., one pooled test, olus four individual tests)}
+  \end{cases}
+\]
+Then $\text{E}(X) = (0.6561 \times 1) + (0.3439 \times 5) = 2.3756$ and
+$\text{E}(X^2) = (0.6561 \times 1^2) + (0.3439 \times 5^2) =  9.2536$ so that $\text{var}(X) = 3.610125$.
+So for a pool of four people, rather than four tests we would expected to have to conduct 2.3756 tests, a saving of $4 - 2.3756 = 1.6244$ tests.
+
+If 200 people in total, testing each individual would cost $200\times 15 = \$3000$.
+With $n = 4$, a total of 50 pools are created, and each pool saves 1.6244 tests, so the total numbert of tests expected to be saved in $50 \times 1.6244 = 81.22$; at \$15 each, the saving is $\$1218.30$.
+:::
+
+```{r PoolTestFig, echo=TRUE, fig.show='hide}
+n <- 2:14
+
+probIndTestsNeeded <- 1 - 0.9^n
+probOneTestNeeded <- 0.9^n
+expectedTests <- (probOneTestNeeded * 1) + (probIndTestsNeeded * (n + 1) )
+TestsSaved <- n - expectedTests
+
+par(mfrow = c(1, 2))
+
+plot( expectedTests ~ n,
+      las = 1,
+      ylim = c(0, 12),
+      type = "b",
+      main = "Expected number of tests\nfor pooling first",
+      xlab = "Number in pooled test",
+      ylab = "Expected number of tests")
+plot( TestsSaved ~ n,
+      las = 1,
+      ylim = c(0, 2.5),
+      type = "b",
+      main = "The number of tests saved\nby pooling first",
+      xlab = "Number in pooled test",
+      ylab = "Expected number of tests saved/pool")
+
+```
+```{r PoolTestFig2, echo=FALSE, fig.cap="The advantage of initial pooled testing", out.width='90%', fig.width='7'}
+<<<PoolTestFig>>>
+```
 
 
 ## Answers for Chap. 4
