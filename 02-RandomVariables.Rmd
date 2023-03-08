@@ -590,9 +590,6 @@ The value of a pdf at some point $x$ does not represent a probability, but rathe
 Hence, the pdf can have any non-negative value of arbitrary size at a specific value of $X$.
 :::
 
-Properties 5 and 6 directly relate the idea of a density to that of a probability.
-These properties often find use in making approximations and in theoretical work.
-
 
 ::: {.example #ProbabilityDensityFunction name="Probability density function"}
 Consider the continuous random variable $W$ with the pdf
@@ -976,7 +973,7 @@ Consider the df
    F_X(x) = 
    \begin{cases}
       0        & \text{for $x < 0 $};\\
-      x(2 - x) & \text{for $x \le x \le 1$};\\
+      x(2 - x) & \text{for $0 \le x \le 1$};\\
       1        & \text{for $x > 1$.}
    \end{cases}
 \]
@@ -986,13 +983,13 @@ To find the pdf, use \@ref(eq:DFtoPDF):
    f_X(x) = 
    \begin{cases}
       \frac{d}{dx} 0        & \text{for $x < 0 $};\\
-      \frac{d}{dx} x(2 - x) & \text{for $x \le x \le 1$};\\
+      \frac{d}{dx} x(2 - x) & \text{for $0 \le x \le 1$};\\
       \frac{d}{dx} 1        & \text{for $x > 1$}
    \end{cases}
    =
       \begin{cases}
       0        & \text{for $x < 0 $};\\
-      2(1 - x) & \text{for $x \le x \le 1$};\\
+      2(1 - x) & \text{for $0 \le x \le 1$};\\
       0        & \text{for $x > 1$}
    \end{cases}
 \]
@@ -1218,11 +1215,11 @@ RainArray[, 2] <- outDec$counts
 colnames(RainArray) <- c("June",
                          "December")
 rownames(RainArray) <- c("Zero rainfall", 
-           "$\\phantom{20}0 < R < 20\\phantom{0}$",
-           "$\\phantom{0}20 \\le R < 40\\phantom{0}$",
-           "$\\phantom{0}40 \\le R < 60\\phantom{0}$",
-           "$\\phantom{0}60 \\le R < 80\\phantom{0}$",
-           "$\\phantom{0}80 \\le R < 100$",
+           "$0 < R < 20$",
+           "$20 \\le R < 40$",
+           "$40 \\le R < 60$",
+           "$60 \\le R < 80$",
+           "$80 \\le R < 100$",
            "$100 \\le R < 120$",
            "$120 \\le R < 140$",
            "$140 \\le R < 160$",
@@ -1243,8 +1240,20 @@ if( knitr::is_latex_output() ) {
     row_spec(0, bold = TRUE) 
 }
 if( knitr::is_html_output() ) {
-  knitr::kable(RainArray,
-               escape = TRUE,
+  rownames(RainArray) <- c("Zero rainfall", 
+             "Over 0 to under 20",
+             "20 to under 40",
+             "40  to under  60",
+             "60  to under  80",
+             "80  to under  100",
+             "100  to under  120",
+             "120  to under  140",
+             "140  to under  160",
+             "160  to under  180",
+             "180  to under  200",
+             "200  to under  220")
+knitr::kable(RainArray,
+               escape = FALSE,
                format = "html",
                booktabs = TRUE,
                align = "r",
@@ -1316,11 +1325,12 @@ is used for describing mortality where $Y$ denotes age at death in years.
 :::{.exercise #PooledTest}
 To detect disease in a population through a blood test, usually every individual is tested.
 If the disease is uncommon, however, an alternative method is often more efficient.
-In the alternative method, the blood from $n$ individuals is combined, and one test is conducted.
-If the test returns a negative result, then all $n$ people do not have the disease; if the test returns a positive result, all $n$ individuals are then tested.
+In the alternative method, blood from $n$ individuals is combined, and one test is conducted.
+If the test returns a negative result, then none of the $n$ people have the disease; if the test returns a positive result, all $n$ individuals are then tested to identify which individual(s) have the disease.
 
-Suppose a disease occurs in an unknown proportion of people $p = 0.1$ of people, and blood from $n = 4$ people is pooled and tested. 
-Deduce the probability distribution of the random variable 'whether the pooled test returns a negative test' $X$, where $x = 0$ means the pooled test returns negative, and $x = 1$ means the pooled test returns positive.
+Suppose a disease occurs in an unknown proportion of people $p$ of people.
+Blood from $n = 4$ people is pooled and tested.
+Deduce the probability distribution of the random variable $X$ when $n = 4$ and $p = 0.1$, where $X = 0$ means the pooled test returns a negative result, and $X = 1$ means the pooled test returns a positive result.
 :::
 
 
@@ -1380,8 +1390,8 @@ Consider the distribution function
 
 
 :::{.exercise #Cards4}
-Suppose a dealer deal four cards from a standard 52-card pack.
-Define $Y$ as the number if suits in the four cards.
+Suppose a dealer deals four cards from a standard 52-card pack.
+Define $Y$ as the number of suits in the four cards.
 Deduce the distribution of $Y$.
 :::
 
