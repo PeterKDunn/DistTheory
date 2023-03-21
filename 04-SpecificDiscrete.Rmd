@@ -459,17 +459,16 @@ Binomial probabilities can sometimes be approximated using the normal distributi
 ## Geometric distribution {#GeometricDistribution}
 
 Consider now an experiment where independent Bernoulli trials are repeated until the *first* success occurs. 
-What is the distribution of the number of trials required?
+What is the distribution of the number of *failures* until the first success?
 
-Let the random variable $Y$ be the number of trials necessary to obtain the first success.
-Since the first success may occur on the first trial, or second trial or third trial, and so on, $Y$ is a random variable with range space $\{1, 2, 3, \dots\}$.
+Let the random variable $X$ be the number of failures before the first success.
+Since the first success may occur on the first trial, or second trial or third trial, and so on, $X$ is a random variable with range space $\{0, 1, 2, 3, \dots\}$.
 
-To observe the first success on the $y$th trial, $y - 1$ failures must be followed by one success.
-Since the probability of failure is $q = 1 - p$ and the probability of success is $p$, the probability of the first success on trial $y$ is
+Since the probability of failure is $q = 1 - p$ and the probability of success is $p$, the probability of $x$ failures before teh first success is
 
 \begin{align*}
-   \Pr(\text{$(y - 1)$ failures})    &\times \Pr(\text{first success}) \\
-   q^{y - 1}                         &\times  p.
+   \Pr(\text{$x$ failures})          &\times \Pr(\text{first success}) \\
+   q^x                               &\times  p.
 \end{align*}
 This derivation assumes the events are independent.
 
@@ -478,14 +477,14 @@ This derivation assumes the events are independent.
 A random variable $X$ has a *geometric distribution* if the pf of $X$ is given by
 
 \begin{equation}
-   p_X(x) =  q^{x - 1} p\quad\text{for $x = 1, 2, \dots$}
+   p_X(x) =  (1 - p)^x p = q^x p\quad\text{for $x = 0, 1, 2, \dots$}
    (\#eq:GeometricPMF)
 \end{equation}
 where $q = 1 - p$ and $0 < p < 1$ is the parameter of the distribution.
 We write $X\sim\text{Geom}(p)$.
 :::
 
-
+This is the parametrisation used by **R**.
 The pf for a geometric distribution for various values of $p$ is shown in Fig. \@ref(fig:Geometric).
 The following are the basic properties of the geometric distribution.
 
@@ -494,7 +493,7 @@ If $X\sim\text{Geom}(p)$ as defined in Eq. \@ref(eq:GeometricPMF), then
 
 1. $\text{E}(X) = 1/p$.
 2. $\text{var}(X) = (1 - p)/p^2$.
-3. $M_X(t) = pe^t/\{1 - (1 - p)e^t\}$ for $t < -\log(1 - p)$.
+3. $M_X(t) = p/\{1 - (1 - p)e^t\}$ for $t < -\log(1 - p)$.
 :::
 
 :::{.proof}
@@ -503,19 +502,18 @@ This is left as an exercise.
 :::
 
 
-The parameterisation above is for the *number of trials* needed for the first success, so that $x = 1, 2, 3, \dots$.
-An alternative parameterisation is for the *number of failures* before a success, when $x = 0, 1, 2, \dots$.
+The parameterisation above is for the *number of failures* needed for the first success, so that $x = 0, 1, 2, 3, \dots$.
+An alternative parameterisation is for the *number of trials* $X$ before a success, when $x = 1, 2, \dots$.
 Then,
 \[
-   p_X(x) =  q^{x} p\quad\text{for $x = 0, 1, 2, \dots$}.
+   p_X(x) =  q^{x - 1} p\quad\text{for $x = 0, 1, 2, \dots$}.
 \]
-This is the parametrisation used by **R**.
 
 
 :::{.definition #GeometricDistributionALT name="Geometric distribution: Alternative parameterisation"}
 A random variable $X$ has a *geometric distribution* if the pf of $X$ is given by
 \begin{equation}
-   p_X(x) =  q^{x - 1} p\quad\text{for $x = 1, 2, \dots$}
+   p_X(x) =  (1 - p)^{x - 1}p = q^{x - 1} p\quad\text{for $x = 1, 2, \dots$}
    (\#eq:GeometricPMFAlternative)
 \end{equation}
 where $q = 1 - p$ and $0 < p < 1$ is the parameter of the distribution.
@@ -635,9 +633,10 @@ Many natural phenomena fall into this category.
 :::{.definition #PoissonDistribution name="Poisson distribution"}
 A random variable $X$ is said to have a *Poisson distribution* if its pmf is
 
-\[
-   p_X(x) = \frac{\exp(-\mu) \mu^x}{x!}\quad   \text{for $x = 0, 1, 2, \dots$}
-\]
+\begin{equation}
+   p_X(x) = \frac{\exp(-\mu) \mu^x}{x!}\quad \text{for $x = 0, 1, 2, \dots$}
+   (\#eq:PoissonPMF)
+\end{equation}
 where the parameter is $\mu > 0$.
 We write $X\sim\text{Pois}(\mu)$.
 :::
@@ -1551,6 +1550,7 @@ Then,
 \end{equation}
 While $p$ and $N$ are unknown, the value of $N$ is sought.
 
+1. Explain how \@ref(eq:GeomCapture) arises.
 1. Take logarithms of \@ref(eq:GeomCapture).
    Write this equation in the form of a linear regression equation $\hat{y} = \beta_0 + \beta_1 x$.
 1. From the regression equation, identify how to estimate $p$ from the slope of the regression line, and then $N$ from the $y$-intercept.
@@ -1590,14 +1590,17 @@ if( knitr::is_html_output() ) {
 :::
 
 
-:::{.exercise}
+:::{.exercise #NigerianWater}
 A Nigerian study of using solar energy to disinfect water (SODIS) modelled the number of days exposure needed to disinfect the water [@nwankwo2022solar].
-The threshold for disinfection was a day recording 4 kWh/m^2^ daily cumulative solar irradiance.
+The threshold for disinfection was a single day recording 4 kWh/m^2^ daily cumulative solar irradiance.
+Define $p$ as the probability that a single day records more than this threshold.
 
 1. Suppose $p = 0.5$.
    How many days exposure would be needed, on average, to achieve disinfection?
 1. Suppose $p = 0.25$.
    How many days exposure would be needed, on average, to achieve disinfection?
+1. If $p = 0.25$, what is the variance of the number of days needed to achieve disinfection?
+1. If $p = 0.25$, what is the probability that disinfection will be achieved in three days or fewer?
 :::
 
 
@@ -1616,7 +1619,8 @@ A study investigating bacterial sample preparation procedures for single-cell st
 The number of bacteria in 2$\mu$L samples was modelled using a Poisson distribution with $\lambda = 1.04$.
 
 1. What is the probability that a sample has more than 4 bacteria? 
-1. What is the probability that a sample has more than 4 bacteria, given it has bacteria? 1. Would you expect the negative binomial distribution to fit the data better than the Poisson?
+1. What is the probability that a sample has more than 4 bacteria, given it has bacteria? 
+1. Would you expect the negative binomial distribution to fit the data better than the Poisson?
 :::
 
 
@@ -1732,4 +1736,6 @@ Suppose that a certain queue is modelled with a Poisson distribution with a mean
 :::
 
 
-
+:::{.exercise #PoissonEqualValues}
+For the Poisson distribution in \@ref(eq:PoissonPMF), determine the values of $\lambda$ such that $\Pr(X) = \Pr(X + 1)$.
+:::
