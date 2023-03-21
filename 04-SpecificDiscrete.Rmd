@@ -26,7 +26,7 @@ This is one of the simplest discrete distributions.
 
 
 :::{.definition #DiscreteUniform name="Discrete uniform distribution"}
-If a random variable $X$ with range space $\{a, a + 1, a + 2, \dots, b\}$ where $a$ and $b$ ($a < b$) are integers has the pf
+If a random variable $X$ with range space $\{a, a + 1, a + 2, \dots, b\}$, where $a$ and $b$ ($a < b$) are integers, has the pf
 
 \[
    p_X(x) = \frac{1}{b - a + 1}\text{ for $x = a, a + 1, \dots, b$}
@@ -35,7 +35,6 @@ then $X$ has a *discrete uniform distribution*.
 We write $X\sim U(a, b)$ or $X\sim \text{Unif}(a, b)$.
 :::
 
-This distribution is also called the *rectangular distribution*.
 A plot of the probability function for a discrete uniform distribution is shown in Fig. \@ref(fig:DiscreteUnform).
 
 
@@ -93,8 +92,35 @@ box()
 ```
 
 
+:::{.definition #DiscreteUniform name="Discrete uniform distribution"}
+If a random variable $X$ with range space $\{a, a + 1, a + 2, \dots, b\}$, where $a$ and $b$ ($a < b$) are integers, has the pf
+
+\begin{equation}
+   p_X(x) = \frac{1}{b - a + 1}\text{ for $x = a, a + 1, \dots, b$}
+   (\#eq:DiscreteUniform)
+\end{equation}
+then $X$ has a *discrete uniform distribution*.
+We write $X\sim U(a, b)$ or $X\sim \text{Unif}(a, b)$.
+:::
+
+
+:::{.definition #DiscreteUniformDF name="Discrete uniform distribution: distribution function"}
+For a random variable $X$ with the uniform distribution given by the probability function in \@ref(eq:DiscreteUniform), the *distribution function* is 
+
+\[
+   F_X(x) = 
+   \begin{cases}
+      0                                                        & \text{for $x < a$}\\
+      \displaystyle \frac{\lfloor x\rfloor - a + 1}{b - a + 1} & \text{for $x = a, a + 1, \dots, b$}\\
+      1                                                        & \text{for $x > b$}
+   \end{cases}
+\]
+where $\lfloor z \rfloor$ is the *floor function* (i.e., round $z$ towards $-\infty$ to the nearest integer).
+:::
+
+
 :::{.example #DiscreteUniform name="Discrete uniform"}
-Let $X$ be the number of spots showing after a single throw of a fair die.
+Let $X$ be the number showing after a single throw of a fair die.
 Then $X \sim \text{Unif}(1, 6)$.
      
 For an experiment involving selection of a single-digit number from a table of random digits, the number chosen, $X$, has probability distribution $\text{Unif}(0, 9)$.
@@ -107,11 +133,11 @@ If $X\sim \text{Unif}(a, b)$ then
 
 1. $\displaystyle \text{E}(X) = (a + b)/2$.
 2. $\displaystyle \text{var}(X) = \frac{(b - a)(b - a + 2)}{12}$.
+3. $\displaystyle M_X(t) = \frac {e^{at} - e^{(b + 1)t}}{(b - a + 1)(1 - e^{t})}$.
 :::
 
 :::{.proof}
-Working with  $Y = X - a$ rather than $X$ itself is easier (as $Y$ is defined on $[0, b - a]$), using that $\text{E}(X) = \text{E}(Y) + a$ and $\text{var}(Y) = \text{var}(X)$.
-
+The mean and variance are easier to find by working with  $Y = X - a$ rather than $X$ itself (as $Y$ is defined on $0 < y < (b - a)$), using that $\text{E}(X) = \text{E}(Y) + a$ and $\text{var}(Y) = \text{var}(X)$.
 Since $Y\sim\text{Unif}(0, b - a)$, then using \@ref(eq:SumNaturalNumbers)
 
 \begin{align*}
@@ -125,7 +151,7 @@ Therefore,
    \text{E}(X) = \text{E}(Y) + a = \frac{b - a}{2} + a = \frac{a + b}{2}.
 \]
 
-Since $\text{var}(Y) = \text{E}(Y^2) - \text{E}(Y)^2$, continue (using \@ref(eq:SumSquaredNaturalNumbers)):
+Since $\text{var}(Y) = \text{E}(Y^2) - \text{E}(Y)^2$, find $\text{E}(Y^2)$ using \@ref(eq:SumSquaredNaturalNumbers):
 
 \begin{align*}
   \text{E}(Y^2)
@@ -147,10 +173,10 @@ Therefore
 
 :::{.example #LottoStats name="Lotto"}
 Oz Lotto, like many lottery games, challenges players to match randomly chosen numbers.
-Oz Lotto randomly picks numbers between 1 and 45 (inclusive).
-Each number should have an equal chance of selection, so the discrete uniform distribution $U(1,45)$ is appropriate.
+Oz Lotto randomly picks numbers between 1 and 47 (inclusive).
+Each number should have an equal chance of selection, so the discrete uniform distribution $U(1,47)$ is appropriate.
 
-If the data follow a discrete uniform distribution exactly, the mean number drawn should be  $(1 + 45) / 2 = 23$, and the variance $(44 \times 46)/12 = 168.66$.
+If the data follow a discrete uniform distribution exactly, the mean number drawn should be  $(1 + 47) / 2 = 24$, with variance $(46 \times 48)/12 = 184$.
 :::
 
 
@@ -174,22 +200,36 @@ More succinctly:
 
 \begin{equation}
    p_X(x) = p^x (1 - p)^{1 - x} \quad\text{for $x = 0, 1$}.
-   (\#eq:BermoulliPMF)
+   (\#eq:BernoulliPMF)
 \end{equation}
 We write $X\sim\text{Bern}(p)$.
 
 
 :::{.definition #BrnoulliDistribution name="Bernoulli distribution"}
-Let $X$ be the number of successes in one independent trials with $\Pr(\text{Success}) = p$ ($0\le p\le 1$), constant in each trial.
-Then $X$ has a *Bernoulli probability distribution* with parameter $p$ and pf given by \@ref(eq:BermoulliPMF).
+Let $X$ be the number of successes in a single trial with $\Pr(\text{Success}) = p$ ($0\le p\le 1$), constant in each trial.
+Then $X$ has a *Bernoulli probability distribution* with parameter $p$ and pf given by \@ref(eq:BernoulliPMF).
 We write $X\sim\text{Bern}(p)$.
 :::
 
 
+:::{.definition #BrnoulliDistributionCDF name="Bernoulli distribution: distribution function"}
+For a random variable $X$ with the Bernoulli distribution given in \@ref(eq:BernoulliPMF), the *distribution function* is
+\[
+  F_X(x) = 
+  \begin{cases}
+    0     & \text{if $x < 0$}\\
+    1 - p & \text{if $0\leq x < 1$}\\
+    1     & \text{if $x\geq 1$}.
+  \end{cases}
+\]
+:::
+
+
+
+
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The terms 'success' and 'failure' are not literal.
-
-'Success' simply means that the event is of interest.
+'Success' simply refers to the event of interest.
 If the event of interest is whether a cyclone causes damage, this is still called a 'success'.
 :::
 
@@ -209,17 +249,17 @@ The following are the basic properties of the Bernoulli distribution.
 If $X\sim\text{Bern}(p)$ then
 
 1. $\text{E}(X) = p$.
-2. $\text{var}(X) = p(1 - p) = pq$ where $q = 1 - p$s.
+2. $\text{var}(X) = p(1 - p) = pq$ where $q = 1 - p$.
 3. $M_X(t) = pe^t + q$.
 :::
 
 :::{.proof}
-We make use of \@ref(eq:BinomialSeries) in the following:
+By definition:
 
 \[
      \text{E}(X) = \sum^1_{x = 0} x p_X(x) = 0\times (1 - p) + 1\times p = p.
 \]
-To find the variance, we use the computational formula $\text{var}(X) = \text{E}(X^2) - \text{E}(X)^2$.
+To find the variance, use the computational formula $\text{var}(X) = \text{E}(X^2) - \text{E}(X)^2$.
 Then,
 
 \[
@@ -251,15 +291,14 @@ Proving the third result first, and then using it to prove the others, is easier
 
 ## Binomial distribution {#BinomialDistribution}
 
-A binomial distribution is used in a situation where a Bernoulli trial is repeated many times, and one of two outcomes is observed on each trial.
+A binomial distribution is used to model the number of successes in $n$ independent Bernoulli trials.
 A simple example is tossing a coin ten times and observing how often a head falls. 
+The same random process is repeated (tossing the coin), only two outcomes are possible on each trial (a head or a tail), and the probability of a head remains constant on each trial (i.e., the tosses are independent).
 
-The same experiment is repeated (tossing the coin), there are only two outcomes on each trial (a head or a tail), and the probability of a head remains constant on each trial.
-
-Consider tossing a die five times and observing the number of times a `r knitr::include_graphics("Dice/die1.png", dpi=2000)` is rolled.
-The probability of observing three `r knitr::include_graphics("Dice/die1.png", dpi=2000)` can be found as follows:
-In the five tosses, a `r knitr::include_graphics("Dice/die1.png", dpi=2000)` must appear three times; there are $binom{5}{3}$ ways of allocating on which of the five rolls they will appear.
-In the five rolls, `r knitr::include_graphics("Dice/die1.png", dpi=2000)` must appear three times with probability $1/6$; the other two rolls must produce another number with probability $5/6$.
+Consider tossing a die five times and observing the number of times a `r knitr::include_graphics("Dice/die2.png", dpi=1750)` is rolled.
+The probability of observing a `r knitr::include_graphics("Dice/die2.png", dpi=1750)` three times can be found as follows:
+In the five tosses, a `r knitr::include_graphics("Dice/die2.png", dpi=1750)` must appear three times; there are $\binom{5}{3}$ ways of allocating on which of the five rolls they will appear.
+In the five rolls, `r knitr::include_graphics("Dice/die2.png", dpi=1750)` must appear three times with probability $1/6$; the other two rolls must produce another number, with probability $5/6$.
 
 So the probability will be
 
@@ -282,9 +321,9 @@ This could correspond to the sample point
    \underbrace{s \quad s \quad s \dots s \quad s \quad s \quad s}_r\quad
    \underbrace{f \quad f \dots f \quad f}_{n - r} 
 \]
-which is the intersection of $n$ independent events consisting of $r$ successes and $n - r$ failures, and hence the probability is $p^r q^{n - r}$.
+which is the intersection of $n$ independent events comprising $r$ successes and $n - r$ failures, and hence the probability is $p^r q^{n - r}$.
 
-Every other sample point in the event $X = r$ will appear as a rearrangement of the $S$'s and $F$'s in the sample point described above and will therefore have the same probability. 
+Every other sample point in the event $X = r$ will appear as a rearrangement of the $s$'s and $f$'s in the sample point described above and will therefore have the same probability. 
 
 Now the number of distinct arrangements of the $r$ successes $s$ and $(n - r)$ failures $f$ is $\binom{n}{r}$, so
 
@@ -292,22 +331,24 @@ Now the number of distinct arrangements of the $r$ successes $s$ and $(n - r)$ f
      \Pr(X = r) = \binom{n}{r} p^r q^{n - r},\quad r = 0, 1, \dots, n.
         (\#eq:BinomialPMF)
 \end{equation}
+This leads to the *binomial distribution*.
 
-The sum of the probabilities is 1 as the binomial expansion of $(p + q)^n$ (using \@ref(eq:BinomialSeries)) is
+Note that the sum of the probabilities is 1, as the binomial expansion of $(p + q)^n$ (using \@ref(eq:BinomialSeries)) is
 
 \begin{equation}
    \sum_{r = 0}^n \binom{n}{r} p^r q^{n - r} = (p + q)^n = 1\label{EQN:sumbin}
 \end{equation}
 since $p + q = 1$. 
-This leads to the *binomial distribution*.
 
 
 :::{.definition #BinomialDistribution name="Binomial distribution"}
-Let $X$ be the number of successes in $n$ independent Bernoulli trials with $\Pr(\text{Success}) = p$ ($0\le p\le 1$), constant for each trial.
+Let $X$ be the number of successes in $n$ independent Bernoulli trials with $\Pr(\text{Success}) = p$ (for $0\le p\le 1$) constant for each trial.
 Then $X$ has a *binomial probability distribution* with parameters $n$, $p$ and pf given by \@ref(eq:BinomialPMF).
 We write $X\sim\text{Bin}(n, p)$.
 :::
 
+
+The distribution function is complicated and is not given.
 Fig. \@ref(fig:BinomialExamples) shows the pf for the binomial distribution for various parameter values.
 
 
@@ -347,13 +388,13 @@ for (i in (1:4)) {
 A die is thrown 4 times. 
 What is the probability of exactly 2 sixes?
 
-There are 4 Bernoulli trials with $p = 1/6$.
+There are $n = 4$ Bernoulli trials with $p = 1/6$.
 Let the random variable $X$ be the  number of 6's in 4 tosses. 
 Then
 
 \[ 
   \Pr(X = 2) = 
-  \binom{4}{2} \left(\frac{1}{6}\right)^2\left(\frac{5}{6}\right)^2 = 150/1296.
+  \binom{4}{2} \left(\frac{1}{6}\right)^2\left(\frac{5}{6}\right)^2 = 150/1296 \approx 0.1157.
 \]
 :::
 
@@ -377,8 +418,8 @@ Using \@ref(eq:BinomialSeries):
      & = np\sum^n_{x = 1} \binom{n - 1}{x - 1} p^{x - 1} q^{n - x}\\
      & = np \sum^{n - 1}_{y = 0} \binom{n - 1}{y}p^y q^{n - 1 - y}\quad \text{putting $y = x - 1$}.
 \end{align*}
-The sum is 1 since a term in the sum is the probability of $y$ successes in $(n - 1)$ Bernoulli trials and the sum is over all values in $R_X$ (so it represents a probability function).
-Note also that in the second line the sum is over $x$ from $1$ to $n$ because for $x = 0$ we have a binomial coefficient of the form $\binom{b}{a}$ with $a < 0$, which is defined to be zero. 
+The summation is 1, since it is equivalent to summing over all values of $y$ for the binomial pf with $y$ successes in $(n - 1)$ Bernoulli trials (and hence represents a probability function with a sum of one).
+In the second line, the sum is over $x$ from $1$ to $n$ because, for $x = 0$, the binomial coefficient has the form $\binom{b}{a}$ with $a < 0$, which is defined to be zero. 
 Thus,
 
 \[ 
@@ -391,26 +432,26 @@ Firstly, to find $\text{E}(X^2)$, write $\text{E}(X^2)$ as $\text{E}[X(X - 1) + 
 \begin{align*}
      \text{E}(X^2) 
      &= \sum^n_{x = 0} x(x - 1)\Pr(X = x) + np\\
-     &= \sum^n_{x = 2} x(x  -1)\frac{n(n - 1)}{x(x - 1)} \binom{n - 2}{x - 2} p^x q^{n - x} + np\\
-     &= \sum^n_{x = 2} n(n - 1)\binom{n - 2}{x - 2} p^x q^{n - x} + np\\
-     &= n(n - 1)p^2 \sum^{n - 2}_{y = 0} \binom{n - 2}{y} p^yq^{n - 2 - y} + np,
+     &= np + \sum^n_{x = 2} x(x  -1)\frac{n(n - 1)}{x(x - 1)} \binom{n - 2}{x - 2} p^x q^{n - x}\\
+     &= np + \sum^n_{x = 2} n(n - 1)\binom{n - 2}{x - 2} p^x q^{n - x}\\
+     &= np + n(n - 1)p^2 \sum^{n - 2}_{y = 0} \binom{n - 2}{y} p^yq^{n - 2 - y},
 \end{align*}
 putting $y = x - 2$.
-For the same reason as before, the sum is 1, so
+For the same reason as before, the summation is 1, so
 
 \[ 
-   \text{E}(X^2) = n^2 p^2 - np^2 + np 
+   \text{E}(X^2) = np + n^2 p^2 - np^2 
 \]
 and hence
 
 \[ 
    \text{var}(X) 
    = \text{E}(X^2) - [\text{E}(X)]^2 
-   = n^2p^2 - np^2 + np -n^2 p^2
-   = np (1- p). 
+   = np + n^2p^2 - np^2 - n^2 p^2
+   = np (1 - p). 
 \]
 
-The mgf of $X$ is given by
+The mgf of $X$ is
 
 \begin{align*}
    M_X(t)
@@ -432,7 +473,6 @@ In **R**, the binomial distribution functions have the form `[dpqr]binom(size, p
 A binomial situation requires the trials to be *independent*, and the probability of success $p$ to be *constant* throughout the trials.
 
 For example, drawing cards from a pack without replacing them is **not** a binomial situation; after drawing one card, the probabilities will then change for the drawing of the next card.
-
 In this case, the *hypergeometric distribution* could be used (Sect. \@ref(HypergeometricDistribution)).
 :::
 
@@ -443,7 +483,7 @@ Since the lake is deep, it will only freeze during exceptionally cold weather.
 The probability the lake freezes during any one year can be estimated as $p = 10/200 = 0.05$.
 
 Using this information, the number of times the lake will *not* freeze in ten randomly chosen years in given by the random variable $X$ where $X \sim \text{Bin}(10, 0.95)$.
-The probability that the lake will not freeze in these ten years is $\Pr(X = 10) = \binom{10}{10} 0.95^{10} 0.05^{0} \approx 0.599$, or about 60%.
+The probability that the lake will not freeze in any of these ten years is $\Pr(X = 10) = \binom{10}{10} 0.95^{10} 0.05^{0} \approx 0.599$, or about 60%.
 
 Note we could define the random variable $Y$ as the number of times the lake *will* freeze in the ten randomly chosen years.
 Then, $Y\sim\text{Bin}(10, 0.05)$ and we would compute $\Pr(Y = 0)$ and get the same answer.
@@ -459,12 +499,12 @@ Binomial probabilities can sometimes be approximated using the normal distributi
 ## Geometric distribution {#GeometricDistribution}
 
 Consider now an experiment where independent Bernoulli trials are repeated until the *first* success occurs. 
-What is the distribution of the number of *failures* until the first success?
+What is the distribution of the number of *failures* until the first success is observed?
 
 Let the random variable $X$ be the number of failures before the first success.
 Since the first success may occur on the first trial, or second trial or third trial, and so on, $X$ is a random variable with range space $\{0, 1, 2, 3, \dots\}$.
 
-Since the probability of failure is $q = 1 - p$ and the probability of success is $p$, the probability of $x$ failures before teh first success is
+Since the probability of failure is $q = 1 - p$ and the probability of success is $p$, the probability of $x$ failures before the first success is
 
 \begin{align*}
    \Pr(\text{$x$ failures})          &\times \Pr(\text{first success}) \\
@@ -474,7 +514,7 @@ This derivation assumes the events are independent.
 
 
 :::{.definition #GeometricDistribution name="Geometric distribution"}
-A random variable $X$ has a *geometric distribution* if the pf of $X$ is given by
+A random variable $X$ has a *geometric distribution* if the pf of $X$ is
 
 \begin{equation}
    p_X(x) =  (1 - p)^x p = q^x p\quad\text{for $x = 0, 1, 2, \dots$}
@@ -484,6 +524,24 @@ where $q = 1 - p$ and $0 < p < 1$ is the parameter of the distribution.
 We write $X\sim\text{Geom}(p)$.
 :::
 
+
+:::{.definition #GeometricDistributionDF name="Geometric distribution: distribution function"}
+For a random variable $X$ with the geometric distribution given in \@ref(eq:GeometricPMF), the distribution function is
+
+\[
+  F_X(x) = 
+  \begin{cases}
+    0                                  & \text{for $x < 0$}\\
+    1 - (1 - p)^{\lfloor x\rfloor + 1} & \text{for $x\ge 0$},
+  \end{cases}
+\]
+where $\lfloor z \rfloor$ is the *floor function*.
+:::
+
+
+
+
+
 This is the parametrisation used by **R**.
 The pf for a geometric distribution for various values of $p$ is shown in Fig. \@ref(fig:Geometric).
 The following are the basic properties of the geometric distribution.
@@ -491,7 +549,7 @@ The following are the basic properties of the geometric distribution.
 :::{.theorem #GeometricProperties name="Geometric distribution properties"}
 If $X\sim\text{Geom}(p)$ as defined in Eq. \@ref(eq:GeometricPMF), then
 
-1. $\text{E}(X) = 1/p$.
+1. $\text{E}(X) = (1 - p)/p$.
 2. $\text{var}(X) = (1 - p)/p^2$.
 3. $M_X(t) = p/\{1 - (1 - p)e^t\}$ for $t < -\log(1 - p)$.
 :::
@@ -502,16 +560,24 @@ This is left as an exercise.
 :::
 
 
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+In **R**, the geometric distribution functions have the form `[dpqr]geom(prob)`, where `prob`${} = p$.
+:::
+
+
 The parameterisation above is for the *number of failures* needed for the first success, so that $x = 0, 1, 2, 3, \dots$.
-An alternative parameterisation is for the *number of trials* $X$ before a success, when $x = 1, 2, \dots$.
+An alternative parameterisation is for the *number of trials* $X$ before observing a success, when $x = 1, 2, \dots$.
 Then,
+
 \[
    p_X(x) =  q^{x - 1} p\quad\text{for $x = 0, 1, 2, \dots$}.
 \]
-
+The only way to distinguish which parameterisation is being used is to check the range space or the pf.
 
 :::{.definition #GeometricDistributionALT name="Geometric distribution: Alternative parameterisation"}
-A random variable $X$ has a *geometric distribution* if the pf of $X$ is given by
+A random variable $X$ has a *geometric distribution* if the pf of $X$ is
+
 \begin{equation}
    p_X(x) =  (1 - p)^{x - 1}p = q^{x - 1} p\quad\text{for $x = 1, 2, \dots$}
    (\#eq:GeometricPMFAlternative)
@@ -524,9 +590,9 @@ We write $X\sim\text{Geom}(p)$.
 :::{.theorem #GeometricPropertiesALT name="Geometric distribution properties"}
 If $X\sim\text{Geom}(p)$ as defined in Eq. \@ref(eq:GeometricPMFAlternative), then
 
-1. $\text{E}(X) = (1 - p)/p$.
+1. $\text{E}(X) = 1/p$.
 2. $\text{var}(X) = (1 - p)/p^2$.
-3. $M_X(t) = p/\{ 1 - (1 - p)e^t \}$ for $t < -\log(1 - p)$.
+3. $M_X(t) = p\exp(t) /\{ 1 - (1 - p)e^t \}$ for $t < -\log(1 - p)$.
 :::
 
 :::{.proof}
@@ -568,52 +634,24 @@ for (i in (1:4)) {
 
 ```
 
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-In **R**, the geometric distribution functions have the form `[dpqr]geom(prob)`.
-**R** used the parameterisation that models the number of *failures* before the first success, as in \@ref(eq:GeometricPMFAlternative).
-:::
 
 
+:::{.example #GeometricNetball name="Netball shooting"}
+Suppose a netball goal shooter has a probability of $p = 0.8$ of *scoring* a goal.
+Let $Y$ be the number of goals made until the shooter *misses*; in this case a 'success' refers to *missing* the shot with $p = 0.2$.
+Notice that $Y = \{0, 1, 2, \dots \}$), so the parameterisation corresponds to that used by **R**, and $Y\sim \text{Geom}(0.2)$.
 
-:::{.example #GeometricComputerFail name="Computer failure"}
-A computer system fails at random with probability $0.02$ on any given day.
-Let $Y$ be the day on which the system fails, so that $Y = \{1, 2, 3, \dots\}$ using \@ref(eq:GeometricPMF).
-Then $Y \sim\text{Geom}(0.02)$.
-
-The probability that the system will first fail before day $20$ (that is, $\Pr(Y < 20) = \Pr(Y \le 19)$) can be found by hand, or using a computer.
-
-To use **R**, the alternative parameterisation \@ref(eq:GeometricPMFAlternative) is needed.
-Let $X$ be the number of days before the first system failure, so that $X = \{0, 1, 2, 3, \dots\}$ using \@ref(eq:GeometricPMFAlternative).
-
-Then, the probability that the system will first fail before day $20$ means there are $19$ days with no failure (that is, $\Pr(X < 19) = \Pr(Y \le 18)$) can be found in **R**.
-The command `dgeom()` gives the probability mass function for the geometric distribution, and `pgeom()` gives values from the distribution function of the geometric distribution:
-
-```{r echo=TRUE}
-sum( dgeom( x = 0:18, # For alt. parameterisation
-            prob = 0.02))
-pgeom(q = 18, 
-      prob = 0.02) # i.e., up to 18 failures at p=0.02
+The probability that the shooter makes 4 goals before the first miss is:
+```{r}
+dgeom(4, prob = 0.2)
 ```
-The probability is $0.32$ that the system will fail before day $20$.
+The probability that the shooter makes 4 or fewer goals before the first miss is $\Pr(Y = 0, 1, 2, 3, \text{or} 4)$:
+```{r}
+pgeom(4, prob = 0.2)
+```
+The expected number of shots until the first miss is $\text{E}(Y) = (1 - p)/p  = 4$.
 
-The number of days the system can be expected to work until failure is $\text{E}(Y) = 1/p = 1/0.02 = 50$.
-The system could be expected to last fifty days before the first failure.
 :::
-
-
-
-
-<!-- :::{.example #BabyBoom name="Baby Boom"} -->
-<!-- An article appearing in *The Sunday Mail* on 21 December 1997 give the birth weight, gender, and time of birth of 44 babies born in the 24-hour period of 18 December 1997 at the Mater Mother's Hospital in Brisbane, Australia. -->
-
-<!-- KEEP FOR EXERCISE OR ASSIGNMENT -->
-
-
-<!-- The gender of the births is a random process, and so the number of births observed until a boy is born should have approximately a geometric distribution. -->
-<!-- By counting the number of births until a boy is born (and restarting the count when a girl is born), Table ??? has been constructed. -->
-<!-- The theoretical probabilities have been based on the probability of a boy being born as being $0.5$. -->
-<!-- The fit is reasonable (but not brilliant) for the small sample size; see Table ???. -->
-<!-- ::: -->
 
 
 
@@ -634,14 +672,29 @@ Many natural phenomena fall into this category.
 A random variable $X$ is said to have a *Poisson distribution* if its pmf is
 
 \begin{equation}
-   p_X(x) = \frac{\exp(-\mu) \mu^x}{x!}\quad \text{for $x = 0, 1, 2, \dots$}
+   p_X(x) = \frac{\exp(-\lambda) \lambda^x}{x!}\quad \text{for $x = 0, 1, 2, \dots$}
    (\#eq:PoissonPMF)
 \end{equation}
-where the parameter is $\mu > 0$.
-We write $X\sim\text{Pois}(\mu)$.
+where the parameter is $\lambda > 0$.
+We write $X\sim\text{Pois}(\lambda)$.
 :::
 
-The pmf for a Poisson distribution for different values of $\mu$ is shown in Fig. \@ref(fig:PoissonExamples).
+
+:::{.definition #PoissonDistributionDF name="Poisson distribution: distribution function"}
+For a random variable $X$ with the Poisson distribution given in \@ref(eq:PoissonPMF), the distribution function is
+
+\[
+  F_X(x) = 
+  \begin{cases}
+    0                                  & \text{for $x < 0$}\\
+    \displaystyle \exp(-\lambda) \sum _{i = 0}^{\lfloor x \rfloor }{\frac {\lambda ^{i}}{i!}} & \text{for $x\ge 0$};\\
+  \end{cases}
+\]
+where $\lfloor z \rfloor$ is the *floor function*.
+:::
+
+
+The pmf for a Poisson distribution for different values of $\lambda$ is shown in Fig. \@ref(fig:PoissonExamples).
 
 
 
@@ -663,7 +716,7 @@ for (i in (1:4)) {
          xlim = c(0, xmax),
          xlab = expression(italic(x)),
          ylab = "Probability function",
-         main = bquote("Poisson mean:" ~ mu == .(muvalue)),
+         main = bquote("Poisson mean:" ~ lambda == .(muvalue)),
          las = 1,
          lty = 3,
          col = "grey",
@@ -679,11 +732,11 @@ for (i in (1:4)) {
 The following are the basic properties of the Poisson distribution.
 
 ::: {.theorem #PoissonProperties name="Poission distribution properties"}
-If $X\sim\text{Pois}(\mu)$ then
+If $X\sim\text{Pois}(\lambda)$ then
 
-1. $\text{E}(X) = \mu$.
-2. $\text{var}(X) = \mu$.
-3. $M_X(t) = \exp[ -\mu\{1 - \exp(t)\}]$.
+1. $\text{E}(X) = \lambda$.
+2. $\text{var}(X) = \lambda$.
+3. $M_X(t) = \exp[ \lambda\{\exp(t) - 1\}]$.
 :::
 
 :::{.proof}
@@ -691,11 +744,11 @@ The third result is proven, then the other results follow:
 
 \begin{align*}
    M_X(t) = \text{E}(e^{tX}) 
-     &= \sum^\infty_{x = 0} e^{xt} e^{-\mu} \mu^x / x!\\
-     &= e^{-\mu} \sum^\infty_{x = 0} \frac{(\mu\, e^t)^x}{x!} \\
-     &= e^{-\mu} \left[ 1 + \mu\, e^t + \frac{(\mu\,e^t)^2}{2!} + \dots \right]\\
-     &= e^{-\mu} e^{\mu\, e^t}\\
-     &= e^{-\mu (1 - e^t)}
+     &= \sum^\infty_{x = 0} e^{xt} e^{-\lambda} \lambda^x / x!\\
+     &= e^{-\lambda} \sum^\infty_{x = 0} \frac{(\lambda\, e^t)^x}{x!} \\
+     &= e^{-\lambda} \left[ 1 + \lambda\, e^t + \frac{(\lambda\,e^t)^2}{2!} + \dots \right]\\
+     &= e^{-\lambda} e^{\lambda\, e^t}\\
+     &= e^{-\lambda (1 - e^t)}
 \end{align*}
 using \@ref(eq:Exponential).
 The first two results follow from differentiating the mgf.
@@ -711,9 +764,9 @@ In **R**, the Poisson distribution functions have the form `[dpqr]poiss(lambda)`
 
 
 :::{.example #Queues name="Queuing"}
-Customers enter a waiting line 'at random' at a rate of 4 per minute.
+Customers enter a service line 'at random' at a rate of 4 per minute.
 Assume that the number entering the line in any given time interval has a Poisson distribution.
-To determine the probability that at least one customer enters the line in a given $\frac{1}{2}$-minute interval, use (since $\mu = 2$):
+To determine the probability that at least one customer enters the line in a given $\frac{1}{2}$-minute interval, use (since $\lambda = 2$ oer half-hour):
 
 \[ 
    \Pr(X\geq 1) = 1 - \Pr(X = 0) = 1 - e^{-2} = 0.865.
@@ -803,27 +856,24 @@ if( knitr::is_html_output() ) {
 
 ### Relationship to the binomial distribution {#PoissonBinomial}
 
-If the number of trials is very large and the probability of success in a single trial is very small, then computing binomial probability is tedious. 
-For example, consider $X\sim \text{Bin}(n = 2000, p = 0.005)$. 
-Then, the pf is
+Computing binomial probabilities is tedious if the number of trials $n$ is very large and the probability of success in a single trial is very small. For example, consider $X\sim \text{Bin}(n = 2000, p = 0.005)$; the pf is
 
 \[
    p_X(x) = \binom{2000}{x}(0.005)^x 0.995^{2000 - x}.
 \]
-Using the pmf, computing some probabilities, such as $\Pr(X > 101)$, is very tedious.
+Using the pmf, computing some probabilities, such as $\Pr(X > 101)$, is tedious.
 (Try computing $\binom{2000}{102}$ on your calculator, for example.)
 However, the Poisson distribution can be used to approximate this probability.
 
 Set the Poisson mean to equal the binomial mean (that is, $\mu = np$).
 Since $\text{E}(Y) = \text{var}(Y) = \mu$ for the Poisson distribution, this means the variance is also set to $\sigma^2 = np$.
-Of course, the binomial mean is $np(1 - p)$, so this can only be (approximately) true if $p$ is close to zero.
+Of course, the binomial mean is $np(1 - p)$, so this can only be (approximately) true if $p$ is close to zero (and so $1 - p\approx 1$).
 
 A general guideline is that the Poisson distribution can be used to approximate the binomial when $n$ is large, $p$ is small and $np \le 7$.
 
 
 ::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
 If the random variable $X$ has the binomial distribution $X \sim \text{Bin}(n, p)$, the probability function can be approximated by the Poisson distribution $X \sim \text{Pois}(\lambda)$, where $\lambda = np$.
-
 The approximation is good when $n$ is large, $p$ is small, and $np\le 7$.
 :::
 
@@ -881,14 +931,15 @@ for (i in (1:4)) {
 
 ### Extensions
 
-The Poisson distribution is commonly-used to model independent counts.
+The Poisson distribution is commonly used to model independent counts.
 However, sometimes these counts explicitly *exclude* a count of zero.
+For example, consider modelling the number of nights patients spend in hospital; patients must spend at least one night in hospital. 
 Then, the probability functions can be expressed as
 
 \[
-   p_X(x) = \frac{\exp(-\mu) \mu^{x - 1}}{(x - 1)!}\quad   \text{for $x = 1, 2, 3, \dots$}
+   p_X(x) = \frac{\exp(-\lambda) \lambda^{x - 1}}{(x - 1)!}\quad   \text{for $x = 1, 2, 3, \dots$}
 \]
-where the parameter is $\mu > 0$.
+where the parameter is $\lambda > 0$.
 In this case, $\text{E}(X) = \lambda + 1$ and $\text{var}(X) = \lambda$.
 
 In some cases, the random variable is a count, but has an upper limit on the possible number of counts.
@@ -898,9 +949,10 @@ If the counts have a maximum of $K$, the the probability function is
 \[
    p_X(x) =
    \begin{cases}
+      \displaystyle 
       \frac{\exp(-\mu) \mu^x}{x!}                           &  \text{for $x = 0, 1, 2, \dots, K$};\\
       \displaystyle
-      \sum_{x = K + 1}^\infty \frac{\exp(-\mu) \mu^x}{x!}   & \text{for $x = K + 1, K + 2, \infty$};
+      \sum_{x = K + 1}^\infty \frac{\exp(-\mu) \mu^x}{x!}   & \text{for $x = K + 1, K + 2, \dots, \infty$};
    \end{cases}
 \]
 
@@ -914,44 +966,43 @@ In these situations, the *zero-inflated Poisson distribution* may be suitable.
 ### Standard parameterisation
 
 Consider a random process where independent Bernoulli trials are repeated until the $r$th success occurs. 
-Let the random variable $Y$ be the number of *failures* before the $r$th success is observed, so that $Y = 0, 1, 2, \dots$.
+Let the random variable $X$ be the number of *failures* before the $r$th success is observed, so that $X = 0, 1, 2, \dots$.
 
-To observe the $r$th success after $y$ failures, we need to observe $y$ failures and $r - 1$ successes first.
-There are $\binom{y + r - 1}{r - 1}$ ways in which to allocate these successes to the first $y + r - 1$ trials.
-Each of the $r - 1$ successes occur with probability $p$, and the $y$ failures with probability $1 - p$ (assuming events are independent).
-
-Hence the probability of observing the $r$th success in trial $y$ is
+To observe the $r$th success after $y$ failures, $y$ failures and $r - 1$ successes are observed first in the $x + r - 1$ trials.
+There are $\binom{x + r - 1}{r - 1}$ ways in which to allocate these successes to the first $x + r - 1$ trials.
+Each of the $r - 1$ successes occur with probability $p$, and the $x$ failures with probability $1 - p$ (assuming events are independent).
+Hence the probability of observing the $r$th success in trial $x$ is
 
 \begin{align*}
    \text{No. ways}
-   &\times \Pr\big(\text{$y$ failures}\big) \times \Pr(\text{$r$ successes}) \\
-   \binom{y + r - 1}{r - 1} 
-   &\times (1 - p)^{y} \times p^r.
+   &\times \Pr\big(\text{$x$ failures}\big) \times \Pr(\text{$r - 1$ successes}) \\
+   \binom{x + r - 1}{r - 1} 
+   &\times (1 - p)^{x} \times p^{r - 1}.
 \end{align*}
 
 
 :::{.definition #NegativeBinomialDistribution name="Negative binomial distribution"}
-A random variable $Y$ with pf
+A random variable $X$ with pf
 
 \begin{equation}
-   p_Y(y) = \binom{y +r - 1}{r - 1}(1 - p)^{y} p^r
- \quad\text{for $y = 0, 1, 2, \dots$}
+   p_X(x) = \binom{x + r - 1}{r - 1}(1 - p)^{x} p^{r - 1}
+ \quad\text{for $x = 0, 1, 2, \dots$}
    (\#eq:NegativeBinomialPMF)
 \end{equation}
-has a *negative binomial distribution* with parameters $r$ (an integer $\ge 1$) and $p$ ($0\le p\le1$).
-We write $Y\sim\text{NB}(r, p)$.
+has a *negative binomial distribution* with parameters $r$ (an positive integer) and $p$ ($0\le p\le 1$).
+We write $X\sim\text{NB}(r, p)$.
 :::
 
-
+The distribution function is complicated and is not given.
 The following are the basic properties of the negative binomial distribution.
 
 
 :::{.theorem #NegBinomialProperties name="Negative binomial properties"}
-If $X\sim \text{NB}(r,p)$ with pf \@ref(eq:NegativeBinomialPMF) then
+If $X\sim \text{NB}(r, p)$ with pf \@ref(eq:NegativeBinomialPMF) then
 
 1. $\text{E}(X) = \{r(1 - p)\}/p$.
 2. $\text{var}(X) = r(1 - p)/p^2$.
-3. $M_X(t) = \left[ p / \{1 - (1 - p)e^t\} \right]^r$.
+3. $M_X(t) = \left[ p / \{1 - (1 - p)\exp(t)\} \right]^r$ for $t < -\log p$.
 :::
 
 :::{.proof}
@@ -965,7 +1016,6 @@ Then the first two are then derived from the mgf.
 Ten people are needed for the demonstration. 
 The probability that a randomly-chosen person accepts the invitation is only 0.15.
 
-Consider finding the probability that the marketer will need to make more than 100 calls to secure ten acceptances. 
 Here, a ‘success’ is an acceptance to attend the demonstration. 
 Let $Y$ be the number of *failed* calls necessary to secure ten acceptances.
 Then $Y$ has a negative binomial distribution with $p = 0.15$ and $r = 10$.
@@ -974,6 +1024,9 @@ The mean number of failures made will is $\text{E}(Y) = \{r(1 - p)\}/p = \{10 \t
 Hence, including the ten calls that leads to a person accepting the invitation, the mean number of calls to be made will is $10 + \text{E}(Y) = 66.66\dots$.
 :::
 
+
+
+### Alternative parameterisation
 
 Often, a different parameterisation for the negative binomial distribution; see Exercise \@ref(exr:NegativeBinomialALT).
 However, the parameterisation presented here is used by **R**.
@@ -1075,16 +1128,16 @@ Then $C = 0.25 Y + 166.75$, so $\text{E}(C) = 0.25 \text{E}(Y) + 166.75 = C = 0.
 
 
 
-The negative binomial distribution can be extended so that $r$ can be any positive number, not just an integer.
+The negative binomial distribution can be extended so that $r$ can be *any* positive number, not just an integer.
 When $r$ is non-integer, the above interpretations are lost, but the distribution is more flexible.
 Relaxing the restriction on $r$ gives the pf as
 
 \begin{equation}
-   p_X(x) = \frac{\Gamma(x + r)}{\Gamma(r) x!} p^r (1 - p)^x,
+   p_X(x) = \frac{\Gamma(x + r)}{\Gamma(r)\, x!} p^r (1 - p)^x,
    (\#eq:NegativeBinomialPMFAlternative2)
 \end{equation}
-for $x = 0$, $1$, $2$, $\dots$ and $r > 0$.
-In this expression, $\Gamma(r)$ is the *gamma function* (Def. \@ref(def:GammaFunction)), and is like a factorial;
+for $x = 0, 1, 2 \dots$ and $r > 0$.
+In this expression, $\Gamma(r)$ is the *gamma function* (Def. \@ref(def:GammaFunction)), and is related to factorials when $r$ is integer;
 for instance, $\Gamma(r) = (r - 1)!$ if $r$ is a positive integer.
 
 
@@ -1112,34 +1165,21 @@ Important properties of the gamma function are given below.
 For the gamma function $\Gamma(\cdot)$,
 
 1. $\Gamma(r) = (r - 1)\Gamma(r - 1)$ if $r > 0$.
-2. $\Gamma(1/2) = \sqrt{\pi}$.
-3. $\lim_{r\to 0} \to \infty$.
+1. $\Gamma(1/2) = \sqrt{\pi}$.
+1. $\lim_{r\to 0} \to \infty$.
+1. $\Gamma(1) = \Gamma(2) = 1$.
+1. $\Gamma(n) = (n - 1)$ for all positive integers $n$.
 :::
 
 :::{.proof}
-Integration by parts gives
+For the first propoerty, integration by parts gives
 
 \begin{align*}
    \Gamma(r)
-   &= \int_0^{\infty}-x^{r - 1} \, d(e^{-x})\\
+   &= \left. -\exp(-x) \frac{x^2}{r}\right|_0^\infty + \int_0^\infty \exp(-x) (r - 1) x^{r - 2}\,dx\\
    &= 0 + \ (r - 1) \int_0^{\infty}  e^{-x}  x^{r - 2} \, dx\\
-   &= ( r - 1) \Gamma(r - 1).
+   &= (r - 1) \Gamma(r - 1).
 \end{align*}
-
-For the second property, put $r = 1/2$ in the first part gives
-
-\begin{align*}
-   \Gamma(1/2)
-   &= \int_0^{\infty}e^{-x}  x^{-\frac{1}{2}}\,dx\\
-   &= \sqrt{2}\int_0^{\infty}e^{-\frac{1}{2}z^2}\,dz, \text { putting $x = z^2/2\quad z \geq 0$}\\
-   &= \sqrt{2}  \sqrt{2 \pi} \underbrace{\int_0^{\infty}\frac{1}{\sqrt{2 \pi}} e^{-\frac{1}{2}z^2}\,dz}_{1/2}.
-\end{align*}
-The integral is $1/2$, being half the area under a normal curve (which we see later in Sect. \@ref(Normal)). 
-So
-
-\[
-   \Gamma(1/2) = \sqrt{\pi}.
-\]
 :::
 
 
@@ -1173,7 +1213,7 @@ legend("top",
 
 text(x = xPoints,
      y = gamma(xPoints),
-     pos = 3,
+     pos = c(3, 3, 3, 3, 2),
      labels = c("0!",
                 "1!",
                 "2!",
@@ -1182,7 +1222,7 @@ text(x = xPoints,
 ```
 
 :::{.example #Computing name="Negative binomial"}
-Consider the computer system in Example \@ref(exm:GeometricComputerFail). 
+Consider a computer system that fails with probability $p = 0.02$ on any given day (so that the system failure is a 'success').
 Suppose after five failures, the system is upgraded.
 
 To find the probability that an upgrade will happen within one year, let $D$ be the number of days before the fifth failure.
@@ -1200,7 +1240,7 @@ So the probability of upgrading within one year is about $85$%.
 
 :::{.example #NBMites name="Mites"}
 @BIB:Bliss:negbin gives data from the counts of adult European red mites on leaves selected at random from six similar apple trees (Table \@ref(tab:MitesTable)).
-From the data, the mean mites per leaf is
+From the data, the mean number of mites per leaf is
 
 \[
    \text{E}(X) = (0.467 \times 0) + (0.253 \times 1) +\cdots \approx 1.14667.
@@ -1211,7 +1251,7 @@ To compute the variance,
    \text{E}(X^2) = (0.467 \times 0^2) + (0.253 \times 1^2) +\cdots \approx 3.5733,
 \]
 so that $\text{var}(X) = 3.573333 - (1.146667)^2 =  2.258489$.
-The Poisson distribution has an equal mean and variance; the Poisson distribution may not model these data well.
+The Poisson distribution has an equal mean and variance; the Poisson distribution may not model these count data well.
 
 The expression for the mean and variance of the negative binomial distribution can be set to the computed values above, then solved for $p$ and $r$; then $p\approx 0.5077$ and $r\approx 1.1826$.
 Using these values, the estimated probability function for both the Poisson and negative binomial distributions are given in Table \@ref(tab:MitesTable); the negative binomial distribution fits better as expected.
@@ -1240,8 +1280,8 @@ if( knitr::is_latex_output() ) {
                 longtable = FALSE,
                 align = "r",
                 linesep = c("", "", "\\addlinespace"),
-                col.names = c("No. leaves", 
-                              "No. mites",
+                col.names = c("No. mites", 
+                              "No. leaves",
                               "Empirical prob.",
                               "Poisson prob.",
                               "Neg. bin. prob."),
@@ -1299,68 +1339,73 @@ Similarly,
    \Pr(X = 3) =\frac{ \binom{6}{3}\times \binom{4}{0} }{\binom{10}{3}}.
 \]
 
-In general, if there are $N$ balls in total in the bag, and $r$ of them are red, and we select a sample of size $n$ from the bag *without replacement*, then the probability of finding $x$ red balls in the sample of size $n$ is
+In general, suppose a bag contains $N$ balls, and $m$ of them are red and $n$ and *not* red; then $N = m + n$.
+Suppose a sample of size $k$ is drawn from the bag *without replacement*; then the probability of finding $x$ red balls in the sample of size $k$ is
 
 \[
-   \Pr(X = x) = \frac{ \binom{r}{x}{ \binom{N - r}{n - x}}}{\binom{N}{n}}
+   \Pr(X = x) 
+   = \frac{ \binom{m}{x}{ \binom{n}{k - x}}}{\binom{N}{k}}
+   = \frac{ \binom{m}{x}{ \binom{n}{k - x}}}{\binom{m + n}{k}}
 \]
-where $X$ is the number of red balls in sample of size $n$.
-(In the example, $n = 3$, $r = 6$ and $N = 10$.)
+where $X$ is the number of red balls in sample of size $k$.
+(In the example, $k = 3$, $m = 6$ and $N = 10$.)
 
-In the formula, $\binom{r}{x}$ is the number of ways of selecting $x$ red balls from the $r$ red balls in the bag; $\binom{N - r}{n - x}$ is the number of ways of selecting all the remaining $n - x$ to be the other colour (and there are $N - r$ of those in the bag); and $\binom{N}{n}$ is the number of ways of selecting a sample of size $n$ if there are $N$ balls in the bag in total.
+In the formula, $\binom{m}{x}$ is the number of ways of selecting $x$ red balls from the $m$ red balls in the bag; $\binom{n}{k - x}$ is the number of ways of selecting all the remaining $k - x$ to be the other colour (and there are $n = N - m$ of those in the bag); and $\binom{N}{k}$ is the number of ways of selecting a sample of size $k$ if there are $N$ balls in the bag in total.
 
 
 :::{.definition #HypergeometricDistribution name="Hypergeometric distribution"}
-Consider a set of $N$ items of which $r$ are of one kind (call them 'successes') and other $N - r$ are of another kind (call them 'failures').
-We are interested in the probability of $x$ successes in $n$ trials, when the selection (or drawing) is made *without* replacement. 
+Consider a set of $N = m + n$ items of which $m$ are of one kind (call them 'successes') and other $n = N - m$ are of another kind (call them 'failures').
+We are interested in the probability of $x$ successes in $k$ trials, when the selection (or drawing) is made *without* replacement. 
 Then the random variable $X$ is said to have a *hypergeometric distribution* with pf
 
 \begin{equation}
-   p_X(x) = \frac{ \binom{r}{x}\binom{N - r}{n - x}}{\binom{N}{n}}
+   p_X(x) = \frac{ \binom{m}{x}\binom{n}{k - x}}{\binom{m + n}{k}}
    (\#eq:HypergeometricPMF)
 \end{equation}
-where $x = 0$, $1$, $\dots$, $n$; $x \le r$, and $n - x \le N - r$.
+where $\max(0, k - n) \le x \le \min(n, m)$.
 :::
 
+The distribution function is complicated and is not given.
 The following are the basic properties of the hypergeometric distribution.
 
 :::{.theorem #HypergeomatricDistributionProperties name="Hypergeometric distribution properties"}
-If $X$ has a hypergeometric distribution with pf \@ref(eq:HypergeometricPMF), then
+If $X$ has a hypergeometric distribution with pf \@ref(eq:HypergeometricPMF), then (writing $N = m + n$)
 
-1. $\text{E}(X) = nr/N$.
-2. $\text{var}(X) = {n\left(\frac{r}{N}\right)\left(\frac{N-r}{N}\right)\left(\frac{N-n}{N-1}\right)}$.
+1. $\text{E}(X) = km/N$.
+2. $\displaystyle
+    \text{var}(X) = {k \left(\frac{m}{N}\right)\left(\frac{N - k}{N - 1}\right)\left(1 - \frac{m}{N}\right)}$.
 :::
 The moment generating function is difficult and will not be considered.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-In **R**, the hypergeometric distribution functions have the form `[dpqr]hyper(m, n, k)`.
+In **R**, the hypergeometric distribution functions have the form `[dpqr]hyper(m, n, k)`, where `k`${} = k$, `m`${} = m$ and `m`${} + {}$`n`${} = N$ (so that `n`${}={}$`N`${}-{}$`m`).
 :::
 
 
 ::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
-If the population is much larger than the sample size (that is, $N$ is much larger than $n$), then the probability of a success will be approximately constant, and the binomial distribution can be used to give approximate probabilities.
+If the population is much larger than the sample size (that is, $N$ is much larger than $k$), then the probability of a success will be approximately constant, and the binomial distribution can be used to give approximate probabilities.
 :::
 
 
 Consider the example at the start of this section.
 The probability of drawing a red ball initially is $6/10 = 0.6$, and the probability that the next ball is red is $5/9 = 0.556$.
-But suppose there are 10000 balls in the bag, of which 6000 are red.
-The probability of drawing a red ball initially is $6000 / 10000 = 0.6$, and the probability that the next ball is red becomes $5999/9999 = 0.59996$; the probability is almost the same.
+But suppose there are 10,000 balls in the bag, of which 6000 are red.
+The probability of drawing a red ball initially is $6000 / 10,000 = 0.6$, and the probability that the next ball is red becomes $5999/9999 = 0.59996$; the probability is almost the same.
 In this case, we might consider using the binomial distribution with $p\approx 0.6$.
 
-In general, if $N$ is much larger than $n$, the population proportion then will be approximately $p\approx r/N$, and so $1 - p \approx (N - r)/N$.
+In general, if $N$ is much larger than $k$, the population proportion then will be approximately $p\approx m/N$, and so $1 - p \approx (N - m)/N$.
 Using this information,
 
 \[
-   \text{E}(X) = n \times (r/N) \approx np
+   \text{E}(X) = k \times (m/N) \approx kp
 \]
 and
 \begin{align*}
    \text{var}(X)
-   &= n\left(\frac{r}{N}\right)\left(\frac{N - r}{N}\right)\left(\frac{N - n}{N - 1}\right)\\
-   &\approx n\left( p \right ) \left( 1 - p \right) \left(1 \right ) \\
-   &= n p (1 - p),
+   &= k\left(\frac{m}{N}\right)\left(1 - \frac{m}{N}\right)\left(\frac{N - k}{N - 1}\right)\\
+   &\approx k\left( p \right ) \left( 1 - p \right) \left(1 \right ) \\
+   &= k p (1 - p),
 \end{align*}
 which correspond to the mean and variance of the binomial distribution.
 
@@ -1370,8 +1415,8 @@ Twenty mice are available to be used in an experiment; seven of the mice are fem
 Five mice are required and will be sacrificed.
 What is the probability that more than three of the mice are males?
 
-Let $X$ be the number of male mice chosen in a sample of size $5$.
-Then $X$ has  a hypergeometric distribution (since mice are chosen without replacement) where $N = 20$, $n = 5$, $r = 13$ and we seek
+Let $X$ be the number of male mice chosen in a sample of size $k = 5$.
+Then $X$ has  a hypergeometric distribution (since mice are chosen without replacement) where $N = 20$, $k = 5$, $m = 13$ and $n = 20 - 13 = 7$, and we seek
 
 \begin{align*}
    \Pr(X > 3)
@@ -1380,7 +1425,12 @@ Then $X$ has  a hypergeometric distribution (since mice are chosen without repla
        \frac{ \binom{13}{5} \binom{7}{0}}{ \binom{20}{5} } \\
    & \approx  0.3228 + 0.0830 = 0.4058.
 \end{align*}
-The probability is about 41%.
+The probability is about 41%:
+
+```{r}
+dhyper(x = 4, m = 13, n = 7, k = 5) + 
+  dhyper(x = 5, m = 13, n = 7, k = 5)
+```
 :::
 
 
@@ -1398,21 +1448,30 @@ rpois(3, # Generate three random numbers...
       lambda = 4) # ... with mean = 4
 ```
 
-So, for example, if the Poisson distribution with mean $0.5$ was used to model the number of new cases of a disease in a given town each month, the number of cases in a *year* could be simulated in this way:
-
-```{r echo=FALSE}
-set.seed(1072908)
-```
+Consider, for example, if the Poisson distribution was used to model the number of new cases of a disease in a given town each month.
+However, the mean number of cases each month depends on external factors; the mean is either $\lambda = 3.5$ (with probability $0.17$) or $\lambda = 0.5$ (with probability $0.73$) following a binomial distribution. 
+The number of cases in one year could be modelled using:
 
 ```{r echo=TRUE}
+set.seed(1072908) # So you can repeat what I do
+
 cases <- 0  # Initialise
 for (m in (1:12)){   # For each month...
-   cases <- cases + rpois(1, 0.5)  # Add new cases for each month
-   cat("Month ", m, "; Number of cases so far: ", cases, "\n")
+
+  whichLambda <- rbinom(1, # Give one random observation
+                        1, # Number of trials: That is, 0 or 1 here
+                        prob = 0.17) 
+  lambda <- ifelse(whichLambda == 0, 
+                   3.5,
+                   0.5)
+  newCasesThisMonth <- rpois(1, lambda = lambda)
+  cases <- cases + newCasesThisMonth  # Add new cases for each month
+  cat("Month ", m, "; New cases:", newCasesThisMonth, 
+      "; Total number of cases so far: ", cases, "\n")
 }
 ```
 
-The code can be repeatedly run, as each run will produce different random numbers.
+The code can be repeatedly run, as each run will produce different random numbers (provided the `set.seed()` line is removed).
 If we run the above code 1000 times, we can record how many cases are recorded at the end of each year (Fig. \@ref(fig:SimAPlot)):
 
 
@@ -1420,62 +1479,42 @@ If we run the above code 1000 times, we can record how many cases are recorded a
 set.seed(10729083)
 numberCasesEndOfYear <- array( dim = 1000)  # Array to store cases
 
+lsmall <- 0
+
 for (sim in (1:1000)) { # For every simulation...
-   cases <- 0           # Initialise afresh for each sim.
-   for (m in (1:12)){   # For each month
-      cases <- cases + rpois(1, 0.5)   # Add cases
-   }
-   numberCasesEndOfYear[sim] <- cases  # Add to the array
+  cases <- 0  # Initialise
+  for (m in (1:12)){   # For each month...
+  
+    whichLambda <- rbinom(1, # Give one random observation
+                          1, # Number of trials: That is, 0 or 1 here
+                          prob = 0.17) 
+    lambda <- ifelse(whichLambda == 0, 
+                     3.5,
+                     0.5)
+    newCasesThisMonth <- rpois(1, lambda = lambda)
+    cases <- cases + newCasesThisMonth  # Add new cases for each month
+  }
+  numberCasesEndOfYear[sim] <- cases  # Add to the array
 }
 hist( numberCasesEndOfYear,
       las = 1,
-      breaks = seq(0, 20, by = 2),
-      xlim = c(0, 20),
+      breaks = seq(0, 60, by = 5),
+      xlim = c(0, 60),
       xlab = "Number of cases in one year",
       main = "Histogram of number of annual cases\n over 1000 simulations")
 ```
 
-```{r SimAPlot, echo=FALSE, fig.cap="The number of cases per year", fig.align="center", fig.width=4}
+```{r SimAPlot, echo=FALSE, fig.cap="The number of cases per year", fig.align="center", fig.width=5, fig.height=4}
 <<SimA>>
 ```
 
 Then, empirical probabilities can be computed:
 
 ```{r echo=TRUE}
-sum( numberCasesEndOfYear > 10) / 1000
-```
-The chance that more than ten cases are observed is about `r round(sum( numberCasesEndOfYear > 10) / 1000*100, 1)`%.
-
-Of course, these probabilities can be computed from a knowledge of the Poisson distribution too, but simulation makes studying more complex examples easier.
-Suppose, for instance, that the number of cases of the disease has a mean of $0.5$ for most of the year, but a mean of $1.2$ over winter.
-Again, the number of new cases in a *year* could be simulated (Fig. \@ref(fig:SimB)):
-
-
-```{r SimB, echo=TRUE, fig.cap="The number of cases per year", fig.align="center", fig.width=4}
-numberCasesEndOfYear <- array( dim = 1000)
-
-for (sim in (1:1000)) {
-   cases <- 0
-   for (m in (1:12)){
-     mn <- 0.5  # The usual mean
-     if (m %in% c(6, 7, 8) ) mn <- 1.2  # Alter mean for winter
-    
-     cases <- cases + rpois(1, mn)  
-   }
-   numberCasesEndOfYear[sim] <- cases
-}
-hist( numberCasesEndOfYear,
-      las = 1,
-      breaks = seq(0, 20, by = 2),
-      xlim = c(0, 20),
-      xlab = "Number of cases in one year",
-      main = "Histogram of number of annual cases\n over 1000 simulations")
-
-sum( numberCasesEndOfYear > 10) / 1000
-
+sum( numberCasesEndOfYear > 40) / 1000
 ```
 
-The chance that more than ten cases are observed has increased to about `r round(sum( numberCasesEndOfYear > 10) / 1000*100, 1)`%.
+The chance that more than 40 cases are observed is about `r round(sum( numberCasesEndOfYear > 40) / 1000 * 100, 1)`%.
 
 
 ## Exercises
@@ -1738,4 +1777,17 @@ Suppose that a certain queue is modelled with a Poisson distribution with a mean
 
 :::{.exercise #PoissonEqualValues}
 For the Poisson distribution in \@ref(eq:PoissonPMF), determine the values of $\lambda$ such that $\Pr(X) = \Pr(X + 1)$.
+:::
+
+:::{.exercise #HypergeometricFPC}
+Consider the mean and variance for the hypergeometric distribution, and write the hypergeometric distribution in terms of the sample size $n$ rather than $k$.
+
+1. Write $p = m/N$, and express the mean and variance of the hypergeometric distribution in terms of $p$ and $n$.
+1. Show that the mean of the hypergeometric and binomial distributions are the same.
+1. Show that the variance of the hypergeometric and binomial distributions are by connected a factor of
+
+\[
+ \sqrt{ \frac{N - n}{N - 1} },
+\]
+called the *Finite Population Correction* factor (Def. \@ref(def:FPC)).
 :::
