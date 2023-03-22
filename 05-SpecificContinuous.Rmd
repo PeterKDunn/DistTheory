@@ -25,15 +25,17 @@ The continuous uniform distribution has a constant pdf over a given range.
 
 :::{.definition #ContinuousUniformDistribution name="Continuous uniform distribution"}
 If a random variable $X$ with range space $[a, b]$ has the pdf
-\[
-   f_X(x) = \displaystyle\frac{1}{b - a}\quad\text{for $a\le x\le b$},
-\]
+
+\begin{equation}
+   f_X(x; a, b) = \displaystyle\frac{1}{b - a}\quad\text{for $a\le x\le b$},
+   (\#eq:ContinuousUniformPMF)
+\end{equation}
 then $X$ has a *continuous uniform distribution*.
-We write $Y\sim U(a,b)$ or $X\sim\text{Unif}(a,b)$.
+We write $X\sim U(a, b)$ or $X\sim\text{Unif}(a, b)$.
 :::
 
 This distribution is also called the *rectangular distribution*.
-The same notation is used to denote the discrete continuous uniform distribution; the context should make it clear which is meant). 
+The same notation is used to denote the discrete and continuous uniform distribution; the context should make it clear which is meant). 
 A plot of the pdf for a continuous uniform distribution is shown in Fig. \@ref(fig:ContinuousUniform).
 
 
@@ -89,6 +91,22 @@ lines( x = c(7, 7),
 ```
 
 
+
+:::{.definition #ContinuousuniformDF name="Continuous uniform distribution: distribution function"}
+For a random variable $X$ with the continuous uniform distribution given in \@ref(eq:ContinuousUniformPMF), the distribution function is
+
+\[
+  F_X(x; a, b) = 
+  \begin{cases}
+    0                                  & \text{for $x < a$};\\
+    \displaystyle \frac{x - a}{b - a}  & \text{ for $a \le x \le b$};\\ 
+    1                                  & \text{for $x > b$}.
+  \end{cases}
+\]
+:::
+
+
+
 The following are the basic properties of the continuous uniform distribution.
 
 :::{.theorem #ContUniformProperties name="Continuous uniform distribution properties"}
@@ -96,13 +114,20 @@ If $X\sim\text{Unif}(a,b)$ then
 
 1. $\text{E}(X)  = (a + b)/2$.
 2. $\text{var}(X) = (b - a)^2/12$.
-3. $M_X(t) = \{ \exp(bt) - \exp(at) \} / [t(b - a)]$.
+3. $M_X(t) = \{ \exp(bt) - \exp(at) \} / \{t(b - a)\}$.
 :::
 
 
 :::{.proof}
 These proofs are left as exercises.
 :::
+
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+In **R**, the continuous uniform distribution functions have the form `[dpqr]unif(min, max)`.
+:::
+
 
 
 :::{.example #ContinuousUniform name="Continuous uniform"}
@@ -114,35 +139,38 @@ These proofs are left as exercises.
      &= \frac{3}{4}.
 \end{align*}
 The probability could also be computed by finding the area of the appropriate rectangle.
-:::
-
-
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-In **R**, the continuous uniform distribution functions have the form `[dpqr]unif(min, max)`.
+Alternatively, in **R**:
+```{r}
+punif(-0.5, -2, 2) + 
+  1 - punif(0.5, -2, 2)
+```
 :::
 
 
 ## Normal distribution {#Normal}
 
-The most well-known continuous distribution is probably the *normal distribution*, sometimes called the *bell-shaped* distribution.
+### The general Normal distribution {#NormalUsual}
+
+The most well-known continuous distribution is probably the *normal distribution* (or *Gaussian distribution*), sometimes called the *bell-shaped* distribution.
 The normal distribution has many applications (especially in [sampling](SamplingDistributions)), and many natural quantities (such as heights and weights of humans) follow normal distributions.
 
 
 :::{.definition #NormalDistribution name="Normal distribution"}
 If a random variable $X$ has the pdf
-\[
-   f_X(x) =
+
+\begin{equation}
+   f_X(x; \mu, \sigma^2) =
    \displaystyle \frac{1}{\sigma \sqrt{2\pi}}
                  \exp\left\{ -\frac{1}{2}\left( \frac{x-\mu}{\sigma}\right)^2 \right\}
-\]
+   (\#eq:NormalPMF)
+\end{equation}
 for $-\infty<x<\infty$, then $X$ has a *normal distribution*.
 The two parameters are the mean $\mu$ such that $-\infty < \mu < \infty$; and the standard deviation $\sigma$ such that $\sigma > 0$.
-
-We write $X\sim N(\mu, \sigma^2)$.
+We write $X\sim N(\mu, \sigma^2)$ (though sometimes in non-theoretical work the notation used is $X\sim N(\mu, \sigma)$).
 :::
 
 
-Some authors use the notation $X\sim N(\mu,\sigma)$ so it is wise to check each article or book for the npotation used.
+Some authors use the notation $X\sim N(\mu,\sigma)$ so it is wise to check each article or book for the notation used.
 Some examples of normal distribution pdfs are shown in Fig. \@ref(fig:Normal).
 
 ```{r Normal, echo=FALSE, fig.align="center", fig.cap="Some examples of normal distributions. The solid lines correspond to $\\sigma = 0.5$ and the dashed lines to $\\sigma = 1$. For the left panel, $\\mu = -3$; for the right panel, $\\mu = 2$.", fig.height=3.5, fig.width=7, out.width='80%'}
@@ -180,6 +208,7 @@ for (i in (1:2)){
 ```
 
 
+
 In drawing the graph of the normal pdf, note that
 
 1. $f_X(x)$ is symmetrical about $\mu$: $f_X(\mu - x) = f_X(\mu + x)$.
@@ -190,6 +219,25 @@ In drawing the graph of the normal pdf, note that
 
 The proof that $\displaystyle \int^\infty_{-\infty} f_X(x)\,dx = 1$ is not obvious so will not be given.
 The proof relies on first squaring the integral and then changing to polar coordinates.
+
+
+:::{.definition #NormalDF name="Normal distribution: distribution function"}
+For a random variable $X$ with the normal distribution given in \@ref(eq:NormalPMF), the distribution function is
+
+\[
+  F_X(x; \mu, \sigma^2) = 
+  \frac{1}{2} \left\{1 + \operatorname{erf} \left( \frac {x - \mu }{\sigma {\sqrt {2}} }\right)\right\}
+\]
+where $\operatorname{erf}(\cdot)$ is the *error function*
+
+\begin{equation}
+  \operatorname{erf}(x) = 
+  \frac{2}{\sqrt{\pi}} \int _{0}^{x} e^{-t^{2}}\,dt,
+  (\#eq:ErrorFunction)
+\end{equation}
+which appears in numerous places, is commonly tabulated, and usually available in most computer packages.
+:::
+
 
 The following are the basic properties of the normal distribution.
 
@@ -211,16 +259,18 @@ In **R**, the normal distribution functions have the form `[dpqr]norm(mean, sd)`
 :::
 
 
-## The standard normal distribution {#StandardNormal}
+### The standard normal distribution {#StandardNormal}
 
 A special case of the normal distribution is the *standard normal* distribution, when the normal distribution has mean zero and variance one.
 
 
 :::{.definition #StandardNormal name="Standardard normal distribution"}
 The pdf for a random variable $Z$ with a *standard normal distribution* is
+
 \[
    f_Z(z) = \displaystyle \frac{1}{\sqrt{2\pi}}
                                 \exp\left\{ -\frac{z^2}{2}\right\}
+   (\#eq:StandardNormalPMF)
 \]
 where $-\infty < z < \infty$.
 We write $Z\sim N(0, 1)$.
@@ -231,7 +281,24 @@ Since $f_Z(z)$ is a pdf, then
    \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty} e^{-\frac 12 z^2}\,dz = 1,
    (\#eq:ZDistribution)
 \end{equation}
-a result which proves useful in many contexts (as in the proof of \@ref(thm:GammaFunctionProperties), and in the proof below).
+a result which proves useful in many contexts (as in the proof of the second statement in \@ref(thm:GammaFunctionProperties), and in the proof below).
+
+
+
+:::{.definition #StandardNormalDF name="Standard normal distribution: distribution function"}
+For a random variable $X$ with the standard normal distribution given in \@ref(eq:StandardNormalPMF), the distribution function is
+
+\begin{align}
+  F_X(x) = \Phi(z)  
+  &= \frac{1}{2} \left\{1 + \operatorname{erf} \left\{ \frac {x}{\sqrt {2}} \right)\right\}\nonumber\\
+  &= \int_{-\infty}^z \frac{1}{\sqrt{2\pi}} \exp\left\{ -\frac{t^2}{2}\right\}\, dt,
+  (\#eq:PhiFunction)
+\end{align}
+where $\operatorname{erf}(\cdot)$ is the *error function* \@ref(eq:ErrorFunction).
+The distribution function for the standard normal distribution is used so often that is has its own notation: $\Phi(\cdot)$.
+:::
+
+
 
 The following are the basic properties of the standard normal distribution.
 
@@ -248,6 +315,7 @@ If $Z\sim N(0, 1)$ then
 Part 3 could be proven first, and used to prove Parts 1 and 2.
 However, proving Parts 1 and 2 directly is constructive.
 For the expected value:
+
 \begin{align*}
     \text{E}(Z)
     &= \frac {1}{\sqrt{2\pi}} 
@@ -259,17 +327,20 @@ since the integrand is symmetric about $0$.
 
 For the variance, first see that $\text{var}(Z) = \text{E}(Z^2) - \text{E}(Z)^2 = \text{E}(Z^2)$ since $\text{E}(Z) = 0$.
 So:
+
 \[
    \text{var}(X) = \text{E}(Z^2)
    = \frac {1}{\sqrt{2\pi}}\int^\infty_{-\infty}z^2e^{-\frac{1}{2}z^2}\,dz.
 \]
 To integrate by parts (i.e., $\int u\,dv = uv - \int v\, du$), set $u = z$ (so that $du = 1$) and set
+
 \[
    dv = ze^{-\frac{1}{2}z^2}
    \quad\text{so that}\quad
    v = -e^{-\frac{1}{2}z^2}.
 \]
 Hence,
+
 \begin{align*}
    \text{var}(X)
    &= \frac {1}{\sqrt{2\pi}} \left\{ -e^{-\frac{1}{2}z^2} - \int^\infty_{-\infty}-e^{-\frac{1}{2}z^2}\, dz \right \}\\
@@ -278,44 +349,53 @@ Hence,
 since the first term is zero (due to symmetry), and the second term uses \@ref(eq:ZDistribution).
 
 For the mgf:
+
 \[ 
    M_Z(t) = \text{E}(e^{tZ}) =\int^\infty_{-\infty}e^{tz} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}z^2}\,dz.
 \]
 Collecting together the terms in the exponent and completing the square,
+
 \begin{equation*}
      -\frac{1}{2}[z^2 -2tz] = -\frac{1}{2}(z - t)^2+\frac{1}{2} t^2.
 \end{equation*}
 Taking the constants outside the integral:
+
 \[ 
    M_Z(t) = e^{\frac{1}{2}t^2}\int^\infty_{-\infty} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}[z - t]^2}\,dz. 
 \]
 The integral here is 1, since it is the area under an $N(t, 1)$ pdf. 
 Hence
+
 \[ 
    M_Z(t) = e^{\frac{1}{2} t^2}.
 \]
 :::
 
 This distribution is important in practice since *any* normal distribution can be rescaled into a standard normal distribution using
+
 \begin{equation}
    Z = \frac{X - \mu}{\sigma}.
    (\#eq:ConvertToZ)
 \end{equation}
 Since $Z = (X - \mu)/\sigma$, then $X = \mu + \sigma Z$, and so
+
 \[
    \text{E}(X) = \text{E}(\mu + \sigma Z) = \mu + \sigma \text{E}(Z) = \mu
 \]
 because $\text{E}(Z) = 0$.
 Also
+
 \[
    \text{var}(X) = \text{var}(\mu  +\sigma Z) = \sigma^2\text{var}(Z) = \sigma^2
 \]
 because $\text{var}(Z) = 1$.
 Finally
+
 \[
    M_X(t) = \text{E}(e^{tX}) = \text{E}\big(\exp\{t(\mu + \sigma Z)\}\big) = \exp(\mu t)\text{E}\big(\exp(t\sigma Z)\big).
 \]
 However, $\text{E}\big(\exp(t\sigma Z)\big) = M_Z(t\sigma) = e^{\frac{1}{2}(\sigma t)^2}$ so 
+
 \[
    M_Z(t) = \displaystyle \exp\left(\frac{t^2}{2}\right).
 \]
@@ -324,6 +404,8 @@ However, $\text{E}\big(\exp(t\sigma Z)\big) = M_Z(t\sigma) = e^{\frac{1}{2}(\sig
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 In **R**, the normal distribution functions have the form `[dpqr]norm(mean, sd)`.
 By default, `mean = 0` and `sd = 1`, corresponding to the standard normal distribution.
+
+Specifically, $\Phi(z)$ corresponds to the function `pnorm(z)`.
 :::
 
 
@@ -331,10 +413,12 @@ By default, `mean = 0` and `sd = 1`, corresponding to the standard normal distri
 ### Determining normal probabilities {#FindNormalProbs}
 
 The probability $\Pr(a < X \le b)$ where $X\sim N(\mu, \sigma^2)$ can be written
+
 \[
    \Pr(a < X \le b) = F_X(b) - F_X(a).
 \]
 where $F_X(x)$ is the distribution function
+
 \[
    F_X(x) 
    = \Pr(X \le x) 
@@ -344,28 +428,29 @@ This integral cannot be written in terms of standard functions and in general mu
 However, all statistical packages have a built-in procedure that evaluates $F_X(x)$ for any $z$ (such as `pnorm()` in **R**).
 
 Also, since any normal distribution can be transformed into a standard normal distribution, we can write
+
 \[
    z_1 = (a - \mu)/\sigma
    \quad\text{and}\quad
    z_2 = (b - \mu)/\sigma
 \]
 and hence the probability is 
+
 \[
    \Pr( z_1 < Z \le z_2) = \Phi(z_2) - \Phi(z_1),
 \]
-where $\Phi(z)$ is the distribution function for the standard normal distribution
-\[
-   \Phi(z) = \int_{-\infty}^z \frac{1}{\sqrt{2\pi}}
-                                \exp\left\{ -\frac{t^2}{2}\right\}\, dt.
-\]
+where $\Phi(z)$ is the distribution function for the standard normal distribution \@ref(eq:ErrorFunction).
+
 The process of converting a value $x$ into $z$ using $z = (x - \mu)/\sigma$ is called *standardising*.
 Tables of $\Phi(z)$ (or sometimes $1 - \Phi(z)$) are commonly available.
 These tables can be used to compute any probabilities associated with the normal distributions (see the examples below).
+Of course, **R** can be used too.
 
 In addition, the tables are often used in the reverse sense, where the probability of an event is given and the value of the random variable is sought.
 In these case, the tables are used 'backwards'; the appropriate area is found in the body of the table and the corresponding $z$-value found in the table margins.
 In **R**, the function `qnorm()` is used.
 This $z$-value is then converted to a value of the original random variable using
+
 \begin{equation}
    x = \mu + z\sigma.
    (\#eq:Unstandardising)
@@ -892,9 +977,11 @@ Many distributions can be used for modelling right skewed data defined on the po
 
 :::{.definition #ExponentialDistribution name="Exponential distribution"}
 If a random variable $X$ has the pdf
-\[
-   f_X(x) = \displaystyle \frac{1}{\beta}  \exp(-x/\beta)
-\]
+
+\begin{equation}
+   f_X(x; \beta) = \displaystyle \frac{1}{\beta}  \exp(-x/\beta)
+   (\#eq:ExponentialPMF)
+\end{equation}
 then $X$ has an *exponential distribution* with parameter $\beta > 0$. 
 We write $X\sim\text{Exp}(\beta)$.
 :::
@@ -942,14 +1029,26 @@ legend( "topright",
 ```
 
 
+:::{.definition #ExponentialDF name="Exponential distribution: distribution function"}
+For a random variable $X$ with the exponential distribution given in \@ref(eq:ExponentialPMF), the distribution function is
+
+\[
+  F_X(x; \lambda) 
+  = 1 - e^{-x/\beta}
+  = 1 - e^{-\lambda x}.
+\]
+:::
+
+
+
 The following are the basic properties of the exponential distribution.
 
 :::{.theorem #ExponentialProperties name="Exponential distribution properties"}
 If $X\sim\text{Exp}(\beta)$ then 
 
-1. $\text{E}(X) = \beta$.
-2. $\text{var}(X) = \beta^2$.
-3. $M_X(t) = (1 - \beta t)^{-1}$ for $t < 1/\beta$.
+1. $\text{E}(X) = \beta = 1/\lambda$.
+2. $\text{var}(X) = \beta^2 = 1/\lambda^2$.
+3. $M_X(t) = (1 - \beta t)^{-1}$ for $t < 1/\beta$ (or, $M_X(t) = \lambda/(\lambda - t)$ for $t < \lambda$).
 :::
 
 :::{.proof}
@@ -959,11 +1058,11 @@ The proofs are left as an exercise.
 
 The parameter $\beta$ represents the *mean* of the exponential distribution.
 The alternative parameter $\lambda = 1/\beta$ represents the mean *rate* at which events occur.
-Like the [Poisson distribution](#PoissonDistribution), once the mean is defined the variance is defined.
+Like the [Poisson distribution](#PoissonDistribution), the variance is defined once the mean is defined .
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-In **R**, the exponential distribution functions have the form `[dpqr]exp(rate)` where `rate`${}= \lambda$.
+In **R**, the exponential distribution functions have the form `[dpqr]exp(rate)` where `rate`${}= \lambda = 1/\beta$.
 :::
 
 
@@ -982,6 +1081,7 @@ What proportion of time intervals can be expected to be longer than 1 second?
 
 If $X$ is the time between successive nerve pulses (in seconds), then $X\sim \text{Exp}(\beta = 0.2186)$.
 The solution will then be
+
 \begin{align*}
    \Pr(X>1)
    &=  \int_1^\infty \frac{1}{0.2186}\exp(-x/0.2186)\, dx \\
@@ -1028,6 +1128,7 @@ Hence the exponential distribution is used to describe the interval between cons
 :::{.theorem #PoissonProcess name="Poisson process"}
 Consider a Poisson process at rate $\lambda$ and suppose observation starts at an arbitrary time point. 
 Then the time $T$ to the first event has an exponential distribution with mean $\text{E}(T) = 1/\lambda$; i.e.,
+
 \[
    f_T(t) = \lambda e^{-\lambda t},\quad t > 0.
 \]
@@ -1039,21 +1140,23 @@ Consider an interval $(0, t]$ for some fixed value $t > 0$.
 Now $T$ is the elapsed time after observations starts until the first event occurs.
 
 Clearly, if the first event takes longer than $t$ to occur, then $T > t$ and the number of events in $(0, t]$ is zero.
-Conversely, if the first event occurs at time $t$ or earlier then $T \le t$ and the number of events in $(0, t]$ is greater than zero.
+Conversely, if the first event occurs at time $t$ or earlier, then $T \le t$ and the number of events in $(0, t]$ is greater than zero.
 Hence, the events $\{T > t\}$ and $\{N(t) = 0\}$ are equivalent where $N(t)$ is the number of events occurring in time $(0, t]$.
 Therefore
+
 \[
    \Pr(T > t) = \Pr(N(t) = 0).
 \]
-But $N(t) \sim \text{Pois}(\lambda)$ with mean $\text{E}(N(t)) = \lambda t$.
-Hence
+But $N(t) \sim \text{Pois}(\lambda)$ with mean $\text{E}(N(t)) = \lambda t$; hence
+
 \begin{equation}
    \Pr(T > t) 
    = \frac{(\lambda t)^0 e^{-\lambda t}}{0!}
    = e^{-\lambda t}.
    (\#eq:ExpSurvivor)
 \end{equation}
-This shows that the df of $T$ is given by
+This shows that the df of $T$ is
+
 \[
    F_T(t)
    = \Pr(T \le t) 
@@ -1061,6 +1164,7 @@ This shows that the df of $T$ is given by
    = 1 - e^{-\lambda t}.
 \]
 Differentiating with respect to $t$ yields the pdf
+
 \[
    f_T(t)
    = \frac{d}{dt}F_T(t)
@@ -1079,11 +1183,11 @@ If events occur according to a Poisson distribution, then the "time" *between* t
 
 
 :::{.example #ExpPoisson name="Relationship between exponential and Poisson distributions"}
-A Poisson process occurs at the mean rate of 5 events per hour.
+Suppose a Poisson process occurs at the mean *rate* of 5 events per hour.
 Let $N$ represent the number of events in one day and $T$ the time between consecutive events. 
 We can describe the distribution of the time between consecutive events and the distribution of the number of events in one day (24 hours).
 
-Since events occur at the mean rate of $\lambda = 5$ events per hour, then the mean time between consecutive events is $\beta = 1/\lambda = 0.2$ hours. 
+Since events occur at the mean rate of $\lambda = 5$ events per hour, the mean time between consecutive events is $\beta = 1/\lambda = 0.2$ hours. 
 Hence, the mean number of events in one day is $\mu = 24\times 5 = 120$.
 
 Consequently, $N\sim\text{Pois}(\mu = 120)$ and  $X\sim\text{Exp}(\beta = 0.2)$ (or, equivalently, $X\sim\text{Exp}(\lambda = 5)$).
@@ -1096,6 +1200,7 @@ This property is captured in the following theorem.
 
 :::{.theorem #MemorylessProperty name="Memoryless property"}
 If $T \sim \text{Exp}(\lambda)$, then for $s > 0$ and $t > 0$, 
+
 \[
     \Pr(T > s + t \mid T > s) = \Pr(T > t)
 \]
@@ -1103,12 +1208,14 @@ If $T \sim \text{Exp}(\lambda)$, then for $s > 0$ and $t > 0$,
 
 :::{.proof}
 Using Definition \@ref(def:ConditionalProb),
+
 \[
    \Pr(T > s + t \mid T > s) 
    = \frac{ \Pr( \{T > s + t\} \cap \{T > s\})} {\Pr(T > s)}
 \]
 But if $T > s + t$, then $T > s$. 
 Consequently $\Pr( \{T > s + t \}\cap \{T > s \} ) = \Pr(T > s + t)$ and so
+
 \begin{align*}
    \Pr(T > s + t \mid T > s )
    &= \frac{\Pr(T > s +t )}{\Pr(T > s)}\\
@@ -1128,12 +1235,14 @@ Suppose the lifespan of component $A$ is modelled by an exponential distribution
 Then, $T \sim \text{Exp}(\beta = 6)$.
 
 The probability that component $A$ fails in less than 6 months is
+
 \[
    \Pr(T < 6) = 1 - \exp(-6/12) = 0.3935.
 \]
 
 Now, suppose component $A$ has been in place for 12 months. 
 The probability that it will fail in less than a further 6 months is
+
 \[
    \Pr(T < 18 | T > 12) = \Pr(T < 6) = 1 - \exp(-6/12) = 0.3935
 \]
@@ -1141,9 +1250,9 @@ by the memoryless property.
 :::
 
 
-Example \@ref(exm:Memoryless) highlights the notion that an exponential process is ageless: the risk of 'mortality' remains constant with age.
-In other words, the probability of such an event occurring in the next small interval, whether it be the failure of a component or the occurrence of an accident, remains constant regardless of the age of the component or the length of time since the last accident. 
-In this sense an exponential lifetime is different from a human lifetime or the lifetime of many man-made objects where the risk of 'death' in the next small interval increases with age.
+Example \@ref(exm:Memoryless) shows that an exponential process is 'ageless': the risk of 'mortality' remains constant with age.
+Thta is, the probability of such an event occurring in the next small interval, whether the failure of a component or the occurrence of an accident, remains constant regardless of the age of the component or the length of time since the last accident. 
+In this sense, an exponential lifetime is different from a human lifetime, or the lifetime of many man-made objects, where the risk of 'death' in the next small interval increases with age.
 
 
 ## Gamma distribution {#GammaDistribution}
@@ -1154,8 +1263,9 @@ More flexibility is sometimes needed, which is provided by the gamma distributio
 
 :::{.definition #GammaDistribution  name="Gamma distribution"}
 If a random variable $X$ has the pdf
+
 \[
-   f_X(x) 
+   f_X(x; \alpha, \beta) 
    = \frac{1}{\beta^\alpha \Gamma(\alpha)} x^{\alpha - 1} \exp(-x/\beta)
 \]
 then $X$ has a *gamma distribution*, where $\Gamma(\cdot)$ is the *gamma function* (see Sect. \@ref(def:GammaFunction)) and $\alpha, \beta > 0$.
@@ -1236,6 +1346,7 @@ for (i in (1:length(alpha))){
 
 
 Notice that
+
 \begin{align}
    \int_0^\infty f_X(x)\,dx
    &= \int_0^\infty\frac{e^{-x/\beta}x^{\alpha - 1}}{\beta^\alpha\Gamma(\alpha)}\,dx\nonumber\\
@@ -1245,7 +1356,7 @@ Notice that
 \end{align}
 as it must.
 
-
+The distribution function for the gamma distribution is complicated, involving incomplete gamma functions, and will not be given.
 The following are the basic properties of the gamma distribution.
 
 
@@ -1258,6 +1369,8 @@ If $X\sim\text{Gam}(\alpha,\beta)$ then
 :::
 
 :::{.proof}
+For the expected value:
+
 \[
    \text{E}(X)
    = \int_0^{\infty}x f_X(x)\,dx 
@@ -1276,6 +1389,7 @@ This result follows from using \@ref(eq:GammaStd) and Theorem \@ref(thm:GammaPro
 \]
 where the result follows by writing $\Gamma(\alpha + 2) = (\alpha + 1)\alpha\Gamma(\alpha)$.
 Hence
+
 \[
    \text{var}(X)
    = \text{E}(X^2) - [\text{E}(X)]^2
@@ -1283,6 +1397,7 @@ Hence
    = \alpha\beta^2
 \]
 Also:
+
 \begin{align*}
    M_X(t)
     = \text{E}(e^{Xt})
@@ -1297,10 +1412,12 @@ since the integral remaining is 1.
 
 As usual the moments can be found by expanding $M_X(t)$ as a series.
 That is,
+
 \[
    M_X(t) = 1 \ + \ \alpha\beta t \ + \ \frac{\alpha(\alpha+1)\beta^2}{2!}  t^2 \ + \ \cdots
 \]
 from which
+
 \begin{align*}
    E(X)   &= \text{coefficient of }t =\alpha\beta,\\
    E(Y^2) &= \text{coefficient of }t^2/2!=\alpha(\alpha+1)\beta^2,
@@ -1380,6 +1497,7 @@ What is the probability that a component will last for more than three hours?
 
 From the information, $T\sim \text{Gam}(\alpha = 2, \beta = 1)$.
 The required probability is therefore
+
 \begin{align*}
    \Pr(T > 3)
    &= \int_3^\infty \frac{1}{1^2 \Gamma(2)}t^{2 - 1} \exp(-t/1)\,dt \\
@@ -1387,6 +1505,7 @@ The required probability is therefore
 \end{align*}
 since $\Gamma(2) = 1! = 1$.
 This expression can be integrated using integration by parts:
+
 \begin{align*}
    \Pr(T > 3)
    &= \int_3^\infty t \exp(-t)\,dt \\
@@ -1427,6 +1546,7 @@ If $X\sim \text{Gam}(\alpha, \beta)$, find the distribution of $Y = kX$ for some
 One way to approach this question is to use moment generating functions.
 Since $X$ has a gamma distribution, $M_X(t) = (1-\beta t)^{-\alpha}$.
 Now,
+
 \begin{align*}
    M_Y(t)
    &= \text{E}(\exp(tY)) \qquad\text{by definition of the mgf}\\
@@ -1450,11 +1570,13 @@ The beta distribution is useful in these situations.
 
 :::{.definition #BetaDistribution name="Beta distribution"}
 A random variable $X$ with probability density function
+
 \begin{equation*}
    f_X(x)
    = \frac{x ^ {m - 1}(1 - x)^{n - 1}}{B(m,n)}, \ 0 \leq x \leq 1, \ m>0, \ n>0
 \end{equation*}
 where
+
 \begin{equation}
    B(m, n)
    = \int_0^1  x^{m - 1}(1 - x)^{n - 1} \, dx, \quad m > 0, \ n > 0
@@ -1468,6 +1590,7 @@ We write $X \sim \text{Beta}(m, n)$.
 
 $B(m, n)$ defined by \@ref(eq:BetaFunction) is known as the *beta function* with parameters $m$ and $n$.
 Since $\int_0^1 f_X(x)\,dx = 1$ then
+
 \begin{equation}
    \int_0^1  \frac{x^{m - 1}(1 - x)^{n - 1}}{B(m, n)}\,dx = 1.
 \end{equation}
@@ -1476,10 +1599,10 @@ Since $\int_0^1 f_X(x)\,dx = 1$ then
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 In **R**, the beta function is evaluated using `beta(a, b)`.
 
-The beta distribution functions have the form `[dpqr]beta(shape1, shape2)`, where `shape1`$= n$ and `shape2`$= m$.
+The beta distribution functions have the form `[dpqr]beta(shape1, shape2)`, where `shape1`${}= n$ and `shape2`${}= m$.
 :::
 
-
+The distribution function for the beta distribution is complicated, involving incomplete beta functions, and will not be given.
 Some properties of the beta function follow.
 
 
@@ -1496,6 +1619,7 @@ The beta function \@ref(eq:BetaFunction) satisfies the following:
 :::{.proof}
 To prove the first, put $z = 1 - x$ and hence $dz = -dx$ in \@ref(eq:BetaFunction). 
 Then
+
 \begin{align*}
    B(m, n)
    &= -\int_1^0(1 - z)^{m - 1}  z^{n - 1} \, dz\\
@@ -1505,10 +1629,12 @@ Then
 
 For the second, put $x = \sin^2\theta$, and so $dx = 2\sin\theta\cos\theta\,d\theta$, in \@ref(eq:BetaFunction).
 We have
+
 \[
    B(m, n) = 2 \int_0^{\pi/2} \sin^{2m - 1}\theta \cos ^{2n - 1}\theta\,d\theta.
 \]
 So, for $m = n = \frac{1}{2}$,
+
 \[
    B\left(\frac{1}{2}, \frac{1}{2}\right) = 2\int_0^{\pi/2} d\theta = \pi.
 \]
@@ -1528,7 +1654,7 @@ When $m = n = 1$, the beta distribution becomes the uniform distribution on $(0,
 :::
 
 
-```{r BetaDistributions, echo=FALSE, fig.align="center", fig.cap="Various beta-distribution PDFs", fig.width=7, fig.height=3.5, out.width='80%'}
+```{r BetaDistributions, echo=FALSE, fig.align="center", fig.cap="Various beta-distribution pdfs", fig.width=7, fig.height=3.5, out.width='80%'}
 
 par(mfrow = c(1, 2))
 
@@ -1599,25 +1725,27 @@ Some basic properties of the beta distribution follow.
 If $X \sim \text{Beta}(m, n)$ then
 
 1. $\text{E}(X) = m/(m + n)$.
-2. $\text{var}(X) = \frac{mn}{(m + n)^2(m + n + 1)}$.
-3. A mode occurs at $x = \frac{m - 1}{m + n - 2}$ for $m, n > 1$.
+2. $\displaystyle\text{var}(X) = \frac{mn}{(m + n)^2(m + n + 1)}$.
+3. A mode occurs at $\displaystyle x = \frac{m - 1}{m + n - 2}$ for $m, n > 1$.
 :::
 
 
 :::{.proof}
 Assume $X \sim \text{Beta}(m, n)$, then
+
 \begin{align*}
    \mu_r'
    =\text{E}(X^r)
    &= \int_0^1  \frac{x^r  x^{m - 1}(1 - x)^{n - 1}} {B(m, n)}\,dx\\
    &= \frac{B(m + r, n)}{B(m, n)}  \int_0^1 \frac{x^{m + r - 1}(1 - x)^{n - 1}}{B(m + r, n)}\,dx\\
-   &= \frac{\Gamma(m + r)\Gamma(n)}{\Gamma(m + r + n)}\frac{\Gamma(m + n)}{\Gamma(m)\Gamma(n)}\\
-   &= \frac{\Gamma(m + r)\Gamma(m + n)}{\Gamma(m + r + n)\Gamma(m)}
+   &= \frac{\Gamma(m + r)\,\Gamma(n)}{\Gamma(m + r + n)} \frac{\Gamma(m + n)}{\Gamma(m)\,\Gamma(n)}\\
+   &= \frac{\Gamma(m + r)\,\Gamma(m + n)}{\Gamma(m + r + n)\,\Gamma(m)}
 \end{align*}
 Putting $r = 1$ and $r = 2$ into the above expression, and using sthat $\text{var}(X) = \text{E}(X^2) - \text{E}(X)^2$, the mean and variance are $\text{E}(X) = m/(m + n)$ and $\text{var}(X) = \frac{mn}{(m + n)^2(m + n + 1)}$.
 
 Any mode $\theta$ of the distribution for which $0 < \theta < 1$ will satisfy $f'_X(\theta) = 0$. 
 From the definition we see that for $m, n>1$ and $0 < x < 1$,
+
 \[
    f'_X(x) = (m - 1)x^{m - 2} (1 - x)^{n - 1} - (n - 1)x^{m - 1}(1 - x)^{n - 1}/B(m, n) = 0
 \]
@@ -1641,11 +1769,13 @@ The bulk storage tanks of a fuel retailed are filled each Monday.
 The retailer has observed that over many weeks the proportion of the available fuel supply sold is well modelled by a beta distribution with $m = 4$ and $n = 2$.
 
 If $X$ denotes the proportion of the total supply sold in a given week, the mean proportion of fuel sold each week is
+
 \[
    \text{E}(X) = m/(m + n) = 4/6 = 2/3.
 \]
 
 To find the probability that at least 90% of the supply will sell in a given week, compute:
+
 \begin{align*}
    \Pr(X > 0.9)
    &= \int_{0.9}^1\frac{\Gamma(4 + 2)}{\Gamma(4)\Gamma(2)}x^3(1 - x)dx\\
@@ -1996,7 +2126,7 @@ Another commonly-used distribution is the *Weibull distribution*:
 \[
    f_Y(y) = \frac{k}{\lambda} \left( \frac{x}{\lambda} \right)^{k - 1} \exp( -(x/\lambda)^k)\quad\text{for $x > 0$},
 \]
-where $\lambda > 0$ is called a *scale parameter*, and $k > 0$ is called a *shape parameter$.
+where $\lambda > 0$ is called a *scale parameter*, and $k > 0$ is called a *shape parameter*.
 
 1. Produce some sketches in **R** to show the variety on the shapes of the density function.
 1. Derive the mean and variance of the Weibull distribution.
