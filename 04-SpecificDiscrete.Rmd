@@ -28,9 +28,10 @@ This is one of the simplest discrete distributions.
 :::{.definition #DiscreteUniform name="Discrete uniform distribution"}
 If a random variable $X$ with range space $\{a, a + 1, a + 2, \dots, b\}$, where $a$ and $b$ ($a < b$) are integers, has the pf
 
-\[
+\begin{equation}
    p_X(x; a, b) = \frac{1}{b - a + 1}\text{ for $x = a, a + 1, \dots, b$}
-\]
+   (\#eq:DiscreteUniform)
+\end{equation}
 then $X$ has a *discrete uniform distribution*.
 We write $X\sim U(a, b)$ or $X\sim \text{Unif}(a, b)$.
 :::
@@ -572,7 +573,7 @@ If $X\sim\text{Geom}(p)$ as defined in Eq. \@ref(eq:GeometricPMF), then
 
 :::{.proof}
 The first two result can be proven directly but proving the third result, and using the mgf to prove the first two, is easier.
-This is left as an exercise.
+This is left as an exercise (Ex. \@ref(exr:GeometricPropertiesProof)).
 :::
 
 
@@ -946,7 +947,7 @@ for (i in (1:4)) {
 ```
 
 
-### Extensions
+### Extensions {#PoissonExtensions}
 
 The Poisson distribution is commonly used to model independent counts.
 However, sometimes these counts explicitly *exclude* a count of zero.
@@ -958,7 +959,7 @@ Then, the probability functions can be expressed as
 \]
 where the parameter is $\lambda > 0$.
 This is called the *zero-truncated Poisson distribution*.
-In this case, $\text{E}(X) = \lambda + 1$ and $\text{var}(X) = \lambda$.
+In this case, $\text{E}(X) = \lambda + 1$ and $\text{var}(X) = \lambda$ (Ex. \@ref(exr:PoissonZeroTruncated)).
 
 In some cases, the random variable is a count, but has an upper limit on the possible number of counts.
 This is the *truncated Poisson distribution*.
@@ -1311,19 +1312,159 @@ When the selection of items a fixed number of times is done *with* replacement, 
 However, when the selection of items is done *without* replacement, the trials are not independent, making the binomial model unsuitable.
 In these situations, a hypergeometric distribution is appropriate.
 
-Consider a simple example: A bag contains six red balls and four blue balls.
-The variable of interest, say $X$, is the number of red balls drawn in three random selections from the bag, without replacing the balls.
-Since the balls are not replaced, $\Pr(\text{draw a red ball})$ is not constant, and so the binomial distribution cannot be used.
+Consider a simple example: A bag contains six light-coloured balls and four dark-coloured balls (Fig. \@ref(fig:HypergeometricHelp)).
+The variable of interest, say $X$, is the number of light-coloured balls drawn in three random selections from the bag, without replacing the balls.
+Since the balls are not replaced, $\Pr(\text{draw a light-coloured ball})$ is not constant, and so the binomial distribution cannot be used.
+
+
+```{r HypergeometricHelp, echo=FALSE, fig.align="center", fig.cap="Drawing balls from a 'bag'", fig.width=7, out.width='75%'}
+drawBall <- function(x, y, diameter = 1, col = "white", ...){
+  t <- seq(0, 2 * pi, 
+           length = 100)
+  tx <- cos(t) * diameter
+  ty <- sin(t) * diameter
+  polygon( x = x + tx,
+           y = y + ty,
+           col = col,
+         ...)
+  
+}
+
+
+
+#############
+### "Bag"
+
+
+plot(x = c(-1, 9),
+     y = c(-2, 2),
+     asp = 1,
+     axes = FALSE,
+     type = "n",
+     xlab = "",
+     ylab = ""
+     )
+drawBall(x = 0.2,
+         y = 1.4,
+         diameter = 0.15,
+         col = grey(0.8))
+drawBall(x = 0.6,
+         y = 1.4,
+         diameter = 0.15,
+         col = grey(0.8))
+drawBall(x = 1.0,
+         y = 1.4,
+         diameter = 0.15,
+         col = grey(0.8))
+drawBall(x = 1.4,
+         y = 1.4,
+         diameter = 0.15,
+         col = grey(0.8))
+drawBall(x = 1.8,
+         y = 1.4,
+         diameter = 0.15,
+         col = grey(0.8))
+drawBall(x = 2.2,
+         y = 1.4,
+         diameter = 0.15,
+         col = grey(0.8))
+
+
+
+
+
+drawBall(x = 0.6,
+         y = 0.4,
+         diameter = 0.15,
+         col = grey(0.4))
+drawBall(x = 1.0,
+         y = 0.4,
+         diameter = 0.15,
+         col = grey(0.4))
+drawBall(x = 1.4,
+         y = 0.4,
+         diameter = 0.15,
+         col = grey(0.4))
+drawBall(x = 1.8,
+         y = 0.4,
+         diameter = 0.15,
+         col = grey(0.4))
+
+polygon( x = c(-0.1, -0.1, 2.5, 2.5),
+         y = c(0.1, 1.7, 1.7, 0.1),
+         lwd = 2)
+text(x = 1,
+     y = -0.5,
+     #font = 2, # BOLD
+     labels = expression(paste(Balls~"in"~the~bag:~italic(N)==10*":")))
+text(x = 1,
+     y = -1.35,
+     labels = expression( atop( italic(m)==6~"light-coloured balls",
+                                italic(n)==4~"dark-coloured balls") ))
+
+
+
+#############
+### Selection
+
+
+
+drawBall(x = 1.0 + 6,
+         y = 1.4,
+         diameter = 0.15,
+         col = grey(0.8))
+
+
+
+
+
+drawBall(x = 0.6 + 6,
+         y = 0.4,
+         diameter = 0.15,
+         col = grey(0.4))
+drawBall(x = 1.0 + 6,
+         y = 0.4,
+         diameter = 0.15,
+         col = grey(0.4))
+
+
+#polygon( x = c(-0.1 + 6, -0.1 + 6, 2.5, 2.5),
+#         y = c(0.1, 1.7, 1.7, 0.1),
+#         lwd = 2)
+text(x = 1 + 6,
+     y = -0.5,
+     #font = 2, # BOLD
+     labels = "Balls selected:")
+text(x = 1 + 6,
+     y = -1.35,
+     labels = expression( atop( italic(x)==1~"light-coloured ball",
+                                2~"dark-coloured balls") ) )
+
+arrows( x0 = 2.6,
+        x1 = 6.2,
+        y0 = 0.9, 
+        y1 = 0.9,
+        lwd = 2,
+        length = 0.15,
+        angle = 15)
+text(x = 4.4,
+     y = 1.1,
+     labels = expression( paste(Select~italic(k)==3~balls)))
+
+#axis(side = 1); axis(side = 2); box()
+```
+
+
 
 The probabilities can be computed, however, using the counting ideas from Chap. \@ref(Probability).
-There are a total of $\binom{10}{3}$ ways of selecting a sample of size 3 from the bag.
+There are a total of $\binom{10}{3}$ ways of selecting a sample of size $k = 3$ from the bag.
 Consider the case $X = 0$.
-The number of ways of drawing no red balls is $\binom{6}{0}$ and the number of ways of drawing the three blue balls in $\binom{4}{3}$, so the probability is
+The number of ways of drawing no light-coloured balls is $\binom{6}{0}$ and the number of ways of drawing the three dark-coloured balls in $\binom{4}{3}$, so the probability is
 
 \[
    \Pr(X = 0) = \frac{\binom{6}{0}\binom{4}{3}}{\binom{10}{3}} \approx 0.00833.
 \]
-Likewise, the number of ways to draw one red ball (and hence two blue balls) is $\binom{6}{1}\times \binom{4}{2}$, so
+Likewise, the number of ways to draw one light-coloured ball (and hence two dark-coloured balls; Fig. \@ref(fig:HypergeometricHelp)) is $\binom{6}{1}\times \binom{4}{2}$, so
 
 \[
    \Pr(X = 1) = \frac{ \binom{6}{1}\times \binom{4}{2} }{\binom{10}{3}}.
@@ -1336,18 +1477,18 @@ Similarly,
    \Pr(X = 3) =\frac{ \binom{6}{3}\times \binom{4}{0} }{\binom{10}{3}}.
 \]
 
-In general, suppose a bag contains $N$ balls, and $m$ of them are red and $n$ and *not* red; then $N = m + n$.
-Suppose a sample of size $k$ is drawn from the bag *without replacement*; then the probability of finding $x$ red balls in the sample of size $k$ is
+In general, suppose a bag contains $N$ balls, and $m$ of them are light-coloured and $n$ and *not* light-coloured; then $N = m + n$.
+Suppose a sample of size $k$ is drawn from the bag *without replacement*; then the probability of finding $x$ light-coloured balls in the sample of size $k$ is
 
 \[
    \Pr(X = x) 
    = \frac{ \binom{m}{x}{ \binom{n}{k - x}}}{\binom{N}{k}}
    = \frac{ \binom{m}{x}{ \binom{n}{k - x}}}{\binom{m + n}{k}}
 \]
-where $X$ is the number of red balls in sample of size $k$.
+where $X$ is the number of light-coloured balls in sample of size $k$.
 (In the example, $k = 3$, $m = 6$ and $N = 10$.)
 
-In the formula, $\binom{m}{x}$ is the number of ways of selecting $x$ red balls from the $m$ red balls in the bag; $\binom{n}{k - x}$ is the number of ways of selecting all the remaining $k - x$ to be the other colour (and there are $n = N - m$ of those in the bag); and $\binom{N}{k}$ is the number of ways of selecting a sample of size $k$ if there are $N$ balls in the bag in total.
+In the formula, $\binom{m}{x}$ is the number of ways of selecting $x$ light-coloured balls from the $m$ light-coloured balls in the bag; $\binom{n}{k - x}$ is the number of ways of selecting all the remaining $k - x$ to be the other colour (and there are $n = N - m$ of those in the bag); and $\binom{N}{k}$ is the number of ways of selecting a sample of size $k$ if there are $N$ balls in the bag in total.
 
 
 :::{.definition #HypergeometricDistribution name="Hypergeometric distribution"}
@@ -1364,6 +1505,7 @@ where $\max(0, k - n) \le x \le \min(n, m)$.
 
 The distribution function is complicated and is not given.
 The following are the basic properties of the hypergeometric distribution.
+
 
 :::{.theorem #HypergeomatricDistributionProperties name="Hypergeometric distribution properties"}
 If $X$ has a hypergeometric distribution with pf \@ref(eq:HypergeometricPMF), then (writing $N = m + n$)
@@ -1386,9 +1528,9 @@ If the population is much larger than the sample size (that is, $N$ is much larg
 
 
 Consider the example at the start of this section.
-The probability of drawing a red ball initially is $6/10 = 0.6$, and the probability that the next ball is red is $5/9 = 0.556$.
-But suppose there are 10,000 balls in the bag, of which 6000 are red.
-The probability of drawing a red ball initially is $6000 / 10,000 = 0.6$, and the probability that the next ball is red becomes $5999/9999 = 0.59996$; the probability is almost the same.
+The probability of drawing a light-coloured ball initially is $6/10 = 0.6$, and the probability that the next ball is light-coloured is $5/9 = 0.556$.
+But suppose there are 10,000 balls in the bag, of which 6000 are light-coloured.
+The probability of drawing a light-coloured ball initially is $6000 / 10,000 = 0.6$, and the probability that the next ball is light-coloured becomes $5999/9999 = 0.59996$; the probability is almost the same.
 In this case, we might consider using the binomial distribution with $p\approx 0.6$.
 
 In general, if $N$ is much larger than $k$, the population proportion then will be approximately $p\approx m/N$, and so $1 - p \approx (N - m)/N$.
@@ -1450,29 +1592,39 @@ Suppose $E \sim \text{Pois}(8.5)$, and the probability that any given egg is fer
 
 The fertility for one females can be modelled in **R**:
 
+```{r echo=FALSE}
+set.seed(17283)
+```
 
 ```{r}
 # One female
-NumberOfEggs <- rpois(1, lambda = 8.5)
+NumberOfEggs <- rpois(1, 
+                      lambda = 8.5)
 
-# How many fertile?
+# How many eggs are fertile?
 NumberFertileEggs <- rbinom(1, # Only one random number for this one female
                             size = NumberOfEggs,
                             prob = 0.6)
 cat("Number of eggs:", NumberOfEggs,
-    " Number of fertile eggs:", NumberFertileEggs, "\n")
+    "| Number of fertile eggs:", NumberFertileEggs, "\n")
 ```
 
-We can repeat this over many simulations:
+Since random numbers are being generated, each simulation will produce different results, so we repeat this over many simulations:
+
+
+```{r echo=FALSE}
+set.seed(109883)
+```
 
 ```{r}
 # Many simulations
-set.seed(1238721)
 
-NumberOfEggs <- array( dim = 1000 )
-NumberFertileEggs <- array( dim = 1000 )
+numberSims <- 5000
 
-for (i in (1:1000)){ 
+NumberOfEggs <- array( dim = numberSims )
+NumberFertileEggs <- array( dim = numberSims )
+
+for (i in (1:numberSims)){ 
   NumberOfEggs[i] <- rpois(1, lambda = 8.5)
   
   # How many fertile?
@@ -1484,22 +1636,27 @@ for (i in (1:1000)){
 
 We can then draw a histogram of the number of fertile eggs laid by females (Fig. \@ref(fig:EggsSimulation)):
 
-```{r EggsSimulation, fig.cap="The number of fertile eggs laid, over 1000 simulations", fig.height=4, fig.width=5, out.width='56%', fig.align="center"}
+```{r EggsSimulation, fig.cap="The number of fertile eggs laid, over 5000 simulations", fig.height=4, fig.width=5, out.width='56%', fig.align="center"}
 hist(NumberFertileEggs,
      las = 1, # Horizontal tick mark labels
      xlab = "Number of fertile eggs",
      ylab = "Count",
-     main = "Number of fertile eggs:\n1000 simulations")
+     main = "Number of fertile eggs:\n5000 simulations")
 ```
 
-
-Then, empirical probabilities can be computed:
+Using this information, questions can be answered about the number of fertile eggs layed.
+For example:
 
 ```{r echo=TRUE}
-sum( NumberFertileEggs > 6) / 1000
+sum( NumberFertileEggs > 6) / numberSims
 ```
 
-The chance that a female lays more than 6 fertile eggs is about `r round(sum( NumberFertileEggs > 6) / 1000 * 100, 1)`%.
+The chance that a female lays more than 6 fertile eggs is about `r round(sum( NumberFertileEggs > 6) / numberSims * 100, 1)`%.
+The mean and variance of the number of fertile eggs laid is:
+```{r echo=TRUE}
+mean( NumberFertileEggs )
+var( NumberFertileEggs )
+```
 
 
 
@@ -1787,4 +1944,18 @@ In this exercise, we find the variance of the discrete uniform distribution, usi
 1. Then find $\text{var}(X)$.
 :::
 
+
+:::{.exercise #GeometricPropertiesProof}
+Prove the results in Theroem \@ref(thm:GeometricProperties), by first finding the mgf.
+:::
+
+
+:::{.exercise #PoissonZeroTruncated}
+Prove these results from Sect. \@ref(PoissonExtensions): $\text{E}(X) = \lambda + 1$ and $\text{var}(X) = \lambda$ for the zero-truncated Poisson distribution.
+:::
+
+
+:::{.exercise #GammaSpecificValues}
+Prove this result from Theorem \@ref(thm:GammaFunctionProperties):  $\Gamma(1) = \Gamma(2) = 1$.
+:::
 
