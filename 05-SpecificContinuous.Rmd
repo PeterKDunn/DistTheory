@@ -404,6 +404,7 @@ However, $\text{E}\big(\exp(t\sigma Z)\big) = M_Z(t\sigma) = e^{\frac{1}{2}(\sig
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 In **R**, the normal distribution functions have the form `[dpqr]norm(mean, sd)`.
 By default, `mean = 0` and `sd = 1`, corresponding to the standard normal distribution.
+Note that the normal distribution is specified by giving the *standard deviation* and **not* the *variance*.
 
 Specifically, $\Phi(z)$ corresponds to the function `pnorm(z)`.
 :::
@@ -1562,8 +1563,7 @@ This is just the mgf for random variable $X$ with $k\beta$ in place of $\beta$, 
 
 ## Beta distribution {#BetaDistribution}
 
-Apart from the uniform distribution, all the continuous distributions considered have a range space on the positive real numbers.
-However, some phenomena are constrained to a finite interval. 
+Some continuous random variables are constrained to a finite interval. 
 The beta distribution is useful in these situations.
 
 
@@ -1576,12 +1576,12 @@ A random variable $X$ with probability density function
 \end{equation*}
 and
 
-\begin{equation}
+\begin{align}
    B(m, n)
-   = \int_0^1  x^{m - 1}(1 - x)^{n - 1} \, dx, \quad \text{for $m > 0$ and $n > 0$}
-   = \frac{\Gamma(m) \Gamma(n)}{\Gamma(m + n)}
+   &= \int_0^1  x^{m - 1}(1 - x)^{n - 1} \, dx, \quad \text{for $m > 0$ and $n > 0$}\nonumber\\
+   &= \frac{\Gamma(m)\, \Gamma(n)}{\Gamma(m + n)}
    (\#eq:BetaFunction)
-\end{equation}
+\end{align}
 is said to have a *beta distribution* with parameters $m$ and $n$.
 We write $X \sim \text{Beta}(m, n)$.
 :::
@@ -1611,8 +1611,7 @@ The beta function \@ref(eq:BetaFunction) satisfies the following:
 1. The beta function is symmetric in $m$ and $n$.
    That is, if $m$ and $n$ are interchanged, the function remains unaltered; i.e., $B(m, n) = B (n, m)$.
 2. $B(1, 1) = 1$.
-3. $\displaystyle B\left(\frac{1}{2}, \frac{1}{2}\right) = \pi$
-4. For positive constants $m$, $n$ (not necessarily integers) $\displaystyle B(m, n) = \frac{\Gamma(m) \Gamma(n)}{\Gamma(m + n)}$.
+3. $B\left(\frac{1}{2}, \frac{1}{2}\right) = \pi$
 :::
 
 :::{.proof}
@@ -1623,7 +1622,7 @@ Then
    B(m, n)
    &= -\int_1^0(1 - z)^{m - 1}  z^{n - 1} \, dz\\
    &= \int_0^1 z^{n - 1}(1 - z)^{m - 1} \, dz\\
-   &= B(n, m)
+   &= B(n, m).
 \end{align*}
 
 For the second, put $x = \sin^2\theta$, and so $dx = 2\sin\theta\cos\theta\,d\theta$, in \@ref(eq:BetaFunction).
@@ -1770,7 +1769,7 @@ For a random variable $Y$ defined on a different closed interval $[a, b]$, defin
 The beta distribution is a suitable model, since these relative areas are proportions.
 In addition, the authors state that
 
->  plant cover data tend to be left-skewed (J-shaped), right skewed (L-shaped) or U-shaped (p. 2747)
+>  ...plant cover data tend to be left-skewed (J-shaped), right skewed (L-shaped) or U-shaped (p. 2747)
 
 which align with some of the plots in Fig. \@ref(fig:BetaDistributions).
 :::
@@ -1795,6 +1794,13 @@ To find the probability that at least 90% of the supply will sell in a given wee
    &= 0.08
 \end{align*}
 It is unlikely that 90% of the supply will be sold in a given week.
+In **R**:
+
+```{r}
+1 - pbeta(0.9, 
+          shape1 = 4, 
+          shape2 = 2)
+```
 :::
 
 
@@ -1829,11 +1835,11 @@ htW <- rnorm(1000,  # One thousand women
              sd = 5)      # Sd of height
 pcTallWomen <- sum( htW > 173 )/1000 * 100
 
-cat("Percentage tall women:", pcTallWomen, '%\n')
+cat("Percentage 'tall' women:", pcTallWomen, '%\n')
 ```
 
 Now consider a more complex situation.
-Suppose adult males have heights with a mean of 175cm with standard deviation of 7cm, and constitute 48% of the population.
+Suppose adult males have heights with a mean of 175cm with standard deviation of 7cm, and constitute 44% of the population.
 Now, we are seeking women *or* men over 173cm tall (Fig. \@ref(fig:HeightSimHistograms), right panel):
 
 
@@ -1844,7 +1850,7 @@ set.seed(107423)
 ```{r echo=TRUE}
 personSex <- rbinom(1000,  # Select sex of each person
                     1,
-                    0.48) # So 0 = Male; 1 = Female
+                    0.44) # So 0 = Male; 1 = Female
 
 htP <- rnorm(1000,  # change ht parameters according to sex
              mean = ifelse(personSex == 0,
@@ -1857,11 +1863,12 @@ htP <- rnorm(1000,  # change ht parameters according to sex
 pcTallPeople <- sum( htP > 173 )/1000 * 100
 pcFemales <- sum( personSex == 1 ) / 1000 * 100
 
-cat("Percentage tall people:", pcTallPeople, '%\n\n')
+cat("Percentage 'tall' people:", pcTallPeople, '%\n\n')
 cat("Percentage females:", pcFemales, '%\n\n')
-cat("Percentage of tall people that are female:", 
+cat("Percentage of 'tall' people that are female:", 
     round( sum(htP > 173 & personSex == 1) / sum(htP > 173) * 100, 1),
     '%\n\n')
+cat("Variance of hieghts: ", var(htP), "\n")
 ```
 
 ```{r HeightSimHistograms, echo=FALSE, fig.width=6.5, out.width='100%', fig.height = 3.5, fig.cap="The distribution of heights of women (left panel) and men and women combined (right panel)"}
@@ -1880,6 +1887,7 @@ hist( htP,
       ylim = c(0, 400),
       las = 1)
 ```
+
 
 ## Exercises
 
@@ -1904,8 +1912,8 @@ In a study modelling pedestrian road-crossing behaviour [@shaaban2017agent], the
 The normal model has a mean of 48km/h, with a standard deviation^[Although the article calls it the 'variance'...] of 8.8km/h.
 
 1. The article ignores all vehicles travelling slower than 30 km/h and faster than 72 km/h.
-   Write the pdf for this truncated normal distribution.
-1. What proportion of vehicles are excluded using this criterion?
+   What proportion of vehicles are excluded using this criterion?
+1. Write the pdf for this truncated normal distribution.
 1. Plot the pdf and df for this truncated normal distribution.
 1. Compute the mean and variance for this truncated normal distribution.
 1. Suppose a vehicle is caught speeding (i.e., exceeding 60km/h); what is the probability that the vehicle is exceeding 65 km/h?
@@ -1916,7 +1924,7 @@ The normal model has a mean of 48km/h, with a standard deviation^[Although the a
 A study of the service life of concrete in various conditions [@liu2012stochastic] modelled the diffusion coefficients using a gamma distribution, with $\alpha = 27.05$ and $\beta = 1.42$ (units not given).
 
 1. Plot the pdf and df.
-1. Determine the mean and standard deviation of the chloride diffusion coefficients used in the simulation.
+1. Determine the mean and standard deviation of the chloride diffusion coefficients that were used in the simulation.
 1. If $C$ represents the chloride diffusion coefficients, compute $\Pr(C > 30\mid C < 50)$.
 :::
 
@@ -2150,7 +2158,28 @@ In May 2007, the relative humidity was modelled with a $\text{Beta}(6.356, 1.970
 
 1. With the given models, determine the mean and variance of the humidity for both months.
 2. On the same graph, plot both distributions, and comment.
-3. For May 2008, compute $\Pr(X > 60), where $X$ is the relative humidity.
-4. For May 2008, compute $\Pr(X > 60 \mid X > 50), where $X$ is the relative humidity.
-5. For May 2008, 80% of days have a relative humidity less than what value?
+3. For May 2008, compute $\Pr(X > 60)$, where $X$ is the relative humidity, based on the model.
+4. For May 2008, compute $\Pr(X > 60 \mid X > 50)$, where $X$ is the relative humidity, based on the model.
+5. For May 2008, 80% of days have a relative humidity less than what value, based on the model?
+:::
+
+
+:::{.exercise #SimulationGirlHeights}
+Based on @data:AustralianGirls, the *mean* height $y$ of Australian girls aged between 2 and 5 years of age based on their age $x$ is approximately given by
+
+\[
+   \hat{y} = 7.5x + 70.
+\]
+Similarly, the *standard deviation* $s$ of the heights at age $x$ is approximately given by
+
+\[
+   s = 0.4575x + 1.515.
+\]
+
+1. Suppose that, Australia-wide, day-care facilities have 32% of children aged 2, 33% of children aged 3, 25% of children aged 4, and the remainder aged 5.
+   Use **R** to simulate the distribution of the heights of children at day-care facilities.
+1. Using the normal distributions implied, what percentage of children are taller than 100cm for each age? 
+1. Use the simulation to determine the proportion of children taller than 100cm.
+1. Use the simulation to determine the mean and *variance* of the height of the children at the day-care facility.
+1. Use the simulation to determine the heights for the tallest 15% of children at the facility.
 :::
