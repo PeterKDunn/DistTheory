@@ -1560,7 +1560,6 @@ This is just the mgf for random variable $X$ with $k\beta$ in place of $\beta$, 
 :::
 
 
-
 ## Beta distribution {#BetaDistribution}
 
 Apart from the uniform distribution, all the continuous distributions considered have a range space on the positive real numbers.
@@ -1572,18 +1571,18 @@ The beta distribution is useful in these situations.
 A random variable $X$ with probability density function
 
 \begin{equation*}
-   f_X(x)
-   = \frac{x ^ {m - 1}(1 - x)^{n - 1}}{B(m,n)}, \ 0 \leq x \leq 1, \ m>0, \ n>0
+   f_X(x; m, n)
+   = \frac{x ^ {m - 1}(1 - x)^{n - 1}}{B(m, n)} \quad \text{for $0\leq x \leq 1$ and $m > 0$, $n > 0$},
 \end{equation*}
-where
+and
 
 \begin{equation}
    B(m, n)
-   = \int_0^1  x^{m - 1}(1 - x)^{n - 1} \, dx, \quad m > 0, \ n > 0
+   = \int_0^1  x^{m - 1}(1 - x)^{n - 1} \, dx, \quad \text{for $m > 0$ and $n > 0$}
    = \frac{\Gamma(m) \Gamma(n)}{\Gamma(m + n)}
    (\#eq:BetaFunction)
 \end{equation}
-is said to have a *beta distribution* with parameters $m$, $n$.
+is said to have a *beta distribution* with parameters $m$ and $n$.
 We write $X \sim \text{Beta}(m, n)$.
 :::
 
@@ -1597,9 +1596,9 @@ Since $\int_0^1 f_X(x)\,dx = 1$ then
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-In **R**, the beta function is evaluated using `beta(a, b)`.
+In **R**, the beta function is evaluated using `beta(a, b)`, where `a`${} = m$ and `b`${} = n$.
 
-The beta distribution functions have the form `[dpqr]beta(shape1, shape2)`, where `shape1`${}= n$ and `shape2`${}= m$.
+The beta distribution functions have the form `[dpqr]beta(shape1, shape2)`, where `shape1`${}= m$ and `shape2`${}= n$.
 :::
 
 The distribution function for the beta distribution is complicated, involving incomplete beta functions, and will not be given.
@@ -1611,7 +1610,7 @@ The beta function \@ref(eq:BetaFunction) satisfies the following:
 
 1. The beta function is symmetric in $m$ and $n$.
    That is, if $m$ and $n$ are interchanged, the function remains unaltered; i.e., $B(m, n) = B (n, m)$.
-2. $B(1, 1) = 1$
+2. $B(1, 1) = 1$.
 3. $\displaystyle B\left(\frac{1}{2}, \frac{1}{2}\right) = \pi$
 4. For positive constants $m$, $n$ (not necessarily integers) $\displaystyle B(m, n) = \frac{\Gamma(m) \Gamma(n)}{\Gamma(m + n)}$.
 :::
@@ -1640,11 +1639,11 @@ So, for $m = n = \frac{1}{2}$,
 \]
 
 For the third, note that $\Gamma(1/2) = \sqrt{\pi}$ from Theorem \@ref(thm:GammaProperties).
-Further, since $\Gamma(1) = 0! = 1$, and the results follows.
+Further, since $\Gamma(1) = 0! = 1$, the results follows.
 :::
 
 
-Typical graphs for the beta pdf are given below. 
+Typical graphs for the beta pdf are given in Fig. \@ref(fig:BetaDistributions). 
 When $m = n$, the distribution is symmetric about $x = \frac{1}{2}$.
 
 
@@ -1725,7 +1724,7 @@ Some basic properties of the beta distribution follow.
 If $X \sim \text{Beta}(m, n)$ then
 
 1. $\text{E}(X) = m/(m + n)$.
-2. $\displaystyle\text{var}(X) = \frac{mn}{(m + n)^2(m + n + 1)}$.
+2. $\displaystyle\text{var}(X) = \frac{mn}{(m + n)^2 (m + n + 1)}$.
 3. A mode occurs at $\displaystyle x = \frac{m - 1}{m + n - 2}$ for $m, n > 1$.
 :::
 
@@ -1759,10 +1758,22 @@ The distribution function of the beta must be evaluated numerically in general, 
 
 If $X\sim \text{Beta}(m, n)$, then $X$ is defined on $[0, 1]$.
 Sometimes then, the beta distribution is used to model proportions, though not proportions out of a total number (when the [binomial distribution](#BinomialDistribution) is used).
-Instead, the beta distribution is used in situations like the percentage cloud cover (and also see Example \@ref(exm:BetaTanks)).
+Instead, the beta distribution is used, for example, tp model percentage cloud cover (and also see Example \@ref(exm:BetaTanks)).
 
 For a random variable $Y$ defined on a different closed interval $[a, b]$, define $Y = X(b - a) + a$.
 
+
+
+
+:::{.example}
+@damgaard2019using use the beta-distribution to model the relative areas covered by plants of different species.
+The beta distribution is a suitable model, since these relative areas are proportions.
+In addition, the authors state that
+
+>  plant cover data tend to be left-skewed (J-shaped), right skewed (L-shaped) or U-shaped (p. 2747)
+
+which align with some of the plots in Fig. \@ref(fig:BetaDistributions).
+:::
 
 :::{.example #BetaTanks name="Beta distributions"}
 The bulk storage tanks of a fuel retailed are filled each Monday.
@@ -2133,3 +2144,13 @@ where $\lambda > 0$ is called a *scale parameter*, and $k > 0$ is called a *shap
 1. Derive the cdf for the Weibull distribution.
 :::
 
+:::{.exercise}
+@raschke2011empirical modelled the humidity at the Haarweg Wageningen (Netherlands) weather station in May 2007 and 2008 using beta distributions.
+In May 2007, the relative humidity was modelled with a $\text{Beta}(6.356, 1.970)$ distribution; in May 2008, with the $\text{Beta}(2.803, 1.456)$ distribution.
+
+1. With the given models, determine the mean and variance of the humidity for both months.
+2. On the same graph, plot both distributions, and comment.
+3. For May 2008, compute $\Pr(X > 60), where $X$ is the relative humidity.
+4. For May 2008, compute $\Pr(X > 60 \mid X > 50), where $X$ is the relative humidity.
+5. For May 2008, 80% of days have a relative humidity less than what value?
+:::
