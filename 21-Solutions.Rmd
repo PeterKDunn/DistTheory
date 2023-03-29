@@ -33,6 +33,7 @@
 
 1. $S = \{ (a,b,c) \mid a\in(-\infty, 0)\cap (0, \infty), -\infty < b < \infty, -\infty < c < \infty\}$.
 1. The solutions to a quadratic equation are given by
+
 \[
    x = \frac{-b \pm \sqrt{b^2 - 4ac} }{2a}.
 \]
@@ -349,6 +350,7 @@ text(x = 0.5,
 
 :::{.answer}
 **Answer to Exercise \@ref(exr:MatchingBrackets).**
+
 1. `()()` and `(())`. 
    There are two ways.
 1. `()()()` and `(())()` and `()(())` and `((()))` and `(()())`. 
@@ -356,6 +358,7 @@ text(x = 0.5,
 1. $\displaystyle \frac{1}{n + 1} \binom{2n}{n} = \frac{1}{n + 1}\frac{(2n)!}{n!n!}  = \frac{1}{(n + 1)!} \frac{(2n)!}{n!}$ as to be shown.
 1. Write as $\displaystyle \frac{(2n)!}{n!\, n!} - \frac{(2n)!}{(n + 1)! (2n - n - 1)!}$.
    Simplifying: 
+   
 \begin{align*}
      \frac{(2n)!}{n!\, n!} - \frac{(2n)!}{(n + 1)! (n - 1)!}
    &= \frac{(2n)!}{n!\, n!} - \left( \frac{n}{n + 1}\right) \frac{(2n)!}{n!\,n!}\\
@@ -422,18 +425,24 @@ plot(RelError ~ n,
 :::{.answer}
 **Answer to Exercise \@ref(exr:RandomisedResponse).**
 
-1. Use Theorem \@ref(thm:TotalProb) to find $\Pr(Y)$.
-2. $Y$ = \{Yes\}, $D$ = \{Student has used illegal drugs in last 12 months\}, $\overline{D}$ = \{student hasn't used illegal drugs in last 12 months\}.
-3. $\displaystyle \Pr(D)= \frac{N\Pr(Y) - [N - m]}{2m - N}$.
+Write $d$ as $\Pr(\text{used drugs})$ and $y = \Pr(\text{Answers `yes'})$.
+
+1. Then, from a tree diagram (Step 1: Used drugs/did not use drugs; Step 2: Card says "Used drugs"/Card says "Did not use drugs"):
+
+\begin{align*}
+   y 
+   &= \Pr(\text{Never takes drugs and say so}) + \Pr(\text{Takes drugs and says so})\\
+   &= (1 - d) \times\left(\frac{N - m}{N}\right) + d\times\frac{m}{N}.
+\end{align*}
+Solving for the unknown $d$:
+
+\[
+  d = \frac{yN - N + m}{2m - N}.
+\]
+2. $Y = 175/400 = 0.4375$.
+3. $\displaystyle d = \frac{yN - N + m}{2m - N}$, so plugging in $N = 100$, $m = 25$ and $y = 175/400$ gives $d = 0.625$.
 :::
 
-
-:::{.answer}
-**Answer to Exercise \@ref(exr:MCExam).**
-
-Use Theorem \@ref(thm:TotalProb) to find $\Pr(C)$ where $C = \text{select correct answer}$, $K = \text{student knows answer}$. 
-Then, $\Pr(C)  =\displaystyle {\frac{mp + q}{m}}$
-:::
 
 
 :::{.answer}
@@ -452,7 +461,44 @@ Then, $\Pr(C)  =\displaystyle {\frac{mp + q}{m}}$
 
 
 :::{.answer}
-**Answer to Exercise \@ref(exr:Newsletter).**
+**Answer to Exercise \@ref(exr:TwoPointsInSquare).**
+Write $d$ as the distance; then $S = \{d: 0 \le d \le \sqrt{2}\}$.
+
+For the grid, let's use **R** to find what values are possible:
+
+```{r}
+set.seed(8757) # For reproducibility
+numSims <- 5000
+distance <- array( dim = numSims)
+
+for (i in 1:numSims) {
+  xA <- sample( seq(0, 1, by = 0.25),
+                size = 1) 
+  xB <- sample( seq(0, 1, by = 0.25),
+                size = 1) 
+  yA <- sample( seq(0, 1, by = 0.25),
+                size = 1) 
+  yB <- sample( seq(0, 1, by = 0.25),
+                size = 1) 
+  
+  distance[i] <- sqrt( (xB - xA)^2 + (yA - yB) ^ 2)
+}
+levels( factor( distance))
+```
+It seems there are 15 possible values for the distance:
+
+* $0$, $0.25$, $0.50$, $0.75$ and $1$ along grid lines;
+* $\sqrt{2}/4$, $\sqrt{5}/4$, $\sqrt{10}/4$ and $\sqrt{17}/4$ when the line is moved one grid-square right;
+* $\sqrt{13}/4$ and $\sqrt{20}/4$ when the line is moved two grid-squares right;
+* $\sqrt{25}/4$ when the line is moved three grid-squares right;
+
+and so on.
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:LocalNewsletter).**
 
 1. Anywhere between 0% and 8%.
 1. $0.06/0/30 = 0.20$.
@@ -461,10 +507,12 @@ Then, $\Pr(C)  =\displaystyle {\frac{mp + q}{m}}$
 :::
 
 
+
 :::{.answer}
-**Answer to Exercise \@ref(exr:SchoolChildren).**
+**Answer to Exercise \@ref(exr:SchoolKids).**
 The total number of children: $69,279$.
 Define $N$ as 'a first-nations student', $F$ as 'a female student', and $G$ as 'attends a government school'.
+
 1. $(2540 + 2734 + 391 + 362) / 69,279 \approx 0.0870$.
 1. $49,067/69,279 \approx 0.708$.
 1. Many ways to approach this. For **government schools** only: 
@@ -477,14 +525,62 @@ $\Pr(\bar{F} \mid N)  = 362/(391 + 9496) \approx 0.0366$.
 These are---*very* roughly--about the same, so *approximately* independent.
 1. MAKES NO SENSE!!
 1. MAKES NO SENSE!!
-0:::
+:::
+
 
 
 
 :::{.answer}
-**Answer to Exercise \@ref(exr:CombinSimplify).**
-$\binom{25}{8}/binom{26}{6} = (25!\, 6!\, 19!)/(8!\,17!\,25!) = 171/28$.
+**Answer to Exercise \@ref(exr:CardsAces).**
+1. $4/52 \approx 0.07692308$.
+1. $3/51 \approx 0.05882353$.
+1. Be careful:
+
+\begin{align*}
+  &\Pr(\text{1st card lower rank than second card})\\
+  &= \Pr(\text{2nd card a K}) \times \Pr(\text{1st card from Q to Ace}) + {}\\
+  &\qquad   \Pr(\text{2nd card a Q}) \times \Pr(\text{1st card from J to Ace}) +{}\\
+  &\qquad   \Pr(\text{2nd card a J}) \times \Pr(\text{1st card from 10 to Ace}) + \dots + {}\\
+  &\qquad   \Pr(\text{2nd card a 2}) \times \Pr(\text{1st card an Ace}) \\
+  &= \frac{4}{51} \times \frac{12\times 4}{52} + {}\\
+  &\qquad   \frac{4}{51} \times \frac{11\times 4}{52} +\\
+  &\qquad   \frac{4}{51} \times \frac{10\times 4}{52} + \dots +\\
+  &\qquad   \frac{4}{51} \times \frac{1\times 4}{52} \\
+  &= \frac{4}{51}\frac{4}{52}\left[ 12 + 11 + 10 + \cdots + 1\right]\\
+  &= \frac{4}{51}\frac{4}{52} \frac{13\times 12}{2} \approx 0.4705882.
+\end{align*}
+1. We can select any of the 52 cards to begin.
+   Then, there are four cards higher and four lower, so a total of 16 options for the second card, a total of $52\times 16 = 832$ ways it can happen.
+   The number of ways of getting two cards is $52\times 51 = 2652$, so the probability is $832/2652 \approx 0.30 = 137$.
 :::
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:SolvePermk).**
+
+\begin{align*}
+   12\times {}^7P_k &= 7\times {}^6P_{k + 1} \\
+   12\times \frac{7!}{(7 - k)!} &= 7\times\frac{6!}{(5 - k)!}\\
+   \frac{12}{(7 - k)!} &= \frac{1}{(5 - k)!}\\
+   \frac{12}{(7 - k)\times (6 - k)\times (5 - k)!} &= \frac{1}{(5 - k)!}\\
+   12 &= (7 - k)(6 - k)\\
+   k^2 - 13k +30 &= 0\\
+   (k - 10)(k - 3) &= 0
+\end{align*}
+and so $k = 10$ or $k = 3$.
+But of $k = 10$, we get silly things like ${}^7P_{10}$.
+So the solution must be $k = 3$.
+
+```{r}
+for (k in (1:5)){ # Answer must e less than 6
+  cat("FOR k = ",k, ":")
+  cat("LHS =", 12 * factorial(7) / factorial(7 - k), "; ")
+  cat("RHS =", 7 * factorial(6) / factorial(5 - k), "\n")
+}
+```
+:::
+
+
 
 
 
@@ -497,7 +593,8 @@ $n\left( {}^{n - 1}P_{r - 1} \right) = n\left((n - 1)!/\left( (n - 1) - (r - 1)\
 
 
 :::{.answer}
-**Answer to Exercise \@ref(exr:CombinSolve2).**
+**Answer to Exercise \@ref(exr:SolvePermk).**
+
 \begin{align*}
    \frac{ {}^7 P_{r + 1}}{ {}^{7}C_r}
    &= \frac{7!}{(7 - (r + 1))!} \times \frac{(7 - r)!\, r!}{7!}\\
@@ -510,6 +607,33 @@ $n\left( {}^{n - 1}P_{r - 1} \right) = n\left((n - 1)!/\left( (n - 1) - (r - 1)\
 Rewrite: $r! = 10/(7 - r)$.
 Since $r!$ is a positive integer, $r$ must be either $r = 2$ or $r = 5$.
 Trying both, clearly $r = 2$.
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:PairsPoker).**
+
+There are $\binom{52}{5} = 2,598,960$ ways to get five cards from 52 (without replacement).
+
+1. Pick the denomination: there are 13 to select from.
+   We need two of those 4 cards: $13\times \binom{4}{2}$.
+   Now the other three cards are drawn from the other 12 denominations: $\binom{12}{3}$.
+   There are also 4 ways to choose the suit of *each* of those 3 cards.  
+   All up then: the number of ways is $13\times\binom{4}{2}\times\binom{12}{3}\times 4^3 = 1,098,240$.  
+   The probability is therefore $1,098,240/2,598,960 = 0.422569$.
+1. Probability a bit less.
+1. Using the above logic again:
+   There are 13 denomination, and we select three of those four cards: $13\times \binom{4}{3}$.
+   The remaining two cards must be one of the other 12 denominations: $\binom{12}{2}\times 4^2$.  
+    All up then: the number of ways is $13\times\binom{4}{3}\times\binom{12}{2}\times 4^2 = 1,098,240$.  
+   The probability is therefore $54912/2,598,960 = 0.02112845$.
+:::
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:NoTechP).**
+$\binom{25}{8}/\binom{26}{6} = (25!\, 6!\, 19!)/(8!\,17!\,25!) = 171/28$.
 :::
 
 
@@ -793,13 +917,12 @@ plot( F1(x) ~ x,
 :::{answer}
 **Answer for Exercise \@ref(exr:PooledTest).**
 
-$\Pr(\text{Pooled test is positive})$ 
-${}={}$
-$1 - \Pr(\text{Pooled test is negative})$ 
-${}={}$
-$1 - \Pr(\text{All individuals are negative})$ 
-${}={}$
-$1 -(0.9)^ 4 = 0.3439$.
+\begin{align*}
+  \Pr(\text{Pooled test is positive})
+  &= 1 - \Pr(\text{Pooled test is negative}) \\
+  &= 1 - \Pr(\text{All individuals are negative})\\
+  &= 1 -(0.9)^ 4 = 0.3439.
+\end{align*}
 So the pmf of $X$, whether the pooled test returns negative (i.e., $x = 0$) or positive (i.e., $x = 1$), is
 
 \[
