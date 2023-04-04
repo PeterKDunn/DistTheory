@@ -1304,34 +1304,123 @@ Then, $X\sim \text{Geom}(p)$.
 :::{.answer}
 **Answer to Exercise \@ref(exr:CountingBirds).**
 
+**ASSUMING ERROR IN PAPER**:
+Write $k=r$ and $1-p=(m/k)$ in out parameterisation.
+
+So then:
+
+* in ponderosa pine stand (riparian sites): $m = 0.11$ and $k = 0.275$: $r = 0.275$ and $p = 0.6$
+* in lodgepole pine stands (again, riparian sites): $m = 0.04$ and $k = 0.275$: $r = 0.275$ and $p = 0.8545$.
+
+
+$\Pr(\text{fewer than 2 birds})$ means observing 0 birds or 1 bird.
+
+$\Pr(\text{fewer than 2 birds} \mid \text{1 or more birds seen})$ means observing 0 birds or 1 bird.
+
+
 ```{r}
+x <- 0:5
+pf1 <- dnbinom(x,
+               size = 0.275,
+               p = 0.6)
+pf2 <- dnbinom(x,
+               size = 0.275,
+               p = 0.8545)
+plot( y = c(0, 1),
+      x = range(x),
+      type = "n",
+      las = 1,
+      main = "Two negative binomial distributions",
+      xlab = expression(italic(x)),
+      ylab = "Prob function")
+points(pf1 ~ x, 
+       pch = 1)
+points(pf2 ~ x, 
+       pch = 19)
+
+pnbinom(1, # Ponnderosa pine stand
+        size = 0.275,
+        p = 0.6 )
+pnbinom(1, #lodgepole pine stand
+        size = 0.275,
+        p = 0.8545)
+
+dnbinom(1, # Ponnderosa pine stand
+        size = 0.275,
+        p = 0.6 ) / 
+  (1 - dnbinom(0, # Ponnderosa pine stand
+               size = 0.275,
+               p = 0.6 ) )
+dnbinom(1, #lodgepole pine stand
+        size = 0.275,
+        p = 0.8545) / 
+  (1 - dnbinom(0, #lodgepole pine stand
+               size = 0.275,
+               p = 0.8545) )
 
 ```
-
-
-
-In a study of counting birds [@white1996analysis], the parametrisation of the negative binomial distribution used by the authors is
-
-\begin{equation}
-   p_X(x) 
-   = \binom{k + x - 1}{k - 1} \left( \frac{m}{k} \right) 
-   \left( 1 + \frac{m}{k} \right)
-   (\#eq:NegativeBinomialPMFAlternative)
-\end{equation}
-for $x = 0, 1, 2, \dots$ and $k > 0$ and mean $m > 0$.
-
-The fitted parameters are, for orange-crowned warblers:
-
-* in ponderosa pine stand (riparian sites): $m = 0.11$ and $k = 0.275$; and
-* in lodgepole pine stands (again, riparian sites): $m = 0.04$ and $k= 0.275$.
-
-1. On the same graph, plot both distributions.
-   Comment.
-1. Compute the probability of observing fewer than 5 birds in each environment.
-1. Compute the probability of observing fewer than 5 birds in each environment, given that the bird was seen.
 :::
 
 
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:NegativeBinomialALT).**
+
+In Eq. (\@ref(eq:NegativeBinomialPMF)), the rv $X$ refers to the number of *failures* before the $r$th success is observed, so that $X = 0, 1, 2, \dots$.
+So define $Y$ as the number of trials till the $r$th success, and hence $Y = X + r$.
+
+1. The range space is $Y\in\{r, r + 1, r + 2, \dots\}$
+1. \begin{equation}
+   p_Y(y; p, r) = \binom{y - 1}{r - 1}(1 - p)^{y - r} p^{r - 1}
+   \quad\text{for $y = r, r + 1, r + 2, \dots$}
+\end{equation}
+1. $\text{E}(Y) = \text{E}(X + r) = \text{E}(X) + r = r/p$.  
+   $\text{var}(Y) = \text{var}(X + r) = \text{var}(X) = r(1 - p)/p^2$.  
+
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:PoissonTypos).**
+
+Let $X$ be the number of typos per minute; then $X\sim\text{Pois}(\lambda = 2.5\times 5 = 12.5)$ for a five-minute test.
+
+```{r}
+dpois(10, lambda = 12.5)
+dpois(6, lambda = 2.5 * 3) * dpois(4, lambda = 2.5 * 2)
+```
+
+For part 3: The number of errors occurring in the 'overlap minute' could be 0, 2, \dots 6:
+
+* 6 errors in overlap minute: 
+ $\Pr(\text{0 errors in first 2 minutes})\times{}$ 
+ $\Pr(\text{6 errors in overlap minute})\times{}$
+ $\Pr(\text{0 errors in final 2 minutes})$ 
+* 5 errors in overlap minute: 
+ $\Pr(\text{1 error in first 2 minutes})\times{}$ 
+ $\Pr(\text{5 errors in overlap minute})\times{}$
+ $\Pr(\text{1 error in final 2 minutes})$ 
+ 
+And so on.
+
+```{r}
+prob <- function(ErrorsInOverlap){
+  dpois( (6 - ErrorsInOverlap), lambda = 2 * 2.5) * 
+  dpois(ErrorsInOverlap, lambda = 1 * 2.5) * 
+  dpois((6 - ErrorsInOverlap), lambda = 2 * 2.5)
+}
+sum( prob( 0:6 ) )
+```
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:RiverDepth).**
+
+???
+:::
 
 
 
@@ -1339,37 +1428,99 @@ The fitted parameters are, for orange-crowned warblers:
 :::{.answer}
 **Answer to Exercise \@ref(exr:QueuingPois).**
 
+The code below is for one simulation for each part only.
+
 ```{r}
-queueLength <- 0
-for (i in 1:60){
-   queueLength <- queueLength + rpois(1, lambda = 0.5)
-   cat("After ", i, " minutes past 8AM, queue length: ", queueLength, "\n")
+### Part 1
+set.seed(2268) # For reproducibility
+
+queueLength <- array(dim = 60)
+
+queueLength[1] <- rpois(1, lambda = 0.5)
+
+for (i in 2:60){
+   queueLength[i] <- queueLength[i - 1] + rpois(1, lambda = 0.5)
+   # Print every 10 minutes
+   if ( floor(i/10) == i/10 ) {
+     cat("After ", i, " minutes past 8AM, queue length: ", queueLength[i], "\n")
+   }
+}
+plot( queueLength, type = "l", las = 1)
+
+
+
+### Part 2
+queuelength <- array(dim = 60)
+
+queueLength[1] <- rpois(1, lambda = 0.5)
+
+for (i in 2:60){
+   NumberIn <- rpois(1, lambda = 0.5)
    
+   # Number being served
+   if ( i < 30 ) {
+     NumberServed <- 0
+   } else {
+     if (i >= 30) {
+        lambda <- 0.75
+     }
+     NumberServed <- rpois(1, lambda = lambda)
+     queueLength[i] <- queueLength[i - 1] + NumberIn - NumberServed
+   }
+   
+   if ( queueLength[i] < 0 ) queueLength[i] <- 0
 }
 
-queueLength <- 0
-for (i in 1:60){
-   if (i == 30) cat(" --- Server begins ---\n")
-   queueLength <- queueLength + rpois(1, lambda = 0.5)
-   if ( i > 30) {
-      queueLength <- queueLength - rpois(1, lambda = 0.75)
-      if (queueLength < 0 ) queueLength <- 0
-   }
-   cat("After ", i, " minutes, queue length: ", queueLength, "\n")
+plot( queueLength, type = "l", las = 1)
+abline(v = 30,
+       lwd = 2,
+       col = "grey")
+text(30, 5, 
+     pos = 3, # To the right,
+     labels = "Server starts")
+
+
+
+
+### Part 3.
+queuelength <- array(dim = 60)
+
+queueLength[1] <- rpois(1, lambda = 0.5)
+
+for (i in 2:60){
+   NumberIn <- rpois(1, lambda = 0.5)
    
+   # Number being served
+   if ( i < 30 ) {
+     NumberServed <- 0
+   } else {
+     if ( (i > 30) & (i < 45) ) {
+        lambda <- 0.7
+     }
+     if ( i > 45 ) {
+        lambda <- 1.3
+     }
+     NumberServed <- rpois(1, lambda = lambda)
+   }
+   
+   queueLength[i] <- queueLength[i - 1] + NumberIn - NumberServed
+
+   if ( queueLength[i] < 0 ) queueLength[i] <- 0
 }
 
-queueLength <- 0
-for (i in 1:60){
-   if (i == 30) cat("--- Server begins ---\n")
-   queueLength <- queueLength + rpois(1, lambda = 0.5)
-   if ( i > 30) {
-      queueLength <- max( queueLength - rpois(1, lambda = 1.5), 0)
-      if (queueLength < 0 ) queueLength <- 0
-   }
-   cat("After ", i, " minutes, queue length: ", queueLength, "\n")
-   
-}
+plot( queueLength, type = "l", las = 1)
+abline(v = 30,
+       lwd = 2,
+       col = "grey")
+text(30, 5, 
+     pos = 3, # To the right,
+     labels = "Server 1 starts")
+abline(v = 45,
+       lwd = 2,
+       col = "grey")
+text(45, 5, 
+     pos = 3, # To the right,
+     labels = "Server 2 starts")
 ```
 
 :::
@@ -1394,6 +1545,18 @@ dpois(x = 4,     lambda = 5)
 dpois(x = 4 + 1, lambda = 5)
 ```
 :::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:HypergeometricFPC).**
+
+1. $\text{E}(X) = kp$ which is the same as the binomial (here, $k$ is the sample size).
+1. $\text{var}(X) = k p (1 - p) \times \left(\frac{N - k}{N - 1}\right)$; the first bit is the variance for the binomial distribution (recall $k$ is the sample size).
+   The other term is $(N - k)/(N - 1)$, which is the FPC factor as defined.
+:::
+
+
 
 
 :::{.answer}
