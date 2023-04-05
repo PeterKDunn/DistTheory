@@ -35,7 +35,7 @@ We write $X\sim U(a, b)$ or $X\sim\text{Unif}(a, b)$.
 :::
 
 This distribution is also called the *rectangular distribution*.
-The same notation is used to denote the discrete and continuous uniform distribution; the context should make it clear which is meant). 
+The same notation is used to denote the discrete and continuous uniform distribution; the context should make it clear which is meant. 
 A plot of the pdf for a continuous uniform distribution is shown in Fig. \@ref(fig:ContinuousUniform).
 
 
@@ -131,11 +131,18 @@ In **R**, the continuous uniform distribution functions have the form `[dpqr]uni
 
 
 :::{.example #ContinuousUniform name="Continuous uniform"}
- If $X$ is uniformly distributed on $[-2, 2]$, find $\Pr(|X| > \frac{1}{2})$.
+If $X$ is uniformly distributed on $[-2, 2]$, then $\Pr(|X| > \frac{1}{2})$ can be found.
+Note that
+
+\[
+  f_X(x; a = =2, b = 2) = \frac{1}{4} \quad\text{for $-2 < 2$.}
+\]
+Then:
+
 \begin{align*}
      \Pr\left(|X| > \frac{1}{2}\right) 
      &= \Pr\left(X > \frac{1}{2}\right) + \Pr\left(X < -\frac{1}{2}\right)\\
-     &= \int^2_{\frac{1}{2}} f(x)\,dx  +  \int^{-\frac{1}{2}}_{-2} f(x)\,dx \text{ where $f(x) = \frac{1}{4}$}\\
+     &= \int^2_{\frac{1}{2}} f(x)\,dx  +  \int^{-\frac{1}{2}}_{-2} f(x)\,dx\\
      &= \frac{3}{4}.
 \end{align*}
 The probability could also be computed by finding the area of the appropriate rectangle.
@@ -165,12 +172,12 @@ If a random variable $X$ has the pdf
    (\#eq:NormalPMF)
 \end{equation}
 for $-\infty<x<\infty$, then $X$ has a *normal distribution*.
-The two parameters are the mean $\mu$ such that $-\infty < \mu < \infty$; and the standard deviation $\sigma$ such that $\sigma > 0$.
-We write $X\sim N(\mu, \sigma^2)$ (though sometimes in non-theoretical work the notation used is $X\sim N(\mu, \sigma)$).
+The two parameters are the mean $\mu$ such that $-\infty < \mu < \infty$; and the variance  $\sigma^2$ such that $\sigma^2 > 0$.
+We write $X\sim N(\mu, \sigma^2)$.
 :::
 
 
-Some authors use the notation $X\sim N(\mu,\sigma)$ so it is wise to check each article or book for the notation used.
+Some authors---especially in non-theoretical work---use the notation $X\sim N(\mu,\sigma)$ so it is wise to check each article or book for the notation used.
 Some examples of normal distribution pdfs are shown in Fig. \@ref(fig:Normal).
 
 ```{r Normal, echo=FALSE, fig.align="center", fig.cap="Some examples of normal distributions. The solid lines correspond to $\\sigma = 0.5$ and the dashed lines to $\\sigma = 1$. For the left panel, $\\mu = -3$; for the right panel, $\\mu = 2$.", fig.height=3.5, fig.width=7, out.width='80%'}
@@ -224,18 +231,23 @@ The proof relies on first squaring the integral and then changing to polar coord
 :::{.definition #NormalDF name="Normal distribution: distribution function"}
 For a random variable $X$ with the normal distribution given in \@ref(eq:NormalPMF), the distribution function is
 
-\[
-  F_X(x; \mu, \sigma^2) = 
-  \frac{1}{2} \left\{1 + \operatorname{erf} \left( \frac {x - \mu }{\sigma {\sqrt {2}} }\right)\right\}
-\]
+\begin{align}
+  F_X(x; \mu, \sigma^2) 
+  = \frac{1}{\sigma \sqrt{2\pi}} 
+    \int_{-\infty}^x 
+    \exp\left\{\frac{(t - \mu)^2}{2\sigma^2}\right\}\, dt\\
+  = \frac{1}{2} 
+    \left\{1 + \operatorname{erf} \left( \frac{x - \mu}{\sigma {\sqrt{2}} }\right)\right\}
+\end{align}
 where $\operatorname{erf}(\cdot)$ is the *error function*
 
 \begin{equation}
   \operatorname{erf}(x) = 
-  \frac{2}{\sqrt{\pi}} \int _{0}^{x} e^{-t^{2}}\,dt,
+  \frac{2}{\sqrt{\pi}} \int _{0}^{x} \exp\left( -t^{2}\right)\,dt,
   (\#eq:ErrorFunction)
 \end{equation}
-which appears in numerous places, is commonly tabulated, and usually available in most computer packages.
+for $x \in\mathbb{R}$.
+The function $\operatorname{erf}(\cdot)$ appears in numerous places, is commonly tabulated, and available in many computer packages.
 :::
 
 
@@ -256,6 +268,13 @@ The proof is delayed until after the Theorem \@ref(thm:StandardNormalProperties)
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 In **R**, the normal distribution functions have the form `[dpqr]norm(mean, sd)`.
+Note that the normal distribution is specified by giving the *standard deviation* and **not** the *variance*.
+
+The error function $\operatorname{erf}(\cdot)$ is not available directly in **R**, but can be evaluated using
+
+\[
+  \operatorname{erf}(\cdot) = 2\times \texttt{pnorm}(x\sqrt{2}) - 1.
+\]
 :::
 
 
@@ -278,7 +297,7 @@ We write $Z\sim N(0, 1)$.
 
 Since $f_Z(z)$ is a pdf, then
 \begin{equation}
-   \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty} e^{-\frac 12 z^2}\,dz = 1,
+   \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty} \exp\left\{-\frac{1}{2} z^2\right\}\,dz = 1,
    (\#eq:ZDistribution)
 \end{equation}
 a result which proves useful in many contexts (as in the proof of the second statement in \@ref(thm:GammaFunctionProperties), and in the proof below).
@@ -290,7 +309,8 @@ For a random variable $X$ with the standard normal distribution given in \@ref(e
 
 \begin{align}
   F_X(x) = \Phi(z)  
-  &= \frac{1}{2} \left\{1 + \operatorname{erf} \left\{ \frac {x}{\sqrt {2}} \right)\right\}\nonumber\\
+  &= \frac{1}{2} 
+     \left\{1 + \operatorname{erf} \left( \frac {x}{\sqrt{2}} \right)\right\}\nonumber\\
   &= \int_{-\infty}^z \frac{1}{\sqrt{2\pi}} \exp\left\{ -\frac{t^2}{2}\right\}\, dt,
   (\#eq:PhiFunction)
 \end{align}
@@ -319,9 +339,9 @@ For the expected value:
 \begin{align*}
     \text{E}(Z)
     &= \frac {1}{\sqrt{2\pi}} 
-       \int^\infty_{-\infty} z e^{-\frac{1}{2}z^2}\,dz\\
-    &= \int^\infty_{-\infty} -\frac{d}{dz} \left(e^{-\frac{1}{2}z^2} \right)\, dz\\
-    &= \left[ -e^{-\frac{1}{2}z^2}\right]^\infty_{-\infty} = 0,
+       \int^\infty_{-\infty} z \exp\left\{-\frac{1}{2}z^2 \right\}\,dz\\
+    &= \int^\infty_{-\infty} -\frac{d}{dz} \left(\exp\left\{-\frac{1}{2}z^2\right\} \right)\, dz\\
+    &= \left[ -\exp\left\{-\frac{1}{2}z^2\right\}\right]^\infty_{-\infty} = 0,
 \end{align*}
 since the integrand is symmetric about $0$.
 
@@ -343,15 +363,17 @@ Hence,
 
 \begin{align*}
    \text{var}(X)
-   &= \frac {1}{\sqrt{2\pi}} \left\{ -e^{-\frac{1}{2}z^2} - \int^\infty_{-\infty}-e^{-\frac{1}{2}z^2}\, dz \right \}\\
-   &= \frac {1}{\sqrt{2\pi}}\left(\left. -z\,e^{-\frac{1}{2} z^2}\right|^\infty_{-\infty}\right) + \frac 1{\sqrt{2\pi}}\int^\infty_{-\infty} e^{-\frac 12 z^2}\,dz = 1
+   &= \frac {1}{\sqrt{2\pi}} \left\{ -z \exp\left\{-\frac{1}{2}z^2\right\} - \int^\infty_{-\infty}-\exp\left\{-\frac{1}{2}z^2\right\}\, dz \right\}\\
+   &= \frac {1}{\sqrt{2\pi}}\left(\left. -z\,\exp\left\{-\frac{1}{2} z^2\right\}\right|^\infty_{-\infty}\right) + \frac{1}{\sqrt{2\pi}}\int^\infty_{-\infty} \exp\left\{-\frac{1}{2}z^2\right\}\,dz = 1
 \end{align*}
-since the first term is zero (due to symmetry), and the second term uses \@ref(eq:ZDistribution).
+since the first term is zero, and the second term uses \@ref(eq:ZDistribution).
 
 For the mgf:
 
 \[ 
-   M_Z(t) = \text{E}(e^{tZ}) =\int^\infty_{-\infty}e^{tz} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}z^2}\,dz.
+   M_Z(t) = \text{E}(\exp\left\{tZ\right\}) 
+   = \int^\infty_{-\infty} \exp\left\{tz\right\} 
+     \frac{1}{\sqrt{2\pi}} \exp\left\{-\frac{1}{2}z^2\right\}\,dz.
 \]
 Collecting together the terms in the exponent and completing the square,
 
@@ -361,13 +383,15 @@ Collecting together the terms in the exponent and completing the square,
 Taking the constants outside the integral:
 
 \[ 
-   M_Z(t) = e^{\frac{1}{2}t^2}\int^\infty_{-\infty} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}[z - t]^2}\,dz. 
+   M_Z(t) 
+   = \exp\left\{\frac{1}{2}t^2\right\}\int^\infty_{-\infty}
+     \frac{1}{\sqrt{2\pi}} \exp\left\{-\frac{1}{2}[z - t]^2\right\}\,dz. 
 \]
 The integral here is 1, since it is the area under an $N(t, 1)$ pdf. 
 Hence
 
 \[ 
-   M_Z(t) = e^{\frac{1}{2} t^2}.
+   M_Z(t) = \exp\left\{\frac{1}{2} t^2\right\}.
 \]
 :::
 
@@ -394,7 +418,7 @@ Finally
 \[
    M_X(t) = \text{E}(e^{tX}) = \text{E}\big(\exp\{t(\mu + \sigma Z)\}\big) = \exp(\mu t)\text{E}\big(\exp(t\sigma Z)\big).
 \]
-However, $\text{E}\big(\exp(t\sigma Z)\big) = M_Z(t\sigma) = e^{\frac{1}{2}(\sigma t)^2}$ so 
+However, $\text{E}\big(\exp(t\sigma Z)\big) = M_Z(t\sigma) = \exp\left\{\frac{1}{2}(\sigma t)^2\right\}$ so 
 
 \[
    M_Z(t) = \displaystyle \exp\left(\frac{t^2}{2}\right).
@@ -404,9 +428,7 @@ However, $\text{E}\big(\exp(t\sigma Z)\big) = M_Z(t\sigma) = e^{\frac{1}{2}(\sig
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 In **R**, the normal distribution functions have the form `[dpqr]norm(mean, sd)`.
 By default, `mean = 0` and `sd = 1`, corresponding to the standard normal distribution.
-Note that the normal distribution is specified by giving the *standard deviation* and **not* the *variance*.
-
-Specifically, $\Phi(z)$ corresponds to the function `pnorm(z)`.
+Note that the normal distribution is specified by giving the *standard deviation* and **not** the *variance*.
 :::
 
 
@@ -418,15 +440,9 @@ The probability $\Pr(a < X \le b)$ where $X\sim N(\mu, \sigma^2)$ can be written
 \[
    \Pr(a < X \le b) = F_X(b) - F_X(a).
 \]
-where $F_X(x)$ is the distribution function
-
-\[
-   F_X(x) 
-   = \Pr(X \le x) 
-   = \frac1{\sqrt{2\pi}\sigma}\int_{-\infty}^x e^{-\frac{1}{2}(u - \mu )^2 / \sigma ^2}\, du.
-\]
-This integral cannot be written in terms of standard functions and in general must be evaluated for a particular $x$ numerically (e.g., using Simpson's rule or similar).
-However, all statistical packages have a built-in procedure that evaluates $F_X(x)$ for any $z$ (such as `pnorm()` in **R**).
+where $F_X(x)$ is the distribution function in Def. \@ref(def:StandardNormalDF).
+The integral in the distribution function cannot be written in terms of standard functions and in general must be evaluated for a particular $x$ numerically (e.g., using Simpson's rule or similar).
+However, all statistical packages have built-in procedures to evaluate $F_X(x)$ for any $z$ (such as `pnorm()` in **R**).
 
 Also, since any normal distribution can be transformed into a standard normal distribution, we can write
 
@@ -458,7 +474,7 @@ This $z$-value is then converted to a value of the original random variable usin
 \end{equation}
 This process is sometimes referred to as *unstandardising*.
 
-The following examples illustrate the use of the standard normal table.
+The following examples illustrate the use of *the**R**.
 Drawing rough graphs showing the relevant areas is encouraged.
 
 
@@ -474,8 +490,8 @@ Using this model:
 1. What is the probability that a person walks faster than 1.5m/s?
 1. What is the probability that a person walks slower than 1.0m/s?
 1. What is the probability that a person walks between 1.0m/s and 1.5m/s?
-1. At what speed do the quickest 15% of people walk?
-1. At what speed do the slowest 5% of people walk?
+1. At what speed do the slowest 15% of people walk?
+1. At what speed do the quickest 5% of people walk?
 
 Sketches of each of these situations are shown in Fig. \@ref(fig:NormalWalkingSpeed).
 Using **R**:
@@ -572,7 +588,7 @@ shadeNormal(out$x,
             col = plotColour1)
 
 out <- plotWalking()
-title(main = "Quickest 15%")
+title(main = "Slowest 15%")
 shadeNormal(out$x, 
             out$y,
             hi = qnorm(0.15, mean= 1.15, sd = 0.2),
@@ -580,7 +596,7 @@ shadeNormal(out$x,
             col = plotColour1)
 
 out <- plotWalking()
-title(main = "Slowest 5%")
+title(main = "Quickest 5%")
 shadeNormal(out$x, 
             out$y,
             hi = 100, 
@@ -606,7 +622,14 @@ Let $x_1$ be such that
    \Pr\left(Z < \frac{500 - x_1}{100}\right) 
    & = 0.75.
 \end{align*}
-From tables or **R**, $0.75 = \Phi(0.675)$ so $(500 - x_1)/100 = 0.675$ and $x_1 = 432.5$.
+From tables, $0.75 = \Phi(0.675)$ so $(500 - x_1)/100 = 0.675$ and $x_1 = 432.5$.
+Using **R**:
+
+```{r}
+qnorm(0.25, # Top 75% = bottom 25% 
+      mean = 500,
+      sd = 100)
+```
 :::
 
 
@@ -615,9 +638,9 @@ From tables or **R**, $0.75 = \Phi(0.675)$ so $(500 - x_1)/100 = 0.675$ and $x_1
 ### Normal approximation to the binomial {#NormalApproxBinomial}
 
 In Sect. \@ref(BinomialDistribution), the binomial distribution was considered.
-Sometines using the binomial distribution is tedious; consider a binomial random variable $X$ where $n = 1000$, $p = 0.45$ and $\Pr(X > 650)$ is sought.
+Sometimes using the binomial distribution is tedious; consider a binomial random variable $X$ where $n = 1000$, $p = 0.45$ and $\Pr(X > 650)$ is sought: we would calculate $\Pr(X = 651) + \Pr(X = 652) + \cdots + \Pr(X = 1000)$. 
 
-However, sometimes the normal distribution can be used to approximate binomial probabilities
+However, sometimes the normal distribution can be used to *approximate* binomial probabilities.
 For certain parameter values, the binomial pf starts to take on a normal distribution shape (Fig. \@ref(fig:NormalApprox)).
 
 When is the binomial pf close enough to use the normal approximation?
@@ -678,8 +701,8 @@ for (i in (1:4)){
 
 
 
-The normal distribution can be used to approximate probabilities in situation that are actually binomial.
-A fundamental difficulty with this approach is that discrete distribution is being modelled with a continuous distribution.
+The normal distribution can be used to *approximate* probabilities in situations that are actually binomial.
+A fundamental difficulty with this approach is that a *discrete* distribution is being modelled with a *continuous* distribution.
 This is best explained through an example.
 The example explains the *principle*; the idea extends to all situations where the normal distribution is used to approximate a binomial distribution.
 
@@ -705,7 +728,7 @@ Figure \@ref(fig:ContCorrBoxes) shows the upper tail of the distribution near $X
 using the normal approximation from $Y = 35$, only *half* of the original bar in the binomial pf is included.
 However, since the number of mice is discrete, we want the *entire* bar corresponding to $X = 35$.
 So to compute the correct answer, the normal distribution must be evaluated for $\Pr(Y > 34.5)$.
-This change from $X \ge 34.5$ to $Y > 34.5$ is called using the *continuity correction*.
+This change from $Y \ge 34.5$ to $Y > 34.5$ is called using the *continuity correction*.
 
 The exact answer (using the binomial distribution) is $0.1629$ (rounded to four decimal places).
 Using the normal distribution *with* the continuity correction gives the answer as $0.1631$; using the normal distribution *without* the continuity correction, the answer is $0.1376$.
@@ -718,6 +741,9 @@ The solution is more accurate, as expected, using the continuity correction.
 ExactP <- sum( dbinom(x = 35:100,
                       size = 100,
                       prob = 0.30))
+ExactP2 <- 1 - pbinom(34, 
+                      size = 100,
+                      prob = 0.30)
 # Normal approx
 NormalP <- 1 - pnorm(35, 
                      mean = 30,
@@ -726,9 +752,10 @@ NormalP <- 1 - pnorm(35,
 ContCorrP <- 1 - pnorm(34.5, 
                        mean = 30,
                        sd = sqrt(21))
-c("Exact:" = round(ExactP, 6), 
-  "Normal approx:" = round(NormalP, 6),
-  "With correction:" = round(ContCorrP, 6))
+cat("Exact:" = round(ExactP, 6), "\n") # \n means "new line" 
+cat("Exact (alt):" = round(ExactP2, 6), "\n")
+cat("Normal approx:" = round(NormalP, 6), "\n")
+cat("With correction:" = round(ContCorrP, 6), "\n")
 ```
 
 
@@ -877,7 +904,7 @@ CCTable[4, ] <- c("$\\Pr(X \\ge 21)$",
 CCTable[5, ] <- c("$\\Pr(15 \\lt X \\le 17)$",
                   round(pbinom(17, prob = prob, size = n) - pbinom(16, prob = prob, size = n), 4),
                   "",
-                  "$\\Pr(15.5 \\lt Y \\lt 16.5)$",
+                  "$\\Pr(15.5 \\lt Y \\lt 17.5)$",
                   round( pnorm(16.5, mean = mn, sd = stdev) - pnorm(15.5, mean = mn, sd = stdev), 4) )
 
 if( knitr::is_latex_output() ) {
@@ -970,7 +997,7 @@ CCTable[5, ] <- c("$\\Pr(15 \\lt X \\le 17)$",
 ## Exponential distribution {#ExponentialDistribution}
 
 One shortcoming of using the normal distribution in modelling is that it is defined for all real values, but many quantities are not defined on the positive real numbers only.
-This is not always a problem, especially when the observations are far from zero, such as heights.
+This is not always a problem, especially when the observations are far from zero, such as heights of adult humans.
 However, many random variables have observations close to zero, and the data are often skewed to the right (positively skewed).
 
 Many distributions can be used for modelling right skewed data defined on the positive real numbers; one is the exponential distribution.
