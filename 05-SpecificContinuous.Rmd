@@ -474,7 +474,7 @@ This $z$-value is then converted to a value of the original random variable usin
 \end{equation}
 This process is sometimes referred to as *unstandardising*.
 
-The following examples illustrate the use of *the**R**.
+The following examples illustrate the use of **R**.
 Drawing rough graphs showing the relevant areas is encouraged.
 
 
@@ -934,7 +934,7 @@ CCTable[4, ] <- c("$\\Pr(X \\ge 21)$",
 CCTable[5, ] <- c("$\\Pr(15 < X \\le 17)$",
                   round(pbinom(17, prob = prob, size = n) - pbinom(16, prob = prob, size = n), 4),
                   "",
-                  "$\\Pr(15.5 < Y < 16.5)$",
+                  "$\\Pr(15.5 < Y < 17.5)$",
                   round( pnorm(16.5, mean = mn, sd = stdev) - pnorm(15.5, mean = mn, sd = stdev), 4) )
 
   knitr::kable(CCTable,
@@ -1000,7 +1000,7 @@ One shortcoming of using the normal distribution in modelling is that it is defi
 This is not always a problem, especially when the observations are far from zero, such as heights of adult humans.
 However, many random variables have observations close to zero, and the data are often skewed to the right (positively skewed).
 
-Many distributions can be used for modelling right skewed data defined on the positive real numbers; one is the exponential distribution.
+Many distributions can be used for modelling right-skewed data defined on the positive real numbers; the simplest is the exponential distribution.
 
 
 :::{.definition #ExponentialDistribution name="Exponential distribution"}
@@ -1015,11 +1015,12 @@ We write $X\sim\text{Exp}(\beta)$.
 :::
 
 
-The parameter $\lambda = 1/\beta$ (or $\theta = 1/\beta$) is often used in place of $\beta$, and is called the *rate* parameter.
+The parameter $\lambda = 1/\beta$ is often used in place of $\beta$, and is called the *rate* parameter.
+Sometimes the notation $X\sim\text{Exp}(\lambda)$, so checking which notation is being used in any context is wise.
 Plots of the pdf for various exponential distributions are given in Fig. \@ref(fig:ExponentialDistributions)}.
 
 
-```{r ExponentialDistributions, echo=FALSE, fig.align="center", fig.cap="Exponential distributions",fig.width=4,fig.height=3.5}
+```{r ExponentialDistributions, echo=FALSE, fig.align="center", fig.cap="Exponential distributions for various values of the rate parameter $\\lambda = 1/\\beta$",fig.width=4,fig.height=3.5}
 x <- seq(0, 12,
          length = 100)
 
@@ -1062,8 +1063,8 @@ For a random variable $X$ with the exponential distribution given in \@ref(eq:Ex
 
 \[
   F_X(x; \lambda) 
-  = 1 - e^{-x/\beta}
-  = 1 - e^{-\lambda x}.
+  = 1 - \exp\left\{-x/\beta\right\}
+  = 1 - \exp\left\{-\lambda x\right\}.
 \]
 :::
 
@@ -1108,10 +1109,11 @@ This is indeed the case (Fig. \@ref(fig:ExpNerves)).
 What proportion of time intervals can be expected to be longer than 1 second?
 
 If $X$ is the time between successive nerve pulses (in seconds), then $X\sim \text{Exp}(\beta = 0.2186)$.
+(sp the *rate parameter* is $\lambda = 1/0.2186 = 4.575$ per second.)
 The solution will then be
 
 \begin{align*}
-   \Pr(X>1)
+   \Pr(X > 1)
    &=  \int_1^\infty \frac{1}{0.2186}\exp(-x/0.2186)\, dx \\
    &= -\exp(-x/0.2186)\Big|_1^\infty \\
    &= (-0) + (\exp\{-1/0.2186\})\\
@@ -1148,9 +1150,9 @@ lines( x = xx,
 
 
 
-The Poisson distribution and the exponential distribution are related.
-If the number of events in a process follows a Poisson distribution, the space or time between two consecutive events has an exponential distribution (Theorem \@ref(thm:PoissonProcess)).
-Hence the exponential distribution is used to describe the interval between consecutive randomly occurring events.
+The Poisson distribution and the exponential distribution are closely related.
+If the number of events in a process follows a Poisson distribution, the space or time *between* two consecutive events has an exponential distribution (Theorem \@ref(thm:PoissonProcess)).
+Hence the exponential distribution is used to describe the interval between consecutive randomly occurring events that follow a Poisson distribution.
 
 
 :::{.theorem #PoissonProcess name="Poisson process"}
@@ -1227,7 +1229,7 @@ This property is captured in the following theorem.
 
 
 :::{.theorem #MemorylessProperty name="Memoryless property"}
-If $T \sim \text{Exp}(\lambda)$, then for $s > 0$ and $t > 0$, 
+If $T \sim \text{Exp}(\lambda)$ where $\lambda$ is the *rate* parameter, then for $s > 0$ and $t > 0$, 
 
 \[
     \Pr(T > s + t \mid T > s) = \Pr(T > t)
@@ -1247,9 +1249,9 @@ Consequently $\Pr( \{T > s + t \}\cap \{T > s \} ) = \Pr(T > s + t)$ and so
 \begin{align*}
    \Pr(T > s + t \mid T > s )
    &= \frac{\Pr(T > s +t )}{\Pr(T > s)}\\
-   &= \frac{e^{-\lambda(s + t)}}{e^{-\lambda s}}\\
-   &= e^{-\lambda t}\\
-   &= \Pr(T > t)
+   &= \frac{\exp\left\{-\lambda(s + t)\right\}}{\exp\left\{-\lambda s\right\}}\\
+   &= \exp\left\{-\lambda t\right\}\\
+   &= \Pr(T > t),
 \end{align*}
 where we have used \@ref(eq:ExpSurvivor).
 :::
@@ -1279,7 +1281,7 @@ by the memoryless property.
 
 
 Example \@ref(exm:Memoryless) shows that an exponential process is 'ageless': the risk of 'mortality' remains constant with age.
-Thta is, the probability of such an event occurring in the next small interval, whether the failure of a component or the occurrence of an accident, remains constant regardless of the age of the component or the length of time since the last accident. 
+That is, the probability of such an event occurring in the next small interval, whether the failure of a component or the occurrence of an accident, remains constant regardless of the age of the component or the length of time since the last accident. 
 In this sense, an exponential lifetime is different from a human lifetime, or the lifetime of many man-made objects, where the risk of 'death' in the next small interval increases with age.
 
 
@@ -1327,16 +1329,21 @@ This means that properties of the exponential distribution can be obtained by su
 
 par( mfrow = c(2, 2))
 
-alpha <- c(0.9, 1,
+alpha <- c(0.7, 1,
            2, 3)
 beta <- c(0.5, 1, 2)
 
-x <- seq(0, 10,
-         length = 100)
 
 for (i in (1:length(alpha))){
   alphai <- alpha[i]
   
+  if ( (i == 1) | ( i == 2 ) ) xmax <- 8
+  if (i == 3) xmax <- 10
+  if (i==4) xmax <= 12
+  
+  x <- seq(0, xmax,
+           length = 100)
+
   plot(x = x,
        y = dgamma(x,
                   shape = alphai,
@@ -1345,6 +1352,7 @@ for (i in (1:length(alpha))){
        ylab = "Prob. density",
        las = 1,
        lwd = 2,
+       col = plotColour1,
        type = "l",
        main = bquote("Gamma distributions:" ~ alpha == .(alphai) ) ) 
 
@@ -1352,12 +1360,14 @@ for (i in (1:length(alpha))){
          y = dgamma(x,
                   shape = alphai,
                   scale = beta[2]),
+         col = plotColour1,
          lty = 2,
          lwd = 2)
   lines( x = x,
          y = dgamma(x,
                   shape = alphai,
                   scale = beta[3]),
+         col = plotColour1,
          lty = 3,
          lwd = 2)
   legend("topright",
@@ -1379,11 +1389,11 @@ Notice that
    \int_0^\infty f_X(x)\,dx
    &= \int_0^\infty\frac{e^{-x/\beta}x^{\alpha - 1}}{\beta^\alpha\Gamma(\alpha)}\,dx\nonumber\\
    &= \frac{1}{\Gamma(\alpha)} \int_0^\infty e^{-y} y^{\alpha-1}\,dy  \quad \text{(on putting $y = x/\beta$)}\nonumber \\
-   &= 1\quad \text{(because $\int_0^\infty e^{-y} y^{\alpha-1}\,dy = \Gamma(\alpha)$)}
+   &= 1,
    (\#eq:GammaStd)
 \end{align}
-as it must.
-
+because $\int_0^\infty \exp(-y) y^{\alpha-1}\,dy = \Gamma(\alpha)$.
+ 
 The distribution function for the gamma distribution is complicated, involving incomplete gamma functions, and will not be given.
 The following are the basic properties of the gamma distribution.
 
@@ -1403,7 +1413,7 @@ For the expected value:
    \text{E}(X)
    = \int_0^{\infty}x f_X(x)\,dx 
    = \beta \frac{\Gamma(\alpha + 1)}{\Gamma(\alpha)}
-     \underbrace{\int_0^{\infty}\frac{e^{-x/\beta} x^{(\alpha + 1) - 1}}{\beta^{\alpha + 1}\Gamma(\alpha + 1)} \, dx}_{= 1}
+     \underbrace{\int_0^{\infty}\frac{\exp(-x/\beta) x^{(\alpha + 1) - 1}}{\beta^{\alpha + 1}\Gamma(\alpha + 1)} \, dx}_{= 1}
    = \alpha\beta.
 \]
 This result follows from using \@ref(eq:GammaStd) and Theorem \@ref(thm:GammaProperties).
@@ -1412,7 +1422,7 @@ This result follows from using \@ref(eq:GammaStd) and Theorem \@ref(thm:GammaPro
    \text{E}(X^2)
    = \int_0^{\infty}x^2  f_X(x) \, dx 
    = \beta^2\frac{\Gamma(\alpha + 2)}{\Gamma(\alpha)}
-     \underbrace{\int_0^{\infty}\frac{e^{-x/\beta} x^{(\alpha + 2) - 1}}{\beta^{\alpha + 2}\Gamma(\alpha + 2)}\,dx}_{= 1}
+     \underbrace{\int_0^{\infty}\frac{\exp(-x/\beta) x^{(\alpha + 2) - 1}}{\beta^{\alpha + 2}\Gamma(\alpha + 2)}\,dx}_{= 1}
    = \alpha(\alpha + 1)\beta^2
 \]
 where the result follows by writing $\Gamma(\alpha + 2) = (\alpha + 1)\alpha\Gamma(\alpha)$.
@@ -1429,9 +1439,9 @@ Also:
 \begin{align*}
    M_X(t)
     = \text{E}(e^{Xt})
-   &= \int_0^{\infty}e^{tx} \frac{e^{-x/\beta}x^{\alpha - 1}}{\beta^{\alpha} \Gamma(\alpha)} \, dx\\
-   &= \int_0^{\infty} \frac{e^{-x(1 - \beta t)/\beta}x^{\alpha - 1}}{\beta^{\alpha}\Gamma(\alpha)} \, dx\\
-   &= \int_0^{\infty} \frac{e^{-z}z^{\alpha - 1}}{\Gamma(\alpha)(1 - \beta t)^{\alpha - 1}} \, \frac{dz} {1 - \beta t}, 
+   &= \int_0^{\infty}\exp(tx) \frac{\exp(-x/\beta) x^{\alpha - 1}}{\beta^{\alpha} \Gamma(\alpha)} \, dx\\
+   &= \int_0^{\infty} \frac{\exp\{-x(1 - \beta t)/\beta\}x^{\alpha - 1}}{\beta^{\alpha}\Gamma(\alpha)} \, dx\\
+   &= \int_0^{\infty} \frac{\exp(-z) z^{\alpha - 1}}{\Gamma(\alpha)(1 - \beta t)^{\alpha - 1}} \, \frac{dz} {1 - \beta t}, 
       \text{putting $z = x(1 - \beta t)/\beta$}\\ 
    &= (1 - \beta t)^{-\alpha},
 \end{align*}
@@ -1546,7 +1556,7 @@ This expression can be integrated using integration by parts:
 Integration by parts is only possible since $\alpha$ is integer.
 If $\alpha$ was, for example $\alpha = 2.5$, integration by parts would not be possible.
 
-A more general approach is to use tables of the incomplete gamma function to evaluate the integral, numerical integration of software.
+A more general approach is to use tables of the incomplete gamma function to evaluate the integral, numerical integration, or software.
 To use **R**:
 
 
@@ -1601,12 +1611,12 @@ A random variable $X$ with probability density function
    f_X(x; m, n)
    = \frac{x ^ {m - 1}(1 - x)^{n - 1}}{B(m, n)} \quad \text{for $0\leq x \leq 1$ and $m > 0$, $n > 0$},
 \end{equation*}
-and
+and $B(m, n)$ is the *beta function*
 
 \begin{align}
    B(m, n)
    &= \int_0^1  x^{m - 1}(1 - x)^{n - 1} \, dx, \quad \text{for $m > 0$ and $n > 0$}\nonumber\\
-   &= \frac{\Gamma(m)\, \Gamma(n)}{\Gamma(m + n)}
+   &= \frac{\Gamma(m)\, \Gamma(n)}{\Gamma(m + n)},
    (\#eq:BetaFunction)
 \end{align}
 is said to have a *beta distribution* with parameters $m$ and $n$.
@@ -1638,7 +1648,7 @@ The beta function \@ref(eq:BetaFunction) satisfies the following:
 1. The beta function is symmetric in $m$ and $n$.
    That is, if $m$ and $n$ are interchanged, the function remains unaltered; i.e., $B(m, n) = B (n, m)$.
 2. $B(1, 1) = 1$.
-3. $B\left(\frac{1}{2}, \frac{1}{2}\right) = \pi$
+3. $B\left(\frac{1}{2}, \frac{1}{2}\right) = \pi$.
 :::
 
 :::{.proof}
@@ -1766,7 +1776,7 @@ Assume $X \sim \text{Beta}(m, n)$, then
    &= \frac{\Gamma(m + r)\,\Gamma(n)}{\Gamma(m + r + n)} \frac{\Gamma(m + n)}{\Gamma(m)\,\Gamma(n)}\\
    &= \frac{\Gamma(m + r)\,\Gamma(m + n)}{\Gamma(m + r + n)\,\Gamma(m)}
 \end{align*}
-Putting $r = 1$ and $r = 2$ into the above expression, and using sthat $\text{var}(X) = \text{E}(X^2) - \text{E}(X)^2$, the mean and variance are $\text{E}(X) = m/(m + n)$ and $\text{var}(X) = \frac{mn}{(m + n)^2(m + n + 1)}$.
+Putting $r = 1$ and $r = 2$ into the above expression, and using that $\text{var}(X) = \text{E}(X^2) - \text{E}(X)^2$, the mean and variance are $\text{E}(X) = m/(m + n)$ and $\text{var}(X) = \frac{mn}{(m + n)^2(m + n + 1)}$.
 
 Any mode $\theta$ of the distribution for which $0 < \theta < 1$ will satisfy $f'_X(\theta) = 0$. 
 From the definition we see that for $m, n>1$ and $0 < x < 1$,
@@ -1784,7 +1794,7 @@ The distribution function of the beta must be evaluated numerically in general, 
 
 If $X\sim \text{Beta}(m, n)$, then $X$ is defined on $[0, 1]$.
 Sometimes then, the beta distribution is used to model proportions, though not proportions out of a total number (when the [binomial distribution](#BinomialDistribution) is used).
-Instead, the beta distribution is used, for example, tp model percentage cloud cover (and also see Example \@ref(exm:BetaTanks)).
+Instead, the beta distribution is used, for example, to model percentage cloud cover (for example, @falls1974beta).
 
 For a random variable $Y$ defined on a different closed interval $[a, b]$, define $Y = X(b - a) + a$.
 
@@ -1846,11 +1856,16 @@ rnorm(3, # Generate three random numbers...
       sd = 2)       # ... with sd = 2
 ```
 
-Suppose we are seeking women over 175cm tall for a study; what percentage of women are over 173cm tall?
+Suppose we are seeking women over 173cm tall for a study; what percentage of women are over 173cm tall?
 Assume that adult females have heights modelled by a normal distribution with mean 163cm and a standard deviation of 5cm [@data:ABS1995:MeasureUp].
-Of course, the actual percentage can be computed by working directly with normal distributions, but simulations allows us to consider more complex situations.
-For this simple question initially (Fig. \@ref(fig:HeightSimHistograms), right panel):
+The percentage taller than 173 cm is:
 
+```{r}
+1 - pnorm(173, mean = 163, sd = 5)
+```
+
+Simulations can also be used, which allows us to consider more complex situations.
+For this simple question initially (Fig. \@ref(fig:HeightSimHistograms), left panel):
 
 ```{r echo=FALSE}
 set.seed(17283)
@@ -1895,7 +1910,7 @@ cat("Percentage females:", pcFemales, '%\n\n')
 cat("Percentage of 'tall' people that are female:", 
     round( sum(htP > 173 & personSex == 1) / sum(htP > 173) * 100, 1),
     '%\n\n')
-cat("Variance of hieghts: ", var(htP), "\n")
+cat("Variance of heights: ", var(htP), "\n")
 ```
 
 ```{r HeightSimHistograms, echo=FALSE, fig.width=6.5, out.width='100%', fig.height = 3.5, fig.cap="The distribution of heights of women (left panel) and men and women combined (right panel)"}
@@ -1931,7 +1946,7 @@ The speeds have a minimum value of 30 km/h, and a maximum value of 72 km/h.
 
 1. Using this model, compute the mean and standard deviation of vehicle speeds.
 1. Plot the pdf and df.
-1. If $X$ is the vehicle speed, compute $\Pr(X > 60)$, where 60km/h is the posted speed limit.
+1. If $X$ is the vehicle speed, compute $\Pr(X > 60)$, where 60 km/h is the posted speed limit.
 1. Compute $\Pr(X > 65\mid X > 60)$.
 :::
 
@@ -1945,7 +1960,7 @@ The normal model has a mean of 48km/h, with a standard deviation^[Although the a
 1. Write the pdf for this truncated normal distribution.
 1. Plot the pdf and df for this truncated normal distribution.
 1. Compute the mean and variance for this truncated normal distribution.
-1. Suppose a vehicle is caught speeding (i.e., exceeding 60km/h); what is the probability that the vehicle is exceeding 65 km/h?
+1. Suppose a vehicle is caught speeding (i.e., exceeding 60 km/h); what is the probability that the vehicle is exceeding the speed limit by less than 5 km/h?
 :::
 
 
@@ -1960,7 +1975,7 @@ A study of the service life of concrete in various conditions [@liu2012stochasti
 
 :::{.exercise #ConcreteSurfaceCholride}
 A study of the service life of concrete in various conditions [@liu2012stochastic] used normal distributions to model the surface chloride concentrations.
-In one model, the mean was set as $\mu = 2$kg/m^2^ and the standard deviation as $\sigma = 0.2$kg/m^3^.
+In one model, the mean was set as $\mu = 2$ kg/m^2^ and the standard deviation as $\sigma = 0.2$ kg/m^3^.
 
 1. Plot the pdf and df.
 2. Let $Y$ be the surface chloride concentration.
@@ -1987,7 +2002,7 @@ for $a > 0$ and $b > 0$.
 
 
 :::{.exercise #GammaCV}
-Show that the gamma distribution has a constant *coefficient of variation*, where the *coefficient of variation* if the standard deviation divided by the mean.
+Show that the gamma distribution has a constant *coefficient of variation*, where the *coefficient of variation* is the standard deviation divided by the mean.
 :::
 
 
@@ -2218,6 +2233,17 @@ Similarly, the *standard deviation* $s$ of the heights at age $x$ is approximate
 Show that the variance of the normal, Poisson and gamma distributions can all be written in the form $\text{var}(X) = \phi \text{E}(X)^p$ for $p = 0, 1$ and $2$ respectively.
 :::
 
+:::{.exercise}
+@chia1991beta used the beta distribution to model cloud duration in Darwin, defined as 
 
+> ...the fraction of observable daylight hours not receiving bright sunshine.
+>
+> --- @chia1991beta, p. 195.
+
+In January, the fitted parameters were $m = 0.859$ and $n = 0.768$; in July, the fitted parameters were $m = 0.110$ and $b = 1.486$.
+
+1. Plot both pdfs on the same graph, and comment on what this tells you about cloud cover in Darwin
+1. Writing $C$ for the cloud duration, compute $\Pr(C > 0.5)$ for both January and July.
+:::
 
 
