@@ -820,7 +820,44 @@ So counting, the pdf for the distance $D$ is:
 
 :::{answer}
 **Answer for Exercise \@ref(exr:Continuous1).**
+
+1. $a\int_0^1 (1 - y)^2\,dy = \left. (1 - y)^3/3\right|_0^1 = 1/3$.
+1. $\Pr(|Y - 1/2| > 1/4) = \Pr(Y > 3/4) + \Pr(Y < 1/4) = 1 - \Pr(1/4 < Y < 3/4) = 13/32$.
+1. See Fig. \@ref(fig:PDFy).
+
+```{r PDFy, fig.cap="The pdf of $y$", fig.align="center"}
+y <- seq(0, 1, length = 500)
+fy <- ( (1 - y)^2 ) * 3
+
+plot(fy ~ y,
+     lwd = 2,
+     xlab = "y",
+     ylab = "PDF",
+     type = "l")
+```
+
 :::
+
+
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:Discrete1).**
+
+1. Write as $p(x) = \log_{10}(1 + x) - \log_{10}x$; then the sum is
+
+  \[
+    (\log_{10}(2) - \log_{10} 1) 
+    + (\log_{10} 3 - \log_{10} 2)
+    + (\log_{10} 4 - \log_{10} 3) + \dots
+    + (\log_{10} 10 - \log_{10} 9)
+  \]
+and things cancel, leaving $\log{10}10 = 1$.
+1. DF:
+:::
+
+
+
 
 
 :::{answer}
@@ -1749,22 +1786,11 @@ qnorm(0.85, mean = mn, sd = sd)
 :::{.answer}
 **Answer to Exercise \@ref(exr:Kumaraswamy).**
 
-An alternative to the beta distribution with a closed form is the *Kumaraswamy distribution*, with pdf
-
-\[
-   p_X(x) = 
-   \begin{cases}
-      ab x^{a - 1} (1 - x)^{b - 1} & \text{for $0 < x < 1$};\\
-      0                            & \text{elsewhere}
-   \end{cases}
-\]
-for $a > 0$ and $b > 0$.
-We write $X\sim \text{Kumaraswamy}(a, b)$.
-
 1. See Fig. \@ref(fig:KumaraswamyPlots).
 1. See Fig. \@ref(fig:KumaraswamyPlots).
 1. With $b = 1$, the pdf is $p_X(x) = a x^{a - 1}$.
    Also, 
+   
    \begin{align*}
      \text{Beta}(a, 1) 
      &= \frac{x^{a - 1} (1 - x)^1 - 1}{B(a, 1)}\\
@@ -1785,8 +1811,6 @@ pKumaraswamy <- function(x, a, b){
 }
 
 
-
-
 x <- seq(0, 1, length = 200)
 
 par(mfrow = c(1, 2))
@@ -1795,16 +1819,21 @@ plot( y = dKumaraswamy(x, a = 0.5, b = 0.5),
       x = x,
       xlab = expression(italic(x)),
       ylab = "Prob. fn",
+      las = 1,
       type = "l",
+      ylim = c(0, 4),
       lwd = 2)
 lines(y = dKumaraswamy(x, a = 4, b = 1),
       x = x,
+      lwd = 2,
       lty = 2)
 lines(y = dKumaraswamy(x, a = 1, b = 4),
       x = x,
+      lwd = 2,
       lty = 3)
 lines(y = dKumaraswamy(x, a = 1, b = 3),
       x = x,
+      lwd = 2,
       lty = 4)
 
 
@@ -1812,24 +1841,80 @@ lines(y = dKumaraswamy(x, a = 1, b = 3),
 
 plot( y = pKumaraswamy(x, a = 0.5, b = 0.5),
       x = x,
+      las = 1,
       xlab = expression(italic(x)),
-      ylab = "Prob. fn",
+      ylab = "Dist. fn",
       type = "l",
       lwd = 2)
 lines(y = pKumaraswamy(x, a = 4, b = 1),
       x = x,
+      lwd = 2,
       lty = 2)
 lines(y = pKumaraswamy(x, a = 1, b = 4),
       x = x,
+      lwd = 2,
       lty = 3)
 lines(y = pKumaraswamy(x, a = 1, b = 3),
       x = x,
+      lwd = 2,
       lty = 4)
 
 
 ```
 
 
+:::{.answer}
+**Answer to Exercise \@ref(exr:GammaCV).**
+
+$\text{CV} = \frac{\sqrt{a\beta^2}}P{\alpha\beta} = 1/\sqrt{\alpha}$, which is constant.
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:BetaHospital).**
+
+In a study modelling waiting times at a hospital [@khadem2008evaluating], patients are classified into one of three categories:
+
+* Red: Critically ill or injured patients.
+* Yellow: Moderately ill or
+injured patients.
+* Green: Minimally injured or
+uninjured patients.
+
+For 'Green' patients, the service time $S$ was modelled as $S = 4.5 + 11V$, where $V \sim \text{Beta}(0.287, 0.926)$.
+
+
+For the given beta distribution, $\text{E}(V) = 0.287/(0.287 + 0.926) = 0.2366...$ and $\text{Var}(V) = 0.08161874$.
+
+1. $\text{E}(S) = \text{E}(4.5 + 11V) = 4.5 + 11\text{E}(V) = 7.10$ minutes.
+   $\text{var}(S) = 11^2\times\text{Var}(V) = 9.875$ minutes^2^.
+1. $V\in (4.5, 15.5)$.
+1. See Fig. \@ref(fig:ServiceTimes).
+1. This corresponds to $V = 10.5/11 = 0.9545455$, so $\Pr(S > 15) = \Pr(V > 0.9545455) = 0.01745087$.
+1. With $V$, the largest 20% correspond to $V = 0.4940853$, so that $S = 9.934938$; the largest 20% are longer than 9.93 minutes.
+:::
+
+
+```{r ServiceTimes, fig.cap="Service times", fig.align="center"}
+v <- seq(0, 1, length = 500)
+stime <- 4.5 + 11 * v
+  
+PDFv <- dbeta(v, shape1 = 0.287, shape2 = 0.926)
+
+plot( PDFv ~ stime,
+      type = "l",
+      las = 1,
+      xlim = c(4.5, 15.5),
+      ylim = c(0, 5),
+      xlab = expression(italic(S)),
+      ylab = "PDF",
+      main = "Distribution of S",
+      lwd = 2)
+
+1 - pbeta( 0.9545455, shape1 = 0.287, shape2 = 0.926)
+qbeta(0.8, shape1 = 0.287, shape2 = 0.926)
+```
 
 
 :::{.answer}
