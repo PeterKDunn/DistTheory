@@ -1612,7 +1612,7 @@ $\text{var}(X) = (72 - 30)^2 / 12 = 147$(km.h^-1^)^2^ (more easily understood, a
 
 :::
 
-```{r, VehicleSpeeds, echo=TRUE, fig.align="center", fig.cap="Vehicle speeds"}
+```{r, VehicleSpeeds, echo=TRUE, fig.align="center", fig.cap="Vehicle speeds", out.width='70%'}
 par(mfrow = c(1, 2))
 
 x <- seq(10, 100,
@@ -1638,7 +1638,7 @@ plot( x = x,
       ylim = c(0, 1),
       xlab = "Vehicle speeds (in km/h)",
       ylab = "Probability density",
-      main = "PDF for vehicle speeds")
+      main = "DF for vehicle speeds")
 ```
 
 :::{.answer}
@@ -1666,7 +1666,6 @@ where $k \approx \Phi(-2.045455) + (1 - \Phi(2.727273)) = 0.02359804$.
 pnorm(30, 48, 8.8) + # Slower than 30
    (1- pnorm(72, 48, 8.8)) # Faster than 72
 ```
-
 :::
 
 
@@ -1674,15 +1673,12 @@ pnorm(30, 48, 8.8) + # Slower than 30
 :::{.answer}
 **Answer to Exercise \@ref(exr:ConcreteDiffusion).**
 
-A study of the service life of concrete in various conditions [@liu2012stochastic] modelled the diffusion coefficients using a gamma distribution, with $\alpha = 27.05$ and $\beta = 1.42$ (units not given).
-
-
-1.
+1. See Fig. \@ref(fig:ConcreteDiffusion).
 1. $\text{E}(X) = \alpha \beta \approx 38.4$ and $\text{var}(X) = \alpha \beta^2 \approx 54.54$. 
 1. $\Pr(C > 30 \mid C < 50) = \Pr(30 < C < 50) / \Pr(C < 50)\approx 0.0044$.
 :::
 
-```{r}
+```{r ConcreteDiffusion, fig.cap="The gamma distribution for the concrete diffusion model", out.width='70%', fig.align="center"}
 alpha <- 27.05
 beta <- 1.42
 
@@ -1713,15 +1709,125 @@ plot( y = pgamma(x, shape = alpha, rate = beta),
 :::{.answer}
 **Answer to Exercise \@ref(exr:ConcreteSurfaceCholride).**
 
-A study of the service life of concrete in various conditions [@liu2012stochastic] used normal distributions to model the surface chloride concentrations.
-In one model, the mean was set as $\mu = 2$kg/m^2^ and the standard deviation as $\sigma = 0.2$kg/m^3^.
-
-1. Plot the pdf and df.
-2. Let $Y$ be the surface chloride concentration.
-   Compute $\Pr(Y > 2.4)$.
-3. 80% of the time, surface chloride concentrations are below what value?
-3. 15% of the time, surface chloride concentrations exceed what value?
+1. See Fig .\@ref(fig:SurfaceChloride).
+2. About 0.0228.
+3. About 2.17 kg/m^3^.
+3. About 2.21 kg/m^3^.
 :::
+
+
+```{r SurfaceChloride, fig.cap="The gamma distribution for the surface chloride concentrations model", out.width='70%', fig.align="center"}
+mn <- 2
+sd <- 0.2
+
+x <- seq(1.2, 2.8, length = 200)
+
+par(mfrow = c(1, 2))
+
+plot( y = dnorm(x, mean = mn, sd = sd),
+      x = x,
+      xlab = expression(italic(x)),
+      ylab = "Prob. fn",
+      type = "l",
+      lwd = 2)
+plot( y = pnorm(x, mean = mn, sd = sd ),
+      x = x,
+      xlab = expression(italic(x)),
+      ylab = "Dist. fn",
+      type = "l",
+      lwd = 2)
+
+1 - pnorm(2.4, mean = mn, sd = sd)
+qnorm(0.8, mean = mn, sd = sd)
+qnorm(0.85, mean = mn, sd = sd)
+
+```
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:Kumaraswamy).**
+
+An alternative to the beta distribution with a closed form is the *Kumaraswamy distribution*, with pdf
+
+\[
+   p_X(x) = 
+   \begin{cases}
+      ab x^{a - 1} (1 - x)^{b - 1} & \text{for $0 < x < 1$};\\
+      0                            & \text{elsewhere}
+   \end{cases}
+\]
+for $a > 0$ and $b > 0$.
+We write $X\sim \text{Kumaraswamy}(a, b)$.
+
+1. See Fig. \@ref(fig:KumaraswamyPlots).
+1. See Fig. \@ref(fig:KumaraswamyPlots).
+1. With $b = 1$, the pdf is $p_X(x) = a x^{a - 1}$.
+   Also, 
+   \begin{align*}
+     \text{Beta}(a, 1) 
+     &= \frac{x^{a - 1} (1 - x)^1 - 1}{B(a, 1)}\\
+     &= \frac{x^{a - 1} \Gamma(a + 1)}{\Gamma(a) \, \Gamma(a)} = a x^{a - 1},
+  \end{align*}
+  which is the same as above.
+1. With $a = b = 1$, the pdf is $p_X(x) = 1$, which is the continuous uniform distribution.
+1. Write $Y = 1 - X$; then $p_X(x) = ab(1 - y)^{a - 1} (y^a) ^{b - 1}$.
+:::
+
+
+```{r KumaraswamyPlots, fig.cap="Some Kumaraswamy distributions", out.width='70%', fig.align="center"}
+dKumaraswamy <- function(x, a, b){
+  a * b * x^(a - 1) * (1 - x^2) ^ (b - 1)
+}
+pKumaraswamy <- function(x, a, b){
+  1 - (1 - x^a)^b
+}
+
+
+
+
+x <- seq(0, 1, length = 200)
+
+par(mfrow = c(1, 2))
+
+plot( y = dKumaraswamy(x, a = 0.5, b = 0.5),
+      x = x,
+      xlab = expression(italic(x)),
+      ylab = "Prob. fn",
+      type = "l",
+      lwd = 2)
+lines(y = dKumaraswamy(x, a = 4, b = 1),
+      x = x,
+      lty = 2)
+lines(y = dKumaraswamy(x, a = 1, b = 4),
+      x = x,
+      lty = 3)
+lines(y = dKumaraswamy(x, a = 1, b = 3),
+      x = x,
+      lty = 4)
+
+
+
+
+plot( y = pKumaraswamy(x, a = 0.5, b = 0.5),
+      x = x,
+      xlab = expression(italic(x)),
+      ylab = "Prob. fn",
+      type = "l",
+      lwd = 2)
+lines(y = pKumaraswamy(x, a = 4, b = 1),
+      x = x,
+      lty = 2)
+lines(y = pKumaraswamy(x, a = 1, b = 4),
+      x = x,
+      lty = 3)
+lines(y = pKumaraswamy(x, a = 1, b = 3),
+      x = x,
+      lty = 4)
+
+
+```
 
 
 
