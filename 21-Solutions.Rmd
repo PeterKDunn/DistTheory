@@ -1874,17 +1874,6 @@ $\text{CV} = \frac{\sqrt{a\beta^2}}P{\alpha\beta} = 1/\sqrt{\alpha}$, which is c
 :::{.answer}
 **Answer to Exercise \@ref(exr:BetaHospital).**
 
-In a study modelling waiting times at a hospital [@khadem2008evaluating], patients are classified into one of three categories:
-
-* Red: Critically ill or injured patients.
-* Yellow: Moderately ill or
-injured patients.
-* Green: Minimally injured or
-uninjured patients.
-
-For 'Green' patients, the service time $S$ was modelled as $S = 4.5 + 11V$, where $V \sim \text{Beta}(0.287, 0.926)$.
-
-
 For the given beta distribution, $\text{E}(V) = 0.287/(0.287 + 0.926) = 0.2366...$ and $\text{Var}(V) = 0.08161874$.
 
 1. $\text{E}(S) = \text{E}(4.5 + 11V) = 4.5 + 11\text{E}(V) = 7.10$ minutes.
@@ -1915,6 +1904,154 @@ plot( PDFv ~ stime,
 1 - pbeta( 0.9545455, shape1 = 0.287, shape2 = 0.926)
 qbeta(0.8, shape1 = 0.287, shape2 = 0.926)
 ```
+
+
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:Headway).**
+
+Note that if $Y = X - \Delta$, then $Y$ has a gamma distribution, with $\alpha = 2.5$ and $\beta = 0.8$, with $\text{E}(Y) = \alpha\beta = 2$ and $\text{var}(Y) = \alpha\beta^2 = 1.6$.
+
+1. $\text{E}(X) = \text{E}(Y + \Delta) = 3.2$ seconds.
+   $\text{var}(X) = \text{var}(Y) = 1.6$ seconds^2^.
+
+
+```{r}
+numSims <- 1000
+yHeadway <- rgamma( n = numSims,
+                    shape = 2.5,
+                    rate = 0.8)
+xHeadway <- yHeadway + 1.2
+hist(xHeadway,
+     las = 1,
+     lwd = 2,
+     xlim = c(0, max(xHeadway)),
+     main = "Histogram of headway",
+     ylab = "Prob. fn.",
+     xlab = "Headway (in sec)")
+
+xMean <- 3.2; xVar <- 1.6
+xLo <- 3.2 - 2 * sqrt(xVar)
+xHi <- 3.2 + 2 * sqrt(xVar)
+
+Num <- sum( (xHeadway < xHi ) & (xHeadway > xLo) )
+EmpiricalProp <- Num / numSims
+
+# Tchebyshev: AT LEAST this proportion
+k <- 2
+1 - 1/k^2
+```
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:DisaggregationDuration).**
+
+4. In summer: If the event lasts more than 1 hour, what is the probability that it eventually lasts more than three hours?
+5. In winter: If the event lasts more than 1 hour, what is the probability that it lasts less  than two hours?
+
+```{r}
+alpha <- 2; betaS <- 0.04; betaW <- 0.03
+x <- seq(0, 1, length = 1000)
+
+yS <- dgamma( x, shape = alpha, scale = betaS)
+yW <- dgamma( x, shape = alpha, scale = betaW)
+
+plot( range(c(yS, yW)) ~  range(x),
+      type = "n", # No plot, just canvas
+      las = 1,
+      xlab = "Event duration (in ??)",
+      ylab = "Prob. fn.")
+lines(yS ~ x, 
+      lty = 1,
+      lwd = 2)
+lines(yW ~ x, 
+      lty = 2,
+      lwd = 2)
+legend( "topright",
+        lwd = 2,
+        lty = 1:2,
+        legend = c("Summer", "Winter"))
+
+1 - pgamma(6/24, shape = alpha, scale = betaW)
+1 - pgamma(6/24, shape = alpha, scale = betaS)
+
+```
+::: 
+
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:NormalLeaveTime).**
+
+1. About 25.2%.
+2. $Pr(T > 7 | T > 5) = \Pr(T > 7)/\Pr(T > 5)$ or about 33.8%.
+3. About 7:30pm.
+
+```{r}
+pnorm(5, mean = 6, sd = 1.5)
+
+(1 - pnorm(7, mean = 6, sd = 1.5) ) / 
+  (1 - pnorm(5, mean = 6, sd = 1.5) )
+
+qnorm(0.85, mean = 6, sd = 1.5)
+```
+
+:::
+
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:BetaClay).**
+
+Write $X$ for the percentage of clay content in soil.
+
+2. County A: 
+   * $\text{E}(X) = m / (m + n) = 0.708$ or about 70.8%.
+   * $\text{var}(X) = 0.01196957$ or about 1.2%.  
+   County B: 
+   * $\text{E}(X) = m / (m + n) = 0.274$ or about 27.4%.
+   * $\text{var}(X) = 0.02939085$ or about 2.9%.
+3. About 71.7% for County A; about 51.5% for County B.
+   These look reasonable from the plots.
+
+```{r}
+x <- seq(0, 1, length = 1000)
+yA <- dbeta(x, shape1 = 11.52, shape2 = 4.75)
+yB <- dbeta(x, shape1 = 3.85, shape2 = 3.65)
+
+plot( range( c(yA, yB)) ~ range(100 * x),
+      type = "n", #No plot, just canvas
+      las = 1,
+      xlab = "Percentage clay",
+      ylab = "Prob. fn.")
+lines( yA ~ I(100 * x), 
+       lwd = 2,
+       lty = 1)
+lines( yB ~ I(100 * x), 
+       lwd = 2,
+       lty = 2)
+legend("top",
+       lty = 1:2,
+       lwd = 2,
+       legend = c("Location A", "Location B"))
+
+qbeta( 0.5, shape1 = 11.52, shape2 = 4.75)
+qbeta( 0.5, shape1 = 3.85, shape2 = 3.65)
+```
+:::
+
+
+
+
 
 
 :::{.answer}
