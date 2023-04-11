@@ -1910,43 +1910,6 @@ qbeta(0.8, shape1 = 0.287, shape2 = 0.926)
 
 
 
-:::{.answer}
-**Answer to Exercise \@ref(exr:Headway).**
-
-Note that if $Y = X - \Delta$, then $Y$ has a gamma distribution, with $\alpha = 2.5$ and $\beta = 0.8$, with $\text{E}(Y) = \alpha\beta = 2$ and $\text{var}(Y) = \alpha\beta^2 = 1.6$.
-
-1. $\text{E}(X) = \text{E}(Y + \Delta) = 3.2$ seconds.
-   $\text{var}(X) = \text{var}(Y) = 1.6$ seconds^2^.
-
-
-```{r}
-numSims <- 1000
-yHeadway <- rgamma( n = numSims,
-                    shape = 2.5,
-                    rate = 0.8)
-xHeadway <- yHeadway + 1.2
-hist(xHeadway,
-     las = 1,
-     lwd = 2,
-     xlim = c(0, max(xHeadway)),
-     main = "Histogram of headway",
-     ylab = "Prob. fn.",
-     xlab = "Headway (in sec)")
-
-xMean <- 3.2; xVar <- 1.6
-xLo <- 3.2 - 2 * sqrt(xVar)
-xHi <- 3.2 + 2 * sqrt(xVar)
-
-Num <- sum( (xHeadway < xHi ) & (xHeadway > xLo) )
-EmpiricalProp <- Num / numSims
-
-# Tchebyshev: AT LEAST this proportion
-k <- 2
-1 - 1/k^2
-```
-:::
-
-
 
 :::{.answer}
 **Answer to Exercise \@ref(exr:DisaggregationDuration).**
@@ -1985,6 +1948,46 @@ legend( "topright",
 
 
 
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:Diarrhoea).**
+
+1. $\text{E}(X) = \alpha\beta = 3.76$ days.
+   $\text{var}(X) = \alpha\beta^2 = 12.75$ days^2^.
+1. The main difference is at the lower end of the distribution.
+1. About 35% (gamma) and 31% (exponential).
+1. Both just over 10 days.
+
+
+```{r}
+x <- seq(0, 15, length = 500)
+yGamma <- dgamma(x, shape = alpha, scale = beta)
+yExp <- dexp(x, rate = 1/beta)
+
+plot( range (c(yGamma, yExp)) ~ range(x),
+      type = "n", # No plot, just canvas
+      las = 1,
+      xlab = "Duration of symptoms (in days)",
+      ylab = "Prob. fn.")
+lines( yGamma ~ x,
+       lwd = 2,
+       lty = 1)
+lines( yExp ~ x,
+       lwd = 2,
+       lty = 2)
+legend( "topright",
+        lwd = 2,
+        lty = 1:2,
+        legend = c("Gamma", "Exponential"))
+
+1 - pgamma(4, shape = alpha, scale = beta)
+1 - pexp(4, rate = 1/beta)
+
+qgamma(0.95, shape = alpha, scale = beta)
+qexp(0.95, rate = 1/beta)
+```
+:::
 
 
 :::{.answer}
@@ -2051,6 +2054,43 @@ qbeta( 0.5, shape1 = 3.85, shape2 = 3.65)
 
 
 
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:Headway).**
+
+Note that if $Y = X - \Delta$, then $Y$ has a gamma distribution, with $\alpha = 2.5$ and $\beta = 0.8$, with $\text{E}(Y) = \alpha\beta = 2$ and $\text{var}(Y) = \alpha\beta^2 = 1.6$.
+
+1. $\text{E}(X) = \text{E}(Y + \Delta) = 3.2$ seconds.
+   $\text{var}(X) = \text{var}(Y) = 1.6$ seconds^2^.
+
+
+```{r}
+numSims <- 1000
+yHeadway <- rgamma( n = numSims,
+                    shape = 2.5,
+                    rate = 0.8)
+xHeadway <- yHeadway + 1.2
+hist(xHeadway,
+     las = 1,
+     lwd = 2,
+     xlim = c(0, max(xHeadway)),
+     main = "Histogram of headway",
+     ylab = "Prob. fn.",
+     xlab = "Headway (in sec)")
+
+xMean <- 3.2; xVar <- 1.6
+xLo <- 3.2 - 2 * sqrt(xVar)
+xHi <- 3.2 + 2 * sqrt(xVar)
+
+Num <- sum( (xHeadway < xHi ) & (xHeadway > xLo) )
+EmpiricalProp <- Num / numSims
+
+# Tchebyshev: AT LEAST this proportion
+k <- 2
+1 - 1/k^2
+```
+:::
 
 
 
