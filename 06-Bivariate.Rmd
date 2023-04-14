@@ -2979,36 +2979,40 @@ rgl::persp3d(x = M$x,
 ```
 
 
-## Random parameters {#RandomParameters}
+## Introduction to Bayesian analysis {#BayesianIntro}
 
-So far, parameters describing a model or population have been assumed to be fixed values.
+### Random parameters {#RandomParameters}
+
+So far, parameters used to describe model or populations have been fixed values.
 In some applications, though, the *parameters* themselves may be assumed to have distributions.
 This idea is best introduced using examples.
 
 
 :::{.example #RandomPar1 name="Exam scores"}
-The score achieved by a student on an exam is approximately normal with mean $\mu$.
-The mean $\mu$ is not constant, but varies (due to the specific questions that appear on the exam, the amount of study completed, etc.), and follows an approximately normal distribution.
+The score achieved by students on an exam is approximately normal with mean $\theta$.
+The score achieved by a specific student $X$ can be modelled with this normal distribution, using this mean $\theta$.
+The mean $\theta$ is not constant, but varies (due to the specific questions that appear on the exam, the amount of study completed by individual students, etc.), and follows an approximately normal distribution.
 :::
 
 
-
 :::{.example #RandomPar2 name="Vehicle crashes"}
-Motor vehicle crashes occur in a town according to a Poisson distribution with a mean rate of 10 per day when fine, and 20 per day when wet.
+Motor vehicle crashes occur in a town according to a Poisson distribution with mean $\theta$.
+The number of crashes on a specific day $X$ can be modelled with this distribution, but the mean $\theta$ is 10 per day when fine, and 20 per day when wet.
 About 10% of days are wet.
 :::
 
 
 :::{.example #RandomPar3 name="Goal kicking"}
 Let $\theta$ be the probability that a rugby league goal-kicker lands a goal.
-This number of kicks landed $X$ can be modelled using a binomial distribution, but the probability of a successful kick $\theta$ may vary (depending on the conditions, where the kick is taken from, and so on).
+This number of kicks landed $X$ can be modelled using a binomial distribution with probability $\theta$, but the probability of a successful kick $\theta$ may vary (depending on the conditions, where the kick is taken from, who is taking the kick, and so on).
 :::
 
 
-In each of these examples, a distribution $f_{X}(x; \theta)$ describes the data, where the parameter $\Theta$ itself has a distribution, $f_\Theta(\theta)$.
+In each of these examples, a distribution $f_{X}(x; \theta)$ describes the data for some given value of $\Theta$.
+However, the value of $\Theta$ itself has a distribution, $f_\Theta(\theta)$, so the actual distribution $f_{X}(x; \theta)$ depends in *which* value of $\Theta$ is realised.
 Hence, the distribution $f_X(x; \theta)$ is effectively a *conditional* distribution $f_{x|\Theta}(x \mid \Theta)$, and the parameter $\Theta$ is effectively a random variable.
 
-The *marginal* distribution of $X$ can be found from Def. \@ref(def:BVContMarginal) if $X$ and $\Theta$ are continuous:
+The *marginal* distribution of $X$ (i.e., $f_X(x)$) can be found from Def. \@ref(def:BVContMarginal) if $X$ and $\Theta$ are continuous:
 
 \begin{equation}
    f_X(x)
@@ -3040,16 +3044,17 @@ for $X$ discrete and $\Theta$ continuous.
 
 
 Only in special cases will these marginal distributions have a standard distribution or closed form.
-The parameters that describe the distribution of $\Theta$ are called *hyperparameters*.
+The parameters that describe the distribution of the parameter $\Theta$ are called *hyperparameters*.
 
 
 :::{.example #RandomParExam name="Exam scores"}
-The score $X$ achieved by a student on an exam is normal with mean $\Theta$ and standard deviation $\sigma = 5$.
-The mean $\Theta$ varies with a normal distribution with two hyperparameters: the mean 60 and standard deviation 10. 
+The score $X$ achieved by a student on an exam is normal with mean $\Theta$ and standard deviation $\sigma = 5$; that is, for some *given* value of $\Theta$, we have $X \sim N(\Theta, 5^2)$.
+The mean $\Theta$ varies with a normal distribution with two *hyperparameters*: the mean 60 and standard deviation 10; that is, $\Theta \sim N(60, 10^2)$.
 From \@ref(eq:marg1), the marginal pdf of $X$ is
 
 \begin{align}
   f_X(x)
+  &= \int f_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta\notag\\
   &=\int_{-\infty}^\infty \frac{1}{5\sqrt{2\pi}}
      \exp\left[ -\frac{1}{2}\left(\frac{x - \theta}{5}\right)^2 \right]
      \frac{1}{10\sqrt{2\pi}}
@@ -3068,18 +3073,20 @@ This describes the distribution of $X$, taking into account the various values o
 
 :::{.example #RandomParAccidents name="Vehicle crashes"}
 Let $X$ be the number of motor vehicle crashes per day.
-Then $X \sim \text{Pois}(M)$, where mean parameter $M$ has the distribution by $\Pr(M = 10) = 0.9$ and $\Pr(M = 20) = 0.1$, or
+Then $X \sim \text{Pois}(\Theta)$ for some given value of $\Theta$.
+However, the mean parameter $\Theta$ has the distribution by $\Pr(\Theta = 10) = 0.9$ and $\Pr(\Theta = 20) = 0.1$, or
 
 \[
-   p_M(m) = 0.1^{(m - 10)/10} 0.9^{(20 - m)/10}\quad\text{for $m = 10, 20$}.
+   p_\Theta(\theta) = 0.1^{(\theta - 10)/10} 0.9^{(20 - \theta)/10}\quad\text{for $\theta = 10, 20$}.
 \]
 From \@ref(eq:marg2), the marginal pf of $X$ is
 
-\begin{equation}
+\begin{align}
   p_X(x)
-  = 0.9 \frac{e^{-10}10^x}{x!} + 0.1 \frac{e^{-20}{20^x}}{x!}\quad\text{for $x = 0,1,2,\dots$}.
+  &= \sum_\theta p_{X \mid \Theta}(x, \theta)p_\Theta(\theta)\notag\\
+  &= 0.9 \frac{e^{-10}10^x}{x!} + 0.1 \frac{e^{-20}{20^x}}{x!}\quad\text{for $x = 0, 1, 2, \dots$}.
   (\#eq:RandomParAccidents)
-\end{equation}
+\end{align}
 See  Fig. \@ref(fig:RandomMarginal) (centre panel).
 :::
 
@@ -3090,9 +3097,10 @@ From \@ref(eq:marg4), the marginal pf of $X$ is
 
 \begin{align}
   p_X(x)
+  &= \int p_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta\notag\\
   &= \int_0^1 \binom{10}{x}\theta^x(1 - \theta)^{10 - x}
-     \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)} \theta^3(1 - \theta)^3\,d\theta\notag\\
-  &= \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)}\binom{10}{x}\int_0^1 \theta^{x + 3}(1 - \theta)^{10 - x + 3}\,d\theta\notag\\
+     \frac{\Gamma(8)}{\Gamma(4)\,\Gamma(4)} \theta^3(1 - \theta)^3\,d\theta\notag\\
+  &= \frac{\Gamma(8)}{\Gamma(4)\,\Gamma(4)}\binom{10}{x}\int_0^1 \theta^{x + 3}(1 - \theta)^{10 - x + 3}\,d\theta\notag\\
 \end{align}
 where the integral can be simplified by seeing it is a [Beta function](eqn:BetaFunction) with parameters $x + 4$ and $14 - x$, so that $\int_0^1 \theta^{x + 3}(1 - \theta)^{10 - x + 3}\,d\theta = \Gamma(x - 4)\Gamma(14 - x)/\Gamma(18)$.
 Then:
@@ -3228,15 +3236,21 @@ In their most usual form, the above equations for the combinations of continuous
 <!-- \end{align} -->
 
 In all cases \@ref(eq:Bayesdis) to \@ref(eq:Bayesctsdis), the left-hand side shows that the distribution is a function of $y$, given the observed data $X$.
-The denominator of the right-hand side is only a function of the observed data $X$, and contains no unknowns (so is effectively a normalising constant whose value ensures that the expression is a valid probability function).
+The *denominator* of the right-hand side is only a function of the observed data $X$, and contains no unknowns (so is effectively a normalising constant whose value ensures that the expression is a valid probability function).
 
-Because of this, sometimes these expressions in \@ref(eq:Bayesdis) to \@ref(eq:Bayesctsdis) are written as proportionalities rather than equalities by omitting the denominator (the normalising constant); also, write $\Theta$ as the paameter of interest:
+Because of this, sometimes these expressions in \@ref(eq:Bayesdis) to \@ref(eq:Bayesctsdis) are written as proportionalities rather than equalities by omitting the denominator (the normalising constant); also, write $\Theta$ as the parameter of interest:
 
 \begin{align*}
    f_{\Theta|X}(\theta \mid x)      &\propto f_{X|\Theta}(x\mid \theta)      \times f_\Theta(\theta)\\
    \text{Posterior distn} &\propto \text{Sampling distn} \times \text{Prior distn}.
 \end{align*}
-This shows that a distribution for $\Theta$ is assumed *prior* to seeing the data (i.e., $f_\Theta(\theta)$), and is then adjusted with the knowledge of the data $X$ to produce the *conditional* (or *posterior*) distribution $f_{\Theta|X}(\theta\mid x)$.
+Here:
+
+* The *prior distribution*: This is the distribution of the parameter $\Theta$ that is assumed before the data $X$ are observed, perhaps based on past experience.
+* The *sampling distribution*: This describes the distribution from which the data are assumed to come.
+* The *posterior distribution*: This describes the distribution of the parameter $\Theta$, after the data $X$ is observed.
+
+The distribution for $\Theta$ is assumed *prior* to seeing the data (i.e., $f_\Theta(\theta)$), and is then adjusted with the knowledge of the data $X$ to produce the *conditional* (or *posterior*) distribution $f_{\Theta|X}(\theta\mid x)$.
 
 In this context:
 
@@ -3249,7 +3263,7 @@ In this context:
 
 
 :::{.example #ExamScores3 name="Exam scores"}
-The conditional pdf of the mean $\Theta$ given $X = x$ follows directly from \@ref(eq:Bayescts) on substituting \@ref(eq:exam2):
+The conditional pdf of the mean score $\Theta$, given the observed data $X = x$, follows directly from \@ref(eq:Bayescts) on substituting \@ref(eq:exam2):
 
 \begin{align}
   f_{\Theta \mid X}(\theta, x)
@@ -3266,31 +3280,34 @@ The conditional pdf of the mean $\Theta$ given $X = x$ follows directly from \@r
 \end{align}
 after some algebraic manipulation; i.e., $\Theta | (X = x)\sim N(0.8x + 12, 4.472^2)$.
 
-This is the distribution of the mean score, given an observed value of $x$.
+This distribution derived above is for the mean score, *given* an observed value of $x$.
 The initial (*prior*) assumption about the mean score (Example \@ref(exm:RandomParExam)) was that $\Theta \sim N(60, 10^2)$.
-After seeing an exam score, this is adjusted to $\Theta\mid X\sim N(0.8x + 12, 4.472^2)$:
+After seeing an exam score, this is adjusted to $\Theta\mid X\sim N(0.8x + 12, 4.472^2)$.
+Consider the implications:
 
 * If observed exam score is $x = 60$ (i.e., equal to the prior belief about the mean), then there is no change to the prior mean: $0.8\times 60 + 12 = 60$.
-  Note, however, that the variance is smaller, as our confidence in that value of the parameter has increased.
-* If observed exam score is less than $60$ (e.g., $x = 50$), the original expectation is adjusted down, since $0.8\times 50 + 12 = 52$.
-* If observed exam score is greater than $60$ (e.g., $x = 70$), the original expectation is adjusted up, since $0.8\times70 + 12 = 68$.
+  That is, the mean of the prior distribution is 60, and the data don;t prodive any evidence to chaneg this, so the mean of the *posterior* distribution is also 60.
+  Note, however, that the variance is *smaller*, as our confidence in that value of the parameter has increased.
+* If observed exam score is *less* than $60$ (e.g., $x = 50$), the original expectation is adjusted *down* from the original assumption of a mean of 60, since $0.8\times 50 + 12 = 52$.
+* If observed exam score is greater than $60$ (e.g., $x = 70$), the original expectation is adjusted *up* from the original assumption of a mean of 60, since $0.8\times 70 + 12 = 68$.
 
 See Fig. \@ref(fig:PosteriorExam).
 In other words, our *prior* belief of the mean score is adjusted in light of the observed evidence to produce the *posterior* distribution.
+The extra observations adds to the confidence of the estimate (i.e., reduced variance).
 :::
 
 
 
-```{r PosteriorExam, echo=FALSE, fig.align="center", out.width='100%', fig.height=2.25, fig.width=4.75, fig.cap="Exam scores: The prior distribution for the mean (left panel) and the posterior distribution when $x = 50$ centre panel) and when $x = 70$ (right panel)."}
+```{r PosteriorExam, echo=FALSE, fig.align="center", out.width='100%', fig.height=2.25, fig.width=4.75, fig.cap="Exam scores: The prior distribution for the mean (left panel) and the posterior distribution when $x = 50$ centre panel) and when $x = 70$ (right panel). The dashed grey lines in the two right plots shows the prior distribution."}
 par( mfrow = c(1, 3),
      mar = c(5, 2, 4, 2) + 0.1)
 
 xx <- seq(0, 100,
           length = 500)
-yy <- dnorm( xx,
+yA <- dnorm( xx,
              mean = 60,
              sd = 10)
-plot(yy ~ xx,
+plot(yA ~ xx,
      type = "l",
      lwd = 2,
      xlim = range(xx),
@@ -3308,9 +3325,13 @@ box()
 yy <- dnorm( xx,
              mean = 52,
              sd = 4.472)
-plot(yy ~ xx,
+yy <- yy/max(yy) * max(yA)
+  
+plot(yA ~ xx,
      type = "l",
      lwd = 2,
+     lty = 2,
+     col = "grey",
      xlim = range(xx),
      xlab = "Mean",
      main = expression(Posterior~distn:~italic(x)==50),
@@ -3318,6 +3339,8 @@ plot(yy ~ xx,
 axis(side = 1,
      at = seq(0, 100, 
               by = 50))
+lines( yy ~ xx,
+       lwd = 2)
 box()
 
 
@@ -3325,9 +3348,13 @@ box()
 yy <- dnorm( xx,
              mean = 68,
              sd = 4.472)
-plot(yy ~ xx,
+yy <- yy/max(yy) * max(yA)
+
+plot(yA ~ xx,
      type = "l",
      lwd = 2,
+     lty = 2,
+     col = "grey",
      xlim = range(xx),
      xlab = "Mean",
      main = expression(Posterior~distn:~italic(x)==70),
@@ -3335,6 +3362,8 @@ plot(yy ~ xx,
 axis(side = 1,
      at = seq(0, 100, 
               by = 50))
+lines( yy ~ xx,
+       lwd = 2)
 box()
 
 
@@ -3389,7 +3418,7 @@ See Fig. \@ref(fig:PostPosteriorAccidents).
 
 
 
-```{r PostPosteriorAccidents, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Vehicle crashes: The prior distribution for $M$ (left panel) and the posterior distribution when $x = 10$ (centre panel) and when $x = 20$ (right panel)."}
+```{r PostPosteriorAccidents, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Vehicle crashes: The prior distribution for $M$ (left panel) and the posterior distribution when $x = 10$ (centre panel) and when $x = 20$ (right panel). The grey crosses in the two right plots shows the prior distribution."}
 
 par( mfrow = c(1, 3),
      mar = c(5, 2, 4, 2) + 0.1)
@@ -3402,9 +3431,9 @@ daccidents <- function(x, mu){
   f / denom
 }
 
-yy <- c(0.1, 0.9)
+yA <- c(0.1, 0.9)
 
-plot(yy ~ xx,
+plot(yA ~ xx,
      type = "h",
      lty = 2,
      lwd = 2,
@@ -3416,13 +3445,15 @@ plot(yy ~ xx,
      xlab = expression(Mean~M),
      ylab = "Prob. function",
      main = expression(Prior~prob.~M) )
-points(yy ~ xx,
+points(yA ~ xx,
        pch = 19)
 axis(side = 1,
      at = c(10, 20))
 axis(side = 2,
      las = 1,
      at = c(0, 0.5, 1) )
+
+
 box()
 
 
@@ -3448,6 +3479,9 @@ axis(side = 1,
 axis(side = 2,
      las = 1,
      at = c(0, 0.5, 1) )
+points(yA ~ xx,
+       pch = 4,
+       col = "grey")
 box()
 
 
@@ -3474,6 +3508,9 @@ axis(side = 1,
 axis(side = 2,
      las = 1,
      at = c(0, 0.5, 1) )
+points(yA ~ xx,
+       pch = 4,
+       col = "grey")
 box()
 ```
 
@@ -3513,16 +3550,16 @@ See Fig. \@ref(fig:PostPosteriorKicks).
 :::
 
 
-```{r PostPosteriorKicks, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Goal kicking: The prior distribution for $\\theta$ (left panel) and the posterior distribution when $x = 8$ (centre panel) and when $x = 1$ (right panel). The grey vertical lines correspond to the distribution means."}
+```{r PostPosteriorKicks, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Goal kicking: The prior distribution for $\\theta$ (left panel) and the posterior distribution when $x = 8$ (centre panel) and when $x = 1$ (right panel). The grey vertical lines correspond to the distribution means. The dashed grey lines in the two right plots show the prior distribution."}
 
 par( mfrow = c(1, 3),
      mar = c(5, 2, 4, 2) + 0.1)
 
 xx <- seq(0, 1,
           length = 500)
-yy <- dbeta(xx, 4, 4)
+yA <- dbeta(xx, 4, 4)
 
-plot(yy ~ xx,
+plot(yA ~ xx,
      type = "l",
      lwd = 2,
      axes = FALSE,
@@ -3531,43 +3568,50 @@ plot(yy ~ xx,
      main = expression(Prior~prob.~theta) )
 axis(side = 1,
      at = c(0, 0.5, 1))
-abline(v = 4/(4 + 4),
-       col = "grey")
+
 box()
 
 
 x <- 8
 yy <- dbeta(xx, 4 + x, 14 - x)
+yy <- yy/max(yy) * max(yA)
 
-plot(yy ~ xx,
+plot(yA ~ xx,
      type = "l",
      lwd = 2,
+     col = "grey",
+     lty = 2,
      axes = FALSE,
      xlab = expression(Probability~theta),
      ylab = "Prob. function",
      main = expression(Posterior~prob.:~italic(x)==8 ) )
+lines( yy ~ xx,
+       lwd = 2)
 axis(side = 1,
      at = c(0, 0.5, 1))
-abline(v = (4 + x)/(18),
-       col = "grey")
+
 box()
 
 
 
 x <- 1
 yy <- dbeta(xx, 4 + x, 14 - x)
+yy <- yy/max(yy) * max(yA)
 
-plot(yy ~ xx,
+plot(yA ~ xx,
      type = "l",
      lwd = 2,
+     col = "grey",
+     lty = 2,
      axes = FALSE,
      xlab = expression(Probability~theta),
      ylab = "Prob. function",
      main = expression(Posterior~prob.:~italic(x)==1) )
+lines( yy ~ xx,
+       lwd = 2)
 axis(side = 1,
      at = c(0, 0.5, 1))
-abline(v = (4 + x)/(18),
-       col = "grey")
+
 box()
 ```
 
