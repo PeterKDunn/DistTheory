@@ -2990,21 +2990,21 @@ This idea is best introduced using examples.
 
 :::{.example #RandomPar1 name="Exam scores"}
 The score achieved by students on an exam is approximately normal with mean $\theta$.
-The score achieved by a specific student $X$ can be modelled with this normal distribution, using this mean $\theta$.
-The mean $\theta$ is not constant, but varies (due to the specific questions that appear on the exam, the amount of study completed by individual students, etc.), and follows an approximately normal distribution.
+The score achieved by any specific student $X$ can be modelled with this normal distribution, using this mean $\theta$.
+The mean $\theta$ is not constant, but varies (due to the specific questions that appear on the exam, the amount of study completed by individual students, etc.), and follows an approximately normal distribution (with mean 60 and standard deviation 10).
 :::
 
 
 :::{.example #RandomPar2 name="Vehicle crashes"}
-Motor vehicle crashes occur in a town according to a Poisson distribution with mean $\theta$.
+Motor vehicle crashes per day occur in a town according to a Poisson distribution with mean $\theta$.
 The number of crashes on a specific day $X$ can be modelled with this distribution, but the mean $\theta$ is 10 per day when fine, and 20 per day when wet.
 About 10% of days are wet.
 :::
 
 
 :::{.example #RandomPar3 name="Goal kicking"}
-Let $\theta$ be the probability that a rugby league goal-kicker lands a goal.
-This number of kicks landed $X$ can be modelled using a binomial distribution with probability $\theta$, but the probability of a successful kick $\theta$ may vary (depending on the conditions, where the kick is taken from, who is taking the kick, and so on).
+The probability that a rugby league goal-kicker lands a goal is $\theta$.
+This number of kicks landed $X$ can be modelled using a binomial distribution with probability $\theta$, but the probability of a successful kick $\theta$ may vary (depending on the conditions, where the kick is taken from, who is taking the kick, and so on), such that $theta \sim \text{Beta}(4, 4)$.
 :::
 
 
@@ -3048,8 +3048,9 @@ The parameters that describe the distribution of the parameter $\Theta$ are call
 
 
 :::{.example #RandomParExam name="Exam scores"}
+(Follows Example \@ref(exm:RandomPar1).)
 The score $X$ achieved by a student on an exam is normal with mean $\Theta$ and standard deviation $\sigma = 5$; that is, for some *given* value of $\Theta$, we have $X \sim N(\Theta, 5^2)$.
-The mean $\Theta$ varies with a normal distribution with two *hyperparameters*: the mean 60 and standard deviation 10; that is, $\Theta \sim N(60, 10^2)$.
+The mean $\Theta$ varies from student to student with a normal distribution, with two *hyperparameters*: the mean 60 and standard deviation 10; that is, $\Theta \sim N(60, 10^2)$.
 From \@ref(eq:marg1), the marginal pdf of $X$ is
 
 \begin{align}
@@ -3072,6 +3073,7 @@ This describes the distribution of $X$, taking into account the various values o
 
 
 :::{.example #RandomParAccidents name="Vehicle crashes"}
+(Follows Example \@ref(exm:RandomPar2).)
 Let $X$ be the number of motor vehicle crashes per day.
 Then $X \sim \text{Pois}(\Theta)$ for some given value of $\Theta$.
 However, the mean parameter $\Theta$ has the distribution by $\Pr(\Theta = 10) = 0.9$ and $\Pr(\Theta = 20) = 0.1$, or
@@ -3092,6 +3094,7 @@ See  Fig. \@ref(fig:RandomMarginal) (centre panel).
 
 
 :::{.example #RandomParGoalKicking name="Goal kicking"}
+(Follows Example \@ref(exm:RandomPar3).)
 Suppose the goal-kicker takes 10 kicks at goal in a match; the number of successful kicks $X$ can be be modelled by the binomial distribution $\text{Bin}(n = 10, p = \Theta)$, where the probability $\Theta$ has a $\text{Beta}(4, 4)$ distribution. 
 From \@ref(eq:marg4), the marginal pf of $X$ is
 
@@ -3263,7 +3266,8 @@ In this context:
 
 
 :::{.example #ExamScores3 name="Exam scores"}
-The conditional pdf of the mean score $\Theta$, given the observed data $X = x$, follows directly from \@ref(eq:Bayescts) on substituting \@ref(eq:exam2):
+(Follows Examples \@ref(exm:RandomPar1) and \@ref(exm:RandomParExam).)
+The conditional pdf of the mean score $\Theta$, given an observed exam score $X = x$, follows directly from \@ref(eq:Bayescts) on substituting \@ref(eq:exam2):
 
 \begin{align}
   f_{\Theta \mid X}(\theta, x)
@@ -3281,8 +3285,11 @@ The conditional pdf of the mean score $\Theta$, given the observed data $X = x$,
 after some algebraic manipulation; i.e., $\Theta | (X = x)\sim N(0.8x + 12, 4.472^2)$.
 
 This distribution derived above is for the mean score, *given* an observed value of $x$.
-The initial (*prior*) assumption about the mean score (Example \@ref(exm:RandomParExam)) was that $\Theta \sim N(60, 10^2)$.
-After seeing an exam score, this is adjusted to $\Theta\mid X\sim N(0.8x + 12, 4.472^2)$.
+Thus we have:
+
+* The initial (*prior*) distribution about the mean score (Example \@ref(exm:RandomParExam)): $\Theta \sim N(60, 10^2)$.
+* After seeing an exam score $x$, the adjusted (*posterior*) distribution of the mean score is $\Theta\mid X\sim N(0.8x + 12, 4.472^2)$.
+
 Consider the implications:
 
 * If observed exam score is $x = 60$ (i.e., equal to the prior belief about the mean), then there is no change to the prior mean: $0.8\times 60 + 12 = 60$.
@@ -3298,7 +3305,7 @@ The extra observations adds to the confidence of the estimate (i.e., reduced var
 
 
 
-```{r PosteriorExam, echo=FALSE, fig.align="center", out.width='100%', fig.height=2.25, fig.width=4.75, fig.cap="Exam scores: The prior distribution for the mean (left panel) and the posterior distribution when $x = 50$ centre panel) and when $x = 70$ (right panel). The dashed grey lines in the two right plots shows the prior distribution."}
+```{r PosteriorExam, echo=FALSE, fig.align="center", out.width='100%', fig.height=2.25, fig.width=4.75, fig.cap="Exam scores: The prior distribution for the mean $\\Theta$ (left panel) and the posterior distribution when $x = 50$ centre panel) and when $x = 70$ (right panel). The dashed grey lines in the two right plots shows the prior distribution."}
 par( mfrow = c(1, 3),
      mar = c(5, 2, 4, 2) + 0.1)
 
@@ -3311,8 +3318,8 @@ plot(yA ~ xx,
      type = "l",
      lwd = 2,
      xlim = range(xx),
-     xlab = "Mean",
-     main = "Prior",
+     xlab = expression(Mean~Theta),
+     main = expression(Prior~prob.~of~Theta),
      axes = FALSE)
 axis(side = 1,
      at = seq(0, 100, 
@@ -3333,8 +3340,9 @@ plot(yA ~ xx,
      lty = 2,
      col = "grey",
      xlim = range(xx),
-     xlab = "Mean",
-     main = expression(Posterior~distn:~italic(x)==50),
+     xlab = expression(Mean~Theta),
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==50)),
      axes = FALSE)
 axis(side = 1,
      at = seq(0, 100, 
@@ -3356,8 +3364,9 @@ plot(yA ~ xx,
      lty = 2,
      col = "grey",
      xlim = range(xx),
-     xlab = "Mean",
-     main = expression(Posterior~distn:~italic(x)==70),
+     xlab = expression(Mean~Theta),
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==70)),
      axes = FALSE)
 axis(side = 1,
      at = seq(0, 100, 
@@ -3373,43 +3382,52 @@ box()
 
 
 :::{.example #Accidents3 name="Vehicle crashes"}
-From \@ref(eq:RandomParAccidents) and \@ref(eq:Bayescts), the conditional pf of $M$ given $X$ is 
+(Follows Example \@ref(exm:RandomPar1) and \@ref(exm:RandomParAccidents).)
+From \@ref(eq:RandomParAccidents) and \@ref(eq:Bayescts), the conditional pf of the mean number of accidents per day $\Theta$ given $X$ is 
 
 \begin{align}
-  p_{M \mid X}(\mu, x)
-  &= \frac{f_{X \mid M}(x, \mu)f_M(\mu)}{p_X(x)}\notag\\
+  p_{\Theta \mid X}(\theta, x)
+  &= \frac{f_{X \mid \Theta}(x, \theta)f_\Theta(\theta)}{p_X(x)}\notag\\
   &= \begin{cases}
-        \displaystyle \frac{0.9\frac{e^{-10}10^x}{x!}} {0.9 \frac{e^{-10}10^x}{x!} + 0.1 \frac{e^{-20}{20^x}}{x!}} & \text{for $\mu = 10$}\\[6pt]
+        \displaystyle \frac{0.9\frac{e^{-10}10^x}{x!}} {0.9 \frac{e^{-10}10^x}{x!} + 0.1 \frac{e^{-20}{20^x}}{x!}} & \text{for $\theta = 10$}\\[6pt]
         \displaystyle \frac{0.1\frac{e^{-20}20^x}{x!}}
-     {0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}} & \text{for $\mu = 20$}.
+     {0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}} & \text{for $\theta = 20$}.
   \end{cases}\notag\\
   &= \begin{cases}
-        \displaystyle \frac{0.9 e^{-10}10^x} {0.9 e^{-10}10^x + 0.1 e^{-20}{20^x}} & \text{for $\mu = 10$}\\[6pt]
+        \displaystyle \frac{0.9 e^{-10}10^x} {0.9 e^{-10}10^x + 0.1 e^{-20}{20^x}} & \text{for $\theta = 10$}\\[6pt]
         \displaystyle \frac{0.1 e^{-20}20^x}
-     {0.9 e^{-10}10^x + 0.1 e^{-20}{20^x}} & \text{for $\mu = 20$}.
+     {0.9 e^{-10}10^x + 0.1 e^{-20}{20^x}} & \text{for $\theta = 20$}.
    (\#eq:accidents3)
   \end{cases}
 \end{align}
 
-After observing the number of crashes, the prior belief is adjusted accordingly:
+So the *prior* belief abour $\Theta$ is that 
+\[
+  p_\Theta(\theta) = 
+  \begin{cases}
+    0.9 & \text{for $\theta = 10$ (i.e., fine)};\\
+    0.1 & \text{for $\theta = 20$ (i.e, wet)}.
+  \end{cases}
+\]
+After observing the number of crashes, the prior belief is adjusted accordingly to produce the *posterior* distribution (Eq. \@ref(eq:accidents3)); i.e.:
 
-* If we observe 10 crashes, the prior belief is adjusted to
+* If we observe $x = 8$ crashes, the prior belief is adjusted to
 
 \[
-  f_{M|X}(m \mid X) = 
+  p_{\Theta\mid X}(\theta \mid X) = 
   \begin{cases}
-     0.995 & \text{for $m = 10$};\\
-     0.005 & \text{for $m = 20$}.
+     0.9987 & \text{for $\theta = 10$ (i.e., fine)};\\
+     0.0013 & \text{for $\theta = 20$ (i.e., wet)}.
   \end{cases}
 \]
 
-* If we observe 20 crashes, the prior belief is adjusted to
+* If we observe $x = 17$ crashes, the prior belief is adjusted to
 
 \[
-  f_{M|X}(m \mid X) = 
+  p_{\Theta|X}(m \mid \theta) = 
   \begin{cases}
-     0.159 & \text{for $m = 10$};\\
-     0.841 & \text{for $m = 20$}.
+     0.602 & \text{for $\theta = 10$ (i.e., fine)};\\
+     0.398 & \text{for $\theta = 20$ (i.e., wet)}.
   \end{cases}
 \]
 See Fig. \@ref(fig:PostPosteriorAccidents).
@@ -3418,7 +3436,7 @@ See Fig. \@ref(fig:PostPosteriorAccidents).
 
 
 
-```{r PostPosteriorAccidents, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Vehicle crashes: The prior distribution for $M$ (left panel) and the posterior distribution when $x = 10$ (centre panel) and when $x = 20$ (right panel). The grey crosses in the two right plots shows the prior distribution."}
+```{r PostPosteriorAccidents, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Vehicle crashes: The prior distribution for $\\Theta$ (left panel) and the posterior distribution when $x = 8$ crashes (centre panel) and when $x = 17$ crashes (right panel). The grey crosses in the two right plots shows the prior distribution."}
 
 par( mfrow = c(1, 3),
      mar = c(5, 2, 4, 2) + 0.1)
@@ -3442,9 +3460,9 @@ plot(yA ~ xx,
      axes = FALSE,
      xlim = c(5, 25),
      ylim = c(0, 1),
-     xlab = expression(Mean~M),
+     xlab = expression(Mean~Theta),
      ylab = "Prob. function",
-     main = expression(Prior~prob.~M) )
+     main = expression(Prior~prob.~of~Theta) )
 points(yA ~ xx,
        pch = 19)
 axis(side = 1,
@@ -3452,12 +3470,10 @@ axis(side = 1,
 axis(side = 2,
      las = 1,
      at = c(0, 0.5, 1) )
-
-
 box()
 
 
-x <- 10
+x <- 8
 yy <- daccidents(x, mu = c(10, 20))
 
 plot(yy ~ xx,
@@ -3469,9 +3485,10 @@ plot(yy ~ xx,
      axes = FALSE,
      xlim = c(5, 25),
      ylim = c(0, 1),
-     xlab = expression(Mean~M),
+     xlab = expression(Mean~Theta),
      ylab = "Prob. function",
-     main = expression(Posterior~prob.:~italic(x)==10 ) )
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==8)) )
 points(yy ~ xx,
        pch = 19)
 axis(side = 1,
@@ -3481,6 +3498,7 @@ axis(side = 2,
      at = c(0, 0.5, 1) )
 points(yA ~ xx,
        pch = 4,
+       cex = 1.5,
        col = "grey")
 box()
 
@@ -3498,9 +3516,10 @@ plot(yy ~ xx,
      axes = FALSE,
      xlim = c(5, 25),
      ylim = c(0, 1),
-     xlab = expression(Mean~M),
+     xlab = expression(Mean~Theta),
      ylab = "Prob. function",
-     main = expression(Posterior~prob.:~italic(x)==20) )
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==17)) )
 points(yy ~ xx,
        pch = 19)
 axis(side = 1,
@@ -3510,12 +3529,14 @@ axis(side = 2,
      at = c(0, 0.5, 1) )
 points(yA ~ xx,
        pch = 4,
+       cex = 1.5,
        col = "grey")
 box()
 ```
 
 
 :::{.example #GoalKicking3 name="Goal kicking"}
+(Follows Example \@ref(exm:RandomPar3) and \@ref(exm:RandomParGoalKicking).)
 From \@ref(eq:marg4), the conditional pdf of $\Theta$ given $X$ is
 
 \[
@@ -3538,7 +3559,8 @@ Putting the pieces together:
   &= \frac{17!\theta^{x + 3} (1 - \theta)^{13 - x}}{(x + 3)! (13 - x)!}
    (\#eq:goal3)
 \end{align}
-which corresponds to a $\text{Beta}(4 + x, 14 - x)$.
+which corresponds to a *posterior* distribution for $\Theta$ of $\text{Beta}(4 + x, 14 - x)$.
+In contrast, the *prior* distribution for $\Theta$ was $\text{Beta}(4, 4)$.
 
 After observing the 10 kicks, the prior belief is adjusted accordingly:
 
@@ -3550,7 +3572,7 @@ See Fig. \@ref(fig:PostPosteriorKicks).
 :::
 
 
-```{r PostPosteriorKicks, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Goal kicking: The prior distribution for $\\theta$ (left panel) and the posterior distribution when $x = 8$ (centre panel) and when $x = 1$ (right panel). The grey vertical lines correspond to the distribution means. The dashed grey lines in the two right plots show the prior distribution."}
+```{r PostPosteriorKicks, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Goal kicking: The prior distribution for $\\theta$ (left panel) and the posterior distribution when $x = 8$ (i.e., lands 8 kicks out of 10; centre panel) and when $x = 1$ (i.e., lands 1 kick out of 10; right panel). The grey vertical lines correspond to the distribution means. The dashed grey lines in the two right plots show the prior distribution."}
 
 par( mfrow = c(1, 3),
      mar = c(5, 2, 4, 2) + 0.1)
@@ -3584,7 +3606,8 @@ plot(yA ~ xx,
      axes = FALSE,
      xlab = expression(Probability~theta),
      ylab = "Prob. function",
-     main = expression(Posterior~prob.:~italic(x)==8 ) )
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==8)) )
 lines( yy ~ xx,
        lwd = 2)
 axis(side = 1,
@@ -3606,7 +3629,8 @@ plot(yA ~ xx,
      axes = FALSE,
      xlab = expression(Probability~theta),
      ylab = "Prob. function",
-     main = expression(Posterior~prob.:~italic(x)==1) )
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==1)) )
 lines( yy ~ xx,
        lwd = 2)
 axis(side = 1,
@@ -3618,11 +3642,13 @@ box()
 Applying meaning to the conditional distribution of parameters, such as those in \@ref(eq:exam3), \@ref(eq:accidents3) and \@ref(eq:goal3), has historically been controversial in statistics.
 However, the idea of *modifying* a parameter of a distribution based on new information has proven constructive, and is the basis of an important branch of statistics called *Bayesian statistics*.
 
-The algebra involved in deriving posterior distributions is, except in special cases (Table \@ref(tab:ConjugateTable)), intractable and so numerical methods are necessary (including simulation techniques).
+The algebra involved in deriving posterior distributions is, except in special cases (Table \@ref(tab:PriorPosteriorTable)), intractable and so numerical methods are necessary (including simulation techniques).
+If the prior and posterior distributions are the same type of distribution (e.g., both normal distribution), they are called *conjugate distributions*.
+The prior and posterior distribution combinations in \@ref(tab:PriorPosteriorTable)) and conjugate distributions.
 
 
-```{r ConjugateTable, echo=FALSE}
-Conjugates <- array( dim = c(4, 3))
+```{r PriorPosteriorTable, echo=FALSE}
+Conjugates <- array( dim = c(6, 3))
 
 colnames(Conjugates) <- c("Sampling distribution",
                           "Prior distribution",
@@ -3639,16 +3665,22 @@ Conjugates[3, ] <- c("$X \\sim \\text{Pois}(\\lambda)$",
                      "$\\lambda \\mid X \\sim \\text{Gam}(\\alpha_0 + \\sum x, \\beta_0 + n)$")
 Conjugates[4, ] <- c("$X \\sim N(\\mu, \\sigma^2)$",
                      "$\\mu \\sim N(\\mu_0, \\sigma^2_0)$",
-                     "$\\mu \\mid X \\sim N(?, ?)$")
+                     "$\\mu \\mid X \\sim N(\\mu_P, \\sigma_P^2)$")
+Conjugates[5, ] <- c("",
+                     "",
+                     "where $\\mu_P = \\displaystyle \\frac{1}{1/\\sigma_0^2 + n/\\sigma^{2}} \\left(\\frac{\\mu _0}{\\sigma _0^2} + \\frac{\\sum_{i = 1}^n x_{i}}{\\sigma^2}\\right)$")
+Conjugates[6, ] <- c("",
+                     "",
+                     "and $\\sigma_P^2 = \\left( \\frac{1}{\\sigma_0^2} + \\frac{n}{\\sigma^2} \\right)^{-1}$")
 
 if( knitr::is_latex_output() ) {
   knitr::kable(Conjugates,
                format = "latex",
                booktabs = TRUE,
                align = c("l"),
-               col.names = c("distribution $f(X\\mid\\Theta)$",
-                             "distribution $f(\\Theta)$",
-                             "distribution $f(\\Theta\\mid X$)"),
+               col.names = c("distn $f(X\\mid\\Theta)$",
+                             "distn $f(\\Theta)$",
+                             "distn $f(\\Theta\\mid X$)"),
                longtable = FALSE,                
                escape = FALSE,
                caption = "Conjugate distributions for random parameters: The sampling distribution,  $f(X\\mid\\Theta)$; the prior distribution $f(\\Theta)$; and the posterior distribution $f(\\Theta\\mid X$)") %>%
@@ -3692,7 +3724,7 @@ Random numbers from the *bivariate normal* distribution (Sect. \@ref(BVNormalDis
 Random numbers from the *multinomial* distribution (Sect. \@ref(MultinomialDistribution)) are generated using the function `rmultinom()`.
 More commonly, univariate distributions are combined (as in Sect. \@ref(RandomParameters)).
 
-Monthly rainfall, for example, is commony modelled using gamma distributions (for example, @husak2007use).
+Monthly rainfall, for example, is commonly modelled using gamma distributions (for example, @husak2007use).
 Simulating rainfall is then used in others models (such as for cropping simulations; for example @ines2006bias).
 As an example, consider a location where the monthly rainfall is well-modelled by a gamma distribution with a shape parameter $\alpha = 1.6$ and a scale parameter of $\beta = 220$ (Fig \@ref(fig:RainfallSim), left panel):
 
@@ -3701,12 +3733,14 @@ set.seed(107283)
 ```
 
 ```{r echo=TRUE}
-MRain <- rgamma( 1000,
+MRain <- rgamma( 2000,
                  shape = 1.6,
                  scale = 220)
 
-cat("Rainfall exceeding 1200mm:",
-    sum(MRain > 1200) / 1000 * 100, "%\n")
+cat("Rainfall exceeding 900mm:",
+    sum(MRain > 900) / 2000 * 100, "%\n")
+# Directly:
+round( (1 - pgamma(900, shape = 1.6, scale = 220) ) * 100, 2)
 ```
 
 The percentage of months with rainfall exceeding 1000mm was also computed. 
@@ -3720,10 +3754,10 @@ MRain2 <- rgamma( 1000,
                   shape = rexp(1000, rate = 1/2),
                   scale = 220)
 
-cat("Rainfall exceeding 1200mm:",
-    sum(MRain2 > 1200) / 1000 * 100, "%\n")
+cat("Rainfall exceeding 900mm:",
+    sum(MRain2 > 900) / 1000 * 100, "%\n")
 ```
-Using simulation, it is also easy to simulate the impact of the scale parameter $\beta$ varying also, suppose with a normal distribution mean of 200 and variance of 9 (Fig \@ref(fig:RainfallSim), right panel):
+Using simulation, it is also easy to simulate the impact of the scale parameter $\beta$ varying also, suppose with a normal distribution mean of 200 and variance of 16 (Fig \@ref(fig:RainfallSim), right panel):
 
 ```{r echo=FALSE}
 set.seed(1072483)
@@ -3731,13 +3765,13 @@ set.seed(1072483)
 ````{r echo=TRUE}
 MRain3 <- rgamma( 1000,
                   shape = rexp(1000, rate = 1/2),
-                  scale = rnorm(1000, mean = 200, sd = 3))
+                  scale = rnorm(1000, mean = 200, sd = 4))
 
-cat("Rainfall exceeding 1200mm:",
-    sum(MRain3 > 1200) / 1000 * 100, "%\n")
+cat("Rainfall exceeding 900:",
+    sum(MRain3 > 900) / 1000 * 100, "%\n")
 ```
 
-```{r echo=FALSE, RainfallSim, fig.width=6, fig.height = 3, out.width='100%', fig.align="center", fig.cap="KK"}
+```{r echo=FALSE, RainfallSim, fig.width=6, fig.height = 3, out.width='100%', fig.align="center", fig.cap="Three simulations using the gamma distribution"}
 par( mfrow = c(1, 3))
 
 hist(MRain,
@@ -3847,6 +3881,10 @@ Assuming $A$ and $B$ are independent, find:
 :::
 
 
+:::{.exercise #AandBsimple2}
+Repeat Exercise \@ref(exr:AandBsimple), but with $\text{cor}(A, B) = 0.2$.
+:::
+
 :::{.exercise}
 Suppose $X_1, X_2, \dots, X_n$ are independently distributed random variables, each with mean $\mu$ and variance $\sigma^2$.
 Define the sample mean as $\overline{X} = \left( \sum_{i=1}^n X_i\right)/n$.
@@ -3890,17 +3928,17 @@ Suppose the monthly rainfall station at a particular station can be modelled usi
 :::
 
 
-:::{.exercise}
-Show that the negative binomial distribution can be generated as follows:
-Suppose $X \sim \text{Pois}(\lambda)$, where $\lambda\sim\text{Gamma}$.
+:::{.exercise #NBfromPoisGamma}
+Suppose $X \sim \text{Pois}(\lambda)$.
+Show that if $\lambda\sim\text{Gamma}(a, p/(1 - p) )$, then the distribution of $X$ has a negative binomial distribution.
 :::
   
   
-:::{.exercise}
+:::{.exercise #JointProbAbsolute}
 $(X, Y)$ has joint probability function given by
 
 \[ 
-  \Pr(X = x, Y = y) = k|x - y|
+  \Pr(X = x, Y = y) = k |x - y|
 \]
 for $x = 0, 1, 2$ and $y = 1, 2, 3$.
 
@@ -4057,7 +4095,7 @@ Show that the distribution of $Z_1 + Z_2 + \cdots + Z_n$ has the gamma distribut
 :::{.exercise}
 @climate:wilks:statmethods (p. 101) states that the maximum daily temperatures measured at Ithaca ($I$) and Canandaigua ($C$) in January 1987 are both symmetrical. 
 He also says that the two temperatures could be modelled with a bivariate normal
-distribution with $\mu_I = 29.87$, $\mu_C = 31.77$, $\sigma_I = 7.71$, $\sigma_C = 7.86$ and  $\rho_{IC}=0.957$.
+distribution with $\mu_I = 29.87$, $\mu_C = 31.77$, $\sigma_I = 7.71$, $\sigma_C = 7.86$ and  $\rho_{IC} = 0.957$.
 (All measurements are in degrees Fahrenheit.)
 
 1. Explain, in context, what a correlation coefficient of 0.957 means.
@@ -4069,6 +4107,7 @@ distribution with $\mu_I = 29.87$, $\mu_C = 31.77$, $\sigma_I = 7.71$, $\sigma_C
 1. Find $\Pr(C < 32 \mid I = 25)$.
 1. Find $\Pr(C < 32)$.
 1. Comment on the differences between the last two answers.
+1. If temperature were measured in degrees Celsius instead of degrees Fahrenheit, how would the value of $\rho_{IC}$ change?
 :::
 
 
@@ -4150,13 +4189,6 @@ Let $X$ and $Y$ denote, respectively, the maximum and minimum of the numbers of 
 :::
 
 
-:::{.exercise}
-Let $X$ have a gamma distribution with parameters $\alpha > 2$ and $\beta > 0$.
-
-1. Prove that the mean of $1/X$ is $\beta/(\alpha - 1)$.
-2. Prove that the variance of $1/X$ is $\beta^2/[(\alpha - 1)^2(\alpha - 2)]$.
-:::
-
 
 :::{.exercise}
 Let $X$ be a random variable for which $\text{E}(X) = \mu$ and $\text{var}(X) = \sigma^2$, and let $c$ be an arbitrary constant.
@@ -4173,7 +4205,7 @@ Let $X$ be a random variable for which $\text{E}(X) = \mu$ and $\text{var}(X) = 
 
 :::{.exercise #DailyRainfallSim}
 In Sect. \@ref(SimulationBivariate), simulation was used for monthly rainfall.
-*Daily* rainfall, however, is ore difficult to model as some days have exactly zero rainfall, and on some days a continuous amount of rainfalls; i.e., daily monthly is a *mixed* random variable (Sect. \@ref(RVsMixed)).
+*Daily* rainfall, however, is more difficult to model as some days have exactly zero rainfall, and on some days a continuous amount of rainfalls; i.e., daily monthly is a *mixed* random variable (Sect. \@ref(RVsMixed)).
 
 One way to model daily rainfall is to use a two-step process [@climate:chandler:2002].
 Firstly, model whether a day records rainfall or not (using a binomial distribution): the *occurrence model*.
@@ -4201,7 +4233,7 @@ Consider the joint pdf
 \[
    f_{X, Y}(x, y) = 
    \begin{cases}
-      c x(y + 1) & \text{where $x + y = 2$ with $x > 0$ and $y > 0$};\\
+      c x(y + 1)  & \text{where $x + y < 2$ with $x > 0$ and $y > 0$};\\
       0           & \text{elsewhere}.
    \end{cases}
 \]
