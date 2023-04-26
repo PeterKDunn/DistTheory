@@ -16,6 +16,7 @@ ADD a chapter on how to generate random numbers and quantiles and so on.
 ## Chapter 4
 
 * Can we get some OzLotto data??
+* EXERCISES IN CHAP 4: #CountingBirds. Check. There's an error in the paper, so have I got things correct??
 
 
 ## Chap 7
