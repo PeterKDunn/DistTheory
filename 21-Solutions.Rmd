@@ -2530,6 +2530,47 @@ Gamma: $\text{var}(X) = \phi \mu^2$, so $\phi = ???$ and $p = 2$.
 :::
 
 
+:::{.answer}
+**Answer to Exercise \@ref(exr:PoissonGammaRainfall).**
+
+For one month:
+
+```{r}
+set.seed(932649)
+N <- rpois(1, lambda = 0.78)
+Rain <- 0
+if (N > 0 ){
+  Amount <- sum( rgamma(N,
+                        shape = 0.5,
+                        scale = 6) )
+  Rain <- Rain + Amount
+}
+```
+
+For 1000 simulations:
+
+```{r}
+set.seed(932649)
+
+Rain <- array(0,  dim = 1000)
+
+for (i in 1:1000){
+  N <- rpois(1, lambda = 0.78)
+  if (N > 0 ){
+    Amount <- sum( rgamma(N,
+                          shape = 0.5,
+                          scale = 6) )
+    Rain[i] <- Rain[i] + Amount
+  }
+}
+
+# Exact zeros:
+sum(Rain == 0) / 1000
+mean(Rain)
+mean(Rain[Rain > 0])
+```
+:::
+
 
 :::{.answer}
 **Answer to Exercise \@ref(exr:JointPDF).**
@@ -2623,12 +2664,14 @@ which is the mgf of a gamma distribution with parameters $n$ and $\beta$, as to 
 
 :::{.answer}
 **Answer to Exercise \@ref(exr:JointTriangular).**
+
 1. See below.
 1. Need to integrate correctly; e.g., $\displaystyle \int_0^2 \!\!\!\int_0^{2 - x} x(y + 1)\,dy \, dx = 2$, so $c = 1/2$.
 1. $P(Y < 1 \mid X > 1) = P(Y < 1 \cap X > 1)/\Pr(X > 1)$.
    First, $f_X(x) = (1/2) \int_0^{2 - x} x(y + 1)\,dy =  (1/4)(x^3 - 6x^2 + 8x)$ for $0 < x < 2$.
    So $\Pr(X > 1) = 7/16$.
    Also, 
+   
    \[
       P(Y < 1 \cap X > 1)
       =  (1/2) \int_1^2 \!\!\!\int_0^{2 - x} x(y + 1)\,dy \, dx
@@ -2641,7 +2684,7 @@ which is the mgf of a gamma distribution with parameters $n$ and $\beta$, as to 
 
 
 
-Consider the joint pdf
+Consider the joint pdf 
 
 \[
    f_{X, Y}(x, y) = 
@@ -2654,7 +2697,7 @@ Consider the joint pdf
 AND SO ON.
 :::
 
-```{r}
+```{r echo=FALSE}
 plot( x = c(-0.5, 3),
       y = c(-0.5, 3),
       type = "n",
@@ -2684,27 +2727,6 @@ arrows( x0 = 1.75,
 ```
 
 
-
-
-
-:::{.answer}
-**Answer to Exercise \@ref(exr:JointQuad).**
-
-Consider the joint pdf
-
-\[
-   f_{X, Y}(x, y) = 
-   \begin{cases}
-      k ( 1 - x) y & \text{for the region $R$ below};\\
-      0            & \text{elsewhere},
-   \end{cases}
-\]
-where the region $R$ is shown in Fig. \@ref(fig:RegionR).
-
-1. Determine the value of $k$.
-1. Compute $\Pr(X > Y)$.
-1. Compute $\Pr(X > 0.5)$.
-:::
 
 
 
@@ -2807,47 +2829,19 @@ for (i in 1:1000){
 :::
 
 
+
+
+
+
 :::{.answer}
-**Answer to Exercise \@ref(exr:PoissonGammaRainfall).**
+**Answer to Exercise \@ref(exr:JointQuad).**
 
-For one month:
 
-```{r}
-set.seed(932649)
-N <- rpois(1, lambda = 0.78)
-Rain <- 0
-if (N > 0 ){
-  Amount <- sum( rgamma(N,
-                        shape = 0.5,
-                        scale = 6) )
-  Rain <- Rain + Amount
-}
-```
-
-For 1000 simulations:
-
-```{r}
-set.seed(932649)
-
-Rain <- array(0,  dim = 1000)
-
-for (i in 1:1000){
-  N <- rpois(1, lambda = 0.78)
-  if (N > 0 ){
-    Amount <- sum( rgamma(N,
-                          shape = 0.5,
-                          scale = 6) )
-    Rain[i] <- Rain[i] + Amount
-  }
-}
-
-# Exact zeros:
-sum(Rain == 0) / 1000
-mean(Rain)
-mean(Rain[Rain > 0])
-```
-
+1. We find that $\displaystyle \int_0^1\!\!\!\int_{x^2}^1 (1 - x)y\, dy\, dx = 7/30$, so that $k = 30/7$.
+2. $25/28$.
+3. First, $f_X(x) = 15(x - 1)(x^4 - 1)/7$, and then $\Pr(X > 0.5) = 183/896$.
 :::
+
 
 
 ## Answers for Chap. 7
