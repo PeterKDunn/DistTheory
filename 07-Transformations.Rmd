@@ -23,12 +23,60 @@ An important concept in this context is a *one-to-one transformation*.
 
 
 :::{.definition #OneOneTransformation name="One-to-one transformation"}
-Given random variables $X$ and $Y$ with range spaces $R_X$ and $R_Y$ respectively, the function $u$ is a *one-to-one transformation* (or mapping) if for each $y\in R_Y$ there corresponds exactly one $x\in R_X$.
+Given random variables $X$ and $Y$ with range spaces $R_X$ and $R_Y$ respectively, the function $u$ is a *one-to-one transformation* (or mapping) if, for each $y\in R_Y$, there corresponds exactly one $x\in R_X$.
 :::
 
 
 When $Y = u(X)$ is a one-to-one transformation, the inverse function is uniquely defined; that is, $X$ can be written uniquely in terms of $Y$. 
 This is important when considering the distribution of $Y$ when the distribution of $X$ is known.
+
+
+:::{.example #OneToOneTransformation}
+The transformation $Y = (X - 1)^2$ is not, in general, a one-to-one transformation.
+For example, the inverse transformation is $X = 1 \pm \sqrt{Y}$, and two values of $X$ exists for any given value of $Y > 0$ (Fig. \@ref(fig:TwoTransforms), left panel).
+
+However, if the random variable $X$ is only defined for $X > 2$, then the transformation is a one-to-one function  (Fig. \@ref(fig:TwoTransforms), right panel).
+:::
+
+```{r TwoTransforms, echo=FALSE, fig.align="center", fig.cap="Two transformations: a non-one-to-one transformation (left panel), and a one-to-one transformation (right panel)", fig.width=5, out.width='80%', fig.width=7}
+par(mfrow = c(1, 2))
+
+x <- seq(-2, 4, 
+         length = 500)
+y <- (x - 1)^2
+
+x1 <- seq(2, 3,
+          length = 500)
+y1 <- (x1 - 1)^2
+
+plot( y ~ x,
+      type = "l",
+      las = 1,
+      lwd = 3,
+      xlab = expression(italic(X)),
+      ylab = expression(italic(Y)),
+      main = "A transformation that is\nnot one-to-one")
+
+plot( y ~ x,
+      type = "l",
+      las = 1,
+      col = "grey",
+      lwd = 3,
+      lty = 2,
+      xlab = expression(italic(X)),
+      ylab = expression(italic(Y)),
+      main = "A transformation that is\none-to-one")
+lines( y1 ~ x1,
+       lwd = 2)
+lines(x = c(min(x1), min(x1)),
+      y = c(0, min(y1)),
+      lty = 3)
+lines(x = c(max(x1), max(x1)),
+      y = c(0, max(y1)),
+      lty = 3)
+```
+
+
 
 
 ## The change of variable method {#ChangeOfVariable}
@@ -45,8 +93,8 @@ The discrete and continuous cases are considered separately.
 
 Let $X$ be a discrete random variable with pf $p_X(x)$. 
 Let $R_X$ denote the set of discrete points for which $p_X(x) > 0$.
-Let $y = u(x)$ define a *one-to-one transformation* that maps $R_X$ onto $R_Y$, the set of discrete points at each of which the transformed variable $Y$ has a non-zero probability. 
-If we solve $y = u(x)$ for $x$ in terms of $y$, say $x = w(y)$, then for each $y \in R_Y$, we have $x = w(y)\in R_X$.
+Let $y = u(x)$ define a *one-to-one transformation* that maps $R_X$ onto $R_Y$, the set of discrete points for which the transformed variable $Y$ has a non-zero probability. 
+If we solve $y = u(x)$ for $x$ in terms of $y$, say $x = w(y) = u^{-1}(y)$, then for each $y \in R_Y$, we have $x = w(y)\in R_X$.
 
 
 :::{.example #Transform1 name="Transformation (1:1)"}
@@ -59,14 +107,16 @@ Given
       0    & \text{elsewhere}.
    \end{cases}
 \]
-To find the probability function of $Y$ where $Y = 2X + 1$, first see that $R_X = \{1, 2, 3, 4, 5\}$.
+To find the probability function of $Y$ where $Y = 2X + 1$ (i.e., $u(x) = 2x + 1$), first see that $R_X = \{1, 2, 3, 4, 5\}$.
 Hence $R_Y = \{3, 5, 7, 9, 11\}$ and the mapping $y = 2x + 1 = u(x)$ is one-to-one. 
-Now
+Also, $w(y) = u^{-1}(y) = (y - 1)/2$.
+Hence,
 
 \[ 
    \Pr(Y = y)
    = \Pr(2X + 1 = y)
    = \Pr\left(X = \frac{y - 1}{2}\right)
+   = \left(\frac{y - 1}{2}\right) \times\frac{1}{15}
    = \frac{y - 1}{30}. 
 \]
 So the probability function of $Y$ is
@@ -97,7 +147,7 @@ Let $X$ have a binomial distribution with pf
 
 \[
    p_X(x) = \begin{cases}
-               \binom{3}{x}(0.2)^x (0.8)^{3 - x} & \text{for $x = 0, 1, 2, 3$};\\
+               \binom{3}{x}0.2^x (0.8)^{3 - x} & \text{for $x = 0, 1, 2, 3$};\\
                0 & \text{otherwise}.
             \end{cases}
 \]
@@ -109,7 +159,7 @@ The inverse function is $x = w(y) = \sqrt{y}$, and hence the pf of $Y$ is
 \[
    p_Y(y) = p_X(\sqrt{y})
    = \begin{cases}
-               \binom{3}{\sqrt{y}}(0.2)^{\sqrt{y}} (0.8)^{3 - \sqrt{y}} & \text{for $y = 0, 1, 4, 9$}\\
+               \binom{3}{\sqrt{y}}0.2^{\sqrt{y}} (0.8)^{3 - \sqrt{y}} & \text{for $y = 0, 1, 4, 9$};\\
                0 & \text{otherwise}.
      \end{cases}
 \]
@@ -286,7 +336,7 @@ if( knitr::is_html_output() ) {
 
 
 Sometimes, a joint pf of two random variables is given, but only *one* new random variable is required.
-In this case, a second (dummy) transformation is used, usually very simple.
+In this case, a second (dummy) transformation is used, usually a very simple tranasformation.
 
 
 :::{.example #TransformBivariate2 name="Transformation (bivariate)"}
@@ -300,7 +350,7 @@ Let $X_1$ and $X_2$ be two independent random variables with the joint pf
 This is the joint pf of two independent Poisson random variables.
 Suppose we wish to find the pf of $Y_1 = X_1 + X_2$.
 
-Consider the two *one-to-one transformations*:
+Consider the two *one-to-one transformations*, where $Y_2 = X_2$ is just a dummy transformation:
 
 \begin{align}
    y_1 &= x_1 + x_2             = u_1(x_1, x_2)\\
@@ -313,7 +363,6 @@ which map the points in $R^2_X$ onto
 \]
 $Y_2$ is a dummy transform, and is very simple.
 Any second transform could be chosen (as it is not of direct interest), and so choose one that is simple.
-
 The inverse functions are
 
 \begin{align*}
@@ -345,7 +394,7 @@ which is equivalent to
       0 & \text{otherwise}.
    \end{cases}
 \]
-This is the pf of a Poisson random variable with mean $\mu_1 + \mu_2$.
+You should recognise this as the pf of a Poisson random variable (Def. \@ref(def:PoissonDistribution)) with mean $\mu_1 + \mu_2$.
 Thus $Y_1 \sim \text{Pois}(\lambda = \mu_1 + \mu_2)$.
 :::
 
@@ -378,7 +427,7 @@ If $a < y < b$ then $w(a) < x < w(b)$ and  $\Pr(a < Y < b) = \Pr\big(w(a) < X <w
 Therefore, $\displaystyle {f_Y(y) = f_X\big( w(y) \big)\frac{dx}{dy}}$, where $w(y) = u^{-1}(x)$.
 
 
-```{r Transformation, echo=FALSE, fig.align="center", fig.cap="A monotone increasing transformation function (left panel) and decreasing function (right panel).", fig.width=7, fig.height=4, out.width='100%'}
+```{r Transformation, echo=FALSE, fig.align="center", fig.cap="A strictly increasing transformation function (left panel) and strictly decreasing function (right panel).", fig.width=7, fig.height=4, out.width='100%'}
 par( mfrow = c(1, 2))
 
 logit <- function(x) { 
@@ -490,7 +539,7 @@ But $dx/dy$ is negative in the case of a decreasing function, so in general
 \]
 :::
 
-The absolute  value  of  $w'(y) = dx/dy$  is  called  the *Jacobian  of  the transformation*.
+The absolute value of $w'(y) = dx/dy$ is called the *Jacobian of the transformation*.
 
 
 :::{.example #Transform3 name="Transformation"}
@@ -503,12 +552,11 @@ Let the pdf of $X$ be given by
       0 & \text{elsewhere}.
    \end{cases}
 \]
-Consider the transformation $Y = -2\log X$ (where $\log$ refers to logarithms to base $e$, or *natural logarithms*).
-
+Consider the transformation $Y = u(X) = -2\log X$ (where $\log$ refers to logarithms to base $e$, or *natural logarithms*).
 The transformation is one-to-one, and the inverse transformation is
 
 \[
-   X = \exp( -Y/2) = w(Y).
+   X = \exp( -Y/2) = u^{-1}(Y) = w(Y).
 \]
 The space $R_X = \{x \mid 0 < x < 1\}$ is mapped to $R_y = \{y \mid 0 < y < \infty\}$.
 Then,
@@ -521,11 +569,11 @@ The pdf of $Y = -2\log X$ is
 
 \begin{align*}
    f_Y(y)
-   &= f_X\{w(y)\} |w'(y)| \\
-   &= f_X\{\exp(-y/2)\} \exp(-y/2)/2 \\
+   &= f_X\big(w(y)\big) |w'(y)| \\
+   &= f_X\big(\exp(-y/2)\big) \exp(-y/2)/2 \\
    &= \frac{1}{2}\exp(-y/2)\quad\text{for $y > 0$}.
 \end{align*}
-That is, $Y \sim \text{Exp}(2)$.
+That is, $Y$ has an exponential distribution with $\beta = 2$: $Y \sim \text{Exp}(2)$ (Def. \@ref(def:ExponentialDistribution)).
 :::
 
 
@@ -533,20 +581,22 @@ That is, $Y \sim \text{Exp}(2)$.
 Consider the random variable $X$ with pdf $f_X(x) = e^{-x}$ for $x \geq 0$.
 To find the pdf of $Y = \sqrt{X}$, first see that $y = \sqrt{x}$ is a strictly increasing function for $x \geq 0$ (Fig. \@ref(fig:SqrtRt)).
 
-The inverse relation is $x = y^2$, and $dx/dy = |2y| = 2y$.
+The inverse relation is $x = y^2$, and $dx/dy = |2y| = 2y$ for $x \ge 0$.
 The pdf of $Y$ is
 
-\begin{align*}
+\[
     f_Y(y)
-    &= f_X(x)\left|\frac{dx}{dy}\right|\\
-    &= 2y e^{-y^2}\quad \text{for $y\geq0$}.
-\end{align*}
+    = f_X(x)\left|\frac{dx}{dy}\right|\\
+    = 2y e^{-y^2}\quad \text{for $y\geq0$}.
+\]
 :::
 
 
 
 
-```{r SqrtRt, echo=FALSE, fig.align="center", fig.cap="The square-root transformation", fig.width=4, fig.height=3.5}
+```{r SqrtRt, echo=FALSE, fig.align="center", fig.cap="The square-root transformation (left panel); the pdf of $X$ (centre panel) and the pdf of $Y$ (right panel)", fig.width=7, fig.height=2.5, out.width='100%'}
+par(mfrow = c(1, 3))
+
 x <- seq(0, 20,
          length = 100)
 y <- sqrt(x)
@@ -560,6 +610,37 @@ plot(x = x,
      ylab = expression( italic(y) == sqrt(italic(x))),
      type = "l")
 
+
+
+
+x <- seq(0, 5,
+         length = 500)
+fx <- exp(-x)
+
+plot(fx ~ x,
+     xlab = expression(italic(X)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(X)),
+     type="l",
+     las = 1,
+     lwd = 2)
+
+
+
+
+
+
+y <- seq(0, 5,
+         length = 500)
+fy <- 2 * y * exp(-y^2)
+
+plot(fy ~ y,
+     xlab = expression(italic(Y)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(Y)),
+     type="l",
+     las = 1,
+     lwd = 2)
 ```
 
 
@@ -581,7 +662,9 @@ This is the [*Cauchy distribution*](exr:C3Cauchy).
 
 
 
-```{r TanXform, echo=FALSE, fig.align="center", fig.cap="The tan transformation", fig.width=4,fig.height=3.5}
+```{r TanXform, echo=FALSE, fig.align="center", fig.cap="The tan transformation (left panel); the pdf of $X$ (centre panel) and the pdf of $Y$ (right panel)", fig.width=7, fig.height=2.5, out.width='100%'}
+par(mfrow = c(1, 3))
+
 x <- seq(-pi/2 + 0.1, 
          pi/2 - 0.1,
          length = 100)
@@ -591,7 +674,6 @@ plot(x = x,
      y = y,
      lwd = 2,
      las = 1,
-     xlim = c(-pi/2, pi/2),
      axes = FALSE,
      main = expression(paste("The transformation ", italic(y) == plain(tan)(italic(x)))),
      xlab = expression(italic(x)),
@@ -611,6 +693,49 @@ abline(v = 0,
        lty = 1,
        col = "grey")
 box()
+
+
+
+
+x <- seq(-pi/2, pi/2,
+         length = 500)
+fx <- rep(1/pi, length(x) )
+
+plot(fx ~ x,
+     xlab = expression(italic(X)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(X)),
+     type="l",
+     ylim = c(0, 0.35),
+     xlim = c(-2, 2),
+     las = 1,
+     lwd = 2)
+lines( x = c(-pi/2, -pi/2),
+       y = c(0, 1/pi),
+       lty = 3,
+       col = "grey")
+lines( x = c(pi/2, pi/2),
+       y = c(0, 1/pi),
+       lty = 3,
+       col = "grey")
+
+
+
+
+
+
+
+y <- seq(-3, 3,
+         length = 500)
+fy <- 1 / (1 + y^2)
+
+plot(fy ~ y,
+     xlab = expression(italic(Y)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(Y)),
+     type="l",
+     las = 1,
+     lwd = 2)
 ```
 
 
@@ -630,7 +755,7 @@ Then:
 \]
 The inverse relation, $z = u^{-1}(y)$ is $z = \pm \sqrt{2y}$. 
 For a given value of $y$, two values of $z$ are possible. 
-In the range $-\infty < z < 0$, and then $y$ and $z$ are monotonically related. 
+In the range $-\infty < z < 0$, $y$ and $z$ are monotonically related. 
 Similarly, for $0 < z <\infty$, $y$ and $z$ are monotonically related. 
 Thus (see Fig. \@ref(fig:Non11Xform)),
 
@@ -652,7 +777,7 @@ that is,
    = e^{-y}y^{-\frac{1}{2}} / \sqrt{\pi}\quad\text{for $0 < y < \infty$}.
 \]
 This pdf is a [gamma distribution](GammaDistribution) with parameters $\alpha = 1/2$ and $\beta = 1$.
-It follows that if $X$ is $N(\mu,\sigma^2)$, the pdf of $Y = \frac{1}{2} (X - \mu )^2 / \sigma^2$ is also $\text{Gamma}(\alpha = 1/2,\beta = 1)$ since then $(X - \mu)\sigma$ is distributed $N(0, 1)$.
+It follows that if $X\sim N(\mu,\sigma^2)$, then the pdf of $Y = \frac{1}{2} (X - \mu )^2 / \sigma^2$ is also $\text{Gamma}(\alpha = 1/2,\beta = 1)$ since then $(X - \mu)/\sigma$ is distributed as $N(0, 1)$.
 :::
 
 
@@ -680,8 +805,8 @@ plot(x = x,
      las = 1,
      axes = FALSE,
      main = "A non-1:1 transformation",
-     xlab = expression(italic(x)),
-     ylab = expression(italic(y) == italic(x)^2),
+     xlab = expression(italic(z)),
+     ylab = expression(italic(y) == italic(z)^2),
      type = "l")
 axis(side = 1,
      at = c(x1, x2, x3, x4),
@@ -738,9 +863,8 @@ Consider the random variable $X$ with pdf
                0 & \text{elsewhere}.
             \end{cases}
 \]
-To find the pdf of the random variable $Y$ where $Y = X^2$, first see that $1 < y < 9$.
+To find the pdf of the random variable $Y$ where $Y = X^2$, first see that $1 < y < 9$ and the transfornation is monotonoic over this region.
 The distribution function for $Y$ is
-
 \begin{align*}
    F_Y(y)
    &= \Pr(Y\le y) \qquad\text{(by definition)}\\
@@ -755,10 +879,10 @@ Then continue as follows:
 
 \begin{align*}
    F_Y(y)
-   &=\Pr( X\le \sqrt{y}\,) \\
-   &= F_X\big(\sqrt{y}\,\big) \qquad\text{(by definition of $F_X(x)$)} \\
-   &= \int_1^{\sqrt{y}} (x/4) \,dx \\
-   &= (y - 1)/8
+    =\Pr( X\le \sqrt{y}\,)
+   &= F_X\big(\sqrt{y}\,\big) \qquad\text{(definition of $F_X(x)$)} \\
+   &= \int_1^{\sqrt{y}} (x/4) \,dx
+    = (y - 1)/8
 \end{align*}
 for $1 < y < 9$, and is zero elsewhere. 
 This is the *distribution function* of $Y$; to find the pdf:
@@ -775,7 +899,8 @@ Note the range for which $Y$ is defined; since $1 < x < 3$, then $1 < y < 9$.
 :::
 
 
-```{r SquaringXform, echo=FALSE, fig.align="center", fig.cap="The transformation $Y = X^2$ when $X$ is defined from $1$ to $3$. The thicker line corresponds to the region where the transformation applies. Note that if $Y < y$, then $2 - \\sqrt{y - 1} < X < 2 + \\sqrt{y - 1}$.", fig.width=4.5, fig.height=4}
+```{r SquaringXform, echo=FALSE, fig.align="center", fig.cap="The transformation $Y = X^2$ when $X$ is defined from $1$ to $3$. The thicker line corresponds to the region where the transformation applies. Note that if $Y < y$, then $2 - \\sqrt{y - 1} < X < 2 + \\sqrt{y - 1}$.", fig.width=4.5, fig.height=4, out.width='100%'}
+par( mfrow = c(1, 3))
 
 x <- seq(-1, 4,
          length = 100)
@@ -809,7 +934,50 @@ axis(side = 1,
                 expression(italic(x) == sqrt(3) ),
                 3, 4))
 box()
+
+
+
+
+funx <- function(x){
+  y <- array(0, dim = length(x))
+  y <- ifelse( (x > 1) & (x < 3), x/4, 0)
+}
+
+x <- seq(0, 4,
+         length = 500)
+fx <- funx(x)
+
+plot(fx ~ x,
+     xlab = expression(italic(X)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(X)),
+     type="l",
+     las = 1,
+     lwd = 2)
+
+
+
+
+
+funy <- function(y){
+   fy <- ifelse( (y > 1) & (y < 2),
+                 1/(2 * sqrt(y - 1)),
+                 0)  
+}
+
+y <- seq(0, 3,
+         length = 500)
+fy <- funy(y)
+
+plot(fy ~ y,
+     xlab = expression(italic(Y)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(Y)),
+     type="l",
+     las = 1,
+     lwd = 2)
 ```
+
 
 
 :::{.example #TransformA name="Transformation"}
