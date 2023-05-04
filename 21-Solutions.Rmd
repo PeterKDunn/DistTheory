@@ -1180,8 +1180,8 @@ plot(x = xx,
      lwd = 2,
      type = "l",
      las = 1,
-     main = expression("PDF for"~italic(D)),
-     xlab = expression(italic(D)),
+     main = expression("PDF for"~italic(Y)),
+     xlab = expression(italic(Y)),
      ylab = "Prob. fn")
 ```
 
@@ -1199,7 +1199,7 @@ $k = 1/4$.
 
 
 :::{answer}
-**Answer for Exercise \@ref(exr:YouFriendInLine).**
+**Answer for Exercise \@ref(exr:YouFriendInLine2).**
 
 Using the pmf from Exercise \@ref(exr:YouFriendInLine):
 
@@ -1257,6 +1257,61 @@ Also, $M''_Z(t) = 0.18\exp(2t) + 0.6\exp(t)[0.3\exp(t) + 0.7]$ so $\text{E}(Z^2)
 :::
 
 
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:C3NoMean).**
+
+1. $\text{E}(Y) = \int_2^\infty y\frac{2}{y}\,dy = 2\log y\Big|_2^\infty$, which does not converge.
+1. If \text{E}(Y)$ is not defined, that $\text{var}(Y)$ cannot be defined either.
+1. See Fig. \@ref(fig:NoMeanPlots), left panel.
+1. $F_Y(y) = \int_2^y 2/t^2\, dt = 1 - (2/y)$; see Fig. \@ref(fig:NoMeanPlots), right panel.
+1. $F_Y(y) = 0.5$ gives the median as 4.
+1. $F_Y(y) = 1/4$ gives $Q_1 = 8/3$; $F_Y(y) = 3/4$ gives $Q_3 = 8$; so IQR is $8 - 8/3 = 16/3$.
+1. $\Pr(Y > 4\mid Y > 3) = \Pr(Y > 4)/\Pr(Y > 3)$.
+   Then, $\Pr(Y > 4) = 1 - \Pr(Y < 4) = 1/2$ using the df;
+   and   $\Pr(Y > 3) = 1 - \Pr(Y < 3) = 2/3$ using the df;
+   so the answer is 3/4. 
+:::
+
+```{r NoMeanPlots, echo=FALSE, fig.align="center", fig.cap="The probability and distribution functions for a distribution with no mean", out.width='80%', fig.width=7, fig.height=3}
+y <- seq(0, 5, 
+         length = 200)
+ypdf <- function(x){
+  ifelse(y > 2, 
+         2/y^2,
+         0)
+}
+ycdf <- function(x){
+  ifelse(y > 2, 
+         1 - 2/y,
+         0)
+}
+
+par( mfrow = c(1, 2))
+
+plot( ypdf(y) ~ y,
+      las = 1,
+      lwd = 2,
+      type = "l",
+      xlab = expression(italic(y)), 
+      ylab = "Prob. fn.",
+      main = "Probability function")
+
+y <- seq(0, 10, 
+         length = 200)
+
+plot( ycdf(y) ~ y,
+      las = 1,
+      lwd = 2,
+      ylim = c(0, 1),
+      type = "l",
+      xlab = expression(italic(y)) ,
+      ylab = "Dist. fn.",
+      main = "Distribution  function")
+
+```
+
+
 :::{.answer}
 **Answer to Exercise \@ref(exr:C3Cauchy).**
 
@@ -1297,6 +1352,147 @@ plot(Y ~ x,
 
 Begin with Definition \@ref(def:MGF) for $M_X(t)$ and use fact that if a distribution is symmetric about 0 then $f_X(x) = f_X(-x)$ using symmetry. 
 Transform the resulting integral.
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:TriangularHospitalExp).**
+
+First, the pdf needs to be defined (see Fig. \@ref(fig:WaitingTimes)), and define $W$ as the waiting time.
+Let $H$ be the 'height' of the triangle.
+The area of triangle $A_1$ is $3H/4$, and the area of triangle $A_2$ is $51H/4$, so the value of $H$ is $2/27$.
+
+The two lines, $L_1$ and $L_2$ can be found (find the slope; determine the linear equation) so that:
+
+\[
+   f_W(w) =
+   \begin{cases}
+      4w/81 - 14/81       & \text{for $3.5 < w < 5$};\\
+      -4w/1377 + 122/1377 & \text{for $5 \le w < 30.5$}.
+   \end{cases}
+\]
+
+1. $\text{E}(W)$ can be computed as usual across the two parts of the pdf: $\text{E}(W) = \frac{1}{4} + \frac{51}{4} = 13$ minutes.
+1. $\text{E}(W^2)$ can be computed in two parts also: $\text{E}(W^2) = \frac{163}{144} + \frac{29\,699}{144} = 16598/8$.
+   Hence $\text{var}(Y) = (1659/8) - 13^2 = 307/8\approx 38.375$, so the *standard deviation* is $\sqrt{38.375} = 6.19$  minutes.
+:::
+
+
+```{r WaitingTimes, echo=FALSE, fig.width=5, fig.align="center", fig.cap="Waiting times"}
+flo <- function(x){
+  (4/81) * x - (14/81)
+}
+fhi <- function(x){
+  (-4/1377) * x + (122/1377)
+}
+
+ff <- function(x){
+  y <- array( 0, 
+              dim = length(x))
+  
+  lo <- (x <= 3.5)
+  hi <- (x >= 30.5)
+  midlo <- (x > 3.5) & (x < 5)
+  midhi <- (x >= 5)  & (x < 30.5)
+  
+  y[midlo] <- flo( x[midlo] )
+  y[midhi] <- fhi( x[midhi] )
+  y
+}
+
+y <- seq(0, 35,
+         length = 500)
+
+plot(ff(y) ~ y, 
+     type="l",
+     las = 1,
+     lwd = 2,
+     xlab = expression(italic(W)),
+     ylab = "Prob. fn.",
+     ylim = c(0, 0.095) )
+
+
+polygon( x = c(3.5, 5, 5, 3.5),
+         y = c(0, 2/27, 0, 0),
+         col = grey(0.7))
+polygon( x = c(5, 5, 30.5, 5),
+         y = c(0, 2/27, 0, 0),
+         col = grey(0.8))
+
+ylo <- seq(0, 7, 
+           length = 100)
+lines(flo(ylo) ~ ylo,
+      lty = 2,
+      col = "grey",
+      lwd = 2)
+
+yhi <- seq(3, 30.5, 
+           length = 100)
+lines(fhi(yhi) ~ yhi,
+      lty = 2,
+      col = "grey",
+      lwd = 2)
+
+lines(ff(y) ~ y, 
+     lwd = 2)
+
+
+abline(v = c(3.5, 5, 30.5),
+        lty = 2, 
+        col = "grey")
+abline(h = 2/27,
+       lty = 2,
+       col = "grey")
+points(x = 5,
+       y = 2/27,
+       pch = 19)
+
+text( 4.25, 0.007,
+      labels = expression(italic(A)[1]))
+text( 15, 0.02,
+      labels = expression(italic(A)[2]))
+
+text(15, fhi(15),
+     pos = 3,
+     labels = expression(italic(L)[2]))
+text(5, fhi(5),
+     pos = 3,
+     labels = expression(italic(L)[1]))
+```
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:FindkGiveVar).**
+First see that the area under the curve must be one, so
+
+\[
+   1 = \int_{-c}^c k(3x^2 + 4)\, dx = k(2c^3 + 8c).
+\]
+Then, note that $\text{E}(W) = 0$ (as the pdf is symmetric about 0), so that $\text{var}(X) = \text{E}(X^2)$, and:
+
+\[
+  \text{E}(X^2) = \int_{-c}^c k x^2 (3x^2 + 4)\, dx
+  = k c^3\frac{18c^2 + 40}{15} = \frac{28}{15},
+\]
+and hence, equating the top lines of both fractions:
+
+\[
+  k c^3(9c^2 + 20) = 14.
+\]
+So we have two equations in two unknowns.
+Equating we obtain, after some algebra,
+
+\[
+  9 c^4 - 8c^2 - 112 = 0.
+\]
+This is just a quadratic equation in $c^2$; so write
+
+\[
+  9 X^2 - 8X - 112 = (9X + 28)(X - 4) = 0
+\]
+with the two solutions $X = c^2 = -28/9$ (which has no real solutions for $c$), and $X = c^2 = 4$, so that $c = 2$ (as the pdf must be positive).
 :::
 
 
@@ -1363,30 +1559,22 @@ plot( TestsSaved ~ n,
 
 :::{.answer}
 **Answer to Exercise \@ref(exr:SolitonDist).**
-Consider the distribution such that<!-- Soliton distribution -->
-
-\[
-   p_X(x) = 
-   \begin{cases}
-      \frac{1}{K}        & \text{for $x = 1$};\\
-      \frac{1}{x(x - 1)} & \text{for $x = 2, 3, \dots, K$};\\
-      0                  & \text{elsewhere}
-   \end{cases}
-\]
-for $K > 2$.
-
-1. Find the mean and variance of $X$.
-1. Plot the distribution for various values of $K$.
-1. For $K = 6$, determine the mgf.
-
-
-
 1. $\text{E}(X) = \sum_{x = 1}^K x. p_X(x) = (1/6) + \sum_{x = 2}^K 1(x - 1)$.
+   $\text{E}(X^2) = \frac{1}{K} + \sum_{x=2}^K \frac{x}{x - 1}$ with no closed form, so the variance is a PITA.
    No closed form!
-1. See below.
-1. $M_X(t) = \text{E}(\exp(tX)) = \dots$.
+1. See Fig. \@ref(fig:Solition).
+1. Applying the definition:
 
-```{r}
+\[  
+  M_X(t) = \text{E}(\exp(tX)) = \frac{1}{K} 
+     + \left( 
+     \frac{\exp(2t)}{2\times 1} +
+     \frac{\exp(3t)}{3\times 2} +
+     \frac{\exp(4t)}{4\times 3} + \dots +
+     \frac{\exp(Kt)}{K\times (K-1)}\right).
+\]
+
+```{r Solition, echo=FALSE, fig.align="center", fig.caption="The Soliton distribution", fig.width=5}
 pSoliton <- function(K){
   y <- array( dim = K)
   Kseq <- 2:K
@@ -1430,6 +1618,37 @@ lines(px ~ I(1:K),
      lwd = 2)
 ```
 :::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:InvertMGFcontinuous).**
+
+1. Since $M_X(t) = \lambda/(\lambda - t)$, then $M_X(it) = \lambda/(\lambda - it)$. 
+   Then
+
+\begin{align}
+  f_X(x) 
+  &= \int_{-\infty}^{\infty} MX(it) ]exp(-itx)\, dt \\ 
+  &= \int_{-\infty}^{\infty} \frac{\lambda}{\lambda - it)} (\cos(-tx) + \sin(-tx))\, dt\\
+  &= \int_{-\infty}^{\infty} \frac{\lambda(\lambda + it)}{\lambda^2 - t^2} (\cos(tx) - \sin(tx))\, dt \\
+  &= \int_{-infty}^\lambda \frac{\lambda}{\lambda^2 - t^2} (\lambda\cos(tx) + t\sin(tx))\, dt.
+\end{align}
+
+
+```{r Integrand, echo=FALSE, fig.cap="The integrand", fig.align="center"}
+t <- seq(-50, 2, # Recall: t only from -infty to lambda (= 2)
+         length = 1000)
+integrand <- function(t, lambda=2, x=1){
+  lambda / (lambda^2 - t^2) *
+    (lambda * cos(t * x) + t*sin(t*x))
+}
+
+plot(integrand(t) ~ t,
+     type = "l")
+```
+:::
+
 
 
 ## Answers for Chap. 4
@@ -2665,7 +2884,7 @@ which is the mgf of a gamma distribution with parameters $n$ and $\beta$, as to 
 :::{.answer}
 **Answer to Exercise \@ref(exr:JointTriangular).**
 
-1. See below.
+1. See Fig. \@ref(fig:TriRegion).
 1. Need to integrate correctly; e.g., $\displaystyle \int_0^2 \!\!\!\int_0^{2 - x} x(y + 1)\,dy \, dx = 2$, so $c = 1/2$.
 1. $P(Y < 1 \mid X > 1) = P(Y < 1 \cap X > 1)/\Pr(X > 1)$.
    First, $f_X(x) = (1/2) \int_0^{2 - x} x(y + 1)\,dy =  (1/4)(x^3 - 6x^2 + 8x)$ for $0 < x < 2$.
@@ -2680,24 +2899,14 @@ which is the mgf of a gamma distribution with parameters $n$ and $\beta$, as to 
    Then, $P(Y < 1 \mid X > 1) = 1$, which makes sense from the diagram (if $X > 1$, $Y$ *must* be less than 1).
 1. $P(X < 1 \mid X > 0.25) = P(X < 1 \cap X > 0.25)/\Pr(X > 0.25)$.
    Using results from above, $\Pr(X > 0.25) = 2079/4096$ and $P(X < 1 \cap X > 0.25) = ??$.
-   
-
-
-
-Consider the joint pdf 
-
-\[
-   f_{X, Y}(x, y) = 
-   \begin{cases}
-      c x(y + 1)  & \text{where $x + y < 2$ with $x > 0$ and $y > 0$};\\
-      0           & \text{elsewhere}.
-   \end{cases}
-\]
-
-AND SO ON.
+1. First, $f_Y(y) = \frac{1}{2} \int_0^{2 - y} x(y + 1)\, dx = \frac{1}{4}(y + 1)(y - 2)^2$.
+   Then, 
+   \[
+     \Pr(Y < 1) = \int_0^1 \frac{1}{4}(y + 1)(y - 2)^2\, dy = \frac{13}{16}.
+   \]
 :::
 
-```{r echo=FALSE}
+```{r TriRegion, echo=FALSE, fig.align="center", fig.cap="The region where $X$ and $Y$ have positive probability"}
 plot( x = c(-0.5, 3),
       y = c(-0.5, 3),
       type = "n",
