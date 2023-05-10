@@ -1,0 +1,584 @@
+
+
+## Answers for Chap. 5
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:BetaRepara).**
+
+$m = \frac{\mu}{\sigma^2}\left( \mu(1 - \mu) - \sigma^2\right)$;
+$n = \frac{1 - \mu}{\sigma^2}\left( \mu(1 - \mu) - \sigma^2\right)$.
+:::
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:SpeedSimUnif).**
+
+1. $\text{E}(X) = (72 + 30)/2 = 51$km.h^-1^.
+$\text{var}(X) = (72 - 30)^2 / 12 = 147$(km.h^-1^)^2^ (more easily understood, as $\sqrt{\text{Var}(X)} = 12.12$km.h^-1^).
+1. See Fig. \@ref(fig:VehicleSpeeds).
+
+
+
+```{r}
+1 - punif(60, 32, 70)
+(1 - punif(65, 32, 70) ) /
+  (1 - punif(60, 32, 70) )
+
+```
+
+:::
+
+```{r, VehicleSpeeds, echo=TRUE, fig.align="center", fig.cap="Vehicle speeds", out.width='70%'}
+par(mfrow = c(1, 2))
+
+x <- seq(10, 100,
+         length = 1000)
+plot( x = x,
+      y = dunif(x, 
+                min = 30,
+                max = 72),
+      type = "l",
+      las = 1,
+      xlab = "Vehicle speeds (in km/h)",
+      ylab = "Probability density",
+      main = "PDF for vehicle speeds")
+
+x <- seq(10, 100,
+         length = 1000)
+plot( x = x,
+      y = punif(x, 
+                min = 30,
+                max = 72),
+      type = "l",
+      las = 1,
+      ylim = c(0, 1),
+      xlab = "Vehicle speeds (in km/h)",
+      ylab = "Probability density",
+      main = "DF for vehicle speeds")
+```
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:SpeedSimNorm).**
+
+
+1. About 2.4% of vehicles are excluded.
+1. $Y$ has the distribution of $X \mid (X > 30 \cap X < 72)$ if $X \sim N(48, 8.8^2)$.
+The pdf is
+
+\[
+  f_Y(y) = 
+  \begin{cases}
+     0 & \text{for $y < 30$};\\
+        \displaystyle \frac{1}{8.8k \sqrt{2\pi}}
+                 \exp\left\{ -\frac{1}{2}\left( \frac{y - 48}{8.8}\right)^2 \right\} & \text{for $30\le y \le 72$};\\
+     0 & \text{for $y > 72$}.
+  \end{cases}
+\]
+where $k \approx \Phi(-2.045455) + (1 - \Phi(2.727273)) = 0.02359804$.
+
+
+```{r}
+# Proportion excluded:
+pnorm(30, 48, 8.8) + # Slower than 30
+   (1- pnorm(72, 48, 8.8)) # Faster than 72
+```
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:ConcreteDiffusion).**
+
+1. See Fig. \@ref(fig:ConcreteDiffusion).
+1. $\text{E}(X) = \alpha \beta \approx 38.4$ and $\text{var}(X) = \alpha \beta^2 \approx 54.54$. 
+1. $\Pr(C > 30 \mid C < 50) = \Pr(30 < C < 50) / \Pr(C < 50)\approx 0.0044$.
+:::
+
+```{r ConcreteDiffusion, fig.cap="The gamma distribution for the concrete diffusion model", out.width='70%', fig.align="center"}
+alpha <- 27.05
+beta <- 1.42
+
+x <- seq(0, 40, length = 200)
+
+par(mfrow = c(1, 2))
+
+plot( y = dgamma(x, shape = alpha, rate = beta),
+      x = x,
+      xlab = expression(italic(x)),
+      ylab = "Prob. fn",
+      type = "l",
+      lwd = 2)
+plot( y = pgamma(x, shape = alpha, rate = beta),
+      x = x,
+      xlab = expression(italic(x)),
+      ylab = "Dist. fn",
+      type = "l",
+      lwd = 2)
+
+( pgamma(50, shape = alpha, rate = beta) - pgamma(30, shape = alpha, rate = beta) ) /
+  pgamma(50, shape = alpha, rate = beta)
+```
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:ConcreteSurfaceCholride).**
+
+1. See Fig .\@ref(fig:SurfaceChloride).
+2. About 0.0228.
+3. About 2.17 kg/m^3^.
+3. About 2.21 kg/m^3^.
+:::
+
+
+```{r SurfaceChloride, fig.cap="The gamma distribution for the surface chloride concentrations model", out.width='70%', fig.align="center"}
+mn <- 2
+sd <- 0.2
+
+x <- seq(1.2, 2.8, length = 200)
+
+par(mfrow = c(1, 2))
+
+plot( y = dnorm(x, mean = mn, sd = sd),
+      x = x,
+      xlab = expression(italic(x)),
+      ylab = "Prob. fn",
+      type = "l",
+      lwd = 2)
+plot( y = pnorm(x, mean = mn, sd = sd ),
+      x = x,
+      xlab = expression(italic(x)),
+      ylab = "Dist. fn",
+      type = "l",
+      lwd = 2)
+
+1 - pnorm(2.4, mean = mn, sd = sd)
+qnorm(0.8, mean = mn, sd = sd)
+qnorm(0.85, mean = mn, sd = sd)
+
+```
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:Kumaraswamy).**
+
+1. See Fig. \@ref(fig:KumaraswamyPlots).
+1. See Fig. \@ref(fig:KumaraswamyPlots).
+1. With $b = 1$, the pdf is $p_X(x) = a x^{a - 1}$.
+   Also, 
+   
+   \begin{align*}
+     \text{Beta}(a, 1) 
+     &= \frac{x^{a - 1} (1 - x)^1 - 1}{B(a, 1)}\\
+     &= \frac{x^{a - 1} \Gamma(a + 1)}{\Gamma(a) \, \Gamma(a)} = a x^{a - 1},
+  \end{align*}
+  which is the same as above.
+1. With $a = b = 1$, the pdf is $p_X(x) = 1$, which is the continuous uniform distribution.
+1. Write $Y = 1 - X$; then $p_X(x) = ab(1 - y)^{a - 1} (y^a) ^{b - 1}$.
+:::
+
+
+```{r KumaraswamyPlots, fig.cap="Some Kumaraswamy distributions", out.width='70%', fig.align="center"}
+dKumaraswamy <- function(x, a, b){
+  a * b * x^(a - 1) * (1 - x^2) ^ (b - 1)
+}
+pKumaraswamy <- function(x, a, b){
+  1 - (1 - x^a)^b
+}
+
+
+x <- seq(0, 1, length = 200)
+
+par(mfrow = c(1, 2))
+
+plot( y = dKumaraswamy(x, a = 0.5, b = 0.5),
+      x = x,
+      xlab = expression(italic(x)),
+      ylab = "Prob. fn",
+      las = 1,
+      type = "l",
+      ylim = c(0, 4),
+      lwd = 2)
+lines(y = dKumaraswamy(x, a = 4, b = 1),
+      x = x,
+      lwd = 2,
+      lty = 2)
+lines(y = dKumaraswamy(x, a = 1, b = 4),
+      x = x,
+      lwd = 2,
+      lty = 3)
+lines(y = dKumaraswamy(x, a = 1, b = 3),
+      x = x,
+      lwd = 2,
+      lty = 4)
+
+
+
+
+plot( y = pKumaraswamy(x, a = 0.5, b = 0.5),
+      x = x,
+      las = 1,
+      xlab = expression(italic(x)),
+      ylab = "Dist. fn",
+      type = "l",
+      lwd = 2)
+lines(y = pKumaraswamy(x, a = 4, b = 1),
+      x = x,
+      lwd = 2,
+      lty = 2)
+lines(y = pKumaraswamy(x, a = 1, b = 4),
+      x = x,
+      lwd = 2,
+      lty = 3)
+lines(y = pKumaraswamy(x, a = 1, b = 3),
+      x = x,
+      lwd = 2,
+      lty = 4)
+
+
+```
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:GammaCV).**
+
+$\text{CV} = \frac{\sqrt{a\beta^2}}P{\alpha\beta} = 1/\sqrt{\alpha}$, which is constant.
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:BetaHospital).**
+
+For the given beta distribution, $\text{E}(V) = 0.287/(0.287 + 0.926) = 0.2366...$ and $\text{Var}(V) = 0.08161874$.
+
+1. $\text{E}(S) = \text{E}(4.5 + 11V) = 4.5 + 11\text{E}(V) = 7.10$ minutes.
+   $\text{var}(S) = 11^2\times\text{Var}(V) = 9.875$ minutes^2^.
+1. $V\in (4.5, 15.5)$.
+1. See Fig. \@ref(fig:ServiceTimes).
+1. This corresponds to $V = 10.5/11 = 0.9545455$, so $\Pr(S > 15) = \Pr(V > 0.9545455) = 0.01745087$.
+1. With $V$, the largest 20% correspond to $V = 0.4940853$, so that $S = 9.934938$; the largest 20% are longer than 9.93 minutes.
+:::
+
+
+```{r ServiceTimes, fig.cap="Service times", fig.align="center"}
+v <- seq(0, 1, length = 500)
+stime <- 4.5 + 11 * v
+  
+PDFv <- dbeta(v, shape1 = 0.287, shape2 = 0.926)
+
+plot( PDFv ~ stime,
+      type = "l",
+      las = 1,
+      xlim = c(4.5, 15.5),
+      ylim = c(0, 5),
+      xlab = expression(italic(S)),
+      ylab = "PDF",
+      main = "Distribution of S",
+      lwd = 2)
+
+1 - pbeta( 0.9545455, shape1 = 0.287, shape2 = 0.926)
+qbeta(0.8, shape1 = 0.287, shape2 = 0.926)
+```
+
+
+
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:DisaggregationDuration).**
+
+4. In summer: If the event lasts more than 1 hour, what is the probability that it eventually lasts more than three hours?
+5. In winter: If the event lasts more than 1 hour, what is the probability that it lasts less  than two hours?
+
+```{r}
+alpha <- 2; betaS <- 0.04; betaW <- 0.03
+x <- seq(0, 1, length = 1000)
+
+yS <- dgamma( x, shape = alpha, scale = betaS)
+yW <- dgamma( x, shape = alpha, scale = betaW)
+
+plot( range(c(yS, yW)) ~  range(x),
+      type = "n", # No plot, just canvas
+      las = 1,
+      xlab = "Event duration (in ??)",
+      ylab = "Prob. fn.")
+lines(yS ~ x, 
+      lty = 1,
+      lwd = 2)
+lines(yW ~ x, 
+      lty = 2,
+      lwd = 2)
+legend( "topright",
+        lwd = 2,
+        lty = 1:2,
+        legend = c("Summer", "Winter"))
+
+1 - pgamma(6/24, shape = alpha, scale = betaW)
+1 - pgamma(6/24, shape = alpha, scale = betaS)
+
+```
+::: 
+
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:Diarrhoea).**
+
+1. $\text{E}(X) = \alpha\beta = 3.76$ days.
+   $\text{var}(X) = \alpha\beta^2 = 12.75$ days^2^.
+1. The main difference is at the lower end of the distribution.
+1. About 35% (gamma) and 31% (exponential).
+1. Both just over 10 days.
+
+
+```{r}
+x <- seq(0, 15, length = 500)
+yGamma <- dgamma(x, shape = alpha, scale = beta)
+yExp <- dexp(x, rate = 1/beta)
+
+plot( range (c(yGamma, yExp)) ~ range(x),
+      type = "n", # No plot, just canvas
+      las = 1,
+      xlab = "Duration of symptoms (in days)",
+      ylab = "Prob. fn.")
+lines( yGamma ~ x,
+       lwd = 2,
+       lty = 1)
+lines( yExp ~ x,
+       lwd = 2,
+       lty = 2)
+legend( "topright",
+        lwd = 2,
+        lty = 1:2,
+        legend = c("Gamma", "Exponential"))
+
+1 - pgamma(4, shape = alpha, scale = beta)
+1 - pexp(4, rate = 1/beta)
+
+qgamma(0.95, shape = alpha, scale = beta)
+qexp(0.95, rate = 1/beta)
+```
+:::
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:NormalLeaveTime).**
+
+1. About 25.2%.
+2. $Pr(T > 7 | T > 5) = \Pr(T > 7)/\Pr(T > 5)$ or about 33.8%.
+3. About 7:30pm.
+
+```{r}
+pnorm(5, mean = 6, sd = 1.5)
+
+(1 - pnorm(7, mean = 6, sd = 1.5) ) / 
+  (1 - pnorm(5, mean = 6, sd = 1.5) )
+
+qnorm(0.85, mean = 6, sd = 1.5)
+```
+
+:::
+
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:BetaClay).**
+
+Write $X$ for the percentage of clay content in soil.
+
+2. County A: 
+   * $\text{E}(X) = m / (m + n) = 0.708$ or about 70.8%.
+   * $\text{var}(X) = 0.01196957$ or about 1.2%.  
+   County B: 
+   * $\text{E}(X) = m / (m + n) = 0.274$ or about 27.4%.
+   * $\text{var}(X) = 0.02939085$ or about 2.9%.
+3. About 71.7% for County A; about 51.5% for County B.
+   These look reasonable from the plots.
+
+```{r}
+x <- seq(0, 1, length = 1000)
+yA <- dbeta(x, shape1 = 11.52, shape2 = 4.75)
+yB <- dbeta(x, shape1 = 3.85, shape2 = 3.65)
+
+plot( range( c(yA, yB)) ~ range(100 * x),
+      type = "n", #No plot, just canvas
+      las = 1,
+      xlab = "Percentage clay",
+      ylab = "Prob. fn.")
+lines( yA ~ I(100 * x), 
+       lwd = 2,
+       lty = 1)
+lines( yB ~ I(100 * x), 
+       lwd = 2,
+       lty = 2)
+legend("top",
+       lty = 1:2,
+       lwd = 2,
+       legend = c("Location A", "Location B"))
+
+qbeta( 0.5, shape1 = 11.52, shape2 = 4.75)
+qbeta( 0.5, shape1 = 3.85, shape2 = 3.65)
+```
+:::
+
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:Headway).**
+
+Note that if $Y = X - \Delta$, then $Y$ has a gamma distribution, with $\alpha = 2.5$ and $\beta = 0.8$, with $\text{E}(Y) = \alpha\beta = 2$ and $\text{var}(Y) = \alpha\beta^2 = 1.6$.
+
+1. $\text{E}(X) = \text{E}(Y + \Delta) = 3.2$ seconds.
+   $\text{var}(X) = \text{var}(Y) = 1.6$ seconds^2^.
+
+
+```{r}
+numSims <- 1000
+yHeadway <- rgamma( n = numSims,
+                    shape = 2.5,
+                    rate = 0.8)
+xHeadway <- yHeadway + 1.2
+hist(xHeadway,
+     las = 1,
+     lwd = 2,
+     xlim = c(0, max(xHeadway)),
+     main = "Histogram of headway",
+     ylab = "Prob. fn.",
+     xlab = "Headway (in sec)")
+
+xMean <- 3.2; xVar <- 1.6
+xLo <- 3.2 - 2 * sqrt(xVar)
+xHi <- 3.2 + 2 * sqrt(xVar)
+
+# Part 3
+Num <- sum( (xHeadway < xHi ) & (xHeadway > xLo) )
+EmpiricalProp <- Num / numSims
+EmpiricalProp
+
+# Part 4: Tchebyshev: AT LEAST this proportion
+k <- 2
+1 - 1/k^2
+```
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:SimulationGirlHeights).**
+
+```{r, fig.align="center", fig.cap="Heights of children at day-care facilities" }
+htMean <- function(x) {
+  7.5 * x + 70
+}
+htSD <- function(x) {
+  0.4575 * x + 1.515
+}
+
+NumSims <- 10000
+
+Ages <- c(
+  rep(2, NumSims * 0.32),
+  rep(3, NumSims * 0.33),
+  rep(4, NumSims * 0.25),
+  rep(5, NumSims * 0.10)
+)
+
+Hts <- rnorm(NumSims,
+             mean = htMean(Ages),
+             sd = htSD(Ages))
+hist(Hts,
+     las = 1,
+     xlab = "Heights (in cm)")
+
+# Taller than 100:
+cat("Taller than 100cm:", sum( Hts > 100) / NumSims * 100, "%\n")
+# Mean and variance:
+cat("Mean:", mean( Hts ), "cm; ",
+    "Std dev: ", sd(Hts), "cm\n")
+
+# Sort the heights to find where the tallest 20% are:
+cat("Tallest 15% are taller than", 
+    sort(Hts)[ NumSims * 0.85], "cm\n")
+```
+
+:::
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:ConcreteDiffusion).**
+
+Write $C$ for the diffusion coefficients; then $C \sim \text{Gamma}(27.05, 1.42)$.
+
+2. $\text{E}(C) = \alpha\beta \approx 38.41$. 
+   $\text{var}(C) = \alpha\beta^2 \approx 54.54$.
+3. $\Pr(C > 30\mid C < 50) = \Pr(30 \cap 50) / \Pr( C < 50) = \Pr(30 < C < 50) / \Pr( C < 50) \ approx 0.870$.
+Using **R**:
+
+```{r}
+topPart <- pgamma(50, shape = 27.05, scale = 1.42) - 
+           pgamma(30, shape = 27.05, scale = 1.42)
+bottomPart <-pgamma(50, shape = 27.05, scale = 1.42)
+
+topPart / bottomPart
+```
+
+```{r fig.align="center", fig.cap="Diffusion coefficients"}
+par(mfrow = c(1, 2))
+
+x <- seq(0, 80,
+         length = 1000)
+y <- dgamma(x,
+            shape = 27.05,
+            scale = 1.42)
+plot(y ~ x,
+     las = 1,
+     type = "l",
+     xlab = "Diffusion coefficient",
+     ylab = "Probability density",
+     main = "PDF")
+
+
+x <- seq(0, 80,
+         length = 1000)
+y <- pgamma(x,
+            shape = 27.05,
+            scale = 1.42)
+plot(y ~ x,
+     las = 1,
+     type = "l",
+     xlab = "Diffusion coefficient",
+     ylab = "Distribution function",
+     main = "DF")
+```
+
+A study of the service life of concrete in various conditions [@liu2012stochastic] modelled the diffusion coefficients using a gamma distribution, with $\alpha = 27.05$ and $\beta = 1.42$ (units not given).
+
+1. Plot the pdf and df.
+1. Determine the mean and standard deviation of the chloride diffusion coefficients used in the simulation.
+1. If $C$ represents the chloride diffusion coefficients, compute $\Pr(C > 30\mid C < 50)$.
+:::
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:TweedieVarFn).**
+Normal: $\text{var}(X) = \sigma^2 \mu^0$, so $\phi = sigma^2$ and $p = 0$.
+
+Poisson: $\text{var}(X) = \mu$, so $\phi = 1$ and $p = 1$.
+
+Gamma: $\text{var}(X) = \phi \mu^2$, so $\phi = ???$ and $p = 2$.
+:::
+
+
+
+  

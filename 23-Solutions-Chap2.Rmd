@@ -1,0 +1,635 @@
+## Answers for Chap. 2
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:SSpaceRV).**
+
+1. $R_X = \{X \mid x \in (0, 1, 2) \}$; discrete.
+2. $R_X = \{X \mid x \in (1, 2, 3\dots) \}$; discrete.
+3. $R_X = \{X \mid x \in (0, \infty) \}$; continuous.
+4. $R_X = \{X \mid x \in (0, \infty) \}$; continuous.
+5. $R_X = \{X \mid x \in (0, 1, 2, \dots) \}$; discrete.
+6. $R_X = \{X \mid x \in (0, 1, 2, \dots) \}$; discrete.
+7. $R_X = \{X \mid x \in (0, \infty) \}$; continuous.
+:::
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:DFdiscrete).**
+
+1. $\displaystyle F_X(x) = 
+   \begin{cases}
+      0   & \text{for $x < 10$};\\
+      0.3 & \text{for $10 \le x < 15$};\\
+      0.5 & \text{for $15 \le x < 20$};\\
+      1   & \text{for $x \ge 20$}.
+    \end{cases}$
+1. $\Pr(X > 13) = 1 - F_X(13) = 0.7$.
+1. $\Pr(X \le 10 \mid X\le 15) = \Pr(X \le 10) / \Pr(X \le 15) = F_X(10)/F_X(15) = 0.3/0.5 = 0.6$.
+:::
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:DFcontinuous).**
+
+1. $\displaystyle F_Z(z) = 
+    \begin{cases}
+        0                     &  \text{for $z \le -1$};\\
+        6z/15 - z^2/15 + 7/15 & \text{for $-1 < z < 2$};\\
+        1                     & \text{for $z \ge 2$}.
+    \end{cases}$
+1. $\Pr(Z < 0) = F_Z(0) = 7/15 \approx 0.4666...$.
+:::
+
+```{r fig.align="center", fig.cap="The DF for $f(z)$"}
+F1 <- function(x){
+  F <- array( dim = length(x))
+  F[ x < -1] <- 0
+  F[ x > 2] <- 1
+  Interesting <- (x > -1) & (x < 2)
+  F[ Interesting ] <- 6*z[Interesting]/15 - (z[Interesting]^2)/15 + 7/15
+  F
+}
+
+z <- seq(-2, 3, 
+         length = 200)
+plot( F1(z) ~ z,
+      las = 1,
+      type = "l",
+      xlab = expression(italic(x)),
+      ylab = "Dist. fn.",
+      lwd = 2)
+```
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:DFdiscreteBackwards).**
+
+1. $\displaystyle
+   p_W(w) = \begin{cases}
+               0.3 & \text{for $w = 10$};\\
+               0.4 & \text{for $w = 20$};\\
+               0.2 & \text{for $w = 30$};\\
+               0.1 & \text{for $w = 40$};\\
+               0   & \text{elsewhere}.
+            \end{cases}$
+1. $\Pr(W < 25) = 0.7$.
+:::
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:DFcontinuousBackwards).**
+
+1. $\displaystyle
+   f_Y(y) = \begin{cases}
+               (4/3) - y^2 & \text{for $0 < y < 1$};\\
+               0 & \text{elsewhere}.
+            \end{cases}$
+1. $\Pr(Y < 0.5) = 0.625$.
+:::
+
+```{r}
+fy <- function(y){
+  pdfy <- array(0, dim = length(y))
+  pdfy <- ifelse( (y > 0) & (y < 1),
+                  (4/3) - y^2,
+                  0)
+  pdfy
+}
+y <- seq(-1, 2,
+         length = 500)
+plot(fy(y) ~ y,
+     lwd = 2,
+     type = "l",
+     xlab = expression(italic(y)),
+     ylab = "PDF",
+     las = 1)
+```
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:Chlorine).**
+
+1. Easiest to draw, and see that this represents a *triangular distribution*, and find the area of the said triangle.
+   Integration can be used though.
+2. PDF:
+\[
+   f_X(x) 
+   = 
+   \begin{cases}
+      \frac{2}{8.8\times 4.4} (x - 0.6) & \text{for $0.6 < x < 5$};\\
+      \frac{2}{8.8\times 4.4} (9.4 - x) & \text{for $5 < x < 9.4$}
+   \end{cases}
+   = 
+   \begin{cases}
+      \frac{2}{38.72} (x - 0.6) & \text{for $0.6 < x < 5$};\\
+      \frac{2}{38.72} (9.4 - x) & \text{for $5 < x < 9.4$}.
+   \end{cases}
+\]
+3. 
+\[
+   F_X(x) 
+   = 
+   \begin{cases}
+      0                                   & \text{for $x < 0.6$}\\
+      [(0.6 - x)^2 ]/ 38.72               & \text{for $0.6 \le x < 5$};\\
+      [-69 + 18.8x - x^2] / 38.72         & \text{for $5 \le x < 9.4$}.\\
+      1                                   & \text{for $x \ge 9.4$}
+   \end{cases}
+\]
+
+4. See below.
+5. $\Pr(X > 3) = 1 - \Pr(X < 3) =  1 - 0.1487603 =  0.8512397$ (or use areas of  triangles)
+6. $\Pr(X > 3 \mid X > 1) = \Pr(X > 3) / \Pr(X > 1) = 0.8512397 / 0.9958678 = 0.8547718$.
+7. One is just if $X$ exceeds 3; the other if $X$ exceeds 3 if we already know $X$ has exceeded 1.
+:::
+
+```{r, out.width='90%'}
+f <- function(x){
+  f <- array( dim = length(x))
+  f[x < 0.6] <- 0
+  f[x > 9.4] <- 0
+  xSmall <- (x >= 0.6) & ( x <= 5)
+  xLarge <- (x > 5) & (x <= 9.4)
+  f[xSmall] <- 2 / (8.8 * 4.4) * (x[xSmall] - 0.6)
+  f[xLarge] <- 2 / (8.8 * 4.4) * (9.4 - x[xLarge] )
+  f
+}
+
+F <- function(x){
+  FF <- array( dim = length(x))
+  
+  for (i in (1:length(x))){
+    FF[i] <- integrate(f, lower = 0.6, upper = x[i])$value
+  }
+  FF
+}
+
+
+par(mfrow = c(1, 2))
+x <- seq(0, 10,
+         length = 200)
+plot( f(x) ~ x,
+      type = "l",
+      lwd = 2,
+      las = 1,
+      main = "PROB fn",
+      xlab = expression(italic(x)),
+      ylab = "Prob. fn.")
+
+
+
+x <- seq(0, 10,
+         length = 200)
+plot( F(x) ~ x,
+      type = "l",
+      lwd = 2,
+      las = 1,
+      main = "DIST fn",
+      xlab = expression(italic(x)),
+      ylab = "Dist fn.")
+```
+
+
+```{r}
+1 - F(3)
+(1 - F(3)) / (1 - F(1)) 
+```
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:TriangularHospital).**
+
+Using the area of triangles, the 'height' is $2/27 \approx 0.07407407$ as shown below.
+Then, after some algebra:
+
+\[
+   f_S(s) = 
+   \begin{cases}
+      \frac{4}{81}s - \frac{14}{81} & \text{for $3.5 < s < 5$};\\
+      -\frac{4}{1377}s + \frac{122}{1377} & \text{for $5 < s < 30.5$}.
+   \end{cases}
+\]
+
+Also,
+\[
+   F_S(s) = 
+   \begin{cases}
+      0                                    & \text{for $s < 3.5$};\\
+      \frac{(7 - 2s)^2}{162}               & \text{for $3.5 < s < 5$};\\
+      \frac{2}{1377} (s^2 - 61s + 280)     & \text{for $5 < s < 30.5$};\\
+      1                                    & \text{for $s > 30.5$}.
+   \end{cases}
+\]
+
+Then, 
+$\Pr(S > 20 \mid S > 10) = \Pr( (S > 20) \cap (S > 10) )/\Pr(S > 10) = \Pr(S > 20)/\Pr(S > 10) = 0.1601311 / 0.6103854$.
+This is about 0.2623.
+:::
+
+
+```{r, echo=FALSE, out.width='90%'}
+par( mfrow = c(1, 2))
+
+f <- function(x){
+  f <- array( dim = length(x))
+  f[x < 3.5] <- 0
+  f[x > 30.5] <- 0
+  xLO <- (x >= 3.5) & (x <= 5)
+  xHI <- (x > 5) & (x <= 30.5)
+  f[xLO] <- 4 * x[xLO] / 81 - (14 / 81)
+  f[xHI] <- -4 * x[xHI]/1377 + 122/1377
+  f
+}
+
+x <- seq(0, 35, 
+         length = 500)
+
+plot( f(x) ~ x,
+      type = "l",
+      lwd = 2,
+      las = 1,
+      main = "PROBABILITY function",
+      xlab = expression(italic(s)),
+      ylab = "Prob. fn.")
+points(x = 5, 
+       y = f(5), 
+       pch = 19)
+lines( x = c(0, 5),
+       y = c(f(5), f(5)),
+       lty = 2,
+       lwd = 2)
+axis(side = 2,
+     at = f(5),
+     labels = "2/27")
+
+
+
+
+Fx <- function(x){
+  F <- array( dim = length(x))
+  
+  for (i in (1:length(x))) {
+    F[i] <- integrate(f, lower = 3.5, upper = x[i])$value
+  }
+  F
+}
+
+x <- seq(0, 35, 
+         length = 500)
+
+plot( Fx(x) ~ x,
+      type = "l",
+      lwd = 2,
+      las = 1,
+      ylim = c(0, 1),
+      main = "DISTRIBUTION function",
+      xlab = expression(italic(s)),
+      ylab = "Dist. fn.")
+```
+
+```{r}
+(1 - Fx(20) ) / ( 1 - Fx(10))
+```
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:Exceedance).**
+
+1. Producers usually need that they will receive *at least* a certain amount of rainfall.
+2. A **very poor* graph below; I really have to fix that.
+3. Six months have recorded over 60mm; so 6/81. 
+   But taking half of the previous '40 to under 60' category, we'd get 12/81.
+   So somewhere around there.
+4. In June, there are 81 observations, so the median is the 41st: The median rainfall is between 0 to under 20mm.  
+   In December, there are 80 observations, so the median is the 40.5th: The median rainfall is between 40 to under 60mm.
+5. Median; *very* skewed to the right.
+6. ...
+:::
+
+```{r echo=FALSE}
+Rain12 <- read.csv("Data/IDCJAC0001_044021/IDCJAC0001_044021_Data12.csv", 
+                   na.strings = "null")
+RainDec <- Rain12$Dec
+RainJun <- Rain12$Jun
+
+breaks <- c( 0, 0.01, 20,
+             seq(40, 220, by = 20) )
+outDec <- hist(RainDec,
+               breaks = breaks,
+               plot = FALSE)
+outJun <- hist(RainJun, 
+               breaks = breaks,
+               plot = FALSE)
+
+Buckets <- c("Zero", 
+           "0 < R < 20",
+           "20 <= R < 40",
+           "40 <= R < 60",
+           "60 <= R < 80",
+           "80 <= R < 100",
+           "100 <= R < 120",
+           "120 <= R < 140",
+           "140 <= R < 160",
+           "160 <= R < 180",
+           "180 <= R < 200",
+           "200 <= R < 220")
+
+cbind("Buckets" = Buckets,
+      "Jun" = outJun$counts,
+      "Dec" = outDec$counts)
+
+exceedanceJun <-  ( sum(outJun$counts) - cumsum(outJun$counts) ) / sum(outJun$counts)
+exceedanceDec <-  ( sum(outDec$counts) - cumsum(outDec$counts) ) / sum(outDec$counts)
+
+plot( exceedanceJun ~ breaks[1:12], 
+      type = "b",
+      xlab = "Rainfall (in mm)",
+      ylab = "Exceedance probability",
+      main = "Charleville",
+      ylim = c(0, 1.1),
+      lwd = 2,
+      lty = 1,
+      pch = 19,
+      las = 1)
+lines( exceedanceDec ~ breaks[1:12], 
+       type = "b",
+      pch = 1,
+      lty = 2,
+      las = 1)
+legend("topright",
+       lwd = 2,
+       pch = c(19, 1),
+       lty = c(1, 2),
+       legend = c("June",
+                  "December"))
+```
+
+:::{answer}
+**Answer for Exercise \@ref(exr:YouFriendInLine).**
+
+Suppose I stand at Position 1; my friend can be at Positions 2 to 5, with distances 1, 2, 3 4.
+Similar if I stand at Position 5.
+
+Suppose I stand at Position 2; my friend can be at Positions 1, 3 to 5, with distances 1, 1, 2, 3.
+Similar if I stand at Position 4.
+
+Suppose I stand at Position 3; my friend can be at Positions 1, 2, 4, 5, with distances 1, 2, 2, 1.
+
+So counting, the pdf for the number of people between us, say $Y$, is:
+
+\[
+   f_Y(y) = 
+   \begin{cases}
+      4/10 & \text{for $y = 0$};\\
+      3/10 & \text{for $y = 1$};\\
+      2/10 & \text{for $y = 2$};\\
+      1/10 & \text{for $y = 3$};\\
+         0 & \text{elsewhere}.
+   \end{cases}
+\]
+or $f_Y(y) = (4 - y)/10$ for $y\in\{0, 1, 2, 3\}$.
+:::
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:Continuous1).**
+
+1. $a\int_0^1 (1 - y)^2\,dy = \left. (1 - y)^3/3\right|_0^1 = 1/3$.
+1. $\Pr(|Y - 1/2| > 1/4) = \Pr(Y > 3/4) + \Pr(Y < 1/4) = 1 - \Pr(1/4 < Y < 3/4) = 13/32$.
+1. See Fig. \@ref(fig:PDFy).
+
+```{r PDFy, fig.cap="The pdf of $y$", fig.align="center"}
+y <- seq(0, 1, length = 500)
+fy <- ( (1 - y)^2 ) * 3
+
+plot(fy ~ y,
+     lwd = 2,
+     xlab = "y",
+     ylab = "PDF",
+     type = "l")
+```
+
+:::
+
+
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:Discrete1).**
+
+1. Write as $p(x) = \log_{10}(1 + x) - \log_{10}x$; then the sum is
+
+  \[
+    (\log_{10}(2) - \log_{10} 1) 
+    + (\log_{10} 3 - \log_{10} 2)
+    + (\log_{10} 4 - \log_{10} 3) + \dots
+    + (\log_{10} 10 - \log_{10} 9)
+  \]
+and things cancel, leaving $\log{10}10 = 1$.
+1. DF:
+:::
+
+
+
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:Discrete1).**
+:::
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:Quartic).**
+
+
+
+
+:::{.exercise #Quartic}
+$\Pr(60 < Y < 70) = 154,360,000k/3\approx 51,453,333k$ and $\Pr(Y > 70) = 54,360,000k$.
+Using this model, the larger probability is dying over 70.
+:::
+
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:PooledTest).**
+
+\begin{align*}
+  \Pr(\text{Pooled test is positive})
+  &= 1 - \Pr(\text{Pooled test is negative}) \\
+  &= 1 - \Pr(\text{All individuals are negative})\\
+  &= 1 -(0.9)^ 4 = 0.3439.
+\end{align*}
+So the pmf of $X$, whether the pooled test returns negative (i.e., $x = 0$) or positive (i.e., $x = 1$), is
+
+\[
+  p_X(x) = 
+  \begin{cases}
+     0.6561 & \text{for $x = 0$ (i.e., the pooled test is negative)};\\
+     0.3439 & \text{for $x = 1$ (i.e., the pooled test is positive)}.
+  \end{cases}
+\]
+:::
+
+
+
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:CardDistance).**
+:::
+
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:BenfordsLaw).**
+
+The df is
+\begin{align*}
+   F_D(d) 
+   &= \sum_{i = 1}^d \log[ (1 + d)/ \log(d) ] \\
+   &= \sum_{i = 1}^d \log(1 + d) - \log d\\
+   &= (\log 2 - \log 1) + (\log 3 - \log 2) + \log 4 - \log 3) + \cdots\\
+   &  \quad {} + (\log d - \log(d - 1) ) + (\log (1 + d) - \log d)\\
+   &= \log (1 + d).
+\end{align*}
+:::
+
+```{r}
+fd <- function(x){
+  log10( 1 + 1/d)
+}
+
+Fd <- function(x){
+  log10(1 + d)
+}
+
+d <- 1:9
+
+par(mfrow = c(1, 2))
+
+plot( fd(d) ~ d,
+      type = "p",
+      pch = 19,
+      las = 1,
+      main = "Prob. fn",
+      xlab = expression(italic(d)),
+      ylab = "Prob. fn.")
+points( fd(d) ~ d,
+        type = "h",
+        lty = 2,
+        col = "grey",
+        lwd = 2)
+
+plot( Fd(d) ~ d,
+      type = "p",
+      pch = 19,
+      las = 1,
+      main = "Distribution fn",
+      ylim = c(0, 1),
+      xlab = expression(italic(d)),
+      ylab = "Prob. fn.")
+points( Fd(d) ~ d,
+        type = "h",
+        lty = 2,
+        col = "grey",
+        lwd = 2)
+```
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:Arcsine).**
+
+$F(y) = \int_0^x \frac{1}{pi\sqrt{t(1 - t)}}\, dt = \frac{1}{\pi}\arcsin(2x - 1) + \frac{1}{2}$ for $0 < x < 1$.
+:::
+
+```{r}
+y <- seq(-0.5, 1.5, 
+         length = 100)
+fy <- ifelse( (y > 0) & (y < 1),
+              1/( pi * sqrt( y * (1 - y))),
+              0)
+
+Fy <- array( 0, 
+             dim = length(y))
+Fy[ y < 0 ] <- 0
+Fy[ y > 1 ] <- 1
+Fy[ (y > 0) & (y < 1) ] <- 1/pi * asin(2*y[(y > 0) & (y < 1)] - 1) + 0.5
+
+par(mfrow = c(1, 2))
+
+plot( fy ~ y,
+      type = "l",
+      lwd = 2,
+      xlab = expression(italic(x)),
+      ylab = "Prob. fn",
+      las = 1)
+plot( Fy ~ y,
+      type = "l",
+      lwd = 2,
+      ylim = c(0, 1),
+      xlab = expression(italic(x)),
+      ylab = "Dist. fn",
+      las = 1)
+```
+
+
+:::{answer}
+**Answer for Exercise \@ref(exr:DFExpInverse).**
+
+The pdf is
+\[
+   f_X(x) 
+   = \frac{d}{dx} \exp(-1/x) 
+   = \frac{\exp(-1/x)}{x^2}
+\]
+for $x > 0$.
+See Fig. \@ref(fig:PlotDFExpInverse).
+:::
+
+```{r PlotDFExpInverse, echo=FALSE}
+par( mfrow = c(1, 2))
+
+f1 <- function(x){
+  fy <- array(0, dim = length(x))
+  fy <- ifelse(x > 0,
+               exp(-1/x) / x^2,
+               0)
+  fy
+}
+
+x <- seq(-0.5, 5, length = 100)
+
+plot( f1(x) ~ x,
+      type = "l",
+      lwd = 2,
+      xlab = expression(italic(x)),
+      ylab = expression(italic(f)(italic(x))),
+      las = 1)
+
+
+
+F1 <- function(x){
+  fy <- array(0, dim = length(x))
+  fy <- ifelse(x > 0,
+               exp(-1/x),
+               0)
+  fy
+}
+
+x <- seq(-0.5, 8, length = 100)
+
+plot( F1(x) ~ x,
+      type = "l",
+      lwd = 2,
+      ylim = c(0, 1),
+      xlab = expression(italic(x)),
+      ylab = expression(italic(F)(italic(x))),
+      las = 1)
+
+
+```
+
+
+
+  
