@@ -6,8 +6,8 @@
 **Answer to Exercise \@ref(exr:BetaRepara).**
 
 For example:
-From $\mu = m/(m + n)$, we get $n = m(1 - \mu)/\mu$ and $m + n = m/mu$.
-Also, from the expression for the variance, substitiute $m + n = m/mu$ and simplify to get
+From $\mu = m/(m + n)$, we get $n = m(1 - \mu)/\mu$ and $m + n = m/\mu$.
+Also, from the expression for the variance, substitiute $m + n = m/\mu$ and simplify to get
 
 \[
    n = \frac{\sigma^2 m (m + \mu)}{\mu^3}
@@ -23,13 +23,15 @@ $n = \frac{1 - \mu}{\sigma^2}\left( \mu(1 - \mu) - \sigma^2\right)$.
 1. $\text{E}(X) = (72 + 30)/2 = 51$km.h^-1^.
 $\text{var}(X) = (72 - 30)^2 / 12 = 147$(km.h^-1^)^2^ (more easily understood, as $\sqrt{\text{Var}(X)} = 12.12$km.h^-1^).
 1. See Fig. \@ref(fig:VehicleSpeeds).
+1. See below.
+1. See below.
 
 
 
 ```{r}
 1 - punif(60, 30, 72)
 (1 - punif(65, 30, 72) ) /
-  (1 - punif(60, 32, 72) )
+  (1 - punif(60, 30, 72) )
 
 ```
 
@@ -105,25 +107,28 @@ pnorm(30, 48, 8.8) + # Slower than 30
 alpha <- 27.05
 beta <- 1.42
 
-x <- seq(0, 40, length = 200)
+x <- seq(0, 80, length = 200)
 
 par(mfrow = c(1, 2))
 
-plot( y = dgamma(x, shape = alpha, rate = beta),
+plot( y = dgamma(x, shape = alpha, scale = beta),
       x = x,
+      las = 1,
       xlab = expression(italic(x)),
       ylab = "Prob. fn",
       type = "l",
       lwd = 2)
-plot( y = pgamma(x, shape = alpha, rate = beta),
+plot( y = pgamma(x, shape = alpha, scale = beta),
       x = x,
       xlab = expression(italic(x)),
       ylab = "Dist. fn",
       type = "l",
+      las = 1,
       lwd = 2)
 
-( pgamma(50, shape = alpha, rate = beta) - pgamma(30, shape = alpha, rate = beta) ) /
-  pgamma(50, shape = alpha, rate = beta)
+( pgamma(50, shape = alpha, scale = beta) - 
+  pgamma(30, shape = alpha, scale = beta) ) /
+pgamma(50, shape = alpha, scale = beta)
 ```
 
 
@@ -265,9 +270,9 @@ For the given beta distribution, $\text{E}(V) = 0.287/(0.287 + 0.926) = 0.2366..
 1. $\text{E}(S) = \text{E}(4.5 + 11V) = 4.5 + 11\text{E}(V) = 7.10$ minutes.
    $\text{var}(S) = 11^2\times\text{Var}(V) = 9.875$ minutes^2^.
 1. $V\in (4.5, 15.5)$.
-1. See Fig. \@ref(fig:ServiceTimes).
+   See Fig. \@ref(fig:ServiceTimes).
 1. This corresponds to $V = 10.5/11 = 0.9545455$, so $\Pr(S > 15) = \Pr(V > 0.9545455) = 0.01745087$.
-1. With $V$, the largest 20% correspond to $V = 0.4940853$, so that $S = 9.934938$; the largest 20% are longer than 9.93 minutes.
+1. With $V$, the largest 20% correspond to $V = 0.004080076$, so that $S = 4.544881$; the *quickest* 20% are within 4.54 minutes.
 :::
 
 
@@ -286,9 +291,11 @@ plot( PDFv ~ stime,
       ylab = "PDF",
       main = "Distribution of S",
       lwd = 2)
-
+## Part 3
 1 - pbeta( 0.9545455, shape1 = 0.287, shape2 = 0.926)
-qbeta(0.8, shape1 = 0.287, shape2 = 0.926)
+
+## Part 4
+qbeta(0.2, shape1 = 0.287, shape2 = 0.926)
 ```
 
 
@@ -347,6 +354,8 @@ legend( "topright",
 
 
 ```{r}
+alpha <- 1.11; beta <- 3.39
+
 x <- seq(0, 15, length = 500)
 yGamma <- dgamma(x, shape = alpha, scale = beta)
 yExp <- dexp(x, rate = 1/beta)
@@ -367,9 +376,11 @@ legend( "topright",
         lty = 1:2,
         legend = c("Gamma", "Exponential"))
 
+## Part 3
 1 - pgamma(4, shape = alpha, scale = beta)
 1 - pexp(4, rate = 1/beta)
 
+## Part 4
 qgamma(0.95, shape = alpha, scale = beta)
 qexp(0.95, rate = 1/beta)
 ```
@@ -380,7 +391,7 @@ qexp(0.95, rate = 1/beta)
 **Answer to Exercise \@ref(exr:NormalLeaveTime).**
 
 1. About 25.2%.
-2. $Pr(T > 7 | T > 5) = \Pr(T > 7)/\Pr(T > 5)$ or about 33.8%.
+2. $\Pr(T > 7 \mid T > 5) = \Pr(T > 7)/\Pr(T > 5)$ or about 33.8%.
 3. About 7:30pm.
 
 ```{r}
@@ -407,7 +418,7 @@ Write $X$ for the percentage of clay content in soil.
    * $\text{E}(X) = m / (m + n) = 0.708$ or about 70.8%.
    * $\text{var}(X) = 0.01196957$ or about 1.2%.  
    County B: 
-   * $\text{E}(X) = m / (m + n) = 0.274$ or about 27.4%.
+   * $\text{E}(X) = m / (m + n) = 0.513$ or about 51.3%.
    * $\text{var}(X) = 0.02939085$ or about 2.9%.
 3. About 71.7% for County A; about 51.5% for County B.
    These look reasonable from the plots.
@@ -433,8 +444,9 @@ legend("top",
        lwd = 2,
        legend = c("Location A", "Location B"))
 
-qbeta( 0.5, shape1 = 11.52, shape2 = 4.75)
-qbeta( 0.5, shape1 = 3.85, shape2 = 3.65)
+## Part 3
+pbeta( 0.5, shape1 = 11.52, shape2 = 4.75)
+pbeta( 0.5, shape1 = 3.85, shape2 = 3.65)
 ```
 :::
 
@@ -468,6 +480,7 @@ hist(xHeadway,
 xMean <- 3.2; xVar <- 1.6
 xLo <- 3.2 - 2 * sqrt(xVar)
 xHi <- 3.2 + 2 * sqrt(xVar)
+cat("Limits", xLo, "and", xHi, "\n")
 
 # Part 3
 Num <- sum( (xHeadway < xHi ) & (xHeadway > xLo) )
