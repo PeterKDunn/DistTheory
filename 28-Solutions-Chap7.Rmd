@@ -99,3 +99,81 @@ $f_Y(y)=\displaystyle {\frac{1}{\pi \sqrt{y}(1 + y)}}$ for $0 < y < \infty$.
 1. $F_Y(y) =\Pr(Y \le y) = 1 - 2\sqrt{4 - y}$ for $3.75 < y < 4$.
 1. $f_Y(y) = (4 - y)^{-1/2}$.
 :::
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:LogNormal)**.
+
+1. First see that $Y = \log X$.
+   Then:  
+   \begin{align*}
+     F_Y(y)
+     &= \Pr(y < Y) \\
+     &= \Pr( \exp x < Y)\\
+     &= \Pr( x < \log Y)\\
+     &= \Phi\big((\log Y - \mu)/sigma\big) 
+   \end{align*}
+   by the definition of $\Phi(\cdot)$.
+1. Proceed:
+   \begin{align*}
+     f_Y(y) 
+     &= \frac{d}{dy}  \Phi\big((\log Y - \mu)/sigma\big) \\
+     &= \frac{1}{y} \Phi\big((\log Y - \mu)/sigma\big) \\
+     &= \frac{1}{y\sqrt{2\pi\sigma^2}}
+        \exp\left[\left(
+           -\frac{ (\log\y - \mu)^2}{\sigma}\right)^2\right]
+   \end{align*}
+   since the derivative of $\Phi(\cdot)$ (the df of a standard normal distribution) is $\phi(\cdot)$ (the pdf of a standard normal distribution).
+3. See Fig. \@ref(fig:LogNormalPlots).
+4. See below: About 0.883.
+
+
+1. Plot the log-normal distribution for various parameter values.
+1. Determine $\Pr(Y > 1 | Y < 2)$ when $\mu = 2$ and $\sigma^2 = 2$.
+
+(**Hint**: Use the `dlnorm()` and `plnorm()` functions in **R**.)
+:::
+
+```{r LogNormalPlots, fig.align="center", fig.cap = 
+Log-normal distributions", out.width='100%', fig.width=9.5, fig.height = 7}
+par( mfrow = c(2, 2))
+
+x <- seq(0, 8,
+         length = 500)
+
+plot( dlnorm(x, meanlog = log(1), sdlog = 1) ~ x,
+      xlab = expression(italic(y)),
+      ylab = "PDF",
+      type = "l",
+      main = expression(Log~normal*":"~mu==1~and~sigma==1),
+      lwd = 2,
+      las = 1)
+plot( dlnorm(x, meanlog = log(3), sdlog = 1) ~ x,
+      xlab = expression(italic(y)),
+      ylab = "PDF",
+      type = "l",
+      main = expression(Log~normal*":"~mu==3~and~sigma==1),
+      lwd = 2,
+      las = 1)
+plot( dlnorm(x, meanlog = log(1), sdlog = 2) ~ x,
+      xlab = expression(italic(y)),
+      ylab = "PDF",
+      main = expression(Log~normal*":"~mu==1~and~sigma==2),
+      type = "l",
+      lwd = 2,
+      las = 1)
+plot( dlnorm(x, meanlog = log(3), sdlog = 2) ~ x,
+      xlab = expression(italic(y)),
+      ylab = "PDF",
+      main = expression(Log~normal*":"~mu==3~and~sigma==2),
+      type = "l",
+      lwd = 2,
+      las = 1)
+```
+
+```{r}
+(1 - plnorm(2, meanlog=2, sdlog=2)) / 
+  (1 - plnorm(1, meanlog=2, sdlog=2))
+```
+:::
+
