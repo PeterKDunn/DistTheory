@@ -35,14 +35,20 @@ So the pdf of $Y$ is as above.
 :::{.answer}
 **Answer to Exercise \@ref(exr:JointDiscrete).**
 
-* When $Y_2 = 0$ (i.e., $X_2 = 0$): $Y_1$ takes the values 0 and 1 (with probs 0 and 2/6).
-* When $Y_2 = 1$ (i.e., $X_2 = 1$): $Y_1$ takes the values 1 and 2 (with probs 1/6 and 3/6).
- 
-So the joint pf is shown in Table \@ref(tab:JDTable).
-Hence,
+First:
+
+* For $X_1 = 0$, $X_2= 0$ (with prob: $0$):   $Y_1 = 0$; $Y_2 = 0$;
+* For $X_1 = 0$, $X_2= 1$ (with prob. $1/6$): $Y_1 = 1$; $Y_2 = 1$;
+* For $X_1 = 1$, $X_2= 0$ (with prob. $2/6$): $Y_1 = 1$; $Y_2 = 0$;
+* For $X_1 = 1$, $X_2= 1$ (with prob. $3/6$): $Y_1 = 2$; $Y_2 = 1$.
+
+Effectively, the first line can be ignored (since the probability is zero), so $Y_1 \in \{1, 2\}$ and $Y_2\in\{0, 1\}$.
+
+1. From the above, the joint pf is shown in Table \@ref(tab:JDTable).
+1. Hence, from the table:
 
 \[
-   f_{Y_1} = 
+   f_{Y_1}(y_1) = 
    \begin{cases} 
       1/2 & \text{if $y_1 = 1$};\\
       1/2 & \text{if $y_1 = 2$};\\
@@ -51,20 +57,17 @@ Hence,
 \]
 
 ```{r JDTable, echo=FALSE}
-JDTable <- array( dim = c(2, 4))
+JDTable <- array( dim = c(2, 3))
 
 colnames(JDTable) <- c("",
                        "$Y_1 = 1$",
-                       "$Y_1 = 2$",
-                       "$Y_1 = 3$")
+                       "$Y_1 = 2$")
 JDTable[1, ] <- c("$Y_2 = 0$",
-                  "0",
-                  "2/6",
-                  "0")
+                  "$2/6$",
+                  "$0$")
 JDTable[2, ] <- c("$Y_2 = 1$",
-                  "0",
-                  "1/6",
-                  "3/6")
+                  "$1/6$",
+                  "$3/6$")
 if (knitr::is_latex_output()) {
   kable(JDTable,
     format = "latex",
@@ -96,9 +99,25 @@ $Y \sim\text{Gam}(\sum\alpha, \beta)$.
 
 :::{.answer}
 **Answer to Exercise \@ref(exr:CauchySquared).**
-  
-Transformation is not 1-1. 
-$f_Y(y)=\displaystyle {\frac{1}{\pi \sqrt{y}(1 + y)}}$ for $0 < y < \infty$.
+
+Transformation is not 1-1; and $Y > 0$.
+
+Then:  
+\begin{align*}
+   F_Y(y) 
+   &= \Pr(Y < y)\\
+   &= \Pr( X^1 < y)\\
+   &= \Pr( -\sqrt{y} < X < \sqrt{y} ) \quad\text{(draw a diagram!)}\\
+   &= \int_{-\sqrt{y}}^{\sqrt{y}} \frac{1}{\pi(1 + x^2)}\, dx\\
+   &= \frac{2}{\pi} \tan^{-1}(\sqrt{y}).
+\end{align*}
+and so  
+\begin{align*}
+   f_Y(y)
+   &= \frac{d}{dy} \frac{2}{\pi} \tan^{-1}(\sqrt{y})\\
+   &= \frac{1}{\pi(y + 1)\sqrt{y}}\quad\text{for $y > 0$}.
+\end{align*}
+
 :::
 
 :::{.answer}
@@ -218,6 +237,8 @@ abline( v = c(3.75, 4),
 ```
 
 
+
+
 :::{.answer}
 **Answer to Exercise \@ref(exr:Projectile).**
 
@@ -247,7 +268,7 @@ Then,
   &= \frac{2g}{\pi \sqrt{v^4 - d^2 g^2}}
 \end{align*}
 after (e.g.) drawing the right-angled triangle to re-write $\sin 2\theta = Dg/v^2$. 
-See Fig. \ref(fig:Projectile).
+See Fig. \@ref(fig:Projectile).
 :::
 
 ```{r Projectile, fig.align="center", fig.cap="The distance travelled by a projectile"}
@@ -270,32 +291,23 @@ abline(v = v^2/g,
 
 
 :::{.answer}
-**Answer to Exercise \@ref(exr:BinomXform).**
-See that $Y\in\{0, 1, \sqrt{2}, \sqrt{3}, 2\}$ and so. 
-\[ 
-   \Pr(Y = y) = \binom{4}{y^2} (0.2)^{y^2} (0.8)^{4 - y^2} \quad \text{for $y = 0, 1, \sqrt{2}, \sqrt{3}, 2$}.
-\]
-:::
-
-
-:::{.answer}
 **Answer to Exercise \@ref(exr:LogNormal)**.
 
 1. First see that $Y = \log X$.
    Then:  
    \begin{align*}
      F_Y(y)
-     &= \Pr(y < Y) \\
-     &= \Pr( \exp x < Y)\\
-     &= \Pr( x < \log Y)\\
-     &= \Phi\big((\log Y - \mu)/sigma\big) 
+     &= \Pr(Y < y) \\
+     &= \Pr( \exp X < y)\\
+     &= \Pr( X < \log y)\\
+     &= \Phi\big((\log y - \mu)/\sigma\big) 
    \end{align*}
    by the definition of $\Phi(\cdot)$.
 2. Proceed:
    \begin{align*}
      f_Y(y) 
-     &= \frac{d}{dy}  \Phi\big((\log Y - \mu)/sigma\big) \\
-     &= \frac{1}{y} \Phi\big((\log Y - \mu)/sigma\big) \\
+     &= \frac{d}{dy}  \Phi\big((\log y - \mu)/\sigma\big) \\
+     &= \frac{1}{y} \Phi\big((\log y - \mu)/\sigma\big) \\
      &= \frac{1}{y\sqrt{2\pi\sigma^2}}
         \exp\left[\left(
            -\frac{ (\log y - \mu)^2}{\sigma}\right)^2\right]
@@ -306,8 +318,7 @@ See that $Y\in\{0, 1, \sqrt{2}, \sqrt{3}, 2\}$ and so.
 :::
 
 
-```{r LogNormalPlots, fig.align="center", fig.cap = 
-Log-normal distributions", out.width='100%', fig.width=9.5, fig.height = 7}
+```{r LogNormalPlots, fig.align="center", fig.cap="Log-normal distributions", out.width='100%', fig.width=9.5, fig.height = 7}
 par( mfrow = c(2, 2))
 
 x <- seq(0, 8,
@@ -348,6 +359,17 @@ plot( dlnorm(x, meanlog = log(3), sdlog = 2) ~ x,
   (1 - plnorm(1, meanlog=2, sdlog=2))
 ```
 
+
+
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:BinomXform).**
+See that $Y\in\{0, 1, \sqrt{2}, \sqrt{3}, 2\}$ and so  
+\[ 
+   \Pr(Y = y) = \binom{4}{y^2} (0.2)^{y^2} (0.8)^{4 - y^2} \quad \text{for $y = 0, 1, \sqrt{2}, \sqrt{3}, 2$}.
+\]
+:::
 
 
 
