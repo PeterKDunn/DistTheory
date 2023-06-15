@@ -179,64 +179,50 @@ sum( dgeom(0:2,  # 0 to 2 failures before the success
 
 
 :::{.answer}
-**Answer to Exercise \@ref(exr:CountingBirds).**
+**Answer to Exercise \@ref(exr:LayDate).**
 
-**ASSUMING ERROR IN PAPER**:
-Write $k = r$ and $1 - p = (m/k)$ in our parameterisation.
+1. See Fig. \@ref(fig:LayData).
+   They are not hugely different.
+1. Similar probabilities: 0.85 (in 1999) and 0.91 (in 2000).
+1. Similar: 16 days (in 1999) and 12 (in 2000).
+1. Writing $X$ for the clutch size (where $n = 237$):
 
-So then:
-
-* in ponderosa pine stand (riparian sites): $m = 0.11$ and $k = 0.275$: $r = 0.275$ and $p = 0.6$
-* in lodgepole pine stands (again, riparian sites): $m = 0.04$ and $k = 0.275$: $r = 0.275$ and $p = 0.8545$.
-
-
-$\Pr(\text{fewer than 2 birds})$ means observing 0 birds or 1 bird.
-
-$\Pr(\text{fewer than 2 birds} \mid \text{1 or more birds seen})$ means observing 0 birds or 1 bird.
-
+   * $\text{E}(X) = (1\times \frac{9}{237}) + (2\times \frac{29}{237}) + (3\times \frac{199}{237}) =   2.801688$, or about 2.8.
+   * $\text{E}(X^2) = (1^2\times \frac{9}{237}) + (2^2\times \frac{29}{237}) + (3^2\times \frac{199}{237}) = 8.084388$.
+   * So, $\text{var}(X) = 8.084388 - (2.801688)^2 = 0.2349324$, so the standard deviation is 0.4846982, or about 0.485.
+:::
 
 ```{r}
-x <- 0:5
-pf1 <- dnbinom(x,
-               size = 0.275,
-               p = 0.6)
-pf2 <- dnbinom(x,
-               size = 0.275,
-               p = 0.8545)
-plot( y = c(0, 1),
-      x = range(x),
-      type = "n",
-      las = 1,
-      main = "Two negative binomial distributions",
-      xlab = expression(italic(x)),
-      ylab = "Prob function")
-points(pf1 ~ x, 
-       pch = 1)
-points(pf2 ~ x, 
-       pch = 19)
-
-pnbinom(1, # Ponnderosa pine stand
-        size = 0.275,
-        p = 0.6 )
-pnbinom(1, #lodgepole pine stand
-        size = 0.275,
-        p = 0.8545)
-
-dnbinom(1, # Ponnderosa pine stand
-        size = 0.275,
-        p = 0.6 ) / 
-  (1 - dnbinom(0, # Ponnderosa pine stand
-               size = 0.275,
-               p = 0.6 ) )
-dnbinom(1, #lodgepole pine stand
-        size = 0.275,
-        p = 0.8545) / 
-  (1 - dnbinom(0, #lodgepole pine stand
-               size = 0.275,
-               p = 0.8545) )
+  ## Part 2
+pnbinom(30, mu = 23.0, size = 20.6)
+pnbinom(30, mu = 19.5, size = 8.9)
+  ## Part 3
+qnbinom(0.15, mu = 23.0, size = 20.6)
+qnbinom(0.15, mu = 19.5, size = 8.9)
 
 ```
-:::
+
+```{r LayData, out.width='80%', fig.width=8, fig.height = 3.5, fig.cap="The lay date model for glaucous-winged gulls, in 1999 and 2000", fig.align="center"}
+x <- 0:50 
+y1999 <- dnbinom(x, mu = 23.0, size = 20.6)
+y2000 <- dnbinom(x, mu = 19.5, size = 8.9)
+
+plot( y1999 ~ x,
+      pch = 19,
+      las = 1,
+      main = "Lay date for glaucous-winged gulls",
+      xlab = "Lay date",
+      ylab = "Prob. function")
+points( y2000 ~ x,
+        pch = 1)
+legend("topleft",
+       pch = c(19, 1),
+       legend = c("1999",
+                  "2000"))
+
+```
+
+
 
 
 

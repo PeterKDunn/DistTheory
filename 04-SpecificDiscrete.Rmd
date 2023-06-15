@@ -1789,6 +1789,7 @@ Define $p$ as the probability that a single day records more than this threshold
 :::
 
 
+
 :::{.exercise}
 A negative binomial distribution was used to model the number of parasites on feral cats on on Kerguelen Island [@hwang2016estimating].
 The model used is parameterised so that $\mu = 8.7$ and $k = 0.4$, where $\text{var}(X) = \mu + \mu^2/k$.
@@ -1797,7 +1798,6 @@ The model used is parameterised so that $\mu = 8.7$ and $k = 0.4$, where $\text{
 1. Determine the probability that a feral cat has more than 10 parasites.
 1. The cats with the largest 10% of parasites have how many parasites?
 :::
-
 
 :::{.exercise}
 A study investigating bacterial sample preparation procedures for single-cell studies  [@koyama2016bacterial] studied, among other bacteria, *E. coli* 110.
@@ -1838,29 +1838,63 @@ A study of crashes at intersections [@lord2005poisson] examined high risk inters
 :::
 
 
-:::{.exercise #CountingBirds}
-In a study of counting birds [@white1996analysis], the parameterisation of the negative binomial distribution used by the authors is
 
-\begin{equation}
-   p_X(x) 
-   = \frac{\Gamma(k + x)}{\Gamma(k)\,\Gamma(x + 1)} 
-     \left( \frac{m}{k} \right)^x
-     \left( 1 - \frac{m}{k} \right)^{ -(k + x)}
-   (\#eq:NegativeBinomialPMFAlternative)
-\end{equation}
-for $x = 0, 1, 2, \dots$ and $k > 0$ and $m > 0$.
-Here, $X$ is the number of birds observed.
 
-The fitted parameters are, for orange-crowned warblers:
+:::{.exercise #LayDate}
+A *negative binomial* distribution was used to model the day on which eggs were layed by glaucous-winged gulls [@zador2006balancing].
+The authors used a different parameterisation of the negative binomial distribution, with the two parameters $\mu$ (the mean) and $\phi$ (the overdispersion parameter).
+(In **R**, these are called `mu` and `size` respectively when calling `dnbinom()` and friends.)
+The *expected* 'lay date' (from Day 0) was 23.0 in 1999, and 19.5 in 2000;
+the overdispersion parameter was 20.6 in 1999 and 8.9 in 2000.
 
-* in ponderosa pine stand (riparian sites): $m = 0.11$ and $k = 0.275$; and
-* in lodgepole pine stands (again, riparian sites): $m = 0.04$ and $k= 0.275$.
-
-1. On the same graph, plot both distributions.
-   Comment.
-1. Compute the probability of observing fewer than 2 birds in each environment.
-1. Compute the probability of observing fewer than 2 birds in each environment, *given* that the bird was seen.
+1. Using this information, plot the probability function for both years (on the same graph), and comment.
+1. For both years, compute the probability that the lay date exceeds $30$, and comment.
+1. For both years, find the lay date for the earliest 15% of birds.
+1. The data in Table \@ref(tab:ClutchSize) shows the clutch size (number of eggs) found in the birds' nest.
+   Compute the mean and standard deviation of the number of eggs per clutch.
 :::
+
+
+```{r ClutchSize, echo=FALSE}
+EggsTable <- array( dim = c(1, 3))
+
+EggsTable[1, ] <- c(9, 29, 199)
+
+rownames(EggsTable) <- c("Number of clutches")
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(EggsTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               col.names = c("1 egg",
+                             "2 eggs",
+                             "3 eggs"),
+               caption = "The numbers of eggs per clutch") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(EggsTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               col.names = c("1 egg",
+                             "2 eggs",
+                             "3 eggs"),
+               caption = "The numbers of eggs per clutch") %>%
+    row_spec(1, bold = TRUE) 
+}
+
+
+```
+
+
 
 
 
