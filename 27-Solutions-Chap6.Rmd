@@ -241,7 +241,86 @@ $Y = 1$ | $0$     | $1/4$   | $1/4$   |
 :::
 
 
-  
+:::{.answer}
+**Answer to Exercise \@ref(exr:DiceMinMax).**
+The joint probability function is shown in Table \@ref(tab:DiceMinMaxTab).
+For example:
+
+* A minimum of 2 and a maximum of 1 is impossible; this makes no sense (hence probability is zero).
+* A minimum of 3 and a maximum of 4 can happen in two ways: A 4 on the first die and a 3 on the other, or a 3 on the first die and a 4 on the other.
+* A minimum *and* a maximum of 2 can only happen one way: both dice show a 2.
+
+Then, the marginal distribution for $B$ (the minimum) is  
+\[
+   f_B(b) =
+   \begin{cases}
+       11/36 & \text{for $b = 1$};\\
+       9/36 & \text{for $b = 2$};\\
+       7/36 & \text{for $b = 3$};\\
+       5/36 & \text{for $b = 4$};\\
+       3/36 & \text{for $b = 5$};\\
+       1/36 & \text{for $b = 6$}
+   \end{cases}
+\]
+which is easily confirmed as a valid pmf.
+
+
+```{r DiceMinMaxTab, echo=FALSE}
+DiceMinMax <- array( 0, 
+                     dim = c(6, 6))
+
+colnames(DiceMinMax) <- c("$\\text{min} = 1$",
+                          "$\\text{min} = 2$",
+                          "$\\text{min} = 3$",
+                          "$\\text{min} = 4$",
+                          "$\\text{min} = 5$",
+                          "$\\text{min} = 6$")
+rownames(DiceMinMax) <- c("$\\text{max} = 1$",
+                          "$\\text{max} = 2$",
+                          "$\\text{max} = 3$",
+                          "$\\text{max} = 4$",
+                          "$\\text{max} = 5$",
+                          "$\\text{max} = 6$")
+DiceMinMax[1, ] <- paste0( c(1, 0, 0, 0, 0, 0), "/36")
+DiceMinMax[2, ] <- paste0( c(2, 1, 0, 0, 0, 0), "/36")
+DiceMinMax[3, ] <- paste0( c(2, 2, 1, 0, 0, 0), "/36")
+DiceMinMax[4, ] <- paste0( c(2, 2, 2, 1, 0, 0), "/36")
+DiceMinMax[5, ] <- paste0( c(2, 2, 2, 2, 1, 0), "/36")
+DiceMinMax[6, ] <- paste0( c(2, 2, 2, 2, 2, 1), "/36")
+
+
+DiceMinMax.caption <- "The minimum and maximum from two rolls of a die"
+if( knitr::is_latex_output() ) {
+  knitr::kable(DiceMinMax,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               linesep = c("", "", "\\addlinespace"),
+               caption = DiceMinMax.caption) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(DiceMinMax,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = DiceMinMax.caption) %>%
+    row_spec(0, bold = TRUE) 
+}
+
+
+```
+
+
+:::
+
+
+
 :::{.answer}
 **Answer to Exercise \@ref(exr:GammaExp).**
 
@@ -447,9 +526,30 @@ arrows( x0 = 1.75,
 :::{.answer}
 **Answer to Exercise \@ref(exr:JointQuad).**
 
-
-1. We find that $\displaystyle \int_0^1\!\!\!\int_{x^2}^1 (1 - x)y\, dy\, dx = 7/30$, so that $k = 30/7$.
-2. $25/28$.
-3. First, $f_X(x) = 15(x - 1)(x^4 - 1)/7$, and then $\Pr(X > 0.5) = 183/896$.
+1. Proceed:  
+\begin{align*}
+   1 
+   &= k\int_0^1\!\!\!\int_0^{\sqrt{y}} (1 - x)y\, dx\, dy\\
+   &= k\int_0^1\!\!\!\int_{x^2}^{1} (1 - x)y\, dy\, dx\\
+   &= \frac{k}{2}\int_0^1 (1 - x) (1 - x^4) \, dx\\
+   &= \frac{7k}{30},
+\end{align*}
+so that $k = 30/7\approx 4.285714$.
+2. Being careful with the integration limits again (draw a diagram!):  
+\begin{align*}
+   \Pr(X > Y)
+   &= \int_0^1 \!\int_y^{\sqrt{y}} f(x, y)\, dx\, dy\\
+   &= \int_0^1 \!\int_x^{x^2} f(x, y)\, dy\, dx\\
+   &= \frac{15}{7} \int_0^1 (x - 1) x^2 (x^2 - 1)\, dx\\
+   &= 3/28\approx 0.1071429.
+\end{align*}
+3. First find the marginal distribution of $X$:  
+\[
+  f_X(x) = \int_{x^2}^1 f(x, y)\, dy = \frac{15}{7} (x - 1)(x^4 - 1),
+\]
+and so
+\[
+   \Pr(X > 0.5) =  \frac{15}{7} \int_{1/2}^1 (x - 1)(x^4 - 1)\, dx = \frac{183}{896}\approx 0.2042411.
+\]
 :::
 

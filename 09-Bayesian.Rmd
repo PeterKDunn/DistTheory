@@ -1,725 +1,744 @@
-# Bayesian tools {#BayesianInference}
 
-## Introduction
+# Bayesian approaches {#BayesianIntro}
 
-This chapter introduces concepts that form the building blocks needed to introduce the Bayesian form of inference that will be covered in future statistical inference courses such as STAT261.
+## Random parameters {#RandomParameters}
 
-These *Bayesian tools* consist of Bayes' theorem, likelihood and Markov chains.
+So far, parameters used to describe model or populations have been fixed values.
+In some applications, though, the *parameters* themselves may be assumed to have distributions.
+This idea is best introduced using examples.
 
 
-
-## Bayes' theorem
-
-Recall the idea of partitioning a sample space (see \S\ref{SS:part}) and Bayes' theorem (see \S\ref{SS:Bayes}). 
-In particular, let $E$ be an event, with $H_1, \ldots, H_n$ a sequence of mutually exclusive and exhaustive events partitioning the sample space. 
-Then
-\[
-   \Pr(H_n | E ) = \frac{\Pr(H_n) \Pr(E | H_n) }{\Pr(E)}
-\]
-or
-\[
-   \Pr(H_n | E) \propto \Pr(H_n) \Pr(E | H_n )
-\]
-assuming that $\Pr(E) \neq 0$.
-This can be written as
-\[
-   \Pr(H_n | E ) 
-   = 
-   \frac{\Pr(H_n) \Pr(E | H_n) }{ \sum_m \Pr(H_m ) \Pr(E|H_m)}
-\]
-which is Bayes' theorem in the discrete case.
-
-:::{.example #Gambling name="Teenage gambling in the U.S."}
-A study was reported in which teenagers were asked whether they had gambled at least once a week during the past year. 
-The sample consisted of 49.1% boys and 50.9% girls.
-The proportion of boys who had gambled weekly was 0.229, while the proportion of girls who had done so was only 0.045.
-
-What is the chance that a teenage *gambler* chosen at random is a boy?
-
-The event $E = \{ \text{Gambler} \}$, while $H_1 = \{ \text{Boy} \}$ and $H_2 = \{ \text{Girl} \}$.
-The question posed requires $\Pr(H_1 | E) = \Pr(\text{Boy} | \text{Gambler})$.
-Now
-\[
-   \Pr(H_1 | E ) 
-   = 
-   \frac{\Pr(H_1) \Pr(E|H_1) }{ \Pr(E) }
-   = 
-   \frac{\Pr(H_1) \Pr(E|H_1) }{  \Pr(H_1) \Pr(E|H_1) + \Pr(H_2) \Pr(E|H_2)}
-\]
-We are given that:
-$\Pr(H_1) = 0.491$, $\Pr(H_2) = 0.501$,
-$\Pr(E|H_1) = 0.229$ and $\Pr(E|H_2) = 0.045$.
-So
-\begin{align*}
-  \Pr(\text{Boy}|\text{Gambler})
-  &= \frac{\Pr(\text{Boy}) \Pr(\text{Gambler}|\text{Boy})} {\Pr(\text{Boy})\Pr(\text{Gambler}|\text{Boy}) +
-  \Pr(\text{Girl}) \Pr(\text{Gambler}|\text{Girl})}\\
-  &= \frac{0.491 \times 0.229}{0.491 \times 0.491 + 0.509 \times 0.045} 
-  = \frac{0.1124}{0.1124 + 0.0229}\\
-  &= \frac{0.1124}{0.1353} = 0.8307
-\end{align*}
-Thus 83\% of the time a random gambler will turn out to be a boy.
+:::{.example #RandomPar1 name="Exam scores"}
+The score achieved by students on an exam is approximately normal with mean $\theta$.
+The score achieved by any specific student $X$ can be modelled with this normal distribution, using this mean $\theta$.
+The mean $\theta$ is not constant, but varies (due to the specific questions that appear on the exam, the amount of study completed by individual students, etc.), and follows an approximately normal distribution (with mean 60 and standard deviation 10).
 :::
 
 
+:::{.example #RandomPar2 name="Vehicle crashes"}
+The number of motor vehicle crashes per day occur in a town vary according to a Poisson distribution with mean $\theta$.
+The number of crashes on a specific day $X$ can be modelled with this distribution, but the mean $\theta$ is 10 per day when fine, and 20 per day when wet.
+About 10% of days are wet.
+:::
 
-### Continuous case
 
-Bayes' theorem can be extended to the case of continuous random variables.
+:::{.example #RandomPar3 name="Goal kicking"}
+The probability that a rugby league goal-kicker lands a goal is $\theta$.
+This number of kicks landed $X$ can be modelled using a binomial distribution with probability $\theta$, but the probability of a successful kick $\theta$ may vary (depending on the conditions, where the kick is taken from, who is taking the kick, and so on), such that $\theta \sim \text{Beta}(4, 4)$.
+:::
 
-If $X$ and $Y$ are continuous random variables, and the conditional pdf $f_{Y|X}(y|x)  \geq 0$ with
+
+In each of these examples, a distribution $f_{X}(x; \theta)$ describes the data for some given value of $\Theta$.
+However, the value of $\Theta$ itself has a distribution, $f_\Theta(\theta)$, so the actual distribution $f_{X}(x; \theta)$ depends in *which* value of $\Theta$ is realised.
+Hence, the distribution $f_X(x; \theta)$ is effectively a *conditional* distribution $f_{x|\Theta}(x \mid \Theta)$, and the parameter $\Theta$ is effectively a random variable.
+
+The *marginal* distribution of $X$ (i.e., $f_X(x)$) can be found from Def. \@ref(def:BVContMarginal) if $X$ and $\Theta$ are continuous:
+
+\begin{equation}
+   f_X(x)
+   = \int f_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta.
+   (\#eq:marg1)
+\end{equation}
+For $X$ and $\Theta$ discrete, Def. \@ref(def:BVDiscreteMarginal) yields
+
+\begin{equation}
+   p_X(x) 
+   = \sum_\theta p_{X \mid \Theta}(x, \theta)p_\Theta(\theta).
+   (\#eq:marg2)
+\end{equation}
+The mixed cases can be dealt with similarly: 
+
+\begin{equation}
+   f_X(x) 
+   = \sum_\theta f_{X \mid \Theta}(x, \theta)p_\Theta(\theta)
+   (\#eq:marg3)
+\end{equation}
+for $X$ continuous and $\Theta$ discrete, and
+
+\begin{equation}
+   p_X(x)
+   = \int p_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta
+   (\#eq:marg4)
+\end{equation}
+for $X$ discrete and $\Theta$ continuous.
+
+
+Only in special cases will these marginal distributions have a standard distribution or closed form.
+The parameters that describe the distribution of the parameter $\Theta$ are called *hyperparameters*.
+
+
+:::{.example #RandomParExam name="Exam scores"}
+(Follows Example \@ref(exm:RandomPar1).)
+The score $X$ achieved by a student on an exam is normal with mean $\Theta$ and standard deviation $\sigma = 5$; that is, for some *given* value of $\Theta$, we have $X \sim N(\Theta, 5^2)$.
+The mean $\Theta$ varies from student to student with a normal distribution, with two *hyperparameters*: the mean 60 and standard deviation 10; that is, $\Theta \sim N(60, 10^2)$.
+From \@ref(eq:marg1), the marginal pdf of $X$ is
+\begin{align}
+  f_X(x)
+  &= \int f_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta\notag\\
+  &= \int_{-\infty}^\infty \frac{1}{5\sqrt{2\pi}}
+     \exp\left[ -\frac{1}{2}\left(\frac{x - \theta}{5}\right)^2 \right]
+     \frac{1}{10\sqrt{2\pi}}
+  \exp\left[ -\frac{1}{2}\left(\frac{\theta - 60}{10}\right)^2 \right]\,d\theta\notag\\
+  &= \frac{1}{11.18\sqrt{2\pi}}
+     \exp\left[-\frac{1}{2}\left(\frac{x - 60}{11.18}\right)^2\right]
+     (\#eq:exam2)
+\end{align}
+after considerable algebra involving completing the square.
+Then, $X\sim N(60, 11.18^2)$ (see Fig. \@ref(fig:RandomMarginal), left panel; note that $11.18 = \sqrt{5^2 + 10^2}$.)
+
+This describes the distribution of $X$, taking into account the various values of $\Theta$ that are possible (as described by $f_\Theta(\theta)$.)
+:::
+
+
+:::{.example #RandomParAccidents name="Vehicle crashes"}
+(Follows Example \@ref(exm:RandomPar2).)
+Let $X$ be the number of motor vehicle crashes per day.
+Then $X \sim \text{Pois}(\Theta)$ for some given value of $\Theta$.
+However, the mean parameter $\Theta$ has the distribution by $\Pr(\Theta = 10) = 0.9$ and $\Pr(\Theta = 20) = 0.1$, or
+
 \[
-   \int f_{Y|X}(y|x)\,dy = 1
+   p_\Theta(\theta) = 0.1^{(\theta - 10)/10} 0.9^{(20 - \theta)/10}\quad\text{for $\theta = 10, 20$}.
 \]
-then the marginal pdf
+From \@ref(eq:marg2), the marginal pf of $X$ is
+
+\begin{align}
+  p_X(x)
+  &= \sum_\theta p_{X \mid \Theta}(x, \theta)p_\Theta(\theta)\notag\\
+  &= 0.9 \frac{e^{-10}10^x}{x!} + 0.1 \frac{e^{-20}{20^x}}{x!}\quad\text{for $x = 0, 1, 2, \dots$}.
+  (\#eq:RandomParAccidents)
+\end{align}
+See  Fig. \@ref(fig:RandomMarginal) (centre panel).
+:::
+
+
+:::{.example #RandomParGoalKicking name="Goal kicking"}
+(Follows Example \@ref(exm:RandomPar3).)
+Suppose the goal-kicker takes 10 kicks at goal in a match; the number of successful kicks $X$ can be be modelled by the binomial distribution $\text{Bin}(n = 10, p = \Theta)$, where the probability $\Theta$ has a $\text{Beta}(4, 4)$ distribution. 
+From \@ref(eq:marg4), the marginal pf of $X$ is
+
+\begin{align}
+  p_X(x)
+  &= \int p_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta\notag\\
+  &= \int_0^1 \binom{10}{x}\theta^x(1 - \theta)^{10 - x}
+     \frac{\Gamma(8)}{\Gamma(4)\,\Gamma(4)} \theta^3(1 - \theta)^3\,d\theta\notag\\
+  &= \frac{\Gamma(8)}{\Gamma(4)\,\Gamma(4)}\binom{10}{x}\int_0^1 \theta^{x + 3}(1 - \theta)^{10 - x + 3}\,d\theta\notag\\
+\end{align}
+where the integral can be simplified by seeing it is a [Beta function](eqn:BetaFunction) with parameters $x + 4$ and $14 - x$, so that $\int_0^1 \theta^{x + 3}(1 - \theta)^{10 - x + 3}\,d\theta = \Gamma(x - 4)\Gamma(14 - x)/\Gamma(18)$.
+Then:
+
 \[
-   f_Y(y) = \int f_{Y,X}(y,x)\,dx 
-   = 
-   \int f_X(x) f_{Y|X}(y|x)\,dx
+  p_X(x)
+  = \frac{7!\, 10!\, (x + 3)!\, (13 - x)!}{3!^2\, 17!\, x!\, (10 - x)!}\quad\text{for $x = 0 , 1 , 2,\dots, 10$}.
+   (\#eq:goal2)
 \]
-since $f_{Y|X}(y|x) = \frac{f_{Y,X}(y,x)}{f_X(x)}$.
-So
-\[
-   f_{Y|X}(y|x) = \frac{f_{Y,X}(y,x)}{f_X(x)} = \frac{f_Y(y) f_{X|Y}(x|y)}{f_X(x)}
-\]
-giving
-\[
-   f_{Y|X}(y|x)  \propto f_Y(y) f_{X|Y}(x|y)
-\]
-which is Bayes' theorem with the constant of proportionality
-\[
-  \frac{1}{f_X(x)} 
-  = 
-  \frac{1}{\int f_Y(y)f_{X|Y}(x|y)\,dy}
-\]
-ie,
-\[
-   f_{Y|X}(y|x) =\frac{f_Y(y) f_{X|Y}(x|y)}{\int f_Y(y) f_{X|Y}(x|y)\,dy }
-\]
+See  Fig. \@ref(fig:RandomMarginal) (right panel).
+:::
 
 
-
-## Likelihood
-
-The likelihood is a measure of the amount of information about a data set that is conveyed by the statistical model.
-Parameter estimates are the values of the parameters which maximise the likelihood.
-When there is a choice of models, the one with the maximum likelihood is regarded as the one with the best explanation of the observed differences and it is the preferred candidate.
-
-The concept of likelihood is best introduced by a simple example.
+```{r RandomMarginal, echo=FALSE, out.width='100%', fig.width = 5.0, fig.height=2.25, fig.align="center", fig.cap="Marginal distributions"}
+par( mfrow = c(1, 3),
+     mar = c(5, 2, 4, 2) + 0.1)
 
 
-
-
-:::{.example #Likelihood name="Likelihood: Estimation proportion"}
-From a random sample of 10 transistors, we find 3 are defective.
-What value of the proportion of defectives is most likely to give this result?
-
-Calculate the probability of getting 3 defectives out of 10, for values of the proportion $\pi$ over the interval (0, 1) and choose the proportion giving the highest 'probability'.
-This  `binomial' probability is given by
-\[
-   p_3 
-   = 
-   {10 \choose 3} \pi^3 (1 - \pi)^{10 - 3}
-\]
-and includes all ${10 \choose 3}$ possible outcomes with exactly 3 defectives, such as DDDGGGGGGG, GDGDGDGGGG, etc.
-
-The term 'likelihood' reflects the fact that this 'probability' is now a function of the proportion ($\pi$), and so is no longer a probability, hence the change of name.
-The formula gives a probability when summed over all possible outcomes, for a *specific* value of the proportion.
-
-Calculations in R:
-
-```{r echo=FALSE, results='hide'}
-lpie <- 0
-pie <- 0:100
-pie <- pie/100
-for (i in 0:100) {
-   pi <-  i/100
-   lpi <-  10*9*8 * pi^3 * (1-pi)^7 / (3*2*1)
-   lpie <- rbind(lpie,lpi)
-}
-
-Lpie <- lpie[2:102,]
-
-xy <- cbind(pie, Lpie)
-plot(xy,
+mn <- 60
+sd <- 11.18
+xx <- seq(mn - 3.5*sd, 
+          mn + 3.5*sd, 
+          length = 500)
+yy <- dnorm( xx, 
+             mean = mn, 
+             sd = sd)
+plot(yy ~ xx, 
      type = "l",
+     axes = FALSE,
+     xlab = "Exam mark",
+     ylab = "Prob. function",
+     main = "Marginal distn\nof exam marks")
+axis(side = 1)
+box()
+
+
+
+xx <- 0:20
+yy <- 0.9 * dpois(xx,
+                  lambda = 10) + 
+      0.1 * dpois(xx,
+                  lambda = 20)
+plot(yy ~ xx,
+     type = "h",
+     col = "grey",
      las = 1,
-     main = "Likelihood(pi) vs pi",
-     xlab = "pi",
-     ylab = "Lpi")
+     axes = FALSE,
+     lty = 2,
+     xlab = "Number of accidents",
+     ylab = "Prob. function",
+     main = "Marginal distn\nfor accidents")
+axis(side = 1)
+points(yy ~ xx,
+       pch = 19)
+box()
+
+
+
+xx <- 0:10
+yy <- factorial(7) * factorial(10) * factorial(xx + 3) * factorial(13 - xx) / (factorial(3) * factorial(3) * factorial(17) * factorial(xx) * factorial(10 - xx))
+
+plot(yy ~ xx,
+     type = "h",
+     col = "grey",
+     las = 1,
+     axes = FALSE,
+     lty = 2,
+     xlab = "Number of goals",
+     ylab = "Prob. function",
+     main = "Marginal distn\nfor goal kicks")
+axis(side = 1)
+points(yy ~ xx,
+       pch = 19)
+box()
 ```
 
 
-From  Figure~\ref{fig:lhood}, the value of the proportion giving the highest 'likelihood' is $\pi = 0.3$; i.e., the sample proportion, as expected.
+## Bayes' theorem revisited {#BayesTheoremRevisited}
 
-In this example, we call the value of $\pi$ that maximises the likelihood the *maximum likelihood estimator* (mle)
-and denote it with a `hat' as in $\widehat{\pi}$.
-:::
-
-
-:::{.example #Exprain name="Exponential distributions"}
-The pf for the Poisson distribution is given by
-\[
-   p_Y(y,\lambda) = \Pr{Y=y|\lambda} = \frac{e^{-\lambda} \lambda^y}{y!}, \;
-   y = 0, 1, 2, \ldots , \infty
-\]
-For a random sample of size $n$,
-\[
-   p_Y(y_i,\lambda)
-   =
-   \Pr(Y = y_i |\lambda)
-   =
-   \frac{e^{-\lambda}\lambda^{y_i} }{y_i !},\; i=1,2, \ldots , n
-\]
-The joint pf for the sample is
-\[
-   p(y_1 , y_2 , \ldots , y_n ) 
-   = 
-   p_{Y_1}(y_1) p_{Y_2}(y_2) \ldots p_{Y_n}(y_n)
-\]
-since the $Y_i$ are iid. 
-This becomes
-\[
-   \prod_i p_{Y_i}(y_i) = \prod_i f_{Y_i}(y_i ; \lambda ).
-\]
-Since the likelihood is a function of $\lambda$, we get
-\[
-   L(\lambda) = \prod_i p_{Y_i}(\lambda; y_i) = \prod_i \frac{e^{-\lambda} \lambda^{y_i}  }{y_i !}
-   = \frac{e^{-n\lambda} \lambda^{\sum_i y_i } }{\prod_i y_i !}
-\]
-
-The maximum value of $L$ occurs at $\widehat{\lambda}$.
-Rather than maximise $L$ however, it's easier to maximise the *logarithm* of the likelihood of $L$.
-Stationary points of the likelihood and log-likelihood occur at the same values of $\lambda$.
-
-We have
-\[
-   \ell(\lambda) = \ln(L) = - n \lambda + \sum_i y_i \ln \lambda + \ln (\prod_i y_i !)
-\]
-yielding stationary points when
-\[
-   \frac{\partial \ell }{\partial \lambda} = -n + \sum_i y_i \frac{1}{\lambda} = 0.
-\]
-The solution $\widehat{\lambda} = \sum_i y_i / n$ is the mle since
-\[
-   \frac{ \partial^2 \ell }{\partial \lambda^2 } = \sum_i
-   \frac{-y_i}{\lambda^2 } < 0
-\]
-as $\lambda > 0$ and $y_i > 0$.
-:::
-
-
-
-:::{.example #Exprain name="Exponential distributions"}
-The normal pdf is
-\[
-   f_Y(y; \mu, \sigma)=\frac{1}{\sigma \sqrt{2\pi}} e^{-\frac12(y-\mu)^2 /\sigma^2}, \; 
-   -\infty < y < \infty
-\]
-where $Y$ can be modelled as
-\[
-   y = \mu + \varepsilon, \; \varepsilon \sim N(0, \sigma^2).
-\]
-For a random sample of size $n$, the pdf for the $i$th observation is
-\[
-   f_{Y_i}(y_i ; \mu, \sigma) = \frac{1}{\sigma \sqrt{2\pi}}
-   e^{-\frac12(y_i-\mu)^2/\sigma^2}, \; i=1,2,\dots,n,\; -\infty < y_i < \infty.
-\]
-This gives the joint pdf as
-\[
-   f_{Y_1, Y_2, \ldots, Y_n}(y_1, y_2, \ldots, y_n) = f_{Y_1}(y_1) \ldots f_{Y_n}(y_n) 
-   = \prod_i f_{Y_i}(y_i ; \mu,
-\sigma)
-\]
-since the $Y_i$ are iid.
-
-Assuming $\sigma$ is known, the likelihood is a function of $\mu$, and so
-\[
-   L(\mu) 
-   = \prod_i f_{Y_i}(\mu; y_i, \sigma) 
-   = \prod_i \frac{1}{\sigma\sqrt{2\pi}}
-     e^{-\frac12(y_i-\mu)^2/\sigma^2}
-   = \frac{1}{(2\pi\sigma^2)^{n/2}}e^{-\frac12(y_i-\mu)^2/\sigma^2}
-\]
-The log-likelihood $\ell$ is thus
-\[
-   \ell(\mu) = \ln(L) 
-   = 
-   -\frac{n}{2} \ln (2\pi\sigma^2) - \frac{1}{2} \sum_i
-    (y_i - \mu)^2 / \sigma^2.
-\]
-When
-\[
-   \frac{\partial \ell}{\partial \mu} 
-   = 
-   -\frac{1}{2} \sum_i 2 (y_i - \mu) \frac{(-1)}{\sigma^2} = 0
-\]
-we get $\widehat{\mu} = \frac{\sum_i y_i }{n} = \bar{y}$, which is the mle since
-\[
-   \frac{\partial^2 \ell}{\partial \mu^2} = - \frac{n}{\sigma^2} <0 \; {\rm as} \; \sigma^2 > 0
-\]
-:::
-
-
-:::{.example #Exprain name="Exponential distributions"}
-Another continuous example case is demonstrated by a simple linear regression through the origin.
-The data are shown in Table~\ref{tab:slrnoi} and Figure~\ref{fig:noim}. 
-The data is generated from $x = 0, 1, 2, \ldots, 10$ and $y = 0, 1, 2, \ldots, 10$ with $1/10$ randomly added or subtracted to $y$.
-
-\begin{table}[h!]
-\begin{center}
-\begin{tabular}{|l|lllllllllll|}\hline
-x & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10   \\ \hline
-y& 0.1 & 0.9 & 1.9& 2.9 & 4.1 & 5.1 & 5.9 & 6.9 & 8.1 & 9.1 & 10.1 \\ \hline
-\end{tabular}
-\end{center}
-\caption{Simple linear regression---no intercept} \label{tab:slrnoi}
-\end{table}
-
-\begin{figure}[h!]
-\begin{center}
-%\includegraphics{xy.ps}
-\end{center}
-\caption{Data for no intercept model} \label{fig:noim}
-\end{figure}
-
-
-The model is
-\[
-   Y =  X\beta  + \epsilon
-\]
-while  the likelihood  $L$ is given by
-\[
-   L(\beta|y ) \propto \sigma^{-n}  e^{ \textstyle - \sum_i (y_i  -\beta x_i)^2 / (2 \sigma^2) }
-\]
-A small R program fits the model to the data using `lm()` and then calculates the likelihood and plots the values against the range of  values swept for the regression coefficient~(slope estimate).
-
-```{r echo=TRUE}
-x <- c(0,1:10)
-y <- c(0.1,0.9,1.9,2.9,4.1,5.1,5.9,6.9,8.1,9.1,10.1)
-lm1 <- lm(y~x-1)
-summary(lm1)
-anova(lm1)
-lb1 <- 0
-b <- 900:1100
-b <- b/1000
-length(b)
-for (i in 900:1100) {
-  bi <-  i/1000
-  lb <-  exp( - sum( (y-bi*x)^2 /2 ) )
-  lb1 <- rbind(lb1,lb)
-}
-Lb <- lb1[2:202,]
-xy <- cbind(b, Lb)
-plot(xy, 
-     type = "l", 
-     main = "Likelihood(b) vs b")
-```
-
-
-From Figure~\ref{fig:noilhood}, the value for the slope~(1.004) that maximises the likelihood can be seen to be the same as that given numerically in the R output.
-
-Note that in the calculation for $L$, the variance $\sigma^2$ has been put equal to one.
-The mle for the slope is independent of $\sigma^2$ in this example.
-
-A test of the hypothesis that $\beta = 1$ can be performed.
-
-Under $H_0 : \beta =1$,
-\[
-   T = \frac{b-\beta}{SE(b)} \sim t_{df}.
-\]
-Now
-\[
-   T_o = \frac{1.00442 -1 }{0.00516} = \frac{0.00442}{0.00516} < 1
-\]
-and so we accept $H_0 : \beta = 1$, as expected.
-:::
-
-
-
-## Markov chains
-
-
-### Introduction
-
-A sequence of observations $X_1, X_2, \ldots$ is a *stochastic process* ('just one thing after another').
-We will be restricting our attention to a *discrete time process*, where each random event occurs at discrete or separated points in time. 
-So $X_1$ is the initial state and $X_n$ is the state at time period $n$.
-
-For example, a gambler's holdings after each spin of a roulette wheel would be such a discrete time stochastic process.
-
-The technical connotation of 'random' means that the process cannot be described by a deterministic law, but probabilities can be ascribed to different possible values. 
-A probability model for a stochastic process would specify probabilities to states from the initial~($X_1$) to the current~($X_n$) and the next ($X_{n + 1}$) in the form of a conditional probability
-\[
-   \Pr(X_{n+1} = x_{n+1}  | X_1 =x_1, X_2 = x_2, \ldots, X_n = x_n ) .
-\]
-
-:::{.example #Exprain name="Exponential distributions"}
-The number $X_n$ could be the number of specialist items held by a jeweller (eg, carriage clocks), where the time period $n$ is only updated by a sale or by a new item being received into the shop after an order was placed with the supplier.
-(A negative value for $X_n$ may be used to indicate back orders, assuming that all stock was exhausted.)
-:::
-
-
-:::{.definition #MarovChain name="Markov chain"}
-A *Markov chain* is a special type of stochastic process where the probability of *future* ($n + 1$) states depends only on the *current* ($n$) state (the *Markov property*).  
-Formally,
-\[
-   \Pr(X_{n + 1} 
-   = 
-   x_{n + 1}  | X_1 =x_1, X_2 = x_2, \ldots, X_n  = x_n) =
-   P(X_{n+1} = x_{n+1} | X_n =x_n)
-\]
-:::
-
-This definition leads to the following:
-
-
-:::{.theorem}
-If $\{X_i | n=1,2,3,\dots\}$ is a Markov chain then
-\[
-   \Pr(X_1 = x_1, X_2 = x_2,\ldots, X_n = x_n)
-    = \Pr(X_1 = x_1).
-    \Pr(X_2 = x_2 | X_1 = x_1).
-    \Pr(X_3 =x_3 | X_2 = x_2)  \ldots
-  \Pr(X_n = x_n | X_{n-1}) 
-  = x_{n - 1}
-\]
-:::
-
-
-:::{.proof}
-Let $AB = A \cap B$. 
+Recall Bayes' theorem in Sect. \@ref(BayesTheorem). 
+Let $E$ be an event, with $H_1, \ldots, H_n$ a sequence of mutually exclusive and exhaustive events partitioning the sample space. 
 Then
-\[
-   \Pr{A_1 A_2 \ldots | B} 
-   = 
-   \Pr{A_1 | B} \Pr{A_2 |A_1 B} \ldots \Pr{A_n | A_1 A_2 \ldots A_{n-1} B}
-\]
-since
-\begin{align*}
-  \Pr{A_1 A_2  \ldots A_n | B} 
-  &= \frac{\Pr{A_1 A_2 \ldots A_n B }}{\Pr{B}}\\
-  &= \frac{\Pr{A_1 B}}{\Pr{B}} \frac{\Pr{A_1 A_2 B}}{\Pr{A_1 B}}
-     \frac{\Pr{A_1 A_2 A_3 B}}{\Pr{A_1 A_2 B}} \ldots
-     \frac{\Pr{A_1 A_2 \ldots A_n B}}{\Pr{A_1 A_2 \ldots A_{n-1} B}}\\
-  &= \Pr{A_1 | B} \Pr{A_2 |A_1 B}  \Pr{A_3 | A_1 A_2 | B} \ldots \Pr{A_n | A_1 A_2 \ldots A_{n-1} B}
-\end{align*}
 
-Now let $A_1 = B = \{X_1 = x_1\}, \; A_2 = \{X_2 =x_2\}, \ldots , A_n = \{X_n =x_n\}$ and so
-\[
-   \Pr{A_2 \ldots A_n | A_1} = \frac{\Pr{A_1 \ldots A_n}}{\Pr{A_1}}
-\]
-which gives
-\[
-   \Pr{A_1 \ldots A_n } = \Pr{X_1 =x_1, X_2 =x_2, \ldots, X_n = x_n} =
- \Pr{A_1 } . \Pr{A_2 \ldots A_n | A_1}
-\]
-But
-\[
-   \Pr{A_2 \ldots A_n | A_1 }= \Pr{A_2 | A_1 } . \Pr{A_3 | A_1 A_2}
- \ldots \Pr{A_n |A_1 \ldots A_{n-1}}
-\]
-from Theorem~2.1.2, DGS, p53. 
-By the Markov property,
-\[
-   Pr{A_3 | A_1 A_2} = \Pr{A_3 |A_2}, \ldots, \Pr{A_n | A_1, \ldots , A_{n-1}} 
-   = \Pr{A_n | A_{n-1}}
-\]
-and so we get
+\begin{equation}
+  \Pr(H_n \mid E ) 
+  = \frac{\Pr(H_n) \Pr(E \mid H_n) }{\Pr(E)}
+  = \frac{\Pr(H_n) \Pr(E \mid H_n) }{\sum_m \Pr(H_m ) \Pr(E \mid H_m )}
+\end{equation}
+assuming that $\Pr(E) \neq 0$.
+Bayes' theorem extends to random variables.
+
+Suppose that $X$ and $Y$ are discrete random variables, where $p_Y(y)$ is the pf for $Y$ and $p_{X \mid Y}(x,y)$ is the conditional pmf for $X$ given $Y$.
+Then the conditional pmf of $Y$ given $X$ is
+
+\begin{align}
+  p_{Y \mid X}(y, x)
+  &= \frac{p_{X, Y}(x, y)}{p_X(x)} \\
+  &= \frac{p_{X \mid Y}(x, y)p_Y(y)}{\sum_y p_{X \mid Y}(x, y)p_Y(y)}.
+  (\#eq:Bayesdis)
+\end{align}
+
+In their most usual form, the above equations for the combinations of continuous and discrete random variables produce these results:
+
+\begin{align}
+   f_{Y \mid X}(y, x)
+   &= \frac{f_{X, Y}(x, y)}{f_X(x)}
+    = \frac{f_{X \mid Y}(x, y)f_Y(y)}{\int_y f_{X \mid Y}(x, y)f_Y(y)\,dy}
+    = \frac{f_{X \mid Y}(x, y)f_Y(y)}{f_X(x)};
+   (\#eq:Bayescts)\\
+  p_{Y \mid X}(y, x)
+  &= \frac{f_{X, Y}(x, y)}{p_X(x)}
+   = \frac{f_{X \mid Y}(x, y)p_Y(y)}{\sum_y f_{X \mid Y}(x, y)p_Y(y)}
+   = \frac{f_{X \mid Y}(x, y)p_Y(y)}{p_X(x)};
+  (\#eq:Bayesdiscts)\\
+  f_{Y \mid X}(y, x)
+  &= \frac{f_{X, Y}(x, y)}{p_X(x)}
+   = \frac{p_{X \mid Y}(x, y)f_Y(y)}{\int_y p_{X \mid Y}(x, y)f_Y(y)\,dy}
+   = \frac{p_{X \mid Y}(x, y)f_Y(y)}{p_X(x)}.
+  (\#eq:Bayesctsdis)
+\end{align}
+<!-- \begin{align} -->
+<!--    f_{Y \mid X}(y, x) -->
+<!--    &= \frac{f_{X, Y}(x, y)}{f_X(x)} -->
+<!--    = \frac{f_{X \mid Y}(x, y)f_Y(y)}{\int_y f_{X \mid Y}(x, y)f_Y(y)\,dy}; -->
+<!--    (\#eq:Bayescts)\\ -->
+<!--   p_{Y \mid X}(y, x) -->
+<!--   &= \frac{f_{X, Y}(x, y)}{p_X(x)} -->
+<!--   = \frac{f_{X \mid Y}(x, y)p_Y(y)}{\sum_y f_{X \mid Y}(x, y)p_Y(y)}, -->
+<!--   (\#eq:Bayesdiscts) -->
+<!--   \quad \text{and}\\ -->
+<!--   f_{Y \mid X}(y, x) -->
+<!--   &= \frac{f_{X, Y}(x, y)}{p_X(x)} -->
+<!--   = \frac{p_{X \mid Y}(x, y)f_Y(y)}{\int_y p_{X \mid Y}(x, y)f_Y(y)\,dy}. -->
+<!--   (\#eq:Bayesctsdis) -->
+<!-- \end{align} -->
+
+In all cases \@ref(eq:Bayesdis) to \@ref(eq:Bayesctsdis), the left-hand side shows that the distribution is a function of $y$, given the observed data $X$.
+The *denominator* of the right-hand side is only a function of the observed data $X$, and contains no unknowns (so is effectively a normalising constant whose value ensures that the expression is a valid probability function).
+
+Because of this, sometimes these expressions in \@ref(eq:Bayesdis) to \@ref(eq:Bayesctsdis) are written as proportionalities rather than equalities by omitting the denominator (the normalising constant); also, write $\Theta$ as the parameter of interest:
+
 \begin{align*}
-  \Pr{A_2 \ldots A_n | A_1}&= \Pr{A_2 | A_1 } . \Pr{A_3 |  A_2} \ldots \Pr{A_n | A_{n-1}}\\
-  &=\Pr{X_2 = x_2 | X_1 = x_1 } . \Pr{X_3 =x_3 | X_2 = x_2}  \ldots \Pr{X_n = x_n | X_{n-1} = x_{n-1}}
+   f_{\Theta|X}(\theta \mid x)      &\propto f_{X|\Theta}(x\mid \theta)      \times f_\Theta(\theta)\\
+   \text{Posterior distn} &\propto \text{Sampling distn} \times \text{Prior distn}.
 \end{align*}
-which leads to
-\begin{align*}
-  \Pr{A_1 \ldots A_n } &= \Pr{X_1 =x_1, X_2 =x_2, \ldots, X_n = x_n}\\
-  &= \Pr{A_1} . \Pr{A_2 \ldots A_n | A_1}\\
-  &= \Pr{X_1 = x_1} .
-  \Pr{X_2 = x_2 | X_1 = x_1} . \ldots
-  \Pr{X_n = x_n | X_{n-1} = x_{n-1}}
-\end{align*}
-as required.  
-This rule will be used later.
+Here:
+
+* The *prior distribution*: This is the distribution of the parameter $\Theta$ that is assumed before the data $X$ are observed, perhaps based on past experience.
+* The *sampling distribution* or the *likelihood function*: This describes the distribution from which the data are assumed to come.
+* The *posterior distribution*: This describes the distribution of the parameter $\Theta$, after the data $X$ is observed.
+
+The distribution for $\Theta$ is assumed *prior* to seeing the data (i.e., $f_\Theta(\theta)$), and is then adjusted with the knowledge of the data $X$ to produce the *conditional* (or *posterior*) distribution $f_{\Theta|X}(\theta\mid x)$.
+
+In this context:
+
+* $\Theta$ is a parameter of interest.
+* The original, or *unconditional* distribution $f_\Theta(\theta)$ models our prior beliefs about the parameter $\theta$.
+  This is called the *prior* distribution (modelling our beliefs about the parameter of the distribution  *prior* to seeing the data).
+* We then observe the data $X$.
+* Using this extra available information, the description of $\theta$ is updated. 
+  This is the *conditional* distribution $f_{\Theta \mid X}(\theta, x)$, called the *posterior* distribution in this context.
+
+
+:::{.example #ExamScores3 name="Exam scores"}
+(Follows Examples \@ref(exm:RandomPar1) and \@ref(exm:RandomParExam).)
+The conditional pdf of the mean score $\Theta$, given an observed exam score $X = x$, follows directly from \@ref(eq:Bayescts) on substituting \@ref(eq:exam2):
+
+\begin{align}
+  f_{\Theta \mid X}(\theta, x)
+  &= \frac{f_{X|\Theta}(x, \theta)f_\Theta(\theta)}{f_X(x)}\notag\\
+  &= \frac{\frac{1}{5\sqrt{2\pi}}
+  \exp\left[ -\frac{1}{2}\left(\frac{x - \theta}{5}\right)^2 \right]
+  \frac{1}{10\sqrt{2\pi}}
+  \exp\left[ -\frac{1}{2}\left(\frac{\theta - 60}{10}\right)^2 \right]}
+  {\frac{1}{11.18\sqrt{2\pi}}
+  \exp\left[ -\frac{1}{2}\left(\frac{x - 60}{11.18}\right)^2 \right]}\notag\\
+  &=\frac{1}{4.472\sqrt{2\pi}}
+  \exp\left[ -\frac{1}{2}\left(\frac{\theta - (0.8x + 12)}{4.472}\right)^2 \right]
+   (\#eq:exam3)
+\end{align}
+after some algebraic manipulation; i.e., $\Theta | (X = x)\sim N(0.8x + 12, 4.472^2)$.
+
+This distribution derived above is for the mean score, *given* an observed value of $x$.
+Thus we have:
+
+* The initial (*prior*) distribution about the mean score (Example \@ref(exm:RandomParExam)): $\Theta \sim N(60, 10^2)$.
+* After seeing an exam score $x$, the adjusted (*posterior*) distribution of the mean score is $\Theta\mid X\sim N(0.8x + 12, 4.472^2)$.
+
+Consider the implications:
+
+* If observed exam score is $x = 60$ (i.e., equal to the prior belief about the mean), then there is no change to the prior mean: $0.8\times 60 + 12 = 60$.
+  That is, the mean of the prior distribution is 60, and the data don't provide any evidence to change this, so the mean of the *posterior* distribution is also 60.
+  Note, however, that the variance is *smaller*, as our confidence in that value of the parameter has increased.
+* If observed exam score is *less* than $60$ (e.g., $x = 50$), the original expectation is adjusted *down* from the original assumption of a mean of 60, since $0.8\times 50 + 12 = 52$.
+* If observed exam score is greater than $60$ (e.g., $x = 70$), the original expectation is adjusted *up* from the original assumption of a mean of 60, since $0.8\times 70 + 12 = 68$.
+
+See Fig. \@ref(fig:PosteriorExam).
+In other words, our *prior* belief of the mean score is adjusted in light of the observed evidence to produce the *posterior* distribution.
+The extra observations adds to the confidence of the estimate (i.e., reduced variance).
 :::
 
 
-:::{.definition #OneOneTransformation name="One-to-one transformation"}
-A factory has two machines, but on any given day not more than one is in use. 
-This machine has a constant probability $p$ of breaking down and, if it does, the breakdown occurs at the end of the day's work. 
-Only one repairman is employed. 
-It takes him two days to repair a machine, and he works on only one machine at a time. 
-The number of days $X_n$ needed to get both machines back in working order can be considered a stochastic process, where $X_n$ is recorded at the end of each day.
 
-If both machines are in working order (at the end of the day), then $X_n$ is 0.
+```{r PosteriorExam, echo=FALSE, fig.align="center", out.width='100%', fig.height=2.25, fig.width=4.75, fig.cap="Exam scores: The prior distribution for the mean $\\Theta$ (left panel) and the posterior distribution when $x = 50$ centre panel) and when $x = 70$ (right panel). The dashed grey lines in the two right plots shows the prior distribution."}
+par( mfrow = c(1, 3),
+     mar = c(5, 2, 4, 2) + 0.1)
 
-If one machine is in working order and the other has had one day's repair carried out on it, then $X_n$ is 1.
-
-If one machine is in working order, and the other has just broken down, then $X_n$ is 2.
-
-If one machine has just broken down, and the other has had one day's repair carried out on it, then $X_n$ is 3.
-
-These 4 cases are the only possible states.
-:::
-
-
-
-### Finite Markov chains
-
-Where there are only a finite number of possible states ($k$), the Markov chain is designated as *finite*. 
-For the previous factory example, $k = 4$. 
-The conditional probability
-\[
-   \Pr{X_{n+1} = x_{n+1} = s_j | X_n = x_n = s_i}
-\]
-is called the *transition probability*. 
-If this probability is constant over $n = 1,2, \ldots$; i.e.,
-\[
-   \Pr(X_{n+1}) = x_{n+1} = \Pr(s_j | X_n = x_n = s_i) = p_{ij},
-\]
-then the term *stationary transition probability* is used.
+xx <- seq(0, 100,
+          length = 500)
+yA <- dnorm( xx,
+             mean = 60,
+             sd = 10)
+plot(yA ~ xx,
+     type = "l",
+     lwd = 2,
+     lty = 2,
+     xlim = range(xx),
+     xlab = expression(Mean~Theta),
+     main = expression(Prior~prob.~of~Theta),
+     axes = FALSE)
+axis(side = 1,
+     at = seq(0, 100, 
+              by = 50))
+box()
 
 
+##
 
-### Transition matrix
-
-For a finite Markov chain, the transition probabilities for a single step can be displayed in a *transition matrix*, where the entries in the matrix are $p_{ij}$.
-Thus the rows are the current state and the columns are the next state. 
-So the transition matrix will be
-\[
-   {P} = 
-   \left[ \begin{array}{lll}
-      p_{11} & \ldots & p_{1k} \\ p_{21} & \ldots & p_{2k}\\ \vdots & & \vdots \\
-      p_{k1} & \ldots & p_{kk} 
-  \end{array} \right].
-\]
-Note that the sum over each row is unity; ie, $\Sigma_{j=1}^k  p_{ij} = 1$.
-
-
-:::{.definition #OneOneTransformation name="One-to-one transformation"}
-We have a 'memoryless' rat trapped in a maze, as given in the following figure.
-
-\begin{center}
-\begin{tabular}{cccccccc}
- & & & & & & & \\ \cline{2-7}
-\multicolumn{1}{c|}{}  & & &  \multicolumn{1}{c|}{} &  & &
- \multicolumn{1}{c|}{} & \\
-\multicolumn{1}{c|}{} & &   2 & & & 3  &  \multicolumn{1}{c|}{} & \\
-\multicolumn{1}{c|}{} & & & \multicolumn{1}{c|}{} & & & \multicolumn{1}{c|}{} & \\ \cline{2-2} \cline{4-7}
-\multicolumn{1}{c|}{} &&& \multicolumn{1}{c|}{} &&&& \\
-\multicolumn{1}{c|}{} && 1& \multicolumn{1}{c|}{} &&&& \\
-\multicolumn{1}{c|}{} &&& \multicolumn{1}{c|}{}  &&&& \\ \cline{2-4}
-\end{tabular}
-\end{center}
-
-Depending on the assumptions that are made about how the rat moves several models are possible.
-For example, do we define a 'period' as the times when the rat moves, or do we just take a fixed interval?  
-The state is simply which room the rat is in. 
-The most general Markov chain model appears to be:
-\[
-   \left[ \begin{array}{lll} 
-      p_{11} & 1-p_{11} & 0 \\ p_{21} & p_{22}  & p_{23} \\ 
-      0 & p_{32} & p_{33} 
-   \end{array} \right]
-\]
-A *state diagram* as follows can be used to describe the possible transitions:
-
-\begin{center}
- \begin{tabular}{ccc}
- 1 & $\leftrightarrow$ & 2 \\
-   &                 &  $\updownarrow$ \\
-   &                 & 3 \\
-\end{tabular}
-\end{center}
-:::
+yy <- dnorm( xx,
+             mean = 52,
+             sd = 4.472)
+yy <- yy/max(yy) * max(yA)
+  
+plot(yA ~ xx,
+     type = "l",
+     lwd = 2,
+     lty = 2,
+     col = "grey",
+     xlim = range(xx),
+     xlab = expression(Mean~Theta),
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==50)),
+     axes = FALSE)
+axis(side = 1,
+     at = seq(0, 100, 
+              by = 50))
+lines( yy ~ xx,
+       lwd = 2)
+box()
 
 
-### Multiple-step transition matrix
+###
+yy <- dnorm( xx,
+             mean = 68,
+             sd = 4.472)
+yy <- yy/max(yy) * max(yA)
 
-Rather than using a single step at a time, we may want to consider several steps; ie, what are the probabilities of moving from state $i$ to state $j$ in $m$ steps?
-
-The notation 
-\[
-   p^{(m)}_{ij} = \Pr{X_{n+m} = s_j | X_n = s_i}
-\]
-denotes the probability of moving from state $i$ at time $n$ to state $j$ at time $n + m$.
-
-Consider $m = 2$ initially:
-\begin{align*}
-  p^{(2)}_{ij} &=  \Pr{X_{n+2} = s_j | X_n = s_i}\\
-  &= \Sigma_{r=1}^k \Pr{X_{n+1}= s_r \cap X_{n+2} = s_j | X_n = s_i}\\
-  &= \Sigma_{r=1}^k \Pr{A_1 \cap A_2 | B}\\
-  &= \Sigma_r \Pr{A_1 |B}\Pr{A_2 | A_1 B}\\
-  &\hbox{(by Thm 2.1.2 DGS p53, and the proof of Theorem~\ref{TM:MC}.)}\\
-  &= \Sigma_r \Pr{X_{n+1} = s_r | X_n = s_i} \Pr{X_{n+2} = s_j | X_{n+1} =
-  s_r \cap X_n = s_i}\\
-  &= \Sigma_r \Pr{X_{n+1} = s_r | X_n = s_i}\Pr{X_{n+2} = s_j | X_{n+1} =
-  s_r}
-\end{align*}
-(by invoking the Markov property.)
-Thus
-\[
-   p^{(2)}_{ij}  = \Sigma^k_{r=1}  p_{ir} p_{rj}.
-\]
-
-The value of $p^{(2)}_{ij}$ can be interpreted as the element of the $i$th row and the $j$th column of the matrix $\vec{P}^2$. 
-In, general, the term $p^{(m)}_{ij}$ will be the $ij$th entry in the matrix $\vec{P}^m$, which is called the *m-step transition matrix*.
+plot(yA ~ xx,
+     type = "l",
+     lwd = 2,
+     lty = 2,
+     col = "grey",
+     xlim = range(xx),
+     xlab = expression(Mean~Theta),
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==70)),
+     axes = FALSE)
+axis(side = 1,
+     at = seq(0, 100, 
+              by = 50))
+lines( yy ~ xx,
+       lwd = 2)
+box()
 
 
-
-
-### Initial distribution
-
-The initial distribution or probability vector shows the distribution of particles across states or the probability that a particle will exist in a particular state. 
-From this initial vector
-\[
-   \nu_i = \Pr{X_1 = s_i}, \;  i=1, \ldots , k
-\]
-we can calculate the distribution of particles across states after $n$ steps via repeated application of the transition matrix. 
-For one step, we get
-\begin{align*}
-  \Pr{X_2= s_j} &= \Sigma_{i=1}^k  \Pr{X_1 = s_i  \cap   X_2 = s_j}\\
-  &= \Sigma^k_{i=1} \Pr{X_1 =s_i } . \Pr{X_2 = s_j | X_1 = s_i}\\
-  & = \Sigma^k_{i=1}\nu_i p_{ij}
-\end{align*}
-
-This final summation is recognized as the $j$th component of $\vec{\nu} \vec{P}$.
-After $n$ steps the distribution will be given by $\vec{\nu} \vec{P}^n$.
-
-
-#### Rat maze revisited
-
-Consider two models for the rat maze Example~\ref{EX:maze}.
-In the first model, we use an event frame, so that the time periods are aligned with movement of the rat from room to room. In the second model, we use a time scan meter, so that we record time periods on a fixed interval and record activity over the interval (assuming that the interval is short enough to allow only one activity).
-Then we have:
-
-I: 
-\[
-   \vec{P}=
-   \left[ \begin{array}{lll} 
-      0 & 1 & 0 \\ 
-      1/2 & 0 & 1/2 \\ 
-      0 & 1 & 0
-  \end{array} \right]
-\]
-
-(II):
-\[
-   bv{P}=
-   \left[ \begin{array}{lll} 
-     1/2 & 1/2 & 0 \\ 
-     1/3 & 1/3 & 1/3 \\ 
-     0 & 1/2 & 1/2
-   \end{array} \right]
-\]
-We now examine each of these models in turn.
-
-For Model I, the following R code shows the long term behaviour by examining $\vec{P}^n$ as $n$ increases:
-
-```{r echo=TRUE}
-p <- c(0, 1, 0, 
-       1/2, 0, 1/2, 
-       0, 1, 0)
-P <- matrix(p,
-            ncol = 3,
-            nrow = 3,
-            byrow = TRUE)
-P
-P2 <- P %*% P
-P2
-P4 <- P2 %*% P2
-P8 <- P4 %*% P4
-P3 <- P %*% P2
-P3
-P5 <- P2 %*% P3
-P5
-P7 <- P2 %*% P5
-P7
 ```
 
-It is clear that the system is periodic (period = 2), as all the even powers of $\vec{P}$ are the same, as well as the odd.
-
-For Model II, we get a very different story:
-```{r echo=TRUE}
-p <- c(1/2, 1/2, 0, 
-        1/3, 1/3, 1/3, 
-        0, 1/2, 1/2)
-P <- matrix(p, 
-            ncol = 3,
-            nrow = 3,
-            byrow = TRUE)
-P
-P2 <- P %*% P
-P2
-P4 <- P2 %*% P2
-P4
-P8 <- P4 %*% P4
-P8
-```
-In this case, *all* the rows of the matrix $\vec{P}^n$ converge to the same values. 
-You can confirm the *any* initial vector $\vec{\nu}$ will converge
-to the distribution given by the rows of $\vec{P}^{\infty}$; ie, $(2/7, 3/7, 2/7) = \vec{\nu}\vec{P}^{\infty}$.
-Thus in this case, the initial distribution is irrelevant.
-
-So what is going on?
-
-The outcomes of these two models are fundamentally different.
 
 
-### Long run behaviour of Markov chains
 
-If our Markov chain has the property that *for some* $m$, the matrix $\vec{P}^m$ has all of its elements strictly positive, then the matrix is *regular*. 
-Further, there exists a *limiting distribution* given by the rows of the matrix
+:::{.example #Accidents3 name="Vehicle crashes"}
+(Follows Example \@ref(exm:RandomPar1) and \@ref(exm:RandomParAccidents).)
+From \@ref(eq:RandomParAccidents) and \@ref(eq:Bayescts), the conditional pf of the mean number of accidents per day $\Theta$ given $X$ is 
+
+\begin{align}
+  p_{\Theta \mid X}(\theta, x)
+  &= \frac{f_{X \mid \Theta}(x, \theta)f_\Theta(\theta)}{p_X(x)}\notag\\
+  &= \begin{cases}
+        \displaystyle \frac{0.9\frac{e^{-10}10^x}{x!}} {0.9 \frac{e^{-10}10^x}{x!} + 0.1 \frac{e^{-20}{20^x}}{x!}} & \text{for $\theta = 10$}\\[6pt]
+        \displaystyle \frac{0.1\frac{e^{-20}20^x}{x!}}
+     {0.9 \frac{e^{-10}10^x}{x!}+ 0.1 \frac{e^{-20}{20^x}}{x!}} & \text{for $\theta = 20$}.
+  \end{cases}\notag\\
+  &= \begin{cases}
+        \displaystyle \frac{0.9 e^{-10}10^x} {0.9 e^{-10}10^x + 0.1 e^{-20}{20^x}} & \text{for $\theta = 10$}\\[6pt]
+        \displaystyle \frac{0.1 e^{-20}20^x}
+     {0.9 e^{-10}10^x + 0.1 e^{-20}{20^x}} & \text{for $\theta = 20$}.
+   (\#eq:accidents3)
+  \end{cases}
+\end{align}
+
+So the *prior* belief abour $\Theta$ is that 
 \[
-   \lim_{m\to\infty}\vec{P}^m.
+  p_\Theta(\theta) = 
+  \begin{cases}
+    0.9 & \text{for $\theta = 10$ (i.e., fine)};\\
+    0.1 & \text{for $\theta = 20$ (i.e, wet)}.
+  \end{cases}
 \]
-Thus the rows of this limiting matrix show the probabilities of the chain being each state in the long run, and these probabilities are NOT related to the initial distribution across states.
+After observing the number of crashes, the prior belief is adjusted accordingly to produce the *posterior* distribution (Eq. \@ref(eq:accidents3)); i.e.:
 
-The second rat maze model is an example of such a Markov chain.
+* If we observe $x = 8$ crashes, the prior belief is adjusted to
 
+\[
+  p_{\Theta\mid X}(\theta \mid X) = 
+  \begin{cases}
+     0.9987 & \text{for $\theta = 10$ (i.e., fine)};\\
+     0.0013 & \text{for $\theta = 20$ (i.e., wet)}.
+  \end{cases}
+\]
 
-:::{.example #Exprain name="Exponential distributions"}
-Sociologists often assume that the social classes of successive generations in a family can be regarded as a Markov chain. 
-Thus, the occupation of a son is assumed to depend only on his father's occupation and not on his grandfather's. 
-For such a model the transition matrix is:
+* If we observe $x = 17$ crashes, the prior belief is adjusted to
 
-\begin{center}
-\begin{tabular}{ll|lll}
-&& \multicolumn{3}{c}{Son's Class} \\
-  & & Lower & Middle & Upper \\ \cline{3-5}
-  Father's & Lower & 0.4 & 0.5 & 0.1 \\
- Class & Middle &  0.05 & 0.7 & 0.25 \\
-     & Upper & 0.05 & 0.5 & 0.45 \\
-\end{tabular}
-\end{center}
-
-Using R to find the limiting distribution:
-
-```{r echo=TRUE}
-p <- c(0.4, 0.5, 0.1, 
-       0.05, 0.7, 0.25, 
-       0.05, 0.5, 0.45)
-P <- matrix(p,
-            ncol = 3,
-            nrow = 3,
-            byrow = TRUE)
-P
-P2 <- P %*% P
-P4 <- P2 %*% P2
-P8 <- P4 %*% P4
-P8
-```
-
-Thus a limiting distribution $(1/13, 5/8, 31/104)$ exists. 
-So in the long term 62.5\% of the population are in middle class, according to the model.
-
-There are far more efficient methods of calculating the limiting distribution, as can be gleaned from the exact values given in fractions.
-(You may care to find out how!)
+\[
+  p_{\Theta|X}(m \mid \theta) = 
+  \begin{cases}
+     0.602 & \text{for $\theta = 10$ (i.e., fine)};\\
+     0.398 & \text{for $\theta = 20$ (i.e., wet)}.
+  \end{cases}
+\]
+See Fig. \@ref(fig:PostPosteriorAccidents).
 :::
 
 
 
-In Bayesian MCMC~(Markov Chain Monte Carlo) methods however, the brute force methods shown here are the only possible way and so this direct method is sufficient for our purposes of introducing the tools needed for the Bayesian approach
-to data modelling.
+
+```{r PostPosteriorAccidents, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Vehicle crashes: The prior distribution for $\\Theta$ (left panel) and the posterior distribution when $x = 8$ crashes (centre panel) and when $x = 17$ crashes (right panel). The grey crosses in the two right plots shows the prior distribution."}
+
+par( mfrow = c(1, 3),
+     mar = c(5, 2, 4, 2) + 0.1)
+
+xx <- c(10, 20)
+daccidents <- function(x, mu){
+  denom <- 0.9 * exp(-10) * 10^x +
+           0.1 * exp(-20) * 20^x
+  f <-  exp(-mu) * mu^x * 0.1^((mu - 10)/10) * 0.9^((20 - mu)/10)
+  f / denom
+}
+
+yA <- c(0.1, 0.9)
+
+plot(yA ~ xx,
+     type = "h",
+     lty = 2,
+     lwd = 2,
+     las = 1,
+     col = "grey",
+     axes = FALSE,
+     xlim = c(5, 25),
+     ylim = c(0, 1),
+     xlab = expression(Mean~Theta),
+     ylab = "Prob. function",
+     main = expression(Prior~prob.~of~Theta) )
+points(yA ~ xx,
+       pch = 4,
+       cex = 1.5)
+axis(side = 1,
+     at = c(10, 20))
+axis(side = 2,
+     las = 1,
+     at = c(0, 0.5, 1) )
+box()
+
+
+x <- 8
+yy <- daccidents(x, mu = c(10, 20))
+
+plot(yy ~ xx,
+     type = "h",
+     lty = 2,
+     lwd = 2,
+     las = 1,
+     col = "grey",
+     axes = FALSE,
+     xlim = c(5, 25),
+     ylim = c(0, 1),
+     xlab = expression(Mean~Theta),
+     ylab = "Prob. function",
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==8)) )
+points(yy ~ xx,
+       pch = 19)
+axis(side = 1,
+     at = c(10, 20))
+axis(side = 2,
+     las = 1,
+     at = c(0, 0.5, 1) )
+points(yA ~ xx,
+       pch = 4,
+       cex = 1.5,
+       col = "grey")
+box()
+
+
+
+x <- 20
+yy <- daccidents(x, mu = c(10, 20) )
+
+plot(yy ~ xx,
+     type = "h",
+     lty = 2,
+     lwd = 2,
+     las = 1,
+     col = "grey",
+     axes = FALSE,
+     xlim = c(5, 25),
+     ylim = c(0, 1),
+     xlab = expression(Mean~Theta),
+     ylab = "Prob. function",
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==17)) )
+points(yy ~ xx,
+       pch = 19)
+axis(side = 1,
+     at = c(10, 20))
+axis(side = 2,
+     las = 1,
+     at = c(0, 0.5, 1) )
+points(yA ~ xx,
+       pch = 4,
+       cex = 1.5,
+       col = "grey")
+box()
+```
+
+
+:::{.example #GoalKicking3 name="Goal kicking"}
+(Follows Example \@ref(exm:RandomPar3) and \@ref(exm:RandomParGoalKicking).)
+From \@ref(eq:marg4), the conditional pdf of $\Theta$ given $X$ is
+
+\[
+  f_{\Theta \mid X}(\theta, x)
+  = \frac{p_{X \mid \Theta}(x, \theta) f_\Theta(\theta)}{p_X(x)}
+\]
+where $X \mid \theta \sim \text{Bin}(n = 10, p = \theta)$ so that
+
+\[
+  p(X \mid\Theta) = \binom{10}{x}\theta^x (1 - \theta)^{10 - x},
+\]
+and where $p_X(x)$ is given in \@ref(eq:goal2), and $\Theta \sim \text{Beta}(4, 4)$.
+Putting the pieces together:
+
+\begin{align}
+  f_{\Theta \mid X}(\theta, x)
+  &= \frac{ \binom{10}{x}\theta^x (1 - \theta)^{10 - x}
+     \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)} \theta^3 (1 - \theta)^3}
+          {\frac{7!\, 10!\, (x + 3)!\, (13 - x)!}{3!^2\, 17!\, x!\, (10 - x)!} } \\
+  &= \frac{17!\theta^{x + 3} (1 - \theta)^{13 - x}}{(x + 3)! (13 - x)!}
+   (\#eq:goal3)
+\end{align}
+which corresponds to a *posterior* distribution for $\Theta$ of $\text{Beta}(4 + x, 14 - x)$.
+In contrast, the *prior* distribution for $\Theta$ was $\text{Beta}(4, 4)$.
+
+After observing the 10 kicks, the prior belief is adjusted accordingly:
+
+* If the number of kicks made is $5/10 = 0.5$, the prior belief is adjusted to $\text{Beta}(9, 9)$, but the mean remains as $9/(9 + 9) = 0.5$;
+* If the number of kicks made is $8/10 = 0.8$, the prior belief is adjusted upwards;  $\text{Beta}(12, 6)$ where the mean becomes $12/(12 + 6) = 0.67$;
+* If the number of kicks made is $1/10 = 0.1$, the prior belief is adjusted downwards: $\text{Beta}(5, 13)$ where the mean becomes $5/(5 + 13) = 0.28$.
+
+See Fig. \@ref(fig:PostPosteriorKicks).
+:::
+
+
+```{r PostPosteriorKicks, echo=FALSE, out.width='100%', fig.height=2.25, fig.width=4.75, fig.align="center", fig.cap="Goal kicking: The prior distribution for $\\theta$ (left panel) and the posterior distribution when $x = 8$ (i.e., lands 8 kicks out of 10; centre panel) and when $x = 1$ (i.e., lands 1 kick out of 10; right panel). The grey vertical lines correspond to the distribution means. The dashed grey lines in the two right plots show the prior distribution."}
+
+par( mfrow = c(1, 3),
+     mar = c(5, 2, 4, 2) + 0.1)
+
+xx <- seq(0, 1,
+          length = 500)
+yA <- dbeta(xx, 4, 4)
+
+plot(yA ~ xx,
+     type = "l",
+     lwd = 2,
+     lty = 2,
+     axes = FALSE,
+     xlab = expression(Probability~theta),
+     ylab = "Prob. function",
+     main = expression(Prior~prob.~theta) )
+axis(side = 1,
+     at = c(0, 0.5, 1))
+
+box()
+
+
+x <- 8
+yy <- dbeta(xx, 4 + x, 14 - x)
+yy <- yy/max(yy) * max(yA)
+
+plot(yA ~ xx,
+     type = "l",
+     lwd = 2,
+     col = "grey",
+     lty = 2,
+     axes = FALSE,
+     xlab = expression(Probability~theta),
+     ylab = "Prob. function",
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==8)) )
+lines( yy ~ xx,
+       lwd = 2)
+axis(side = 1,
+     at = c(0, 0.5, 1))
+
+box()
+
+
+
+x <- 1
+yy <- dbeta(xx, 4 + x, 14 - x)
+yy <- yy/max(yy) * max(yA)
+
+plot(yA ~ xx,
+     type = "l",
+     lwd = 2,
+     col = "grey",
+     lty = 2,
+     axes = FALSE,
+     xlab = expression(Probability~theta),
+     ylab = "Prob. function",
+     main = expression(atop("Posterior distn", 
+                            when~italic(x)==1)) )
+lines( yy ~ xx,
+       lwd = 2)
+axis(side = 1,
+     at = c(0, 0.5, 1))
+
+box()
+```
+
+Applying meaning to the conditional distribution of parameters, such as those in \@ref(eq:exam3), \@ref(eq:accidents3) and \@ref(eq:goal3), has historically been controversial in statistics.
+However, the idea of *modifying* a parameter of a distribution based on new information has proven constructive, and is the basis of an important branch of statistics called *Bayesian statistics*.
+
+The algebra involved in deriving posterior distributions is, except in special cases (Table \@ref(tab:PriorPosteriorTable)), intractable and so numerical methods are necessary (including simulation techniques).
+If the prior and posterior distributions are the same type of distribution (e.g., both normal distribution), they are called *conjugate distributions*.
+The prior and posterior distribution combinations in \@ref(tab:PriorPosteriorTable)) and conjugate distributions.
+
+
+```{r PriorPosteriorTable, echo=FALSE}
+Conjugates <- array( dim = c(6, 3))
+
+colnames(Conjugates) <- c("Sampling distribution",
+                          "Prior distribution",
+                          "Posterior distribution")
+
+Conjugates[1, ] <- c("$X \\sim \\text{Bin}(m, p)$",
+                     "$p \\sim \\text{Beta}(a, b)$",
+                     "$p \\mid X \\sim \\text{Beta}(a + \\sum x, b + mn - \\sum x)$")
+Conjugates[2, ] <- c("$X \\sim \\text{Gam}(\\alpha, \\beta)$",
+                     "$\\beta \\sim \\text{Gam}(\\alpha_0, \\beta_0)$",
+                     "$\\beta \\mid X \\sim \\text{Gam}(\\alpha_0 + n\\alpha, \\beta_0 + \\sum x)$")
+Conjugates[3, ] <- c("$X \\sim \\text{Pois}(\\lambda)$",
+                     "$\\lambda \\sim \\text{Gam}(\\alpha_0, \\beta_0)$",
+                     "$\\lambda \\mid X \\sim \\text{Gam}(\\alpha_0 + \\sum x, \\beta_0 + n)$")
+Conjugates[4, ] <- c("$X \\sim N(\\mu, \\sigma^2)$",
+                     "$\\mu \\sim N(\\mu_0, \\sigma^2_0)$",
+                     "$\\mu \\mid X \\sim N(\\mu_P, \\sigma_P^2)$")
+Conjugates[5, ] <- c("",
+                     "",
+                     "\\quad where $\\mu_P = \\displaystyle \\frac{1}{1/\\sigma_0^2 + n/\\sigma^{2}} \\left(\\frac{\\mu _0}{\\sigma _0^2} + \\frac{\\sum_{i = 1}^n x_{i}}{\\sigma^2}\\right)$")
+Conjugates[6, ] <- c("",
+                     "",
+                     "\\quad and $\\sigma_P^2 = \\left( \\frac{1}{\\sigma_0^2} + \\frac{n}{\\sigma^2} \\right)^{-1}$")
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(Conjugates,
+               format = "latex",
+               booktabs = TRUE,
+               align = c("l"),
+               col.names = c("distn $f(X\\mid\\Theta)$",
+                             "distn $f(\\Theta)$",
+                             "distn $f(\\Theta\\mid X$)"),
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "Conjugate distributions for random parameters: The sampling distribution,  $f(X\\mid\\Theta)$; the prior distribution $f(\\Theta)$; and the posterior distribution $f(\\Theta\\mid X$)") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above(c("Sampling" = 1,  # Multi-line header
+                       "Prior" = 1, 
+                       "Posterior" = 1),
+                     bold = TRUE,
+                     line = FALSE,
+                     align = "l")
+} else {
+     knitr::kable(Conjugates,
+               format = "html",
+               booktabs = TRUE,
+               align = c("l"),
+               col.names = c("distribution $f(X\\mid\\Theta)$",
+                             "distribution $f(\\Theta)$",
+                             "distribution $f(\\Theta\\mid X$)"),
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "Conjugate distributions for random parameters: The sampling distribution,  $f(X\\mid\\Theta)$; the prior distribution $f(\\Theta)$; and the posterior distribution $f(\\Theta\\mid X$)") %>%
+    kable_styling(font_size = 11) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above(c("Sampling" = 1,  # Multi-line header
+                       "Prior" = 1, 
+                       "Posterior" = 1),
+                     bold = TRUE,
+                     line = FALSE,
+                     align = "l")
+}
+```
+
+
+## Exercises
 
 
 
