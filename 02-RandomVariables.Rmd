@@ -590,6 +590,112 @@ The value of a pdf at some point $x$ does not represent a probability, but rathe
 Hence, the pdf can have any non-negative value of arbitrary size at a specific value of $X$.
 :::
 
+This last statement is easy to show.
+See Fig. \@ref(fig:ShowProbCont), wich shows some probability density function $f(x)$.
+The probability of $X$ occurring can be expressed as   
+\[
+  \Pr(X = x^*)
+  \approx \Pr\left(x^* - \frac{\Delta x}{2} < X < x^* - \frac{\Delta x}{2} \right)
+\] 
+as $\Delta x \to 0$.
+This is shown by the shaded area, which can be approximated by the rectangle shown.
+That is,  
+\begin{align*}
+  \Pr(X = x^*)
+  &\approx \Pr\left(x^* - \frac{\Delta x}{2} < X < x^* - \frac{\Delta x}{2} \right) \\
+  &= \Delta x \times f(x).
+\end{align*} 
+Rearranging,  
+\[
+  f(x) = \frac{\Pr(X = x^*)}{\Delta x}.
+\]
+That is, the density function $f(x)$ is *not* a probability.
+
+
+
+```{r ShowProbCont, fig.align="center", fig.cap="Finding probabilities for a continuous random variable $X$", out.width='90%', fig.width=8, echo=FALSE}
+xAt <- 6
+deltax <- 4
+
+xLo <- xAt - deltax/2
+xHi <- xAt + deltax/2
+
+x <- seq(1, 10,
+         length = 100)
+fx <- function(x) {
+  dnorm(x, 
+        mean = 5,
+        sd = 5)
+}
+
+plot( fx(x) ~ x,
+      type = "l",
+      lwd = 3,
+      axes = FALSE,
+      ylim = c(0, 0.10),
+      xlab = expression(Values~of~italic(X)),
+      ylab = "Probability function")
+axis(side = 1,
+     at = c(xLo, xAt, xHi),
+     labels = expression( italic(x)*"*" - Delta*italic(x)/2,
+                          italic(x)*"*",
+                          italic(x)*"*" + Delta*italic(x)/2))
+box()
+
+lines(x = c(xLo, xLo),
+      y = c(0, fx(xLo)),
+            lwd = 2,
+            col = grey(0.3),
+            lty = 2)
+lines(x = c(xAt, xAt),
+      y = c(0, fx(xAt)),
+            lwd = 2,
+            col = grey(0.3),
+            lty = 2)
+lines(x = c(xHi, xHi),
+      y = c(0, fx(xLo)),
+            lwd = 2,
+            col = grey(0.3),
+            lty = 2)
+lines(x = c(xLo, xHi),
+      y = c(fx(xAt), fx(xAt)),
+            lwd = 2,
+            col = grey(0.3),
+            lty = 2)
+xShade <- seq(xLo, xHi,
+              length = 100)
+
+polygon( x = c(min(xShade), xShade, max(xShade)),
+         y = c(0, fx(xShade), 0),
+         col = plotColour)
+points(x = xAt,
+      y = fx(xAt),
+      cex = 1.5,
+      pch = 19)
+text(x = xAt,
+     y = fx(xAt),
+     pos = 3,
+     labels = expression(italic(f)*(italic(x)*"*")) )
+text(x = max(x),
+     y = fx( max(x) ),
+     pos = 3,
+     labels = expression(italic(f)*(italic(x))) )
+
+
+arrows(x0 = xLo,
+       x1 = xHi,
+       y0 = 0.02,
+       y1 = 0.02,
+       code = 3,
+       angle = 15,
+       length = 0.15)
+text(x = xLo + 0.3 * (xHi - xLo), # Offset a bit
+     y = 0.02,
+     pos = 3,
+     labels = expression(Delta*italic(x))) 
+
+```
+
 
 ::: {.example #ProbabilityDensityFunction name="Probability density function"}
 Consider the continuous random variable $W$ with the pdf
@@ -623,7 +729,7 @@ However, $\int_{\mathbb{R}} f_W(w) \, dw = 1$ as required of a probability densi
 
 
 
-```{r ContinuousPDF, echo=FALSE, fig.align="center", fig.cap="The probability function for $W$", fig.height=3.5,fig.width=4}
+```{r ContinuousPDF, echo=FALSE, fig.align="center", fig.cap="The probability function for $W$", fig.height=3.5,fig.width=6, out.width='55%'}
 plot( x = c(-1, 2),
       y = c(0, 2),
       type = "n",
