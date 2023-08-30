@@ -136,7 +136,7 @@ The mean and variance are easier to find by working with  $Y = X - a$ rather tha
 Since $Y\sim\text{Unif}(0, b - a)$:  
 \begin{align*}
   \text{E}(Y)
-  &= \sum_{i = 0}^{b - a} i\frac{1}{b - a + 1}\\
+  &= \sum_{y = 0}^{b - a} i\frac{1}{b - a + 1}\\
   &= \frac{1}{b - a + 1}\big(0 + 1 + 2 + \dots + (b - a)\big)\\
   &= \frac{(b - a)(b - a + 1)}{2(b - a + 1)} = (b - a)/2
 \end{align*}
@@ -150,16 +150,14 @@ The variance of $Y$ can be found similarly (Exercise \@ref(exr:DiscreteUniformVa
 To find the mgf:  
 \begin{align*}
   M_X(t)
-  &= \sum_{i = a}^{b} \exp(it) \frac{1}{b - a + 1}\\
-  &= \frac{1}{b - a + 1} \sum_{i = a}^{b} \exp(it)\\
+  &= \sum_{x = a}^{b} \exp(xt) \frac{1}{b - a + 1}\\
+  &= \frac{1}{b - a + 1} \sum_{x = a}^{b} \exp(xt)\\
   &= \frac{1}{b - a + 1} \left( \exp\{at\} + \exp\{(a + 1)t\} + \exp\{(a + 2)t\} + \dots + \exp\{bt\} \right) \\
   &= \frac{\exp(at)}{b - a + 1} \left( 1 + \exp\{t\} + \exp\{2t\} + \dots + \exp\{(b - 1)t\} \right) \\
   &= \frac{\exp(at)}{b - a + 1} \left( \frac{1 - \exp\{(b - a + 1)t\}}{1 - \exp(t)} \right) 
 \end{align*}
 using \@ref(eq:SumGeometricFinite).
 :::
-
-
 
 
 ## Bernoulli distribution {#BernoulliDistribution}
@@ -656,6 +654,70 @@ The Poisson distribution arises as a result of assumptions made about a random p
 
 Whenever these assumptions are valid, or approximately so, the Poisson distribution is appropriate.
 Many natural phenomena fall into this category.
+
+
+### Derivation of Poisson distribution {#PoissonDerivation}
+
+The [binomial distribution](BinomialDistribution) applies in situations where an event may or may not occur in a fixed number of trials, say $n$.
+What if $n$ gets increasingly large though, so effectively there is no upper limit?
+Mathematically, we might say: What happens if $n\to\infty$?
+
+Let's find out.
+Begin with the binomial probability function  
+\begin{equation}
+   p_X(x; n, p) = \binom{n}{x} p^x (1 - p)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}
+   (\#eq:BinomialPMF2)
+\end{equation}
+with a mean of $\lambda = np$. 
+Re-writing \@ref(eq:BinomialPMF2) in terms of the mean $\lambda$:  [
+\begin{equation}
+   p_X(x; n, p) 
+   = 
+   \binom{n}{x} \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}
+   (\#eq:BinomialPMF2Mean)
+\end{equation}
+Now consider the case $n \to \infty$ (for $x = 0, 1, \dots$ still):  
+\begin{align}
+   \lim_{n\to\infty}
+   p_X(x; n, p) 
+   &= 
+   \lim_{n\to\infty} \binom{n}{x} 
+   \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x}\\    
+   &= \frac{\lambda^k}{k!} 
+   \lim_{n\to\infty} \frac{n!}{(n - k)!} \frac{1}{n^k} \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}.
+\end{align}
+Now, since the limit of product of functions is equal to product of their limits, each component can be considered in turn.
+Looking at $n!/(n - k)! \times 1/n^k$, see that  
+\begin{align}
+  \lim_{n\to\infty} \frac{n!}{(n - k)!} \times 1/n^k
+  &= \lim_{n\to\infty} \frac{n \times (n - 1) \times (n - 2) \times\cdots\times 2 \times 1}
+                            {(n - k)\times (n - k - 1) \times \cdots \times 2 \times 1} \frac{1}{n^k}\\
+  &= \lim_{n\to\infty}\frac{ \overbrace{n \times (n - 1) \times \cdots\times (n - k + 1)}^{\text{$k$ terms}}}
+                           { \underbrace{n \times n \times\cdots \times n\times n}_{\text{$k$ terms}}}\\
+  &= \lim_{n\to\infty} \frac{n}{n} \times \frac{n - 1}{n} \times \frac{n - 2}{n} \times\cdots\times \frac{n - k + 1}{n}\\
+  &= 1 \times 1\times\cdots\times 1 = 1.
+\end{align}
+For the next component, see that (using \@ref(eq:ExponentialInfSeries)):  
+\[
+  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{n} = \exp(\-lambda).
+\]
+For the last term:  
+\[
+  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{-k} = 1^{-k} - 1.
+\]
+Putting the pieces together:
+\begin{align}
+   \lim_{n\to\infty}
+   p_X(x; n, p) 
+   &= 
+   \lim_{n\to\infty} \binom{n}{x} 
+   \lim_{n\to\infty} \frac{n}{n} \times \frac{n - 1}{n} \times \frac{n - 2}{n} \times\cdots\times \frac{n - k + 1}{n}\\   
+   &= \frac{\lambda^k}{k!}  
+   1 \times \exp(-\lambda) \times 1\\
+   &= \frac{\exp(-\lambda) \lambd^k}{k!},
+\end{align}
+for $x = 0, 1, 2, \dots$.
+This is the probability function for the *Poisson distribution*.
 
 
 :::{.definition #PoissonDistribution name="Poisson distribution"}
