@@ -268,6 +268,8 @@ A binomial distribution is used to model the number of successes in $n$ independ
 A simple example is tossing a coin ten times and observing how often a head falls. 
 The same random process is repeated (tossing the coin), only two outcomes are possible on each trial (a head or a tail), and the probability of a head remains constant on each trial (i.e., the tosses are independent).
 
+### Derivation of a binomial distribution {#BinomialDerivation}
+
 Consider tossing a die five times and observing the number of times a `r knitr::include_graphics("Dice/die2.png", dpi=1750)` is rolled.
 The probability of observing a `r knitr::include_graphics("Dice/die2.png", dpi=1750)` three times can be found as follows:
 In the five tosses, a `r knitr::include_graphics("Dice/die2.png", dpi=1750)` must appear three times; there are $\binom{5}{3}$ ways of allocating on which of the five rolls they will appear.
@@ -308,6 +310,9 @@ Note that the sum of the probabilities is 1, as the binomial expansion of $(p + 
 \end{equation}
 since $p + q = 1$. 
 
+### Definition and properties {#BinomialDefinition}
+
+The definition of the binomial distribution can now be given.
 
 :::{.definition #BinomialDistribution name="Binomial distribution"}
 Let $X$ be the number of successes in $n$ independent Bernoulli trials with $\Pr(\text{Success}) = p$ (for $0\le p\le 1$) constant for each trial.
@@ -493,6 +498,8 @@ Binomial probabilities can sometimes be approximated using the normal distributi
 
 ## Geometric distribution {#GeometricDistribution}
 
+### Derivation of a geometric distribution {#GeometricDerivation}
+
 Consider now a random process where independent Bernoulli trials  (Def. \@ref(def:BernoulliTrials)) are repeated until the *first* success occurs. 
 What is the distribution of the number of *failures* until the first success is observed?
 
@@ -506,6 +513,10 @@ Since the probability of failure is $q = 1 - p$ and the probability of success i
 \end{align*}
 This derivation assumes the events are independent.
 
+
+### Definition and properties {#GeometricDefinition}
+
+The definition of the geometric distribution can now be given.
 
 :::{.definition #GeometricDistribution name="Geometric distribution"}
 A random variable $X$ has a *geometric distribution* if the pf of $X$ is  
@@ -658,7 +669,7 @@ Many natural phenomena fall into this category.
 
 ### Derivation of Poisson distribution {#PoissonDerivation}
 
-The [binomial distribution](BinomialDistribution) applies in situations where an event may or may not occur in a fixed number of trials, say $n$.
+The [binomial distribution](BinomialDistribution) applies in situations where an event may occur a certain number of times in a fixed number of trials, say $n$.
 What if $n$ gets increasingly large though, so effectively there is no upper limit?
 Mathematically, we might say: What happens if $n\to\infty$?
 
@@ -668,57 +679,64 @@ Begin with the binomial probability function
    p_X(x; n, p) = \binom{n}{x} p^x (1 - p)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}
    (\#eq:BinomialPMF2)
 \end{equation}
-with a mean of $\lambda = np$. 
-Re-writing \@ref(eq:BinomialPMF2) in terms of the mean $\lambda$:  [
+which has a mean of $\lambda = np$. 
+First, re-writing \@ref(eq:BinomialPMF2) in terms of the mean $\lambda$:  
 \begin{equation}
-   p_X(x; n, p) 
+   p_X(x; n, \lambda) 
    = 
-   \binom{n}{x} \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}
+   \binom{n}{x} \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}.
    (\#eq:BinomialPMF2Mean)
 \end{equation}
-Now consider the case $n \to \infty$ (for $x = 0, 1, \dots$ still):  
+Now consider the case $n \to \infty$ (for $x = 0, 1, \dots$):  
 \begin{align}
    \lim_{n\to\infty}
-   p_X(x; n, p) 
+   p_X(x; n, \lambda) 
    &= 
    \lim_{n\to\infty} \binom{n}{x} 
    \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x}\\    
-   &= \frac{\lambda^k}{k!} 
-   \lim_{n\to\infty} \frac{n!}{(n - k)!} \frac{1}{n^k} \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}.
+   &= \frac{\lambda^x}{x!} 
+   \lim_{n\to\infty} \frac{n!}{(n - x)!} \frac{1}{n^x} \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}.
 \end{align}
-Now, since the limit of product of functions is equal to product of their limits, each component can be considered in turn.
-Looking at $n!/(n - k)! \times 1/n^k$, see that  
+Now, since *the limit of product of functions is equal to product of their limits*, each component can be considered in turn.
+
+Looking at the first component, see that  
 \begin{align}
-  \lim_{n\to\infty} \frac{n!}{(n - k)!} \times 1/n^k
+  \lim_{n\to\infty} \frac{n!}{(n - x)!} \times \frac{1}{n^x}
   &= \lim_{n\to\infty} \frac{n \times (n - 1) \times (n - 2) \times\cdots\times 2 \times 1}
-                            {(n - k)\times (n - k - 1) \times \cdots \times 2 \times 1} \frac{1}{n^k}\\
-  &= \lim_{n\to\infty}\frac{ \overbrace{n \times (n - 1) \times \cdots\times (n - k + 1)}^{\text{$k$ terms}}}
-                           { \underbrace{n \times n \times\cdots \times n\times n}_{\text{$k$ terms}}}\\
-  &= \lim_{n\to\infty} \frac{n}{n} \times \frac{n - 1}{n} \times \frac{n - 2}{n} \times\cdots\times \frac{n - k + 1}{n}\\
+                            {(n - x)\times (n - x - 1) \times \cdots \times 2 \times 1} \times \frac{1}{n^x}\\
+  &= \lim_{n\to\infty}\frac{ \overbrace{n \times (n - 1) \times \cdots\times (n - x + 1)}^{\text{$x$ terms}}}
+                           { \underbrace{n \times n \times\cdots \times n\times n}_{\text{$x$ terms}}}\\
+  &= \lim_{n\to\infty} \frac{n}{n} \times \frac{n - 1}{n} \times \frac{n - 2}{n} \times\cdots\times \frac{n - x + 1}{n}\\
   &= 1 \times 1\times\cdots\times 1 = 1.
 \end{align}
-For the next component, see that (using \@ref(eq:ExponentialInfSeries)):  
+For the next component, see that (using \@ref(eq:ExponentialLimit)):  
 \[
-  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{n} = \exp(\-lambda).
+  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{n} = \exp(-\lambda).
 \]
 For the last term:  
 \[
-  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{-k} = 1^{-k} - 1.
+  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{-x} = 1^{-x} = 1.
 \]
-Putting the pieces together:
+Putting the pieces together:  
 \begin{align}
    \lim_{n\to\infty}
-   p_X(x; n, p) 
+   p_X(x; n, \lambda) 
    &= 
-   \lim_{n\to\infty} \binom{n}{x} 
-   \lim_{n\to\infty} \frac{n}{n} \times \frac{n - 1}{n} \times \frac{n - 2}{n} \times\cdots\times \frac{n - k + 1}{n}\\   
-   &= \frac{\lambda^k}{k!}  
+   \frac{\lambda^x}{x!} 
+   \lim_{n\to\infty} \frac{n!}{(n - x)!} \frac{1}{n^x} 
+   \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}\\   
+   p_X(x; \lambda) 
+   &= \frac{\lambda^k}{x!}  
    1 \times \exp(-\lambda) \times 1\\
-   &= \frac{\exp(-\lambda) \lambd^k}{k!},
+   &= \frac{\exp(-\lambda) \lambda^x}{x!},
 \end{align}
 for $x = 0, 1, 2, \dots$.
 This is the probability function for the *Poisson distribution*.
 
+
+### Definition and properties {#PoissonDefinition}
+
+The definition of the Poisson distribution can now be given.
 
 :::{.definition #PoissonDistribution name="Poisson distribution"}
 A random variable $X$ is said to have a *Poisson distribution* if its pmf is  
@@ -900,6 +918,8 @@ if( knitr::is_html_output() ) {
 
 ### Relationship to the binomial distribution {#PoissonBinomial}
 
+Given the derivation of the Poisson distribution (Sect. \@ref(PoissonDerivation)), a relationship between the Poisson and binomial distributions should come as no surprise.
+
 Computing binomial probabilities is tedious if the number of trials $n$ is very large and the probability of success in a single trial is very small. 
 For example, consider $X\sim \text{Bin}(n = 2000, p = 0.005)$; the pf is  
 \[
@@ -913,7 +933,7 @@ Set the Poisson mean to equal the binomial mean (that is, $\lambda = \mu = np$).
 Since $\text{E}(Y) = \text{var}(Y) = \lambda$ for the Poisson distribution, this means the variance is also set to $\sigma^2 = np$.
 Of course, the binomial mean is $np(1 - p)$, so this can only be (approximately) true if $p$ is close to zero (and so $1 - p\approx 1$).
 
-A general guideline is that the Poisson distribution can be used to approximate the binomial when $n$ is large, $p$ is small and $np \le 7$.
+A general guideline is that the Poisson distribution can be used to approximate the binomial when $n$ is large (recall, the derivation was for the case $n\to\infty$), $p$ is small and $np \le 7$.
 
 
 ::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
@@ -1000,7 +1020,7 @@ In these situations, the *zero-inflated Poisson distribution* may be suitable.
 
 ## Negative binomial distribution {#NegativeBinomialDistribution}
 
-### Standard parameterisation {#NegBinStandard}
+### Derivation: standard parameterisation {#NegBinStandard}
 
 Consider a random process where independent Bernoulli trials are repeated until the $r$th success occurs. 
 Let the random variable $X$ be the number of *failures* before the $r$th success is observed, so that $X = 0, 1, 2, \dots$.
@@ -1016,6 +1036,10 @@ Hence the probability of observing the $r$th success in trial $x$ is
    &\times (1 - p)^{x} \times p^{r - 1}.
 \end{align*}
 
+
+### Definition and properties: standard parameterisation {#NegBinStandard}
+
+The standard definition of the negative binomial distribution can now be given.
 
 :::{.definition #NegativeBinomialDistribution name="Negative binomial distribution"}
 A random variable $X$ with pf  
@@ -1163,8 +1187,6 @@ Then $C = 0.25 Y + 166.75$, so $\text{E}(C) = 0.25 \text{E}(Y) + 166.75 = C = 0.
 Often, a different parameterisation for the negative binomial distribution; see Exercise \@ref(exr:NegativeBinomialALT).
 However, the parameterisation presented in Sect. \@ref(NegBinStandard) is used by **R**.
 
-
-
 The negative binomial distribution can be extended so that $r$ can be *any* positive number, not just an integer.
 When $r$ is non-integer, the above interpretations are lost, but the distribution is more flexible.
 Relaxing the restriction on $r$ gives the pf as  
@@ -1174,7 +1196,6 @@ Relaxing the restriction on $r$ gives the pf as
 \end{equation}
 for $x = 0, 1, 2 \dots$ and $r > 0$.
 In this expression, $\Gamma(r)$ is the *gamma function* (Def. \@ref(def:GammaFunction)), and is related to factorials when $r$ is integer: $\Gamma(r) = (r - 1)!$ if $r$ is a positive integer.
-
 
 
 :::{.definition #GammaFunction name="Gamma function"}
@@ -1330,6 +1351,8 @@ if( knitr::is_html_output() ) {
 
 
 ## Hypergeometric distribution {#HypergeometricDistribution}
+
+### Derivation of a hypergeometric distribution {#HypergeometricDerivation}
 
 When the selection of items a fixed number of times is done *with* replacement, the probability of an item being selected stays the same and the binomial distribution can be used.
 However, when the selection of items is done *without* replacement, the trials are not independent, making the binomial model unsuitable.
@@ -1495,6 +1518,10 @@ Similarly,
    \quad\text{and}\quad
    \Pr(X = 3) =\frac{ \binom{6}{3}\times \binom{4}{0} }{\binom{10}{3}}.
 \]
+
+
+
+### Definition and properties {#HypergeometricDefinition}
 
 In general, suppose a bag contains $N$ balls, and $m$ of them are light-coloured and $n$ and *not* light-coloured; then $N = m + n$.
 Suppose a sample of size $k$ is drawn from the bag *without replacement*; then the probability of finding $x$ light-coloured balls in the sample of size $k$ is  

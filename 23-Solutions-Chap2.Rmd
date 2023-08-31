@@ -578,7 +578,7 @@ for $x > 0$.
 See Fig. \@ref(fig:PlotDFExpInverse).
 :::
 
-```{r PlotDFExpInverse, echo=FALSE, fig.cap="A pdf", fig.align="center"}
+```{r PlotDFExpInverse, echo=FALSE, fig.cap="A pdf", fig.align="center", out.width='80%'}
 par( mfrow = c(1, 2))
 
 f1 <- function(x){
@@ -621,6 +621,37 @@ plot( F1(x) ~ x,
 
 ```
 
+:::{answer}
+**Answer for Exercise \@ref(exr:Cards4).**
 
+* 1 suit: Select 4 cards from the 13 of that suit, and there are four suits to select.
+* 2 suits: There are two scenarios here: 
+  - Three from one suit, and one from another: 
+    Choose a suit, and select three cards from it: $\binom{4}{3}\binom{13}{3}$.
+    Then we need another suit (three choices remain) and one card from (any of the 13).
+  - Chose two suits, and two cards from each of two suits:
+    $\binom{4}{2}\binom{13}{2}\binom{13}{2}$
+* 3 suits: Umm...
+* 4 suits: Choose one from each of the four suits.
 
+One way to get 3 suits is to realise that the total probablity must add to one...
+
+```{r echo=TRUE}
+### 1 SUIT
+suits1 <- 4 * choose(13, 4) / choose(52, 4)
+
+### 2 SUITS
+suits2 <- choose(4, 3) * choose(13, 3) * choose(3, 1) * choose(13, 1) + 
+          choose(4, 2) * choose(13, 2) * choose(13, 2)
+suits2 <- suits2 / choose(52, 4)
+
+### 4 SUITS:
+suits4 <- choose(13, 1) * choose(13, 1) * choose(13, 1) * choose(13, 1)
+suits4 <- suits4  / choose(52, 4)
+
+suits3 <- 1 - suits1 - suits2 - suits4
+
+round( c(suits1, suits2, suits3, suits4), 3)
+```
+:::
   
