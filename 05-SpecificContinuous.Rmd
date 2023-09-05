@@ -988,29 +988,95 @@ Many distributions can be used for modelling right-skewed data defined on the po
 
 The exponential distribution is closely related to the Poisson distribution.
 
-Consider a [Poisson process](PoissonDerivation), where events occur at a rate of $\lambda$ events per unit time (e.g., $\lambda = 3$ per minute).
-Then, in a length of time $t$, the number of occurrences $Y$ would be $\lambda t$ (e.g., in 6 minutes, we'd expect $3\times 6 = 18$ occurrences).
-So the number of occurrences in the time $\lambda t$ would be modelled with a Poisson distribution with mean $\lambda t$, with probability function  
+Consider a [Poisson process](PoissonDerivation), where events occur at an average rate of $\lambda$ events per unit time (e.g., $\lambda = 3$ per minute).
+Then, in a length of time $t$, the number of occurrences $Y$ would have an average rate of $\lambda t$ (e.g., in 6 minutes, we'd expect an average rate of $3\times 6 = 18$ occurrences).
+So the *number* of occurrences in the time $\lambda t$ (say $Y$) would be modelled with a Poisson distribution with mean $\lambda t$, with probability function  
 \begin{equation}
-  p_Y(y) = \frac{\exp(-\lambda t) (\lambda t)^x}{x!},
+  p_Y(y) = \frac{\exp(-\lambda t) (\lambda t)^y}{y!},
    (\#eq:PoissonPMF2)
 \end{equation}
 from the Poisson probability function (Sect. \@ref(PoissonDefinition)).
 
-Suppose we look at time $t = 0$.
 Let $X$ be the *time* at which the first event occurs.
-Suppose *zero* occurrences (i.e., $Y = 0$) happen in the interval $0 < X < T$. 
+Suppose *zero* occurrences (i.e., $Y = 0$) happen in the interval $[0, T]$. 
 This is the same as saying that the *first* occurrence must happen *after* time $T$.
 
-Since the mean rate of occurrences is $\lambda t$, using the argument above, then the probability of zero events in the time interval $\lambda t$ is  
+```{r}
+
+plot( x = c(0, 10),
+      y = c(-5, 5),
+      type = "n",
+      axes = FALSE,
+      xlab = "",
+      ylab = "")
+
+# Draw main "time line"
+lines( x = c(0, 10),
+       y = c(0, 0),
+       lwd = 2)
+lines( x = c(0, 0),
+       y = c(-0.5, 0.5),
+       lwd = 2)
+lines( x = c(10, 10),
+       y = c(-0.5, 0.5),
+       lwd = 2)
+
+# Label ends
+text( x = 0,
+      y = 0.5,
+      pos = 3,
+      labels = "0")
+
+text( x = 10,
+      y = 0.5,
+      pos = 3,
+      labels = expression(italic(t)) )
+
+# Locate events that occur
+locateEvents <- c(0.25,
+                  0.35, 
+                  0.42,
+                  0.55, 
+                  0.78) * 10
+numEvents <- length(locateEvents)
+
+points( x = locateEvents,
+        y = rep(0, length = numEvents),
+        pch = 19)
+
+text(x = locateEvents,
+     y = 0,
+     labels = c( expression(italic(X)[1]),
+                 expression(italic(X)[2]),
+                 expression(italic(X)[3]),
+                 expression(italic(X)[4]),
+                 expression(italic(X)[5]) ),
+     pos = 1)
+
+# Time T
+arrows( x0 = 0.8 * locateEvents[1],
+        x1 = 0.8 * locateEvents[1],
+        y0 = 3,
+        y1 = 0,
+        angle = 15,
+        length = 0.15)
+text(x = 0.8 * locateEvents[1],
+     y = 3,
+     pos = 3,
+     labels = expression(italic(T)))
+
+```
+
+
+Since the mean rate of occurrences is $\lambda t$, then the probability of zero events in the time interval $[0, T]$ is  
 \[
   \Pr(Y = 0)
-  = \Pr(X > t) 
-  = \frac{\exp(-\lambda T) (\lambda T)^0}{0!}\\
+  = \Pr(X > T) 
+  = \frac{\exp(-\lambda t) (\lambda t)^0}{0!}\\
   = \exp(-\lambda t)
 \]
-using $X = 0$ in \@ref(eq:PoissonPMF2).
-Since $\Pr(X < t) = 1 - \Pr(X > t)$ is the distribution function for $X$, we can write   
+using $Y = 0$ in \@ref(eq:PoissonPMF2).
+Since $\Pr(X < t) = 1 - \Pr(X > t)$ is the *distribution function* for $X$, we can write   
 \[
   F_X(x) = 1 - \exp(-\lambda t);
 \]
@@ -1018,9 +1084,13 @@ differentiating, the probability density function of $X$ is
 \[
   f_X(x) = \lambda \exp(-\lambda x) \quad \text{for $x > 0$}.
 \]
+This is the probability density function for the exponential distribution.
 
 
-### Definition and properties {ExponentialDefinition}
+### Definition and properties {#ExponentialDefinition}
+
+The exponential distribution is usually written as follows.
+
 
 :::{.definition #ExponentialDistribution name="Exponential distribution"}
 If a random variable $X$ has the pdf  
