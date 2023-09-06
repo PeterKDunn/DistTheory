@@ -988,102 +988,40 @@ Many distributions can be used for modelling right-skewed data defined on the po
 
 The exponential distribution is closely related to the Poisson distribution.
 
-Consider a [Poisson process](PoissonDerivation), where events occur at an average rate of $\lambda$ events per unit time (e.g., $\lambda = 3$ per minute).
-Then, in a length of time $t$, the number of occurrences $Y$ would have an average rate of $\lambda t$ (e.g., in 6 minutes, we'd expect an average rate of $3\times 6 = 18$ occurrences).
-So the *number* of occurrences in the time $\lambda t$ (say $Y$) would be modelled with a Poisson distribution with mean $\lambda t$, with probability function  
+Consider a [Poisson process](#PoissonDerivation), where events occur at an average rate of $\lambda$ events per unit time (e.g., $\lambda = 0.5$ per minute).
+
+Then consider a fixed length of time $t > 0$; then, the number of occurrences $Y$ would have an average rate of $\lambda t$ (e.g., in 12 minutes, we'd expect an average rate of $0.5\times 12 = 6$ occurrences).
+That is, the number of events occurring in the interval $(0, t)$ has Poisson distribution with mean $\lambda t$, with probability function  
 \begin{equation}
-  p_Y(y) = \frac{\exp(-\lambda t) (\lambda t)^y}{y!},
+  p_Y(y) = \frac{\exp(-\lambda t) (\lambda t)^y}{y!}
+  \quad
+  \text{for $y = 0, 1, 2, \dots$}.
    (\#eq:PoissonPMF2)
 \end{equation}
-from the Poisson probability function (Sect. \@ref(PoissonDefinition)).
-
-Let $X$ be the *time* at which the first event occurs.
-Suppose *zero* occurrences (i.e., $Y = 0$) happen in the interval $[0, T]$. 
-This is the same as saying that the *first* occurrence must happen *after* time $T$.
-
-```{r}
-
-plot( x = c(0, 10),
-      y = c(-5, 5),
-      type = "n",
-      axes = FALSE,
-      xlab = "",
-      ylab = "")
-
-# Draw main "time line"
-lines( x = c(0, 10),
-       y = c(0, 0),
-       lwd = 2)
-lines( x = c(0, 0),
-       y = c(-0.5, 0.5),
-       lwd = 2)
-lines( x = c(10, 10),
-       y = c(-0.5, 0.5),
-       lwd = 2)
-
-# Label ends
-text( x = 0,
-      y = 0.5,
-      pos = 3,
-      labels = "0")
-
-text( x = 10,
-      y = 0.5,
-      pos = 3,
-      labels = expression(italic(t)) )
-
-# Locate events that occur
-locateEvents <- c(0.25,
-                  0.35, 
-                  0.42,
-                  0.55, 
-                  0.78) * 10
-numEvents <- length(locateEvents)
-
-points( x = locateEvents,
-        y = rep(0, length = numEvents),
-        pch = 19)
-
-text(x = locateEvents,
-     y = 0,
-     labels = c( expression(italic(X)[1]),
-                 expression(italic(X)[2]),
-                 expression(italic(X)[3]),
-                 expression(italic(X)[4]),
-                 expression(italic(X)[5]) ),
-     pos = 1)
-
-# Time T
-arrows( x0 = 0.8 * locateEvents[1],
-        x1 = 0.8 * locateEvents[1],
-        y0 = 3,
-        y1 = 0,
-        angle = 15,
-        length = 0.15)
-text(x = 0.8 * locateEvents[1],
-     y = 3,
-     pos = 3,
-     labels = expression(italic(T)))
-
-```
-
-
-Since the mean rate of occurrences is $\lambda t$, then the probability of zero events in the time interval $[0, T]$ is  
+Hence, the probability that zero events occur in the interval $(0, t)$ is  
 \[
   \Pr(Y = 0)
-  = \Pr(X > T) 
-  = \frac{\exp(-\lambda t) (\lambda t)^0}{0!}\\
+  = \frac{\exp(-\lambda t) (\lambda t)^0}{0!}  
   = \exp(-\lambda t)
 \]
 using $Y = 0$ in \@ref(eq:PoissonPMF2).
-Since $\Pr(X < t) = 1 - \Pr(X > t)$ is the *distribution function* for $X$, we can write   
+
+Now, introduce a new random variable $T$ that represent the *time until the first event occurs*.
+Then, $Y = 0$ (i.e., no events occur in the interval $(0, t)$) corresponds to $T > t$ (i.e., the time till the first event occurs must be great than the time interval $t$).
+That is,  
 \[
-  F_X(x) = 1 - \exp(-\lambda t);
+  \Pr(Y = 0) = \exp(-\lambda t) = \Pr(T  > t).
 \]
-differentiating, the probability density function of $X$ is  
+Rewriting in terms of a distribution function for $T$,  
 \[
-  f_X(x) = \lambda \exp(-\lambda x) \quad \text{for $x > 0$}.
+  F_T(t) = 1 - \Pr(T > t) = 1 - \exp(-\lambda t)
 \]
+for $t > 0$.
+Hence, the probability density function is  
+\[
+  f_T(t) = \lambda \exp(-\lambda t)
+\]
+for $t > 0$.
 This is the probability density function for the exponential distribution.
 
 
@@ -1096,6 +1034,8 @@ The exponential distribution is usually written as follows.
 If a random variable $X$ has the pdf  
 \begin{equation}
    f_X(x; \beta) = \displaystyle \frac{1}{\beta}  \exp(-x/\beta)
+   \quad
+   \text{for $x > 0$}
    (\#eq:ExponentialPMF)
 \end{equation}
 then $X$ has an *exponential distribution* with parameter $\beta > 0$. 
@@ -1109,7 +1049,7 @@ Plots of the pdf for various exponential distributions are given in Fig. \@ref(f
 
 
 ```{r ExponentialDistributions, echo=FALSE, fig.align="center", fig.cap="Exponential distributions for various values of the rate parameter $\\lambda = 1/\\beta$",fig.width=4,fig.height=3.5}
-x <- seq(0, 12,
+x <- seq(0, 10,
          length = 100)
 
 lambda <- c(0.5, 1, 2)
@@ -1151,8 +1091,9 @@ For a random variable $X$ with the exponential distribution given in \@ref(eq:Ex
 \[
   F_X(x; \lambda) 
   = 1 - \exp\left\{-x/\beta\right\}
-  = 1 - \exp\left\{-\lambda x\right\}.
+  = 1 - \exp\left\{-\lambda x\right\}
 \]
+for $x > 0$.
 :::
 
 
@@ -1195,8 +1136,7 @@ An exponential distribution might be expected to model the data well.
 This is indeed the case (Fig. \@ref(fig:ExpNerves)).
 What proportion of time intervals can be expected to be longer than 1 second?
 
-If $X$ is the time between successive nerve pulses (in seconds), then $X\sim \text{Exp}(\beta = 0.2186)$.
-(sp the *rate parameter* is $\lambda = 1/0.2186 = 4.575$ per second.)
+If $X$ is the time between successive nerve pulses (in seconds), then $X\sim \text{Exp}(\beta = 0.2186)$ (so the *rate parameter* is $\lambda = 1/0.2186 = 4.575$ per second).
 The solution will then be  
 \begin{align*}
    \Pr(X > 1)
@@ -1241,7 +1181,7 @@ If the number of events in a process follows a Poisson distribution, the space o
 Hence the exponential distribution is used to describe the interval between consecutive randomly occurring events that follow a Poisson distribution.
 
 
-:::{.theorem #PoissonProcess name="Poisson process"}
+:::{.theorem #PoissonProcess name="Poisson process and exponential distributions"}
 Consider a Poisson process at rate $\lambda$ and suppose observation starts at an arbitrary time point. 
 Then the time $T$ to the first event has an exponential distribution with mean $\text{E}(T) = 1/\lambda$; i.e.,  
 \[
