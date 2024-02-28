@@ -1,6 +1,8 @@
 # Notes to self
 
+To publish:
 
+bookdown::publish_book()
 
 ## General
 
