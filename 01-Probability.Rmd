@@ -153,7 +153,8 @@ To denote that a certain element, say $a_1$, belongs to a set, say $A$, write $a
 ::: {.example #DefiningSets name="Sets"}
 Define set $B$ as 'the even numbers after rolling a single die'.
 The sample space is (Example\ \@ref(exm:SampleSpaceDice)) $S = \{ 1, 2, 3, 4, 5, 6\}$.
-$B$ can also be described by listing the elements: $B = \{$`r if (knitr::is_latex_output()) {
+$B$ can also be described by listing the elements: $B = \big\{$
+`r if (knitr::is_latex_output()) {
    '\\Largedice{2}'
 } else {
    '<span class="larger-die">&#9857;</span>'
@@ -167,7 +168,7 @@ $B$ can also be described by listing the elements: $B = \{$`r if (knitr::is_late
    '\\Largedice{6}'
 } else {
    '<span class="larger-die">&#9861;</span>'
-}`$\}$.
+}`$\big\}$.
 $B$ contains a finite number of elements.
 
 The set $N$ of odd numbers could be defined by enumeration, by giving a *pattern*: $N = \{1, 3, 5, 7, 9, \dots\}$.
@@ -407,11 +408,9 @@ Suppose we define these sets:
 \end{align*}
 Then:
 \begin{align*}
-   C \cap D &= \{ 4, 5\};\\ 
-   C \cup D &= \{ 0, 1, 2, 3, 4, 5, 6, 7\};\\ 
-   E &\in D ;\\ 
-   E &\notin C ;\\ 
-   C \cap E &= \emptyset.
+   C \cap D &= \{ 4, 5\};                   &          C \cup D &= \{ 0, 1, 2, 3, 4, 5, 6, 7\};\\ 
+   E &\in D;                                &          E &\notin C;\\ 
+   C \cap E &= \emptyset;                   &         D \cap E &= D.
 \end{align*}
 :::
 
@@ -933,17 +932,19 @@ Then:
 :::
 
 
-```{r CricketBallSpace, out.width='80%',echo=FALSE, fig.height=3, fig.align="center", fig.cap="The two events $B_1$ and $B_2$ defined for throwing a cricket ball"}
+```{r CricketBallSpace, out.width='80%',echo=FALSE, fig.height=3.5, fig.align="center", fig.cap="The two events $B_1$ and $B_2$ defined for throwing a cricket ball"}
 par( mar = c(1, 1, 1, 1) + 0.1 )
 
 plot( x = c(-10, 70),
       y = c(0, 0),
-      ylim = c(-30, 30),
+      ylim = c(-30, 70),
       type = "l",
       lwd = 2,
       axes = FALSE,
       xlab = "",
       ylab = "")
+
+# Tick marks
 for (i in seq(0, 70, by = 10)){
    lines( x = c(i, i),
           y = c(-3, 3),
@@ -954,23 +955,21 @@ for (i in seq(0, 70, by = 10)){
 }
 
 b1 <- 40
-b2 <- 50
 b1lo <- 10
 b1hi <- 15
-b2lo <- 20
-b2hi <- 25
+
 b1limit1 <- 60
 b1limit2 <- 70
 delta <- 5
 
-# B1
+
+
+### B1
 polygon(x = c(b1limit2 - delta, b1, b1, b1limit2 - delta),
         y = c(b1lo, b1lo, b1hi, b1hi),
         col = plotColour1,
         border = NA) # No borders
-gradientToUse <- seq(b1limit2 - delta, 
-                     b1limit2,
-                     length = 20)
+
 plotrix::gradient.rect( xleft = b1limit2 - delta, 
                         ybottom = b1lo, 
                         ytop = b1hi, 
@@ -981,29 +980,35 @@ plotrix::gradient.rect( xleft = b1limit2 - delta,
                         border = NA, 
                         gradient = "x")
 
-#polygon(x = c(b1limit2 - delta, b1limit2, b1limit2, b1limit2 - delta),
-#        y = c(b1lo, b1lo, b1hi, b1hi),
-#        col = "red", #colsR,
-#        border = NA) # No borders
-
 
 lines(x = c(b1limit1, b1, b1, b1limit1),
       y = c(b1lo, b1lo, b1hi, b1hi),
-      lwd = 1)
+      lwd = 2)
 lines(x = c(b1limit1, b1limit2),
       y = c(b1lo, b1lo),
-      lwd = 1,
+      lwd = 2,
       lty = 2)
 lines(x = c(b1limit1, b1limit2),
       y = c(b1hi, b1hi),
-      lwd = 1,
+      lwd = 2,
       lty = 2)
 
 
-# B2
+#### B2
+b2 <- 50
+b2lo <- 20
+b2hi <- 25
+
 polygon(x = c(0, b2, b2, 0),
         y = c(b2lo, b2lo, b2hi, b2hi),
-        col = plotColour)
+        col = plotColour1,
+        border = NA)
+lines(x = c(0, b2),
+      y = c(b2lo, b2lo),
+      lwd = 2)
+lines(x = c(0, b2),
+      y = c(b2hi, b2hi),
+      lwd = 2)
 
 # Text
 text(0, (b1lo + b1hi)/2, 
@@ -1012,6 +1017,103 @@ text(0, (b1lo + b1hi)/2,
 text(0, (b2lo + b2hi)/2, 
      labels = expression(italic(B)[2]),
      pos = 2)
+
+
+### B1 \cup B_2
+b1CUPb2lo <- 30
+b1CUPb2hi <- 35
+
+polygon(x = c(0, b1limit2 - delta, b1limit2 - delta, 0),
+        y = c(b1CUPb2lo, b1CUPb2lo, b1CUPb2hi, b1CUPb2hi),
+        col = plotColour1,
+        border = NA)
+
+lines(x = c(0, b1limit2 - delta),
+      y = c(b1CUPb2lo, b1CUPb2lo),
+      lwd = 2)
+lines(x = c(0, b1limit2 - delta),
+      y = c(b1CUPb2hi, b1CUPb2hi),
+      lwd = 2)
+lines(x = c(b1limit1, b1limit2),
+      y = c(b1CUPb2lo, b1CUPb2lo),
+      lwd = 2,
+      lty = 2)
+lines(x = c(b1limit1, b1limit2),
+      y = c(b1CUPb2hi, b1CUPb2hi),
+      lwd = 2,
+      lty = 2)
+
+plotrix::gradient.rect( xleft = b1limit2 - delta, 
+                        ybottom = b1CUPb2lo, 
+                        ytop = b1CUPb2hi, 
+                        xright = b1limit2,
+                        reds = c(129/256, 1),
+                        greens = c(194/256, 1),
+                        blues = c(202/256, 1),
+                        border = NA, 
+                        gradient = "x")
+
+
+
+### B1 \cap B_2
+b1CAPb2lo <- 40
+b1CAPb2hi <- 45
+
+polygon(x = c(b1, b2, b2, b1),
+        y = c(b1CAPb2lo, b1CAPb2lo, b1CAPb2hi, b1CAPb2hi),
+        col = plotColour1,
+        border = NA)
+lines(x = c(b1, b2),
+      y = c(b1CAPb2lo, b1CAPb2lo),
+      lwd = 2)
+lines(x = c(b1, b2),
+      y = c(b1CAPb2hi, b1CAPb2hi),
+      lwd = 2)
+lines(x = c(b1, b1),
+      y = c(b1CAPb2lo, b1CAPb2hi),
+      lwd = 2)
+
+
+### NOT B1 
+NOTb1lo <- 50
+NOTb1hi <- 55
+
+polygon(x = c(0, b1, b1, 0),
+        y = c(NOTb1lo, NOTb1lo, NOTb1hi, NOTb1hi),
+        col = plotColour1,
+        border = NA)
+
+lines(x = c(0, b1),
+      y = c(NOTb1lo, NOTb1lo),
+      lwd = 2)
+lines(x = c(0, b1),
+      y = c(NOTb1hi, NOTb1hi),
+      lwd = 2)
+lines(x = c(0, 0),
+      y = c(NOTb1lo, NOTb1hi),
+      lwd = 2)
+
+
+###
+
+# Text
+text(0, (b1lo + b1hi)/2, 
+     labels = expression(italic(B)[1]),
+     pos = 2)
+text(0, (b2lo + b2hi)/2, 
+     labels = expression(italic(B)[2]),
+     pos = 2)
+text(0, (b1CAPb2lo + b1CAPb2hi)/2, 
+     labels = expression(italic(B)[1]*intersect(italic(B)[2])),
+     pos = 2)
+text(0, (b1CUPb2lo + b1CUPb2hi)/2, 
+     labels = expression(italic(B)[1]*union(italic(B)[2])),
+     pos = 2)
+text(0, (NOTb1lo + NOTb1hi)/2, 
+     labels = expression( bar(italic(B))[1]),
+     pos = 2)
+
+
 ```
 
 
@@ -2511,6 +2613,17 @@ In addition, both formulae apply when *there is no replacement* of the items.
 :::
 
 
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+This may help you remember when to use permutations and combinations
+
+* **P**ermutations are used for **p**asswords.
+* **C**ombinations are used when dealing **c**ards.
+:::
+
+
+
+
+
 ::: {.example #ChooseDigits name="Selecting digits"}
 Consider the set of integers ${1, 3, 5, 7}$.
 Choose two numbers, *without replacement*; call the first $a$ and the second $b$.
@@ -2674,7 +2787,7 @@ Find the probability that:
 
 
 :::{.exercise #Quadratic}
-Consider the solutions to the general quadratic equation $y = ax^2 + bx + c = 0$ (where $a\ne0$, since then the equation does not define a quadratic). 
+Consider the solutions to the general quadratic equation $y = ax^2 + bx + c = 0$ (where $a \ne 0$, since then the equation does not define a quadratic). 
 Suppose real values are chosen at random for the constants $a$, $b$ and $c$.
 
 1. Define, using the appropriate notation, the sample space $S$ for the experiment.
@@ -2685,12 +2798,12 @@ Suppose real values are chosen at random for the constants $a$, $b$ and $c$.
 
 :::{.exercise #GreenLights}
 A courier company is interested in the length of time a certain set of traffic lights is green. 
-The lights are set so that the time between green lights in any one direction is between 15 and 150 seconds. 
+The lights are set so that the time between green lights in any one direction is between $15$ and $150$ seconds. 
 An employee  observes the lights and record the length of time between consecutive green lights.
 
 1. What is the random variable?
 2. What is the sample space?
-3. Can the classical approach to probability be used to determine the probability that the time between green lights is less than 90 seconds?
+3. Can the classical approach to probability be used to determine the probability that the time between green lights is less than $90$ seconds?
    Why or why not?
 4. Can the relative frequency approach be used to determine the same probability?
    If so, how? If not, why not?
@@ -2711,7 +2824,7 @@ Suppose a squad consists of seven batters, five bowlers, two all-rounders and on
 
 :::{.exercise #HatData}
 Researchers [@data:Dexter2019:SunProtection] observed the behaviour of pedestrians in Brisbane, Queensland, around midday in summer.
-The researchers found the probability of wearing a hat was 0.025 for males, and 0.060 for females.
+The researchers found the probability of wearing a hat was $0.025$ for males, and $0.060$ for females.
 Using this information:
 
 1. Construct a tree diagram for the sample space.
@@ -3054,7 +3167,7 @@ Without using any technology, compute the value of $\displaystyle \frac{{}^{25} 
 
 
 :::{.exercise #Cards}
-Define these two sets:
+Define these two sets:  
 \begin{align*}
   S &= \{\clubsuit, \spadesuit, \heartsuit, \diamondsuit\};\\
   D &= \{ 2, 3, \dots, 10, \text{Jack}, \text{Queen}, \text{King}, \text{Ace}\}.
