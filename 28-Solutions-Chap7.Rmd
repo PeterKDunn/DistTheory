@@ -396,3 +396,47 @@ See that $Y\in\{0, 1, \sqrt{2}, \sqrt{3}, 2\}$ and so
 :::
 
 
+
+
+:::{.answer}
+**Answer to Exercise \@ref(exr:BetaHospital2).**
+
+For the given beta distribution, $\text{E}(V) = 0.287/(0.287 + 0.926) = 0.2366...$ and $\text{Var}(V) = 0.08161874$.
+
+1. $\text{E}(S) = \text{E}(4.5 + 11V) = 4.5 + 11\text{E}(V) = 7.10$ minutes.
+   $\text{var}(S) = 11^2\times\text{Var}(V) = 9.875$ minutes^2^.
+1. $V\in (4.5, 15.5)$.
+   See Fig. \@ref(fig:ServiceTimes).
+1. This corresponds to $V = 10.5/11 = 0.9545455$, so $\Pr(S > 15) = \Pr(V > 0.9545455) = 0.01745087$.
+1. With $V$, the largest 20% correspond to $V = 0.004080076$, so that $S = 4.544881$; the *quickest* 20% are within 4.54 minutes.
+:::
+
+
+```{r ServiceTimes, fig.cap="Service times", fig.align="center"}
+v <- seq(0, 1, length = 500)
+stime <- 4.5 + 11 * v
+  
+PDFv <- dbeta(v, shape1 = 0.287, shape2 = 0.926)
+
+plot( PDFv ~ stime,
+      type = "l",
+      las = 1,
+      xlim = c(0, 15.5),
+      ylim = c(0, 5),
+      xlab = expression(italic(S)),
+      ylab = "PDF",
+      main = "Distribution of S",
+      lwd = 2)
+abline(v = 4.5,
+       lty = 2,
+       col = "grey",
+       lwd = 2)
+## Part 3
+1 - pbeta( 0.9545455, shape1 = 0.287, shape2 = 0.926)
+
+## Part 4
+qbeta(0.2, shape1 = 0.287, shape2 = 0.926) + 4.5
+```
+
+
+
