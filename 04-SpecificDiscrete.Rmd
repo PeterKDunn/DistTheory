@@ -653,374 +653,6 @@ The first two result can be proven from Theorem \@ref(thm:GeometricProperties).
 
 
 
-
-
-## Poisson distribution {#PoissonDistribution}
-
-The Poisson distribution is commonly used to model the number of occurrences of an event which occurs randomly in time or space.
-The Poisson distribution arises as a result of assumptions made about a random process:
-
-* Events that occur in one time-interval (or region) are independent of those occurring in any other non-overlapping time-interval (or region).
-* The probability that an event occurs in a small time-interval is proportional to the length of the interval.
-* The probability that 2 or more events occur in a very small time-interval is so small that it is negligible.
-
-Whenever these assumptions are valid, or approximately so, the Poisson distribution is appropriate.
-Many natural phenomena fall into this category.
-
-
-### Derivation of Poisson distribution {#PoissonDerivation}
-
-The [binomial distribution](BinomialDistribution) applies in situations where an event may occur a certain number of times in a fixed number of trials, say $n$.
-What if $n$ gets increasingly large though, so effectively there is no upper limit?
-Mathematically, we might say: What happens if $n\to\infty$?
-
-Let's find out.
-Begin with the binomial probability function  
-\begin{equation}
-   p_X(x; n, p) = \binom{n}{x} p^x (1 - p)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}
-   (\#eq:BinomialPMF2)
-\end{equation}
-which has a mean of $\lambda = np$. 
-First, re-writing \@ref(eq:BinomialPMF2) in terms of the mean $\lambda$:  
-\begin{equation}
-   p_X(x; n, \lambda) 
-   = 
-   \binom{n}{x} \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}.
-   (\#eq:BinomialPMF2Mean)
-\end{equation}
-Now consider the case $n \to \infty$ (for $x = 0, 1, \dots$):  
-\begin{align}
-   \lim_{n\to\infty}
-   p_X(x; n, \lambda) 
-   &= 
-   \lim_{n\to\infty} \binom{n}{x} 
-   \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x}\\    
-   &= \frac{\lambda^x}{x!} 
-   \lim_{n\to\infty} \frac{n!}{(n - x)!} \frac{1}{n^x} \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}.
-\end{align}
-Now, since *the limit of product of functions is equal to product of their limits*, each component can be considered in turn.
-
-Looking at the first component, see that  
-\begin{align}
-  \lim_{n\to\infty} \frac{n!}{(n - x)!} \times \frac{1}{n^x}
-  &= \lim_{n\to\infty} \frac{n \times (n - 1) \times (n - 2) \times\cdots\times 2 \times 1}
-                            {(n - x)\times (n - x - 1) \times \cdots \times 2 \times 1} \times \frac{1}{n^x}\\
-  &= \lim_{n\to\infty}\frac{ \overbrace{n \times (n - 1) \times \cdots\times (n - x + 1)}^{\text{$x$ terms}}}
-                           { \underbrace{n \times n \times\cdots \times n\times n}_{\text{$x$ terms}}}\\
-  &= \lim_{n\to\infty} \frac{n}{n} \times \frac{n - 1}{n} \times \frac{n - 2}{n} \times\cdots\times \frac{n - x + 1}{n}\\
-  &= 1 \times 1\times\cdots\times 1 = 1.
-\end{align}
-For the next component, see that (using \@ref(eq:ExponentialLimit)):  
-\[
-  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{n} = \exp(-\lambda).
-\]
-For the last term:  
-\[
-  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{-x} = 1^{-x} = 1.
-\]
-Putting the pieces together:  
-\begin{align}
-   \lim_{n\to\infty}
-   p_X(x; n, \lambda) 
-   &= 
-   \frac{\lambda^x}{x!} 
-   \lim_{n\to\infty} \frac{n!}{(n - x)!} \frac{1}{n^x} 
-   \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}\\   
-   p_X(x; \lambda) 
-   &= \frac{\lambda^k}{x!}  
-   1 \times \exp(-\lambda) \times 1\\
-   &= \frac{\exp(-\lambda) \lambda^x}{x!},
-\end{align}
-for $x = 0, 1, 2, \dots$.
-This is the probability function for the *Poisson distribution*.
-
-A *Poisson process* refers to events that occur at a rate $\lambda$, but occur at random.
-
-
-### Definition and properties {#PoissonDefinition}
-
-The definition of the Poisson distribution can now be given.
-
-:::{.definition #PoissonDistribution name="Poisson distribution"}
-A random variable $X$ is said to have a *Poisson distribution* if its pmf is  
-\begin{equation}
-   p_X(x; \lambda) = \frac{\exp(-\lambda) \lambda^x}{x!}\quad \text{for $x = 0, 1, 2, \dots$}
-   (\#eq:PoissonPMF)
-\end{equation}
-where the parameter is $\lambda > 0$.
-We write $X\sim\text{Pois}(\lambda)$.
-:::
-
-
-:::{.definition #PoissonDistributionDF name="Poisson distribution: distribution function"}
-For a random variable $X$ with the Poisson distribution given in \@ref(eq:PoissonPMF), the distribution function is  
-\[
-  F_X(x; \lambda) = 
-  \begin{cases}
-    0                                  & \text{for $x < 0$}\\
-    \displaystyle \exp(-\lambda) \sum _{i = 0}^{\lfloor x \rfloor }{\frac {\lambda ^{i}}{i!}} & \text{for $x\ge 0$};\\
-  \end{cases}
-\]
-where $\lfloor z \rfloor$ is the *floor function*.
-:::
-
-
-The pmf for a Poisson distribution for different values of $\lambda$ is shown in Fig. \@ref(fig:PoissonExamples).
-
-
-
-
-```{r PoissonExamples, echo=FALSE, fig.align="center", fig.cap="The pf for the Poisson distribution for various values of $\\lambda$", fig.height = 7, fig.width=7, out.width='80%'}
-par( mfrow = c(2, 2))
-
-xmax <- 10
-mu <- c(0.5, 1, 2, 5)
-
-for (i in (1:4)) {
-  muvalue <- mu[i]
-  x <-  0:xmax
-  y <- dpois(x, 
-             lambda = muvalue )
-  
-   plot( x = x,
-         y = y,
-         xlim = c(0, xmax),
-         xlab = expression(italic(x)),
-         ylab = "Probability function",
-         main = bquote("Poisson mean:" ~ lambda == .(muvalue)),
-         las = 1,
-         lty = 3,
-         lwd = 2,
-         col = "grey",
-         type = "h")
-  points(x = x,
-         y = y,
-         pch = 19)
-  
-}
-```
-
-
-The following are the basic properties of the Poisson distribution.
-
-::: {.theorem #PoissonProperties name="Poission distribution properties"}
-If $X\sim\text{Pois}(\lambda)$ then
-
-1. $\text{E}(X) = \lambda$.
-2. $\text{var}(X) = \lambda$.
-3. $M_X(t) = \exp[ \lambda\{\exp(t) - 1\}]$.
-:::
-
-:::{.proof}
-The third result is proven, then the other results follow:  
-\begin{align*}
-   M_X(t) = \text{E}(e^{tX}) 
-     &= \sum^\infty_{x = 0} e^{xt} e^{-\lambda} \lambda^x / x!\\
-     &= e^{-\lambda} \sum^\infty_{x = 0} \frac{(\lambda\, e^t)^x}{x!} \\
-     &= e^{-\lambda} \left[ 1 + \lambda\, e^t + \frac{(\lambda\,e^t)^2}{2!} + \dots \right]\\
-     &= e^{-\lambda} e^{\lambda\, e^t}\\
-     &= e^{-\lambda (1 - e^t)},
-\end{align*}
-using \@ref(eq:Exponential).
-The first two results follow from differentiating the mgf.
-:::
-
-
-Notice that the Poisson distribution has the variance equal to the mean.
-
-
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the Poisson distribution have the form `[dpqr]poiss(lambda)` (see Appendix \@ref(UseRDistributions)).
-:::
-
-
-:::{.example #Queues name="Queuing"}
-Customers enter a service line 'at random' at a rate of 4 per minute.
-Assume that the number entering the line in any given time interval has a Poisson distribution.
-To determine the probability that at least one customer enters the line in a given $\frac{1}{2}$-minute interval, use (since $\lambda = 2$ over half-hour):  
-\[ 
-   \Pr(X\geq 1) = 1 - \Pr(X = 0) = 1 - e^{-2} = 0.865.
-\]
-In **R**:
-```{r}
-1 - dpois(0,
-          lambda = 2)
-```
-:::
-
-
-:::{.example #Bombs name="Bomb hits"}
-@clarke1946application (quoted in @data:hand:handbook, Dataset 289) discusses the number of flying bomb hits on London during World War II in a 36 square kilometre area of South London.
-The area was gridded into 0.25 km squares and the number of bombs falling in each grid was counted (Table \@ref(tab:BombTable)).
-Assuming random hits, the Poisson distribution can be used to model the data using $\lambda = 0.93$.
-The pf for the Poisson distribution can be compared to the empirical probabilities computed above; see Table \@ref(tab:BombTable).
-For example, the probability of zero hits is  
-\[
-   \frac{\exp(-0.93) (0.93)^0}{0!} \approx 0.39.
-\]
-The two probabilities are very close; the Poisson distribution fits the data very well.
-:::
-
-
-```{r BombTable, echo=FALSE}
-BombTable <- array( dim = c(8, 4))
-colnames(BombTable) <- c("Hits",
-                         "Number of bombs",
-                         "Proportion of bombs",
-                         "Poisson proportion")
-BombTable[, 1] <- 0:7
-BombTable[, 2] <- c(229,
-                    211,
-                    93,
-                    35,
-                    7,
-                    0,
-                    0,
-                    1)
-BombTable[, 3] <- round(BombTable[, 2] / sum(BombTable[, 2]), 4)
-lambda <- 0.93 # sum( BombTable[, 1] * BombTable[, 3])
-
-BombTable[, 4] <- dpois(0:7,
-                        lambda = lambda )
-BombTable[, 4] <- round( BombTable[, 4], 4)
-BombTable[ 8, 4] <- 1 - sum( BombTable[1:7, 4])
-
-BombTable.caption <- "The number of flying bomb hits on London during World War II in a 36 square kilometre area of South London. The proportion of the 576 grid squares receiving 0, 1, ...hits was also computed. The observed and empirical probabilities are shown. The Poisson distribution fits the data  well."
-
-if( knitr::is_latex_output() ) {
-  knitr::kable( BombTable,
-                format = "latex",
-                booktabs = TRUE,
-                longtable = FALSE,
-                linesep = c("", "", "\\addlinespace"),
-                col.names = c("Hits",
-                              "Number bombs", 
-                              "Proportion bombs", 
-                              "Poisson proportion"),
-                caption = BombTable.caption) %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE)
-}
-if( knitr::is_html_output() ) {
-  knitr::kable( BombTable,
-                format = "html",
-                booktabs = TRUE,
-                longtable = FALSE,
-                linesep = c("", "", "\\addlinespace"),
-                col.names = c("Hits",
-                              "Number bombs", 
-                              "Proportion bombs", 
-                              "Poisson proportion"),
-                caption = BombTable.caption) %>%
-    row_spec(1, bold = TRUE)
-}
-
-```
-
-
-
-### Relationship to the binomial distribution {#PoissonBinomial}
-
-Given the derivation of the Poisson distribution (Sect. \@ref(PoissonDerivation)), a relationship between the Poisson and binomial distributions should come as no surprise.
-
-Computing binomial probabilities is tedious if the number of trials $n$ is very large and the probability of success in a single trial is very small. 
-For example, consider $X\sim \text{Bin}(n = 2000, p = 0.005)$; the pf is  
-\[
-   p_X(x) = \binom{2000}{x}(0.005)^x 0.995^{2000 - x}.
-\]
-Using the pmf, computing some probabilities, such as $\Pr(X > 101)$, is tedious.
-(Try computing $\binom{2000}{102}$ on your calculator, for example.)
-However, the Poisson distribution can be used to *approximate* this probability.
-
-Set the Poisson mean to equal the binomial mean (that is, $\lambda = \mu = np$).
-Since $\text{E}(Y) = \text{var}(Y) = \lambda$ for the Poisson distribution, this means the variance is also set to $\sigma^2 = np$.
-Of course, the binomial mean is $np(1 - p)$, so this can only be (approximately) true if $p$ is close to zero (and so $1 - p\approx 1$).
-
-A general guideline is that the Poisson distribution can be used to approximate the binomial when $n$ is large (recall, the derivation was for the case $n\to\infty$), $p$ is small and $np \le 7$.
-
-
-::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
-If the random variable $X$ has the binomial distribution $X \sim \text{Bin}(n, p)$, the probability function can be approximated by the Poisson distribution $X \sim \text{Pois}(\lambda)$, where $\lambda = np$.
-The approximation is good when $n$ is large, $p$ is small, and $np\le 7$.
-:::
-
-
-```{r BinomialPoisson, echo=FALSE, fig.align="center", fig.cap="The Poisson distribution is an excellent approximation to the binomial distribution when $p$ is small and $n$ is large. The binomial pf is shown using empty circles; the Poisson pf using crosses.", fig.height = 7, fig.width=7, out.width='80%'}
-par( mfrow = c(2, 2))
-
-n <- c(10, 50, 
-       100, 1000)
-p <- c(0.2, 0.1, 
-       0.010, 0.005)
-xmax <- c(10, 20, 
-          10, 15)
-
-for (i in (1:4)) {
-   pValue <- p[i]
-   nValue <- n[i]
-   
-  x <-  0:n[i]
-  y <- dbinom(x, 
-              size = n[i],
-              prob = p[i])
-  
-   plot( x = x,
-         y = y,
-         xlim = c(0, xmax[i]),
-         xlab = expression(italic(x)),
-         ylab = "Probability",
-         main = bquote("Binomial: " ~ italic(n) == ~ .(nValue) ~ "and" ~ italic(p) == .(pValue) ),
-         lwd = 2,
-         las = 1,
-         lty = 3,
-         col = "grey",
-         type = "h")
-  points(x = x,
-         y = y,
-         pch = 19)
-
-  muPoisson <- nValue * pValue
-  xValues <- 0:xmax[i]
-  points( x = xValues,
-          y = dpois(xValues,
-                    lambda = muPoisson),
-          pch = 4,
-          cex = 1.5)
-  
-  if (i == 4 ){
-    legend("topright",
-           pch = c(4, 19),
-           pt.cex = c(1.5, 1),
-           legend = c("Binomial",
-                      "Poisson approx."))
-  }
-  
-}
-
-```
-
-
-### Extensions {#PoissonExtensions}
-
-The Poisson distribution is commonly used to model independent counts.
-However, sometimes these counts explicitly *exclude* a count of zero.
-For example, consider modelling the number of nights patients spend in hospital; patients must spend at least one night to be in the data. 
-Then, the probability functions can be expressed as  
-\[
-   p_X(x; \lambda) = \frac{\exp(-\lambda) \lambda^{x - 1}}{(x - 1)!}\quad   \text{for $x = 1, 2, 3, \dots$}
-\]
-where the parameter is $\lambda > 0$.
-This is called the *zero-truncated Poisson distribution*.
-In this case, $\text{E}(X) = \lambda + 1$ and $\text{var}(X) = \lambda$ (Ex. \@ref(exr:PoissonZeroTruncated)).
-
-In some cases, the random variable is a count, but has an upper limit on the possible number of counts.
-This is the *truncated Poisson distribution*.
-
-Other situations exist where the the proportions of zeros exceed the proportions expected by the Poisson distribution (e.g., $\exp(-\lambda)$), but the Poisson distributions seems to otherwise be suitable.
-In these situations, the *zero-inflated Poisson distribution* may be suitable.
-
-
-
 ## Negative binomial distribution {#NegativeBinomialDistribution}
 
 ### Derivation: standard parameterisation {#NegBinStandard}
@@ -1088,8 +720,7 @@ Hence, including the ten calls that leads to a person accepting the invitation, 
 
 
 
-Since the parameterisation in \@ref(eq:NegativeBinomialPMF) is defined over the non-negative integers, it is often used to model count data (as an alternative to the [Poisson distribution](PoissonDistribution)).
-Since the negative binomial distribution has two parameters and the Poison only one, the negative binomial distribution often produces a better fit.
+Since the parameterisation in \@ref(eq:NegativeBinomialPMF) is defined over the non-negative integers, it is often used to model count data.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
@@ -1350,6 +981,375 @@ if( knitr::is_html_output() ) {
   row_spec(1, bold = TRUE) 
 }
 ```
+
+
+
+## Poisson distribution {#PoissonDistribution}
+
+The Poisson distribution is very commonly used to model the number of occurrences of an event which occurs randomly in time or space.
+The Poisson distribution arises as a result of assumptions made about a random process:
+
+* Events that occur in one time-interval (or region) are independent of those occurring in any other non-overlapping time-interval (or region).
+* The probability that an event occurs in a small time-interval is proportional to the length of the interval.
+* The probability that 2 or more events occur in a very small time-interval is so small that it is negligible.
+
+Whenever these assumptions are valid, or approximately so, the Poisson distribution is appropriate.
+Many natural phenomena fall into this category.
+
+
+### Derivation of Poisson distribution {#PoissonDerivation}
+
+The [binomial distribution](BinomialDistribution) applies in situations where an event may occur a certain number of times in a fixed number of trials, say $n$.
+What if $n$ gets increasingly large though, so effectively there is no upper limit?
+Mathematically, we might say: What happens if $n\to\infty$?
+
+Let's find out.
+Begin with the binomial probability function  
+\begin{equation}
+   p_X(x; n, p) = \binom{n}{x} p^x (1 - p)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}
+   (\#eq:BinomialPMF2)
+\end{equation}
+which has a mean of $\lambda = np$. 
+First, re-writing \@ref(eq:BinomialPMF2) in terms of the mean $\lambda$:  
+\begin{equation}
+   p_X(x; n, \lambda) 
+   = 
+   \binom{n}{x} \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}.
+   (\#eq:BinomialPMF2Mean)
+\end{equation}
+Now consider the case $n \to \infty$ (for $x = 0, 1, \dots$):  
+\begin{align}
+   \lim_{n\to\infty}
+   p_X(x; n, \lambda) 
+   &= 
+   \lim_{n\to\infty} \binom{n}{x} 
+   \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x}\\    
+   &= \frac{\lambda^x}{x!} 
+   \lim_{n\to\infty} \frac{n!}{(n - x)!} \frac{1}{n^x} \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}.
+\end{align}
+Now, since *the limit of product of functions is equal to product of their limits*, each component can be considered in turn.
+
+Looking at the first component, see that  
+\begin{align}
+  \lim_{n\to\infty} \frac{n!}{(n - x)!} \times \frac{1}{n^x}
+  &= \lim_{n\to\infty} \frac{n \times (n - 1) \times (n - 2) \times\cdots\times 2 \times 1}
+                            {(n - x)\times (n - x - 1) \times \cdots \times 2 \times 1} \times \frac{1}{n^x}\\
+  &= \lim_{n\to\infty}\frac{ \overbrace{n \times (n - 1) \times \cdots\times (n - x + 1)}^{\text{$x$ terms}}}
+                           { \underbrace{n \times n \times\cdots \times n\times n}_{\text{$x$ terms}}}\\
+  &= \lim_{n\to\infty} \frac{n}{n} \times \frac{n - 1}{n} \times \frac{n - 2}{n} \times\cdots\times \frac{n - x + 1}{n}\\
+  &= 1 \times 1\times\cdots\times 1 = 1.
+\end{align}
+For the next component, see that (using \@ref(eq:ExponentialLimit)):  
+\[
+  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{n} = \exp(-\lambda).
+\]
+For the last term:  
+\[
+  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{-x} = 1^{-x} = 1.
+\]
+Putting the pieces together:  
+\begin{align}
+   \lim_{n\to\infty}
+   p_X(x; n, \lambda) 
+   &= 
+   \frac{\lambda^x}{x!} 
+   \lim_{n\to\infty} \frac{n!}{(n - x)!} \frac{1}{n^x} 
+   \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}\\   
+   p_X(x; \lambda) 
+   &= \frac{\lambda^k}{x!}  
+   1 \times \exp(-\lambda) \times 1\\
+   &= \frac{\exp(-\lambda) \lambda^x}{x!},
+\end{align}
+for $x = 0, 1, 2, \dots$.
+This is the probability function for the *Poisson distribution*.
+
+A *Poisson process* refers to events that occur at a rate $\lambda$, but occur at random.
+
+
+### Definition and properties {#PoissonDefinition}
+
+The definition of the Poisson distribution can now be given.
+
+:::{.definition #PoissonDistribution name="Poisson distribution"}
+A random variable $X$ is said to have a *Poisson distribution* if its pmf is  
+\begin{equation}
+   p_X(x; \lambda) = \frac{\exp(-\lambda) \lambda^x}{x!}\quad \text{for $x = 0, 1, 2, \dots$}
+   (\#eq:PoissonPMF)
+\end{equation}
+where the parameter is $\lambda > 0$.
+We write $X\sim\text{Pois}(\lambda)$.
+:::
+
+
+:::{.definition #PoissonDistributionDF name="Poisson distribution: distribution function"}
+For a random variable $X$ with the Poisson distribution given in \@ref(eq:PoissonPMF), the distribution function is  
+\[
+  F_X(x; \lambda) = 
+  \begin{cases}
+    0                                  & \text{for $x < 0$}\\
+    \displaystyle \exp(-\lambda) \sum _{i = 0}^{\lfloor x \rfloor }{\frac {\lambda ^{i}}{i!}} & \text{for $x\ge 0$};\\
+  \end{cases}
+\]
+where $\lfloor z \rfloor$ is the *floor function*.
+:::
+
+
+The pmf for a Poisson distribution for different values of $\lambda$ is shown in Fig. \@ref(fig:PoissonExamples).
+
+
+
+
+```{r PoissonExamples, echo=FALSE, fig.align="center", fig.cap="The pf for the Poisson distribution for various values of $\\lambda$", fig.height = 7, fig.width=7, out.width='80%'}
+par( mfrow = c(2, 2))
+
+xmax <- 10
+mu <- c(0.5, 1, 2, 5)
+
+for (i in (1:4)) {
+  muvalue <- mu[i]
+  x <-  0:xmax
+  y <- dpois(x, 
+             lambda = muvalue )
+  
+   plot( x = x,
+         y = y,
+         xlim = c(0, xmax),
+         xlab = expression(italic(x)),
+         ylab = "Probability function",
+         main = bquote("Poisson mean:" ~ lambda == .(muvalue)),
+         las = 1,
+         lty = 3,
+         lwd = 2,
+         col = "grey",
+         type = "h")
+  points(x = x,
+         y = y,
+         pch = 19)
+  
+}
+```
+
+
+The following are the basic properties of the Poisson distribution.
+
+::: {.theorem #PoissonProperties name="Poission distribution properties"}
+If $X\sim\text{Pois}(\lambda)$ then
+
+1. $\text{E}(X) = \lambda$.
+2. $\text{var}(X) = \lambda$.
+3. $M_X(t) = \exp[ \lambda\{\exp(t) - 1\}]$.
+:::
+
+:::{.proof}
+The third result is proven, then the other results follow:  
+\begin{align*}
+   M_X(t) = \text{E}(e^{tX}) 
+     &= \sum^\infty_{x = 0} e^{xt} e^{-\lambda} \lambda^x / x!\\
+     &= e^{-\lambda} \sum^\infty_{x = 0} \frac{(\lambda\, e^t)^x}{x!} \\
+     &= e^{-\lambda} \left[ 1 + \lambda\, e^t + \frac{(\lambda\,e^t)^2}{2!} + \dots \right]\\
+     &= e^{-\lambda} e^{\lambda\, e^t}\\
+     &= e^{-\lambda (1 - e^t)},
+\end{align*}
+using \@ref(eq:Exponential).
+The first two results follow from differentiating the mgf.
+:::
+
+
+Notice that the Poisson distribution has the variance equal to the mean.
+The negative binomial distribution has two parameters and the Poison only one, so often the negative binomial distribution produces a better fit to data.
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+The four **R** functions for working with the Poisson distribution have the form `[dpqr]poiss(lambda)` (see Appendix \@ref(UseRDistributions)).
+:::
+
+
+:::{.example #Queues name="Queuing"}
+Customers enter a service line 'at random' at a rate of 4 per minute.
+Assume that the number entering the line in any given time interval has a Poisson distribution.
+To determine the probability that at least one customer enters the line in a given $\frac{1}{2}$-minute interval, use (since $\lambda = 2$ over half-hour):  
+\[ 
+   \Pr(X\geq 1) = 1 - \Pr(X = 0) = 1 - e^{-2} = 0.865.
+\]
+In **R**:
+```{r}
+1 - dpois(0,
+          lambda = 2)
+```
+:::
+
+
+:::{.example #Bombs name="Bomb hits"}
+@clarke1946application (quoted in @data:hand:handbook, Dataset 289) discusses the number of flying bomb hits on London during World War II in a 36 square kilometre area of South London.
+The area was gridded into 0.25 km squares and the number of bombs falling in each grid was counted (Table \@ref(tab:BombTable)).
+Assuming random hits, the Poisson distribution can be used to model the data using $\lambda = 0.93$.
+The pf for the Poisson distribution can be compared to the empirical probabilities computed above; see Table \@ref(tab:BombTable).
+For example, the probability of zero hits is  
+\[
+   \frac{\exp(-0.93) (0.93)^0}{0!} \approx 0.39.
+\]
+The two probabilities are very close; the Poisson distribution fits the data very well.
+:::
+
+
+```{r BombTable, echo=FALSE}
+BombTable <- array( dim = c(8, 4))
+colnames(BombTable) <- c("Hits",
+                         "Number of bombs",
+                         "Proportion of bombs",
+                         "Poisson proportion")
+BombTable[, 1] <- 0:7
+BombTable[, 2] <- c(229,
+                    211,
+                    93,
+                    35,
+                    7,
+                    0,
+                    0,
+                    1)
+BombTable[, 3] <- round(BombTable[, 2] / sum(BombTable[, 2]), 4)
+lambda <- 0.93 # sum( BombTable[, 1] * BombTable[, 3])
+
+BombTable[, 4] <- dpois(0:7,
+                        lambda = lambda )
+BombTable[, 4] <- round( BombTable[, 4], 4)
+BombTable[ 8, 4] <- 1 - sum( BombTable[1:7, 4])
+
+BombTable.caption <- "The number of flying bomb hits on London during World War II in a 36 square kilometre area of South London. The proportion of the 576 grid squares receiving 0, 1, ...hits was also computed. The observed and empirical probabilities are shown. The Poisson distribution fits the data  well."
+
+if( knitr::is_latex_output() ) {
+  knitr::kable( BombTable,
+                format = "latex",
+                booktabs = TRUE,
+                longtable = FALSE,
+                linesep = c("", "", "\\addlinespace"),
+                col.names = c("Hits",
+                              "Number bombs", 
+                              "Proportion bombs", 
+                              "Poisson proportion"),
+                caption = BombTable.caption) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  knitr::kable( BombTable,
+                format = "html",
+                booktabs = TRUE,
+                longtable = FALSE,
+                linesep = c("", "", "\\addlinespace"),
+                col.names = c("Hits",
+                              "Number bombs", 
+                              "Proportion bombs", 
+                              "Poisson proportion"),
+                caption = BombTable.caption) %>%
+    row_spec(1, bold = TRUE)
+}
+
+```
+
+
+
+### Relationship to the binomial distribution {#PoissonBinomial}
+
+Given the derivation of the Poisson distribution (Sect. \@ref(PoissonDerivation)), a relationship between the Poisson and binomial distributions should come as no surprise.
+
+Computing binomial probabilities is tedious if the number of trials $n$ is very large and the probability of success in a single trial is very small. 
+For example, consider $X\sim \text{Bin}(n = 2000, p = 0.005)$; the pf is  
+\[
+   p_X(x) = \binom{2000}{x}(0.005)^x 0.995^{2000 - x}.
+\]
+Using the pmf, computing some probabilities, such as $\Pr(X > 101)$, is tedious.
+(Try computing $\binom{2000}{102}$ on your calculator, for example.)
+However, the Poisson distribution can be used to *approximate* this probability.
+
+Set the Poisson mean to equal the binomial mean (that is, $\lambda = \mu = np$).
+Since $\text{E}(Y) = \text{var}(Y) = \lambda$ for the Poisson distribution, this means the variance is also set to $\sigma^2 = np$.
+Of course, the binomial mean is $np(1 - p)$, so this can only be (approximately) true if $p$ is close to zero (and so $1 - p\approx 1$).
+
+A general guideline is that the Poisson distribution can be used to approximate the binomial when $n$ is large (recall, the derivation was for the case $n\to\infty$), $p$ is small and $np \le 7$.
+
+
+::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
+If the random variable $X$ has the binomial distribution $X \sim \text{Bin}(n, p)$, the probability function can be approximated by the Poisson distribution $X \sim \text{Pois}(\lambda)$, where $\lambda = np$.
+The approximation is good when $n$ is large, $p$ is small, and $np\le 7$.
+:::
+
+
+```{r BinomialPoisson, echo=FALSE, fig.align="center", fig.cap="The Poisson distribution is an excellent approximation to the binomial distribution when $p$ is small and $n$ is large. The binomial pf is shown using empty circles; the Poisson pf using crosses.", fig.height = 7, fig.width=7, out.width='80%'}
+par( mfrow = c(2, 2))
+
+n <- c(10, 50, 
+       100, 1000)
+p <- c(0.2, 0.1, 
+       0.010, 0.005)
+xmax <- c(10, 20, 
+          10, 15)
+
+for (i in (1:4)) {
+   pValue <- p[i]
+   nValue <- n[i]
+   
+  x <-  0:n[i]
+  y <- dbinom(x, 
+              size = n[i],
+              prob = p[i])
+  
+   plot( x = x,
+         y = y,
+         xlim = c(0, xmax[i]),
+         xlab = expression(italic(x)),
+         ylab = "Probability",
+         main = bquote("Binomial: " ~ italic(n) == ~ .(nValue) ~ "and" ~ italic(p) == .(pValue) ),
+         lwd = 2,
+         las = 1,
+         lty = 3,
+         col = "grey",
+         type = "h")
+  points(x = x,
+         y = y,
+         pch = 19)
+
+  muPoisson <- nValue * pValue
+  xValues <- 0:xmax[i]
+  points( x = xValues,
+          y = dpois(xValues,
+                    lambda = muPoisson),
+          pch = 4,
+          cex = 1.5)
+  
+  if (i == 4 ){
+    legend("topright",
+           pch = c(4, 19),
+           pt.cex = c(1.5, 1),
+           legend = c("Binomial",
+                      "Poisson approx."))
+  }
+  
+}
+
+```
+
+
+### Extensions {#PoissonExtensions}
+
+The Poisson distribution is commonly used to model independent counts.
+However, sometimes these counts explicitly *exclude* a count of zero.
+For example, consider modelling the number of nights patients spend in hospital; patients must spend at least one night to be in the data. 
+Then, the probability functions can be expressed as  
+\[
+   p_X(x; \lambda) = \frac{\exp(-\lambda) \lambda^{x - 1}}{(x - 1)!}\quad   \text{for $x = 1, 2, 3, \dots$}
+\]
+where the parameter is $\lambda > 0$.
+This is called the *zero-truncated Poisson distribution*.
+In this case, $\text{E}(X) = \lambda + 1$ and $\text{var}(X) = \lambda$ (Ex. \@ref(exr:PoissonZeroTruncated)).
+
+In some cases, the random variable is a count, but has an upper limit on the possible number of counts.
+This is the *truncated Poisson distribution*.
+
+Other situations exist where the the proportions of zeros exceed the proportions expected by the Poisson distribution (e.g., $\exp(-\lambda)$), but the Poisson distributions seems to otherwise be suitable.
+In these situations, the *zero-inflated Poisson distribution* may be suitable.
+
+
 
 
 
@@ -1768,17 +1768,17 @@ A certain number of animals in an area are trapped and tagged, then released.
 At a later point, more animals are trapped, and the number previously tagged is noted.
 
 Define $p$ as the probability that an animal is captured zero times during the study,  and $n_x$ as the number of animals captured $x$ times (for $x = 0, 1, 2, \dots$).
-($n_0$ is unknown.)
+($n_0$, which we write as $N$, is unknown.)
 The study consist of $s$ trapping events, so we have $n_1$, $n_2, \dots n_s$ where $s$ is sufficiently 'large' that the truncation is negligible.
 Then,  
 \begin{equation}
    n_x = N p (1 - p)^x \quad \text{for $x = 0, 1, 2, \dots$}.
    (\#eq:GeomCapture)
 \end{equation}
-While $p$ and $N$ are unknown, the value of $N$ is sought.
+While $p$ and $N$ are both unknown, the value of $N$ is of interest
 
 1. Explain how \@ref(eq:GeomCapture) arises.
-1. Take logarithms of \@ref(eq:GeomCapture), and hence write this equation in the form of a linear regression equation $\hat{y} = \beta_0 + \beta_1 x$.
+1. Take logarithms of both sides of of \@ref(eq:GeomCapture), and hence write this equation in the form of a linear regression equation $\hat{y} = \beta_0 + \beta_1 x$.
 1. From the regression equation, identify *how* to estimate $p$ from the slope of the regression line ($\beta_1$), and then $N$ from the $y$-intercept ($\beta_0$).
 1. Use the data in Table \@ref(tab:RabbitPop), from a study of rabbits in an area Michigan [@eberhardt1963problems], to estimate the rabbit population.
 
@@ -1810,8 +1810,7 @@ if( knitr::is_html_output() ) {
                align = "r",
                longtable = FALSE,                
                escape = FALSE,
-               caption = "The number of rabbits $n_x$ at each trapping who had been previously trapped") %>%
-    kable_styling(font_size = 10) 
+               caption = "The number of rabbits $n_x$ at each trapping who had been previously trapped") 
 }
 
 ```
