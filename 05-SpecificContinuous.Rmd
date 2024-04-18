@@ -663,6 +663,7 @@ for (i in (1:4)){
         xlab = expression(italic(x)),
         ylab = "Probability function",
         type = "h",
+        xlim = c(0, max(xBinomial) ),
         ylim = c(0, ylim[i]),
         las = 1,
         lty = 2,
@@ -697,15 +698,15 @@ The approximation is good if *both* $np \ge 5$ *and* $n(1 - p) \ge 5$.
 
 
 :::{.example #NormalApproxMice name="Normal approximation to binomial"}
-Consider *mdx* mice (which have a strain of muscular dystrophy) from a particular source for which 30% of the mice survive for at least 40 weeks.
-One particular experiment requires at least 35 of the 100 mice to live beyond 40 weeks.
-What is the probability that 35 or more of the group will survive beyond 40 weeks?
+Consider *mdx* mice (which have a strain of muscular dystrophy) from a particular source for which $30$% of the mice survive for at least $40$ weeks.
+One particular experiment requires at least $35$ of the $100$ mice to live beyond $40$ weeks.
+What is the probability that **$35$ or more** of the group will survive beyond $40$ weeks?
 
-First see that the situation is binomial; if $X$ is the number of mice from the group of 100 that survive, then $X \sim \text{Bin}(100, 0.3)$.
+First see that the situation is binomial; if $X$ is the number of mice from the group of $100$ that survive, then $X \sim \text{Bin}(100, 0.3)$.
 This could be *approximated* by the normal distribution $Y\sim N(30, 21)$, where the variance is $np(1 - p) = 100\times 0.3\times 0.7 = 21$.
-Both $np = 30$ and $n(1 - p) = 70$ are much larger than 5, so this approximation is expected to adequate.
+Both $np = 30$ and $n(1 - p) = 70$ are much larger than $5$, so this approximation is expected to adequate.
 
-Figure \@ref(fig:ContCorrBoxes) shows the upper tail of the distribution near $X = 35$:
+Figure\ \@ref(fig:ContCorrBoxes) shows the upper tail of the distribution near $X = 35$:
 using the normal approximation from $Y = 35$, only *half* of the original bar in the binomial pf is included.
 However, since the number of mice is discrete, we want the *entire* bar corresponding to $X = 35$.
 So to compute the correct answer, the normal distribution must be evaluated for $\Pr(Y > 34.5)$.
@@ -740,7 +741,7 @@ cat("With correction:" = round(ContCorrP, 6), "\n")
 ```
 
 
-```{r ContCorrBoxes, echo=FALSE, fig.width=7, fig.height=4, out.width='70%', fig.align="center", fig.cap="The normal distribution approximating the binomial distribution when $n = 100$, $p = 0.3$ and finding the probability that $X > 34$."}
+```{r ContCorrBoxes, echo=FALSE, fig.width=7, fig.height=4, out.width='70%', fig.align="center", fig.cap="The normal distribution approximating the binomial distribution when $n = 100$, $p = 0.3$ and finding the probability that $X > 35$."}
 n <- 100
 p <- 0.3
 
@@ -913,10 +914,10 @@ CCTable[4, ] <- c("$\\Pr(X \\ge 21)$",
                   round( 1 - pnorm(20.5, mean = mn, sd = stdev), 4) )
 
 CCTable[5, ] <- c("$\\Pr(15 < X \\le 17)$",
-                  round(pbinom(17, prob = prob, size = n) - pbinom(16, prob = prob, size = n), 4),
+                  round(pbinom(17, prob = prob, size = n) - pbinom(15, prob = prob, size = n), 4),
                   "",
                   "$\\Pr(15.5 < Y < 17.5)$",
-                  round( pnorm(16.5, mean = mn, sd = stdev) - pnorm(15.5, mean = mn, sd = stdev), 4) )
+                  round( pnorm(17.5, mean = mn, sd = stdev) - pnorm(15.5, mean = mn, sd = stdev), 4) )
 
   knitr::kable(CCTable,
                format = "latex",
@@ -954,10 +955,22 @@ CCTable[4, ] <- c("$\\Pr(X \\ge 21)$",
                   round( 1 - pnorm(20.5, mean = mn, sd = stdev), 4) )
 
 CCTable[5, ] <- c("$\\Pr(15 \\lt X \\le 17)$",
-                  round(pbinom(17, prob = prob, size = n) - pbinom(16, prob = prob, size = n), 4),
+                  round(pbinom(17, 
+                               prob = prob, 
+                               size = n) - 
+                          pbinom(15, 
+                                 prob = prob, 
+                                 size = n), 
+                        4),
                   "",
-                  "$\\Pr(15.5 \\lt Y \\lt 16.5)$",
-                  round( pnorm(16.5, mean = mn, sd = stdev) - pnorm(15.5, mean = mn, sd = stdev), 4) )
+                  "$\\Pr(15.5 \\lt Y \\lt 17.5)$",
+                  round( pnorm(17.5, 
+                               mean = mn, 
+                               sd = stdev) - 
+                           pnorm(15.5, 
+                                 mean = mn, 
+                                 sd = stdev), 
+                         4) )
 
   knitr::kable(CCTable,
                escape = TRUE,
