@@ -155,10 +155,12 @@ pmf1 <- data.frame(
 )
 ```
 
-```{r Bivar1graph, echo=FALSE, warning=FALSE, message=FALSE, webgl=TRUE, fig.cap="A bivariate probability function", fig.align="center", out.width='80%',fig.width=6}
+```{r Bivar1graph, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="A bivariate probability function", fig.align="center", out.width='80%',fig.width=6}
 
 # Plot
 if (knitr::is_html_output()) {
+  setupKnitr(autoprint = TRUE) #NEW: Seems needed as of 02 May 2024: https://github.com/rstudio/rmarkdown-cookbook/issues/370
+
   rgl::plot3d( # Plot the points
     x = pmf1$x,
     y = pmf1$y, 
@@ -181,13 +183,13 @@ if (knitr::is_html_output()) {
       lwd.grid = 1,
     lty = 2
 )
-  rgl::plot3d( # Plots the sticks from z=0 to the points
-    add = TRUE,
-    x = pmf1$x,
-    y = pmf1$y, 
-    z = pmf1$f, 
-    col = plotColour, 
-    type = "h") # Plot the line segments from z = 0 
+#  rgl::plot3d( # Plots the sticks from z=0 to the points
+#    add = TRUE,
+#    x = pmf1$x,
+#    y = pmf1$y, 
+#    z = pmf1$f, 
+#    col = plotColour, 
+#    type = "h") # Plot the line segments from z = 0 
 }
 ```
 
@@ -289,7 +291,7 @@ Consider the following continuous bivariate distribution with joint pdf
 \]
 This is sometimes called the *bivariate uniform distribution* 
 `r if (knitr::is_latex_output()) {
-   '(Fig. \\@ref(fig:BVDiscrete3)).'
+   '(Fig. \\@ref(fig:BVCont3)).'
 } else {
    '(see below).'
 }`
@@ -301,39 +303,42 @@ Hence the probability is $1/4$.
 :::
 
 
-```{r, BVDiscrete3, echo=FALSE, fig.align='center', fig.width=4, fig.height=4.5, out.width='60%',fig.cap="The bivariate uniform distribution"}
-  M <- plot3D::mesh( x = seq(-0.25, 1.25,
-                             by = 0.05),
-                     y = seq(-0.25, 1.25, 
-                             by = 0.05) )
-  zeroPDF <- M$x < 0 | M$x > 1 | M$y < 0 | M$y > 1
-  
-  z <-  array( 1,
-               dim = dim(M$x) )
-  z[zeroPDF] <- 0
-  
+```{r, BVCont3, echo=FALSE, fig.align='center', fig.width=4, fig.height=4.5, out.width='60%',fig.cap="The bivariate continuous uniform distribution"}
+
+M <- plot3D::mesh( x = seq(-0.25, 1.25,
+                           by = 0.05),
+                   y = seq(-0.25, 1.25, 
+                           by = 0.05) )
+zeroPDF <- M$x < 0 | M$x > 1 | M$y < 0 | M$y > 1
+
+z <-  array( 1,
+dim = dim(M$x) )
+z[zeroPDF] <- 0
+
 
 if (knitr::is_html_output()) {
-  rgl::plot3d(x = M$x, 
-                 y = M$y,
-                 z = z,
-                 colkey = FALSE, 
-                 phi = 40, 
-                 theta = 30, 
-                 d = 10, # Less perspective
-                 main = "Bivariate continuous uniform")
-  
+  rgl::persp3d( x = seq(-0.25, 1.25,
+                           by = 0.05),
+                y = seq(-0.25, 1.25, 
+                           by = 0.05),
+                z = z,
+                col = "grey",
+xlab = expression(italic(x)),
+ylab = expression(italic(y)),
+zlab = expression(italic(f)) )
+
+
 } else {
   plot3D::surf3D(x = M$x, 
-                 y = M$y,
-                 z = z,
-                 d = 2, 
-                 facets = FALSE,
-                 col = NULL,
-                 colkey = FALSE, 
-                 phi = 40, 
-                 theta = 30, 
-                 main = "Bivariate continuous uniform")
+  y = M$y,
+  z = z,
+  d = 2, 
+  facets = FALSE,
+  col = NULL,
+  colkey = FALSE, 
+  phi = 40, 
+  theta = 30, 
+  main = "Bivariate continuous uniform")
 }
 
 ```
@@ -1026,27 +1031,24 @@ grid(nx = NULL)
 
 To interpret the conditional distribution, for example $f_{X \mid Y = y}(x \mid y)$, consider slicing through the surface $f_{X, Y}(x, y)$ with the plane $y = c$ say, for $c$ a constant 
 `r if (knitr::is_latex_output()) {
-   '(Fig. \\@ref(fig:BivarConditionalInterpretation)).'
+   '(Fig. \\@ref(fig:BivarConditionala)).'
 } else {
    '(see below).'
 }`
-The intersection of the plane with the surface, will be proportional to a 1-dimensional pdf. 
+The intersection of the plane with the surface, will be proportional to a $1$-dimensional pdf. 
 This is $f_{X, Y}(x, c)$, which will not, in general, be a density function since the area under this curve will be $f_Y(c)$. 
 Dividing by the constant $f_Y(c)$ ensures the area under $\displaystyle\frac{f_{X,Y}(x,c)}{f_Y(c)}$ is one. 
 This is a one-dimensional pdf, of $X$ given $Y = c$; that is $f_{X \mid Y = c}(x\mid c)$.
 
 
 
-```{r BivarConditionalInterpretation, webgl=TRUE, echo=FALSE, fig.cap="A bivariate distribution, sliced at $Y =  c$, showing the conditional distribution of $X$ when $Y = 0.5$", fig.align="center", out.width='100%', fig.width = 7}
+```{r BivarJointa, echo=FALSE, fig.cap="A bivariate distribution", fig.align="center", out.width='100%', fig.width = 7}
 
 f <- function(x, y){
   (3 *x + y)/(2 * (3*x + 1) )
 }
 
-par( mfrow = c(1,2 ))
-
-if
-( knitr::is_latex_output() ) {
+if ( knitr::is_latex_output() ) {
 
 x <- seq(0, 1, 
          length = 30)
@@ -1073,19 +1075,7 @@ persp(x, y, z,
       main = "Joint distribution",
       ticktype = "simple")
 
-persp(x, y, zc, 
-      theta = -60, 
-      phi = 25, 
-      shade = 0.75, 
-      col = plotColour1, 
-      expand = 0.5, 
-      r = 2, 
-      ltheta = 25, 
-      xlab = "X",
-      ylab = "Y",
-      zlab = "f(x, y)",
-      main = "Conditional distribution\n(Cut at x = 0.5)",
-      ticktype = "simple")
+
 }
 if( knitr::is_html_output() ) {
 x <- seq(0, 1, 
@@ -1111,7 +1101,7 @@ z[, Cut] <- 0
 rgl::persp3d(x = M$x, 
             y = M$y, 
             z = z,
-            #col = plotColour,
+            col = "grey",
             colkey = FALSE,
             phi = 40,
             xlab = "X",
@@ -1120,10 +1110,70 @@ rgl::persp3d(x = M$x,
             theta = 30,
             main = "Joint distribution")
 
+
+}
+```
+
+
+
+
+```{r BivarConditionala, echo=FALSE, fig.cap="A bivariate distribution, sliced at $Y =  1$, showing the conditional distribution of $X$ when $Y = 0.5$", fig.align="center", out.width='100%', fig.width = 7}
+
+f <- function(x, y){
+  (3 *x + y)/(2 * (3*x + 1) )
+}
+
+par( mfrow = c(1,2 ))
+
+if ( knitr::is_latex_output() ) {
+
+x <- seq(0, 1, 
+         length = 30)
+y <- seq(0, 2, 
+         length = 30)
+
+z <- zc <- outer(x, y, f)
+
+
+Cut <- which( x < 0.5 )
+zc[, Cut] <- 0
+
+persp(x, y, zc, 
+      theta = -60, 
+      phi = 25, 
+      shade = 0.75, 
+      col = plotColour1, 
+      expand = 0.5, 
+      r = 2, 
+      ltheta = 25, 
+      xlab = "X",
+      ylab = "Y",
+      zlab = "f(x, y)",
+      main = "Conditional distribution\n(Cut at x = 0.5)",
+      ticktype = "simple")
+}
+if( knitr::is_html_output() ) {
+x <- seq(0, 1, 
+         length = 50)
+y <- seq(0, 2, 
+         length = 50)
+
+z <- outer(x, y, f)
+
+
+
+  M <- plot3D::mesh(x = x,
+                   y = y)
+  
+  z <- zc <- outer(x, y, f)
+Cut <- which( x < 0.5 )
+zc[, Cut] <- 0
+
+
 rgl::persp3d(x = M$x, 
             y = M$y, 
             z = zc,
-            #col = plotColour,
+            col = "grey",
             colkey = FALSE,
             phi = 40,
             xlab = "X",
@@ -1609,8 +1659,7 @@ To compute the correlation coefficient, the following steps are required.
 * $\text{Corr}(X, Y) = \text{Cov}(X, Y)/\sqrt{ \text{var}(X)\text{var}(Y) }$, so $\text{var}(X)$, $\text{var}(Y)$ must be computed;
 * To find $\text{var}(X)$ and $\text{var}(Y)$,  $\text{E}(X)$ and $\text{E}(X^2)$, $\text{E}(Y)$ and $\text{E}(Y^2)$ are needed, so the marginal pfs of $X$ and $Y$ are needed.
 
-So first, the marginal pfs are
-
+So first, the marginal pfs are  
 \[
    p_X(x) = \sum_{y = -1, 1} p_{X, Y}(x, y) =
       \begin{cases}
@@ -1620,8 +1669,7 @@ So first, the marginal pfs are
           0 & \text{otherwise}
       \end{cases}
 \]
-and
-
+and  
 \[
    p_Y(y) = \sum_{x = 0}^2 p_{X, Y}(x, y) =
       \begin{cases}
@@ -1631,7 +1679,6 @@ and
       \end{cases}
 \]
 Then,
-
 \begin{align*}
    \text{E}(X)   &= (7/24 \times 0) + (8/24 \times 1) + (9/24\times 2) = 26/24;\\
    \text{E}(X^2) &= (7/24 \times 0^2) + (8/24 \times 1^2) + (9/24\times 2^2) = 44/24;\\
@@ -1640,21 +1687,18 @@ Then,
 \end{align*}
 giving $\text{var}(X) = 44/24 - (26/24)^2 = 0.6597222$ and $\text{var}(Y) = 1 - 0^2 = 1$. 
 Then,
-
 \begin{align*}
    \text{E}(XY) &= \sum_x\sum_y xy\,p_{X,Y}(x,y) \\
     &= (0\times -1 \times 1/8)  + (0\times 1 \times 1/6) + \cdots + (2\times 1 \times 1/4) \\
     &= 1/12.
 \end{align*}
-Hence,
-
+Hence,  
 \[
    \text{Cov}(X,Y) 
    = \text{E}(XY) - \text{E}(X) \text{E}(Y) 
    = \frac{1}{12} - \left(\frac{26}{24}\times 0\right) = 1/12,
 \]
-and
-
+and  
 \[
    \text{Corr}(X,Y)
    = \frac{ \text{Cov}(X,Y)}{\sqrt{ \text{var}(X)\text{var}(Y) } }
@@ -2470,7 +2514,7 @@ Showing $\int^\infty_{-\infty}\!\int^\infty_{-\infty}f_{X,Y}(x,y)\,dx\,dy = 1$ i
 
 
 
-```{r BivarNormalPDF, webgl=TRUE, echo=FALSE, fig.cap="A bivariate normal distribution with means of 0, variances of 1, and a correlation coefficient of 0.5.", fig.align="center", out.width='100%'}
+```{r BivarNormalPDF, echo=FALSE, fig.cap="A bivariate normal distribution with means of 0, variances of 1, and a correlation coefficient of 0.5.", fig.align="center", out.width='100%'}
 mu <- c(0, 0)
  
 sigma <- matrix(c(1, 0.5, 
@@ -2530,7 +2574,7 @@ persp(x, y, z,
 }
 ```
 
-```{r BivarNormalHTML, webgl=TRUE, echo=FALSE, fig.cap="A bivariate normal distribution", fig.align="center", out.width='80%'}
+```{r BivarNormalHTML, echo=FALSE, fig.cap="A bivariate normal distribution", fig.align="center", out.width='80%'}
 mu <- c(0, 0)
 
 sigma <- matrix(c(1, 0.5, 
@@ -2857,7 +2901,7 @@ plot(x = hts$Hht,
 
 
 
-```{r BivarNormalHts, webgl=TRUE, echo=FALSE, fig.cap="Bivariate normal distribution for heights", fig.align="center", out.width='80%'}
+```{r BivarNormalHts, echo=FALSE, fig.cap="Bivariate normal distribution for heights", fig.align="center", out.width='80%'}
 
 mu <- c(1732, 1602)
 
@@ -3091,7 +3135,6 @@ if( knitr::is_latex_output() ) {
                              "$Y = 1$",
                              "$Y = 2$"),
                caption = "$X$ and $Y$") %>%
-    kable_styling(font_size = 10) %>%
     row_spec(0, bold = TRUE) 
 }
 ```
