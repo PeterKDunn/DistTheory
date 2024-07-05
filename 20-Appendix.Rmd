@@ -169,3 +169,88 @@ The **multivariate normal** distribution:
 * `dmnorm()`
 * `pmnorm()`
 * `rmnorm()`
+
+
+# Other useful R functions {#OtherUsefulR}
+
+## General functions {#OtherUsefulRGeneral}
+
+* `seq()` produces a **seq**uence of integers:
+  * `seq(1, 4)` produces the list: $1$, $2$, $3$, $4$.
+  * `seq(0, 10, by = 2)` produces a list going up **by** two each time: $0$, $2$, $4$, $6$, $8$, $10$.
+  * `seq(0, 10, length = 3)` produces a list of **length** three: $0$, $5$, $10$.
+  
+
+## Statistical functions {#OtherUsefulRStatistical}
+
+Because **R** is primarily a statistical package and environment, all the basic statistical function are included, including 
+
+* `mean()`: Find the mean of a set of values.
+   Example: `mean( c(1, 2, 3, 4))`.
+* `median()`: Find the median of a set of values.
+   Example: `median( c(1, 2, 3, 4))`.
+* `sd()`: Finds the *sample* standard deviation of a set of values.
+   Example: `sd( c(1, 2, 3, 4))`.
+* `var()`: Finds the *sample* variance of a set of values.
+   Example: `var( c(1, 2, 3, 4))`.
+* `lm()`: To fit a linear regression model:
+
+```{r}
+x <- c(1, 2, 3, 4, 5)
+y <- c(12, 10, 9, 7, 4)
+
+out <- lm(y ~ x) # Read: 'y as a function of x'
+coef(out)
+summary(out)
+```
+
+
+## Plotting functions {#OtherUsefulRPlotting}
+
+Three systems exists for plotting in **R**, believe it or not.
+Here, we discuss the base system.
+
+`plot()` is the basic function for plotting, with *many* options:
+
+* `plot(x, y)` and `plot(y ~ x)` both produce a scatterplot, with `y` on the vertical axis and `x` on the horizontal axis.
+* `plot(..., type = "l")` plots with **l**ines rather than points.
+* `plot(..., lwd = "3")` plots with a **l**ine **w**i**d**th thrice as thick.
+* `plot(..., xlab = "text", ylab = "Info")` adds an **lab**el to the **x** and **y** axes respectively.
+* `plot(..., main = "Title")` adds a **main** title to the plot.
+* `plot(..., col = "green")` plots in green rather than the default (black).
+
+`plot()` starts a new canvas every time it is called.
+`lines()` and `points()` add **lines** and **points** respectively to an existing plot.
+`legend()` adds a legend to an existing plot.
+
+
+```{r, fig.align='center', fig.cap="An example plot: the probability function for two exponential distributions", out.width='60%', fig.width=5.5}
+x <- seq(0, 4, length = 100)
+y1 <- dexp(x, rate = 2) # Probability function for an exponential distn
+
+plot(y1 ~ x,
+     type = "l", # Use lines, not points
+     lwd = 2, # Make lines a bit thicker
+     xlab = "Values of x",
+     ylab = "Probability function",
+     main = "Probability function for\nexponential distribution",
+      # NOTE: using  \n  adds a line break, and # is used for comments
+     col = "red", 
+     las = 1, # Makes the axis labels all horizontal
+     xlim = c(0, 4.5), # Changes the displayed limits of the x-axis
+     ylim = c(0, 3) ) # Changes the displayed limits on the y-axis
+
+y2 <- dexp(x, rate = 3)
+lines( y2 ~ x, # ADD a line to existing point
+       lwd = 2,
+       col = "blue")
+
+legend("topright", # The location
+       lwd = 2,
+       col = c("red", "blue"),
+       legend = c("Rate = 2",
+                  "Rate = 3")
+       )
+
+```
+
