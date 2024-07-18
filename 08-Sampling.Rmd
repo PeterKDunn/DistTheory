@@ -11,7 +11,7 @@ On completion of this module, students should be able to:
 
 
 
-## Introduction
+## Introduction {#SamplingIntro}
 
 This chapter introduces the application of distribution theory to the discipline of statistics.
 [Recall](ProbIntroduction): Distribution theory is about describing random variables using probability, and statistics is about data collection and extracting information from data. 
@@ -101,15 +101,16 @@ var(MeanAllSamples) * (n - 1) / n
 This example can be repeated, assuming *sampling randomly with replacement*.
 In this case, there are $5\times 5 = 25$ equally-likely samples possible:
 
-```{r}
+```{r results="markup"}
 AllSamplesWithReplacement <- expand.grid(Population, Population)
-names(AllSamplesWithReplacement) <- c("First", 
-                                      "Second")
+names(AllSamplesWithReplacement) <- c(NA, 
+                                      NA)
 MeanAllSamplesWithReplacement <- rowMeans(AllSamplesWithReplacement)
 
-cbind(AllSamplesWithReplacement,
-      "Sample mean" = MeanAllSamplesWithReplacement, 
-      "Probability" = 1/25)
+cbind( AllSamplesWithReplacement[, 1],
+       AllSamplesWithReplacement[, 2],
+       "Sample mean" = MeanAllSamplesWithReplacement, 
+       "Probability" = 1/25)
 ```
 
 From this table, the *distribution* of the sample mean itself can again be determined (Fig.\ \@ref(fig:SampleMeanDistnWithReplacement)):
@@ -205,7 +206,7 @@ Usually the context makes it clear whether the strict or loose meaning of 'rando
 
 When a sample of size $n$ is assumed to be chosen 'at random' *without replacement* from a population of size $N$, this sample does *not* constitute a random sample in the sense of Definition \@ref(def:RandomSample).
 Even though each member of the sample has the same distribution as the population, the members of the sample are not independent.
-For example, consider the second element $X_2$ of the samples in Example \@ref(exm:DistSampMeanIntro).
+For example, consider the second element $X_2$ of the samples in Sect.\ \@ref(SamplingIntro).
 Here, $\Pr(X_2 = 2) = 0.2$ but that $\Pr(X_2 = 2 \mid X_1 = 2) = 0$. 
 Therefore $\Pr(X_2 = 2 \mid X_1 = 2) \ne\Pr(X_2 = 2)$ and so $X_2$ and $X_1$ are dependent.
 
@@ -213,7 +214,7 @@ Sampling at random without replacement *approximates* a random sample *if the sa
 In this case, the impact of removing some members of the population has minimal impact on the distribution of the population remaining, and the observations will be approximately independent.
 Populations sizes are commonly much larger than sample sizes.
 
-In Example \@ref(exm:DistSampMeanIntro), if the sampling is performed *with replacement* then $\Pr(X_2 = 2 \mid X_1 = 2) = \Pr(X_2 = 2) = \Pr(X_1 = 2)$.
+In Sect.\ \@ref(SamplingIntro), if the sampling is performed *with replacement* then $\Pr(X_2 = 2 \mid X_1 = 2) = \Pr(X_2 = 2) = \Pr(X_1 = 2)$.
 Similar statements can be made for all sample members and all values of the population. 
 In this case, the sample is a random sample according to Definition \@ref(def:RandomSample).
 
@@ -272,7 +273,7 @@ $$
 
 
 :::{.example #CLTwithoutReplacement name="CLT when sampling without replacement"}
-In Example \@ref(exm:DistSampMeanIntro), $\mu = 4.4$ and $\sigma^2 = 5.04$ for the *population*.
+In Sect. \@ref(SamplingIntro), $\mu = 4.4$ and $\sigma^2 = 5.04$ for the *population*.
 The FPC is
 $$
    \text{FPC} = \sqrt{ \frac{5 - 2}{5 - 1} } = 0.8660\dots.
@@ -311,13 +312,13 @@ Then $Y \sim N(\Sigma a_i\mu_i, \Sigma a^2_i\sigma^2_i)$.
 In Theorem \@ref(thm:NormalProperties), the mgf of the random variable $X_i$ was shown to be
 $$
    M_{X_i} (t)
-   = \exp\{\mu_i t + \frac{1}{2} \sigma^2_i t^2\}\quad\text{for $i = 1, 2, \dots, n$}.
+   = \exp\left\{\mu_i t + \frac{1}{2} \sigma^2_i t^2\right\}\quad\text{for $i = 1, 2, \dots, n$}.
 $$
 So, for a constant $a_i$ (using Theorem \@ref(thm:ExpectationLinear) with $\beta = 0$, $\alpha = a_i$):
 \begin{align*}
    M_{a_i X_i}(t)   
    &= M_{X_i}(a_it)\\
-   &= \exp\{\mu_i a_i t + \frac{1}{2} \sigma^2_i a^2_i t^2\}.
+   &= \exp\left\{\mu_i a_i t + \frac{1}{2} \sigma^2_i a^2_i t^2\right\}.
 \end{align*}
 Since the mgf of a sum of independent random variables is equal to the product of their mgfs, then
 
