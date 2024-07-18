@@ -14,130 +14,144 @@ On completion of this module, students should be able to:
 ## Introduction
 
 This chapter introduces the application of distribution theory to the discipline of statistics.
-[Recall](ProbIntroduction): Distribution theory is about describing random variables using probability, and statistics is about data collection and extracting information from data. A simple example demonstrates how these two things are related.
+[Recall](ProbIntroduction): Distribution theory is about describing random variables using probability, and statistics is about data collection and extracting information from data. 
+A simple example demonstrates how these two things are related.
 
 
-:::{.example #DistSampMeanIntro name="Distribution of sample mean"}
 A simple random sample (SRS) is taken from a population.
 The main interest is in the *mean* of the sample.
-
-Typically, a population will be very large.
+Typically, a population will be *very* large, and often it will not even be possible to list all elements of the population.
 However, for demonstration purposes suppose the population contains only $N = 5$ elements:
 $$
-   2, 3, 3, 6, 8.
+   2\qquad 3\qquad 3\qquad 6\qquad 8.
 $$
-The mean of this population is $4.4$.
-Assume that the sample is of size $n = 2$, and sampling is *without* replacement.
+The mean of this population is $4.4$:
 
-*Simple random sampling* refers to all possible samples of size $n$ being equally likely. 
+```{r}
+Population <- c(2, 3, 3, 6, 8)
+mean(Population)
+```
+
+The variance of this population is $5.04$:
+
+```{r}
+n <- length(Population)
+var(Population) * (n - 1) / n
+```
+
+(This cumbersome formula for the variance is necessary because the **R** function `var()` computes the variance of a *sample*, rather than the variance of a *population* as we have here.)
+Now, assume we take a sample of size $n = 2$ from this population, *without* replacement.
+
+*Simple random sampling* refers to *all* possible samples of size $n$ being equally likely. 
 Since there are $\binom{N}{n}$ samples of size $n$ when sampling without replacement from $N$ objects, $\binom{5}{2} = 10$ equally-likely possible samples are possible in this example.
-For example, the sample $\{2, 3\}$ has a probability of 1/10 of being selected, and the mean of this sample is 2.5.
+For example, the sample $\{2, 3\}$ has a probability of $1/10$ of being selected, and the mean of this sample is 2.5.
 
-All 10 possible samples of size $n = 2$ can be listed, with the mean of each sample (Table \@ref(tab:Sample2Tab)).
+We can use **R** to determine all possible samples of size $n = 2$:
+
+```{r}
+### All possible combinations of 2 elements:
+AllSamples <- combn(Population,
+                    m = 2)
+AllSamples
+
+### Mean of each possible sample:
+MeanAllSamples <- colMeans(AllSamples)
+MeanAllSamples
+```
+
+
+All $10$ possible samples of size $n = 2$ can be listed, with the mean of each sample:
+
+```{r}
+cbind( t(AllSamples), 
+       "Sample mean" = MeanAllSamples,
+       "Probability" = 1/10)
+```
+
 The *sample* mean varies from sample to sample.
-The mean observed for any one sample depends on which sample is taken.
+The mean of a selected sample depends on *which* sample is selected at random.
 
-From this table, the distribution of the sample mean itself can be determined (Table \@ref(tab:SamplingDistMean)).
-This distribution is known as the *sampling distribution of the sample mean*, recognition that the distribution is based on sampling data.
+From this table, the *distribution* of the sample mean itself can be determined (Fig.\ \@ref(fig:SampleMeanDistn)):
 
-The mean and variance of the sampling distribution are $\mu_{\bar{X}} = 4.4$ and $\sigma^2_{\bar{X}} = 1.89$.
+```{r SampleMeanDistn, fig.align="center", fig.cap="The distribution of the sample means"}
+prop.table(table(MeanAllSamples))
 
-This example can be repeated, assuming *sampling randomly with replacement*, when 25 equally-likely samples possible and possible.
-The mean and variance of the sampling distribution in this case are $\mu_{\bar{X}} = 4.4$ and $\sigma^2_{\bar{X}} = 2.52$ respectively.
+plot( prop.table(table(MeanAllSamples)),
+      las = 1,
+      xlab = "Sample mean",
+      ylab = "Probability",
+      main = "The distribution of sample means")
+```
+
+This distribution is known as the *sampling distribution of the sample mean*, recognising that the distribution is that of the sampling mean.
+
+The mean *of the sampling distribution* is $\mu_{\bar{X}} = 4.4$:
+
+```{r}
+mean(MeanAllSamples)
+```
+
+The variance *of the sampling distribution* is $\sigma^2_{\bar{X}} = 1.89$:
+
+```{r}
+n <- length(MeanAllSamples)
+var(MeanAllSamples) * (n - 1) / n
+```
+
+This example can be repeated, assuming *sampling randomly with replacement*.
+In this case, there are $5\times 5 = 25$ equally-likely samples possible:
+
+```{r}
+AllSamplesWithReplacement <- expand.grid(Population, Population)
+names(AllSamplesWithReplacement) <- c("First", 
+                                      "Second")
+MeanAllSamplesWithReplacement <- rowMeans(AllSamplesWithReplacement)
+
+cbind(AllSamplesWithReplacement,
+      "Sample mean" = MeanAllSamplesWithReplacement, 
+      "Probability" = 1/25)
+```
+
+From this table, the *distribution* of the sample mean itself can again be determined (Fig.\ \@ref(fig:SampleMeanDistnWithReplacement)):
+
+```{r SampleMeanDistnWithReplacement, fig.align="center", fig.cap="The distribution of the sample means"}
+prop.table(table(MeanAllSamplesWithReplacement))
+
+plot( prop.table(table(MeanAllSamplesWithReplacement)),
+      las = 1,
+      xlab = "Sample mean",
+      ylab = "Probability",
+      main = "The distribution of sample means\n(sampling with replacement)")
+```
+
+Then, the mean and variance of the sampling distribution in this case are $\mu_{\bar{X}} = 4.4$ and $\sigma^2_{\bar{X}} = 2.52$ respectively.
+
+
+```{r}
+mean(MeanAllSamplesWithReplacement)
+n <- length(MeanAllSamplesWithReplacement)
+var(MeanAllSamplesWithReplacement) * (n - 1) / n
+
+```
+
+
+In principle, the distribution of *any* statistic could be found (for a mean, median, variance, range, etc.) using the approach in the example above.
+In practice, populations are large and the number of possible samples huge, infinite, or the exact elements of the population difficult or impossible to list.
+
+In terms of distribution theory, the probability distributions in Figs.\ \@ref(fig:SampleMeanDistn) and\ \@ref(fig:SampleMeanDistnWithReplacement) are just the distribution of a random variable, since *the sample mean is a random variable*. 
+Statistically, these distribution describe what to expect for the sample means when we randomly sample from a population.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Any quantity computed from a sample is a random variable, since its value is unknown beforehand.
+The observed value of the quantity depends on *which* sample is selected (at random).
+
+This means that sample means, sample standard deviations, sample medians all are random variables.
 :::
 
 
-
-
-```{r Sample2Tab, echo=FALSE}
-Sample2 <- array( dim = c(10, 3))
-
-colnames(Sample2) <- c("Sample",
-                       "Mean",
-                       "Probability")
-
-Sample2[ 1, ] <- c("2, 3", "2.5", "1/10")
-Sample2[ 2, ] <- c("2, 3", "2.5", "1/10")
-Sample2[ 3, ] <- c("2, 6", "4.0", "1/10")
-Sample2[ 4, ] <- c("2, 8", "5.0", "1/10")
-Sample2[ 5, ] <- c("3, 3", "3.0", "1/10")
-Sample2[ 6, ] <- c("3, 6", "4.5", "1/10")
-Sample2[ 7, ] <- c("3, 8", "5.5", "1/10")
-Sample2[ 8, ] <- c("3, 6", "4.5", "1/10")
-Sample2[ 9, ] <- c("3, 8", "5.5", "1/10")
-Sample2[10, ] <- c("6, 8", "7.0", "1/10")
-
-Sample2.caption <- "All possible samples of size $n = 2$ from the population"
-if( knitr::is_latex_output() ) {
-  knitr::kable(Sample2,
-               format = "latex",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,                
-               escape = FALSE,
-               linesep = c("", "", "", "\\addlinespace"),
-               caption = Sample2.caption) %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) 
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(Sample2,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,                
-               caption = Sample2.caption) %>%
-    row_spec(0, bold = TRUE) 
-}
-
-
-```
-
-
-
-```{r SamplingDistMean, echo=FALSE}
-
-SampDist <- array( dim = c(2, 8))
-SampDist[1, ] <- c("Mean", "2.5", "3.0", "4.0", "4.5", "5.0", "5.5", "7.0")
-SampDist[2, ] <- c("Probability", "0.2", "0.1", "0.1", "0.2", "0.1", "0.2", "0.1")
-
-if( knitr::is_latex_output() ) {
-  knitr::kable(SampDist,
-               format = "latex",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,                
-               escape = FALSE,
-               caption = "Sampling distribution of the mean") %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) 
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(SampDist,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,                
-               caption = "Sampling distribution of the mean") %>%
-    row_spec(1, bold = TRUE) 
-}
-
-```
-
-
-
-
-
-In principle, the distribution of *any* statistic could be found (for a mean, median, variance, range, etc.) using the approach in Example \@ref(exm:DistSampMeanIntro).
-In practice, populations are large and the number of possible samples huge, infinite, or the exact elements of the population difficult or impossible to list.
-
-In terms of distribution theory, Table \@ref(tab:SamplingDistMean) is just the distribution of a random variable, since a *sample mean is a random variable*. 
-Statistically, this distribution describes what to expect for the sample mean when we randomly sample from a population.
-
-Such knowledge is essential in extracting information from samples. 
-Observe that the mean of the sampling distribution in the example is the same as the mean of the population itself: $\mu = (2 + 3 + 3 + 6 + 8 )/5 = 4.4$.
+This knowledge is essential in extracting information from samples. 
+Observe that the mean of the sampling distribution in the example (when taken *without replacement*) is the same as the mean of the population itself: $\mu = (2 + 3 + 3 + 6 + 8 )/5 = 4.4$.
 Also, the variance of the sampling distribution is *smaller* than the variance of the population ($\sigma^2 = 5.04$). 
 The exact relationship between $\sigma^2_{\bar{X}}$ and $\sigma^2$ is expanded on in Theorem \@ref(thm:SamplingDistMean).
 
@@ -1303,22 +1317,4 @@ Demonstrate the Central Limit Theorem using **R**:
 1. For the exponential distribution with parameter 1 (a skewed distribution).
 :::
     
-
-:::{.exercise}
-The random variable $M$ has the probability density function
-$$
-    f_M(m) = \begin{cases}
-                   3m^2 & \text{for $0 < m < 1$}\\
-                   0    & \text{otherwise}
-              \end{cases}
-$$
-A random sample of size $9$ is taken from the distribution, and the sample mean $\overline{M}$ is computed.
-
-1. Compute the mean of $M$.
-1. Compute the variance of $M$.
-1. State the approximate distribution of $\overline{M}$ including the parameters of the distribution.
-1. Compute the probability that the sample mean will be within $0.1$ of the true mean.
-:::
-
-
 
