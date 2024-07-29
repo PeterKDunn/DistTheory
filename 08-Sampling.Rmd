@@ -20,7 +20,7 @@ A simple example demonstrates how these two are related.
 
 ## Examples
 
-### Distribution of the sample mean: $n = 2$, sampling *without* replacement
+### Some results for samples
 
 Suppose a simple random sample (SRS) is taken from a population.
 The main interest is in the *mean* of the sample.
@@ -29,6 +29,46 @@ However, for demonstration purposes, suppose the population contains only $N = 5
 $$
    2\qquad 3\qquad 3\qquad 4\qquad 8.
 $$
+We have seen that the theoretical mean of a discrete random variable $X$ is $\mu = \text{E}[X] = \sum_{i = 1}^n p_X(x) x$ where $p_x(x)$ is the probability function.
+
+Suppose we take a *simple random sample* of observations from some population of size $N$.
+This means that every observation in the population has the sample chance of being selected in our *sample* of size $n$.
+That is, each of the $n$ observations in the sample has the same probability of $1/n$ of being selected in the sample.
+That is,
+$$
+  \text{E}[X] = \sum_{i = 1}^n \frac{1}{n} X_i. 
+$$
+For *observed* values of $X_i$ we write the mean of the sample (the *smaple mean*) as $\bar{x}$:
+$$
+  \bar{x} = \frac{1}{n} \sum_{i = 1}^n x_i. 
+$$
+This is the mean of a sample of observations.
+Similarly, the theoretical variance of a discrete random variable $X$ is $\sigma^2 = \text{E}[X] = \sum_{i = 1}^n p_X(x) (x - \bar{X})^2$ where $p_X(x)$ is the probability function.
+Taking a *simple random sample* of observations again from some population of size $N$, every observation in the population has the sample chance of being selected in our *sample* of size $n$.
+That is, each of the $n$ observations in the sample has the same probability of $1/n$ of being selected in the sample.
+$$
+  \text{var}[X] 
+  = \sum_{i = 1}^n \frac{1}{n} (X_i - \bar{X})^2
+  = \frac{1}{n} \left( \sum_{i = 1}^n  X^2_i - \mu^2 \right).
+$$
+(PROOF?????)
+For *observed* values of $X_i$ we write the mean of the sample (the *smaple mean*) as $\bar{x}$:
+FIX: THEIS OS VAR OF WHOLE POPULATION OF SIZE N
+$$
+  \sigma^2 = \frac{1}{n} \left( \sum_{i = 1}^n  X^2_i - \mu^2 \right).
+$$
+This is the variance of the *sample*, which is written in terms of the *population* mean.
+However, if the variance of the population is unknown, then the mean of the population is likely to be unknown also.
+IN that situation (PROVE!!!)
+$$
+  s^2 = \frac{1}{n - 1} \left( \sum_{i = 1}^n  X^2_i - \mu^2 \right).
+$$
+PROOF?
+
+
+
+### Distribution of the sample mean: $n = 2$, sampling *without* replacement
+
 The mean of this population is $\mu = 4$:
 
 ```{r}
@@ -618,7 +658,7 @@ If $Z_i = \displaystyle{\frac{X_i - \mu}{\sigma}}$, then
 $$
    \sum_{i = 1}^n \left(\frac{X_i - \mu}{\sigma}\right)^2 = \sum_{i = 1}^n Z_i^2.
 $$
-But $Z_i$ is the standardised version of $X_i$ and has a standard normal $N(0, 1)$ distribution.
+Here, $Z_i$ is the standardised version of $X_i$ and has a standard normal $N(0, 1)$ distribution.
 Also, the random variables $Z_i$ are independent because the $X_i$ are independent ($i = 1, 2, \dots, n$).
 The required result follows directly from Theorem \@ref(thm:SumSquaredNormals).
 :::
@@ -660,7 +700,7 @@ $$
 which looks much like the conditions for Theorem \@ref(thm:ChiSquare). 
 The difference is that $\bar{X}$ replaces $\mu$. 
 *This difference is important:*
-$\mu$ is a fixed value that does not vary, whereas $\bar{X}$ is a random variable.
+$\mu$ is a fixed value that does not vary, whereas $\bar{X}$ is a random variable that has a distribution.
 
 Writing
 \begin{align*}
@@ -669,30 +709,32 @@ Writing
     &= \sum_{i = 1}^n \left( \frac{X_i - \mu}{\sigma} \right)^2 -
        n\frac{(\bar{X} - \mu)^2}{\sigma^2}.
 \end{align*}
-(Check the algebra!)
-Rewrite using $T = U + V$, where
-\begin{align*}
-   T
-   &= \sum_{i = 1}^n \left( \frac{X_i - \mu}{\sigma} \right)^2,\\
-   U
-   &= n\frac{(\bar{X} - \mu)^2}{\sigma^2}, \quad\text{and}\\
+(Check!)
+Rewrite as $V = W - U$ where
+$$
    V
-   &= \sum_{i = 1}^n \left(\frac{X_i - \bar{X}}{\sigma}\right)^2.
-\end{align*}
-Then see that:
+   = \sum_{i = 1}^n \left(\frac{X_i - \bar{X}}{\sigma}\right)^2;\qquad
+   W
+   = \sum_{i = 1}^n \left( \frac{X_i - \mu}{\sigma} \right)^2;\quad\text{and}\qquad
+   U
+   = n\frac{(\bar{X} - \mu)^2}{\sigma^2}.\qquad
+$$
+Then wr can write $W = U + V$.
+Then observe:
 
-* $T \sim \chi^2(n)$ by Theorem \@ref(thm:ChiSquare); and 
-* $V \sim \chi^2(1)$ because $V$ is the square of a standard normal random variable, since $\bar{X}\sim N(\mu, \sigma^2/n)$.
-
-Therefore the mgf of $T$ is $(1 - 2t)^{-n}$, and the mgf of $V$ is $(1 - 2t)^{-1}$.
-So, provided $T$ and $V$ are independent, the mgf of $T$ is the product of the mgfs of $U$ and $V$. 
-The mgf of $U$ is therefore
+* $W \sim \chi^2_n$ by Theorem \@ref(thm:ChiSquare), so that the mgf of $W$ is $M_W(t) = (1 - 2t)^{-n}$. 
+* $V \sim \chi^2_1$ because $V$ is the square of a standard normal random variable, since $\bar{X}\sim N(\mu, \sigma^2/n)$.
+  Therefore, the mgf of $V$ is $M_V(t) = (1 - 2t)^{-1}$.
+  
+Provided $W$ and $V$ are independent, the mgf of $W$ is the product of the mgfs of $U$ and $V$. 
+This means that the mgf of $U$ is
 $$
    M_U(t)
-   = \frac{M_T(t)}{M_V(t)}
+   = \frac{M_W(t)}{M_V(t)}
    = (1 - 2t)^{n - 1}
 $$
 which is the mgf of the chi-square distribution with $n - 1$ df.
+
 This is only a *partial proof*, because the independence of $U$ and $V$ has not been shown.
 :::
 
@@ -751,7 +793,17 @@ This proof is not given.
 Another distribution that derives from sampling a normal population is the $t$ distribution.
 
 
-:::{.definition #TDistribution name="T-Distribution"}
+:::{.definition #TDistribution name="T distribution"}
+Suppose $Z \sim N(0, 1)$ (i.e., a standard normal distribution) and $V \sim \chi^2_n$ (i.e., a chi-squared distribution with $n$ degrees of freedom).
+Then
+\begin{equation}
+  T = \frac{Z}{\sqrt{V/n}}
+  (\#eq:Tdist)
+\end{equation}
+is defined as a $T$ distribution with $n$ degrees of freedom.
+:::
+
+:::{.definition #TDistributionPDF name="T distribution"}
 A continuous random variable $X$ with probability density function
 \begin{equation}
    f_X(x)
@@ -764,9 +816,13 @@ The parameter $\nu$ is called the *degrees of freedom*.
 We write $X \sim t_\nu$.
 :::
 
+:::{.proof}
+This proof is not given.
+:::
 
-The pdf of the $t$ distribution is very similar to the standard normal distribution (Fig.\ \@ref(fig:TPlots)): it is bell-shaped and symmetric about zero. 
-However, the variance is greater than one and is dependent on $\nu$.
+
+The pdf of the $T$ distribution is very similar to the standard normal distribution (Fig.\ \@ref(fig:TPlots)): bell-shaped and symmetric about zero. 
+However, the variance is greater than one (Theorem\ \@ref(thm:TDistProperties)) is dependent on $\nu$.
 
 
 
@@ -790,7 +846,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( paste("The"~italic(t)*"-distribution, with 2 df")))
+      main = expression( paste("The"~italic(t)*" distribution, with 2 df")))
 axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
@@ -806,7 +862,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( paste("The"~italic(t)*"-distribution, with 7 df")))
+      main = expression( paste("The"~italic(t)*" distribution, with 7 df")))
 axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
@@ -822,7 +878,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( paste("The"~italic(t)*"-distribution,m with 30 df")))
+      main = expression( paste("The"~italic(t)*" distribution,m with 30 df")))
 axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
@@ -864,7 +920,7 @@ follows a $t_{n - 1}$ distribution where $\bar{X}$ is the sample variance and $S
 
 :::{.proof}
 **We give a partial proof only.**
-The statistic $T$ can be re-expressed as
+The statistic $T$ can be written as
 \begin{align*}
   T
     &= \frac{\bar{X} - \mu}{S/\sqrt{n}}\\
@@ -952,7 +1008,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( paste("The"~italic(F)*"-distribution: df"==1*", "*4)))
+      main = expression( paste("The"~italic(F)*" distribution: df"==1*", "*4)))
 
 
 plot( x = xx,
@@ -962,7 +1018,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( paste("The"~italic(F)*"-distribution: df"==6*", "*1)))
+      main = expression( paste("The"~italic(F)*" distribution: df"==6*", "*1)))
 
 
 plot( x = xx,
@@ -972,8 +1028,25 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( paste("The"~italic(F)*"-distribution: df"==30*", "*5)))
+      main = expression( paste("The"~italic(F)*" distribution: df"==30*", "*5)))
 ```
+
+
+
+
+
+The relationship between the $T$ and $F$ distribution can be established.
+Since $T = 
+ (\#eq:Tdist)
+
+
+$$
+  T^2 
+  = \frac{Z^2}{V/n}
+  = \frac{Z^2/1}{V/n}
+$$
+and the numerator has a $\chi^2_1$ distribution; hence, $T^2$ has a $F_{1, n}$ distribution.
+
 
 
 :::{.theorem #FGenerate name="$F$ distribution"}
