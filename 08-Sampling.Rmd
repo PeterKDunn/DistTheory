@@ -16,82 +16,213 @@ On completion of this module, students should be able to:
 
 This chapter introduces the application of distribution theory to the discipline of statistics.
 [Recall](#ProbIntroduction): distribution theory is about describing random variables using probability, and statistics is about data collection and extracting information from data. 
-A simple example demonstrates how these two are related.
 
-## Examples
+
+
+
+## Estimating population parameters from samples
+
+Until now, our results have concerned theoretical probability distributions (i.e., distribution *theory*) that describe ideal distributions of infinite populations.
+In practice, of course, we do not have infinite populations; instead, we observe finite (usually relatively small) samples (i.e., *statistics*) from unknown distributions.
+
+Consider taking a sample of size\ $n$ from some possibly-unknown distribution: $x_1, x_2, \ldots, x_n$.
+Suppose we wish to use the sample to estimate the unknown mean of the population, and the unknown variance of the population.
+How do we proceed?
+
+
+### Estimating the population mean
+
+
+It turns out that a 'good' estimate of the unknown population mean $\mu$ is
+$$
+  \bar{X} = \frac{1}{n}(X_1 + X_2 + \cdots X_n) = \frac{1}{n}\sum_{i=1}^n X_i,
+$$
+the familiar *sample mean*.
+This is a 'good' estimate in the sense that is an *unbiased* estimate of $\mu$.
+
+
+:::{.definition #Unbiased name="Unbiased estimator"}
+For some parameter $\theta$, the estimate $\hat{\theta}$ is called an *unbiased* estimator of $\theta$ if
+$$
+  \text{E}[\hat{\theta}] = \theta.
+$$
+:::
+
+This means that an unbiased estimator produces estimates that, on average, have the correct value.
+This seems a sensible property for a 'good' estimator.
+(There are other properties of 'good' estimators, we but do not explore these here.)
+When we say that $\bar{X}$ is an unbiased estimator of $\mu$ then, we mean that $\text{E}[\bar{X}] = \mu$,
+
+
+
+:::{.theorem #SampleMeanUnbiased name="An unbiased estimator for $\mu$"}
+The sample mean
+$$
+  \bar{X} = \frac{1}{n} \sum_{i = 1}^n X_i
+$$
+is an unbiased estimator of the population mean $\mu$.
+:::
+
+:::{.proof}
+Using the definition of unbiased:
+\begin{align*}
+  \text{E}[\bar{X}] 
+  &= \text{E}\left[ \frac{1}{n}(X_1 + X_2 + \cdots X_n \right]\\
+  &= \frac{1}{n} \text{E}[ X_1 + X_2 + \cdots X_n) ]\\
+  &= \frac{1}{n} \left( \text{E}[ X_1 ] + \text{E}[X_2] + \cdots \text{E}[X_n)] \right) \\
+  &= \frac{1}{n} (n\times \mu) = \mu.
+\end{align*}
+That is, the expected value of $\bar{X}$ is equal to $\mu$.
+The estimator $\bar{X}$ is an *unbiased* of $\mu$.
+:::
+
+
+By extension, if a population consists of\ $N$ values $X_i, X_2, \ldots X_n$, then the population mean is
+$$
+  \mu = \frac{1}{N}\sum_{i = 1}^N X_i.
+$$
+
+
+### Estimating the population variance
+
+We can also define an unbiased estimator of the variance.
+
+
+:::{.theorem #SampleVarianceUnbiased name="An unbiased estimator for $\sigma^2$"}
+The sample variance
+\begin{equation}
+  S^2_n = \frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2.
+   (\#eq:S2WithPopMean)
+\end{equation}
+is an unbiased estimator of the population variance $\sigma^2$.
+:::
+
+:::{.proof}
+Again starting with the definition of an unbiased estimator:
+\begin{align*}
+    \text{E}[S^2_n] 
+    &= \text{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2\right]\\
+    &= \text{E}\left[ \frac{1}{n} (X_1 - \mu)^2 + (X_2 - \mu)^2 + \cdots + (X_n - \mu)^2\right]\\
+    &= \frac{1}{n} \left( \text{E}[  (X_1 - \mu)^2] + \text{E}[(X_2 - \mu)^2] + \cdots + \text{E}(X_n - \mu)^2\right]\\
+    &= \frac{1}{n} \left( \sigma^2 + \sigma^2 + \cdots + \sigma^2 \right)\\
+    &= \frac{1}{n} \times n\sigma^2 = \sigma^2.
+\end{align*}
+Thus, $S^2_n$ is an unbiased estimator of $\sigma^2$.
+:::
+
+
+Again by extension, if a population consists of\ $N$ values $X_i, X_2, \ldots X_n$, then the population variance is
+$$
+  \sigma^2 = \frac{1}{N}\sum_{i = 1}^N (X_i - \mu)^2.
+$$
+
+
+Equation\ \@ref(eq:S2WithPopMean) has a practical difficulty however; this equation is used to estimate the *unknown* value of the population variance, but relies on knowing the value of the population mean $\mu$.
+Knowing the value of $\mu$ but not the value of $\sigma^2$ seems an unusual situation.
+More likely, we would only have an estimate of the population mean $\bar{X}$.
+
+Since $\bar{X}$ is estimated imprecisely (from just one of the many possible samples), this introduces an extra source of variation into the estimation of $\sigma^2$, and a new estimate is needed.
+
+
+:::{.theorem #SampleVarianceUnbiased name="An unbiased estimator for $\sigma^2$ ($\mu$ unknown)"}
+When the value of $\mu$ is unknown, an *unbiased* estimator of $\sigma^2$ is 
+\begin{equation}
+  S^2_{n - 1} = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \bar{X})^2.
+   (\#eq:S2WithoutPopMean)
+\end{equation}
+Notice that the divisor in front of the summation is now $n - 1$ rather than $n$. 
+:::
+
+:::{.proof}
+Starting again with the definition of an unbiased estimator:
+\begin{align*}
+  \text{E}[S^2_{n-1}]
+  &= \frac{1}{n - 1}\text{E}\left[ \sum_{i=1}^n (X_i - \bar{X})^2\right]\\
+  &= \frac{1}{n - 1}\text{E}\left[ \sum_{i=1}^n \left(X^2_i - 2X_i\bar{X} + \bar{X}^2\right)\right]\\
+  &= \frac{1}{n - 1}\text{E}\left[ \sum_{i=1}^n X^2_i - \bar{X}\sum_{i=1}^n 2X_i + \sum_{i=1}^n \bar{X}^2\right].
+\end{align*}
+Now observe that since $\bar{X} = \sum_i X_i/n$, then $\sum_i X_i = n \bar{X}$; hence
+\begin{align*}
+  \text{E}[S^2_{n-1}]
+  &= \frac{1}{n - 1}\text{E}\left[ \sum_{i=1}^n X^2_i - 2n\sum_{i=1}^n \bar{X}^2 + n \bar{X}^2\right]\\
+  &= \frac{1}{n - 1}\text{E}\left[ \sum_{i=1}^n X^2_i - n\sum_{i=1}^n \bar{X}^2 \right]\\
+  &= \frac{1}{n - 1}\left(\text{E}\left[ \sum_{i=1}^n X^2_i\right] - n\text{E}\left[\sum_{i=1}^n \bar{X}^2 \right]\right).
+\end{align*}
+This expression can be simplified by noting that
+$$
+  \text{var}[\bar{X}]
+  = \text{E}[\bar{X}^2] - \text{E}(\bar{X})^2 
+  = \text{E}[\bar{X}^2] - \mu^2, 
+$$
+and so $\text{E}[\bar{X}^2] = \text{var}{\bar{X}} + \mu^2 = \frac{\sigma^2}{n} + \mu^2$.
+Also, 
+$$
+  \text{var}[X] 
+  = \text{E}[X^2] - \text{E}[X]^2 
+  = \text{E}[X^2] - \mu^2,
+$$
+so that $\text{E}[X^2] = \sigma + \mu^2$.
+Hence,
+\begin{align*}
+  \text{E}[S^2_{n-1}]
+  &= \frac{1}{n - 1}\left(\text{E}\left[ \sum_{i=1}^n X^2_i\right] - n\text{E}\left[\sum_{i=1}^n \bar{X}^2 \right]\right)\\
+  &= \frac{1}{n - 1}\left\{ \sum(\sigma^2 + \mu^2) - n\left(\frac{\sigma^2}{n} + \mu^2\right)\right\}\\
+  &= \frac{1}{n - 1}\left\{ n\sigma^2 + n\mu^2 - \sigma^2 - n\mu^2\right\}\\
+  &= \frac{1}{n - 1}\left\{ n\sigma^2  - \sigma^2\right\} = \sigma^2.
+\end{align*}
+Thus $S^2_{n-1}$ is an unbiased estimator of $\sigma^2$.
+:::
+
+
+## Estimating from samples
+
 
 ### Some results for samples
 
-Suppose a simple random sample (SRS) is taken from a population.
-The main interest is in the *mean* of the sample.
+Suppose a simple random sample (SRS) of size\ $n$ is taken from a population.
+The main interest is in the *mean* of the sample to estimate the unknown mean of the population $\mu$.
 Typically, a population will be *very* large, and often it will not even be possible to list all elements of the population.
 However, for demonstration purposes, suppose the population contains only $N = 5$ elements:
 $$
    2\qquad 3\qquad 3\qquad 4\qquad 8.
 $$
-We have seen that the theoretical mean of a discrete random variable $X$ is $\mu = \text{E}[X] = \sum_{i = 1}^n p_X(x) x$ where $p_x(x)$ is the probability function.
-
-Suppose we take a *simple random sample* of observations from some population of size $N$.
-This means that every observation in the population has the sample chance of being selected in our *sample* of size $n$.
-That is, each of the $n$ observations in the sample has the same probability of $1/n$ of being selected in the sample.
-That is,
+From above, the mean of the population is
 $$
-  \text{E}[X] = \sum_{i = 1}^n \frac{1}{n} X_i. 
+  \mu = \frac{2 + 3 + 3 + 4 + 8}{5} = 4.
 $$
-For *observed* values of $X_i$ we write the mean of the sample (the *smaple mean*) as $\bar{x}$:
-$$
-  \bar{x} = \frac{1}{n} \sum_{i = 1}^n x_i. 
-$$
-This is the mean of a sample of observations.
-Similarly, the theoretical variance of a discrete random variable $X$ is $\sigma^2 = \text{E}[X] = \sum_{i = 1}^n p_X(x) (x - \bar{X})^2$ where $p_X(x)$ is the probability function.
-Taking a *simple random sample* of observations again from some population of size $N$, every observation in the population has the sample chance of being selected in our *sample* of size $n$.
-That is, each of the $n$ observations in the sample has the same probability of $1/n$ of being selected in the sample.
-$$
-  \text{var}[X] 
-  = \sum_{i = 1}^n \frac{1}{n} (X_i - \bar{X})^2
-  = \frac{1}{n} \left( \sum_{i = 1}^n  X^2_i - \mu^2 \right).
-$$
-(PROOF?????)
-For *observed* values of $X_i$ we write the mean of the sample (the *smaple mean*) as $\bar{x}$:
-FIX: THEIS OS VAR OF WHOLE POPULATION OF SIZE N
-$$
-  \sigma^2 = \frac{1}{n} \left( \sum_{i = 1}^n  X^2_i - \mu^2 \right).
-$$
-This is the variance of the *sample*, which is written in terms of the *population* mean.
-However, if the variance of the population is unknown, then the mean of the population is likely to be unknown also.
-IN that situation (PROVE!!!)
-$$
-  s^2 = \frac{1}{n - 1} \left( \sum_{i = 1}^n  X^2_i - \mu^2 \right).
-$$
-PROOF?
-
-
-
-### Distribution of the sample mean: $n = 2$, sampling *without* replacement
-
-The mean of this population is $\mu = 4$:
+Using **R**:
 
 ```{r}
 Population <- c(2, 3, 3, 4, 8)
 mean(Population)
 ```
 
-The variance of this population is $\sigma^2 = 4.4$:
-
+Similarly the variance of the population is
+$$
+  \sigma^2 = \frac{1}{N} \left( \sum_{i = 1}^n  (X_i - \mu)^2 \right) = 4.4
+$$
 ```{r}
-n <- length(Population)
-var(Population) * (n - 1) / n
+N <- length(Population)
+sum( (Population - mean(Population))^2 ) / N
+
+var(Population) * (N - 1) / N
 ```
 
-(This cumbersome formula for the variance is necessary because the **R** function `var()` computes the variance of a *sample*, rather than the variance of a *population* as we have here.^[The formula for the variance of a *sample* is $s^2 = \frac{1}{n - 1}\sum (x - \bar{x})^2$; the formula for the variance of a *population* is $s^2 = \frac{1}{n}\sum (x - \bar{x})^2$... thus the factor of $(n - 1)/n$.])
-Now, assume we take a sample of size $n = 2$ from this population, *without* replacement.
+The cumbersome second formula in **R** for the *population* variance is necessary because the **R** function `var()` computes the variance of a *sample*, rather than the variance of a *population* as we have here.
+The factor $(n - 1)/n$ comes from  the difference between the formulas.
+
+
+### Distribution of the sample mean: $n = 2$ (*without* replacement)
+
+Assume we do not know the values of $\mu$ and $\sigma^2$, which is usually the case.
+Then, to estimate the value of $\mu$, we take a sample of size $n = 2$ from this population, *without* replacement.
 Because samples are taken at random, we do not know which elements will be in the sample, so we do not know what the value of $\bar{X}$ will be.
 
-*Simple random sampling* refers to *all* possible samples of size $n$ being equally likely. 
+*Simple random sampling* refers to *all* possible samples of size\ $n$ being equally likely. 
 Since there are $\binom{N}{n}$ samples of size $n$ when sampling without replacement from $N$ objects, $\binom{5}{2} = 10$ equally-likely possible samples of size $n = 2$ are possible in this example.
-For instance, the sample $\{2, 3\}$ has a probability of $1/10$ of being selected, and the mean of this sample is 2.5.
+For instance, the sample $\{2, 3\}$ has a probability of $1/10$ of being selected, and the mean of this sample is $2.5$.
 
-We can use **R** to list all possible samples of size $n = 2$ from the population:
+We can use **R** to list *all* possible samples of size $n = 2$ from the population:
 
 ```{r}
 ### All possible combinations of 2 elements:
@@ -114,9 +245,9 @@ cbind(                 t(AllSamples),
 ```
 
 The *sample* mean varies from sample to sample.
-The mean of a selected sample depends on *which* sample is selected at random.
+The mean of a sample depends on *which* sample is selected at random.
 
-From this table, the *distribution* of the sample mean itself can be determined (Fig.\ \@ref(fig:SampleMeanDistn)):
+From this information, the *distribution* of the sample mean itself can be determined (Fig.\ \@ref(fig:SampleMeanDistn)):
 
 ```{r SampleMeanDistn, fig.align="center", fig.cap="The distribution of the sample means"}
 prop.table(table(MeanAllSamples))
@@ -136,20 +267,23 @@ The sample mean has a distribution: the value of the sample mean varies, dependi
 :::
 
 
-The mean *of the sampling distribution* is $\mu_{\bar{X}} = 4$:
+The mean *of the sampling distribution* in Fig.\  \@ref(fi:SampleMeanDistn) is $\mu_{\bar{X}} = 4$:
 
 ```{r}
 mean(MeanAllSamples)
 ```
 
-The variance *of the sampling distribution* is $\sigma^2_{\bar{X}} = 1.65$:
+The variance *of the sampling distribution* in Fig.\  \@ref(fi:SampleMeanDistn) is $\sigma^2_{\bar{X}} = 1.65$:
 
 ```{r}
 n <- length(MeanAllSamples)
 var(MeanAllSamples) * (n - 1) / n
 ```
 
-### Distribution of the sample mean: larger samples, sampling *without* replacement
+Note that since we have the mean of *all* possible samples, we have the 'population' of sample means.
+
+
+### Distribution of the sample mean: larger samples (*without* replacement)
 
 We can increase the sample size to $n = 3$, and repeat:
 
@@ -165,7 +299,7 @@ n <- length(MeanAllSamples)
 var(MeanAllSamples) * (n - 1) / n
 ```
 
-The mean of all possible samples is the same ($\mu_x = 4$), but the variance is smaller ($\sigma^2_{\bar{X}} = 0.7333$ rather than $1.65$).
+The mean of all possible samples is the same ($\mu_{\bar{X}} = 4$), but the variance is smaller ($\sigma^2_{\bar{X}} = 0.7333$ rather than $1.65$).
 For $n = 4$, the mean of all possible samples remains the same, but the variance is smaller again:
 
 ```{r}
@@ -181,10 +315,10 @@ var(MeanAllSamples) * (n - 1) / n
 ```
 
 
-### Distribution of the sample mean: $n = 2$, sampling *with* replacement {#SamplingWithReplacement}
+### Distribution of the sample mean: $n = 2$ (*with* replacement) {#SamplingWithReplacement}
 
-All the above example use sampling *without replacement*.
-However, *sampling randomly with replacement* could be used.
+All the above examples use sampling *without replacement*.
+However, *sampling randomly with replacement* could be used too.
 Then, there are $5\times 5 = 25$ equally-likely samples possible:
 
 ```{r results="markup"}
@@ -211,7 +345,7 @@ plot( prop.table(table(MeanAllSamplesWithReplacement)),
       main = "The distribution of sample means\n(sampling with replacement)")
 ```
 
-Then, the mean and variance of the sampling distribution in this case are $\mu_{\bar{X}} = 4$ and $\sigma^2_{\bar{X}} = 2.2$ respectively.
+The mean and variance of the sampling distribution in this case are $\mu_{\bar{X}} = 4$ and $\sigma^2_{\bar{X}} = 2.2$ respectively:
 
 
 ```{r}
@@ -225,13 +359,14 @@ var(MeanAllSamplesWithReplacement) * (n - 1) / n
 
 ### The sampling distribution of other statistics
 
-In principle, the distribution of *any* statistic could be found (for a mean, median, variance, range, etc.) using the approach in the example above.
-For example, we can display the distribution of the sample range:
+In principle, the distribution of *any* statistic could be found using the approach in the example above; that is, the median, variance, range, etc. all have a sampling distribution.
+For example, we can display the distribution of the sample *range*:
 
 ```{r SampleRangeDistnWithReplacement, fig.align="center", fig.cap="The distribution of the sample range", fig.width=5, fig.height=3, out.width="60%"}
-## Population range:
+## Define a function to compute the range
 myRange <- function(x){ max(x) - min(x) }
 
+## The range of the population:
 myRange(Population)
 
 ## Sampling:
@@ -255,7 +390,10 @@ plot( prop.table(table(RangeAllSamplesWithReplacement)),
 
 ## Sampling distributions {#SamplingDistributionsIntro}
 
+The previous section displays numerous *sampling distributions*: the distributions of sample statistics.
 In practice, populations are almost always very large and the number of possible samples huge, infinite, or the exact elements of the population difficult or impossible to list.
+In these cases, listing all possible samples and computing the exact sampling distributions is impossible.
+
 In terms of distribution theory, the probability distributions in Figs.\ \@ref(fig:SampleMeanDistn) and\ \@ref(fig:SampleMeanDistnWithReplacement) are just the distribution of a random variable, since *the sample mean is a random variable*. 
 Statistically, these distribution describe what to expect for the sample means when we randomly sample from a population.
 
@@ -264,11 +402,11 @@ Statistically, these distribution describe what to expect for the sample means w
 Any quantity computed from a sample is a random variable, since its value is unknown beforehand.
 The observed value of the quantity depends on *which* sample is selected (at random).
 
-This means that sample means, sample standard deviations, sample medians all are random variables.
+Consequently, sample means, sample standard deviations, sample medians etc. all are random variables.
 :::
 
 
-This knowledge is essential in extracting information from samples. 
+This knowledge is essential for extracting information from samples. 
 Observe that the mean of the sampling distribution in the example (when taken *without replacement*) is the same as the mean of the population itself: $\mu = (2 + 3 + 3 + 4 + 8 )/5 = 4$.
 Also, the variance of the sampling distribution is *smaller* than the variance of the population ($\sigma^2 = 4.4$). 
 The exact relationship between $\sigma^2_{\bar{X}}$ and $\sigma^2$ is expanded on in Theorem\ \@ref(thm:SamplingDistMean).
@@ -719,7 +857,7 @@ $$
    U
    = n\frac{(\bar{X} - \mu)^2}{\sigma^2}.\qquad
 $$
-Then wr can write $W = U + V$.
+So we can write $W = U + V$.
 Then observe:
 
 * $W \sim \chi^2_n$ by Theorem \@ref(thm:ChiSquare), so that the mgf of $W$ is $M_W(t) = (1 - 2t)^{-n}$. 
@@ -822,7 +960,7 @@ This proof is not given.
 
 
 The pdf of the $T$ distribution is very similar to the standard normal distribution (Fig.\ \@ref(fig:TPlots)): bell-shaped and symmetric about zero. 
-However, the variance is greater than one (Theorem\ \@ref(thm:TDistProperties)) is dependent on $\nu$.
+However, the variance is greater than one (Theorem\ \@ref(thm:TDistProperties)) is dependent on\ $\nu$.
 
 
 
@@ -928,13 +1066,14 @@ The statistic $T$ can be written as
     &= \frac{Z}{Y/(n - 1)},
 \end{align*}
 where $Z$ is a $N(0, 1)$ variable and $Y$ is a chi-square variable with $(n - 1)$ df.
+Using Definition\ \@ref(def:TDistribution) then, $T$ has a $T$ distribution.
 :::
-SO WHAT? THAT NEEDS SOME EXTRA EXPLANATION TO MAKE THE CONNECTIONS.
+
 
 
 Notice that $T$ represents a *standardised* version of the sample mean.
 Because of this, the $T$ statistic is important in statistical inference.
-You probably have used in is hypothesis testing, for example.
+You probably have used it is hypothesis testing, for example.
 
 
 :::{.example #CalcaltingT name="Calculating $T$"}
