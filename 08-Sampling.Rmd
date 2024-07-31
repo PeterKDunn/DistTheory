@@ -18,27 +18,50 @@ This chapter introduces the application of distribution theory to the discipline
 [Recall](#ProbIntroduction): distribution theory is about describing random variables using probability, and statistics is about data collection and extracting information from data. 
 
 
-
-
-## Estimating population parameters from samples
+## From theoretical distributions to practical observations
 
 Until now, our results have concerned theoretical probability distributions (i.e., distribution *theory*) that describe ideal distributions of infinite populations.
-In practice, of course, we do not have infinite populations; instead, we observe finite (usually relatively small) samples (i.e., *statistics*) from unknown distributions.
+In practice, of course, we do not have infinite populations, and we observe finite (usually relatively small) samples (i.e., *statistics*) from unknown distributions.
 
-Consider taking a sample of size\ $n$ from some possibly-unknown distribution: $x_1, x_2, \ldots, x_n$.
-Suppose we wish to use the sample to estimate the unknown mean of the population, and the unknown variance of the population.
-How do we proceed?
+
+:::{.example #Heights}
+Suppose our *population* of interest is only female residents currently living in a local nursing home.
+(Usually, populations are much broader than this.)
+While the heights $X$ of such residents may be described theoretically as, for example, $X\sim N(170, 3^2)$, the actual heights of each of the $N = 86$ female residents is one value from this theoretical distribution, and then rounded (for convenience) to the nearest centimetre.
+
+For example, we may find the heights are: $160$\ cm; $173$\ cm; $169$\ cm; $\ldots$; $171$\ cm.
+:::
+
+
+So while heights are (in theory) continuous, we *observe* discrete values.
+Using these values then, the *expected value* (or population mean) height can be found as
+$$
+  \text{E}[X] = \mu = \sum_{i = 1}^{86} p_X(x_i) \times x_i
+$$
+using the formula for a discrete random variable (using Def.\ \@ref(def:Expectation)).
+Since the population contains $N = 86$ equally-important observations, the expected value is
+$$
+  \text{E}[X] = \mu = \sum_{i = 1}^{86} \frac{1}{86} \times x_i.
+$$
+Using this same idea more generally, the *population mean* can be computed as
+$$
+  \mu = \frac{1}{N} \sum_{i = 1}^N x_i.
+$$
+Similarly, the variance of the population can be found as (Def.\ \@ref(def:Variance)):
+$$
+  \sigma^2 = \frac{1}{N} \sum_{i = 1}^N (x_i - \mu)^2.
+$$
+
 
 
 ### Estimating the population mean
 
-
-It turns out that a 'good' estimate of the unknown population mean $\mu$ is
+Having all values of a population available is almost never possible, and we instead study a sample of size\ $n$ from some probably-unknown distribution: $x_1, x_2, \ldots, x_n$.
+Given the formula for computing value of the *population* mean, a sensible approach for computing the value of the *sample* would seem to be using
 $$
-  \bar{X} = \frac{1}{n}(X_1 + X_2 + \cdots X_n) = \frac{1}{n}\sum_{i=1}^n X_i,
+  \bar{X} = \frac{1}{n}(X_1 + X_2 + \cdots X_n) = \frac{1}{n}\sum_{i=1}^n X_i.
 $$
-the familiar *sample mean*.
-This is a 'good' estimate in the sense that is an *unbiased* estimate of $\mu$.
+In turns out that this is a 'good' estimate of $\mu$, in the sense that is an *unbiased* estimate of $\mu$.
 
 
 :::{.definition #Unbiased name="Unbiased estimator"}
@@ -48,9 +71,10 @@ $$
 $$
 :::
 
-This means that an unbiased estimator produces estimates that, on average, have the correct value.
+
+This means that an unbiased estimator produces estimates that, *on average*, have the correct (population) value that they are estimating.
 This seems a sensible property for a 'good' estimator.
-(There are other properties of 'good' estimators, we but do not explore these here.)
+(There are other properties of 'good' estimators too, we but do not explore these here.)
 When we say that $\bar{X}$ is an unbiased estimator of $\mu$ then, we mean that $\text{E}[\bar{X}] = \mu$,
 
 
@@ -64,12 +88,12 @@ is an unbiased estimator of the population mean $\mu$.
 :::
 
 :::{.proof}
-Using the definition of unbiased:
+Using the definition of an unbiased estimator:
 \begin{align*}
   \text{E}[\bar{X}] 
-  &= \text{E}\left[ \frac{1}{n}(X_1 + X_2 + \cdots X_n \right]\\
-  &= \frac{1}{n} \text{E}[ X_1 + X_2 + \cdots X_n) ]\\
-  &= \frac{1}{n} \left( \text{E}[ X_1 ] + \text{E}[X_2] + \cdots \text{E}[X_n)] \right) \\
+  &= \text{E}\left[ \frac{1}{n}(X_1 + X_2 + \cdots X_n) \right]\\
+  &= \frac{1}{n} \text{E}[ X_1 + X_2 + \cdots X_n ]\\
+  &= \frac{1}{n} \left( \text{E}[ X_1 ] + \text{E}[X_2] + \cdots \text{E}[X_n] \right) \\
   &= \frac{1}{n} (n\times \mu) = \mu.
 \end{align*}
 That is, the expected value of $\bar{X}$ is equal to $\mu$.
@@ -77,15 +101,10 @@ The estimator $\bar{X}$ is an *unbiased* of $\mu$.
 :::
 
 
-By extension, if a population consists of\ $N$ values $X_i, X_2, \ldots X_n$, then the population mean is
-$$
-  \mu = \frac{1}{N}\sum_{i = 1}^N X_i.
-$$
 
+### Estimating the population variance {#EstimatePopVariance}
 
-### Estimating the population variance
-
-We can also define an unbiased estimator of the variance.
+Similarly, given the formula for the population variance, we might suggest the following estimate of the population variance.
 
 
 :::{.theorem #SampleVarianceUnbiased name="An unbiased estimator for $\sigma^2$"}
@@ -102,7 +121,7 @@ Again starting with the definition of an unbiased estimator:
 \begin{align*}
     \text{E}[S^2_n] 
     &= \text{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2\right]\\
-    &= \text{E}\left[ \frac{1}{n} (X_1 - \mu)^2 + (X_2 - \mu)^2 + \cdots + (X_n - \mu)^2\right]\\
+    &= \frac{1}{n} \text{E}\left[  (X_1 - \mu)^2 + (X_2 - \mu)^2 + \cdots + (X_n - \mu)^2\right]\\
     &= \frac{1}{n} \left( \text{E}[  (X_1 - \mu)^2] + \text{E}[(X_2 - \mu)^2] + \cdots + \text{E}(X_n - \mu)^2\right]\\
     &= \frac{1}{n} \left( \sigma^2 + \sigma^2 + \cdots + \sigma^2 \right)\\
     &= \frac{1}{n} \times n\sigma^2 = \sigma^2.
@@ -111,42 +130,31 @@ Thus, $S^2_n$ is an unbiased estimator of $\sigma^2$.
 :::
 
 
-Again by extension, if a population consists of\ $N$ values $X_i, X_2, \ldots X_n$, then the population variance is
-$$
-  \sigma^2 = \frac{1}{N}\sum_{i = 1}^N (X_i - \mu)^2.
-$$
-
-
 Equation\ \@ref(eq:S2WithPopMean) has a practical difficulty however; this equation is used to estimate the *unknown* value of the population variance, but relies on knowing the value of the population mean $\mu$.
-Knowing the value of $\mu$ but not the value of $\sigma^2$ seems an unusual situation.
-More likely, we would only have an estimate of the population mean $\bar{X}$.
+Knowing the value of $\mu$ but not the value of $\sigma^2$ seems unlikely.
+Almost always, we would only have an estimate of the population mean $\bar{X}$.
 
-Since $\bar{X}$ is estimated imprecisely (from just one of the many possible samples), this introduces an extra source of variation into the estimation of $\sigma^2$, and a new estimate is needed.
+This may suggest using
+$$
+  \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2.
+$$
+to estimate the population variance.
+However, *this estimate is not unbiased* (ie., it is biased).
+Since $\bar{X}$ estimates $\mu$ imprecisely (from just one of the many possible samples), this introduces an extra source of variation into the estimation of $\sigma^2$.
 
-
-:::{.theorem #SampleVarianceUnbiased name="An unbiased estimator for $\sigma^2$ ($\mu$ unknown)"}
-When the value of $\mu$ is unknown, an *unbiased* estimator of $\sigma^2$ is 
-\begin{equation}
-  S^2_{n - 1} = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \bar{X})^2.
-   (\#eq:S2WithoutPopMean)
-\end{equation}
-Notice that the divisor in front of the summation is now $n - 1$ rather than $n$. 
-:::
-
-:::{.proof}
-Starting again with the definition of an unbiased estimator:
+To see this, start again with the definition of an unbiased estimator:
 \begin{align*}
-  \text{E}[S^2_{n-1}]
-  &= \frac{1}{n - 1}\text{E}\left[ \sum_{i=1}^n (X_i - \bar{X})^2\right]\\
-  &= \frac{1}{n - 1}\text{E}\left[ \sum_{i=1}^n \left(X^2_i - 2X_i\bar{X} + \bar{X}^2\right)\right]\\
-  &= \frac{1}{n - 1}\text{E}\left[ \sum_{i=1}^n X^2_i - \bar{X}\sum_{i=1}^n 2X_i + \sum_{i=1}^n \bar{X}^2\right].
+  \text{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2 \right]
+  &= \frac{1}{n}\text{E}\left[ \sum_{i=1}^n (X_i - \bar{X})^2\right]\\
+  &= \frac{1}{n}\text{E}\left[ \sum_{i=1}^n \left(X^2_i - 2X_i\bar{X} + \bar{X}^2\right)\right]\\
+  &= \frac{1}{n}\text{E}\left[ \sum_{i=1}^n X^2_i - \bar{X}\sum_{i=1}^n 2X_i + \sum_{i=1}^n \bar{X}^2\right].
 \end{align*}
 Now observe that since $\bar{X} = \sum_i X_i/n$, then $\sum_i X_i = n \bar{X}$; hence
 \begin{align*}
-  \text{E}[S^2_{n-1}]
-  &= \frac{1}{n - 1}\text{E}\left[ \sum_{i=1}^n X^2_i - 2n\sum_{i=1}^n \bar{X}^2 + n \bar{X}^2\right]\\
-  &= \frac{1}{n - 1}\text{E}\left[ \sum_{i=1}^n X^2_i - n\sum_{i=1}^n \bar{X}^2 \right]\\
-  &= \frac{1}{n - 1}\left(\text{E}\left[ \sum_{i=1}^n X^2_i\right] - n\text{E}\left[\sum_{i=1}^n \bar{X}^2 \right]\right).
+  \text{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2 \right]
+  &= \frac{1}{n}\text{E}\left[ \sum_{i=1}^n X^2_i - \bar{X}^2 + n \bar{X}^2\right]\\
+  &= \frac{1}{n}\text{E}\left[ \sum_{i=1}^n X^2_i - n \bar{X}^2 \right]\\
+  &= \frac{1}{n}\left(\text{E}\left[ \sum_{i=1}^n X^2_i\right] - n\text{E}\left[ \bar{X}^2 \right]\right).
 \end{align*}
 This expression can be simplified by noting that
 $$
@@ -164,17 +172,32 @@ $$
 so that $\text{E}[X^2] = \sigma + \mu^2$.
 Hence,
 \begin{align*}
-  \text{E}[S^2_{n-1}]
-  &= \frac{1}{n - 1}\left(\text{E}\left[ \sum_{i=1}^n X^2_i\right] - n\text{E}\left[\sum_{i=1}^n \bar{X}^2 \right]\right)\\
-  &= \frac{1}{n - 1}\left\{ \sum(\sigma^2 + \mu^2) - n\left(\frac{\sigma^2}{n} + \mu^2\right)\right\}\\
-  &= \frac{1}{n - 1}\left\{ n\sigma^2 + n\mu^2 - \sigma^2 - n\mu^2\right\}\\
-  &= \frac{1}{n - 1}\left\{ n\sigma^2  - \sigma^2\right\} = \sigma^2.
+  \text{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2 \right]
+  &= \frac{1}{n}\left(\text{E}\left[ \sum_{i=1}^n X^2_i\right] - n\text{E}\left[\sum_{i=1}^n \bar{X}^2 \right]\right)\\
+  &= \frac{1}{n}\left\{ \sum(\sigma^2 + \mu^2) - n\left(\frac{\sigma^2}{n} + \mu^2\right)\right\}\\
+  &= \frac{1}{n}\left\{ n\sigma^2 + n\mu^2 - \sigma^2 - n\mu^2\right\}\\
+  &= \frac{1}{n}\left\{ n\sigma^2  - \sigma^2\right\}\\
+  &= \frac{n - 1}{n} \sigma^2.
 \end{align*}
-Thus $S^2_{n-1}$ is an unbiased estimator of $\sigma^2$.
+Thus the estimator is a *biased estimator* of $\sigma^2$.
+However, multiplying the estimator by $(n - 1)/n$ *would* produce an unbiased estimator.
+
+
+:::{.theorem #SampleVarianceUnbiased name="An unbiased estimator for $\sigma^2$ ($\mu$ unknown)"}
+When the value of $\mu$ is unknown, an *unbiased* estimator of $\sigma^2$ is 
+\begin{equation}
+  S^2_{n - 1} = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \bar{X})^2.
+   (\#eq:S2WithoutPopMean)
+\end{equation}
+Notice that the divisor in front of the summation is now $n - 1$ rather than $n$. 
+:::
+
+:::{.proof}
+Easily shown using the result above.
 :::
 
 
-## Estimating from samples
+## A example using a small population
 
 
 ### Some results for samples
@@ -199,7 +222,7 @@ mean(Population)
 
 Similarly the variance of the population is
 $$
-  \sigma^2 = \frac{1}{N} \left( \sum_{i = 1}^n  (X_i - \mu)^2 \right) = 4.4
+  \sigma^2 = \frac{1}{N} \sum_{i = 1}^n  (X_i - \mu)^2 = 4.4:
 $$
 ```{r}
 N <- length(Population)
@@ -209,7 +232,7 @@ var(Population) * (N - 1) / N
 ```
 
 The cumbersome second formula in **R** for the *population* variance is necessary because the **R** function `var()` computes the variance of a *sample*, rather than the variance of a *population* as we have here.
-The factor $(n - 1)/n$ comes from  the difference between the formulas.
+The factor $(n - 1)/n$ comes from  the difference between the formulas (Sect.\ \@ref(EstimatePopVariance)).
 
 
 ### Distribution of the sample mean: $n = 2$ (*without* replacement)
