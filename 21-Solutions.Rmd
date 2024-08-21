@@ -590,24 +590,13 @@ Write $d$ as the distance; then $S = \{d: 0 \le d \le \sqrt{2}\}$.
 For the grid, let's use **R** to find what values are possible:
 
 ```{r}
-set.seed(8757) # For reproducibility
-numSims <- 5000
-distance <- array( dim = numSims)
+x <- y <- seq(0, 1, by = 0.25)
 
-for (i in 1:numSims) {
-  xA <- sample( seq(0, 1, by = 0.25),
-                size = 1)
-  xB <- sample( seq(0, 1, by = 0.25),
-                size = 1)
-  yA <- sample( seq(0, 1, by = 0.25),
-                size = 1)
-  yB <- sample( seq(0, 1, by = 0.25),
-                size = 1)
+distances <- outer(x, y, function(x, y){sqrt(x^2 + y^2)})
 
-  distance[i] <- sqrt( (xB - xA)^2 + (yA - yB) ^ 2)
-}
-levels( factor( distance))
+unique(sort(distances))
 ```
+
 It seems there are 15 possible values for the distance:
 
 * $0$, $0.25$, $0.50$, $0.75$ and $1$ along grid lines;
