@@ -590,24 +590,13 @@ Write $d$ as the distance; then $S = \{d: 0 \le d \le \sqrt{2}\}$.
 For the grid, let's use **R** to find what values are possible:
 
 ```{r}
-set.seed(8757) # For reproducibility
-numSims <- 5000
-distance <- array( dim = numSims)
+x <- y <- seq(0, 1, by = 0.25)
 
-for (i in 1:numSims) {
-  xA <- sample( seq(0, 1, by = 0.25),
-                size = 1)
-  xB <- sample( seq(0, 1, by = 0.25),
-                size = 1)
-  yA <- sample( seq(0, 1, by = 0.25),
-                size = 1)
-  yB <- sample( seq(0, 1, by = 0.25),
-                size = 1)
+distances <- outer(x, y, function(x, y){sqrt(x^2 + y^2)})
 
-  distance[i] <- sqrt( (xB - xA)^2 + (yA - yB) ^ 2)
-}
-levels( factor( distance))
+unique(sort(distances))
 ```
+
 It seems there are 15 possible values for the distance:
 
 * $0$, $0.25$, $0.50$, $0.75$ and $1$ along grid lines;
@@ -1173,16 +1162,23 @@ plot(fy(y) ~ y,
    \end{cases}
 \end{align*}
 3. Proceed:
-$$
+\begin{align*}
    F_X(x)
-   =
+   &=
+   \begin{cases}
+      0                                   & \text{for $x < 0.6$}\\
+      \int_{0.6}^x \frac{2}{38.72} (t - 0.6) \, dt               & \text{for $0.6 \le x < 5$};\\
+      \int_5^x     \frac{2}{38.72} (9.4 - t)\, dt + 0.5       & \text{for $5 \le x < 9.4$}.\\
+      1                                   & \text{for $x \ge 9.4$}
+   \end{cases}\\
+   &=
    \begin{cases}
       0                                   & \text{for $x < 0.6$}\\
       [(0.6 - x)^2 ]/ 38.72               & \text{for $0.6 \le x < 5$};\\
-      [-69 + 18.8x - x^2] / 38.72         & \text{for $5 \le x < 9.4$}.\\
+      1 - [(x - 9.4)^2] / 38.72           & \text{for $5 \le x < 9.4$}.\\
       1                                   & \text{for $x \ge 9.4$}
    \end{cases}
-$$
+\end{align*}
 4. See below.
 5. $\Pr(X > 3) = 1 - \Pr(X < 3) =  1 - 0.1487603 =  0.8512397$ (or use areas of  triangles)
 6. $\Pr(X > 3 \mid X > 1) = \Pr(X > 3) / \Pr(X > 1) = 0.8512397 / 0.9958678 = 0.8547718$.
@@ -1530,40 +1526,72 @@ So we have cards like:
 $$
   2, 3, 4, \dots, 8, 9, 10, 10 (J), 10 (Q), 10 (K), 10 (A).
 $$
-For a 'distance' say $D$, of $8$, we need either $(2, 10)$ or $(10, 2)$, with prob.
+That is, there are\ $20$ cards with a points value of ten (four suits of five cards each).
+For a 'distance' say $D$, of\ $8$, we need $\Pr[ (2, 10)\ \text{or}\ (10, 2)]$, with probability.
 $$
-  \Pr(D = 8) = \frac{4 \times 20}{52 \times 51} = 0.03016591.
+  \Pr(D = 8) = 2\times \left(\frac{4 \times 20}{52 \times 51}\right).
 $$
-For a 'distance' of $7$, we need either $(3, 10)$ or $(10, 3)$, or $(2, 9)$ or $(9, 2)$, with prob.
+For a 'distance' of\ $7$, we need
 $$
-  \Pr(D = 7) = \frac{4 \times 20}{52 \times 51} + \frac{4 \times 4}{52\times 51} \times 2 = 0.04223228.
+  \Pr[(3, 10)\ \text{or}\ (10, 3)] + 
+  \Pr[(2,  9)\ \text{or}\ (9,  2)],
 $$
-For a 'distance' of $6$, we need either $(4, 10)$ or $(10, 4)$, or $(3, 9)$ or $(9, 3)$, or $(2, 8)$ or $(8, 2)$, with prob.
+with probability
 $$
-  \Pr(D = 6) = \frac{4 \times 20}{52 \times 51} + \frac{4 \times 4}{52\times 51} \times 4 = 0.05429864.
+  \Pr(D = 7) 
+  = 2\times\left(\frac{  \times 20}{52 \times 51}\right) + 
+    2\times\left(\frac{4 \times 4}{52\times 51}\right).
+$$
+For a 'distance' of\ $6$, we need 
+$$
+   \Pr[(4, 10)\ \text{or}\ (10, 4)] + 
+   \Pr[(3,  9)\ \text{or}\ (9,  3)] + 
+   \Pr[(2,  8)\ \text{or}\ (8,  2)]
+$$
+with probability
+$$
+  \Pr(D = 6) 
+  = 2\times\left(\frac{4 \times 20}{52 \times 51}\right) + 
+    2\times\left(\frac{4 \times 4}{52\times 51}\right) +
+    2\times\left(\frac{4 \times 4}{52\times 51}\right).
 $$
 So in general, for $D = 1, 2, \dots 8$:
 $$
-  \Pr(D = d) = \frac{4 \times 20}{52 \times 51} + \frac{4 \times 4}{52\times 51} \times 2(8 - d).
+  \Pr(D = d) =
+  2\times\left(\frac{4 \times 20}{52 \times 51}\right) + 
+  (8 - d)\times 2\times\left(\frac{4 \times  4}{52 \times 51}\right)
 $$
 
 The case $D = 0$ is different.
-A 'distance' of zero can occur if we get 1 'ten' and another 'ten', **or** two of the other (non-'ten') cards:
+We can compute the probability as\ $1$ minus the probablities from $D = 1$ to $D = 8$, or directly.
+By subtraction :
+
+```{r}
+d <- 1:8
+pd <- (2 * 4 * 20)/(52 * 51) + (8 - d) * (2 * 4 * 4)/(52 * 51)
+rbind(d, pd)
+1 - sum(pd)
+```
+To proceed directly, see that a 'distance' of zero can occur if we get a 'ten' and another 'ten', **or** a non-ten card plus the *same* non-ten card:
 $$
-  \Pr(D = 0) = \frac{4 \times 20}{52 \times 51} \times 2 + \frac{4\times 4}{52\times 51}\times 8 = 0.1085973.
+  \Pr(D = 0) = \frac{20 \times 19}{52 \times 51} + \frac{32\times 3}{52\times 51}.
 $$
+The answer is the same:
+
+```{r}
+(20 * 19)/(52 * 51) + (32 * 3)/(52 * 51)
+```
+
 See the pmf in Fig.\ \@ref(fig:CardDistance).
 :::
 
 
 ```{r CardDistance, fig.cap="The pdf for the 'distance' between cards", fig.align="center"}
-d <- 1:8
-pd <- (4 * 20 * 2)/(52 * 51) + (4 * 4)/(52 * 51) * 2 * (8 - d)
+pd0 <- c( 1 - sum(pd), pd)
+d0 <- 0:8
 
-d <- c(0, d)
-pd <- c( (4 * 3 * 8)/(52 * 51) + (20 * 19)/(52 * 51),
-         pd )
-plot(pd ~ d,
+
+plot(pd0 ~ d0,
      type = "p",
      las = 1,
      pch = 19,
