@@ -1918,25 +1918,25 @@ Write the beta distribution parameters $m$ and $n$ in terms of the mean and vari
 
 :::{.exercise #SpeedSimUnif}
 In a study modelling pedestrian road-crossing behaviour [@shaaban2017agent], the uniform distribution is used in the simulation to model the vehicle speeds.
-The speeds have a minimum value of 30 km/h, and a maximum value of 72 km/h.
+The speeds have a minimum value of $30$\ km.h^$-1^, and a maximum value of $72$\ km.h^$-1^.
 
 1. Using this model, compute the mean and standard deviation of vehicle speeds.
 1. Compute and plot the pdf and df.
-1. If $X$ is the vehicle speed, compute $\Pr(X > 60)$, where 60 km/h is the posted speed limit.
+1. If $X$ is the vehicle speed, compute $\Pr(X > 60)$, where $60$\ km.h^$-1$^ is the posted speed limit.
 1. Compute $\Pr(X > 65\mid X > 60)$.
 :::
 
 
 :::{.exercise #SpeedSimNorm}
 In a study modelling pedestrian road-crossing behaviour [@shaaban2017agent], the normal  distribution is used in the simulation to model the vehicle speeds.
-The normal model has a mean of 48km/h, with a standard deviation^[Although the article calls it the 'variance'...] of 8.8km/h.
+The normal model has a mean of 48km/h, with a standard deviation^[Although the article calls it the 'variance'...] of $8.8$\ km.h^$-1$^.
 
-1. The article ignores all vehicles travelling slower than 30 km/h and faster than 72 km/h.
+1. The article ignores all vehicles travelling slower than $30$\ km.h^$-1$^ and faster than $72$\ km.h^$-1$^.
    What proportion of vehicles are excluded using this criterion?
 1. Write the pdf for this truncated normal distribution.
 1. Plot the pdf and df for this truncated normal distribution.
 1. Compute the mean and variance for this truncated normal distribution.
-1. Suppose a vehicle is caught speeding (i.e., exceeding 60 km/h); what is the probability that the vehicle is exceeding the speed limit by less than 5 km/h?
+1. Suppose a vehicle is caught speeding (i.e., exceeding $60$\ km.h^$-1$^); what is the probability that the vehicle is exceeding the speed limit by less than $5$\ km.h^$-1$^?
 :::
 
 
@@ -1951,7 +1951,7 @@ A study of the service life of concrete in various conditions [@liu2012stochasti
 
 :::{.exercise #ConcreteSurfaceCholride}
 A study of the service life of concrete in various conditions [@liu2012stochastic] used normal distributions to model the surface chloride concentrations.
-In one model, the mean was set as $\mu = 2$ kg/m^3^ and the standard deviation as $\sigma = 0.2$ kg/m^3^.
+In one model, the mean was set as $\mu = 2$ kg.m^$-3$^ and the standard deviation as $\sigma = 0.2$ kg.m^$-3$^.
 
 1. Plot the pdf and df.
 2. Let $Y$ be the surface chloride concentration.
@@ -2196,10 +2196,10 @@ $$
    s = 0.4575x + 1.515.
 $$
 
-1. Suppose that, Australia-wide, day-care facilities have 32% of children aged 2, 33% of children aged 3, 25% of children aged 4, and the remainder aged 5.
+1. Suppose that, Australia-wide, day-care facilities have $32$% of children aged\ $2$, $33$% of children aged\ $3$, $25$% of children aged\ $4$, and the remainder aged\ $5$.
    Use **R** to simulate the distribution of the heights of children at day-care facilities.
-1. Using the normal distributions implied, what percentage of children are taller than 100cm for each age? 
-1. Use the simulation to determine the proportion of children taller than 100cm.
+1. Using the normal distributions implied, what percentage of children are taller than $100$\ cm for each age? 
+1. Use the simulation to determine the proportion of children taller than $100$\ cm.
 1. Use the simulation to determine the mean and *variance* of the height of the children at the day-care facility.
 1. Use the simulation to determine the heights for the tallest 15% of children at the facility.
 :::
@@ -2209,7 +2209,7 @@ $$
 Show that the variance of the normal, Poisson and gamma distributions can all be written in the form $\text{var}(X) = \phi \text{E}(X)^p$ for $p = 0, 1$ and $2$ respectively [@mypapers:dunnsmyth:glms].
 :::
 
-:::{.exercise}
+:::{.exercise #BetaCloud}
 @chia1991beta used the beta distribution to model cloud duration in Darwin, defined as 
 
 > ...the fraction of observable daylight hours not receiving bright sunshine.
@@ -2221,5 +2221,105 @@ In January, the fitted parameters were $m = 0.859$ and $n = 0.768$; in July, the
 1. Plot both pdfs on the same graph, and comment on what this tells you about cloud cover in Darwin
 1. Writing $C$ for the cloud duration, compute $\Pr(C > 0.5)$ for both January and July.
 :::
+
+
+:::{.exercise #ContinuousSpinner}
+Suppose a spinning wheel has a circumference of one metre, and at some point on the outer edge of the wheel is a point of interest (Fig.\ \@ref(fig:OneMCircle)).
+
+When the wheel is spun hard, what is the probability that the point finishes between locations\ $A$ and\ $B$ when it stops?
+:::
+
+
+```{r OneMCircle, echo=FALSE, fig.align="center", fig.cap="A wheel to spin", fig.align="center", fig.width=5, out.width="60%"}
+par( mar = c(1, 1, 1, 1) )
+
+#theta <- seq(0, 2 * pi, 
+#             length = 20)
+# cat(theta, "\n")
+# Silly buggers happening with this. No idea what is going on
+
+x.tmp <- seq(-1, 1,
+         length = 500)
+x <- c(x.tmp, 
+       rev(x.tmp))
+y <- c( sqrt(1 - x.tmp^2),
+        rev( -sqrt(1 - x.tmp^2)))
+
+buffer <- c(-0.1, 0.1)
+plot(x = x, 
+     y = y,
+     type = "l",
+     asp = 1,
+     lwd = 2,
+     xlab = "",
+     ylab = "",
+     main = "",
+     xlim = c(-1, 1) + buffer,
+     ylim = c(-1, 1) + buffer,
+     axes = FALSE)
+
+# Plot point of interest
+points( x = 0,
+        y = 1,
+        pch = 19,
+        col = "red",
+        cex = 2)
+
+# Plot the points A and B, and arrow between them
+angleUp   <-  pi/3
+angleDown <- -pi/3
+
+lines(x = c(0, 0.5),
+      y = c(0, -sqrt(3)/2),
+            col = "grey",
+            lwd = 3)
+
+lines(x = c(0, 0.5),
+      y = c(0, sqrt(3)/2),
+            col = "grey",
+            lwd = 3)
+
+arrows(x0 = 0.5,
+       x1 = 0.5,
+       y0 =  sqrt(3)/2 - 0.1,
+       y1 = -sqrt(3)/2 + 0.1,
+       col = "grey",
+       code = 3,
+       lty = 1,
+       lwd = 2,
+       angle = 15,
+       length = 0.15)
+text(x = 0.5,
+     y = 0,
+     pos = 4,
+     label = expression( sqrt(italic(3))))
+
+points( x = 0.5,
+        y = sqrt(3)/2,
+        pch = 19,
+        col = "black",
+        cex = 1)
+points( x = 0.5,
+        y = -sqrt(3)/2,
+        pch = 19,
+        col = "black",
+        cex = 1)
+text( x = 0.5,
+      y = sqrt(3)/2,
+      pos = 3,
+      label = expression(italic(A)))
+text( x = 0.5,
+      y = -sqrt(3)/2,
+      pos = 1,
+      label = expression(italic(B)))
+
+# Plot centre
+points( x = 0,
+        y = 0,
+        pch = 19,
+        col = "black",
+        cex = 1)
+
+```
 
 
