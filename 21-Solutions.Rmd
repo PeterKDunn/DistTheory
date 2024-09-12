@@ -1888,6 +1888,105 @@ $$
 :::
 
   
+:::{.answer}
+**Answer for Exercise\ \@ref(exr:TotalFour).**
+I have no idea...
+
+From ChatGPT (i.e., haven't checked):
+
+At least four:
+
+```{r, eval=FALSE}
+# Set the number of simulations
+num_simulations <- 100000
+
+# Initialize a vector to store the number of rolls required for each simulation
+rolls_required <- numeric(num_simulations)
+
+# Function to simulate rolling a die until the total is 4
+simulate_rolls <- function() {
+  total <- 0
+  rolls <- 0
+  while (total < 4) {
+    roll <- sample(1:6, 1) # Roll the die
+    total <- total + roll
+    rolls <- rolls + 1
+  }
+  return(rolls)
+}
+
+# Perform simulations
+for (i in 1:num_simulations) {
+  rolls_required[i] <- simulate_rolls()
+}
+
+# Calculate the PMF
+pmf <- table(rolls_required) / num_simulations
+
+# Print the PMF
+print(pmf)
+
+# Optionally, plot the PMF
+barplot(pmf, main="Probability Mass Function of Rolls Needed to Sum to 4",
+        xlab="Number of Rolls", ylab="Probability",
+        col="lightblue", border="blue")
+
+```
+
+Exactly four:
+
+```{r eval=FALSE}
+# Set the number of simulations
+num_simulations <- 100000
+
+# Initialize a vector to store the number of rolls required for each simulation
+rolls_required <- integer(num_simulations)
+
+# Function to simulate rolling a die until the total is exactly 4
+simulate_rolls <- function() {
+  total <- 0
+  rolls <- 0
+  while (total < 4) {
+    roll <- sample(1:6, 1) # Roll the die
+    total <- total + roll
+    rolls <- rolls + 1
+    if (total > 4) {
+      return(NA) # Return NA if the total exceeds 4
+    }
+  }
+  return(rolls)
+}
+
+# Perform simulations
+for (i in 1:num_simulations) {
+  result <- simulate_rolls()
+  if (!is.na(result)) {
+    rolls_required[i] <- result
+  }
+}
+
+# Remove NA values from the results
+rolls_required <- na.omit(rolls_required)
+
+# Remove zero values (impossible cases)
+rolls_required <- rolls_required[rolls_required > 0]
+
+# Calculate the PMF
+pmf <- table(rolls_required) / length(rolls_required)
+
+# Print the PMF
+print(pmf)
+
+# Optionally, plot the PMF
+barplot(pmf, main="Probability Mass Function of Rolls Needed to Sum to 4",
+        xlab="Number of Rolls", ylab="Probability",
+        col="lightblue", border="blue")
+
+```
+
+:::
+
+
   
   
   
