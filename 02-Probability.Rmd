@@ -23,7 +23,9 @@ Upon completion of this module you should be able to:
 ## Introduction {#IntroductionToProbability}
 
 Having laid a foundation by studying sets, the idea of probability can be developed.
-Probability relates to the outcomes of *random processes* (or *random experiments*).
+Probability relies heavily on many of the ideas from set theory.
+
+Building upon this foundation, probability relates to the outcomes of *random processes* (or *random experiments*).
 
 
 :::{.definition #RandomProcess name="Random process"}
@@ -39,9 +41,10 @@ Examples of simple *random processes* include tossing a coin, or rolling a die.
 While the outcome of any instance of a random process produces is unknown, usually the possible outcomes are known.
 
 
-## Sample spaces 
+## Sample spaces {#SampleSpaces}
 
-The possible outcomes of a random process constitute a universal set for the random process, called the *sample space*.
+The possible outcomes of a random process is called the *sample space*.
+In the context of probability, the universal set is the *sample space*.
 
 
 ::: {.definition #SampleSpace name="Sample space"}
@@ -58,11 +61,14 @@ $$
 :::
 
 
+If a sample space is a finite set, or a countably infinite set, the sample space is called *discrete*.
+If a sample space is an uncountably finite set, the sample space is called *continuous*.
+
 
 ## Events {#Events}
 
 While the sample space defines the set of *all* possible outcomes, usually we are interested in just some of those elements of the sample space.
-Events are *subsets* of the sample space.
+Events are *subsets* of the sample space (and hence are also sets).
 
 
 ::: {.definition #Event name="Event"}
@@ -71,7 +77,7 @@ An event $E$ is a subset of $S$, and we write $E \subseteq S$.
 
 
 By this definition, $S$ itself is an event.
-If the cardinality of the sample space is finite or countable infinite, then an event is a collection of sample points.
+If the sample space is a finite or countable infinite set, then an event is a collection of sample points.
 
 
 :::{.example #TwoCoinToss name="Events"}
@@ -88,7 +94,7 @@ $$
 $$
 notice that $A \subset S$.
 
-The event $T$, defined as 'the set of outcomes corresponding to tossing *three* heads'. is the [*null* or *empty set*](#def:EmptySet); no sample points have three heads.
+The event $T$, defined as 'the set of outcomes corresponding to tossing *three* heads', is the [*null* or *empty set*](#def:EmptySet); no sample points have three heads.
 That is, $T = \emptyset$.
 :::
 
@@ -121,20 +127,20 @@ $$
 :::
 
 
-An important concept is that of an *occurrence* of an event.
-
-
-::: {.definition #Occurence name="Occurrence"}
-An event $A$ *occurs* on a particular trial of a [random process](#def:RandomProcess) if the outcome of the trial is part of the sample space for the random process.
-:::
-
-
 :::{.example #ElementaryEvents name="Elementary events"}
 Consider events $T$ and $D$ defined in Example\ \@ref(exm:ElementaryEvents).
 For these events:
 $$
    T\cap D = \{ 6 \};\qquad\text{and}\qquad T\cup D = \{2, 3, 4, 6\}.
 $$
+:::
+
+
+An important concept is that of an *occurrence* of an event.
+
+
+::: {.definition #Occurence name="Occurrence"}
+An event $A$ *occurs* on a particular trial of a [random process](#def:RandomProcess) if the outcome of the trial is an element of the subset\ $A$ from the random process.
 :::
 
 
@@ -172,7 +178,7 @@ See Fig.\ \@ref(fig:EventsFandG)
 
 
 
-```{r EventsFandG, echo=FALSE, out.width = '60%', fig.align="center", fig.cap="Events $E$ and $G$"}
+```{r EventsFandG, echo=FALSE, out.width = '50%', fig.width=7, fig.align="center", fig.cap="Events $E$ and $G$"}
 colourE <- rgb(0, 0, 255, 
                max = 255, 
                alpha = 125)
@@ -251,27 +257,7 @@ The events are therefore *mutually exclusive*.
 :::
 
 
-
-
-
-Set algebra has many rules; we only provide some. 
-For sets $A$, $B$ and $C$ defined on the same sample space, these rules are defined:
-
-* Commutative: $A\cup B = B \cup A$.
-* Associative: $A\cup(B\cup C) = (A\cup B)\cup C$.
-* Distributive: $A\cap (B\cup C) = (A\cap B)\cup (A \cap C)$.
-* De Morgan's law: $\overline{A \cap B } = \overline{A} \cup \overline{B}$.
-* De Morgan's law: $\overline{A \cup B } = \overline{A} \cap \overline{B}$.
-<!-- These are two separate lines, since a second level of indent begins with a dash, and look like a minus sign, which is confusing -->
-
-
-:::{.proof}
-These may be proved using the rules of probability ([given later](#ProbabilityRules)), or using Venn diagrams.
-:::
-
-<!-- :::{.example} -->
-<!-- ??? -->
-<!-- ::: -->
+Since events are really just sets, the set algebra in Sect.\ \@ref(SetAlgebra) applies to events also.
 
 
 
@@ -483,12 +469,14 @@ text(0, (NOTb1lo + NOTb1hi)/2,
 
 
 
+## Axiomatic probabilities {#AssignProbDiscrete}
 
+Usually, we are interested in how likely it is for various outcomes from a random experiment to occur. 
+That is, how likely it is to observe any of the various elements of the sample space.
+*Probability* is the mathematical term for quantifying this likelihood.
 
-## Assigning probabilities: discrete events {#AssignProbDiscrete}
-
-The chance of an event occurring is formalised by assigning a number, called a *probability*, to an event. 
-We denote the probability of an event $E$ occurring as $\text{Pr}(E)$.
+The probability of an event $E$ occurring is denoted $\text{Pr}(E)$.
+But what values should a probability take?
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -497,26 +485,109 @@ The probability of an event $E$ occurring can be denoted as $\text{P}(E)$, $\tex
 :::
 
 
-A probability of\ $0$ is assigned to an event that *never* occurs (i.e., corresponds to the empty set), and\ $1$ to an event that is *certain* to occur (i.e., corresponds to the universal set).
-This method is appealing as it aligns with the idea of [proportions](#EmpiricalApproach) as numbers between\ $0$ and\ $1$.
-
-Developing a method of assigning sensible probabilities to events is difficult.
-Four methods are discussed here.
+A rigorous foundation for probability is found by using a set of fundamental rules, called the *Axioms of Probability*.
+Using these axioms, *all* other rules about probability can be derived.
+These axioms formally define the rules that apply to all probabilities.
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Sometimes, the chance of an event occurring is expressed as *odds*, which are *not* the same as probabilities.
-Odds are the ratio of how often an event is likely to occur, to how often the event is likely to *not occur*.
-
-Using odds, an impossible event is assigned\ $0$, a certain event is assigned $\infty$, and an event that will happen just as often as not happen is assigned\ $1$.
-
-We will only use the system with probabilities between $0$ and $1$ in this book.
-
-Importantly: 'odds' and 'probability' are not the same.
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+An **axiom** is a self-evident truth that does not require proof, or cannot be proven.
 :::
 
 
+:::{.definition #ThreeAxioms name="Three axioms of probability"}
+Consider a sample space $S$ for a random process, and an event\ $A$ in $S$.
+For every event\ $A$ (a subset of\ $S$), a number $\Pr(A)$ can be assigned which is called the *probability* of event $A$.
+
+
+
+The three axioms of probability are:
+
+1. *Non-negativity*: $\Pr(A) \ge 0$.  
+   The probability of any event is a non-negative real number.
+2. *Exhaustive*: $\Pr(S) = 1$.  
+   The event that *something* happens has probability\ $1$ (i.e., is certain), since the sample space lists *all* possible outcomes. 
+3. *Additivity*: If $A_1$, $A_2$, $\dots$ form a sequence of mutually exclusive events in $S$, then
+$$
+      \Pr(A_1 \cup A_2 \cup A_3 \cup \dots) = \sum_{i = 1}^\infty \Pr(A_i).
+$$
+:::
+
+In simple terms, these three axioms state:
+
+1. Probabilities are never negative numbers.
+2. The probability that *something* and only something listed in the sample space will occur is one.
+   (Recall that the sample space lists *every* possible outcome.)
+3.  For [*mutually exclusive* events](#def:MutuallyExclusive), the probability of the *union* of events is the sum of the individual probabilities.
+
+These axioms can sometimes help to assign probabilities, but their main purpose is to formally define the rules that apply to probabilities.
+These axioms of probability can be used to develop all other probability formulae.
+
+
+::: {.example #UsingAxions name="Using the axioms"}
+Consider proving that $\Pr(\emptyset) = 0$.
+While this may appear 'obvious', it is not one of the three axioms.
+
+By definition, the empty set $\emptyset$ contain no points; hence $\emptyset \cup A = A$ for any event $A$.
+Also, $\emptyset\cap A = \emptyset$, as $\emptyset$ and $A$ are [mutually exclusive](#def:MutuallyExclusive) (that is, they have no elements in common).
+Hence, by the [third axiom](#def:ThreeAxioms)  
+\begin{equation}
+   \Pr(\emptyset\cup A) = \Pr(\emptyset) + \Pr(A).
+   (\#eq:ByThirdAxiom)
+\end{equation}
+But since $\emptyset \cup A = A$, then $\Pr(\emptyset \cup A) = \Pr(A)$, and so $\Pr(A) = \Pr(\emptyset) + \Pr(A)$ from Eq.\ \@ref(eq:ByThirdAxiom).
+Hence $\Pr(\emptyset) = 0$.
+:::
+
+While this result may have seemed obvious, *all* probability formulae can be developed just from assuming the three axioms of probability.
+
+Other important rules that can be derived from these axioms, and hence apply to *all* probabiities, are given below, whenre event\ $A$ is defined in a sample space\ $S$:
+
+* All probabilities are between zero and one inclusive: $0 \le \Pr(A)\le 1$.
+* $\Pr(\emptyset) = 0$.
+* WHAT ELSE??
+
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The three axioms dictate that a probability is a real value between\ $0$ and\ $1$.
+Other ways also exists to quantify the likelihood of an event occuring.
+For example, sometimes the chance of an event occurring is expressed as *odds*, which are *not* the same as probabilities.
+Odds are the ratio of how often an event is likely to occur, to how often the event is likely to *not occur*.
+
+We will only use the system with probabilities between $0$ and $1$ in this book.
+Importantly: 'odds' and 'probability' are not the same, and the three axioms define the rules that all probabilities must follow.
+:::
+
+
+Having seen these axioms, and the rules that follow from them, we can now consider *how* to determine probabilities.
+
+
+## Assigning probabilities: discrete samples spaces {#AssignProbDiscrete}
+
+Developing a method of assigning sensible probabilities to events is difficult.
+Three methods are discussed here.
+
+### Classical probability {#AssignProbDiscrete}
+
+For a discrete sample space, where all outcomes in the sample space are equally likely (i.e., there is no reason to suspect one outcome is more likely that any other), the probability of an event\ $E$ is defined as
+$$
+  \Pr(E) 
+  = \frac{|E|}{|S|} 
+  = \frac{\text{The number of elements in $E$}}{\text{The number of elements in $S$}},
+$$
+ 
+where $|\cdot|$ refers to the cardinality notation (Sect.\ \@ref(Cardinality)).
+
+A probability of\ $0$ is assigned to an event that *never* occurs (i.e., $E$ corresponds to the empty set), and\ $1$ to an event that is *certain* to occur (i.e., $E$ corresponds to the universal set).
+This method is appealing as it aligns with the idea of [proportions](#EmpiricalApproach) as numbers between\ $0$ and\ $1$.
+
+
 ### Empirical (relative frequency) approach {#EmpiricalApproach}
+
+The mathematical definition of probability through our axioms describe the *properties* of a probability measure. The classical definition of probability naturally satisfies these axioms, but requires equally-likely outcomes in the sample space\ $S$.
+
+However, outcomes are rarely equally likely; the probability of rain tomorrow is not always the same as the probability of no rain tomorrow.
 
 When a random process is repeated many times, counting the number of times the event of interest occurs means we can compute the *proportion* of times the event occurs.
 Mathematically, if the random process is repeated $n$ times, and event $E$ occurs in $m$ of these ($m < n$), then the *probability* of the event occurring is
@@ -594,6 +665,8 @@ Use $\Pr(\text{Toss head}) = 0.5$.
 Then, after each toss, the probability of obtaining a head using all the available information was computed after each toss.
 For one such simulation, these running probabilities are shown in Fig.\ \@ref(fig:SimTosses).
 While the result of any single toss is unpredictable, we see the general pattern emerging: Heads occur about half the time.
+
+CHECK: THIS IS THE (weak? strog?) LAW of large numbers or something???????
 :::
 
 ```{r echo=FALSE}
@@ -630,59 +703,6 @@ abline( h = 0.5,       # Draw horizontal line at y = 0.5
 
 
 Using the empirical approach shows why probabilities are between 0 and 1 (inclusive), since the proportions $m/n$ are always between 0 and 1 (inclusive).
-
-
-### Classical approach {#ClassicalApproach}
-
-The *classical approach* requires being able to define a sample space containing a set of *equally-likely* outcomes.
-In practice, this is only true for trivial random processes, like tossing coins, rolling dice, and dealing cards.
-In the classical approach, random process with $n$ *equally-likely* outcomes have all outcomes assigned the probability $1/n$.
-
-For the calculation of probabilities for events in a sample space with a finite (or countably infinite) number of elements, sometimes sample points can be described so that we have equally-likely outcomes (and hence the classical approach to the assignment of probabilities is appropriate).
-
-
-:::{.example #TossingDice name="Tossing dice"}
-When a standard die is tossed, the sample space comprises six equally-likely outcomes:  $S = \{ {1},{2},{3},{4},{5},{6}\}$.
-The probability of rolling an even number can be computed by counting those outcomes in the sample space that are even (i.e., three events), and dividing by the total number of outcome in the sample space (six events).
-The probability is $3/6 = 0.5$.
-:::
-
-
-Associating probabilities with events in this situation is essentially counting sample points.
-Example\ \@ref(exm:TossingDice) is a simple demonstration of the principle which we now formalise.
-
-
-:::{.theorem #EquallyLikely name="Equally-likely events"}
-Suppose that a sample space $S$ consists of $k$ equally likely elementary events $E_1$, $E_2$, $\ldots$, $E_k$, and event $A = \{ E_1, E_2, \ldots, E_r\}$ where $(r\leq k)$.
-Then
-$$
-   \Pr(A) = \frac{r}{k}.
-$$
-:::
-
-This method of calculating the probability of an event is sometimes called the *sample-point method*.
-Take care: errors are frequently made by failing to list all the sample points in $S$.
-
-Methods of counting the points in a sample space with a finite (or countably infinite) number of elements are discussed in Sect.\ \@ref(Counting).
-
-
-::: {.example #Lotto name="Lotto"}
-In a game of Oz Lotto, [seven numbered balls are drawn from balls numbered 1 to 47](https://www.thelott.com/oz-lotto/how-to-play).
-The goal is to correctly pick the seven numbers that will be drawn (without replacing the balls) at random.\smallskip
-
-There is no reason to suspect that any one number should be more or less likely to occur than any other number.
-Any set of seven numbers is just a likely to occur as any other set of seven numbers.
-That is,
-$$
-   \{2, 3, 4, 5, 6, 7, 8\}
-$$
-is just as likely to be the chosen seven winning numbers as
-$$
-   \{4, 15, 23, 30, 33, 39, 45 \}.
-$$
-
-Listing the sample space is difficult as [the number of options is very large](#exm:CombinationOzLotto) for selecting seven numbers from 47.
-:::
 
 
 ### Subjective approach {#SubjectiveApproach}
@@ -728,60 +748,15 @@ This approach does not take into account current climatic or weather conditions,
 :::
 
 
-### Axiomatic approach {#AxiomaticApproach}
-
-An **axiom** is a self-evident truth that does not require proof, or cannot be proven.
-Perhaps surprisingly, only three axioms of probability are needed, from which all other results in probability can be proven.
 
 
-:::{.definition #ThreeAxioms name="Three axioms of probability"}
-Consider a sample space $S$ for a random process.
-For every event $A$ (a subset of $S$), a number $\Pr(A)$ can be assigned which is called the *probability* of event $A$.
 
-The three axioms of probability are:
+## Assigning probabilities: continuous sample spaces {#AssignProbContinuous}
 
-1. Non-negativity: $\Pr(A) \ge 0$.
-2. Exhaustive: $\Pr(S) = 1$.
-3. Additivity: If $A_1$, $A_2$, $\dots$ form a sequence of pairwise mutually exclusive events in $S$, then
-$$
-      \Pr(A_1 \cup A_2 \cup A_3 \cup \dots) = \sum_{i = 1}^\infty \Pr(A_i).
-$$
-:::
-
-In simple terms, these three axioms state:
-
-1. Probabilities are never negative numbers.
-2. The probability that *something* and only something listed in the sample space will occur is one.
-   (Recall that the sample space lists *every* possible outcome.)
-3.  For [*mutually exclusive* events](#def:MutuallyExclusive), the probability of the *union* of events is the sum of the individual probabilities.
-
-
-While these axioms can sometimes help to assign probabilities, their main purpose is to formally define the rules that apply to probabilities.
-These axioms of probability can be used to develop all other probability formulae.
-
-
-::: {.example #UsingAxions name="Using the axioms"}
-Consider proving that $\Pr(\emptyset) = 0$.
-While this may appear 'obvious', it is not one of the three axioms.
-
-By definition, the empty set $\emptyset$ contain no points; hence $\emptyset \cup A = A$ for any event $A$.
-Also, $\emptyset\cap A = \emptyset$, as $\emptyset$ and $A$ are [mutually exclusive](#def:MutuallyExclusive) (that is, they have no elements in common).
-Hence, by the [third axiom](#def:ThreeAxioms)  
-\begin{equation}
-   \Pr(\emptyset\cup A) = \Pr(\emptyset) + \Pr(A).
-   (\#eq:ByThirdAxiom)
-\end{equation}
-But since $\emptyset \cup A = A$, then $\Pr(\emptyset \cup A) = \Pr(A)$, and so $\Pr(A) = \Pr(\emptyset) + \Pr(A)$ from Eq.\ \@ref(eq:ByThirdAxiom).
-Hence $\Pr(\emptyset) = 0$.
-:::
-
-While this result may have seemed obvious, *all* probability formulae can be developed just from assuming the three axioms of probability.
-
-
-## Assigning probabilities: continuous events {#AssignProbContinuous}
-
-Continuous events refer to sets that do *not* have distinct outcomes to which probabilities can be assigned.
+Events defined on a uncountably infinite sample space do not have elements that can be counted (Sect.\ \@ref(InfiniteSets)), so different means are needed to compute probabilities in these situations.
 Instead, probabilities are assigned to *intervals* of the sample space, and these probabilities are described using a real-valued *probability function*, say $f_X(x)$.
+
+(BEST TRANSITION?)
 
 In the discrete case, the probability of observing an element of the sample space must *sum* to one; for a continuous sample space, the equivalent statement involves integration over the sample space rather than summations.
 
