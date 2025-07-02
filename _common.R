@@ -4,6 +4,7 @@ library(rgl)
 library(kableExtra)
 library(plotrix)
 library(mnormt) # Multivariate normal
+library(countries) # Sets of countries
 
 # example R options set globally
 options(width = 50)
