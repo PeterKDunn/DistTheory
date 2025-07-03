@@ -22,14 +22,15 @@ Upon completion of this module you should be able to:
 
 ## Introduction {#IntroductionToProbability}
 
-Having laid a foundation by studying sets, the idea of probability can be developed.
+A foundation in set theory allows the idea of probability to be developed.
+Probability is a way of describing how likely it is for some event to occur.
 Probability relies heavily on many of the ideas from set theory.
 
 Building upon this foundation, probability relates to the outcomes of *random processes* (or *random experiments*).
 
 
 :::{.definition #RandomProcess name="Random process"}
-A **random process** is a procedure that:
+A **random process** (or **random experiment**) is a procedure that:
 
 * can be repeated, in theory, indefinitely under essentially identical conditions; and
 * has well-defined outcomes; and
@@ -38,13 +39,12 @@ A **random process** is a procedure that:
 
 
 Examples of simple *random processes* include tossing a coin, or rolling a die.
-While the outcome of any instance of a random process produces is unknown, usually the possible outcomes are known.
+While the outcome of any instance of a random process produces is unknown, the possible outcomes are known.
 
 
 ## Sample spaces {#SampleSpaces}
 
-The possible outcomes of a random process is called the *sample space*.
-In the context of probability, the universal set is the *sample space*.
+When talking about probability, the [*universal set*](#def:UniversalSet) is the set of all possible outcomes that can result from a random process, usually denoted  $S$, $\Omega$ or $U$.
 
 
 ::: {.definition #SampleSpace name="Sample space"}
@@ -52,7 +52,7 @@ A *sample space* (or *event space*, or *outcome space*) for a random process is 
 :::
 
 
-:::{.example #SampleSpaceDice name="Sample Space"}
+:::{.example #SampleSpaceDice name="Sample space"}
 Consider rolling a die.
 The sample space is the set of all possible outcomes:
 $$
@@ -61,11 +61,26 @@ $$
 :::
 
 
-If a sample space is a finite set, or a countably infinite set, the sample space is called *discrete*.
+As with sets, the sample space may be finite, or countably infinite, or uncountably infinite.
+When the sample space is finite or countably infinite, the sample space is called *discrete*.
 If a sample space is an uncountably finite set, the sample space is called *continuous*.
 
 
+:::{.example #SampleSpaceDiceDiscrete name="Discrete sample space"}
+The sample space in Example\ \@ref(exm:SampleSpaceDice) is *discrete*.
+:::
+
+
+:::{.example #SampleSpaceCont name="Continuous sample space"}
+Consider the height of students.
+The sample space is *continuous* (see Example\ \@ref(exm:HeightsOfPeople)).
+:::
+
+
+
 ## Events {#Events}
+
+### Simple events {#Simple events}
 
 While the sample space defines the set of *all* possible outcomes, usually we are interested in just some of those elements of the sample space.
 Events are *subsets* of the sample space (and hence are also sets).
@@ -83,15 +98,39 @@ If the sample space is a finite or countable infinite set, then an event is a co
 :::{.example #TwoCoinToss name="Events"}
 Consider the simple random process of tossing a coin twice.
 The [sample space](#def:SampleSpace) is the set
-$$
-   S = \{(HH), (HT), (TH), (TT) \},
-$$
-where $H$ represents tossing a head and $T$ represents tossing a tail, and the pair lists the result of the two toss in order.
+`r if (knitr::is_latex_output()) {
+   '$$S = \\{ (\\Heads, \\Heads), 
+              (\\Heads, \\Tails),
+              (\\Tails, \\Heads),
+              (\\Tails, \\Tails)\\},$$'
+} else {
+   '$$S = {<span class="HTcircle">H</span>, <span class="HTcircle">H</span>,
+   <span class="HTcircle">H</span>, <span class="HTcircle">T</span>
+   <span class="HTcircle">T</span>, <span class="HTcircle">H</span>
+   <span class="HTcircle">T</span>, <span class="HTcircle">T</span>,$$'
+}`
+where
+`r if (knitr::is_latex_output()) {
+   '$\\Heads$'
+} else {
+   '<span class="HTcircle">H</span>'
+}`
+represents tossing a head and 
+`r if (knitr::is_latex_output()) {
+   '$\\Tails$'
+} else {
+   '<span class="HTcircle">T</span>'
+}`
+represents tossing a tail, and the pair lists the result of the two tosses *in order*.
 
 We can define the event $A$ as 'tossing a head on the second toss', and list the elements:
-$$
-   A = \{ (HH), (TH)\};
-$$
+`r if (knitr::is_latex_output()) {
+   '$$A = \\{ (\\Heads, \\Heads), 
+              (\\Tails, \\Heads)\\};$$'
+} else {
+   '$$A = {<span class="HTcircle">H</span>, <span class="HTcircle">H</span>,
+   <span class="HTcircle">T</span>, <span class="HTcircle">H</span>;$$'
+}`
 notice that $A \subset S$.
 
 The event $T$, defined as 'the set of outcomes corresponding to tossing *three* heads', is the [*null* or *empty set*](#def:EmptySet); no sample points have three heads.
@@ -101,14 +140,12 @@ That is, $T = \varnothing$.
 
 ::: {.definition #ElementaryEvent name="Elementary event"}
 In a sample space with a finite or countable infinite number of elements, an *elementary event* (or a *simple event*) is an event with one sample point, that cannot be decomposed into smaller events.
-
-A collection of elementary events is sometimes called a *compound event*.
 :::
 
 
 :::{.example #ElementaryEvents name="Elementary and compound events"}
 Consider observing the outcome on a single roll of a die (Example\ \@ref(exm:RollDie)).
-The elementary events are:  
+The elementary events are:
 \begin{align*}
    E_1:&\quad \text{Roll a 1}; & E_2:&\quad \text{Roll a 2};\\
    E_3:&\quad \text{Roll a 3}; & E_4:&\quad \text{Roll a 4};\\
@@ -127,7 +164,7 @@ $$
 :::
 
 
-:::{.example #ElementaryEvents name="Elementary events"}
+:::{.example #ElementaryEvents2 name="Elementary events"}
 Consider events $T$ and $D$ defined in Example\ \@ref(exm:ElementaryEvents).
 For these events:
 $$
@@ -144,26 +181,35 @@ An event $A$ *occurs* on a particular trial of a [random process](#def:RandomPro
 :::
 
 
-::: {.definition #MutuallyExclusive name="Mutually exclusive"}
-Events $A$ and $B$ are *mutually exclusive* if, and only if, $A\cap B = \varnothing$; that is, they have no elements in common.
+
+### Compound events
+
+Simple events usually not of great interest; events of interest usually contains many elements of the sample space.
+These are called *compound events*.
+
+
+::: {.definition #CompoundEvents name="Compound event"}
+A collection of elementary events is sometimes called a *compound event*.
 :::
 
-The term *disjoint* is used for *sets* (Sect.\ \@ref(RelationshipsBetweenSets)), whereas *mutually exclusive* is used when referring to *events*.
+
+Since compound events, like all events, are *sets*, operations on existing sets (Sect.\ 
+\@ref(RelationshipsBetweenSets)) can be used to define compound events.
 
 
 :::{.example #RollDie name="Rolling a die"}
 Suppose we roll a single, six-sided die.
 For rolling a die, the sample space is $S = \{1, 2, 3, 4, 5, 6\}$.
 
-We can define these two events (whose cardinality is *uncountably infinite*):  
+We can define these two events:
 \begin{align*}
-   E &= \text{An even number is thrown}         & &= \{2, 4, \phantom{5, }6\};\\
-   G &= \text{A number larger than 3 is thrown} & &= \{\phantom{2, }4, 5, 6\}.
+   E = \text{An even number is thrown}         &= \{2, 4, \phantom{5, }6\};\\
+   G = \text{A number larger than 3 is thrown} &= \{\phantom{2,\ }4, 5, 6\}.
 \end{align*}
-Then,  
+Then, the following compound events could be defined:
 \begin{align*}
    E \cap G       &= \{4, 6\}      &    E \cup G  &= \{ 2, 4, 5, 6\}\\
-   E^c.           &= \{ 1, 3, 5\}  &    G^c       &= \{ 1, 2, 3\}.
+   E^c            &= \{ 1, 3, 5\}  &    G^c       &= \{ 1, 2, 3\}.
 \end{align*}
 We make other observations too:  
 \begin{align}
@@ -240,6 +286,70 @@ text(x = 0.75,
      labels = "5" )
 ```
 
+
+The set operations in Sect.\ \@ref(RelationshipsBetweenSets) apply to events, because events are sets.
+However, different language is usually used, to indicate that events are real outcomes, whereas as sets are for describing structures more widely and abstractly.
+
+
+```{r echo=FALSE}
+
+languageCompare <- array( dim = c(10, 3) )
+
+colnames(languageCompare) <- c("Set theory",
+                               "Probability",
+                               "Example")
+
+languageCompare[1, ] <- c("Set",
+                          "Event",
+                          "")
+languageCompare[2, ] <- c("Element $x \\in A$",
+                          "Simple events",
+                          "")
+languageCompare[3, ] <- c("Universal set, $U$",
+                          "Sample space, $S$",
+                          "")
+languageCompare[4, ] <- c("Subset $X\\subseteq B$",
+                          "$A$ in in Event $B$",
+                          " ")
+languageCompare[5, ] <- c("Union $A\\cup B$",
+                          "$A$ **or** $B$",
+                          "")
+languageCompare[6, ] <- c("Intersection $A\\cap B$",
+                          "$A$ **and** $B$",
+                          "")
+languageCompare[7, ] <- c("Complement $A^c$",
+                          "Not $A$",
+                          "")
+languageCompare[8, ] <- c("Empty set $\\varnothing$",
+                          "Imposisble event",
+                          "")
+languageCompare[9, ] <- c("Disjoint sets",
+                          "Mutually exclusive events",
+                          "")
+languageCompare[10, ] <- c("Set difference $A\\setminus B$",
+                           "$A$ occurs but not $B$",
+                           "")
+knitr::kable(languageCompare,
+             format = "latex",
+             escape = FALSE)
+
+```
+
+
+In set theory: “disjoint” means no shared members.
+
+In probability: “mutually exclusive” means can’t happen at the same time.
+
+They both imply:
+
+
+The term *disjoint* is used for *sets* (Sect.\ \@ref(RelationshipsBetweenSets)), whereas *mutually exclusive* is used when referring to *events*.
+
+
+
+::: {.definition #MutuallyExclusive name="Mutually exclusive"}
+Events $A$ and $B$ are *mutually exclusive* if, and only if, $A\cap B = \varnothing$; that is, they have no elements in common.
+:::
 
 
 
