@@ -78,9 +78,9 @@ The sample space is *continuous* (see Example\ \@ref(exm:HeightsOfPeople)).
 
 
 
-## Events {#Events}
+## Events and probability {#EventsAndProbability}
 
-### Simple events {#Simple events}
+### Simple events {#SimpleEvents}
 
 While the sample space defines the set of *all* possible outcomes, usually we are interested in just some of those elements of the sample space.
 Events are *subsets* of the sample space (and hence are also sets).
@@ -104,10 +104,12 @@ The [sample space](#def:SampleSpace) is the set
               (\\Tails, \\Heads),
               (\\Tails, \\Tails)\\},$$'
 } else {
-   '$$S = {<span class="HTcircle">H</span>, <span class="HTcircle">H</span>,
+'
+<em>S</em> = {<span class="HTcircle">H</span>, <span class="HTcircle">H</span>,
    <span class="HTcircle">H</span>, <span class="HTcircle">T</span>
    <span class="HTcircle">T</span>, <span class="HTcircle">H</span>
-   <span class="HTcircle">T</span>, <span class="HTcircle">T</span>,$$'
+   <span class="HTcircle">T</span>, <span class="HTcircle">T</span>},
+   '
 }`
 where
 `r if (knitr::is_latex_output()) {
@@ -128,9 +130,10 @@ We can define the event $A$ as 'tossing a head on the second toss', and list the
    '$$A = \\{ (\\Heads, \\Heads), 
               (\\Tails, \\Heads)\\};$$'
 } else {
-   '$$A = {<span class="HTcircle">H</span>, <span class="HTcircle">H</span>,
-   <span class="HTcircle">T</span>, <span class="HTcircle">H</span>;$$'
-}`
+   '
+   <em>A</em> = {<span class="HTcircle">H</span>, <span class="HTcircle">H</span>,
+   <span class="HTcircle">T</span>, <span class="HTcircle">H</span>;
+   '}`
 notice that $A \subset S$.
 
 The event $T$, defined as 'the set of outcomes corresponding to tossing *three* heads', is the [*null* or *empty set*](#def:EmptySet); no sample points have three heads.
@@ -181,8 +184,7 @@ An event $A$ *occurs* on a particular trial of a [random process](#def:RandomPro
 :::
 
 
-
-### Compound events
+### Compound events {#CompoundEvents}
 
 Simple events usually not of great interest; events of interest usually contains many elements of the sample space.
 These are called *compound events*.
@@ -288,11 +290,16 @@ text(x = 0.75,
 
 
 The set operations in Sect.\ \@ref(RelationshipsBetweenSets) apply to events, because events are sets.
-However, different language is usually used, to indicate that events are real outcomes, whereas as sets are for describing structures more widely and abstractly.
+However, different language is usually used, to indicate that events are real outcomes, whereas as sets are for describing structures more widely and abstractly (Table\ \@ref(tab:CompareLanguage)).
+For example, 'disjoint' is used for *sets* (Sect.\ \@ref(RelationshipsBetweenSets)), whereas 'mutually exclusive' is used when referring to *events*.
 
 
-```{r echo=FALSE}
+::: {.definition #MutuallyExclusive name="Mutually exclusive"}
+Events $A$ and $B$ are *mutually exclusive* if, and only if, $A\cap B = \varnothing$; that is, they have no elements in common.
+:::
 
+
+```{r CompareLanguage, echo=FALSE}
 languageCompare <- array( dim = c(10, 3) )
 
 colnames(languageCompare) <- c("Set theory",
@@ -302,54 +309,62 @@ colnames(languageCompare) <- c("Set theory",
 languageCompare[1, ] <- c("Set",
                           "Event",
                           "")
-languageCompare[2, ] <- c("Element $x \\in A$",
+languageCompare[2, ] <- c("Element of set $x \\in A$",
                           "Simple events",
-                          "")
+                          "$\\{1\\}$")
 languageCompare[3, ] <- c("Universal set, $U$",
                           "Sample space, $S$",
+                          "$\\{1, 2, 3, 4, 5, 6\\}$")
+languageCompare[4, ] <- c("Subset $A\\subseteq S$",
+                          "$A$ is an Event in $S$",
                           "")
-languageCompare[4, ] <- c("Subset $X\\subseteq B$",
-                          "$A$ in in Event $B$",
-                          " ")
 languageCompare[5, ] <- c("Union $A\\cup B$",
-                          "$A$ **or** $B$",
-                          "")
+                          "$A$ \\textbf{or} $B$",
+                          "$\\{1, 2, 3, 6\\}$")
 languageCompare[6, ] <- c("Intersection $A\\cap B$",
-                          "$A$ **and** $B$",
-                          "")
+                          "$A$ \\textbf{and} $B$",
+                          "$\\{1\\}$")
 languageCompare[7, ] <- c("Complement $A^c$",
                           "Not $A$",
-                          "")
+                          "$\\{4, 5, 6\\}$")
 languageCompare[8, ] <- c("Empty set $\\varnothing$",
-                          "Imposisble event",
+                          "Impossible event",
                           "")
 languageCompare[9, ] <- c("Disjoint sets",
                           "Mutually exclusive events",
                           "")
 languageCompare[10, ] <- c("Set difference $A\\setminus B$",
-                           "$A$ occurs but not $B$",
+                           "$A$ occurs, but not $B$",
                            "")
+if( knitr::is_latex_output() ) {
 knitr::kable(languageCompare,
              format = "latex",
-             escape = FALSE)
+             booktabs = TRUE,
+             align = "c",
+             escape = FALSE,
+             longtable = FALSE,
+             caption = "The language used in set theory and probability. The examples are based on the examples of rolling a six-sided die, where the possible outcomes are $\\{1, 2, 3, 4, 5, 6\\}$, $A = \\{1, 2, 3\\}$ and $B = \\{1, 6\\}$.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+languageCompare[5, ] <- c("Union $A\\cup B$",
+                          "$A$ **or** $B$",
+                          "$\\{1, 2, 3, 6\\}$")
+languageCompare[6, ] <- c("Intersection $A\\cap B$",
+                          "$A$ **and** $B$",
+                          "$\\{1\\}$")
+knitr::kable(languageCompare,
+             format = "html",
+             booktabs = TRUE,
+             align = "c",
+             longtable = FALSE,
+             caption = "The language used in set theory and probability. The examples are based on the examples of rolling a six-sided die, where the possible outcomes are $\\{1, 2, 3, 4, 5, 6\\}$, $A = \\{1, 2, 3\\}$ and $B = \\{1, 6\\}$.") %>%
+    row_spec(0, bold = TRUE) 
+}
 
 ```
 
-
-In set theory: “disjoint” means no shared members.
-
-In probability: “mutually exclusive” means can’t happen at the same time.
-
-They both imply:
-
-
-The term *disjoint* is used for *sets* (Sect.\ \@ref(RelationshipsBetweenSets)), whereas *mutually exclusive* is used when referring to *events*.
-
-
-
-::: {.definition #MutuallyExclusive name="Mutually exclusive"}
-Events $A$ and $B$ are *mutually exclusive* if, and only if, $A\cap B = \varnothing$; that is, they have no elements in common.
-:::
 
 
 
@@ -372,21 +387,21 @@ Since events are really just sets, the set algebra in Sect.\ \@ref(SetAlgebra) a
 
 
 :::{.example #CricketBallEvents name="Throwing a cricket ball"}
-Consider throwing a cricket ball, where the distance of the throw is of interest (Example\ \@ref(exm:CricketBallDefine)), so that $D$ is the set of possible distances: $D = \{ d \mid d > 0 \}$.
+Consider throwing a cricket ball, where the distance of the throw is of interest (Example\ \@ref(exm:CricketBallDefine)), so that $D$ is the set of possible distances: $D = \{ d \in \mathbb{R} \mid d > 0 \}$.
 
 We can define these two events:  
 \begin{align*}
-   B_1:&\quad \text{Throw a cricket ball at least $40$m}  &&=  [40, \infty);\\
-   B_2:&\quad \text{Throw a cricket ball less than $50$m} &&= (0, 50).
+   B_1:&\quad \text{Throw a cricket ball at least $40\ms$}  &&=  [40, \infty);\\
+   B_2:&\quad \text{Throw a cricket ball less than $50\ms$} &&= (0, 50).
 \end{align*}
-The notation for $B_1$ means that a distance of $40$\ m is included in $B_1$.
-The notation for $B_2$ means that distances of $0$\ m and $50$\ m are *not* included in $B_2$.
+The notation for $B_1$ means that a distance of\ $40\ms$ is included in $B_1$.
+The notation for $B_2$ means that distances of $0\ms$ and\ $50\ms$ are *not* included in\ $B_2$.
 
 Then:  
 \begin{align*}
-   B_1 \cap B_2   &= \text{Throw the ball at least $40$m but less than $50$m};\\
+   B_1 \cap B_2   &= \text{Throw the ball at least $40$m but less than $50\ms$};\\
    B_1 \cup B_2   &= \mathbb{R}_+;\\
-   B_1^c &= \text{Throw the ball less than $40$m}.
+   B_1^c &= \text{Throw the ball less than $40\ms$}.
 \end{align*}
 :::
 
@@ -578,30 +593,40 @@ text(0, (NOTb1lo + NOTb1hi)/2,
 
 
 
-
-## Axiomatic probabilities {#AssignProbDiscrete}
+### Probabiity {#ProbabilityDefinition}
 
 Usually, we are interested in how likely it is for various outcomes from a random experiment to occur. 
-That is, how likely it is to observe any of the various elements of the sample space.
+That is, how likely it is to observe any of the various events ('sets') defined on the sample space.
 *Probability* is the mathematical term for quantifying this likelihood.
-
 The probability of an event $E$ occurring is denoted $\text{Pr}(E)$.
-But what values should a probability take?
+
+
+:::{.definition #Probability name="Probability"}
+*Probability* is a function that assigns a number to an event.
+That is, for some event\ $E$, the value $\Pr(E)$ represents the probability that event\ $E$ occurs.
+:::
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Be aware of variations in notation!
 The probability of an event $E$ occurring can be denoted as $\text{P}(E)$, $\text{Pr}(E)$, $\text{Pr}\{E\}$, or using other similar notation.
 :::
 
 
-A rigorous foundation for probability is found by using a set of fundamental rules, called the *Axioms of Probability*.
+
+## Probability axioms {#ProbabilityAxioms}
+
+While we have defined probability as a function that assigns a number to an event, we have not stated what numbers can be assigned as a 'probability'.
+What values should a probability take?
+How should these numerical likelihoods be assigned?
+
+A rigorous foundation for probability is found by using three fundamental axioms, called the *Axioms of Probability*.
 Using these axioms, *all* other rules about probability can be derived.
 These axioms formally define the rules that apply to all probabilities.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 An **axiom** is a self-evident truth that does not require proof, or cannot be proven.
+They form the starting point for building further proofs.
 :::
 
 
@@ -609,33 +634,40 @@ An **axiom** is a self-evident truth that does not require proof, or cannot be p
 Consider a sample space $S$ for a random process, and an event\ $A$ in $S$.
 For every event\ $A$ (a subset of\ $S$), a number $\Pr(A)$ can be assigned which is called the *probability* of event $A$.
 
-
-
-The three axioms of probability are:
+Kolmogorov's three axioms of probability are:
 
 1. *Non-negativity*: $\Pr(A) \ge 0$.  
    The probability of any event is a non-negative real number.
 2. *Exhaustive*: $\Pr(S) = 1$.  
    The event that *something* happens has probability\ $1$ (i.e., is certain), since the sample space lists *all* possible outcomes. 
-3. *Additivity*: If $A_1$, $A_2$, $\dots$ form a sequence of mutually exclusive events in $S$, then
+3. *Additivity*: If $A_1$ and $A_2$ are two mutually exclusive events in $S$ (i.e., $A_1 \cap A_2 = \varnothing$), then
 $$
-      \Pr(A_1 \cup A_2 \cup A_3 \cup \dots) = \sum_{i = 1}^\infty \Pr(A_i).
+      \Pr(A_1 \cup A_2) = \Pr(A_1) + \Pr(A_2).
 $$
 :::
 
-In simple terms, these three axioms state:
 
-1. Probabilities are never negative numbers.
-2. The probability that *something* and only something listed in the sample space will occur is one.
-   (Recall that the sample space lists *every* possible outcome.)
-3.  For [*mutually exclusive* events](#def:MutuallyExclusive), the probability of the *union* of events is the sum of the individual probabilities.
+These axioms can sometimes help to assign probabilities, but their main purpose is to formally define the rules that apply to probabilities, however these numbers are assigned.
 
-These axioms can sometimes help to assign probabilities, but their main purpose is to formally define the rules that apply to probabilities.
 These axioms of probability can be used to develop all other probability formulae.
+For example, these properties follow from these three axioms, for any Events\ $A$ and\ $B$ defined on a sample space\ $S$:
+
+* **Bounds**:  
+  $0 \le \Pr(A)\le 1$; that is, probabilities are numbers between one and one inclusive for any event\ $A$.
+* **Empty sets**:  
+  $\Pr(\varnothing) = 0$; that is, the probability of the empty set is zero.
+* **Monotonicity**:  
+  If $A\subseteq B$, then $\Pr(A) \le \Pr(B)$; that is, if Event\ $A$ is wholly contained within\ $B$, it cannot have a larger probability that $\Pr(B)$.
+* **Complements**:  
+  $\Pr(A^c) = 1 - Pr(A)$; that is, the probability that event\ $A$ *does not* happens is\ $1$ minus the probability that it *does* happen.
+* **Addition**:  
+  $\Pr(A_1 \cup A_2) = \Pr(A_1) + \Pr(A_2) - \Pr(A_1 \cap A_2)$, a more result than the third axiom.
+
+All of these can be proven, simply based on the three axioms and the definitions that have been presented so far.
 
 
-::: {.example #UsingAxions name="Using the axioms"}
-Consider proving that $\Pr(\varnothing) = 0$.
+::: {.example #UsingAxioms name="Proof: Using the axioms"}
+We only prove the empty theorem result: $\Pr(\varnothing) = 0$.
 While this may appear 'obvious', it is not one of the three axioms.
 
 By definition, the empty set $\varnothing$ contain no points; hence $\varnothing \cup A = A$ for any event $A$.
@@ -651,13 +683,6 @@ Hence $\Pr(\varnothing) = 0$.
 
 While this result may have seemed obvious, *all* probability formulae can be developed just from assuming the three axioms of probability.
 
-Other important rules that can be derived from these axioms, and hence apply to *all* probabiities, are given below, whenre event\ $A$ is defined in a sample space\ $S$:
-
-* All probabilities are between zero and one inclusive: $0 \le \Pr(A)\le 1$.
-* $\Pr(\varnothing) = 0$.
-* WHAT ELSE??
-
-
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The three axioms dictate that a probability is a real value between\ $0$ and\ $1$.
@@ -670,15 +695,22 @@ Importantly: 'odds' and 'probability' are not the same, and the three axioms def
 :::
 
 
-Having seen these axioms, and the rules that follow from them, we can now consider *how* to determine probabilities.
+Having seen these axioms, and the rules that follow from them, we can now consider *how* to determine the probability assigned to certain events.
 
 
 ## Assigning probabilities: discrete samples spaces {#AssignProbDiscrete}
 
-Developing a method of assigning sensible probabilities to events is difficult.
-Three methods are discussed here.
+Developing a method of assigning a probability to an event is difficult.
+However, for *discrete sample spaces*, two options are:
 
-### Classical probability {#AssignProbDiscrete}
+* finding probabilities using classical probability (Sect.\ \@ref(ClassicalProb)), when the simple events in the sample space are equally likely (i.e., there is no reason to suspect one outcome is more likely that any other); and
+* *estimating* probabilities using relative-frequency (Sect.\ \@ref(EmpiricalApproach)), when trials can be repeated many times.
+
+THIRD OR NOT????
+When neither symmetry nor data is available, we may use subjective probability — a personal degree of belief.
+
+
+### Classical probability {#ClassicalProb}
 
 For a discrete sample space, where all outcomes in the sample space are equally likely (i.e., there is no reason to suspect one outcome is more likely that any other), the probability of an event\ $E$ is defined as
 $$
@@ -815,7 +847,7 @@ abline( h = 0.5,       # Draw horizontal line at y = 0.5
 Using the empirical approach shows why probabilities are between 0 and 1 (inclusive), since the proportions $m/n$ are always between 0 and 1 (inclusive).
 
 
-### Subjective approach {#SubjectiveApproach}
+### Subjective approach??????? {#SubjectiveApproach}
 
 'Subjective' probabilities are estimated after identifying the information that may influence the probability, and then evaluating and combining this information. 
 You use this method when someone asks you about your team's chance of winning on the weekend.
@@ -863,10 +895,217 @@ This approach does not take into account current climatic or weather conditions,
 
 ## Assigning probabilities: continuous sample spaces {#AssignProbContinuous}
 
-Events defined on a uncountably infinite sample space do not have elements that can be counted (Sect.\ \@ref(InfiniteSets)), so different means are needed to compute probabilities in these situations.
-Instead, probabilities are assigned to *intervals* of the sample space, and these probabilities are described using a real-valued *probability function*, say $f_X(x)$.
+Events defined on a uncountably infinite sample space do not have elements that can be counted (Sect.\ \@ref(InfiniteSets)), so different means are needed to compute probabilities in these situations.I
+In fact, the probability of  observing any specific, individual outcome has probability\ $0$.
 
-(BEST TRANSITION?)
+For continuous sample spaces, a probability is not based on counting elements, but on a *density function*.
+A *probability density function* (or PDF) over the sample space quantifies the concentration of probability in different regions of the sample space.
+
+For example, if we consider the heights of adult females (Example\ \@ref(exm:HeightsOfPeople)).
+Every female has a height, so the sample space\ $S$ of the heights of all females can be defined as:
+$$
+   S = \{ x \in \mathbb{R} \mid 50 < x < 300\},
+$$
+where $x$ is the height in centimetres, and we have assumed no height greater than $300\cms$ or less than $50\cms$. 
+Since this is the sample space\ $S$, this represents a probability of one (by the third axiom of probability (Sect.\ \@ref(ProbabilityAxioms)).
+That is, the total probability over\ $S$ is one; that is, every adult female is represented somewhere within\ $S$.
+
+Now consider how that total probability of one could be distributed to various ranges of heights.
+Now, the probability of finding an adult female with a height less than $75\cms$ (or\ $29\inches$) is basically impossible. 
+Almost no probability will be concentrated below\ $75\cms$.
+
+The probability of finding an adult female with a height less than $150\cms$ (or 4ft 11in) is unlikely, but is possible.
+Thus, only a little of the probability will be concentrated below\ $150\cms$.
+
+Likewise, the probability of finding an adult female with a height greater than $300\cms$ (or 9ft 10in) is practically impossible.
+Almost no probability will be concentrated above\ $300\cms$.
+
+The probability of finding an adult female with a height greater than $175\cms$ (or 5ft 9in) is unlikely but not impossible; only a little of the probability will be concentrated above\ $175\cms$.
+
+In contrast,  the probability of finding an adult female with a height between\ $150\cms$ and\ $175\cms$ is *very* high; almost all of the probability will be concentrated between\ $150\cms$ and\ $175\cms$. 
+We can draw a curve that represents this concentration of probability (Fig.\ \@ref(fig:HeightsConcentrations), left panel).
+This figure shows how the probability is allocated, or *distributed*, over the sample space.
+
+Rather than dividing the sample space into just five large intervals of height, a finer division of heights could be used; Fig.\ \@ref(fig:HeightsConcentrations), right panel) uses the same ideas but with $10\cms$\ intervals of heights.
+This representation shows that most of the probability is concentrated\ $155\cms$ to $165\cms$, suggesting that finding an adult female with a height in this range is concentrates a lot of the probability.
+
+As the intervals become smaller, the grapoh showing the allocations of probability become smoother.
+This smooth curve is called a *probability density function* (or PDF): it shows the density (or concentration) of probability over various range of the sample space.
+
+
+
+
+```{r HeightsConcentrations, echo=FALSE, fig.align="center", fig.cap="Allocating the concentration of probability over regions of the sample space.", fig.width=8, fig.height=5, out.width="90%"}
+par( mfrow = c(1, 2) )
+
+plot( x = c(50, 300),
+      y = c(0, 1),
+      type = "n",
+      las = 1,
+      main = "Height of females:\ncrude allocation of probability",
+      xlab = "Heights (in cm)",
+      ylab = "Probability concentration (density)")
+
+divNever1 <- 100
+divNever2 <- 250
+
+divRare1 <- 150
+divRare2 <- 175
+divOK1 <- 150
+divOK2 <- 175
+
+Divisions <- c(divNever1, divRare1, divOK1, 
+               divOK2, divRare2, divNever2)
+
+# Add divisions, from text
+abline( v = Divisions,
+        lwd = 2,
+        lty = 2,
+        col = "grey")
+
+# Add horizontal lines for prob concentration
+segments(x0 = 0,
+         x1 = Divisions[1],
+         y0 = 0,
+         y1 = 0,
+         lwd = 3)
+segments(x0 = Divisions[6],
+         x1 = 400,
+         y0 = 0,
+         y1 = 0,
+         lwd = 3)
+
+
+segments(x0 = Divisions[1],
+         x1 = Divisions[2],
+         y0 = 0.05,
+         y1 = 0.05,
+         lwd = 3)
+segments(x0 = Divisions[6],
+         x1 = Divisions[5],
+         y0 = 0.05,
+         y1 = 0.05,
+         lwd = 3)
+
+
+
+segments(x0 = Divisions[3],
+         x1 = Divisions[4],
+         y0 = 0.9,
+         y1 = 0.9,
+         lwd = 3)
+
+
+# Arrows to explain
+# Need to adjust the text to the left (adj does not seem to work):
+text_Adjust <- c(23, 23, 15, 23, 15)
+Divisions <- c(divNever1, divRare1, divOK1, 
+               divOK2, divRare2, divNever2)
+
+text(x = mean( c(Divisions[1], 0)) - text_Adjust[1],
+     y = 0.1,
+     srt = 90,
+     pos = 4,
+     cex = 0.9,
+     col = "grey",
+     labels = "Very low prob. concentration")
+text(x = mean( c(Divisions[6], 400)) - text_Adjust[5],
+     y = 0.1,
+     srt = 90,
+     pos = 4,
+     cex = 0.9,
+     col = "grey",
+     labels = "Very low prob. concentration")
+
+
+
+text(x = mean( Divisions[1:2]) - text_Adjust[2],
+     y = 0.15,
+     srt = 90,
+     pos = 4,
+     cex = 0.9,
+     col = "grey",
+     labels = "Low prob. concentration")
+text(x = mean( Divisions[5:6]) - text_Adjust[4],
+     y = 0.15,
+     srt = 90,
+     pos = 4,
+     cex = 0.9,
+     col = "grey",
+     labels = "Low prob. concentration")
+
+
+text(x = mean( Divisions[3:4]) - text_Adjust[3],
+     y = 0.05,
+     srt = 90,
+     pos = 4,
+     cex = 0.9,
+     col = "grey",
+     labels = "High prob. concentration")
+
+
+######################################################## 
+
+# Mean, sd:
+mn_Height <- 162
+sd_Height <- 6.5
+
+# Add divisions, from text
+Divisions2 <- seq(125, 225, 
+                 by = 10)
+
+NormalHts <- array( dim = length(Divisions2) - 1 )
+for (i in 1:length(NormalHts)){
+  NormalHts[i] <- mean( c(Divisions2[i], 
+                          Divisions2[i + 1]) )
+}
+y <- dnorm(NormalHts, 
+           mean = mn_Height,
+           sd = sd_Height)
+
+
+plot( x = c(125, 225),
+      y = c(0, max(y)),
+      type = "n",
+      las = 1,
+      main = "Height of females:\nbetter allocation of probability",
+      xlab = "Heights (in cm)",
+      ylab = "Probability concentration (density)")
+
+# Add divisions
+abline( v = Divisions2,
+        lwd = 1,
+        lty = 2,
+        col = "grey")
+
+# Add horizontal lines for prob concentration
+for (i in (1:length(NormalHts))){
+  # Horizontal
+  segments(x0 = Divisions2[i],
+           x1 = Divisions2[i + 1],
+           y0 = y[i],
+           y1 = y[i],
+           lwd = 3)
+  # Vertical  
+  if (i > 1) {
+    segments(x0 = Divisions2[i],
+             x1 = Divisions2[i],
+             y0 = y[i - 1],
+             y1 = y[i],
+             lty = 2,
+             lwd = 2)
+  }
+}
+
+
+```
+
+:::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+In a PDF, intervals of the (continuous) sample space represent events, and areas under the curve represent probabilities.
+:::
+
+
+With continuous sample spaces, probabilities are assigned to *intervals* (corresponding to the event\ $E$) of the sample space, and these probabilities are described using a real-valued *probability function*, say $f_X(x)$.
 
 In the discrete case, the probability of observing an element of the sample space must *sum* to one; for a continuous sample space, the equivalent statement involves integration over the sample space rather than summations.
 
