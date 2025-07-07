@@ -47,34 +47,31 @@ See the next section for the case where $n\to\infty$.
 \begin{equation}
      \sum_{n = 0}^\infty a r^n
    = a + ar + ar^2 + \ldots
-   \rightarrow \frac{a}{1 - r} \text{ as $n \rightarrow \infty$}
+   \rightarrow \frac{a}{1 - r} \text{ as $n \rightarrow \infty$} \quad\text{for $|r|<1$.}
   (\#eq:SumGeometricInfinite)
 \end{equation}
-where the infinite series only converges if $|r| < 1$.
 * Geometric-like series:  
 \begin{equation}
      \sum_{n = 0}^\infty a n r^n
    = ar + 2ar^2 + 3ar^3 + \ldots
-   \rightarrow \frac{ar}{(1 - r)^2}
+   \rightarrow \frac{ar}{(1 - r)^2} \quad\text{for $|r|<1$.}
   (\#eq:SumGeometricInfinite2)
 \end{equation}
-where the infinite series only converges if $|r| < 1$.  
 \begin{equation}
      \sum_{n=0}^\infty a n^2 r^n
    = ar + 4ar^2 + 9ar^3 \ldots 
-   \rightarrow \frac{ar(r + 1)}{(1 - r)^3}
+   \rightarrow \frac{ar(r + 1)}{(1 - r)^3} \quad\text{for $|r|<1$.}
   (\#eq:SumGeometricInfinite3)
 \end{equation}
-where the infinite series only converges if $|r| < 1$.
 
 
 * Exponential function:  
 \begin{align}
    e^z
-   &= 1 + z + \frac{z^2}{2!} + \frac{z^3}{3!} + \ldots
+   &= 1 + z + \frac{z^2}{2!} + \frac{z^3}{3!} + \ldots \quad\text{for all values of $z$}.
    (\#eq:Exponential)\\
    e^{-z}
-   &= 1 - z + \frac{z^2}{2!} - \frac{z^3}{3!} + \ldots
+   &= 1 - z + \frac{z^2}{2!} - \frac{z^3}{3!} + \ldots \quad\text{for all values of $z$}.
    (\#eq:ExponentialNegative) \\
    e
    &= \lim_{n\to\infty} \left(1 + \frac{1}{z}\right)^z
@@ -87,91 +84,139 @@ where the infinite series only converges if $|r| < 1$.
 * Logarithmic series:  
 \begin{align}
    \log(1 + z)
-   &= z - \frac{z^2}{2} + \frac{z^3}{3} - \ldots
+   &= z - \frac{z^2}{2} + \frac{z^3}{3} - \ldots \quad\text{for $|z|<1$}.
    (\#eq:Logarithmic)\\
    \log(1 - z)
-   &= -z - \frac{z^2}{2} - \frac{z^3}{3} - \ldots
+   &= -z - \frac{z^2}{2} - \frac{z^3}{3} - \ldots \quad\text{for $|z|<1$}.
    (\#eq:LogarithmicNegative)
 \end{align}
 
 * Others:  
 \begin{align}
    (1 - z)^{-1}
-   &= 1 + z + z^2 + z^3 + \ldots
+   &= 1 + z + z^2 + z^3 + \ldots \quad\text{for $|z|<1$}.
    (\#eq:Other1)\\
    (1 - z)^{-r}
-   &= 1 + rz + \frac{r(r + 1)z^2}{2!} + \frac{r(r + 1)(r + 2)z^3}{3!} + \ldots
+   &= 1 + rz + \frac{r(r + 1)z^2}{2!} + \frac{r(r + 1)(r + 2)z^3}{3!} + \ldots \quad\text{for $|z|<1$}.
    (\#eq:Other2)
 \end{align}
-
-
 
 Note that the expressions on the RHS above do not converge to the LHS for all values of $z$.
 
 
 
-# Using R with distributions {#UseRDistributions}
 
-In **R**, standard distributions have four associated functions:
+# Useful R functions {#OtherUsefulR}
 
-* Computing the [probability function](#def:ProbabilityFunction): All begin with `p` (such as `pnorm()` for the normal distribution).
-* Computing the [distribution function](#def:DistributionFunction): All begin with `d`(such as `dnorm()`).
-* Computing the quantile function: All begin with `q` (such as `qnorm()`).
-* Generating random numbers: All begin with `r` (such as `rnorm()`).
+## General ideas
 
-For example, the fours function above are called, for the normal distribution (denoted `norm` in **R**):
+**R** can be used a fancy calculator:
 
-* `dnorm()`
-* `pnorm()`
-* `qnorm()`
-* `rnorm()`
+```{r}
+(-5 + 7) * 2
+2 * pi * 3
+exp(-1)
+sqrt( 9 ) * sin(3 * pi / 2)
+```
 
+Note that spaces are not important to **R**, so these are all the same to **R**:
 
+```{r}
+1 +                2
+1          +  2
+1+2
+1 + 2
+```
 
+The last is better for human readability, so is recommended.
 
+**R** also allows *variables* to be used, and values can be assigned to variables using `=` or the more tradiational `<-` combination of characters. 
+Variables cannot start with a digit.
 
-## Univariate distributions
+```{r}
+Radius = 2
+Area = pi * Radius^2
+Area
 
-Common parameters:
+side1 <- 2
+side2 <- 4
+hypot <- sqrt( side1^2 + side2^2 )
+hypot
+```
 
-* `x`: Values where to evaluate the probability function
-* `q`: Quantiles
-* `p`: Probabilities
-* `n`: The number of random observations to generate
+Notice that the *value* of a variable is displayed by typing the variable name.
 
-Most distributions have other parameters also; check the help (e.g., `?punif`).
+Comments can be added using `#`; any text following a `#` is ignored by **R**:
 
-Distribution       | Probability function | Distribution function | Quantile function | Random numbers
-----------------|-------------------------|-----------------------|-------------------|-----------------
-Discrete uniform   |                      |                       |                   |  `sample()`
-Binomial           | `dbinom()`           | `pbinom()`            | `qbinom()`        | `rbinom(n, )`
-Poisson            | `dpois()`            | `ppois()`             | `qpois()`         | `rpois(n, )`
-Geometric          | `dgeom()`            | `pgeom()`             | `qgeom()`         | `rgeom(n, )`
-Negative binomial  | `dnbinom()`          | `pnbinom()`           | `qnbinom()`       | `rnbinom(n, )`
-Continuous uniform | `dunif()`            | `punif()`             | `qunif()`         | `runif(n, )`
-Normal             | `dunif()`            | `punif()`             | `qunif()`         | `runif(n, )`
-Gamma              | `dgamma()`           | `pgammma()`           | `qgamma()`        | `rgamma(n, )`
-$t$                | `dt()`               | `pt()`                | `qt()`            | `rt(n, )`
-$\chi$-squared     | `dchisq()`           | `pchisq()`            | `qchisq()`        | `rchisq(n, )`
-$F$                | `df()`               | `pf()`                | `qf()`            | `rf(n, )`
+```{r}
+hourly_Wage <- 20  # Hourly wage, in $ per hr
+hours_Worked <- 16 # Number of hours worked
 
+# This all assumes no overtime rates!
 
-
-## Multivariate distributions 
-
-The **multinomial** distribution: 
-
-* `rmultinom()`
-* `dmultinom()`
-
-The **multivariate normal** distribution:
-  
-* `dmnorm()`
-* `pmnorm()`
-* `rmnorm()`
+weekly_Income <- hourly_Wage * hours_Worked # Income in dollar for the week
+weekly_Income
+```
 
 
-# Other useful R functions {#OtherUsefulR}
+## Using functions in R {#FunctionsInR}
+
+**R** has thousands of functions to perform specific tasks.
+We have already seen two being used above:
+
+* `sqrt()` takes the square root of a given value.
+* `exp()` find the value of $\exp(x) = e^x$ for some given value of $x$.
+
+Functions, in general, can take many inputs.
+
+Consider the function `log()`.
+We can type
+
+```{r}
+log(100)
+```
+
+If we look at the help for the `log()` function (by typing `?log`), we see the usage is described like this:
+
+```
+Usage
+log(x, base = exp(1))
+```
+
+That is, the function can take *two* inputs: one called `x`, and one called `base`.
+The help information is starting that the default value of `base`, if it is not told otherwise, is assumed to be `exp(1)` (which is $\exp(1)= e^1 = 2.71828\dots$).
+In other words, the default logarithm is the *natural logarithm*.
+
+Since my command above (i.e., `log(100)`) only gave one input to the `log()` functions, the value of the second input (i.e., `base`) uses the default value of `exp(1)`.
+That is, $\log_e 100 = \ln 100 = 4.605\dots$.
+
+To specify a different base, we can set the value of `base` explicitly:
+
+```{r}
+log(100, 10)
+```
+
+The inputs are assumed by **R** to have been given in the order shown in the help; that is `x = 100` and `base = 10`. 
+It is clearer, though, to *name* the value of the second input:
+
+```{r}
+log(100, base = 10)
+```
+
+The value of the first input can be named also:
+
+```{r}
+log(x = 100, base = 10)
+```
+When inputs are *named*, they can appear in any order:
+
+```{r}
+log(base = 10, x = 100)
+```
+
+Some functions in **R** have *many* inputs.
+Some functions are collected into _**R** packages_ that provide additional functionality. 
+
 
 ## General functions {#OtherUsefulRGeneral}
 
@@ -184,17 +229,8 @@ The **multivariate normal** distribution:
   * `c("fred", "martha")` creates a vector with two text elements.
   * `c(1, 8, 3.14, -2)`create a vector with four numerical elements.
 * `cat()` is often used to print information.
-* `array( dim = c(2, 4))` produces an empty $2\times 3$ array (which is like a matrix).
-* `array( data = c(1, 2, 3, 4, 5, 6), dim = c(2, 3))` produces the $2\times 3$ array
-$$
-  \left[
-  \begin{array}{ccc}
-    1 & 3 & 5\\
-    2 & 4 & 6\\
-  \end{array}
-  \right].
-$$
-* `array( data = c(1, 2, 3, 4, 5, 6), byrow = TRUE, dim = c(2, 3))` produces the $2\times 3$ array
+* `matrix()` is used to produces matrices (of $2$-dimensions):
+  * `matrix(data = c(1, 2, 3, 4, 5, 6), byrow = TRUE, ncol = 3)` produces the $2\times 3$ array (i.e., `ncol = 3` means the number of columns is\ $3$):
 $$
   \left[
   \begin{array}{ccc}
@@ -203,51 +239,76 @@ $$
   \end{array}
   \right].
 $$
-* `t()` **t**ransposes a matrix or array.
-
-
-Logical comparison in **R** are possible (notice the use of `==`):
 
 ```{r}
-DaysOfWeek <- c("Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun")
-HoursSleep <- c(8, 8, 8, 8, 6, 6, 10)
+matrix(data = c(1, 2, 3, 4, 5, 6), byrow = TRUE, ncol = 3)
+```
+  * `matrix(data = c(1, 2, 3, 4, 5, 6), bycol = TRUE, nrow = 2` produces the $2\times 3$ array (i.e., `nrow = 2` means the number of rows is\ $2$):
+$$
+  \left[
+  \begin{array}{ccc}
+    1 & 3 & 5\\
+    2 & 4 & 6\\
+  \end{array}
+  \right].
+$$
+* `array()` produces matrix-like structure, but they can have many dimensions (not just two, like `matrix()`)
+  * `array( dim = c(2, 4))` produces an empty $2\times 4$ array.
+  * `array( data = c(1, 2, 3, 4, 5, 6, 7, 8), dim = c(2, 2, 2))` produces a $2\times 2\times 2$ array:
+```{r}
+array( data = c(1, 2, 3, 4, 5, 6, 7, 8), dim = c(2, 2, 2))
+```
+* `t()` **t**ransposes a matrix or array:
 
-HoursSleep == 8
-HoursSleep > 8
-HoursSleep >= 8
-
-HoursSleep == 6 | HoursSleep == 10 # | means "OR"
-
-HoursSleep > 6 & HoursSleep < 10 # & means "AND"
-
-which(HoursSleep == 8)
-which(HoursSleep > 8)
-which(HoursSleep >= 8)
-
-which(HoursSleep == 6 | HoursSleep == 10 ) # | means "OR"
-
-which(HoursSleep > 6 & HoursSleep < 10 ) # & means "AND"
-
-WeekEnd <- DaysOfWeek == "Sat" | DaysOfWeek == "Sun"
-
-WeekDay <- !WeekEnd # ! means "NOT"
-
-HoursSleep[WeekDay]
-
-HoursSleep[WeekEnd]
+```{r}
+A <- matrix( c(1, -2, -20, 3), ncol = 2)
+A
+t(A)
+```
 
 
-cat("These are the hours of sleep on weekdays:", HoursSleep[WeekDay], "\n")
+Logical comparison in **R** are possible (notice the use of `==` rather than `=`):
+
+```{r}
+Days_Of_Week <- c("Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun")
+Hours_Sleep <- c(8, 8, 8, 8, 6, 6, 10)
+
+Hours_Sleep == 8
+Hours_Sleep > 8
+Hours_Sleep >= 8
+
+Hours_Sleep == 6 | Hours_Sleep == 10 # | means "OR"
+
+Hours_Sleep > 6 & Hours_Sleep < 10 # & means "AND"
+
+which(Hours_Sleep == 8)
+which(Hours_Sleep > 8)
+which(Hours_Sleep >= 8)
+
+which(Hours_Sleep == 6 | Hours_Sleep == 10 ) # | means "OR"
+
+which(Hours_Sleep > 6 & Hours_Sleep < 10 ) # & means "AND"
+
+Weekend <- Days_Of_Week == "Sat" | Days_Of_Week == "Sun"
+
+Week_Day <- !Weekend # ! means "NOT"
+
+Hours_Sleep[Week_Day]
+
+Hours_Sleep[Weekend]
+
+
+cat("These are the hours of sleep on weekdays:", Hours_Sleep[Week_Day], "\n")
    # Notice that  \n  is used to create a new line.
 ```
 
 Specific elements of a vector can be accessed using square brackets:
 
 ```{r}
-HoursSleep[1]
-HoursSleep[3:5]
+Hours_Sleep[1]
+Hours_Sleep[3:5]
 
-HoursSleep[WeekEnd]
+Hours_Sleep[Weekend]
 ```
 
 
@@ -350,4 +411,65 @@ legend("topright", # The location
        )
 
 ```
+
+
+# Using R with distributions {#UseRDistributions}
+
+In **R**, standard distributions have four associated functions:
+
+* Computing the [probability function](#def:ProbabilityFunction): All begin with `p` (such as `pnorm()` for the normal distribution).
+* Computing the [distribution function](#def:DistributionFunction): All begin with `d`(such as `dnorm()`).
+* Computing the quantile function: All begin with `q` (such as `qnorm()`).
+* Generating random numbers: All begin with `r` (such as `rnorm()`).
+
+For example, the fours function above are called, for the normal distribution (denoted `norm` in **R**):
+
+* `dnorm()`
+* `pnorm()`
+* `qnorm()`
+* `rnorm()`
+
+
+
+
+
+## Univariate distributions
+
+Common parameters:
+
+* `x`: Values where to evaluate the probability function
+* `q`: Quantiles
+* `p`: Probabilities
+* `n`: The number of random observations to generate
+
+Most distributions have other parameters also; check the help (e.g., `?punif`).
+
+Distribution       | Probability function | Distribution function | Quantile function | Random numbers
+----------------|-------------------------|-----------------------|-------------------|-----------------
+Discrete uniform   |                      |                       |                   |  `sample()`
+Binomial           | `dbinom()`           | `pbinom()`            | `qbinom()`        | `rbinom(n, )`
+Poisson            | `dpois()`            | `ppois()`             | `qpois()`         | `rpois(n, )`
+Geometric          | `dgeom()`            | `pgeom()`             | `qgeom()`         | `rgeom(n, )`
+Negative binomial  | `dnbinom()`          | `pnbinom()`           | `qnbinom()`       | `rnbinom(n, )`
+Continuous uniform | `dunif()`            | `punif()`             | `qunif()`         | `runif(n, )`
+Normal             | `dunif()`            | `punif()`             | `qunif()`         | `runif(n, )`
+Gamma              | `dgamma()`           | `pgammma()`           | `qgamma()`        | `rgamma(n, )`
+$t$                | `dt()`               | `pt()`                | `qt()`            | `rt(n, )`
+$\chi$-squared     | `dchisq()`           | `pchisq()`            | `qchisq()`        | `rchisq(n, )`
+$F$                | `df()`               | `pf()`                | `qf()`            | `rf(n, )`
+
+
+
+## Multivariate distributions 
+
+The **multinomial** distribution: 
+
+* `rmultinom()`
+* `dmultinom()`
+
+The **multivariate normal** distribution:
+  
+* `dmnorm()`
+* `pmnorm()`
+* `rmnorm()`
 
