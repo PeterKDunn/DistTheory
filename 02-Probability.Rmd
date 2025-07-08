@@ -619,9 +619,13 @@ $$
       \Pr(A_1 \cup A_2) = \Pr(A_1) + \Pr(A_2).
 $$
 :::
+\index{Axioms of probability|)}
 
 
-These purpose of these axioms is to formally define probability and the the rules that apply to probabilities.
+### Rules of probability {#ProbabilityRules}
+
+These\index{Probability rules|(}
+ purpose of these axioms is to formally define probability and the the rules that apply to probabilities.
 These axioms of probability can be used to develop all other probability formulae.
 For example, these properties follow from these three axioms, for any Events\ $A$ and\ $B$ defined on a sample space\ $S$:
 
@@ -631,19 +635,21 @@ For example, these properties follow from these three axioms, for any Events\ $A
   $\Pr(\varnothing) = 0$; that is, the probability of an impossible event is zero.
 * **Monotonicity**:  
   If $A\subseteq B$, then $\Pr(A) \le \Pr(B)$; that is, if every outcome in event\ $A$ is also in event\ $B$, then the probability of\ $A$ cannot exceed the probability of\ $B$.
-
 * **Complements**:\index{Set operations!complement}  
   $\Pr(A^c) = 1 - Pr(A)$; that is, the probability that event\ $A$ *does not* happens is\ $1$ minus the probability that it *does* happen.
 * **Addition**:  
   $\Pr(A_1 \cup A_2) = \Pr(A_1) + \Pr(A_2) - \Pr(A_1 \cap A_2)$, a more general result than the third axiom.
 
 All of these can be proven using only the three axioms and the definitions that have been presented so far.
+We giv etwo examoples of using the axiom to prove these results.
+
+::: {.theroem #CompRule name="Empty sets"}
+For the empty set $\varnothing$,: $\Pr(\varnothing) = 0$.\index{Empty set}
+:::
 
 
-::: {.example #UsingAxioms name="Proof: using the axioms"}
-We only prove the empty theorem result: $\Pr(\varnothing) = 0$.\index{Empty set}
+:::{.proof}
 While this may appear 'obvious', it is not one of the three axioms.
-
 By definition, the empty set $\varnothing$ contain no outcomes; hence $\varnothing \cup A = A$ for any event $A$; the two events are [mutually exclusive](#def:MutuallyExclusive).
 
 So, by the third axiom, $\varnothing\cap A = \varnothing$, as $\varnothing$ and $A$ are mutually exclusive.
@@ -659,6 +665,21 @@ Hence $\Pr(\varnothing) = 0$.
 While this result may have seemed obvious, *all* probability formulae can be developed just from assuming the three axioms of probability.
 
 
+::: {.theorem #CompRule name="Complementary rule of probability"}
+For any event $A$, the probability of 'not $A$' is
+$$
+   \Pr(A^c) = 1 - \Pr(A).
+$$
+:::
+
+:::{.proof}
+By the definition of the [*complement* of an event](#def:IntersectionUnionSubset), $A^c$ and $A$ are mutually exclusive.
+Hence, by the [third axiom](#def:ThreeAxioms), $\Pr(A^c \cup A) = \Pr(A^c) + \Pr(A)$.
+
+As $A^c\cup A = S$ (by definition of the complement) and $\Pr(S) = 1$ (Axiom 2), then $1 = \Pr(A^c) + \Pr(A)$, and the result follows.
+:::
+
+
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The three axioms dictate that a probability is a real value between\ $0$ and\ $1$.
 Other ways also exists to quantify the likelihood of an event occuring.
@@ -671,7 +692,7 @@ The three axioms define the rules that all probabilities must follow.
 
 
 Having seen these axioms, and the rules that follow from them, we can now consider *how* to determine the probability assigned to certain events.
-\index{Axioms of probability|)}
+\index{Probability rules|)}
 
 
 ## Assigning probabilities: discrete samples spaces {#AssignProbDiscrete}
@@ -1063,7 +1084,10 @@ In **R**:
 * the *number* of combinations of `n` elements `k` at a time is found using `choose(n, k)`.
 * a *list* of all combinations of `n` elements, `m` at a time is given by `combn(x, m)`.
 * $n!$ is given by `factorial(n)`.
-* $\Gamma(x)$ is given by `gamma(x)`.????????????????????????????
+
+There is no function to compute the number of permutations, but a command like this can be used:
+`factorial(n) / factorial(n - k)`.
+
 :::
 
 
@@ -1123,6 +1147,8 @@ However, if we compute $a\div b$, then $^4P_2 = 12$ answers are possible, since 
 
 
 ## Assigning probabilities: continuous sample spaces {#AssignProbContinuous}
+
+### Allocating probabilities {#AllocatingProbabilitiesContinuous}
 
 Events defined on a continuous sample space do not have elements that can be counted (Sect.\ \@ref(InfiniteSets)), so different means are needed to compute probabilities in these situations.
 In fact, for a continuous sample space, the probability of observing any specific, individual outcome has probability\ $0$.
@@ -1374,8 +1400,12 @@ for (i in (1:length(NormalHts))){
 ```
 
 :::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-In a pdf, intervals of the (continuous) sample space represent events, and areas under the curve represent probabilities.
+For a continuous sample space, intervals of the sample space represent events, and areas under the curve represent probabilities.
 :::
+
+
+
+### Probability density functions {#PDFs}
 
 As the intervals become smaller, the graph showing the allocations of probability become smoother (Fig.\ \@ref(fig:HeightsConcentrationsSmooth)).
 This smooth curve, say $f(x)$, is called a *probability density function* (or pdf):\index{Pdf} it shows the density (or concentration) of probability over various ranges of the sample space.
@@ -1471,7 +1501,8 @@ Some examples include:
 * What is the chance that an investment will return a positive yield next year?
 * How likely is it that Auckland will have above average rainfall next year?
 
-Subjective probabilities can be used for discrete or continuous sample space, though probabilities can only be allocated to regions for continuous sample spaces.
+Subjective probabilities can be used for discrete or continuous sample space; as always, probabilities can only be allocated to regions for continuous sample spaces.
+
 
 ```{r echo=FALSE}
 # http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_nccObsCode=139&p_display_type=dataFile&p_startYear=&p_c=&p_stn_num=044021
@@ -1502,192 +1533,84 @@ This approach does not take into account current climatic or weather conditions,
 
 
 
-
-## Rules of probability {#ProbabilityRules}
-\index{Probability rules|(}
-Many useful results can be deduced from the [three axioms](#def:ThreeAxioms) which allow probabilities to be computed in more complicated situations.
-
-
-::: {.theorem #CompRule name="Complementary rule of probability"}
-For any event $A$, the probability of 'not $A$' is
-$$
-   \Pr(A^c) = 1 - \Pr(A).
-$$
-:::
-
-:::{.proof}
-By the definition of the [*complement* of an event](#def:IntersectionUnionSubset), $A^c$ and $A$ are mutually exclusive.
-Hence, by the [third axiom](#def:ThreeAxioms), $\Pr(A^c \cup A) = \Pr(A^c) + \Pr(A)$.
-
-As $A^c\cup A = S$ (by definition of the complement) and $\Pr(S) = 1$ (Axiom 2), then $1 = \Pr(A^c) + \Pr(A)$, and the result follows.
-:::
-
-
-:::{.theorem #ProbAddition name="Addition rule of probability"}
-For *any* two events $A$ and $B$, the probability of either $A$ **or** $B$ occurring is
-$$
-   \Pr(A\cup B) = \Pr(A) + \Pr(B) - \Pr(A\cap B).
-$$
-:::
-
-:::{.proof}
-Exercise.
-:::
-
-
-If the two events are [*mutually exclusive*](#def:MutuallyExclusive), we have a corollary of Theorem\ \@ref(thm:ProbAddition).
-
-:::{.corollary #ProbAddition}
-If the two events $A$ and $B$ are *mutually exclusive*, then the probability of either $A$ **or** $B$ is
-$$
-   \Pr(A\cup B) = \Pr(A) + \Pr(B).
-$$
-:::
-
-:::{.proof}
-Exercise.
-:::
-
-
-Some other important results that follow from the axioms are the following.
-
-* $0 \leq \Pr(A) \leq 1$.
-* For events $A$ and $B$, $\Pr(A\cup B) \leq \Pr(A) + \Pr(B)$.
-* For events $A$ and $B$, if $A\subseteq B$ then $\Pr(B\cap A^c) = \Pr(B) - \Pr(A)$.
-* For events $A$ and $B$, if $A\subseteq B$ then $\Pr(A) \leq \Pr(B)$.
-
-:::{.proof}
-Exercises.
-:::
-
-
-<!-- :::{.example} -->
-<!-- ??? -->
-<!-- ::: -->
-
-\index{Probability rules|)}
-
-
-
-
 ## Using diagrams to visualise outcomes {#DiagramsForProbability}
 
 ### Venn diagrams {#VennDiagrams}
 
-Venn diagrams\index{Venn diagrams} can be useful when there are two events, sometimes three, but become unworkable for more than three.
-Often, tables can be used to better represent situations shown in Venn diagrams.
+Venn diagrams\index{Venn diagrams} can be useful for visualising probabilities, usig regions (often circles) to represent events.
+Venn diagrams are useful for two events, sometimes for three, but become unworkable for more than three.
+Often, tables can be used to better represent situations shown in Venn diagrams (Sect.\ \@ref(Tables)).
 
 
 
+:::{.example #VennDiagramExample name="Venn diagrams"}
+Suppose Event\ A has probability $\Pr(A) = 0.4$ and Event\ B has $\Pr(B) = 0.3$.
+In addition, $\Pr(A\cap B) = 0.1$.
+A Venn diagram (Fig.\ \@ref(fig:SimpleVenn)) shows the two events in the sample space.
+The intersection (with probability\ $0.1$) includes elements from *both* Event\ $A$ and Event\ $B$.
 
-::: {.example #BreastCancerVenn name="Breast cancer"}
-Consider again the breast cancer data (Example\ \@ref(exm:BreastCancer), where the events $C$ and $D$ were defined [earlier](#exm:BreastCancer)).
-A Venn diagram could be constructed to show the sample space (Fig.\ \@ref(fig:BreastVenn)).
+We can see, for example, that $\Pr(A\setminus B) = 0.3$, and $\Pr(A\cup B) = 0.6$.
 :::
 
-```{r BreastVenn, echo=FALSE, fig.height=6.25, fig.width=7.25, out.width = '90%', fig.align="center", fig.cap="The Venn diagram for the breast cancer example. The rectangle in each panel represents the sample space."}
-par( mfrow = c(2, 2),
+
+```{r SimpleVenn, echo=FALSE, fig.height=4, fig.width=7.25, out.width = '90%', fig.align="center", fig.cap="A Venn diagram for a simple situation with two events. The rectangle represents the sample space\\ $S$; the purple circle represents Event\\ $A$ and the green circle represents Event\\ $B$. Left: the two events. Right: the probabilities for each section of the sample soace."}
+par( mfrow = c(1, 2),
      mar = c(1, 0.1, 2, 0.1))
-colourCancer <- rgb(0, 0, 255, 
+
+colourA <- rgb(0, 0, 255, 
                     max = 255,
                     alpha = 125)
-colourPos  <- rgb(0, 255, 0, 
+colourB  <- rgb(0, 255, 0, 
                   max = 255, 
                   alpha = 125)
 
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      ylab = "",
-      xlab = "",
-      main = expression(paste("Events ", italic(C), " and ", italic(C)^c)),
-      axes = FALSE)
-
-polygon( x = c(0, 0, 1, 1),
-         y = c(0, 1, 1, 0))
-plotrix::draw.circle(x = 0.4, 
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourCancer)
-text(x = 0.4,
-     y = 0.5,
-     labels = expression(paste(italic(C), ": 0.02")))
-text(x = 0.8,
-     y = 0.5,
-     labels = expression(paste(italic(C)^c, ": 0.98")))
-mtext(text = expression(italic(S)),
-      side = 1,
-      adj = 0.25)
-
-
-###############
-
+##################
 
 plot( x = c(0, 1),
       y = c(0, 1),
       type = "n",
       ylab = "",
       xlab = "",
-      main = expression(paste("Events ", italic(D), " and ", italic(D)^c)) ,
+      main = expression(The~probabilities~of~Events~italic(A)~and~italic(B)),
       axes = FALSE)
-
 
 polygon( x = c(0, 0, 1, 1),
          y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.45, 
+                     y = 0.6,
+                     radius = 0.3,
+                     col = colourA)
+plotrix::draw.circle(x = 0.55,
+                     y = 0.35,
+                     radius = 0.25,
+                     col = colourB)
+text(x = 0.85,
+     y = 0.9,
+     labels = expression(P*"("*italic(A)*")"==0.4) )
+arrows(x0 = 0.85,
+       x1 = 0.71,
+       y0 = 0.87,
+       y1 = 0.76,
+       angle = 15,
+       length = 0.1)
+text(x = 0.85,
+     y = 0.10,
+     labels = expression(P*"("*italic(B)*")"==0.3) )
+arrows(x0 = 0.85,
+       x1 = 0.78,
+       y0 = 0.15,
+       y1 = 0.25,
+       angle = 15,
+       length = 0.1)
 
-plotrix::draw.circle(x = 0.6,
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourPos)
-
-text(x = 0.6,
-     y = 0.5,
-     labels = expression(paste(italic(D), ": 0.113")))
-text(x = 0.2,
-     y = 0.5,
-     labels = expression(paste( italic(D)^c, ": 0.887")))
 
 mtext(text = expression(italic(S)),
       side = 1,
       adj = 0.25)
 
 
-####################
 
-
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      ylab = "",
-      xlab = "",
-      main = expression(paste("Events ", italic(C), " and ", italic(D))) ,
-      axes = FALSE)
-
-
-polygon( x = c(0, 0, 1, 1),
-         y = c(0, 1, 1, 0))
-plotrix::draw.circle(x = 0.4, 
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourCancer)
-plotrix::draw.circle(x = 0.6,
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourPos)
-text(x = 0.3,
-     y = 0.5,
-     labels = expression(italic(C)))
-text(x = 0.7,
-     y = 0.5,
-     labels = expression(italic(D)))
-mtext(text = expression(italic(S)),
-      side = 1,
-      adj = 0.25)
-
-
-#################
-
-
+########################################
 
 plot( x = c(0, 1),
       y = c(0, 1),
@@ -1697,79 +1620,148 @@ plot( x = c(0, 1),
       main = expression("The probabilities in each section"),
       axes = FALSE)
 
-
 polygon( x = c(0, 0, 1, 1),
          y = c(0, 1, 1, 0))
-plotrix::draw.circle(x = 0.4, 
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourCancer)
-plotrix::draw.circle(x = 0.6,
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourPos)
-text(x = 0.3,
-     y = 0.5,
-     labels = "0.005")
-text(x = 0.7,
-     y = 0.5,
-     labels = "0.098")
-text(x = 0.7,
-     y = 0.85,
-     labels = expression((italic(C) ~ union() ~ italic(D))^c ~ ": 0.882") )
+plotrix::draw.circle(x = 0.45, 
+                     y = 0.6,
+                     radius = 0.3,
+                     col = colourA)
+plotrix::draw.circle(x = 0.55,
+                     y = 0.35,
+                     radius = 0.25,
+                     col = colourB)
+text(x = 0.5,
+     y = 0.7,
+     labels = "0.3")
+text(x = 0.5,
+     y = 0.2,
+     labels = "0.2")
 mtext(text = expression(italic(S)),
       side = 1,
       adj = 0.25)
 
 # Intersection
 text(x = 0.5, 
-     y = 0.5, 
-     label = "0.015")
+     y = 0.45, 
+     label = "0.1")
+
+
+# Rest of sample space
+text(x = 0.8, 
+     y = 0.9, 
+     label = expression(P*"("*italic(A)*union()*italic(B)*")"^c==0.4))
+
+
 ```
+
+
+### Tables of probability {#Tables}
+
+With two variables of interest, probability tables may be a convenient way of summarizing the information.\index{Probability tables}
+A probability represents the whole sample spacem an shows how the sample space is divided between two events.
+
+
+:::{.example #TableDiagramExample name="Probability tables"}
+The information in Example\ \@ref(exm:VennDiagramExample) can be compiled into a two-way table (Table\ \@ref(tab:SimpleTable)): Events\ $A$ and 'not\ $A$' are shown in the columns, and Events\ $B$ and 'not\ $B$ are shown in the rows.
+:::
+
+```{r SimpleTable, echo=FALSE}
+SimpleTable <- array(dim = c(3, 3))
+
+SimpleTable[1, ] <- c(0.1, 0.2, 0.3)
+SimpleTable[2, ] <- c(0.3, 0.4, 0.7)
+SimpleTable[3, ] <- c(0.4, 0.6, 1.0)
+
+if( knitr::is_latex_output() ) {
+  colnames(SimpleTable) <- c("\\textbf{A}",
+                             "\\textbf{Not A}",
+                             "Total")
+  rownames(SimpleTable) <- c("\\textbf{B}",
+                             "\\textbf{Not B}",
+                             "Total")
+  knitr::kable(SimpleTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = "c",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "The probabilities in a two-way table.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(2, hline_after = TRUE) %>% 
+    row_spec(0, bold = TRUE) %>% 
+    row_spec(3, bold = TRUE) %>% 
+    column_spec(4, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  colnames(SimpleTable) <- c("A",
+                             "Not A",
+                             "Total")
+  rownames(SimpleTable) <- c("B",
+                             "Not B",
+                             "Total")
+  knitr::kable(SimpleTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "The probabilities in a two-way table.") %>%
+    row_spec(0, bold = TRUE) %>% 
+    row_spec(3, bold = TRUE) %>% 
+    column_spec(4, bold = TRUE)
+}
+```
+
+
+
+
 
 
 ### Tree diagrams {#TreeDiagrams}
 
 *Tree diagrams*\index{Tree diagrams} are useful when a [random process](#def:RandomProcess) can be seen, or thought of, as occurring in steps or stages.
-The branches in the 'second stage' are *conditional probabilities*, conditional on the branch of the first step. 
-Of course, the ideas extend to multiple steps.
+The probabilities in the second step may depend on what happens on the forst step (which are called *conditional probabilities*, which are studied further in Sect.\ \@ref(CondProbIndependence))
+The ideas extend to multiple steps.
 
 
-:::{.example #BreastCancerTree name="Breast cancer"}
-Consider using a tree diagram to describe the breast cancer information from Example\ \@ref(exm:BreastCancer) (Fig.\ \@ref(fig:BreastTree)).
-By following each 'branch' of the tree, we can compute, for example:
-$$
-   \Pr(C \cap D) = \Pr(C)\times \Pr(D\mid C) = 0.02 \times 0.75 = 0.015;
-$$
-that is, the probability that a woman has a positive test **and** breast cancer is about $0.015$.
-But compare:
-$$
-   \Pr(C^c \cap D) = \Pr(C^c)\times \Pr(D\mid C^c) = 0.98 \times 0.10 = 0.098;
-$$
-that is, the probability that a woman has a positive test **and no** breast cancer (that is, a *false* positive) is about $0.098$.\smallskip
+:::{.example #TreeSimple name="Tree diagrams"}
+Suppose the probability that a customer makes a purchase using the online store is $0.35$; then, the probability that the customer requests a refund is $0.30$.
+However, if a customer makes a purchase using the physical store, the probability that the customer requests a refund is $0.05$.
+That is, most customers make purchases at the physical store, and are less likely to request a refund compared to online customers.
 
-This explains the surprisingly result in Example\ \@ref(exm:BreastCancer): because breast cancer is so uncommon in younger women, the *false* positives ($0.098$) overwhelm the *true* positives ($0.015$).
+The two events of interest are:
+\begin{align*}
+  O&: \text{The customer makes a purchase online; and}\\
+  R&: \text{The customer requests a refund.}
+\end{align*}
+Using this notation, $\Pr(O) = 0.35$, and so $\Pr(O^c) = 0.65$ is the probability that a customer makes a purchase in a physical store.
+The value of $\Pr(R)$ (and hence $\Pr(R)$) *depends* on whether the purchase was made online or in-store.
 
-After a positive mammogram, further tests are conducted to conform a cancer diagnosis. 
-In younger women, almost every positive mammogram returns a negative diagnosis from further tests.
+The situation can be considered as having two stages.
+Stage\ 1 is where the purchase was made (online, or in a physical store).
+Stage\ 2 is whether the customer requests a refund.
+The tree diagram for the situation is shown in Fig.\ \@ref(fig:SimpleTree).
+The probabilities in Stage\ 2 are different, depending on where the purchase was made.
 :::
 
+To understand how to use tree diagrams requires a stuy of *conditional probability*, which we do next.
 
-```{r BreastTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the breast-cancer example.", out.width='67%'}
+
+```{r SimpleTree, echo=FALSE, fig.align="center", fig.height=6, fig.cap="Tree diagram for the customer-satisfaction example.", out.width='67%'}
 par(mar = c(1, 0.5, 1, 0.5) + 0.1)
 
 plot( x = c(0, 1),
-      y = c(0, 1),
+      y = c(-0.05, 1),
       type = "n",
-      main = "Tree diagram for the breast cancer example",
+      main = "Tree diagram for the customer satisfaction example",
       xlab = "",
       ylab = "",
       axes = FALSE)
 #STEP 1
-lines( x = c(0.2, 0.40),
+lines( x = c(0.1, 0.4),
        y = c(0.5, 0.75),
        lwd = 2)
-lines( x = c(0.2, 0.40),
+lines( x = c(0.1, 0.4),
        y = c(0.5, 0.25),
        lwd = 2)
 # STEP 2
@@ -1790,150 +1782,87 @@ lines( x = c(0.60, 0.80),
 # TEXT
 text(x = 0.50,
      y = 0.75,
-     labels = expression("Cancer,"~italic(C)))
+     labels = expression(Online*","~italic(O)))
 text(x = 0.50,
      y = 0.25,
-     labels = expression("No cancer,"~italic(C)^c) )
+     labels = expression(atop(Physical,
+                              store*","~italic(O)^c) ) )
 
 text(x = 0.90,
      y = 0.90,
-     labels = expression("+ive test,"~italic(D)) )
+     labels = expression(atop(Refund,
+                              request*","~italic(R)) ) )
 text(x = 0.90,
      y = 0.60,
-     labels = expression("-ive test,"~italic(D)^c) )
+     labels = expression(atop(No~refund,
+                              request*","~italic(R)^c) ))
 
 text(x = 0.90,
      y = 0.40,
-     labels = expression("+ive test,"~italic(D)) )
+     labels = expression(atop(Refund,
+                              request*","~italic(R)) ) )
 text(x = 0.90,
      y = 0.10,
-     labels = expression("-ive test,"~italic(D)^c) )
+     labels = expression(atop(No~refund,
+                              request*","~italic(R)^c) ))
 
 # ADD PROBS
 text(x = 0.38,
      y = 0.63,
      cex = 0.9,
-     labels = "0.02")
+     labels = "0.35")
 text(x = 0.38,
      y = 0.37,
      cex = 0.9,
-     labels = "0.98")
+     labels = "0.65")
 
 text(x = 0.65,
      y = 0.84,
      cex = 0.9,
-     labels = "0.75")
+     labels = "0.30")
 text(x = 0.65,
      y = 0.66,
      cex = 0.9,
-     labels = "0.25")
+     labels = "0.70")
 
 text(x = 0.65,
      y = 0.34,
      cex = 0.9,
-     labels = "0.10")
+     labels = "0.05")
 text(x = 0.65,
      y = 0.16,
      cex = 0.9,
-     labels = "0.90")
+     labels = "0.95")
 
 ## STEPS
 text(x = 0.50,
-     y = 0.01,
-     label = expression(bold("Step 1"))
+     y = -0.05,
+     label = expression(bold("Stage 1"))
      )
 text(x = 0.90,
-     y = 0.01,
-     label = expression(bold("Step 2"))
+     y = -0.05,
+     label = expression(bold("Stage 2"))
      )
 ```
-
-
-
-## Tables of probability {#Tables}
-
-With two variables of interest, probability tables may be a convenient way of summarizing the information.\index{Probability tables}
-Although tables can be used to represent random processes using conditional probabilities, usually tables are used to represent the whole sample space.
-
-
-:::{.example #BreastCancer2 name="Breast cancer"}
-The breast-cancer data in Example\ \@ref(exm:BreastCancer) can also be compiled into a table giving the four outcomes in the sample space (Table\ \@ref(tab:BreastTable)).
-:::
-
-```{r BreastTable, echo=FALSE}
-BreastTable <- array(dim = c(2, 3))
-
-colnames(BreastTable) <- c("Positive test result",
-                           "Negative test result",
-                           "Total")
-rownames(BreastTable) <- c("Has breast cancer",
-                           "Does not have breast cancer")
-BreastTable[1, ] <- c("$0.75 \\times 0.02 = 0.015$",
-                      "$0.25 \\times 0.02 = 0.005$",
-                      "0.02")
-BreastTable[2, ] <- c("$0.10 \\times 0.98 = 0.098$",
-                      "$0.90 \\times 0.98 = 0.882$",
-                      0.98)
-
-if( knitr::is_latex_output() ) {
-  knitr::kable(BreastTable,
-               format = "latex",
-               booktabs = TRUE,
-               align = "c",
-               longtable = FALSE,                
-               escape = FALSE,
-               caption = "The probabilities from the breast cancer example.") %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) 
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(BreastTable,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,                
-               caption = "The probabilities from the breast cancer example.") %>%
-    row_spec(0, bold = TRUE) 
-}
-```
-
 
 
 
 ## Conditional probability and independent events {#CondProbIndependence}
 
-### General multiplication rule {#GeneralMultiplicationRule}
-
-A consequence of Def.\ \@ref(def:ConditionalProb) is the following theorem.\index{Probability rules!multiplication rule}
-
-
-:::{.theorem #GeneralMultRule name="Multiplication rule for probabilities"}
-For any events $A$ and $B$, the probability of $A$ and $B$ is
-\begin{align*}
-     \Pr(A\cap B)
-     &= \Pr(A) \Pr(B \mid A)\\
-     &= \Pr(B) \Pr(A \mid B).
-\end{align*}
-:::
-
-
-This rule can be generalised to any number of events.
-For example, for three events\ $A$, $B$ and\ $C$,
-$$
-  \Pr(A\cap B\cap C) = \Pr(A)\Pr(B\mid A)\Pr(C\mid A\cap B).
-$$
-
-
-The two important counting methods are:
-
-* *permutations*,\index{Permutations} where the order in which the elements are selected *is* important.
-* *combinations*,\index{Combinations} where the order in which the elements are selected *is not* important.
-
 
 ### Conditional probability {#CondProb}
 \index{Probability!conditional|(}
-Assume that a sample space\ $S$ for the [random process](#def:RandomProcess)\index{Random process} has been constructed, an event\ $A$ has been identified, and its probability, $\Pr(A)$, has been determined.
+
+The tree diagram in Example\ \@ref(exm:TreeSimple) is an example of *conditional probability*: the probability of requesting a refund is *conditional on* (or *depends on*) whether the customer made an online or in-store purchase.
+
+In Example\ \@ref(exm:TreeSimple), we see that $\Pr(R) = 0.30$ *if* event $O$ has occurred; we write $\Pr(R \mid O ) = 0.30$, which we read as 'The probability that Event\ $R$ occurs *given that* Event $O$ has occurred'.
+$\Pr(R \mid O )$ is a *conditional probability*.
+
+We see also that $\Pr(R) = 0.05$ *if* event $O$ has *not* occurred; we write $\Pr(R \mid O^c ) = 0.05$, which we read as 'The probability that Event\ $R$ occurs *given that* Event $O$ has *not* occurred'.
+$\Pr(R \mid O^c )$ is also a *conditional probability*.
+
+
+More generally, assume that a sample space\ $S$ for the [random process](#def:RandomProcess)\index{Random process} has been constructed, an event\ $A$ has been identified, and its probability, $\Pr(A)$, has been determined.
 We then receive additional information that some event\ $B$ has occurred.
 Possibly, this new information can change the value of\ $\Pr(A)$.
 
@@ -2109,6 +2038,174 @@ if( knitr::is_html_output() ) {
 \index{Probability!conditional|)}
 
 
+### General multiplication rule {#GeneralMultiplicationRule}
+
+A consequence of Def.\ \@ref(def:ConditionalProb) is the following theorem.\index{Probability rules!multiplication rule}
+
+:::{.theorem #GeneralMultRule name="Multiplication rule for probabilities"}
+For any events $A$ and $B$, the probability of $A$ and $B$ is
+\begin{align*}
+     \Pr(A\cap B)
+     &= \Pr(A) \Pr(B \mid A)\\
+     &= \Pr(B) \Pr(A \mid B).
+\end{align*}
+:::
+
+
+This rule can be generalised to any number of events.
+For example, for three events\ $A$, $B$ and\ $C$,
+$$
+  \Pr(A\cap B\cap C) = \Pr(A)\Pr(B\mid A)\Pr(C\mid A\cap B).
+$$
+
+
+:::{.example #MultiplicationCustomers name="General multiplication rule"}
+Consider again the probabilities in Example\ \@ref(exm:TreeSimple).
+We have $\Pr(O) = 0.35$; then:
+\begin{align*}
+  \Pr(R \mid O)   &= 0.30\quad\text{and so}\quad \Pr(R^c \mid O) = 0.70;\\
+  \Pr(R \mid O^c) &= 0.05\quad\text{and so}\quad \Pr(R^c \mid O^c) = 0.95.
+\end{align*}
+Using the general multiplication rule, 
+\begin{align*}
+  \Pr(R \cap O)       &=   \Pr(R \mid O)     \times \Pr(O)   = 0.30\times 0.35 = 0.105;\\ 
+  \Pr(R^c \cap O)     &=   \Pr(R^c \mid O)   \times \Pr(O)   = 0.70\times 0.35 = 0.245;\\ 
+  \Pr(R \cap O^c)     &=   \Pr(R \mid O^c)   \times \Pr(O^c) = 0.05\times 0.65 = 0.0325;\\ 
+  \Pr(R^c \cap O^c)   &=   \Pr(R^c \mid O^c) \times \Pr(O^c) = 0.95\times 0.65 = 0.6175.
+\end{align*}
+These four probabilities represent the 'final destinations' in the tree diagram, which we can now add to (Fig.\ \@ref(fig:SimpleTree2)).
+Notice that these probabilities on the right add to one, as they represent the entire sample space: every customer is represented on one of the four branches.
+
+We can also determine the probability that a customer requests a refuund:
+$$
+  \Pr(R) = \Pr(R \cap O) + \Pr(R \cap O^c) = 0.105 + 0.0325 = 0.1375.
+$$
+We can then determine the probability that a customer was an *online* customer, given that a refund was requested
+$$
+  \Pr(O\mid R) = \frac{\Pr(O\cap R)}{\Pr(R)} = \frac{0.105}{0.1375} = 0.7636\dots.
+$$
+If a refund is requested, the probability the customer was an online shopper is about\ $0.76$.
+:::
+
+
+```{r SimpleTree2, echo=FALSE, fig.align="center", fig.height=6, fig.cap="Tree diagram for the customer-satisfaction example, adding the probabilities of the four outcomes.", out.width='75%'}
+par(mar = c(1, 0.5, 1, 0.5) + 0.1)
+
+plot( x = c(0, 1.4),
+      y = c(-0.05, 1),
+      type = "n",
+      main = "Tree diagram for the customer satisfaction example",
+      xlab = "",
+      ylab = "",
+      axes = FALSE)
+#STEP 1
+lines( x = c(0.1, 0.4),
+       y = c(0.5, 0.75),
+       lwd = 2)
+lines( x = c(0.1, 0.4),
+       y = c(0.5, 0.25),
+       lwd = 2)
+# STEP 2
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.90),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.60),
+       lwd = 2)
+
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.40),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.10),
+       lwd = 2)
+
+# TEXT
+text(x = 0.50,
+     y = 0.75,
+     labels = expression(Online*","~italic(O)))
+text(x = 0.50,
+     y = 0.25,
+     labels = expression(atop(Physical,
+                              store*","~italic(O)^c) ) )
+
+text(x = 0.90,
+     y = 0.90,
+     labels = expression(atop(Refund,
+                              request*","~italic(R)) ) )
+text(x = 0.90,
+     y = 0.60,
+     labels = expression(atop(No~refund,
+                              request*","~italic(R)^c) ))
+
+text(x = 0.90,
+     y = 0.40,
+     labels = expression(atop(Refund,
+                              request*","~italic(R)) ) )
+text(x = 0.90,
+     y = 0.10,
+     labels = expression(atop(No~refund,
+                              request*","~italic(R)^c) ))
+
+# ADD PROBS
+text(x = 0.38,
+     y = 0.63,
+     cex = 0.9,
+     labels = "0.35")
+text(x = 0.38,
+     y = 0.37,
+     cex = 0.9,
+     labels = "0.65")
+
+text(x = 0.65,
+     y = 0.84,
+     cex = 0.9,
+     labels = "0.30")
+text(x = 0.65,
+     y = 0.66,
+     cex = 0.9,
+     labels = "0.70")
+
+text(x = 0.65,
+     y = 0.34,
+     cex = 0.9,
+     labels = "0.05")
+text(x = 0.65,
+     y = 0.16,
+     cex = 0.9,
+     labels = "0.95")
+
+
+## FAR RIGHT INTERSECTION PROBS
+text(x = 1.25,
+     y = 0.9,
+     label = expression(P*"("*italic(O)*intersect()*italic(R)*")"==0.105) )
+text(x = 1.25,
+     y = 0.6,
+     label = expression(P*"("*italic(O)*intersect()*italic(R)^c*")"==0.245) )
+text(x = 1.25,
+     y = 0.4,
+     label = expression(P*"("*italic(O)^c*intersect()*italic(R)*")"==0.0325) )
+text(x = 1.25,
+     y = 0.1,
+     label = expression(P*"("*italic(O)^c*intersect()*italic(R)^c*")"==0.6175) )
+
+
+## STEPS
+text(x = 0.50,
+     y = -0.05,
+     label = expression(bold("Stage 1"))
+     )
+text(x = 0.90,
+     y = -0.05,
+     label = expression(bold("Stage 2"))
+     )
+```
+
+
+
+The tree diagram in Example\ \@ref(exm:TreeSimple) is an example of *conditional probability*: the probability of requesting a refund is *conditional on* (or *depends on*) whether the customer made an online or in-store purchase.
+
 ### Independent events {#Independence}
 
 The important idea of *independent events* can now be defined.\index{Independent events}
@@ -2172,6 +2269,331 @@ If\ $A$ and\ $B$ are independent events, then
 :::{.proof}
 Exercise.
 :::
+
+
+
+::: {.example #BreastCancer name="Breast cancer"}
+The success of mammograms for detecting breast cancer has been well documented [@white1993mammography]. 
+Mammograms are generally conducted on women over $40$, though breast cancer rarely occurs in women under $40$ also.\smallskip
+
+We can define two events of interest:
+\begin{align*}
+   C:&\quad \text{The woman has breast cancer; and}\\
+   D:&\quad \text{The mammogram returns a positive test result.}
+\end{align*}
+As with any diagnostic tool, a mammogram is not perfect.
+*Sensitivity*\index{Sensitivity} and *specificity*\index{Specificity} are used to describe the accuracy of a test:
+
+* *Sensitivity* is the probability of a *true* positive test result: the probability of a positive test result for people *with* the disease.
+  This is $\Pr(D \mid C)$.
+* *Specificity* is the probability of a *true* negative test result: the probability of a negative test for people *without* the disease.
+  This is $\Pr(D^c \mid C^c)$.
+
+Clearly, we would like both these probabilities to be a high as possible.
+For mammograms [@houssami2003sydney], the *sensitivity* is estimated as about\ $0.75$ and the *specificity* as about\ $0.90$.
+We can write:
+
+* $\Pr(D \mid C ) = 0.75$ (and so $\Pr(D^c \mid C) = 0.25$);
+* $\Pr(D^c \mid C^c) = 0.90$ (and so $\Pr(D \mid C^c) = 0.10$).
+
+Furthermore, about\ $2$% of women under\ $40$ will get breast cancer [@houssami2003sydney]; that is, $\Pr(C) = 0.02$ (and hence $\Pr(C^c) = 0.98$).\smallskip
+
+For this study, the probabilities $\Pr(D\mid C)$ are easy to find: women who are *known* to have breast cancer have a mammogram, and we record whether the mammogram result is positive or negative.\smallskip
+
+But consider a woman under\ $40$ who gets a mammogram.
+When the results are returned, her interest is whether they have breast cancer, *given* the test results; for example $\Pr(C \mid D)$.
+In other words: if the test returns a positive result, what is the probability that she actually has breast cancer?\smallskip
+
+That is, we would like to take probabilities like $\Pr(D\mid C)$, that can be found easily, and determine $\Pr(C \mid  D)$, which is of interest in practice.
+Using [Bayes' Theorem](#thm:Bayes):
+\begin{align*}
+   \Pr(C \mid D) 
+   &= \frac{\Pr(C) \times \Pr(D \mid  C)}
+            {\Pr(C)\times \Pr(D \mid  C) + \Pr(C^c)\times \Pr(D \mid  C^c) }\\
+   &= \frac{0.02 \times 0.75}
+            {(0.02\times 0.75) + (0.98\times 0.10)}\\
+   &= \frac{0.015}{0.015 + 0.098} =  0.1327.         
+\end{align*}
+Consider what this says: Given that a mammogram returns a *positive test* (for a woman under\ $40$), the probability that the woman really has breast cancer is only about\ $6$%...
+This partly explains why mammograms for women under $40$ are not commonplace: most women who return a positive test result actually do not have breast cancer.\smallskip
+
+The reason for this surprising result is explained in Example\ \@ref(exm:BreastCancerTree).
+:::
+
+
+
+:::{.example #BreastCancerTree name="Breast cancer"}
+Consider using a tree diagram to describe the breast cancer information from Example\ \@ref(exm:BreastCancer) (Fig.\ \@ref(fig:BreastTree)).
+By following each 'branch' of the tree, we can compute, for example:
+$$
+   \Pr(C \cap D) = \Pr(C)\times \Pr(D\mid C) = 0.02 \times 0.75 = 0.015;
+$$
+that is, the probability that a woman has a positive test **and** breast cancer is about $0.015$.
+But compare:
+$$
+   \Pr(C^c \cap D) = \Pr(C^c)\times \Pr(D\mid C^c) = 0.98 \times 0.10 = 0.098;
+$$
+that is, the probability that a woman has a positive test **and no** breast cancer (that is, a *false* positive) is about $0.098$.\smallskip
+
+This explains the surprisingly result in Example\ \@ref(exm:BreastCancer): because breast cancer is so uncommon in younger women, the *false* positives ($0.098$) overwhelm the *true* positives ($0.015$).
+
+After a positive mammogram, further tests are conducted to conform a cancer diagnosis. 
+In younger women, almost every positive mammogram returns a negative diagnosis from further tests.
+:::
+
+
+```{r BreastTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the breast-cancer example.", out.width='67%'}
+par(mar = c(1, 0.5, 1, 0.5) + 0.1)
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      main = "Tree diagram for the breast cancer example",
+      xlab = "",
+      ylab = "",
+      axes = FALSE)
+#STEP 1
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.75),
+       lwd = 2)
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.25),
+       lwd = 2)
+# STEP 2
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.90),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.60),
+       lwd = 2)
+
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.40),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.10),
+       lwd = 2)
+
+# TEXT
+text(x = 0.50,
+     y = 0.75,
+     labels = expression("Cancer,"~italic(C)))
+text(x = 0.50,
+     y = 0.25,
+     labels = expression("No cancer,"~italic(C)^c) )
+
+text(x = 0.90,
+     y = 0.90,
+     labels = expression("+ive test,"~italic(D)) )
+text(x = 0.90,
+     y = 0.60,
+     labels = expression("-ive test,"~italic(D)^c) )
+
+text(x = 0.90,
+     y = 0.40,
+     labels = expression("+ive test,"~italic(D)) )
+text(x = 0.90,
+     y = 0.10,
+     labels = expression("-ive test,"~italic(D)^c) )
+
+# ADD PROBS
+text(x = 0.38,
+     y = 0.63,
+     cex = 0.9,
+     labels = "0.02")
+text(x = 0.38,
+     y = 0.37,
+     cex = 0.9,
+     labels = "0.98")
+
+text(x = 0.65,
+     y = 0.84,
+     cex = 0.9,
+     labels = "0.75")
+text(x = 0.65,
+     y = 0.66,
+     cex = 0.9,
+     labels = "0.25")
+
+text(x = 0.65,
+     y = 0.34,
+     cex = 0.9,
+     labels = "0.10")
+text(x = 0.65,
+     y = 0.16,
+     cex = 0.9,
+     labels = "0.90")
+
+## STEPS
+text(x = 0.50,
+     y = 0.01,
+     label = expression(bold("Step 1"))
+     )
+text(x = 0.90,
+     y = 0.01,
+     label = expression(bold("Step 2"))
+     )
+```
+
+
+
+
+
+
+::: {.example #BreastCancerVenn name="Breast cancer"}
+Consider again the breast cancer data (Example\ \@ref(exm:BreastCancer), where the events $C$ and $D$ were defined [earlier](#exm:BreastCancer)).
+A Venn diagram could be constructed to show the sample space (Fig.\ \@ref(fig:BreastVenn)).
+:::
+
+THIS EXAMPLE IS NOW MUCH LATER
+
+
+```{r BreastVenn, echo=FALSE, fig.height=6.25, fig.width=7.25, out.width = '90%', fig.align="center", fig.cap="The Venn diagram for the breast cancer example. The rectangle in each panel represents the sample space."}
+par( mfrow = c(2, 2),
+     mar = c(1, 0.1, 2, 0.1))
+
+colourCancer <- rgb(0, 0, 255, 
+                    max = 255,
+                    alpha = 125)
+colourPos  <- rgb(0, 255, 0, 
+                  max = 255, 
+                  alpha = 125)
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(C), " and ", italic(C)^c)),
+      axes = FALSE)
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+text(x = 0.4,
+     y = 0.5,
+     labels = expression(paste(italic(C), ": 0.02")))
+text(x = 0.8,
+     y = 0.5,
+     labels = expression(paste(italic(C)^c, ": 0.98")))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+###############
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(D), " and ", italic(D)^c)) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+
+text(x = 0.6,
+     y = 0.5,
+     labels = expression(paste(italic(D), ": 0.113")))
+text(x = 0.2,
+     y = 0.5,
+     labels = expression(paste( italic(D)^c, ": 0.887")))
+
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+####################
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(C), " and ", italic(D))) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+text(x = 0.3,
+     y = 0.5,
+     labels = expression(italic(C)))
+text(x = 0.7,
+     y = 0.5,
+     labels = expression(italic(D)))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+#################
+
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression("The probabilities in each section"),
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+text(x = 0.3,
+     y = 0.5,
+     labels = "0.005")
+text(x = 0.7,
+     y = 0.5,
+     labels = "0.098")
+text(x = 0.7,
+     y = 0.85,
+     labels = expression((italic(C) ~ union() ~ italic(D))^c ~ ": 0.882") )
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+# Intersection
+text(x = 0.5, 
+     y = 0.5, 
+     label = "0.015")
+```
+
+
+
+
 
 
 ### Independent and mutually exclusive events {#IndependentEvents}
@@ -2367,55 +2789,6 @@ In effect, the theorem takes a conditional probability and can 'reverse' the con
 
 Bayes' theorem has many uses, as it uses conditional probabilities that are easy to find or estimate to compute a conditional probability that is *not* easy to find or estimate.
 The theorem is the basis of a branch of statistics known as *Bayesian statistics*\index{Bayesian statistics} which involves using pre-existing evidence in drawing conclusions from data.
-
-
-::: {.example #BreastCancer name="Breast cancer"}
-The success of mammograms for detecting breast cancer has been well documented [@white1993mammography]. 
-Mammograms are generally conducted on women over $40$, though breast cancer rarely occurs in women under $40$ also.\smallskip
-
-We can define two events of interest:
-\begin{align*}
-   C:&\quad \text{The woman has breast cancer; and}\\
-   D:&\quad \text{The mammogram returns a positive test result.}
-\end{align*}
-As with any diagnostic tool, a mammogram is not perfect.
-*Sensitivity*]index{Sensitivity} and *specificity*\index{Specificity} are used to describe the accuracy of a test:
-
-* *Sensitivity* is the probability of a *true* positive test result: the probability of a positive test result for people *with* the disease.
-  This is $\Pr(D \mid C)$.
-* *Specificity* is the probability of a *true* negative test result: the probability of a negative test for people *without* the disease.
-  This is $\Pr(D^c \mid C^c)$.
-
-Clearly, we would like both these probabilities to be a high as possible.
-For mammograms [@houssami2003sydney], the *sensitivity* is estimated as about\ $0.75$ and the *specificity* as about\ $0.90$.
-We can write:
-
-* $\Pr(D \mid C ) = 0.75$ (and so $\Pr(D^c \mid C) = 0.25$);
-* $\Pr(D^c \mid C^c) = 0.90$ (and so $\Pr(D \mid C^c) = 0.10$).
-
-Furthermore, about\ $2$% of women under\ $40$ will get breast cancer [@houssami2003sydney]; that is, $\Pr(C) = 0.02$ (and hence $\Pr(C^c) = 0.98$).\smallskip
-
-For this study, the probabilities $\Pr(D\mid C)$ are easy to find: women who are *known* to have breast cancer have a mammogram, and we record whether the mammogram result is positive or negative.\smallskip
-
-But consider a woman under\ $40$ who gets a mammogram.
-When the results are returned, her interest is whether they have breast cancer, *given* the test results; for example $\Pr(C \mid D)$.
-In other words: if the test returns a positive result, what is the probability that she actually has breast cancer?\smallskip
-
-That is, we would like to take probabilities like $\Pr(D\mid C)$, that can be found easily, and determine $\Pr(C \mid  D)$, which is of interest in practice.
-Using [Bayes' Theorem](#thm:Bayes):
-\begin{align*}
-   \Pr(C \mid D) 
-   &= \frac{\Pr(C) \times \Pr(D \mid  C)}
-            {\Pr(C)\times \Pr(D \mid  C) + \Pr(C^c)\times \Pr(D \mid  C^c) }\\
-   &= \frac{0.02 \times 0.75}
-            {(0.02\times 0.75) + (0.98\times 0.10)}\\
-   &= \frac{0.015}{0.015 + 0.098} =  0.1327.         
-\end{align*}
-Consider what this says: Given that a mammogram returns a *positive test* (for a woman under\ $40$), the probability that the woman really has breast cancer is only about\ $6$%...
-This partly explains why mammograms for women under $40$ are not commonplace: most women who return a positive test result actually do not have breast cancer.\smallskip
-
-The reason for this surprising result is explained in Example\ \@ref(exm:BreastCancerTree).
-:::
 \index{Bayes theorem|(}
 
 
