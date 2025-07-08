@@ -89,7 +89,7 @@ The sample space is *mixed*.
 :::
 
 
-## Events and probability {#EventsAndProbability}
+## Events {#Events}
 \index{Event}
 
 ### Simple events {#SimpleEvents}
@@ -560,8 +560,10 @@ text(0, (NOTb1lo + NOTb1hi)/2,
 
 
 
-### Probabiity {#ProbabilityDefinition}
+## Probablility {#Probability}
 \index{Probability}
+
+### Definitions {#ProbabilityDefinition}
 
 Usually, we are interested in how likely it is for various outcomes from a random experiment to occur. 
 That is, how likely it is to observe any of the various events defined on the sample space.
@@ -584,7 +586,7 @@ This definition in Def.\ \@ref(def:Probability) allows *any* number to be assign
 Some restrictions must be placed on the numbers that can be assigned to make this definition workable and practical.
 
 
-## Three axioms of probability {#ProbabilityAxioms}
+### Three axioms of probability {#ProbabilityAxioms}
 
 \index{Axioms of probability|(}\index{Probability}
 While we have defined probability as a function that assigns a number to an event, we have not stated what numbers can be assigned as a 'probability'.
@@ -696,6 +698,9 @@ where $|\cdot|$ refers to the cardinality\index{Cardinality} notation (Sect.\ \@
 A probability of\ $0$ is assigned to an event that *never* occurs (i.e., $E$ corresponds to an *impossible* event), and\ $1$ to an event that is *certain* to occur (i.e., $E$ corresponds to the universal set).
 Notice that this approach conforms to the restriction on probabilities as numbers between\ $0$ and\ $1$ inclusive, a result that follows from the three axioms of probability.
 
+Using the classical approach to probability often requires careful counting of the number of elements in the sample space, and the number of elements in the event of interest. 
+Methods for this careful counting are explored further in Sect.\ \@ref(CombsAndPerms).
+
 
 ### Relative frequency (empirical) approach {#EmpiricalApproach}
 
@@ -771,6 +776,349 @@ if( knitr::is_html_output() ) {
     row_spec(0, bold = TRUE) 
 }
 ```
+
+
+## Counting elements in samples spaces and events {#CombsAndPerms}
+
+
+### Basic ideas: multiplication rule {#MultiplicationRule}
+
+Applying the classical approach to probability often requires counting the number of elements in a finite, discrete sample space, and in a given event.
+
+
+:::{.example #CountingElements name="Counting elements"}
+How many outcomes are possible when a coin is flipped $3$\ times?
+Listing the possible outcomes is feasible:
+\begin{align*}
+  &(\text{Head}, \text{Head}, \text{Head}),   & &(\text{Head}, \text{Head}, \text{Tail}),\\
+  &(\text{Head}, \text{Tail}, \text{Head}),   & &(\text{Head}, \text{Tail}, \text{Tail}),\\
+  &(\text{Tail}, \text{Head}, \text{Head}),   & &(\text{Tail}, \text{Head}, \text{Tail}),\\
+  &(\text{Tail}, \text{Tail}, \text{Head}),   & &(\text{Tail}, \text{Tail}, \text{Tail}).
+\end{align*}
+We can also count four outcomes where a Tail is tossed last.
+
+So the probability of the event 'a tail of the final toss of three coin tosses' is (using classical probability) $4/8 = 0.5$.
+:::
+
+
+If we were considering $25$\ tosses of a coin, however, listing all the outcomes and counting them becomes tedious.
+However, we don't even need to know *what* the outcomes are; we only need to know *how many* outcomes there are.
+This is where counting methods are useful.
+
+The basic counting principle is the *multiplication rule*.
+
+
+:::{.definition #MultiplicationRule name="Multiplication rule"}
+If Event\ 1 has $m$\ possible outcomes, and Event\ 2 has $n$\ possible outcomes, then the total number of combined outcomes is $m\times n$.
+:::
+
+
+The principle can be extended to any number of events.
+For example: for three sets of events with\ $m_1$, $m_2$ and\ $m_3$ outcomes respectively, the number of distinct triplets containing one element from each set is $m_1 m_2 m_3$.
+
+
+:::{.example #CountingElements2 name="Counting elements"}
+In Example\ \@ref(exm:CountingElements), we could use the multiplication rule.
+On Flip\ 1, there are two possible outcomes.
+Likewise, on Flips\ 2 and\ 3, there are two possible outcomes.
+So the total number if possible outcomes is $2\times 2\times 2 = 8$, as found in that example.
+
+In $25$\ tosses, there are $2^{25} = 33\, 554\, 432$ possible outcomes.
+:::
+
+
+
+:::{.example #MultiplicationRulemeals name="Multiplication rule"}
+Suppose a restaurants offers five main courses and three desserts.
+If a 'meal' consists of one main plus one dessert, then $5\times 3 = 15$ meal combinations are possible.
+:::
+
+
+
+:::{.example #CountingElementsPasswords name="Counting elements"}
+Consider selecting a random password from the set of all lower-case letters only ('`a`', '`b`', \dots '`z`'), of *exactly* six characters in length.
+
+There are $26$\ choices for the first character, and $26$\ choices for the second characters, and so on,
+So the total number of passwords is
+$$
+  26^6 = 308\,915\,776.
+$$
+:::
+
+
+
+
+In the example above, notice that the letters can be reused; once a letter is selected, it is effectively returned to the pool of letters and can be chosen again.\index{Selecting!with replacement}
+This called selection *with replacement*; selected elements can be reselected.
+
+The multiplication rule demonstrates the basic idea behind counting (or *enumerating*) events and sample spaces.
+More generally, though, *permutations* and *combinations* are needed when selection are made *without replacement*: that is, one an elements is selected, it cannot be selected again.\index{Selecting!without replacement}
+
+Permutations and combinations are used to count when selections are made from a fixed number of elements, without replacement,
+If the order of selection *is* important, we use *permutations*.\index{Permutations}
+If the order of selection *is not* important, we use *combinations*.\index{Combinations}
+
+
+:::{.example #CombsAndPerms name="Combinations and permutations"}
+Consider selecting a random six-letter password from the set of lower-case letters only: '`a`', '`b`', \dots '`z`'.
+In passwords, the order of the characters is important: the passwords `listen` and `silent` are *different* passwords, even though they contain the same characters.
+Since the *order* of the characters is important, *permutations* could be used to count how many passwords are possible.
+
+Consider dealing five cards to two different players in a game.
+The *order* in which the cards are dealt is not important; it only matters what cards have been dealt to each player.
+Since the *order* in which the cards are dealt is not important, *combinations* could be used to count how many ways there are to deal the cards.
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+This may help you remember when to use combinations and permutations: 
+
+* **P**ermutations are used for **p**asswords: order is important.
+* **C**ombinations are used when dealing **c**ards: order is not important.
+:::
+
+
+Counting the number of outcomes can also be achieved by listing the possible outcomes in other ways.
+
+
+::: {.example #TwoDice name="Rolling two dice"}
+Consider rolling two standard dice and noting the *sum* of the numbers shown.
+The sample space is listed in Table\ \@ref(tab:TwoDice).
+Then, for example, $\Pr(\text{sum is 7}) = 6/36$ is found by counting the equally-likely outcomes that sum to seven.
+:::
+
+```{r TwoDice, echo=FALSE}
+Die1 <- 1:6
+Die2 <- 1:6
+
+DieSum <- outer(Die1, Die2,
+                FUN = "+")
+
+rownames(DieSum) <- paste("Die 1:", 1:6)
+colnames(DieSum) <- paste("Die 2:", 1:6)
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(DieSum,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               linesep = c("", "", "\\addlinespace"),
+               escape = FALSE,
+               caption = "The sum of rolling two dice.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(DieSum,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "The sum of rolling two dice.") %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE)
+}
+```
+
+The number of elements in a set is often large, and a complete enumeration of the set is unnecessary if all we want to do is to count the number of elements in the set.
+When the number of elements in the sample space is large, principles and formulae exist which aid counting, some of which are described in the following sections (Sect.\ \@ref(CombsAndPerms)).
+
+
+
+
+
+### Permutations {#PermutationSelectWithoutReplacement}
+
+Permutations concern selecting elements from a fixed number of elements (without replacement).
+
+
+:::{.definition #Permutations name="Permutations"}
+A *permutation* is an *ordered* selection of elements (without replacement).\index{Permutation}
+:::
+
+
+Consider a finite, discrete sample space with\ $n$ distinct elements. 
+The first element chosen can be selected in\ $n$ different ways.
+The second element must then be chosen, which can be done in $(n - 1)$ ways (since it cannot be the same as the first), using the multiplication rule.
+There are then $(n - 2)$ ways for the third, and so on. 
+Notice that once an element is selected, it cannot be selected again; this is called *selecting without replacement*.
+\index{Selecting!without replacement}
+
+Continuing then, and using the multiplication rule (Def.\ \@ref(def:MultiplicationRule)),\index{Multiplication rule} there are 
+$$
+  n(n - 1)(n - 2)\ldots 2 \times 1
+$$ 
+different ways to order the\ $r$ elements. 
+This is denoted by\ $n!$ and called '$n$-factorial':\index{Factorials}
+$$
+   n! = n(n - 1)(n - 2) \ldots (2)(1)
+$$
+where $n\geq 1$, and we define $0! = 1$.
+
+
+:::{.example}
+EXAMPLE HERE
+:::
+
+
+Now, consider a finite, discrete sample space\ $S$ with\ $n$ distinct elements again.
+Suppose we wish to count the number of *permutations* of size\ $r$ that can be drawn from\ $S$, when selected items *cannot* be reselected ('*without* replacement').\index{Selecting!without replacement}
+
+As before, there are\ $n$ options for the first item selected, and\ $n - 1$ options for the second item selected, since the element selected first *cannot* be re-selected.
+The same idea applies for all\ $r$ elements.
+Therefore, the number of permutations of size\ $r$, when selection is *without* replacement, is (using the *multiplication rule*; Def.\ \@ref(def:MultiplicationRule)):
+$$
+   n \times (n - 1)\times (n - 2)\times\cdots\times (n - r + 1) 
+   = \frac{n!}{(n - r)!}.
+$$
+This number is denoted by $^nP_r$, and we write  
+$$
+   ^nP_r = n(n - 1)(n - 2)\ldots (n - r + 1) = \frac{n!}{(n - r)!}.
+$$
+This expression is referred to as *the number of permutations of\ $r$ elements from\ $n$ elements*.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Notation for permutations varies.
+Other notation for permutations include $nPr$, $^nP_r$, $P_n^r$ or $P(n,r)$.
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+By definition, $0! = 1$.
+With this definition, many formulas (some follow) remain valid for all valid choices of\ $n$ and\ $r$.
+:::
+
+
+:::{.example}
+EXAMPLE HERE
+:::
+
+
+### Combinations {#Combinations}
+
+When the selection order is not important (i.e., when dealing a hand of cards), a *combination* is appropriate for counting the number of possibilities.
+
+
+:::{.definition #Permutations name="Combinations"}
+A *combination* is an *unordered* selection of elements (without replacements).\index{Combination}
+:::
+
+
+Consider a finite, discrete sample space\ $S$ with\ $n$ distinct elements.
+The number of *permutations* of size\ $r$ that can be drawn from the sample space\ $S$ is $^n P_r$.
+But some of these are effectively the same outcomes; for instance, these two hands of cards, shown in the order dealt, are the same since selection order is not important:
+$$
+  (3\spadesuit, 5\heartsuit)\qquad\text{and}\qquad (5\heartsuit, 3\spadesuit).
+$$
+So while both hands are counted separately for permutations, they are considered to be the *same* outcome for combinations.
+(This means that the number of combinations of $r$\ elements from $n$\ elements will never be smaller than the number of permutations of $r$\ elements from $n$\ elements.)
+
+If we have selected $r$\ elements, there are\ $r$ ways to rearrange these elements (by the multiplication rule), all of which are the same of the order is not important.
+So we can state that the number of combinations of $r$\ elments drawn form $n$\ elements, where order is not important, is
+$$
+   ^nC_r = \frac{^nP_r}{r!} = \frac{\text{number of permutations}}{\text{number of equivalent re-arrangements of that permutation}}.
+$$
+More directly, the number of combinations of $r$\ elements from $n$\ elments, where the selection order is not important, is
+\begin{equation}
+   ^nC_r = \binom{n}{r} = \frac{n(n - 1)\ldots (n - r + 1)}{r!} = \frac{n!}{(n - r)!\,r!} = \frac{^n P_r}{r!}
+       (\#eq:CombinationPermutation)
+\end{equation}
+when elements are 'selected without replacement'.\index{Selecting!without replacement}
+The two most common notations are shown: $^nC_r$ and $\binom{n}{r}$. 
+
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Notation for combinations varies.
+Other notation for combinations include $nCr$, $^nC_r$, $C_n^r$, $\binom{n}{r}$ or $C(n,r)$.
+:::
+
+
+:::{.example #CombinationOzLotto name="Oz Lotto combinations"}
+In [Oz Lotto](#exm:Lotto), players select seven numbers from 47, and try to match these with seven randomly selected numbers.
+The order in which the seven numbers are selected in not important, so *combinations* (not permutations) are appropriate.
+That is, winning numbers drawn in the order, as $\{1, 2, 3, 4, 5, 6, 7\}$ are effectively the same as if they were drawn in the order $\{7, 2, 1, 3, 4, 6, 5\}$.\smallskip
+
+The number of options for players to choose from is
+$$
+   \binom{47}{7} = \frac{47!}{40!\times 7!} = 62\,891\,499;
+$$
+that is, almost $63$\ million combinations are possible.\smallskip
+
+The probability of picking the one correct set of seven numbers in a single guess is therefore
+$$
+   \frac{1}{62\,891\,499} = 1.59\times 10^{-8} = 0.000\,000\,015\,9.
+$$
+:::
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+In **R**:
+
+* the *number* of combinations of `n` elements `k` at a time is found using `choose(n, k)`.
+* a *list* of all combinations of `n` elements, `m` at a time is given by `combn(x, m)`.
+* $n!$ is given by `factorial(n)`.
+* $\Gamma(x)$ is given by `gamma(x)`.????????????????????????????
+:::
+
+
+The binomial expansion
+$$
+  (a + b)^n = \sum^{n}_{r = 0} \binom{n}{r} a^r b^{n - r}
+$$
+for $n$ a positive integer, is often referred to as the *Binomial Theorem*\index{Binomial theorem} and hence $\binom{n}{r}$ is referred to as a *binomial coefficient*.\index{Binomial coefficient}
+This series, and associated properties, is sometimes useful in counting.
+Some of the properties of combinations are stated below.
+
+1. $\binom{n}{r} = \binom{n}{n - r}$, for $r = 0, 1, \ldots, n$.
+2. As a special case of the above, $\binom{n}{0} = 1 = \binom{n}{n}$.
+3. $\sum_{r = 0}^n \binom{n}{r} = 2^n$.
+
+
+
+:::{.example #PermAndCombSizes name=""}
+For any given values\ $n$ and\ $r$, the number of permutations is never smaller than the number of combinations (as is clear from Eq.\ \@ref(eq:CombinationPermutation)).
+This is because many permutation corresponds to a single combination, since the order is important for permutations.
+
+For example, suppose two cards have been dealt, in this order:
+$$
+  3\spadesuit, 5\heartsuit.
+$$
+The hand would be exactly the same if they had been dealt in the opposite order:
+$$
+  5\heartsuit, 3\spadesuit.
+$$
+Both hands count as one combination, since order is not important.
+
+However, if the order *was* important, then the two hands are different, and both should be counted: there are *two* separate outcomes.
+
+As a larger example:
+```{r}
+# The number of *combinations* of r = 3 items from n = 20:
+choose(10, 3)
+
+# The number of *permutations* of r = 3 items from n = 20:
+choose(10, 3) * factorial(3)
+```
+:::
+
+
+
+
+
+::: {.example #ChooseDigits name="Selecting digits"}
+Consider the set of integers ${1, 3, 5, 7}$ (these integers have no common factors).
+Choose two numbers, *without replacement*; call the first $a$ and the second $b$.
+If we then compute $a\times b$, then $^4C_2 = 6$ answers are possible since the *selection order is not important* (e.g., $3 \times 7$ gives the *same* answer as $7 \times 3$).\smallskip
+
+However, if we compute $a\div b$, then $^4P_2 = 12$ answers are possible, since the *selection order is important* (e.g., $3 \div 7$ gives a *different* answer than $7 \div 3$).
+:::
+
 
 
 
@@ -1220,7 +1568,368 @@ Exercises.
 \index{Probability rules|)}
 
 
+
+
+## Using diagrams to visualise outcomes {#DiagramsForProbability}
+
+### Venn diagrams {#VennDiagrams}
+
+Venn diagrams\index{Venn diagrams} can be useful when there are two events, sometimes three, but become unworkable for more than three.
+Often, tables can be used to better represent situations shown in Venn diagrams.
+
+
+
+
+::: {.example #BreastCancerVenn name="Breast cancer"}
+Consider again the breast cancer data (Example\ \@ref(exm:BreastCancer), where the events $C$ and $D$ were defined [earlier](#exm:BreastCancer)).
+A Venn diagram could be constructed to show the sample space (Fig.\ \@ref(fig:BreastVenn)).
+:::
+
+```{r BreastVenn, echo=FALSE, fig.height=6.25, fig.width=7.25, out.width = '90%', fig.align="center", fig.cap="The Venn diagram for the breast cancer example. The rectangle in each panel represents the sample space."}
+par( mfrow = c(2, 2),
+     mar = c(1, 0.1, 2, 0.1))
+colourCancer <- rgb(0, 0, 255, 
+                    max = 255,
+                    alpha = 125)
+colourPos  <- rgb(0, 255, 0, 
+                  max = 255, 
+                  alpha = 125)
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(C), " and ", italic(C)^c)),
+      axes = FALSE)
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+text(x = 0.4,
+     y = 0.5,
+     labels = expression(paste(italic(C), ": 0.02")))
+text(x = 0.8,
+     y = 0.5,
+     labels = expression(paste(italic(C)^c, ": 0.98")))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+###############
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(D), " and ", italic(D)^c)) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+
+text(x = 0.6,
+     y = 0.5,
+     labels = expression(paste(italic(D), ": 0.113")))
+text(x = 0.2,
+     y = 0.5,
+     labels = expression(paste( italic(D)^c, ": 0.887")))
+
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+####################
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(C), " and ", italic(D))) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+text(x = 0.3,
+     y = 0.5,
+     labels = expression(italic(C)))
+text(x = 0.7,
+     y = 0.5,
+     labels = expression(italic(D)))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+#################
+
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression("The probabilities in each section"),
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+text(x = 0.3,
+     y = 0.5,
+     labels = "0.005")
+text(x = 0.7,
+     y = 0.5,
+     labels = "0.098")
+text(x = 0.7,
+     y = 0.85,
+     labels = expression((italic(C) ~ union() ~ italic(D))^c ~ ": 0.882") )
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+# Intersection
+text(x = 0.5, 
+     y = 0.5, 
+     label = "0.015")
+```
+
+
+### Tree diagrams {#TreeDiagrams}
+
+*Tree diagrams*\index{Tree diagrams} are useful when a [random process](#def:RandomProcess) can be seen, or thought of, as occurring in steps or stages.
+The branches in the 'second stage' are *conditional probabilities*, conditional on the branch of the first step. 
+Of course, the ideas extend to multiple steps.
+
+
+:::{.example #BreastCancerTree name="Breast cancer"}
+Consider using a tree diagram to describe the breast cancer information from Example\ \@ref(exm:BreastCancer) (Fig.\ \@ref(fig:BreastTree)).
+By following each 'branch' of the tree, we can compute, for example:
+$$
+   \Pr(C \cap D) = \Pr(C)\times \Pr(D\mid C) = 0.02 \times 0.75 = 0.015;
+$$
+that is, the probability that a woman has a positive test **and** breast cancer is about $0.015$.
+But compare:
+$$
+   \Pr(C^c \cap D) = \Pr(C^c)\times \Pr(D\mid C^c) = 0.98 \times 0.10 = 0.098;
+$$
+that is, the probability that a woman has a positive test **and no** breast cancer (that is, a *false* positive) is about $0.098$.\smallskip
+
+This explains the surprisingly result in Example\ \@ref(exm:BreastCancer): because breast cancer is so uncommon in younger women, the *false* positives ($0.098$) overwhelm the *true* positives ($0.015$).
+
+After a positive mammogram, further tests are conducted to conform a cancer diagnosis. 
+In younger women, almost every positive mammogram returns a negative diagnosis from further tests.
+:::
+
+
+```{r BreastTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the breast-cancer example.", out.width='67%'}
+par(mar = c(1, 0.5, 1, 0.5) + 0.1)
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      main = "Tree diagram for the breast cancer example",
+      xlab = "",
+      ylab = "",
+      axes = FALSE)
+#STEP 1
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.75),
+       lwd = 2)
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.25),
+       lwd = 2)
+# STEP 2
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.90),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.60),
+       lwd = 2)
+
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.40),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.10),
+       lwd = 2)
+
+# TEXT
+text(x = 0.50,
+     y = 0.75,
+     labels = expression("Cancer,"~italic(C)))
+text(x = 0.50,
+     y = 0.25,
+     labels = expression("No cancer,"~italic(C)^c) )
+
+text(x = 0.90,
+     y = 0.90,
+     labels = expression("+ive test,"~italic(D)) )
+text(x = 0.90,
+     y = 0.60,
+     labels = expression("-ive test,"~italic(D)^c) )
+
+text(x = 0.90,
+     y = 0.40,
+     labels = expression("+ive test,"~italic(D)) )
+text(x = 0.90,
+     y = 0.10,
+     labels = expression("-ive test,"~italic(D)^c) )
+
+# ADD PROBS
+text(x = 0.38,
+     y = 0.63,
+     cex = 0.9,
+     labels = "0.02")
+text(x = 0.38,
+     y = 0.37,
+     cex = 0.9,
+     labels = "0.98")
+
+text(x = 0.65,
+     y = 0.84,
+     cex = 0.9,
+     labels = "0.75")
+text(x = 0.65,
+     y = 0.66,
+     cex = 0.9,
+     labels = "0.25")
+
+text(x = 0.65,
+     y = 0.34,
+     cex = 0.9,
+     labels = "0.10")
+text(x = 0.65,
+     y = 0.16,
+     cex = 0.9,
+     labels = "0.90")
+
+## STEPS
+text(x = 0.50,
+     y = 0.01,
+     label = expression(bold("Step 1"))
+     )
+text(x = 0.90,
+     y = 0.01,
+     label = expression(bold("Step 2"))
+     )
+```
+
+
+
+## Tables of probability {#Tables}
+
+With two variables of interest, probability tables may be a convenient way of summarizing the information.\index{Probability tables}
+Although tables can be used to represent random processes using conditional probabilities, usually tables are used to represent the whole sample space.
+
+
+:::{.example #BreastCancer2 name="Breast cancer"}
+The breast-cancer data in Example\ \@ref(exm:BreastCancer) can also be compiled into a table giving the four outcomes in the sample space (Table\ \@ref(tab:BreastTable)).
+:::
+
+```{r BreastTable, echo=FALSE}
+BreastTable <- array(dim = c(2, 3))
+
+colnames(BreastTable) <- c("Positive test result",
+                           "Negative test result",
+                           "Total")
+rownames(BreastTable) <- c("Has breast cancer",
+                           "Does not have breast cancer")
+BreastTable[1, ] <- c("$0.75 \\times 0.02 = 0.015$",
+                      "$0.25 \\times 0.02 = 0.005$",
+                      "0.02")
+BreastTable[2, ] <- c("$0.10 \\times 0.98 = 0.098$",
+                      "$0.90 \\times 0.98 = 0.882$",
+                      0.98)
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(BreastTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = "c",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "The probabilities from the breast cancer example.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(BreastTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "The probabilities from the breast cancer example.") %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+
+
+
 ## Conditional probability and independent events {#CondProbIndependence}
+
+### General multiplication rule {#GeneralMultiplicationRule}
+
+A consequence of Def.\ \@ref(def:ConditionalProb) is the following theorem.\index{Probability rules!multiplication rule}
+
+
+:::{.theorem #GeneralMultRule name="Multiplication rule for probabilities"}
+For any events $A$ and $B$, the probability of $A$ and $B$ is
+\begin{align*}
+     \Pr(A\cap B)
+     &= \Pr(A) \Pr(B \mid A)\\
+     &= \Pr(B) \Pr(A \mid B).
+\end{align*}
+:::
+
+
+This rule can be generalised to any number of events.
+For example, for three events\ $A$, $B$ and\ $C$,
+$$
+  \Pr(A\cap B\cap C) = \Pr(A)\Pr(B\mid A)\Pr(C\mid A\cap B).
+$$
+
+
+The two important counting methods are:
+
+* *permutations*,\index{Permutations} where the order in which the elements are selected *is* important.
+* *combinations*,\index{Combinations} where the order in which the elements are selected *is not* important.
+
 
 ### Conditional probability {#CondProb}
 \index{Probability!conditional|(}
@@ -1398,27 +2107,6 @@ if( knitr::is_html_output() ) {
 ```
 
 \index{Probability!conditional|)}
-
-### Multiplication rule {#MultiplicationRule}
-
-A consequence of Def.\ \@ref(def:ConditionalProb) is the following theorem.\index{Probability rules!multiplication rule}
-
-
-:::{.theorem #MultRule name="Multiplication rule for probabilities"}
-For any events $A$ and $B$, the probability of $A$ and $B$ is
-\begin{align*}
-     \Pr(A\cap B)
-     &= \Pr(A) \Pr(B \mid A)\\
-     &= \Pr(B) \Pr(A \mid B).
-\end{align*}
-:::
-
-
-This rule can be generalised to any number of events.
-For example, for three events\ $A$, $B$ and\ $C$,
-$$
-  \Pr(A\cap B\cap C) = \Pr(A)\Pr(B\mid A)\Pr(C\mid A\cap B).
-$$
 
 
 ### Independent events {#Independence}
@@ -1729,653 +2417,6 @@ This partly explains why mammograms for women under $40$ are not commonplace: mo
 The reason for this surprising result is explained in Example\ \@ref(exm:BreastCancerTree).
 :::
 \index{Bayes theorem|(}
-
-
-## Tools for computing probabilities {#ComputingProbs}
-
-Different schemes can be used to help compute probabilities, such as tree diagrams, tables, Venn diagrams and counting.
-Typically, multiple methods may be applied to a given situation, but one method is often easier to apply.
-
-
-### Tree diagrams {#TreeDiagrams}
-
-*Tree diagrams*\index{Tree diagrams} are useful when a [random process](#def:RandomProcess) can be seen, or thought of, as occurring in steps or stages.
-The branches in the 'second stage' are *conditional probabilities*, conditional on the branch of the first step. 
-Of course, the ideas extend to multiple steps.
-
-
-:::{.example #BreastCancerTree name="Breast cancer"}
-Consider using a tree diagram to describe the breast cancer information from Example\ \@ref(exm:BreastCancer) (Fig.\ \@ref(fig:BreastTree)).
-By following each 'branch' of the tree, we can compute, for example:
-$$
-   \Pr(C \cap D) = \Pr(C)\times \Pr(D\mid C) = 0.02 \times 0.75 = 0.015;
-$$
-that is, the probability that a woman has a positive test **and** breast cancer is about $0.015$.
-But compare:
-$$
-   \Pr(C^c \cap D) = \Pr(C^c)\times \Pr(D\mid C^c) = 0.98 \times 0.10 = 0.098;
-$$
-that is, the probability that a woman has a positive test **and no** breast cancer (that is, a *false* positive) is about $0.098$.\smallskip
-
-This explains the surprisingly result in Example\ \@ref(exm:BreastCancer): because breast cancer is so uncommon in younger women, the *false* positives ($0.098$) overwhelm the *true* positives ($0.015$).
-
-After a positive mammogram, further tests are conducted to conform a cancer diagnosis. 
-In younger women, almost every positive mammogram returns a negative diagnosis from further tests.
-:::
-
-
-```{r BreastTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the breast-cancer example.", out.width='67%'}
-par(mar = c(1, 0.5, 1, 0.5) + 0.1)
-
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      main = "Tree diagram for the breast cancer example",
-      xlab = "",
-      ylab = "",
-      axes = FALSE)
-#STEP 1
-lines( x = c(0.2, 0.40),
-       y = c(0.5, 0.75),
-       lwd = 2)
-lines( x = c(0.2, 0.40),
-       y = c(0.5, 0.25),
-       lwd = 2)
-# STEP 2
-lines( x = c(0.60, 0.80),
-       y = c(0.75, 0.90),
-       lwd = 2)
-lines( x = c(0.60, 0.80),
-       y = c(0.75, 0.60),
-       lwd = 2)
-
-lines( x = c(0.60, 0.80),
-       y = c(0.25, 0.40),
-       lwd = 2)
-lines( x = c(0.60, 0.80),
-       y = c(0.25, 0.10),
-       lwd = 2)
-
-# TEXT
-text(x = 0.50,
-     y = 0.75,
-     labels = expression("Cancer,"~italic(C)))
-text(x = 0.50,
-     y = 0.25,
-     labels = expression("No cancer,"~italic(C)^c) )
-
-text(x = 0.90,
-     y = 0.90,
-     labels = expression("+ive test,"~italic(D)) )
-text(x = 0.90,
-     y = 0.60,
-     labels = expression("-ive test,"~italic(D)^c) )
-
-text(x = 0.90,
-     y = 0.40,
-     labels = expression("+ive test,"~italic(D)) )
-text(x = 0.90,
-     y = 0.10,
-     labels = expression("-ive test,"~italic(D)^c) )
-
-# ADD PROBS
-text(x = 0.38,
-     y = 0.63,
-     cex = 0.9,
-     labels = "0.02")
-text(x = 0.38,
-     y = 0.37,
-     cex = 0.9,
-     labels = "0.98")
-
-text(x = 0.65,
-     y = 0.84,
-     cex = 0.9,
-     labels = "0.75")
-text(x = 0.65,
-     y = 0.66,
-     cex = 0.9,
-     labels = "0.25")
-
-text(x = 0.65,
-     y = 0.34,
-     cex = 0.9,
-     labels = "0.10")
-text(x = 0.65,
-     y = 0.16,
-     cex = 0.9,
-     labels = "0.90")
-
-## STEPS
-text(x = 0.50,
-     y = 0.01,
-     label = expression(bold("Step 1"))
-     )
-text(x = 0.90,
-     y = 0.01,
-     label = expression(bold("Step 2"))
-     )
-```
-
-
-### Probability tables {#Tables}
-
-With two variables of interest, probability tables may be a convenient way of summarizing the information.\index{Probability tables}
-Although tables can be used to represent random processes using conditional probabilities, usually tables are used to represent the whole sample space.
-
-
-:::{.example #BreastCancer2 name="Breast cancer"}
-The breast-cancer data in Example\ \@ref(exm:BreastCancer) can also be compiled into a table giving the four outcomes in the sample space (Table\ \@ref(tab:BreastTable)).
-:::
-
-```{r BreastTable, echo=FALSE}
-BreastTable <- array(dim = c(2, 3))
-
-colnames(BreastTable) <- c("Positive test result",
-                           "Negative test result",
-                           "Total")
-rownames(BreastTable) <- c("Has breast cancer",
-                           "Does not have breast cancer")
-BreastTable[1, ] <- c("$0.75 \\times 0.02 = 0.015$",
-                      "$0.25 \\times 0.02 = 0.005$",
-                      "0.02")
-BreastTable[2, ] <- c("$0.10 \\times 0.98 = 0.098$",
-                      "$0.90 \\times 0.98 = 0.882$",
-                      0.98)
-
-if( knitr::is_latex_output() ) {
-  knitr::kable(BreastTable,
-               format = "latex",
-               booktabs = TRUE,
-               align = "c",
-               longtable = FALSE,                
-               escape = FALSE,
-               caption = "The probabilities from the breast cancer example.") %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) 
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(BreastTable,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,                
-               caption = "The probabilities from the breast cancer example.") %>%
-    row_spec(0, bold = TRUE) 
-}
-```
-
-
-
-
-### Venn diagrams {#VennDiagrams}
-
-Venn diagrams\index{Venn diagrams} can be useful when there are two events, sometimes three, but become unworkable for more than three.
-Often, tables can be used to better represent situations shown in Venn diagrams.
-
-
-
-
-::: {.example #BreastCancerVenn name="Breast cancer"}
-Consider again the breast cancer data (Example\ \@ref(exm:BreastCancer), where the events $C$ and $D$ were defined [earlier](#exm:BreastCancer)).
-A Venn diagram could be constructed to show the sample space (Fig.\ \@ref(fig:BreastVenn)).
-:::
-
-```{r BreastVenn, echo=FALSE, fig.height=6.25, fig.width=7.25, out.width = '90%', fig.align="center", fig.cap="The Venn diagram for the breast cancer example. The rectangle in each panel represents the sample space."}
-par( mfrow = c(2, 2),
-     mar = c(1, 0.1, 2, 0.1))
-colourCancer <- rgb(0, 0, 255, 
-                    max = 255,
-                    alpha = 125)
-colourPos  <- rgb(0, 255, 0, 
-                  max = 255, 
-                  alpha = 125)
-
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      ylab = "",
-      xlab = "",
-      main = expression(paste("Events ", italic(C), " and ", italic(C)^c)),
-      axes = FALSE)
-
-polygon( x = c(0, 0, 1, 1),
-         y = c(0, 1, 1, 0))
-plotrix::draw.circle(x = 0.4, 
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourCancer)
-text(x = 0.4,
-     y = 0.5,
-     labels = expression(paste(italic(C), ": 0.02")))
-text(x = 0.8,
-     y = 0.5,
-     labels = expression(paste(italic(C)^c, ": 0.98")))
-mtext(text = expression(italic(S)),
-      side = 1,
-      adj = 0.25)
-
-
-###############
-
-
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      ylab = "",
-      xlab = "",
-      main = expression(paste("Events ", italic(D), " and ", italic(D)^c)) ,
-      axes = FALSE)
-
-
-polygon( x = c(0, 0, 1, 1),
-         y = c(0, 1, 1, 0))
-
-plotrix::draw.circle(x = 0.6,
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourPos)
-
-text(x = 0.6,
-     y = 0.5,
-     labels = expression(paste(italic(D), ": 0.113")))
-text(x = 0.2,
-     y = 0.5,
-     labels = expression(paste( italic(D)^c, ": 0.887")))
-
-mtext(text = expression(italic(S)),
-      side = 1,
-      adj = 0.25)
-
-
-####################
-
-
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      ylab = "",
-      xlab = "",
-      main = expression(paste("Events ", italic(C), " and ", italic(D))) ,
-      axes = FALSE)
-
-
-polygon( x = c(0, 0, 1, 1),
-         y = c(0, 1, 1, 0))
-plotrix::draw.circle(x = 0.4, 
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourCancer)
-plotrix::draw.circle(x = 0.6,
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourPos)
-text(x = 0.3,
-     y = 0.5,
-     labels = expression(italic(C)))
-text(x = 0.7,
-     y = 0.5,
-     labels = expression(italic(D)))
-mtext(text = expression(italic(S)),
-      side = 1,
-      adj = 0.25)
-
-
-#################
-
-
-
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      ylab = "",
-      xlab = "",
-      main = expression("The probabilities in each section"),
-      axes = FALSE)
-
-
-polygon( x = c(0, 0, 1, 1),
-         y = c(0, 1, 1, 0))
-plotrix::draw.circle(x = 0.4, 
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourCancer)
-plotrix::draw.circle(x = 0.6,
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourPos)
-text(x = 0.3,
-     y = 0.5,
-     labels = "0.005")
-text(x = 0.7,
-     y = 0.5,
-     labels = "0.098")
-text(x = 0.7,
-     y = 0.85,
-     labels = expression((italic(C) ~ union() ~ italic(D))^c ~ ": 0.882") )
-mtext(text = expression(italic(S)),
-      side = 1,
-      adj = 0.25)
-
-# Intersection
-text(x = 0.5, 
-     y = 0.5, 
-     label = "0.015")
-```
-
-
-### Enumerating the sample spaces {#Counting}
-
-Sometimes the most convenient way to compute probabilities is to list the sample space.
-This only works for sample spaces with a small number of discrete elements, and works best when each of the outcomes in the sample space are equally likely (so that the classical approach to probability\index{Probability, classical probability} can be applied; see Sect.\ \@ref(ClassicalProb)).
-
-
-::: {.example #TwoDice name="Rolling two dice"}
-Consider rolling two standard dice and noting the *sum* of the numbers shown.
-The sample space is listed in Table\ \@ref(tab:TwoDice).
-Then, for example, $\Pr(\text{sum is 7}) = 6/36$ is found by counting the equally-likely outcomes that sum to seven.
-:::
-
-```{r TwoDice, echo=FALSE}
-Die1 <- 1:6
-Die2 <- 1:6
-
-DieSum <- outer(Die1, Die2,
-                FUN = "+")
-
-rownames(DieSum) <- paste("Die 1:", 1:6)
-colnames(DieSum) <- paste("Die 2:", 1:6)
-
-
-if( knitr::is_latex_output() ) {
-  knitr::kable(DieSum,
-               format = "latex",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,
-               linesep = c("", "", "\\addlinespace"),
-               escape = FALSE,
-               caption = "The sum of rolling two dice.") %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) %>%
-    column_spec(1, bold = TRUE)
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(DieSum,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,                
-               caption = "The sum of rolling two dice.") %>%
-    row_spec(0, bold = TRUE) %>%
-    column_spec(1, bold = TRUE)
-}
-```
-
-The number of elements in a set is often large, and a complete enumeration of the set is unnecessary if all we want to do is to count the number of elements in the set.
-When the number of elements in the sample space is large, principles and formulae exist which aid counting, some of which are described in the following sections (Sect.\ \@ref(CombsAndPerms)).
-
-
-
-### Multiplication principle {#MultiplicationPrinciple}
-
-If we have $m$ ways to perform act $A$ and if, for *each* of these, there are $n$ ways to perform act $B$, then there are $m\times n$ ways to perform the acts $A$ *and* $B$. 
-This is called the *multiplication principle*.\index{Multiplication principle}
-
-
-:::{.definition #MultiplicationPrinciple name="Multiplication principle"}
-With $m$ elements $a_1, a_2, \ldots , a_m$ and $n$ elements $b_1, b_2, \ldots, b_n$ then $mn$ pairs can be made containing one element from each group.
-:::
-
-
-The principle can be extended to any number of sets.
-For example: For three sets of elements $a_1, a_2, \ldots , a_m$, $b_1, b_2, \ldots , b_n$ and $c_1, c_2, \ldots , c_p$, the number of distinct triplets containing one element from each set is $mnp$.
-
-
-:::{.example #MultiplicationPrinciple name="Multiplication principle"}
-Suppose a restaurants offers five main courses and three desserts.
-If a 'meal' consists of one main plus one dessert, then $5\times 3 = 15$ meal combinations are possible.
-:::
-
-
-## Combinations and permutations {#CombsAndPerms}
-
-Combinations and permutations are two ways of counting the number of elements in a finite, discrete sample space.
-In *combinations*,\index{Combinations} the order in which the elements are selected is *not* important.
-In *permutations*,\index{Permutations} the order in which the elements are selected is important.
-
-:::{.example #CombsAndPerms name="Combinations and permutations"}
-Consider dealing five cards to two different players in a game.
-The *order* in which the cards are dealt is not important; it only matters what cards have been dealt to each player.
-Since the *order* in which the cards are dealt is not important, *combinations* could be used to count how many ways there are to deal the cards.
-
-Consider selecting a random six-letter password from the set of lower-case letters only: '`a`', '`b`', \dots '`z`'.
-In passwords, the order of the characters is important: the passwords `listen` and `silent` are *different* passwords, even though they contain the same characters.
-Since the *order* of the characters is important, *permutations* could be used to count how many passwords are possible.
-:::
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-This may help you remember when to use combinations and permutations: 
-
-* **C**ombinations are used when dealing **c**ards: order is not important.
-* **P**ermutations are used for **p**asswords: order is important.
-:::
-
-
-### Combinations {#Combinations}
-
-When the selection order is not important (i.e., when dealing a hand of cards), a *combination* is appropriate for counting the number of possibilities.
-Consider a finite, discrete sample space\ $S$ with\ $n$ distinct elements.
-
-EXPLAIN!!!!!!!!!!!!!!
-The number of *combinations* of size\ $r$ that can be drawn from the sample space\ $S$ is
-$$
-   ^nC_r = \frac{n(n - 1)\ldots (n - r + 1)}{r!} = \frac{n!}{(n - r)!\,r!} = \frac{^n P_r}{r!}
-$$
-when elements are removed from the sample space once they have been selected (this is called 'selecting without replacement').\index{Selecting!without replacement}
-
-(SHOULD I HAVE LOOKED AT THE CASE $r=n$ FIRST?)
-
-The number of *combinations* of $r$ elements from a set with $n$ distinct elements is denoted by $^nC_r$.
-The number of permutations is given by Eq.\ \@ref(eq:Permutation), but the number of combinations must be smaller, since many permutations are equivalent to the same combination.
-In fact, each combination of $r$ elements can be ordered in $r!$ different ways, and so gives rise to $r!$ permutations.
-Hence, the number of permutations must be $r!$ times the number of combinations.
-We have then,
-$$
-   ^nC_r = \frac{n(n - 1)\ldots (n - r + 1)}{r!} = \frac{n!}{(n - r)!\,r!} = \frac{^n P_r}{r!}.
-$$
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Notation for combinations varies.
-Other notation for combinations include $nCr$, $^nC_r$, $C_n^r$, $\binom{n}{r}$ or $C(n,r)$.
-:::
-
-
-:::{.example #CombinationOzLotto name="Oz Lotto combinations"}
-In [Oz Lotto](#exm:Lotto), players select seven numbers from 47, and try to match these with seven randomly selected numbers.
-The order in which the seven numbers are selected in not important, so *combinations* (not permutations) are appropriate.
-That is, winning numbers drawn in the order, as $\{1, 2, 3, 4, 5, 6, 7\}$ are effectively the same as if they were drawn in the order $\{7, 2, 1, 3, 4, 6, 5\}$.\smallskip
-
-The number of options for players to choose from is
-$$
-   \binom{47}{7} = \frac{47!}{40!\times 7!} = 62\,891\,499;
-$$
-that is, almost $63$\ million combinations are possible.\smallskip
-
-The probability of picking the correct seven numbers in a single guess is therefore
-$$
-   \frac{1}{62\,891\,499} = 1.59\times 10^{-8} = 0.000\,000\,015\,9.
-$$
-:::
-
-
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-In **R**:
-
-* the *number* of combinations of `n` elements `k` at a time is found using `choose(n, k)`.
-* a *list* of all combinations of `n` elements, `m` at a time is given by `combn(x, m)`.
-* $n!$ is given by `factorial(n)`.
-* $\Gamma(x)$ is given by `gamma(x)`.
-:::
-
-
-The binomial expansion
-$$
-  (a + b)^n = \sum^{n}_{r = 0} \binom{n}{r} a^r b^{n - r}
-$$
-for $n$ a positive integer, is often referred to as the *Binomial Theorem*\index{Binomial theorem} and hence $\binom{n}{r}$ is referred to as a *binomial coefficient*.\index{Binomial coefficient}
-This series, and associated properties, is sometimes useful in counting.
-Some of the properties of combinations are stated below.
-
-1. $\binom{n}{r} = \binom{n}{n - r}$, for $r = 0, 1, \ldots, n$.
-2. As a special case of the above, $\binom{n}{0} = 1 = \binom{n}{n}$.
-3. $\sum_{r = 0}^n \binom{n}{r} = 2^n$.
-
-
-
-#### Combinations selecting with replacement {#CombinationSelectWithReplacement}
-
-The number of ways $r$ objects can be chosen from $n$ *with replacement* and *without regard to order* is somewhat more difficult and won't be attempted here.
-The number of ways is actually $\binom{n + r - 1}{r}$.
-
-
-
-### Permutations with replacement {#PermutationSelectWithReplacement}
-
-Consider a finite, discrete sample space\ $S$ with\ $n$ elements.
-Suppose we wish to count the number of *permutations* of size\ $r$ that can be drawn from\ $S$, when selected items *can* be reselected ('*with* replacement').\index{Selecting!with replacement}
-There are\ $n$ options for the first item selected; there are also\ $n$ options for the second item selected, since the element selected first can be re-selected.
-The same idea applies for all\ $r$ elements.
-Therefore, the number of permutations of size\ $r$, when selection is *with* replacement, is (using the *multiplication principle*; Sect.\ \@ref(MultiplicationPrinciple)):
-$$
-   n^r.
-$$
-
-
-:::{.example #PasswordLowerCase name="Permutations"}
-Suppose a company requires users to select a password of eight characters using any of the\ $26$ lower-case letters.
-Since the order of the letters is important in a password, *permutations* are relevant.
-In addition, characters can be re-used (so, for example, the letter `r` can appear more than once).
-There are
-$$
-  26^8 = 208\,827\,064\,576
-$$
-possible passwords that can be selected.
-:::
-
-
-
-
-$$
-   ^nC_r = \frac{n(n - 1)\ldots (n - r + 1)}{r!} = \frac{n!}{(n - r)!\,r!} = \frac{^n P_r}{r!}
-$$
-
-
-If each item can be re-selected (for example, the item is returned to the larger pool of items), we say that selection is done *with replacement*.
-
-The number of *ordered selections* of $r$ objects chosen from $n$ *with replacement* is\ $n^r$.
-The first object can be selected in\ $n$ ways, the second can be selected in\ $n$ ways, etc., and by the multiplication principle, we have\ $n^r$ possible outcomes.
-
-
-
-### Permutations without replacement {#PermutationSelectWithoutReplacement}
-
-Consider a finite, discrete sample space with\ $n$ distinct elements. 
-The first element chosen can be selected in\ $n$ different ways.
-The second element must then be chosen, which can be done in $(n - 1)$ ways (since it cannot be the same as the first).
-There are then $(n - 2)$ ways for the third, and so on. 
-Notice that once an elements is selected, it cannot be selected again; this is called *selecting without replacement*.
-\index{Selecting!without replacement}
-
-We find (using the multiplication principle; Sect.\ \@ref(MultiplicationPrinciple))\index{Multiplication principle} that there are $n(n - 1)(n - 2)\ldots 2 \times 1$ different ways to order the\ $n$ elements. 
-This is denoted by\ $n!$ and called '$n$-factorial':\index{Factorials}
-$$
-   n! = n(n - 1)(n - 2) \ldots (2)(1)
-$$
-where $n\geq 1$, and we define $0! = 1$.
-
-
-Now, consider a finite, discrete sample space\ $S$ with\ $n$ distinct elements again.
-Suppose we wish to count the number of *permutations* of size\ $r$ that can be drawn from\ $S$, when selected items *cannot* be reselected ('*without* replacement').\index{Selecting!without replacement}
-There are\ $n$ options for the first item selected. 
-However, there are only\ $n - 1$ options for the second item selected, since the element selected first *cannot* be re-selected.
-The same idea applies for all\ $r$ elements.
-Therefore, the number of permutations of size\ $r$, when selection is *without* replacement, is (using the *multiplication principle*; Sect.\ \@ref(MultiplicationPrinciple)):
-$$
-   n \times (n - 1)\times (n - 2)\times\cdots\times (n - r + 1) 
-   = \frac{n!}{(n - r)!}
-   = r! \times ^nC_r
-$$
-This number is denoted by $^nP_r$, and we write  
-\begin{equation}
-   ^nP_r = n(n - 1)(n - 2)\ldots (n - r + 1) = \frac{n!}{(n - r)!}.
-    (\#eq:Permutation)
-\end{equation}
-This expression is referred to as *the number of permutations of\ $r$ elements from a set with\ $n$ elements*.
-
-
-
-
-
-
-In some cases, the number of ways in which only the first\ $r$ elements of an ordering may be chosen is needed. 
-
-For this problem, the first element in the ordering may be chosen in\ $n$ different ways, the second in $(n - 1)$ ways, the third in $(n - 2)$ ways, and so on... down to the\ $rth$, which may be chosen in $(n - r + 1)$ ways. 
-
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Notation for permutations varies.
-Other notation for permutations include $nPr$, $^nP_r$, $P_n^r$ or $P(n,r)$.
-:::
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-By definition, $0! = 1$.
-With this definition, many formulas (some follow) remain valid for all valid choices of\ $n$ and\ $r$.
-:::
-
-
-:::{.example #PermAndCombSizes name=""}
-For any given values\ $n$ and\ $r$, the number of permutations is never smaller than the number of combinations (as is clear from Eq.\ \@ref(eq:Permutation)).
-This is because any given combinations have many per mutations, since the order is important.
-
-For example, suppose two cards have been dealt, in this order:
-$$
-  3\spadesuit, 5\heartsuit.
-$$
-The hand would be exactly the same if they had been dealt in the opposite order:
-$$
-  5\heartsuit, 3\spadesuit.
-$$
-Both hands count as one combination, since order is not important.
-
-However, if the order *was* important, then the two hands are different, and both should be counted: there are *two* separate outcomes.
-
-As a larger example:
-```{r}
-# The number of *combinations* of r = 3 items from n = 20:
-choose(10, 3)
-
-# The number of *permutations* of r = 3 items from n = 20:
-choose(10, 3) * factorial(3)
-```
-:::
-
-
-
-::: {.example #ChooseDigits name="Selecting digits"}
-Consider the set of integers ${1, 3, 5, 7}$ (these integers have no common factors).
-Choose two numbers, *without replacement*; call the first $a$ and the second $b$.
-If we then compute $a\times b$, then $^4C_2 = 6$ answers are possible since the *selection order is not important* (e.g., $3 \times 7$ gives the *same* answer as $7 \times 3$).\smallskip
-
-However, if we compute $a\div b$, then $^4P_2 = 12$ answers are possible, since the *selection order is important* (e.g., $3 \div 7$ gives a *different* answer than $7 \div 3$).
-:::
-
 
 
 
