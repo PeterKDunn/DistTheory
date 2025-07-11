@@ -1,5 +1,5 @@
 
-# Probability {#Probability}
+# Probability {#ChapterProbability}
 
 
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
@@ -740,7 +740,7 @@ This is the *relative frequency* (or *empirical*) approach to probability.
 
 This method cannot always be used in practice.
 Consider the probability that the air bag in a car correctly deploys in a crash.
-Crashing thousands of cars is not financially viable to estimate the probability that the air bag correctly deploying.
+Crashing thousands of cars is not financially viable to estimate the probability that the air bag is correctly deploying.
 Fortunately, car manufacturers can crash a small numbers of cars to get a very appoximate indications of the probabilities of correct air bag deployment.
 Sometimes, computer simulations can be used to approximate the probabilities.
 
@@ -857,9 +857,9 @@ If a 'meal' consists of one main plus one dessert, then $5\times 3 = 15$ meal co
 
 
 :::{.example #CountingElementsPasswords name="Counting elements"}
-Consider selecting a random password from the set of all lower-case letters only ('`a`', '`b`', \dots '`z`'), of *exactly* six characters in length.
+Consider selecting a random password of *exactly* six characters in length, only using the set of all lower-case letters ('`a`', '`b`', \dots '`z`').
 
-There are $26$\ choices for the first character, and $26$\ choices for the second characters, and so on,
+There are $26$\ choices for the first character, and $26$\ choices for the second character, and so on,
 So the total number of passwords is
 $$
   26^6 = 308\,915\,776.
@@ -873,15 +873,15 @@ In the example above, notice that the letters can be reused; once a letter is se
 This called selection *with replacement*; selected elements can be reselected.
 
 The multiplication rule demonstrates the basic idea behind counting (or *enumerating*) events and sample spaces.
-More generally, though, *permutations* and *combinations* are needed when selection are made *without replacement*: that is, one an elements is selected, it cannot be selected again.\index{Selecting!without replacement}
+More generally, though, *permutations* and *combinations* are needed when selection are made *without replacement*: that is, once an elements is selected, it cannot be selected again.\index{Selecting!without replacement}
 
-Permutations and combinations are used to count when selections are made from a fixed number of elements, without replacement,
-If the order of selection *is* important, we use *permutations*.\index{Permutations}
-If the order of selection *is not* important, we use *combinations*.\index{Combinations}
+Permutations and combinations are used to count outcomes when selections are made from a fixed number of elements, without replacement,
+If the order of selection *is* important, *permutations* are appropriate.\index{Permutations}
+If the order of selection *is not* important, *combinations* are appropriate.\index{Combinations}
 
 
-:::{.example #CombsAndPerms name="Combinations and permutations"}
-Consider selecting a random six-letter password from the set of lower-case letters only: '`a`', '`b`', \dots '`z`'.
+:::{.example #CombsAndPerms name="Permutations and combinations"}
+Consider selecting a random six-letter password from the set of lower-case letters only: '`a`', '`b`', \dots '`z`', where *no letter can be repeated* (which is unrealistic).
 In passwords, the order of the characters is important: the passwords `listen` and `silent` are *different* passwords, even though they contain the same characters.
 Since the *order* of the characters is important, *permutations* could be used to count how many passwords are possible.
 
@@ -899,7 +899,9 @@ This may help you remember when to use combinations and permutations:
 :::
 
 
-Counting the number of outcomes can also be achieved by listing the possible outcomes in other ways.
+
+Permutations and combinations are studied further in the following sections (Sect.\ \@ref(CombsAndPerms)).
+However, counting the number of outcomes can also be achieved by listing the possible outcomes in other ways.
 
 
 ::: {.example #TwoDice name="Rolling two dice"}
@@ -945,12 +947,6 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-The number of elements in a set is often large, and a complete enumeration of the set is unnecessary if all we want to do is to count the number of elements in the set.
-When the number of elements in the sample space is large, principles and formulae exist which aid counting, some of which are described in the following sections (Sect.\ \@ref(CombsAndPerms)).
-
-
-
-
 
 ### Permutations {#PermutationSelectWithoutReplacement}
 
@@ -964,7 +960,7 @@ A *permutation* is an *ordered* selection of elements (without replacement).\ind
 
 Consider a finite, discrete sample space with\ $n$ distinct elements. 
 The first element chosen can be selected in\ $n$ different ways.
-The second element must then be chosen, which can be done in $(n - 1)$ ways (since it cannot be the same as the first), using the multiplication rule.
+The second element must then be chosen, which can be done in $(n - 1)$ ways (it cannot be the same as the first element, as selection is *without* replacement), using the multiplication rule.
 There are then $(n - 2)$ ways for the third, and so on. 
 Notice that once an element is selected, it cannot be selected again; this is called *selecting without replacement*.
 \index{Selecting!without replacement}
@@ -981,8 +977,33 @@ $$
 where $n\geq 1$, and we define $0! = 1$.
 
 
-:::{.example}
-EXAMPLE HERE
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+By definition, $0! = 1$.
+With this definition, many formulas (some follow) remain valid for all valid choices of\ $n$ and\ $r$.
+:::
+
+
+:::{.example #FactorialBasic name="Factorials"}
+Factorials get large very quickly: $4! = 4\times 3\times 2\times 1 = 24$, but $10! = 3\,628\,800$.
+:::
+
+
+:::{.example #FactorialTrick name="Factorials"}
+Consider the expression
+$$
+   \frac{6!}{3!} =
+   \frac{6\times 5\times 4\times 3!}{3!} =  
+   6\times 5\times 4 = 120.
+$$
+Notice that the top line did not need evaluation.
+This trick is often used when working with factorials.
+For instance, we can compute:
+$$
+   \frac{57!}{53!} = 
+   \frac{57\times 56\times 55\times 54\times 53!}{53!} =
+   57\times 56\times 55\times 54 = 9\,480\,240,
+$$
+without needing to compute the value of\ $57!$ (which has the approximate value $4\times 10^{76}$).
 :::
 
 
@@ -991,14 +1012,14 @@ Suppose we wish to count the number of *permutations* of size\ $r$ that can be d
 
 As before, there are\ $n$ options for the first item selected, and\ $n - 1$ options for the second item selected, since the element selected first *cannot* be re-selected.
 The same idea applies for all\ $r$ elements.
-Therefore, the number of permutations of size\ $r$, when selection is *without* replacement, is (using the *multiplication rule*; Def.\ \@ref(def:MultiplicationRule)):
+Therefore, the number of permutations of size\ $r$, when selection is *without* replacement, is (using the *multiplication rule* in Def.\ \@ref(def:MultiplicationRule) and the idea in Example\ \@ref(exm:FactorialTrick)):
 $$
    n \times (n - 1)\times (n - 2)\times\cdots\times (n - r + 1) 
    = \frac{n!}{(n - r)!}.
 $$
 This number is denoted by $^nP_r$, and we write  
 $$
-   ^nP_r = n(n - 1)(n - 2)\ldots (n - r + 1) = \frac{n!}{(n - r)!}.
+   P^n_r = n(n - 1)(n - 2)\ldots (n - r + 1) = \frac{n!}{(n - r)!}.
 $$
 This expression is referred to as *the number of permutations of\ $r$ elements from\ $n$ elements*.
 
@@ -1009,15 +1030,53 @@ Other notation for permutations include $nPr$, $^nP_r$, $P_n^r$ or $P(n,r)$.
 :::
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-By definition, $0! = 1$.
-With this definition, many formulas (some follow) remain valid for all valid choices of\ $n$ and\ $r$.
+:::{.example #PermutationBasic name="Permutations"}
+Eight runners compete in a $100\ms$ race.
+In how many ways could the Gold, Silver and Bronze medals be awarded?
+
+This situation is like selecting $r = 3$ of the $n = 8$ runners to award medals.
+In addition, the order is definitely important (the runner coming first would not be happy being given a Bronze medal), so permutations are appropriate.
+There are
+$$
+  P^8_3 = \frac{8!}{(8 - 3)!} = 336
+$$
+ways in which the three medals could be allocated.
 :::
 
 
-:::{.example}
-EXAMPLE HERE
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+In **R**:
+
+* $n!$ is given by `factorial(n)`.
+
+While there is no function to explicitly compute the number of permutations, two options for computing $^nP_r$ are:
+
+* `factorial(n) / factorial(n - r)`; or
+* `prod( n : (n - r + 1) )` or `prod( (n - r + 1) : n )` (since `prod()` computes the *product* of all given elements).
+
+For example, 
+$$
+   P^{12}_3 =\frac{12\times 11\times 10\times 9!}{9!} = 12\times 11\times 10
+$$
+could be computed as follows:
+
+```{r}
+factorial(12) / factorial(12-3)
+prod( 10:12 )
+prod( 12:10 )
+```
 :::
+
+
+Some of the common properties of permutations are given below.
+
+* $P^n_n = n(n - 1)(n - 2)\ldots1 = n!$.
+* $P^n_0 = \frac{n!}{n!} = 1$.
+* $\displaystyle P^n_1 = n$.
+* $\displaystyle P^n_{n - 1} = \frac{n!}{1} = n!$.
+* $\displaystyle\frac{P^n_r}{P^n_{r - 1}} = n - r + 1$.
+* $\displaystyle P^n_r = P^{n - 1}_r + r \times P^{n - 1}_{r - 1}$.
+* $\displaystyle P^n_r = n \times P^{(n - 1)}_{r - 1} = n \times \times P^{(n - 2)}_{r - 2}$, and so on.
 
 
 ### Combinations {#Combinations}
@@ -1040,13 +1099,13 @@ So while both hands are counted separately for permutations, they are considered
 (This means that the number of combinations of $r$\ elements from $n$\ elements will never be smaller than the number of permutations of $r$\ elements from $n$\ elements.)
 
 If we have selected $r$\ elements, there are\ $r$ ways to rearrange these elements (by the multiplication rule), all of which are the same of the order is not important.
-So we can state that the number of combinations of $r$\ elments drawn form $n$\ elements, where order is not important, is
+So we can state that the number of combinations of $r$\ elements drawn form $n$\ elements, where order is not important, is
 $$
-   ^nC_r = \frac{^nP_r}{r!} = \frac{\text{number of permutations}}{\text{number of equivalent re-arrangements of that permutation}}.
+   C^n_r = \frac{^nP_r}{r!} = \frac{\text{number of permutations}}{\text{number of equivalent re-arrangements of that permutation}}.
 $$
 More directly, the number of combinations of $r$\ elements from $n$\ elments, where the selection order is not important, is
 \begin{equation}
-   ^nC_r = \binom{n}{r} = \frac{n(n - 1)\ldots (n - r + 1)}{r!} = \frac{n!}{(n - r)!\,r!} = \frac{^n P_r}{r!}
+   C^n_r = \binom{n}{r} = \frac{n(n - 1)\ldots (n - r + 1)}{r!} = \frac{n!}{(n - r)!\,r!} = \frac{^n P_r}{r!}
        (\#eq:CombinationPermutation)
 \end{equation}
 when elements are 'selected without replacement'.\index{Selecting!without replacement}
@@ -1057,6 +1116,19 @@ The two most common notations are shown: $^nC_r$ and $\binom{n}{r}$.
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Notation for combinations varies.
 Other notation for combinations include $nCr$, $^nC_r$, $C_n^r$, $\binom{n}{r}$ or $C(n,r)$.
+:::
+
+
+:::{.example #CombinationBasic name="Combinations in cards"}
+Suppose a hand of five cards is drawn from a well-shuffled pack of $52$\ cards.
+Since the order is which the cards are dealt is not important, *combinations* are appropriate.
+The number of possible hands is
+$$
+  P^{52}_5 = \frac{52!}{(52 - 5)!} =
+  \frac{52!}{47!} = \frac{52\times 51\times\cdots \times 48\times 47!}{47!} = 
+  52\times 51\times\cdots \times 48 = 311\,875\,200 
+$$
+Over $311$\ million hands are possible.
 :::
 
 
@@ -1084,10 +1156,6 @@ In **R**:
 * the *number* of combinations of `n` elements `k` at a time is found using `choose(n, k)`.
 * a *list* of all combinations of `n` elements, `m` at a time is given by `combn(x, m)`.
 * $n!$ is given by `factorial(n)`.
-
-There is no function to compute the number of permutations, but a command like this can be used:
-`factorial(n) / factorial(n - k)`.
-
 :::
 
 
@@ -1138,12 +1206,19 @@ choose(10, 3) * factorial(3)
 ::: {.example #ChooseDigits name="Selecting digits"}
 Consider the set of integers ${1, 3, 5, 7}$ (these integers have no common factors).
 Choose two numbers, *without replacement*; call the first $a$ and the second $b$.
-If we then compute $a\times b$, then $^4C_2 = 6$ answers are possible since the *selection order is not important* (e.g., $3 \times 7$ gives the *same* answer as $7 \times 3$).\smallskip
+If we then compute $a\times b$, then $C^4_2 = 6$ answers are possible since the *selection order is not important* (e.g., $3 \times 7$ gives the *same* answer as $7 \times 3$).\smallskip
 
-However, if we compute $a\div b$, then $^4P_2 = 12$ answers are possible, since the *selection order is important* (e.g., $3 \div 7$ gives a *different* answer than $7 \div 3$).
+However, if we compute $a\div b$, then $P^4_2 = 12$ answers are possible, since the *selection order is important* (e.g., $3 \div 7$ gives a *different* answer than $7 \div 3$).
 :::
 
 
+
+Some of the common properties of combinations are given below.
+
+* $\displaystyle\binom{n}{n} = \binom{n}{0} = 1$.
+* $\displaystyle\binom{n}{1} = n$.
+* $\displaystyle\binom{n}{r} = \binom{n}{n - r}$.
+* $\displaystyle\binom{n}{r} + \binom{n}{r - 1} = \binom{n + 1}{r}$.
 
 
 ## Assigning probabilities: continuous sample spaces {#AssignProbContinuous}
@@ -2798,11 +2873,8 @@ The theorem is the basis of a branch of statistics known as *Bayesian statistics
 
 
 
-### COINS TOSS SIMULATION
+### SimulationL coin tossing {#SimulationCoinToss}
 
-**THIS IS CIRCULAR: Assume p = 0.5 to show p = 0.,5**
-
-::: {.example #CoinToss name="Simulating a coin toss"}
 Repeating random processes large numbers of times can be impractical and tedious.
 However, sometimes a computer can be used to *simulate* the random processes.
 Consider using a computer to simulate large numbers of coin tosses; here, **R** is used to simulate 500 tosses.
@@ -2812,8 +2884,6 @@ Then, after each toss, the probability of obtaining a head using all the availab
 For one such simulation, these running probabilities are shown in Fig.\ \@ref(fig:SimTosses).
 While the result of any single toss is unpredictable, we see the general pattern emerging: Heads occur about half the time.
 
-CHECK: THIS IS THE (weak? strog?) LAW of large numbers or something???????
-:::
 
 ```{r echo=FALSE}
 set.seed(966141)                     # For repeatability
@@ -2848,8 +2918,17 @@ abline( h = 0.5,       # Draw horizontal line at y = 0.5
 ```
 
 
-Using the empirical approach shows why probabilities are between 0 and 1 (inclusive), since the proportions $m/n$ are always between 0 and 1 (inclusive).
+Using the empirical approach shows why probabilities are between\ $0$ and\ $1$ (inclusive), since the proportions $m/n$ are always between\ $0$ and\ $1$ (inclusive).
 
+This simulation demonstrates the Weak Law of Large Numbers,
+
+
+:::{.definition #WeakLawLargeNumbers name="Weak Law of Large Numbers"}
+The sample proportion of a random outcome converges (in probability) to the true probability as the number of trials increases.\index{Weak law of large numbers}
+:::
+
+
+In this case, the sample proportion of heads converges (in probability) to the true probability of a head $p = 0.5$ as the number of trials increases.
 
 
 
@@ -2909,6 +2988,72 @@ WinByNotSwitching  <- sum( CarDoor == FirstChoice)
 WinBySwitching     <- sum( CarDoor != FirstChoice)
 
 c(WinByNotSwitching, WinBySwitching) / NumSims
+```
+
+
+In practice, the host selects a door that he or she knows does *not* contains the car.
+So we need to adapt the process:
+
+1. Generate a random sequence of length $1000$ of the digits $1$, $2$ and $3$ to represent which door is hiding the car on each of $1000$ nights. 
+2. Generate another such sequence to represent the contestants *first* choice on each of the $1000$ nights (assumed chosen at random).
+3. The host then opens a door *not* chosen by the contestant, that does *not* contain the car.
+4. The contestant then select from one of the unopened doors.
+5. The number of times the numbers in the two lists of random numbers *do* agree represents the number of times the contestant will win *if the contestant doesn't change doors*.
+   If the numbers in the two columns *don't* agree then the contestant will win *only if the contestant decides to change doors*.
+
+This **R** code simulates this more realistic scenario:
+
+
+```{r}
+set.seed(93671)       # For reproducibility
+NumSims <- 1000       # Number of simulations
+
+# Initialize counters
+WinBySwitching <- 0
+WinByStaying   <- 0
+
+for (i in 1:NumSims) {
+  
+  # Step 1: Randomly place the car
+  CarDoor <- sample(1:3, 1)
+
+  # Step 2: CONTESTANT makes an initial choice
+  FirstChoice <- sample(1:3, 
+                        size = 1)
+
+  # Step 3: HOST then chooses to open a goat door and show contestant.
+  #         Host chooses door *not* picked by contestant, or door *not* hiding car
+  PossibleReveals <- setdiff(1:3, 
+                             c(FirstChoice, CarDoor))
+
+  # So Host may now have one or two options of door to open  
+  if (length(PossibleReveals) == 1) {
+    # With one option... just take it
+    HostReveal <- PossibleReveals
+  }
+  if (length(PossibleReveals) == 2) {
+    # With two options, select one
+    HostReveal <- setdiff(1:3, 
+                          FirstChoice)
+  }
+
+  # Step 4: CONTESTANT may decide to switch to the other unopened door
+  RemainingDoor <- setdiff(1:3, 
+                           c(FirstChoice, HostReveal))
+  SwitchChoice <- RemainingDoor
+
+  # Step 5: Check win conditions
+  if (FirstChoice == CarDoor) {
+    WinByStaying <- WinByStaying + 1
+  } else {
+    if (SwitchChoice == CarDoor) {
+       WinBySwitching <- WinBySwitching + 1
+    }
+  }
+}
+
+# Results
+c(WinByStaying, WinBySwitching) / NumSims
 ```
 
 
@@ -3380,3 +3525,10 @@ text(x = innerPoint[1],
      pos = 4,
      labels = "P")
 ```
+
+
+:::{.exercise #Locks}
+
+A combination lock work by setting (for example) four digits to numbers only known by the owner.
+Suggest a more accurate name for a '*combination* lock'.
+:::
