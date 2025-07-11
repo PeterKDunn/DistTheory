@@ -1070,13 +1070,13 @@ prod( 12:10 )
 
 Some of the common properties of permutations are given below.
 
-* $P^n_n = n(n - 1)(n - 2)\ldots1 = n!$.
-* $P^n_0 = \frac{n!}{n!} = 1$.
+* $P^n_n = n!$.
+* $P^n_0 = 1$.
 * $\displaystyle P^n_1 = n$.
-* $\displaystyle P^n_{n - 1} = \frac{n!}{1} = n!$.
+* $\displaystyle P^n_{n - 1} = n!$.
 * $\displaystyle\frac{P^n_r}{P^n_{r - 1}} = n - r + 1$.
 * $\displaystyle P^n_r = P^{n - 1}_r + r \times P^{n - 1}_{r - 1}$.
-* $\displaystyle P^n_r = n \times P^{(n - 1)}_{r - 1} = n \times \times P^{(n - 2)}_{r - 2}$, and so on.
+* $\displaystyle P^n_r = n \times P^{n - 1}_{r - 1} = n \times (n - 1) \times P^{n - 2}_{r - 2}$, and so on.
 
 
 ### Combinations {#Combinations}
@@ -1101,11 +1101,11 @@ So while both hands are counted separately for permutations, they are considered
 If we have selected $r$\ elements, there are\ $r$ ways to rearrange these elements (by the multiplication rule), all of which are the same of the order is not important.
 So we can state that the number of combinations of $r$\ elements drawn form $n$\ elements, where order is not important, is
 $$
-   C^n_r = \frac{^nP_r}{r!} = \frac{\text{number of permutations}}{\text{number of equivalent re-arrangements of that permutation}}.
+   C^n_r = \frac{P_r}{r!} = \frac{\text{number of permutations}}{\text{number of equivalent re-arrangements of that permutation}}.
 $$
 More directly, the number of combinations of $r$\ elements from $n$\ elments, where the selection order is not important, is
 \begin{equation}
-   C^n_r = \binom{n}{r} = \frac{n(n - 1)\ldots (n - r + 1)}{r!} = \frac{n!}{(n - r)!\,r!} = \frac{^n P_r}{r!}
+   C^n_r = \binom{n}{r} = \frac{n(n - 1)\ldots (n - r + 1)}{r!} = \frac{n!}{(n - r)!\,r!} = \frac{P^n_r}{r!}
        (\#eq:CombinationPermutation)
 \end{equation}
 when elements are 'selected without replacement'.\index{Selecting!without replacement}
@@ -1115,7 +1115,7 @@ The two most common notations are shown: $^nC_r$ and $\binom{n}{r}$.
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Notation for combinations varies.
-Other notation for combinations include $nCr$, $^nC_r$, $C_n^r$, $\binom{n}{r}$ or $C(n,r)$.
+Other notation for combinations include $nCr$, ${}^nC_r$, $C_n^r$, $\binom{n}{r}$ or $C(n,r)$.
 :::
 
 
@@ -2091,7 +2091,7 @@ if( knitr::is_latex_output() ) {
   knitr::kable(MumpsTable,
                format = "latex",
                booktabs = TRUE,
-               align = "r",
+               align = "c",
                longtable = FALSE,                
                escape = FALSE,
                caption = "Students response to isolation request at a Kansas university.") %>%
@@ -2103,7 +2103,7 @@ if( knitr::is_html_output() ) {
                escape = TRUE,
                format = "html",
                booktabs = TRUE,
-               align = "r",
+               align = "c",
                longtable = FALSE,                
                caption = "Students response to isolation request at a Kansas university.") %>%
     row_spec(0, bold = TRUE) 
@@ -2347,329 +2347,6 @@ Exercise.
 
 
 
-::: {.example #BreastCancer name="Breast cancer"}
-The success of mammograms for detecting breast cancer has been well documented [@white1993mammography]. 
-Mammograms are generally conducted on women over $40$, though breast cancer rarely occurs in women under $40$ also.\smallskip
-
-We can define two events of interest:
-\begin{align*}
-   C:&\quad \text{The woman has breast cancer; and}\\
-   D:&\quad \text{The mammogram returns a positive test result.}
-\end{align*}
-As with any diagnostic tool, a mammogram is not perfect.
-*Sensitivity*\index{Sensitivity} and *specificity*\index{Specificity} are used to describe the accuracy of a test:
-
-* *Sensitivity* is the probability of a *true* positive test result: the probability of a positive test result for people *with* the disease.
-  This is $\Pr(D \mid C)$.
-* *Specificity* is the probability of a *true* negative test result: the probability of a negative test for people *without* the disease.
-  This is $\Pr(D^c \mid C^c)$.
-
-Clearly, we would like both these probabilities to be a high as possible.
-For mammograms [@houssami2003sydney], the *sensitivity* is estimated as about\ $0.75$ and the *specificity* as about\ $0.90$.
-We can write:
-
-* $\Pr(D \mid C ) = 0.75$ (and so $\Pr(D^c \mid C) = 0.25$);
-* $\Pr(D^c \mid C^c) = 0.90$ (and so $\Pr(D \mid C^c) = 0.10$).
-
-Furthermore, about\ $2$% of women under\ $40$ will get breast cancer [@houssami2003sydney]; that is, $\Pr(C) = 0.02$ (and hence $\Pr(C^c) = 0.98$).\smallskip
-
-For this study, the probabilities $\Pr(D\mid C)$ are easy to find: women who are *known* to have breast cancer have a mammogram, and we record whether the mammogram result is positive or negative.\smallskip
-
-But consider a woman under\ $40$ who gets a mammogram.
-When the results are returned, her interest is whether they have breast cancer, *given* the test results; for example $\Pr(C \mid D)$.
-In other words: if the test returns a positive result, what is the probability that she actually has breast cancer?\smallskip
-
-That is, we would like to take probabilities like $\Pr(D\mid C)$, that can be found easily, and determine $\Pr(C \mid  D)$, which is of interest in practice.
-Using [Bayes' Theorem](#thm:Bayes):
-\begin{align*}
-   \Pr(C \mid D) 
-   &= \frac{\Pr(C) \times \Pr(D \mid  C)}
-            {\Pr(C)\times \Pr(D \mid  C) + \Pr(C^c)\times \Pr(D \mid  C^c) }\\
-   &= \frac{0.02 \times 0.75}
-            {(0.02\times 0.75) + (0.98\times 0.10)}\\
-   &= \frac{0.015}{0.015 + 0.098} =  0.1327.         
-\end{align*}
-Consider what this says: Given that a mammogram returns a *positive test* (for a woman under\ $40$), the probability that the woman really has breast cancer is only about\ $6$%...
-This partly explains why mammograms for women under $40$ are not commonplace: most women who return a positive test result actually do not have breast cancer.\smallskip
-
-The reason for this surprising result is explained in Example\ \@ref(exm:BreastCancerTree).
-:::
-
-
-
-:::{.example #BreastCancerTree name="Breast cancer"}
-Consider using a tree diagram to describe the breast cancer information from Example\ \@ref(exm:BreastCancer) (Fig.\ \@ref(fig:BreastTree)).
-By following each 'branch' of the tree, we can compute, for example:
-$$
-   \Pr(C \cap D) = \Pr(C)\times \Pr(D\mid C) = 0.02 \times 0.75 = 0.015;
-$$
-that is, the probability that a woman has a positive test **and** breast cancer is about $0.015$.
-But compare:
-$$
-   \Pr(C^c \cap D) = \Pr(C^c)\times \Pr(D\mid C^c) = 0.98 \times 0.10 = 0.098;
-$$
-that is, the probability that a woman has a positive test **and no** breast cancer (that is, a *false* positive) is about $0.098$.\smallskip
-
-This explains the surprisingly result in Example\ \@ref(exm:BreastCancer): because breast cancer is so uncommon in younger women, the *false* positives ($0.098$) overwhelm the *true* positives ($0.015$).
-
-After a positive mammogram, further tests are conducted to conform a cancer diagnosis. 
-In younger women, almost every positive mammogram returns a negative diagnosis from further tests.
-:::
-
-
-```{r BreastTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the breast-cancer example.", out.width='67%'}
-par(mar = c(1, 0.5, 1, 0.5) + 0.1)
-
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      main = "Tree diagram for the breast cancer example",
-      xlab = "",
-      ylab = "",
-      axes = FALSE)
-#STEP 1
-lines( x = c(0.2, 0.40),
-       y = c(0.5, 0.75),
-       lwd = 2)
-lines( x = c(0.2, 0.40),
-       y = c(0.5, 0.25),
-       lwd = 2)
-# STEP 2
-lines( x = c(0.60, 0.80),
-       y = c(0.75, 0.90),
-       lwd = 2)
-lines( x = c(0.60, 0.80),
-       y = c(0.75, 0.60),
-       lwd = 2)
-
-lines( x = c(0.60, 0.80),
-       y = c(0.25, 0.40),
-       lwd = 2)
-lines( x = c(0.60, 0.80),
-       y = c(0.25, 0.10),
-       lwd = 2)
-
-# TEXT
-text(x = 0.50,
-     y = 0.75,
-     labels = expression("Cancer,"~italic(C)))
-text(x = 0.50,
-     y = 0.25,
-     labels = expression("No cancer,"~italic(C)^c) )
-
-text(x = 0.90,
-     y = 0.90,
-     labels = expression("+ive test,"~italic(D)) )
-text(x = 0.90,
-     y = 0.60,
-     labels = expression("-ive test,"~italic(D)^c) )
-
-text(x = 0.90,
-     y = 0.40,
-     labels = expression("+ive test,"~italic(D)) )
-text(x = 0.90,
-     y = 0.10,
-     labels = expression("-ive test,"~italic(D)^c) )
-
-# ADD PROBS
-text(x = 0.38,
-     y = 0.63,
-     cex = 0.9,
-     labels = "0.02")
-text(x = 0.38,
-     y = 0.37,
-     cex = 0.9,
-     labels = "0.98")
-
-text(x = 0.65,
-     y = 0.84,
-     cex = 0.9,
-     labels = "0.75")
-text(x = 0.65,
-     y = 0.66,
-     cex = 0.9,
-     labels = "0.25")
-
-text(x = 0.65,
-     y = 0.34,
-     cex = 0.9,
-     labels = "0.10")
-text(x = 0.65,
-     y = 0.16,
-     cex = 0.9,
-     labels = "0.90")
-
-## STEPS
-text(x = 0.50,
-     y = 0.01,
-     label = expression(bold("Step 1"))
-     )
-text(x = 0.90,
-     y = 0.01,
-     label = expression(bold("Step 2"))
-     )
-```
-
-
-
-
-
-
-::: {.example #BreastCancerVenn name="Breast cancer"}
-Consider again the breast cancer data (Example\ \@ref(exm:BreastCancer), where the events $C$ and $D$ were defined [earlier](#exm:BreastCancer)).
-A Venn diagram could be constructed to show the sample space (Fig.\ \@ref(fig:BreastVenn)).
-:::
-
-THIS EXAMPLE IS NOW MUCH LATER
-
-
-```{r BreastVenn, echo=FALSE, fig.height=6.25, fig.width=7.25, out.width = '90%', fig.align="center", fig.cap="The Venn diagram for the breast cancer example. The rectangle in each panel represents the sample space."}
-par( mfrow = c(2, 2),
-     mar = c(1, 0.1, 2, 0.1))
-
-colourCancer <- rgb(0, 0, 255, 
-                    max = 255,
-                    alpha = 125)
-colourPos  <- rgb(0, 255, 0, 
-                  max = 255, 
-                  alpha = 125)
-
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      ylab = "",
-      xlab = "",
-      main = expression(paste("Events ", italic(C), " and ", italic(C)^c)),
-      axes = FALSE)
-
-polygon( x = c(0, 0, 1, 1),
-         y = c(0, 1, 1, 0))
-plotrix::draw.circle(x = 0.4, 
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourCancer)
-text(x = 0.4,
-     y = 0.5,
-     labels = expression(paste(italic(C), ": 0.02")))
-text(x = 0.8,
-     y = 0.5,
-     labels = expression(paste(italic(C)^c, ": 0.98")))
-mtext(text = expression(italic(S)),
-      side = 1,
-      adj = 0.25)
-
-
-###############
-
-
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      ylab = "",
-      xlab = "",
-      main = expression(paste("Events ", italic(D), " and ", italic(D)^c)) ,
-      axes = FALSE)
-
-
-polygon( x = c(0, 0, 1, 1),
-         y = c(0, 1, 1, 0))
-
-plotrix::draw.circle(x = 0.6,
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourPos)
-
-text(x = 0.6,
-     y = 0.5,
-     labels = expression(paste(italic(D), ": 0.113")))
-text(x = 0.2,
-     y = 0.5,
-     labels = expression(paste( italic(D)^c, ": 0.887")))
-
-mtext(text = expression(italic(S)),
-      side = 1,
-      adj = 0.25)
-
-
-####################
-
-
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      ylab = "",
-      xlab = "",
-      main = expression(paste("Events ", italic(C), " and ", italic(D))) ,
-      axes = FALSE)
-
-
-polygon( x = c(0, 0, 1, 1),
-         y = c(0, 1, 1, 0))
-plotrix::draw.circle(x = 0.4, 
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourCancer)
-plotrix::draw.circle(x = 0.6,
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourPos)
-text(x = 0.3,
-     y = 0.5,
-     labels = expression(italic(C)))
-text(x = 0.7,
-     y = 0.5,
-     labels = expression(italic(D)))
-mtext(text = expression(italic(S)),
-      side = 1,
-      adj = 0.25)
-
-
-#################
-
-
-
-plot( x = c(0, 1),
-      y = c(0, 1),
-      type = "n",
-      ylab = "",
-      xlab = "",
-      main = expression("The probabilities in each section"),
-      axes = FALSE)
-
-
-polygon( x = c(0, 0, 1, 1),
-         y = c(0, 1, 1, 0))
-plotrix::draw.circle(x = 0.4, 
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourCancer)
-plotrix::draw.circle(x = 0.6,
-                     y = 0.5,
-                     radius = 0.2,
-                     col = colourPos)
-text(x = 0.3,
-     y = 0.5,
-     labels = "0.005")
-text(x = 0.7,
-     y = 0.5,
-     labels = "0.098")
-text(x = 0.7,
-     y = 0.85,
-     labels = expression((italic(C) ~ union() ~ italic(D))^c ~ ": 0.882") )
-mtext(text = expression(italic(S)),
-      side = 1,
-      adj = 0.25)
-
-# Intersection
-text(x = 0.5, 
-     y = 0.5, 
-     label = "0.015")
-```
-
-
-
-
-
 
 ### Independent and mutually exclusive events {#IndependentEvents}
 
@@ -2864,7 +2541,334 @@ In effect, the theorem takes a conditional probability and can 'reverse' the con
 
 Bayes' theorem has many uses, as it uses conditional probabilities that are easy to find or estimate to compute a conditional probability that is *not* easy to find or estimate.
 The theorem is the basis of a branch of statistics known as *Bayesian statistics*\index{Bayesian statistics} which involves using pre-existing evidence in drawing conclusions from data.
-\index{Bayes theorem|(}
+
+
+
+
+::: {.example #BreastCancer name="Breast cancer"}
+The success of mammograms for detecting breast cancer has been well documented [@white1993mammography]. 
+Mammograms are generally conducted on women over $40$, though breast cancer rarely occurs in women under $40$ also.\smallskip
+
+We can define two events of interest:
+\begin{align*}
+   C:&\quad \text{The woman has breast cancer; and}\\
+   D:&\quad \text{The mammogram returns a positive test result.}
+\end{align*}
+As with any diagnostic tool, a mammogram is not perfect.
+*Sensitivity*\index{Sensitivity} and *specificity*\index{Specificity} are used to describe the accuracy of a test:
+
+* *Sensitivity* is the probability of a *true* positive test result: the probability of a positive test result for people *with* the disease.
+  This is $\Pr(D \mid C)$.
+* *Specificity* is the probability of a *true* negative test result: the probability of a negative test for people *without* the disease.
+  This is $\Pr(D^c \mid C^c)$.
+
+Clearly, we would like both these probabilities to be a high as possible.
+For mammograms [@houssami2003sydney], the *sensitivity* is estimated as about\ $0.75$ and the *specificity* as about\ $0.90$.
+We can write:
+
+* $\Pr(D \mid C ) = 0.75$ (and so $\Pr(D^c \mid C) = 0.25$);
+* $\Pr(D^c \mid C^c) = 0.90$ (and so $\Pr(D \mid C^c) = 0.10$).
+
+Furthermore, about\ $2$% of women under\ $40$ will get breast cancer [@houssami2003sydney]; that is, $\Pr(C) = 0.02$ (and hence $\Pr(C^c) = 0.98$).\smallskip
+
+For this study, the probabilities $\Pr(D\mid C)$ are easy to find: women who are *known* to have breast cancer have a mammogram, and we record whether the mammogram result is positive or negative.\smallskip
+
+But consider a woman under\ $40$ who gets a mammogram.
+When the results are returned, her interest is whether they have breast cancer, *given* the test results; for example $\Pr(C \mid D)$.
+In other words: if the test returns a positive result, what is the probability that she actually has breast cancer?\smallskip
+
+That is, we would like to take probabilities like $\Pr(D\mid C)$, that can be found easily, and determine $\Pr(C \mid  D)$, which is of interest in practice.
+Using [Bayes' Theorem](#thm:Bayes):
+\begin{align*}
+   \Pr(C \mid D) 
+   &= \frac{\Pr(C) \times \Pr(D \mid  C)}
+            {\Pr(C)\times \Pr(D \mid  C) + \Pr(C^c)\times \Pr(D \mid  C^c) }\\
+   &= \frac{0.02 \times 0.75}
+            {(0.02\times 0.75) + (0.98\times 0.10)}\\
+   &= \frac{0.015}{0.015 + 0.098} =  0.1327.         
+\end{align*}
+Consider what this says: Given that a mammogram returns a *positive test* (for a woman under\ $40$), the probability that the woman really has breast cancer is only about\ $6$%...
+This partly explains why mammograms for women under $40$ are not commonplace: most women who return a positive test result actually do not have breast cancer.\smallskip
+
+The reason for this surprising result is explained in Example\ \@ref(exm:BreastCancerTree).
+:::
+
+
+
+:::{.example #BreastCancerTree name="Breast cancer"}
+Consider using a tree diagram to describe the breast cancer information from Example\ \@ref(exm:BreastCancer) (Fig.\ \@ref(fig:BreastTree)).
+By following each 'branch' of the tree, we can compute, for example:
+$$
+   \Pr(C \cap D) = \Pr(C)\times \Pr(D\mid C) = 0.02 \times 0.75 = 0.015;
+$$
+that is, the probability that a woman has a positive test **and** breast cancer is about $0.015$.
+But compare:
+$$
+   \Pr(C^c \cap D) = \Pr(C^c)\times \Pr(D\mid C^c) = 0.98 \times 0.10 = 0.098;
+$$
+that is, the probability that a woman has a positive test **and no** breast cancer (that is, a *false* positive) is about $0.098$.\smallskip
+
+This explains the surprisingly result in Example\ \@ref(exm:BreastCancer): because breast cancer is so uncommon in younger women, the *false* positives ($0.098$) overwhelm the *true* positives ($0.015$).
+
+After a positive mammogram, further tests are conducted to conform a cancer diagnosis. 
+In younger women, almost every positive mammogram returns a negative diagnosis from further tests.
+:::
+
+
+```{r BreastTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the breast-cancer example.", out.width='67%'}
+par(mar = c(1, 0.5, 1, 0.5) + 0.1)
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      main = "Tree diagram for the breast cancer example",
+      xlab = "",
+      ylab = "",
+      axes = FALSE)
+#STEP 1
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.75),
+       lwd = 2)
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.25),
+       lwd = 2)
+# STEP 2
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.90),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.60),
+       lwd = 2)
+
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.40),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.10),
+       lwd = 2)
+
+# TEXT
+text(x = 0.50,
+     y = 0.75,
+     labels = expression("Cancer,"~italic(C)))
+text(x = 0.50,
+     y = 0.25,
+     labels = expression("No cancer,"~italic(C)^c) )
+
+text(x = 0.90,
+     y = 0.90,
+     labels = expression("+ive test,"~italic(D)) )
+text(x = 0.90,
+     y = 0.60,
+     labels = expression("-ive test,"~italic(D)^c) )
+
+text(x = 0.90,
+     y = 0.40,
+     labels = expression("+ive test,"~italic(D)) )
+text(x = 0.90,
+     y = 0.10,
+     labels = expression("-ive test,"~italic(D)^c) )
+
+# ADD PROBS
+text(x = 0.38,
+     y = 0.63,
+     cex = 0.9,
+     labels = "0.02")
+text(x = 0.38,
+     y = 0.37,
+     cex = 0.9,
+     labels = "0.98")
+
+text(x = 0.65,
+     y = 0.84,
+     cex = 0.9,
+     labels = "0.75")
+text(x = 0.65,
+     y = 0.66,
+     cex = 0.9,
+     labels = "0.25")
+
+text(x = 0.65,
+     y = 0.34,
+     cex = 0.9,
+     labels = "0.10")
+text(x = 0.65,
+     y = 0.16,
+     cex = 0.9,
+     labels = "0.90")
+
+## STEPS
+text(x = 0.50,
+     y = 0.01,
+     label = expression(bold("Step 1"))
+     )
+text(x = 0.90,
+     y = 0.01,
+     label = expression(bold("Step 2"))
+     )
+```
+
+
+
+
+
+
+::: {.example #BreastCancerVenn name="Breast cancer"}
+Consider again the breast cancer data (Example\ \@ref(exm:BreastCancer), where the events $C$ and $D$ were defined [earlier](#exm:BreastCancer)).
+A Venn diagram could be constructed to show the sample space (Fig.\ \@ref(fig:BreastVenn)).
+:::
+
+
+```{r BreastVenn, echo=FALSE, fig.height=6.25, fig.width=7.25, out.width = '90%', fig.align="center", fig.cap="The Venn diagram for the breast cancer example. The rectangle in each panel represents the sample space."}
+par( mfrow = c(2, 2),
+     mar = c(1, 0.1, 2, 0.1))
+
+colourCancer <- rgb(0, 0, 255, 
+                    max = 255,
+                    alpha = 125)
+colourPos  <- rgb(0, 255, 0, 
+                  max = 255, 
+                  alpha = 125)
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(C), " and ", italic(C)^c)),
+      axes = FALSE)
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+text(x = 0.4,
+     y = 0.5,
+     labels = expression(paste(italic(C), ": 0.02")))
+text(x = 0.8,
+     y = 0.5,
+     labels = expression(paste(italic(C)^c, ": 0.98")))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+###############
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(D), " and ", italic(D)^c)) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+
+text(x = 0.6,
+     y = 0.5,
+     labels = expression(paste(italic(D), ": 0.113")))
+text(x = 0.2,
+     y = 0.5,
+     labels = expression(paste( italic(D)^c, ": 0.887")))
+
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+####################
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(C), " and ", italic(D))) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+text(x = 0.3,
+     y = 0.5,
+     labels = expression(italic(C)))
+text(x = 0.7,
+     y = 0.5,
+     labels = expression(italic(D)))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+#################
+
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression("The probabilities in each section"),
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+text(x = 0.3,
+     y = 0.5,
+     labels = "0.005")
+text(x = 0.7,
+     y = 0.5,
+     labels = "0.098")
+text(x = 0.7,
+     y = 0.85,
+     labels = expression((italic(C) ~ union() ~ italic(D))^c ~ ": 0.882") )
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+# Intersection
+text(x = 0.5, 
+     y = 0.5, 
+     label = "0.015")
+```
+
+
+
+
+
+
+
+\index{Bayes theorem|)}
 
 
 
@@ -2873,7 +2877,7 @@ The theorem is the basis of a branch of statistics known as *Bayesian statistics
 
 
 
-### SimulationL coin tossing {#SimulationCoinToss}
+### Simulation: coin tossing {#SimulationCoinToss}
 
 Repeating random processes large numbers of times can be impractical and tedious.
 However, sometimes a computer can be used to *simulate* the random processes.
@@ -2890,9 +2894,9 @@ set.seed(966141)                     # For repeatability
 ```
 
 ```{r SimTossesA, echo=TRUE, collapse=TRUE}
-NumTosses <- 500 # Simulated tossing a coin 500 times
+Num_Tosses <- 500 # Simulated tossing a coin 500 times
 Tosses <- sample(x = c("H", "T"),    # Choose "H"  or  "T"
-                 size = NumTosses,   # Do this 500 times
+                 size = Num_Tosses,   # Do this 500 times
                  replace = TRUE)     # H and T can be reselected 
 Tosses[1 : 10]                       # Show the first 10 results
 ```
@@ -2900,11 +2904,11 @@ Tosses[1 : 10]                       # Show the first 10 results
 Now plot the running probabilities:
 
 ```{r SimTosses, echo=TRUE, fig.align='center', fig.cap = "A simulation of tossing a fair coin $500$ times. The probability of getting a head is computed from the data after each toss.", fig.width=6, fig.height=3.5, out.width='65%'}
-TossNumber <- 1:NumTosses            # Sequence: from 1 to 500
-PropHeads <- cumsum(Tosses == "H") / TossNumber
+Toss_Number <- 1:Num_Tosses            # Sequence: from 1 to 500
+Prop_Heads <- cumsum(Tosses == "H") / Toss_Number  # 'cumulative sum'
                                      # P(Heads) after each toss
 
-plot(PropHeads,
+plot(Prop_Heads,
      main = "The proportion of heads after a given number of tosses",
      xlab = "Toss number",          # Label on x-axis
      ylab = "Proportion of heads",  # Label on y-axis
@@ -2973,21 +2977,21 @@ These estimates would improve for larger simulation sizes.
 ```{r echo=TRUE}
 set.seed(93671)          # For reproducibility
 
-NumSims <- 1000          # The number of simulations
+Num_Sims <- 1000          # The number of simulations
 # Choose the door where the car is hiding:
-CarDoor <- sample(1:3,  # Could be behind Door 1, 2 or 3
-                  size = NumSims, # Repeat
-                  replace = TRUE)
+Car_Door <- sample(1:3,  # Could be behind Door 1, 2 or 3
+                   size = Num_Sims, # Repeat
+                   replace = TRUE)
 # Choose the contestants initial choice:
-FirstChoice <- sample(1:3,        # Could guess Door 1, 2 or 3
-                  size = NumSims, # Repeat
-                  replace = TRUE)
+First_Choice <- sample(1:3,        # Could guess Door 1, 2 or 3
+                       size = Num_Sims, # Repeat
+                       replace = TRUE)
 
 # Compute the chances of winning the car:
-WinByNotSwitching  <- sum( CarDoor == FirstChoice)
-WinBySwitching     <- sum( CarDoor != FirstChoice)
+Win_By_Not_Switching  <- sum( Car_Door == First_Choice)
+Win_By_Switching     <- sum( Car_Door != First_Choice)
 
-c(WinByNotSwitching, WinBySwitching) / NumSims
+c(Win_By_Not_Switching, Win_By_Switching) / Num_Sims
 ```
 
 
@@ -3006,54 +3010,54 @@ This **R** code simulates this more realistic scenario:
 
 ```{r}
 set.seed(93671)       # For reproducibility
-NumSims <- 1000       # Number of simulations
+Num_Sims <- 1000       # Number of simulations
 
 # Initialize counters
-WinBySwitching <- 0
-WinByStaying   <- 0
+Win_By_Switching <- 0
+Win_By_Staying   <- 0
 
-for (i in 1:NumSims) {
+for (i in 1:Num_Sims) {
   
   # Step 1: Randomly place the car
-  CarDoor <- sample(1:3, 1)
+  Car_Door <- sample(1:3, 1)
 
   # Step 2: CONTESTANT makes an initial choice
-  FirstChoice <- sample(1:3, 
-                        size = 1)
+  First_Choice <- sample(1:3, 
+                         size = 1)
 
   # Step 3: HOST then chooses to open a goat door and show contestant.
   #         Host chooses door *not* picked by contestant, or door *not* hiding car
-  PossibleReveals <- setdiff(1:3, 
-                             c(FirstChoice, CarDoor))
+  Possible_Reveals <- setdiff(1:3, 
+                              c(First_Choice, Car_Door))
 
   # So Host may now have one or two options of door to open  
-  if (length(PossibleReveals) == 1) {
+  if (length(Possible_Reveals) == 1) {
     # With one option... just take it
-    HostReveal <- PossibleReveals
+    Host_Reveal <- Possible_Reveals
   }
-  if (length(PossibleReveals) == 2) {
+  if (length(Possible_Reveals) == 2) {
     # With two options, select one
-    HostReveal <- setdiff(1:3, 
-                          FirstChoice)
+    Host_Reveal <- setdiff(1:3, 
+                           First_Choice)
   }
 
   # Step 4: CONTESTANT may decide to switch to the other unopened door
-  RemainingDoor <- setdiff(1:3, 
-                           c(FirstChoice, HostReveal))
-  SwitchChoice <- RemainingDoor
+  Remaining_Door <- setdiff(1:3, 
+                            c(First_Choice, Host_Reveal))
+  Switch_Choice <- Remaining_Door
 
   # Step 5: Check win conditions
-  if (FirstChoice == CarDoor) {
-    WinByStaying <- WinByStaying + 1
+  if (First_Choice == Car_Door) {
+    Win_By_Staying <- Win_By_Staying + 1
   } else {
-    if (SwitchChoice == CarDoor) {
-       WinBySwitching <- WinBySwitching + 1
+    if (Switch_Choice == Car_Door) {
+       Win_By_Switching <- Win_By_Switching + 1
     }
   }
 }
 
 # Results
-c(WinByStaying, WinBySwitching) / NumSims
+c(Win_By_Staying, Win_By_Switching) / Num_Sims
 ```
 
 
@@ -3375,7 +3379,7 @@ Find $\Pr(A\cap B)$ if $\Pr(A) = 0.2$, $\Pr(B) = 0.4$, and $\Pr(A\mid B) + \Pr(B
 
 
 :::{.exercise #SolvePermk}
-Solve $12\times {}^7P_k = 7\times {}^6P_{k + 1}$ using:
+Solve $12\times P^7_k = 7\times P^6_{k + 1}$ using:
 
 1. algebra; and then
 2. using **R** to search over all possible values of $k$.
@@ -3384,7 +3388,7 @@ Solve $12\times {}^7P_k = 7\times {}^6P_{k + 1}$ using:
 
 
 :::{.exercise #SolvePermk2}
-Solve $^7 P_{r + 1} = 10 {^7 C _r}$ for $r$.
+Solve $P^7_{r + 1} = 10 {C^7_r}$ for $r$.
 :::
 
 
@@ -3452,11 +3456,11 @@ In some forms of poker, five cards are dealt to each player, and certain combina
 :::
 
 :::{.exercise}
-Prove that ${}^n P_n = {}^nP_{n-1}$.
+Prove that $P^n_n = P^n_{n-1}$.
 :::
 
 :::{.exercise #NoTechP}
-Without using any technology, compute the value of $\displaystyle \frac{{}^{25} C_8}{{}^{25} C_6}$.
+Without using any technology, compute the value of $\displaystyle \frac{C^{25}_8}{C^{25}_6}$.
 :::
 
 
