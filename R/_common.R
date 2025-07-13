@@ -6,6 +6,9 @@ library(plotrix)
 library(mnormt) # Multivariate normal
 library(countries) # Sets of countries
 library(shape)
+library("diagram")
+library("plotrix") # draw.circle()
+
 
 # example R options set globally
 options(width = 50)
@@ -13,6 +16,7 @@ options(width = 50)
 # example chunk options set globally
 knitr::opts_chunk$set(
   comment = "#>",
+  size = 'scriptsize',
   collapse = TRUE
   )
 
