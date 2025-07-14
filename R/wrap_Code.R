@@ -1,4 +1,4 @@
-wrap_code_lines <- function(code_string, max_line_length = 60, indent = "  ") {
+wrap_Code <- function(code_string, max_line_length = 60, indent = "  ") {
   # Pre-clean any leading or trailing whitespace and prompts
   code_string <- gsub("^\\s*>\\s*", "", code_string)
   code_string <- trimws(code_string)
