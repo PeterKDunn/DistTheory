@@ -22,53 +22,58 @@ This is the idea of *mathematical expectation*.
 In more usual terms, the mathematical expression of the probability distribution of a random variable is the *mean* of the random variable.
 Mathematical expectation goes far beyond just computing means, but we begin here as the idea of a *mean* is easily understood.
 
-The definition looks different in detail for discrete and continuous random variables, but the intention is the same.
+The definition looks different in detail for discrete, continuous and mixed random variables, but the intention is the same.
 
 
 :::{.definition #Expectation name="Expectation"}
-The *expectation* or *expected value* (or *mean*) of a random variable $X$ is defined as
+The *expectation* or *expected value* (or *mean*) of a random variable\ $X$ is written $\text{E}[X]$ (or $\mu$, or $\mu_X$ to distinguish between random variables).
 
-* $\displaystyle
+For a *discrete* random variable\ $X$ with pmf $p_X(x)$, the expected value is
+$$
    \text{E}(X) = 
-        \sum_{x\in R_X} x p_X(x)$
-  for a discrete random variable $X$ with pmf $p_X(x)$;
-
-* $\displaystyle
+        \sum_{x\in R_X} x p_X(x).
+$$
+For a *continuous* random variable\ $X$ with pdf $f_X(x)$, the expected value is
+$$
    \text{E}(X) = 
-        \int_{-\infty}^\infty x f_X(x)$
-  for a continuous random variable $X$ with pdf $f_X(x)$.
-
-Often we write $\mu = \text{E}(X)$, or $\mu_X$ to distinguish between random variables.
+        \int_{-\infty}^\infty x f_X(x).
+$$
+For a *mixed* random variable\ $X$ with pdf $f_X(x)$, the expected value is
+$$
+   \text{E}[X] = 
+     \sum_{x_i} x_i \, p_X(x_i) + \int_{-\infty}^\infty x \, f_X(x) \, dx,
+$$
+where $p_X(x)$ is the probability mass function (pmf) over discrete points\ $x_i$, and $f_X(x)$ is the probability density function (pdf) over the continuous part with pdf $f_X(x)$).
 :::
 
-
-Effectively $\text{E}(X)$ is a weighted average of the points in $R_X$, the weights being the probabilities in the discrete case and probability densities in the continuous case.
+Effectively $\text{E}(X)$ is a weighted average of the points in\ $R_X$, the weights being the probabilities in the discrete case and probability densities in the continuous case.
 
 
 :::{.example #ExpectationDiscrete name="Expectation for discrete variables"}
-Consider the discrete random variable $U$ with probability function
+Consider the discrete random variable\ $U$ with probability function
 $$
    p_U(u) = \begin{cases}
                (u^2 + 1)/5 & \text{for $u = -1, 0, 1$};\\
-               0 & \text{elsewhere}.
+               0 & \text{elsewhere},
            \end{cases}
 $$
-The expected value of $U$ is, by definition,  
+so that $R_U = \{-1, 0, 1\}$.
+The expected value of\ $U$ is, by definition,
 \begin{align*}
    \text{E}(U)
-   &= \sum_{u = -1, 0, 1} up_U(u) \\
-   &= \sum_{u = -1, 0, 1} u \times\left( \frac{u^2 + 1}{5} \right) \\
+   &= \sum_{R_U} up_U(u) \\
+   &= \sum_{R_U} u \times\left( \frac{u^2 + 1}{5} \right) \\
    &= \left( -1 \times \frac{(-1)^2 + 1}{5} \right ) +
        \left( 0 \times \frac{(0)^2  + 1}{5} \right ) +
        \left( 1 \times \frac{(1)^2  + 1}{5} \right ) \\
    &= -2/15 + 0 + 2/15 = 0.
 \end{align*}
-The expected value of $U$ is $0$.
+The expected value of\ $U$ is\ $\text{E}[U] = 0$.
 :::
 
 
 :::{.example #ExpectationContinuousX name="Expectation for continuous variables"}
-Consider a continuous random variable $X$ with pdf
+Consider a continuous random variable\ $X$ with pdf
 $$
    f_X(x) = \begin{cases}
                x/4 & \text{for $1 < x < 3$};\\
@@ -83,13 +88,38 @@ by definition,
     = \int_1^3 x(x/4)\, dx\\
    &= \left.\frac{1}{12} x^3\right|_1^3 = 13/6.
 \end{align*}
-The expected value of $X$ is $13/6$.
+The expected value of\ $X$ is $\text{E}[X] = 13/6$.
+:::
+
+
+
+
+:::{.example #ExpectationMixedX name="Expectation for mixed variables"}
+Consider a continuous random variable\ $W$ with probability function
+$$
+  f_W(w) = 
+  \begin{cases}
+     1/2       & \text{for $w = 0$};\\
+     \exp(-2w) & \text{for $w > 0$};\\
+     0         & \text{elsewhere},
+  \end{cases}
+$$
+so that $p_W(w) = 1/2$ for $w = 0$, and $f_W(w) = \exp(-2w)$ for $w > 0$.
+The expected value of\ $W$ is, by definition,  
+\begin{align*}
+   \text{E}(W)
+   &= \overbrace{\sum_{w = 0} w p_W(w)}^{\text{Discrete component}} \quad + \quad \overbrace{\int_{-\infty}^\infty w f_W(w)\, dw}^{\text{Continuous component}}\\
+   &= \sum_{w = 0} 0\times (1/2)\quad + \quad \int_{0}^\infty w \exp(-2w)\, dw\\
+   &= 0 \quad + \quad 1/4\\
+   &= 1/4.
+\end{align*}
+The expected value of\ $W$ is $\text{E}[W] = 1/4$.
 :::
 
 
 :::{.example #ExpectationCoinOnce name="Expectation for a coin toss"}
 Consider tossing a coin *once* and counting the number of tails.
-Let this random variable be $T$.
+Let this random variable be\ $T$.
 The probability function is
 $$
    p_T(t) = \begin{cases}
@@ -97,7 +127,7 @@ $$
                0   & \text{otherwise.}
             \end{cases}
 $$
-The expected value of $T$ is, by definition  
+The expected value of\ $T$ is
 \begin{align*}
    \text{E}(T) 
    &= \sum_{i = 1}^2 t p_T(t)\\
@@ -106,12 +136,12 @@ The expected value of $T$ is, by definition
 \end{align*}
 Of course, $0.5$ tails can never actually be observed in practice on one toss.
 But it would be silly to round up (or down) and say that the expected number of tails on one toss of a coin is one (or zero).
-The expected value of $0.5$ simply means that over a large number of repeats of this random process, we expect a tail to occur in half of those repeats.
+The expected value of $0.5$ simply means that over a large number of repetitions of this random process, a tail is *expected* to occur in half of those repetitions.
 :::
 
 
 :::{.example #InfiniteMean name="Mean not defined"}
-Consider the distribution of $Z$, with the probability density function
+Consider the distribution of\ $Z$, with the probability density function
 $$
    f_Z(z) = 
    \begin{cases}
@@ -130,7 +160,7 @@ The expected value of $\text{E}[Z]$ is undefined.
 
 
 
-```{r NoMean, echo=FALSE, fig.width=7,fig.align="center", fig.cap="The probability function for the random variable $Z$. The mean is not defined.", fig.height = 3.25, fig.width=4}
+```{r NoMean, echo=FALSE, fig.width=7,fig.align="center", fig.cap="The probability function for the random variable $Z$. The mean is not defined.", fig.height = 3.25, fig.width=4, out.width='60%'}
 z <- seq(1, 6, 
          length = 100)
 plot(x = z,
