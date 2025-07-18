@@ -905,12 +905,57 @@ However, counting the number of outcomes can also be achieved by listing the pos
 
 
 ::: {.example #TwoDice name="Rolling two dice"}
-Consider rolling two standard dice and noting the *sum* of the numbers shown.
-The sample space is listed in Table\ \@ref(tab:TwoDice).
-Then, for example, $\Pr(\text{sum is 7}) = 6/36$ is found by counting the equally-likely outcomes that sum to seven.
+Consider rolling two standard dice; the sample space is shown in Table\ \@ref(tab:TwoDice), and has $6\times 6 = 36$ elements.
+Then, for example, $\Pr(\text{sum is 5}) = 4/36$ is found by counting the equally-likely outcomes that sum to seven (Table\ \@ref(tab:TwoDiceSum)).
 :::
 
+
+
 ```{r TwoDice, echo=FALSE}
+Die1 <- 1:6
+Die2 <- 1:6
+
+DieSS <- outer(Die1, Die2,
+               FUN = function(x, y){paste0("(", 
+                                           x, 
+                                           ", ", 
+                                           y, 
+                                           ")")})
+rownames(DieSS) <- paste("Die 1:", 1:6)
+colnames(DieSS) <- paste("Die 2:", 1:6)
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(DieSS,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               linesep = c("", "", "\\addlinespace"),
+               escape = FALSE,
+               caption = "The sample space for rolling two dice.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(DieSS,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "The sample space for rolling two dice.") %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE)
+}
+```
+
+
+
+
+
+```{r TwoDiceSum, echo=FALSE}
 Die1 <- 1:6
 Die2 <- 1:6
 
