@@ -236,333 +236,8 @@ $$
 
 
 
-## Measures of location {#FeaturesLocation}
 
-Having introduced the idea of mathematical expectation, other descriptions of a random variable can now be introduced.
-
-Two general features of a distribution are the location or centre, and the variability.
-We have already met the mean (or expected value) as one measure of location.
-
-
-### The mean {#Mean}
-
-The most important measure of location is the mean $\mu = \text{E}(X)$, which has already been defined (Sect.\ \@ref(def:Expectation)).
-The mean is the *balance point* of the distribution: the expected mean deviation of the random variable from $\mu$ is zero.
-In other words, $\text{E}(X - \mu) = 0$.
-
-While the mean is commonly used, it is not always a suitable measure of centre: the balance point can be unduly affected by outliers and extreme skewness.
-We have also seen a situation where the mean is undefined (Example\ \@ref(exm:InfiniteMean)).
-
-
-### The mode and median {#ModeMedian}
-
-Other measures of centre sometimes may be more appropriate.
-The mode and median are two common alternatives.
-The mean, when it is defined, is more useful in theoretical work due to nicer mathematical properties,
-
-
-:::{.definition #Mode name="Mode"}
-The *mode(s)* is a value(s) $x\in R_X$ such that:
-
-* $p_X(x)$ attains its maximum (for the discrete case); or 
-* the value(s) of $x$ at which $f_X(x)$ attains its maximum (for the continuous case).
-:::
-
-
-The mode is not necessarily unique.
-
-
-:::{.definition #Median name="Median"}
-The *median* of a random variable $X$ (or of a distribution) is a number $\nu$ such that  
-\begin{equation}
-   \Pr(X\leq \nu )\geq \frac{1}{2}\text{ and }\Pr(X \geq \nu )\geq \frac{1}{2}.
-\end{equation}
-:::
-
-For $X$ discrete, the median is not necessarily unique.
-
-
-:::{.example #ModeDiscrete name="Mode and median for discrete distributions"}
-If $X$ is a discrete random variable with probability function defined in Table\ \@ref(tab:ProbDeg1r) (and shown in Fig.\ \@ref(fig:DiscreteMedian)), the distribution is bimodal (i.e., has two modes), with modes at $x = 3$ and $x = 4$.
-
-The median, say $\nu$, is any value of $X$ in the range $3 < x < 4$, since *any* number in this range satisfies $\Pr(X \le x) = 0.5$ and $\Pr(X \ge x) = 0.5$. 
-The median is not unique.
-:::
-
-```{r ProbDeg1r, echo=FALSE}
-eg1Table <- array( dim = c(2, 8))
-
-eg1Table[1, ] <- 0:7
-eg1Table[2, ] <- c("$\\frac{1}{128}$", "$\\frac{7}{128}$", "$\\frac{21}{128}$", "$\\frac{35}{128}$", "$\\frac{35}{128}$", "$\\frac{21}{128}$", "$\\frac{7}{128}$", "$\\frac{1}{128}$")
-
-rownames(eg1Table) <- c("$x$",
-                        "$\\Pr(X = x)$")
-
-
-if( knitr::is_latex_output() ) {
-  knitr::kable(eg1Table,
-               format = "latex",
-               booktabs = TRUE,
-               align = "c",
-               longtable = FALSE,                
-               escape = FALSE,
-               caption = "A probability distribution") %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) 
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(eg1Table,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "c",
-               longtable = FALSE,                
-               caption = "A probability distribution") %>%
-    row_spec(1, bold = TRUE) 
-}
-
-```
-
-
-```{r DiscreteMedian, echo=FALSE, fig.cap="Finding the median, when it is not unique", fig.align="center", fig.height = 8,out.width='70%'}
-par( mfrow = c(2, 1))
-
-x <- 0:7
-fx <- c(1, 7, 21, 35, 35, 21, 7, 1) / 128
-
-plot(x = x,
-     y = fx,
-     las = 1,
-     lty = 3,
-     ylim = c(0, 0.30 ),
-     type = "h",
-     col = "grey",
-     sub = "Each half contains a probability of 0.5",
-     xlab = expression( italic(X) ),
-     ylab = expression(
-       paste(italic(p)[italic(X)](italic(x)))
-     ),
-     main = "Probability mass function")
-polygon( x = c(-10, -10, 3.5, 3.5),
-         y = c(0, 1, 1, 0),
-         col = plotColour)
-         #col = gray(0.9) )
-
-polygon( x = c(3.5, 3.5,10, 10),
-         y = c(0, 1, 1, 0),
-         col = gray(0.95) )
-
-points( x = x,
-        y = fx,
-        pch = 19)
-points(x = x,
-     y = fx,
-     type = "h",
-     lty = 3,
-     col = grey(0.2))
-box()
-
-
-plot( x = x,
-      y = cumsum(fx),
-      las = 1,
-      axes = FALSE,
-      xlim = c(-2, 9),
-      xlab = expression( italic(X) ),
-      ylab = expression(
-       paste(italic(F)[italic(X)](italic(x)))
-      ),
-      main = "Distribution function",
-      sub = "Any number between 3 and 4 has a cumulative probability of 0.5",
-      type = "n")
-polygon( x = c(3, 3, 4, 4),
-         y = c(0, 0.5, 0.5, 0),
-      col = plotColour)
-#         col = gray(0.9))
-abline( h = c(0, 1),
-        col = "grey")
-axis(side = 1,
-     at = c(-2, 0, 2, 3, 4, 6, 8))
-axis(side = 2,
-     at = c(0, 0.2, 0.5, 0.8, 1),
-     las = 1)
-box()
-points( x = x,
-        y = cumsum(fx),
-        pch = 19)
-points( x = x[2: length(x)],
-        y = cumsum(fx)[1:(length(x) - 1)],
-        pch = 1)
-
-for (i in (1 : (length(x) - 1)) ){
-   lines( x = x[i:(i + 1)],
-          y = c(cumsum(fx)[i],
-                cumsum(fx)[i]),
-          lwd = 2)
-}
-
-# Now add edge cases
-lines( x = c(-1, 0),
-       y = c(0, 0),
-      lwd = 2)
-lines(x = c(-2, -1),
-      y = c(0, 0),
-      lty = 2,
-      lwd = 2)
-points(0, 0, 
-       pch = 1)
-lines(x = c(7, 8),
-      y = c(1, 1),
-      lwd = 2)
-lines(x = c(8, 9),
-      y = c(1, 1),
-      lty = 2,
-      lwd = 2)
-
-lines( x = c(-10, 3),
-       y = c(0.5, 0.5),
-       lty = 3)
-```
-
-
-:::{.example #ExpectationDiscrete2 name="Expectation for discrete variables"}
-Let $X$ be a discrete random variable with the probability function shown in Table\ \@ref(tab:ProbDeg2r) (and Fig.\ \@ref(fig:DiscreteMedian2)).
-The *mode* of this distribution is at $x = 3$.
-The *median* is $\nu = 3$ since this is the only value of $X$ that will satisfy Def.\ \@ref(def:Median).
-:::
-
-
-
-```{r ProbDeg2r, echo=FALSE}
-eg2Table <- array( dim = c(2, 7))
-
-eg2Table[1, ] <- 0:6
-eg2Table[2, ] <- c("$\\frac{1}{64}$", "$\\frac{6}{64}$", "$\\frac{15}{64}$", "$\\frac{20}{64}$", "$\\frac{15}{64}$", "$\\frac{6}{64}$", "$\\frac{1}{64}$")
-
-rownames(eg2Table) <- c("$x$",
-                        "$\\Pr(X = x)$")
-eg2Table.caption <- "A probability distribution"
-
-
-if( knitr::is_latex_output() ) {
-  knitr::kable(eg2Table,
-               format = "latex",
-               booktabs = TRUE,
-               align = "c",
-               longtable = FALSE,                
-               escape = FALSE,
-               caption = eg2Table.caption ) %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) 
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(eg2Table,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "c",
-               longtable = FALSE,                
-               caption = eg2Table.caption) %>%
-    row_spec(1, bold = TRUE) 
-}
-```
-
-```{r DiscreteMedian2, echo=FALSE, fig.align="center", fig.cap="The probability function and distribution function for $H$", fig.height = 8, out.width='70%'}
-par( mfrow = c(2, 1))
-
-x <- 0:6
-fx <- c(1, 6, 15, 20, 15, 6, 1) / 64
-
-plot(x = x,
-     y = fx,
-     las = 1,
-     xlim = c(-2, 8),
-     type = "h",
-     col = "grey",
-     xlab = expression(italic(X)),
-     ylab = expression(
-       paste(italic(p)[italic(X)](italic(x)))
-       ),
-     main = "Probability mass function")
-points( x = x,
-        y = fx,
-        pch = 19)
-
-
-
-
-plot( x = x,
-      y = cumsum(fx),
-      las = 1,
-      xlim = c(-2, 8),
-      axes = FALSE,
-      xlab = expression(italic(X)),
-      ylab = expression(
-       paste(italic(F)[italic(X)](italic(x)))
-       ),
-      main = "Distribution function",
-      type = "n")
-axis(side = 1,
-     at = c(-2, 0, 2, 3, 4, 6, 8))
-axis(side = 2,
-     at = c(0, 0.2, 0.5, 0.8, 1),
-     las = 1)
-box()
-#polygon( x = c(2.75, 2.75, 3.25, 3.25),
-#         y = c(22/64, 42/64, 42/64, 22/64),
-#         col = grey(0.9),
-#         border = NA) # Omits borders
-lines( x = c(-10, 3),
-       y = c(0.5, 0.5),
-       lty = 3)
-lines( x = c(3, 3),
-       y = c(42/64, 0),
-       lty = 3)
-
-abline( h = c(0, 1),
-        col = "grey")
-points( x = x,
-        y = cumsum(fx),
-        pch = 19)
-points( x = x[2: length(x)],
-        y = cumsum(fx)[1:(length(x) - 1)],
-        pch = 1)
-
-for (i in (1 : (length(x) - 1)) ){
-   lines( x = x[i:(i + 1)],
-          y = c(cumsum(fx)[i],
-                cumsum(fx)[i]),
-          lwd = 2)
-}
-
-# Now add edge cases
-lines( x = c(-1, 0),
-       y = c(0, 0),
-       lwd = 2)
-lines(x = c(-2, -1),
-      y = c(0, 0),
-      lty = 2,
-      lwd = 2)
-points(0, 0, 
-       pch = 1)
-lines(x = c(6, 7),
-      y = c(1, 1),
-      lwd = 2)
-lines(x = c(7, 8),
-      y = c(1, 1),
-      lty = 2,
-      lwd = 2)
-
-```
-
-
-## Measures of variability  {#Dispersion}
-
-Apart from the mean, the most important description of a random variable is the *variability*: quantifying how the values of the random variable are dispersed.
-The most important measure of variability is the *variance*.
-
-
-### The variance and standard deviation {#VarianceStdDev}
+## The variance and standard deviation {#VarianceStdDev}
 
 The *variance* can be expressed as a function of a random variable.
 (More correctly, we should say "the variance of the *distribution* of the random variable", but our language is very common.)
@@ -731,40 +406,6 @@ Then:
 :::
 
 
-### The mean absolute deviation {#Variance}
-
-We have already seen variance and standard deviation are suitable measures of dispersion.
-Another alternative is the following.
-
-
-:::{.definition #MAD name="Mean absolute deviation"}
-The *mean absolute deviation* (MAD) is defined as:
-
-* $\displaystyle 
-   \text{E}(|X - \mu|) 
-      = \sum_x |x - \mu| p_X(x)$ for a discrete random variable $X$;
-* $\displaystyle 
-    \text{E}(|X - \mu|) 
-      = 
-         \int_{-\infty}^\infty |x - \mu| f_X(x)\,dx$ for a continuous random variable $X$.
-:::
-
-
-
-:::{.example #MADDie name="MAD of die toss"}
-Consider the fair die described in Example\ \@ref(exm:VarianceDice).
-Then $\mu = \text{E}(X) = 7/2$ and thus the MAD of $X$ is  
-\begin{align*}
-   \text{E}(|X - \mu|) 
-   &= \sum |x - \mu| \Pr(X = x)\\
-   &= \frac{1}{6}\left[ \left|1 - \frac{7}{2}\right| +\left|2 - \frac{7}{2}\right| + \dots + \left|6 - \frac{7}{2}\right|\right]\\
-   &= 1.5.
-\end{align*}
-:::
-
-
-Like the median, the MAD is difficult to use in theoretical work (due to the absolute value).
-The most-used measure of dispersion is the variance (or standard deviation).
 
 
 
@@ -974,6 +615,144 @@ This leads to the idea of a *moment-generating function*.
 
 
 ## Moment-generating functions {#MGF}
+
+
+### Introduction {#MGFIntroduction}
+
+Suppose I asked you to draw the probability density function of a random variable\ $X$, with $\text{E}[X] = 2$.
+Any of the six distributions in Fig.\ \@ref(fig:FiveDistributions) meet this criterion (based on the first moment), so this information is not sufficient to uniquely define a distribution.
+
+So, suppose add a extra criterion: in addition, we require $\text{var}[X] = 1$.
+Any of the first five distributions in Fig.\ \@ref(fig:FiveDistributions) meet these two criteria (based on the first two moments), so again this information is not sufficient to uniquely define a distribution.
+
+Suppose a third criterion is added: the distribution must be symmetric.
+Any of the first four distributions in Fig.\ \@ref(fig:FiveDistributions) meet these three criteria (based on the first three moments); again, this information is not sufficient to uniquely define a distribution.
+
+In general, *all* the moments of a distribution are needed to uniquely define a distribution.
+All the moments of a distribution can be succinctly captured in a *moment generating function* (or MGF).
+
+
+```{r FiveDistributions, echo=FALSE, fig.height=8, fig.width=5, out.width='80%', fig.align="center", fig.cap="Six distributions, all with mean 1 and variance 1. The first four distributions are all symmetric."}
+par(mfrow = c(3, 2))
+
+# x-values
+x <- seq(-1, 5, length.out = 1000)
+
+# D1: Normal(2, 1)
+d1 <- dnorm(x, mean = 2, sd = 1)
+
+# D2: Triangular(1, 2, 3)
+dtri <- function(x, a = 1, b = 2, c = 3) {
+  ifelse(x < a | x > c, 0,
+         ifelse(x <= b,
+                2*(x - a)/((b - a)*(c - a)),
+                2*(c - x)/((c - b)*(c - a))))
+}
+d2 <- dtri(x)
+
+# D3: Symmetric trapezoid: flat top from 1.5 to 2.5
+dtrap <- function(x) {
+  h <- 2/3  # Height for total area = 1
+  ifelse(x < 1 | x > 3, 0,
+         ifelse(x < 1.5, (x - 1) * h / 0.5,
+                ifelse(x <= 2.5, h,
+                       (3 - x) * h / 0.5)))
+}
+d3 <- dtrap(x)
+
+# D4: Shifted exponential: Exp(1)+1
+d4 <- ifelse(x < 1, 0, dexp(x - 1, rate = 1))
+
+# D5: Uniform(1,3)
+d5 <- dunif(x, min = 1, max = 3)
+
+# D6: "Semi-Elliptic Distribution
+d6 <- ifelse(x >= 1 & x <= 3, (3/4)*(1 - (x - 2)^2), 0)
+
+
+
+# Parameters
+a <- sqrt(28)
+b <- 2 - 0.5 * a
+y <- seq(b, b + a, length.out = 1000)
+
+# Inverse transform to get corresponding x in [0, 1]
+x_beta <- (y - b) / a
+
+# Beta(3,3) density scaled
+d7 <- dbeta(x_beta, shape1 = 3, shape2 = 3) / a  # Adjust height due to scaling
+
+# Parameters
+a <- sqrt(24)
+b <- 2 - 0.5 * a
+y <- seq(b + 1e-6, b + a - 1e-6, length.out = 1000)  # avoid infinity at edges
+x_beta <- (y - b) / a
+d8 <- dbeta(x_beta, 0.5, 0.5) / a
+
+
+
+# Plot setup
+plot(x, d1, type = "l", col = "blue", lwd = 2,
+     xlab = "x", 
+     ylab = "Density",
+     axes = FALSE,
+     main = "Normal distribution\n(mean = 2, var = 1)")
+axis(side = 1)
+box()
+
+plot(x, d2, type = "l", col = "red", lwd = 2,
+     xlab = "x", 
+     ylab = "Density",
+     axes = FALSE,
+     main = "Triangular distribution\n(mean = 2, var = 1)")
+axis(side = 1)
+box()
+
+plot(x, d3, type = "l", col = "forestgreen", lwd = 2,
+     xlab = "x", 
+     ylab = "Density",
+     axes = FALSE,
+     main = "Trapezoid distribution\n(mean = 2, var = 1)")
+axis(side = 1)
+box()
+
+plot(y, d8, type = "l", lwd = 2, col = "darkred",
+     ylim = c(0, 2),
+     axes = FALSE,
+     main = "Transformed beta distribution:\n(mean = 2, var = 1)",
+     xlab = "x", 
+     ylab = "Density")
+axis(side = 1)
+box()
+
+plot(x, d4, type = "l", col = "purple", lwd = 2,
+     xlab = "x", 
+     ylab = "Density",
+     axes = FALSE,
+     main = "Shifted exponential distribution\n(mean = 2, var = 1)")
+axis(side = 1)
+box()
+
+plot(x, d5, type = "l", col = "orange", lwd = 2,
+     xlab = "x", 
+     ylab = "Density",
+     axes = FALSE,
+     main = "Uniform distribution\n(mean = 2, var = 1/3)")
+axis(side = 1)
+box()
+
+
+
+#plot(x, d6, type = "l", lwd = 2, col = "darkgreen",
+#   main = "NEW: Semi-Elliptic Distribution\n(Mean = 2, Var = 1)",
+#    xlab = "x", ylab = "Density")
+
+# Plot
+#plot(y, d7, type = "l", lwd = 2, col = "brown",
+#     main = "Transformed Beta(3,3): Mean = 2, Var = 1",
+#     xlab = "x", ylab = "Density")
+
+```
 
 ### Definition {#MGFDefinition}
 
@@ -1346,6 +1125,372 @@ Putting $\sqrt{c} = k\sigma$, Eq.\ \@ref(eq:Tchebysheff) is obtained.
 With the probability function or pdf of a random variable $X$, then $\text{E}(X)$ and $\text{var}(X)$ can be found, but the converse is not true. 
 That is, from a knowledge of $\text{E}(X)$ and $\text{var}(X)$ we cannot reconstruct the probability distribution of $X$ and hence cannot compute probabilities such as $\Pr(|X - \mu| \geq k\sigma)$.
 Nonetheless, using Tchebysheff's inequality we can find a useful *bound* to either the probability outside or inside of $\mu \pm k\sigma$.
+
+
+
+## Other measures of location {#FeaturesLocation}
+
+Having introduced the idea of mathematical expectation, other descriptions of a random variable can now be introduced.
+
+Two general features of a distribution are the location or centre, and the variability.
+We have already met the mean (or expected value) as one measure of location.
+
+
+### The mean {#Mean}
+
+The most important measure of location is the mean $\mu = \text{E}(X)$, which has already been defined (Sect.\ \@ref(def:Expectation)).
+The mean is the *balance point* of the distribution: the expected mean deviation of the random variable from $\mu$ is zero.
+In other words, $\text{E}(X - \mu) = 0$.
+
+While the mean is commonly used, it is not always a suitable measure of centre: the balance point can be unduly affected by outliers and extreme skewness.
+We have also seen a situation where the mean is undefined (Example\ \@ref(exm:InfiniteMean)).
+
+
+### The mode and median {#ModeMedian}
+
+Other measures of centre sometimes may be more appropriate.
+The mode and median are two common alternatives.
+The mean, when it is defined, is more useful in theoretical work due to nicer mathematical properties,
+
+
+:::{.definition #Mode name="Mode"}
+The *mode(s)* is a value(s) $x\in R_X$ such that:
+
+* $p_X(x)$ attains its maximum (for the discrete case); or 
+* the value(s) of $x$ at which $f_X(x)$ attains its maximum (for the continuous case).
+:::
+
+
+The mode is not necessarily unique.
+
+
+:::{.definition #Median name="Median"}
+The *median* of a random variable $X$ (or of a distribution) is a number $\nu$ such that  
+\begin{equation}
+   \Pr(X\leq \nu )\geq \frac{1}{2}\text{ and }\Pr(X \geq \nu )\geq \frac{1}{2}.
+\end{equation}
+:::
+
+For $X$ discrete, the median is not necessarily unique.
+
+
+:::{.example #ModeDiscrete name="Mode and median for discrete distributions"}
+If $X$ is a discrete random variable with probability function defined in Table\ \@ref(tab:ProbDeg1r) (and shown in Fig.\ \@ref(fig:DiscreteMedian)), the distribution is bimodal (i.e., has two modes), with modes at $x = 3$ and $x = 4$.
+
+The median, say $\nu$, is any value of $X$ in the range $3 < x < 4$, since *any* number in this range satisfies $\Pr(X \le x) = 0.5$ and $\Pr(X \ge x) = 0.5$. 
+The median is not unique.
+:::
+
+```{r ProbDeg1r, echo=FALSE}
+eg1Table <- array( dim = c(2, 8))
+
+eg1Table[1, ] <- 0:7
+eg1Table[2, ] <- c("$\\frac{1}{128}$", "$\\frac{7}{128}$", "$\\frac{21}{128}$", "$\\frac{35}{128}$", "$\\frac{35}{128}$", "$\\frac{21}{128}$", "$\\frac{7}{128}$", "$\\frac{1}{128}$")
+
+rownames(eg1Table) <- c("$x$",
+                        "$\\Pr(X = x)$")
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(eg1Table,
+               format = "latex",
+               booktabs = TRUE,
+               align = "c",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "A probability distribution") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(eg1Table,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "c",
+               longtable = FALSE,                
+               caption = "A probability distribution") %>%
+    row_spec(1, bold = TRUE) 
+}
+
+```
+
+
+```{r DiscreteMedian, echo=FALSE, fig.cap="Finding the median, when it is not unique", fig.align="center", fig.height = 8,out.width='70%'}
+par( mfrow = c(2, 1))
+
+x <- 0:7
+fx <- c(1, 7, 21, 35, 35, 21, 7, 1) / 128
+
+plot(x = x,
+     y = fx,
+     las = 1,
+     lty = 3,
+     ylim = c(0, 0.30 ),
+     type = "h",
+     col = "grey",
+     sub = "Each half contains a probability of 0.5",
+     xlab = expression( italic(X) ),
+     ylab = expression(
+       paste(italic(p)[italic(X)](italic(x)))
+     ),
+     main = "Probability mass function")
+polygon( x = c(-10, -10, 3.5, 3.5),
+         y = c(0, 1, 1, 0),
+         col = plotColour)
+         #col = gray(0.9) )
+
+polygon( x = c(3.5, 3.5,10, 10),
+         y = c(0, 1, 1, 0),
+         col = gray(0.95) )
+
+points( x = x,
+        y = fx,
+        pch = 19)
+points(x = x,
+     y = fx,
+     type = "h",
+     lty = 3,
+     col = grey(0.2))
+box()
+
+
+plot( x = x,
+      y = cumsum(fx),
+      las = 1,
+      axes = FALSE,
+      xlim = c(-2, 9),
+      xlab = expression( italic(X) ),
+      ylab = expression(
+       paste(italic(F)[italic(X)](italic(x)))
+      ),
+      main = "Distribution function",
+      sub = "Any number between 3 and 4 has a cumulative probability of 0.5",
+      type = "n")
+polygon( x = c(3, 3, 4, 4),
+         y = c(0, 0.5, 0.5, 0),
+      col = plotColour)
+#         col = gray(0.9))
+abline( h = c(0, 1),
+        col = "grey")
+axis(side = 1,
+     at = c(-2, 0, 2, 3, 4, 6, 8))
+axis(side = 2,
+     at = c(0, 0.2, 0.5, 0.8, 1),
+     las = 1)
+box()
+points( x = x,
+        y = cumsum(fx),
+        pch = 19)
+points( x = x[2: length(x)],
+        y = cumsum(fx)[1:(length(x) - 1)],
+        pch = 1)
+
+for (i in (1 : (length(x) - 1)) ){
+   lines( x = x[i:(i + 1)],
+          y = c(cumsum(fx)[i],
+                cumsum(fx)[i]),
+          lwd = 2)
+}
+
+# Now add edge cases
+lines( x = c(-1, 0),
+       y = c(0, 0),
+      lwd = 2)
+lines(x = c(-2, -1),
+      y = c(0, 0),
+      lty = 2,
+      lwd = 2)
+points(0, 0, 
+       pch = 1)
+lines(x = c(7, 8),
+      y = c(1, 1),
+      lwd = 2)
+lines(x = c(8, 9),
+      y = c(1, 1),
+      lty = 2,
+      lwd = 2)
+
+lines( x = c(-10, 3),
+       y = c(0.5, 0.5),
+       lty = 3)
+```
+
+
+:::{.example #ExpectationDiscrete2 name="Expectation for discrete variables"}
+Let $X$ be a discrete random variable with the probability function shown in Table\ \@ref(tab:ProbDeg2r) (and Fig.\ \@ref(fig:DiscreteMedian2)).
+The *mode* of this distribution is at $x = 3$.
+The *median* is $\nu = 3$ since this is the only value of $X$ that will satisfy Def.\ \@ref(def:Median).
+:::
+
+
+
+```{r ProbDeg2r, echo=FALSE}
+eg2Table <- array( dim = c(2, 7))
+
+eg2Table[1, ] <- 0:6
+eg2Table[2, ] <- c("$\\frac{1}{64}$", "$\\frac{6}{64}$", "$\\frac{15}{64}$", "$\\frac{20}{64}$", "$\\frac{15}{64}$", "$\\frac{6}{64}$", "$\\frac{1}{64}$")
+
+rownames(eg2Table) <- c("$x$",
+                        "$\\Pr(X = x)$")
+eg2Table.caption <- "A probability distribution"
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(eg2Table,
+               format = "latex",
+               booktabs = TRUE,
+               align = "c",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = eg2Table.caption ) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(eg2Table,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "c",
+               longtable = FALSE,                
+               caption = eg2Table.caption) %>%
+    row_spec(1, bold = TRUE) 
+}
+```
+
+```{r DiscreteMedian2, echo=FALSE, fig.align="center", fig.cap="The probability function and distribution function for $H$", fig.height = 8, out.width='70%'}
+par( mfrow = c(2, 1))
+
+x <- 0:6
+fx <- c(1, 6, 15, 20, 15, 6, 1) / 64
+
+plot(x = x,
+     y = fx,
+     las = 1,
+     xlim = c(-2, 8),
+     type = "h",
+     col = "grey",
+     xlab = expression(italic(X)),
+     ylab = expression(
+       paste(italic(p)[italic(X)](italic(x)))
+       ),
+     main = "Probability mass function")
+points( x = x,
+        y = fx,
+        pch = 19)
+
+
+
+
+plot( x = x,
+      y = cumsum(fx),
+      las = 1,
+      xlim = c(-2, 8),
+      axes = FALSE,
+      xlab = expression(italic(X)),
+      ylab = expression(
+       paste(italic(F)[italic(X)](italic(x)))
+       ),
+      main = "Distribution function",
+      type = "n")
+axis(side = 1,
+     at = c(-2, 0, 2, 3, 4, 6, 8))
+axis(side = 2,
+     at = c(0, 0.2, 0.5, 0.8, 1),
+     las = 1)
+box()
+#polygon( x = c(2.75, 2.75, 3.25, 3.25),
+#         y = c(22/64, 42/64, 42/64, 22/64),
+#         col = grey(0.9),
+#         border = NA) # Omits borders
+lines( x = c(-10, 3),
+       y = c(0.5, 0.5),
+       lty = 3)
+lines( x = c(3, 3),
+       y = c(42/64, 0),
+       lty = 3)
+
+abline( h = c(0, 1),
+        col = "grey")
+points( x = x,
+        y = cumsum(fx),
+        pch = 19)
+points( x = x[2: length(x)],
+        y = cumsum(fx)[1:(length(x) - 1)],
+        pch = 1)
+
+for (i in (1 : (length(x) - 1)) ){
+   lines( x = x[i:(i + 1)],
+          y = c(cumsum(fx)[i],
+                cumsum(fx)[i]),
+          lwd = 2)
+}
+
+# Now add edge cases
+lines( x = c(-1, 0),
+       y = c(0, 0),
+       lwd = 2)
+lines(x = c(-2, -1),
+      y = c(0, 0),
+      lty = 2,
+      lwd = 2)
+points(0, 0, 
+       pch = 1)
+lines(x = c(6, 7),
+      y = c(1, 1),
+      lwd = 2)
+lines(x = c(7, 8),
+      y = c(1, 1),
+      lty = 2,
+      lwd = 2)
+
+```
+
+
+## Other measures of variability  {#Dispersion}
+
+Apart from the mean, the most important description of a random variable is the *variability*: quantifying how the values of the random variable are dispersed.
+The most important measure of variability is the *variance*.
+
+
+### The mean absolute deviation {#Variance}
+
+We have already seen variance and standard deviation are suitable measures of dispersion.
+Another alternative is the following.
+
+
+:::{.definition #MAD name="Mean absolute deviation"}
+The *mean absolute deviation* (MAD) is defined as:
+
+* $\displaystyle 
+   \text{E}(|X - \mu|) 
+      = \sum_x |x - \mu| p_X(x)$ for a discrete random variable $X$;
+* $\displaystyle 
+    \text{E}(|X - \mu|) 
+      = 
+         \int_{-\infty}^\infty |x - \mu| f_X(x)\,dx$ for a continuous random variable $X$.
+:::
+
+
+
+:::{.example #MADDie name="MAD of die toss"}
+Consider the fair die described in Example\ \@ref(exm:VarianceDice).
+Then $\mu = \text{E}(X) = 7/2$ and thus the MAD of $X$ is  
+\begin{align*}
+   \text{E}(|X - \mu|) 
+   &= \sum |x - \mu| \Pr(X = x)\\
+   &= \frac{1}{6}\left[ \left|1 - \frac{7}{2}\right| +\left|2 - \frac{7}{2}\right| + \dots + \left|6 - \frac{7}{2}\right|\right]\\
+   &= 1.5.
+\end{align*}
+:::
+
+
+Like the median, the MAD is difficult to use in theoretical work (due to the absolute value).
+The most-used measure of dispersion is the variance (or standard deviation).
+
+
+
 
 
 
