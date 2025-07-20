@@ -35,4 +35,7 @@ plotColour1 <- rgb(red = 129/256,
                    alpha = 1, 
                    maxColorValue = 1)
 
+### 
+source("R/triangular.R")
+source("R/kurtosis.R")
 
