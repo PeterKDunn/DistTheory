@@ -463,17 +463,20 @@ Then:
 
 ## Higher moments {#HigherMoments}
 
+### Raw and central moments {#RawCentralMoments}
+
 The ideas of a mean and a variance can be generalised.
-The mean is a special case of 'moment about the origin', and the variance is a special case of a 'central moment'.
+The mean is a special case of a 'raw moment', and the variance is a special case of a 'central moment'.
+
 
 :::{.definition #RawMoments name="Raw moments"}
 The *$r$th moment about the origin*, or *$r$th raw moment*, of a random variable\ $X$ (where\ $r$ is a positive integer) is denoted\ $\mu'_r$ and defined as $\mu'_r = \text{E}[X^r]$.
 
-For a discrete random variable\ $X$, the $r$th moment about the origin is
+For a discrete random variable\ $X$, the $r$th\ moment about the origin is
 $$
   \mu'_r = \text{E}[X^r] = \sum_X x^r p_X(x).
 $$
-For a continuous random variable\ $X$, the $r$th moment about the origin is
+For a continuous random variable\ $X$, the $r$th\ moment about the origin is
 $$
    \mu'_r = \text{E}[X^r] =  \int_{-\infty}^\infty x^r f_X(x)
 $$
@@ -481,7 +484,7 @@ $$
 
 
 :::{.definition #CentralMoments name="Central moments"}
-The *$r$th central moment*, or *$r$th moment about the mean* (where $r$ is a positive integer), is denoted\ $\mu_r$ and defined as $\mu_r = \text{E}[(X - \mu)^r]$.
+The *$r$th central moment*, or *$r$th moment about the mean* (where\ $r$ is a positive integer), is denoted\ $\mu_r$ and defined as $\mu_r = \text{E}[(X - \mu)^r]$.
 
 For a discrete random variable\ $X$, the $r$th central moment is
 $$
@@ -500,25 +503,40 @@ From these definitions:
 * $\mu'_2 = \text{E}(X^2)$ is the *second raw moment*; and
 * the variance $\mu_2 = \sigma^2$ is the *second central moment*.
 
+
+
+### Skewness {#Skewness}
+
+\index{Skewness|(}
 Higher moments also exist that describe other features of a random variable.
 One important higher moment is related to skewness.
 
 
 :::{.definition #Skewness name="Skewness"}
-The *skewness* of a distribution is defined as  
+The *skewness* of a distribution is defined as\index{Skewness!definition}\index{Skewness}
+$$
+  \text{skewness} = \operatorname{E}\left[\left(\frac{X-\mu}{\sigma}\right)^3\right].
+$$
+In terms of central moments,
 \begin{equation}
-     \gamma_1 = \frac{\mu_3}{\mu_2^{3/2}}.
+     \text{skewness} = \gamma_1 = \frac{\mu_3}{\mu_2^{3/2}}.
      (\#eq:Skewness)
 \end{equation}
 :::
 
 
-If $\gamma_1 > 0$ we say the distribution is positively (or right) skewed, and it is 'stretched' in the positive (negative) direction.
-Similarly, if $\gamma_1 < 0$ we say the distribution is negatively (or left) skewed.
+Rather than using central moments themselves, using expressions unaffected by a linear transformation of the type $Y = aX + b$ (for constants\ $a$ and\ $b$) are convenient for assessing skewness.
+The ratio $(\mu_r)^p / (\mu_p)^r$ is such an expression, and the simplest form is a function of $\mu^2_3/\mu_2^3$, as used in the definition of\ $\gamma_1$.
+
+For a symmetric distribution, the odd central moments are zero (Exercise\ \@ref(exr:SkewDiscreteCentralMomentsZero)).
+This suggests that the odd central moments can be used to measure the *asymmetry* of a distribution (as in Def.\ \@ref(def:Skewness)).
+
+If $\gamma_1 > 0$ we say the distribution is positively (or right) skewed,\index{Skewness!positive} and it is 'stretched' in the positive (negative) direction.
+Similarly, if $\gamma_1 < 0$ we say the distribution is negatively (or left) skewed.\index{Skewness!negative}
 
 
 :::{.definition #Symmetry name="Symmetry"}
-The distribution of\ $X$ is said to be *symmetric* if, for all $x\in R_X$,
+The distribution of\ $X$ is said to be *symmetric*\index{Skewness!symmetric} if, for all $x\in R_X$,
 
 * $\Pr(X = \mu + x) = \Pr(X = \mu - x)$ for the discrete case;
 * $\Pr(X = \mu + x) = f_X(\mu - x)$ for the continuous case.
@@ -527,8 +545,109 @@ The distribution of\ $X$ is said to be *symmetric* if, for all $x\in R_X$,
 
 For a symmetric distribution, the mean is also a median of the distribution, as these results show.
 
-For a symmetric distribution, the odd central moments are zero (Exercise\ \@ref(exr:SkewDiscreteCentralMomentsZero)).
-This suggests that the odd central moments can be used to measure the *asymmetry* of a distribution (as in Def.\ \@ref(def:Skewness)).
+
+
+
+::: {.example #SkewnessPlots name="Skewness"}
+Figure\ \@ref(fig:SkewnessPlots) shows examples of right-skewed (left panels), symmetric (centre panels) and left-skewed (right panels) distributions, for both a continuous random variable (top panels) and a discrete random variable (bottom panels).
+
+(The top distributions are all beta distributions;\index{Beta distribution} the bottom distributions are all binomial distributions.)\index{Binomial distribution}
+:::
+
+
+```{r SkewnessPlots, echo=FALSE, fig.align="center", fig.cap="Examples of right-skewed (left panels), symmetric (centre panels) and left-skewed (right panels) distributions. Top: continuous random variable. Bottom: discrete random variable.", fig.width=7, fig.height=6, out.width='100%'}
+par(mfrow = c(2, 3))
+
+### CONTINUOUS
+x <- seq(0, 1, 
+         length = 100)
+d1 <- dbeta(x, shape1 = 2, shape2 = 5)
+d2 <- dbeta(x, shape1 = 5, shape2 = 5)
+d3 <- dbeta(x, shape1 = 5, shape2 = 2)
+
+plot(d1 ~ x,
+     lwd = 2,
+     type = "l",
+     col = plotColour,
+     axes = FALSE,
+     xlab = expression(italic(X)),
+     ylab = "Prob. density",
+     main = "Continuous rv:\nSkewed right")
+axis(side = 1)
+box()
+
+plot(d2 ~ x,
+     lwd = 2,
+     type = "l",
+     col = plotColour,
+     axes = FALSE,
+     xlab = expression(italic(X)),
+     ylab = "Prob. density",
+     main = "Continuous rv:\nSymmetric")
+axis(side = 1)
+box()
+
+plot(d3 ~ x,
+     lwd = 2,
+     type = "l",
+     col = plotColour,
+     axes = FALSE,
+     xlab = expression(italic(X)),
+     ylab = "Prob. density",
+     main = "Continuous rv:\nSkewed left")
+axis(side = 1)
+box()
+
+### DISCRETE
+
+n <- 10
+x <- seq(0, n)
+
+d4 <- dbinom(x, size = n, p = 0.2)
+d5 <- dbinom(x, size = n, p = 0.5)
+d6 <- dbinom(x, size = n, p = 0.8)
+
+plot(d4 ~ x,
+     lty = 2,
+     type = "h",
+     col = "grey",
+     axes = FALSE,
+     xlab = expression(italic(X)),
+     ylab = "Prob. mass",
+     main = "Discrete rv:\nSkewed right")
+points(d4 ~ x,
+       pch = 19)
+axis(side = 1)
+box()
+
+plot(d5 ~ x,
+     lty = 2,
+     type = "h",
+     col = "grey",
+     axes = FALSE,
+     xlab = expression(italic(X)),
+     ylab = "Prob. mass",
+     main = "Discrete rv:\nSymmetric")
+points(d5 ~ x,
+       pch = 19)
+axis(side = 1)
+box()
+
+plot(d6 ~ x,
+     lty = 2,
+     type = "h",
+     col = "grey",
+     axes = FALSE,
+     xlab = expression(italic(X)),
+     ylab = "Prob. mass",
+     main = "Discrete rv:\nSkewed left")
+points(d6 ~ x,
+       pch = 19)
+axis(side = 1)
+box()
+
+```
+
 
 
 :::{.example #SkewnessCont name="Skewness"}
@@ -560,16 +679,13 @@ y <- fx(xx)
 plot(x = xx,
      y = y,
      lwd = 2,
+     col = plotColour,
      type = "l",
      las = 1,
      main = expression(The~probability~"function"~"for"~italic(X)),
      xlab = expression(italic(X)),
      ylab = "Prob. density")
 ```
-
-
-Instead of central moments themselves, using expressions unaffected by a linear transformation of the type $Y = aX + b$ (for constants\ $a$ and\ $b$) are convenient for assessing skewness.
-The ratio $(\mu_r)^p / (\mu_p)^r$ is such an expression, and the simplest form is a function of $\mu^2_3/\mu_2^3$.
 
 
 :::{.example #SkewnessDiscrete name="Skewness"}
@@ -598,86 +714,127 @@ $$
 $$
 so the distribution has positive skewness.
 :::
+\index{Skewness|)}
 
 
+
+
+### Kurtosis {#Kurtosis}
+
+\index{Kurtosis|(}
 Another ratio gives a measure of *kurtosis*, which measures the heaviness of the tails in a distribution; that is, how much of the probability of the random variable\ $X$ is concentrated in the extremes values of\ $X$.
 
 
 :::{.definition #Kurtosis name="Kurtosis"}
-The *kurtosis* of a distribution is defined as  
+The *kurtosis*\index{Kurtosis}\index{Kurtosis!definition} of a random variable\ $X$ with a given probability function is defined as
+$$
+  \text{kurtosis} = \operatorname{E}\left[\left(\frac{X-\mu}{\sigma}\right)^4\right].
+$$
+In terms of central moments,
 \begin{equation*}
-     \frac{\mu_4}{\mu^2_2}.
+     \text{kurtosis} = \frac{\mu_4}{\mu^2_2}.
 \end{equation*}
-The *excess kurtosis* of a distribution is defined as  
+The *excess kurtosis*\index{Kurtosis!excess} of a distribution is defined as  
 \begin{equation*}
      \gamma_2 = \frac{\mu_4}{\mu^2_2} - 3.
 \end{equation*}
+The *excess kurtosis* definition defines the excess kurtosis compared to a bell-shaped (normal distribution),\index{Normal distribution!kurtosis} which has an excess kurtosis of zero.
 :::
 
 
 :::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Excess kurtosis is commonly used, and sometimes is just called 'kurtosis'.
+Excess kurtosis is so commonly used that is often just called 'kurtosis'.
 :::
 
 
+One way to understand kurtosis (from @moors1986meaning) is to first define $Z = (X - \mu)/sigma$; then the kurtosis is, from Def.\ \@ref(def:Kurtosis), $\operatorname{E}[Z^4]$, and $\operatorname{E}[Z] = 0$ and $\operatorname{var}[X] = 1$.
+Also observe that since $\operatorname{var}[X] =  \operatorname{E}[X^2] - \operatorname{E}[X]^2$ (the definition of variance), we can write
+\begin{equation}
+   \operatorname{E}[X^2] = \operatorname{var}[X] + \operatorname{E}[X]^2.
+   (\#eq:VarianceRearranged)
+\end{equation}
 
----
-
-FROM WIKIPEDIA (https://en.wikipedia.org/wiki/Kurtosis)
-
-In 1986, Moors gave an interpretation of kurtosis.
-Let $Z = (X - \mu)/\sigma$, where\ $X$ is a random variable, $\mu$ is the mean and $\sigma$ is the standard deviation.
-
-Now by definition of the kurtosis $\kappa$ and using that $\left[V^{2}\right]=\operatorname {var}[V] + \operatorname {E}[V]^{2}$,
+Then, the kurtosis is
 \begin{align*}
-  \kappa 
-  &= \operatorname{E}[Z^4]\\
-  &= \operatorname{var}[Z^2] + \operatorname{E}[Z^2]^2\\
-  &= \operatorname{var}[Z^2] + \operatorname{var}[Z]^2\\
-  &= \operatorname{var}[Z^2] + 1
+  \operatorname{E}[Z^4]
+  &= \operatorname{var}[Z^2] + \operatorname{E}[Z^2]^2\quad\text{(using Eq.~(\ref{eq:VarianceRearranged}))}\\
+  &= \operatorname{var}[Z^2] + 
+     \left\{ \operatorname{var}[Z] + \operatorname{E}[Z]^2\right\}^2\quad\text{(using Eq.~(\ref{eq:VarianceRearranged}) again)}\\
+  &= \operatorname{var}[Z^2] + (1 + 0)^2 \\
+  &= \operatorname{var}[Z^2] + 1.
 \end{align*}
-????
-
-The kurtosis can now be seen as a measure of the dispersion of $Z^2$ around its expectation.
-Alternatively it can be seen to be a measure of the dispersion of\ $Z$ around $+1$ and $-1$.
-$\kappa$ attains its minimal value in a symmetric two-point distribution. 
-In terms of the original variable\ $X$, the kurtosis is a measure of the dispersion of\ $X$ around the two values $\mu\pm\sigma$.
-
-High values of\ $\kappa$ arise in two circumstances:
-
-* where the probability mass is concentrated around the mean and the data-generating process produces occasional values far from the mean
-* where the probability mass is concentrated in the tails of the distribution.
-
----
-
-
-
-\end{verbatom"}
-
-
-REPEATED?
-A negative value for the excess kurtosis means that the tails are 'heavy', while small values for the excess kurtosis means that the tails are 'light'.
-
+Thus, the kurtosis is related to the variance of\ $Z^2$ about the mean.
+AND SO WHAT???
 
 Large values of kurtosis corresponds to greater proportion of the distribution in the tails.
 The *excess kurtosis* is defined so that the normal, or bell-shaped, distribution (Sect.\ \@ref(Normal)), which has a kurtosis of\ $3$, has a excess kurtosis of zero.
 Then (see Fig.\ \@ref(fig:KurtosisPlots)):
 
-* distributions with *negative* excess kurtosis are called *platykurtic*.
+* distributions with *negative* excess kurtosis are called *platykurtic*.\index{Playtkurtic}
   These distribution have fewer, or less extreme, observations in the tail compared to the normal distribution ('thinner tails').
-  Examples include the [Bernoulli distribution](BernoulliTrials).
-* distributions with *positive* excess kurtosis are called *leptokurtic*.
+  Examples include the Bernoulli distribution (Sect.\ \@ref(BernoulliTrials)).
+* distributions with *positive* excess kurtosis are called *leptokurtic*.\index{Leptokurtic}
   These distribution have more, or more extreme, observations in the tail compared to the normal distribution ('fatter tails').
-  Examples include the [exponential](ExponentialDistribution) and [Poisson distributions](#PoissonDistribution).
-* distributions with *zero* excess kurtosis are called *mesokurtic*.
-  The [normal distribution](#Normal) is the obvious example.
+  Examples include the exponential distribution (Sect.\ \@ref(ExponentialDistribution)) and Poisson distributions (Sect.\ \@ref(PoissonDistribution)).
+* distributions with *zero* excess kurtosis are called *mesokurtic*.\index{Mesokurtic}
+  The normal distribution (Sect.\ \@ref(Normal))\index{Normal distribution} is the obvious example.
 
 
-```{r KurtosisPlots, fig.cap="Kurtosis"}
-par( mfrow = c(2, 2))
+```{r KurtosisPlots, echo=FALSE, fig.cap="Kurtosis for three distributions plotted from $x = -3$ to $x = +3$; all plots have mean of\\ $0$, variance of\\ $1$ and are symmetric. The grey line shows the middle distribution, with zero kurtosis.", fig.width=6.5, fig.height=3, out.width='100%'}
+par( mfrow = c(1, 3))
+
+x <- seq(-3, 3,
+         length = 100)
+
+# Values of alpha and beta to get var = 1
+# Light tails: beta = 4.778, alpha = 0.856 
+# Normal: beta = 2, alpha = sqrt(2)
+# Heavy tails: beta = 1.325, alpha = 1.842
+
+d1 <- dgnormal(x, mean = 0, alpha = 0.856, beta = 4.778)
+d2 <- dgnormal(x, mean = 0, alpha = sqrt(2), beta = 2) # Normal
+d3 <- dgnormal(x, mean = 0, alpha = 1.842, beta = 1.325)
+
+plot(d1 ~ x,
+     lwd = 2,
+     ylim = c(0, max(d1, d2, d3)),
+     type = "l",
+     col = plotColour,
+     axes = FALSE,
+     xlab = expression(italic(X)),
+     ylab = "Prob. density",
+     main = "Light tails: excess\nkurtosis is negative")
+lines( d2 ~ x,
+       col = "grey")
+axis(side = 1)
+box()
 
 
+plot(d2 ~ x,
+     lwd = 2,
+     ylim = c(0, max(d1, d2, d3)),
+     type = "l",
+     col = plotColour,
+     axes = FALSE,
+     xlab = expression(italic(X)),
+     ylab = "Prob. density",
+     main = "Mesokurtic distribution:\nexcess kurtosis is 0")
+axis(side = 1)
+box()
 
+plot(d3 ~ x,
+     lwd = 2,
+     ylim = c(0, max(d1, d2, d3)),
+     type = "l",
+     col = plotColour,
+     axes = FALSE,
+     xlab = expression(italic(X)),
+     ylab = "Prob. density",
+     main = "Heavy tails: excess\nkurtosis is positive")
+lines( d2 ~ x,
+       col = "grey")
+axis(side = 1)
+box()
 ```
 
 
@@ -693,7 +850,7 @@ par( mfrow = c(2, 2))
 
 :::{.example #SkewDiscrete name="Skewness and kurtosis"}
 Consider the discrete random variable $U$ from Example\ \@ref(exm:ExpectationDiscrete).
-The raw moments are  
+The raw moments are
 \begin{align*}
    \mu'_r = \text{E}(U^r)
    &= \sum_{u = -1, 0, 1} u^r \frac{u^2 + 1}{5} \\
@@ -704,7 +861,7 @@ The raw moments are
    &= \frac{2}{5}[ (-1)^r + 1]
 \end{align*}
 for the $r$th raw moment.
-Then,  
+Then,
 \begin{align*}
    \text{E}(X)   &= \mu'_1 = \frac{2}{5}[ (-1)^1 + 1 ] = 0;\\
    \text{E}(X^2) &= \mu'_2 = \frac{2}{5}[ (-1)^2 + 1 ] = 4/5;\\
@@ -725,11 +882,7 @@ $$
 $$
 so the distribution is platykurtic.
 :::
-
-
-By themselves, the mean, variance, skewness and kurtosis do not completely describe a distribution; many different distributions can be found having a given mean, variance, skewness and kurtosis. 
-However, in general, *all* the moments of a distribution together define the distribution.
-This leads to the idea of a *moment-generating function*.
+\index{Kurtosis|)}
 
 
 ## Moment-generating functions {#MGF}
@@ -737,20 +890,25 @@ This leads to the idea of a *moment-generating function*.
 
 ### Introduction {#MGFIntroduction}
 
+
+By themselves, the mean, variance, skewness and kurtosis do not completely describe a distribution (all the distributions in Fig.\ \@ref(fig:KurtosisPlots) have mean\ $0$, variance\ $1$ and skewness\ $0$, for instance); many different distributions can be found having a given mean, variance, skewness and kurtosis.
+However, in general, *all* the moments of a distribution together define the distribution.
+This leads to the idea of a *moment-generating function*.
+
 Suppose I asked you to draw the probability density function of a random variable\ $X$, with $\text{E}[X] = 2$.
-Any of the six distributions in Fig.\ \@ref(fig:FiveDistributions) meet this criterion (based on the first moment), so this information is not sufficient to uniquely define a distribution.
+Any of the six distributions in Fig.\ \@ref(fig:SixDistributions) meet this criterion (based on the first moment), so this information is not sufficient to uniquely define a distribution.
 
 So, suppose add a extra criterion: in addition, we require $\text{var}[X] = 1$.
-Any of the first five distributions in Fig.\ \@ref(fig:FiveDistributions) meet these two criteria (based on the first two moments), so again this information is not sufficient to uniquely define a distribution.
+Any of the first five distributions in Fig.\ \@ref(fig:SixDistributions) meet these two criteria (based on the first two moments), so again this information is not sufficient to uniquely define a distribution.
 
 Suppose a third criterion is added: the distribution must be symmetric.
-Any of the first four distributions in Fig.\ \@ref(fig:FiveDistributions) meet these three criteria (based on the first three moments); again, this information is not sufficient to uniquely define a distribution.
+Any of the first four distributions in Fig.\ \@ref(fig:SixDistributions) meet these three criteria (based on the first three moments); again, this information is not sufficient to uniquely define a distribution.
 
 In general, *all* the moments of a distribution are needed to uniquely define a distribution.
-All the moments of a distribution can be succinctly captured in a *moment generating function* (or MGF).
+All the moments of a distribution can be succinctly captured in a *moment generating function* (or MGF).\index{Moment generating function}
 
 
-```{r FiveDistributions, echo=FALSE, fig.height=8, fig.width=5, out.width='80%', fig.align="center", fig.cap="Six distributions, all with mean 1 and variance 1. The first four distributions are all symmetric."}
+```{r SixDistributions, echo=FALSE, fig.height=8, fig.width=5, out.width='80%', fig.align="center", fig.cap="Six distributions, all with mean 1 and variance 1. The first four distributions are all symmetric."}
 par(mfrow = c(3, 2))
 
 # x-values
@@ -810,7 +968,10 @@ d8 <- dbeta(x_beta, 0.5, 0.5) / a
 
 
 # Plot setup
-plot(x, d1, type = "l", col = "blue", lwd = 2,
+plot(x, d1, 
+     type = "l", 
+     col = plotColour, 
+     lwd = 2,
      xlab = "x", 
      ylab = "Density",
      axes = FALSE,
@@ -818,7 +979,10 @@ plot(x, d1, type = "l", col = "blue", lwd = 2,
 axis(side = 1)
 box()
 
-plot(x, d2, type = "l", col = "red", lwd = 2,
+plot(x, d2, 
+     type = "l", 
+     col = plotColour, 
+     lwd = 2,
      xlab = "x", 
      ylab = "Density",
      axes = FALSE,
@@ -826,7 +990,10 @@ plot(x, d2, type = "l", col = "red", lwd = 2,
 axis(side = 1)
 box()
 
-plot(x, d3, type = "l", col = "forestgreen", lwd = 2,
+plot(x, d3, 
+     type = "l", 
+     col = plotColour, 
+     lwd = 2,
      xlab = "x", 
      ylab = "Density",
      axes = FALSE,
@@ -834,7 +1001,10 @@ plot(x, d3, type = "l", col = "forestgreen", lwd = 2,
 axis(side = 1)
 box()
 
-plot(y, d8, type = "l", lwd = 2, col = "darkred",
+plot(y, d8, 
+     type = "l", 
+     lwd = 2, 
+     col = plotColour,
      ylim = c(0, 2),
      axes = FALSE,
      main = "Transformed beta distribution:\n(mean = 2, var = 1)",
@@ -843,7 +1013,10 @@ plot(y, d8, type = "l", lwd = 2, col = "darkred",
 axis(side = 1)
 box()
 
-plot(x, d4, type = "l", col = "purple", lwd = 2,
+plot(x, d4, 
+     type = "l", 
+     col = plotColour, 
+     lwd = 2,
      xlab = "x", 
      ylab = "Density",
      axes = FALSE,
@@ -851,7 +1024,10 @@ plot(x, d4, type = "l", col = "purple", lwd = 2,
 axis(side = 1)
 box()
 
-plot(x, d5, type = "l", col = "orange", lwd = 2,
+plot(x, d5, 
+     type = "l", 
+     col = plotColour, 
+     lwd = 2,
      xlab = "x", 
      ylab = "Density",
      axes = FALSE,
@@ -883,19 +1059,27 @@ Other uses of the moment-generating function are seen later (see Sect.\ \@ref(Tr
 
 
 :::{.definition #MGF name="Moment-generating function (mgf)"}
-The *moment-generating function* (or mgf) $M_X(t)$ of the random variable $X$ is defined as:
+The *moment-generating function* (or mgf) $M_X(t)$ of the random variable\ $X$ define over a range\ $R_X$ is denoted $M_X(t)$, and defined as 
+$$
+   \text{E}\big[\exp(tX)\big], 
+$$
+provided the expectation exists for values of\ $t$ in some interval that includes $t = 0$.
 
-* $\displaystyle
-  M_X(t)  = \text{E}\big(\exp(tX)\big) = \sum_x \exp(tx) p_X(x)$ in the discrete case;
-* $\displaystyle
-   M_X(t)  = \text{E}\big(\exp(tX)\big) = \int_{-\infty}^\infty \exp(tx) f_X(x)$ in the continuous case.
+When\ $X$ is a discrete random variable,
+$$
+  M_X(t)  = \text{E}\big[\exp(tX)\big] = \sum_{x\in R_X} \exp(tx) p_X(x).
+$$
+When\ $X$ is a continuous random variable,
+$$
+  M_X(t)  = \text{E}\big[\exp(tX)\big] = \int_{-\infty}^\infty \exp(tx) f_X(x).
+$$
 :::
 
 The mgf is defined as an infinite series or an infinite integral.
-Such an expression may not always exist (that is, converge to a finite value) for all values of $t$, so the mgf may not be defined for all values of $t$.
+Such an expression may not always exist (that is, converge to a finite value) for all values of $t$, so the mgf may not be defined for all values of\ $t$.
 Note that the mgf always exists for $t = 0$; in fact $M_X(0) = 1$.
 
-Provided the mgf is defined for some values of $t$ *other* than zero, it *uniquely* defines a probability distribution, and we can use it to generate the moments of the distribution as described in Theorem\ \@ref(thm:Moments).
+Provided the mgf is defined for some values of $t$ *other* than zero, it *uniquely* defines a probability distribution, and we can use it to easily generate the moments of the distribution, as described in Theorem\ \@ref(thm:Moments).
 
 
 ::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
@@ -903,7 +1087,7 @@ Moment-generating functions are related to Laplace transformations.
 :::
 
 :::{.example #MGF name="Moment-generating function"}
-Consider the random variable $Y$ with pdf
+Consider the random variable\ $Y$ with pdf
 $$
    f_Y(y) =
    \begin{cases}
@@ -911,7 +1095,7 @@ $$
       0        & \text{elsewhere.}
    \end{cases}
 $$
-The mgf is  
+The mgf is
 \begin{align*}
    M_Y(t)
     = \text{E}[\exp(tY)] 
@@ -932,14 +1116,14 @@ which does not converge.
 
 
 :::{.example #MGFDice name="Mgf for die rolls"}
-Consider the pf of $X$, the outcome of tossing a fair die (Example\ \@ref(exm:VarianceDice)).
-The mgf of $X$ is  
+Consider the pmf of\ $X$, the outcome of tossing a fair die (Example\ \@ref(exm:VarianceDice)).
+The mgf of\ $X$ is
 \begin{align*}
    M_X(t)
    &= \text{E}(\exp(tX)) = \sum_{x = 1}^6 \exp(tx) p_X(x)\\
    &= \frac{1}{6}\left(e^t + e^{2t} + e^{3t} + e^{4t} + e^{5t} + e^{6t}\right),
 \end{align*}
-which exists for all values of $t$.
+which exists for all values of\ $t$.
 :::
 
 
@@ -958,43 +1142,49 @@ Then,  the $r$th moment of a distribution about the origin is seen to be the coe
      \frac{d^2 M_X(t)}{dt^2} 
      & = \sum_x x^2\,e^{xt} \Pr(X = x),
 \end{align*}
-and so, for each positive integer $r$,
+and, in general, for each positive integer\ $r$:
 $$
    \frac{d^r M_X(t)}{dt^r} = \sum_x x^re^{xt}\Pr(X = x). 
 $$
-On setting $t = 0$, $d M_X(t)/dt\Big|_{t = 0} = \text{E}(X)$, $d^2M_X(t)/dt^2 \Big|_{t = 0} = \text{E}(X^2)$, and for each positive integer $r$,  
+On setting $t = 0$, 
+\begin{align*}
+ \left.\frac{d M_X(t)}{dt}\right|_{t = 0} &= \text{E}[X]\\
+ \left.\frac{d^2M_X(t)}{dt^2}\right|_{t = 0} &= \text{E}[X^2].
+\end{align*}
+(The notation means to evaluate the expression at $t = 0$.)
+In general, for each positive integer\ $r$,  
 \begin{equation}
-     \frac{d^r M_X(t)}{dt^r}\Big|_{t = 0} = \text{E}(X^r).
+  \left.\frac{d^r M_X(t)}{dt^r}\right|_{t = 0} = \text{E}(X^r).
 \end{equation}
-(Sometimes, $d^r M_X(t)/dt^r\Big|_{t = 0}$ is written as $M^{(r)}(0)$ for brevity.)
+(Sometimes, $d^r M_X(t)/dt^r$ evaluated at $t = 0$ is written as $M^{(r)}(0)$ for brevity.)
 This result is summarised in the following theorem.
 
 
 :::{.theorem #Moments name="Moments"}
-The $r$th moment $\mu'_r$ of the distribution of the random variable $X$ about the origin is given by either
+The $r$th moment\ $\mu'_r$ of the distribution of the random variable\ $X$ about the origin is given by either
 
 1. the coefficient of $t^r/r!,  r = 1, 2, 3,\dots$ in the power series expansion of $M_X(t)$; or
 2. $\displaystyle \mu'_r = \left.\frac{d^rM(t)}{dt^r}\right|_{t = 0}$ where $M_X(t)$ is the mgf of $X$.
 :::
 
 
-:::{.example #MeanVarMGF name="Mean and variance from a MF"}
-Continuing Example\ \@ref(exm:MGF), the mean and variance of $Y$ can be found from the mgf.
+:::{.example #MeanVarMGF name="Mean and variance from a MGF"}
+Continuing Example\ \@ref(exm:MGF), the mean and variance of\ $Y$ can be found from the mgf.
 To find the mean, first find
 $$
    \frac{d}{dt}M_Y(t) = (1 - t)^{-2}.
 $$
-Setting $t = 0$ gives the mean as $\text{E}(Y) = 1$. 
+Setting $t = 0$ gives the mean as $\text{E}[Y] = 1$. 
 Likewise,
 $$
    \frac{d^2}{dt^2}M_Y(t) = 2(1 - t)^{-3}.
 $$
-Setting $t = 0$ gives $\text{E}(Y^2) = 2$.
+Setting $t = 0$ gives $\text{E}[Y^2] = 2$.
 The variance is therefore $\text{var}[Y] = 2 - 1^2 = 1$.
 
 Once the moment-generating function has been computed, raw moments can be computed using
 $$
-   \text{E}(Y^r) = \mu'_r = \left.\frac{d^r}{dt^r} M_Y(t)\right|_{t = 0}.
+   \text{E}[Y^r)] = \mu'_r = \left.\frac{d^r}{dt^r} M_Y(t)\right|_{t = 0}.
 $$
 :::
 
@@ -1007,16 +1197,16 @@ The following theorems are valuable for this task.
 
 
 :::{.theorem #MGFLinear name="Mgf of linear combinations"}
-If the random variable $X$ has mgf $M_X(t)$ and $Y = aX + b$ where $a$ and $b$ are constants, then the mgf of $Y$ is
+If the random variable\ $X$ has mgf $M_X(t)$ and $Y = aX + b$ where\ $a$ and\ $b$ are constants, then the mgf of\ $Y$ is
 $$
-   M_Y(t) = \text{E}\big(\exp\{t(aX + b)\}\big) = \exp(bt) M_X(at).
+   M_Y(t) = \operatorname{E}\big[\exp\{t(aX + b)\}\big] = \exp(bt) M_X(at).
 $$
 :::
 
 
 
 :::{.theorem #MGFIndependent name="Mgf of independent rvs"}
-If $X_1$, $X_2$, $\dots$, $X_n$ are $n$ independent random variables, where $X_i$ has mgf $M_{X_i}(t)$, then the mgf of $Y = X_1 + X_2 + \cdots X_n$ is
+If $X_1$, $X_2$, $\dots$, $X_n$ are $n$ independent random variables, where\ $X_i$ has mgf $M_{X_i}(t)$, then the mgf of $Y = X_1 + X_2 + \cdots X_n$ is
 $$
    M_Y(t) = \prod_{i = 1}^n M_{X_i}(t).
 $$
@@ -1027,22 +1217,22 @@ The proofs are left as an exercise.
 :::
 
 
-Note that in the special case when all the random variables are independently and identically distributed in Theorem\ \@ref(thm:MGFLinear),  we have
+Note that in the special case when all the random variables are independently and identically distributed in Theorem\ \@ref(thm:MGFLinear), we have
 $$
    M_Y(t) = [M_{X_i}(t)]^n.
 $$
 
 
 :::{.example #MGFLinearCombinations name="Mgf of linear combinations"}
-Consider the random variable $X$ with pf
+Consider the random variable\ $X$ with pf
 $$
    p_X(x) = 2(1/3)^x \qquad \text{for $x = 1, 2, 3, \dots$}
 $$
 and zero elsewhere.
-The mgf of $X$ is  
+The mgf of\ $X$ is
 \begin{align*}
    M_X(t)
-   &= \sum_{x: p(x)>0} \exp(tx) p_X(x) \\
+   &= \sum_{x: p(x) > 0} \exp(tx) p_X(x) \\
    &= \sum_{x = 1}^\infty \exp(tx) 2(1/3)^x \\
    &= 2\sum_{x = 1}^\infty (\exp(t)/3)^x \\
    &= 2\left\{ \frac{\exp(t)}{3} + \left(\frac{\exp(t)}{3}\right)^2
@@ -1058,7 +1248,7 @@ $$
    = \exp(-2t/3) M_X(t/3)
    = \frac{2\exp\{(-t)/3\}}{3 - \exp(t/3)}.
 $$
-In practice, rather than identify $a$ and $b$ and remember Theorem\ \@ref(thm:MGFLinear), problems like this are best solved directly from the definition of the mgf:  
+In practice, rather than identify\ $a$ and\ $b$ and remember Theorem\ \@ref(thm:MGFLinear), problems like this are best solved directly from the definition of the mgf:
 \begin{align*}
    M_Y(t) 
     = \text{E}(\exp(tY))
@@ -1078,27 +1268,27 @@ For some distributions, the pdf cannot be written in closed form (so the pdf can
 In the **discrete case**, the mgf is defined as  
 \begin{equation}
    M_X(t)  
-   = \text{E}(\exp(tX)) 
+   = \operatorname{E}[\exp(tX)] 
    = \sum_X e^{tx} p_X(x)
    (\#eq:MGFtoPDFdiscrete)
 \end{equation}
-for $X$ discrete with pf $p_X(x)$.
+for\ $X$ discrete with pmf $p_X(x)$.
 This can be expressed as  
 \begin{align*}
    M_X(t)
    &= \exp(t x_1) p_X(x_1) + \exp(t x_2)p_X(x_2) + \dots\\
    &= \exp(t x_1) \Pr(X = x_1) + \exp(t x_2)\Pr(X = x_2) + \dots\\
 \end{align*}
-and so the probability function of $Y$ can be deduced from the mgf.
+and so the probability function of\ $Y$ can be deduced from the mgf.
 
 
 :::{.example #DistFromMGF name="Distribution from the mgf"}
-Suppose a discrete random variable $D$ has the mgf
+Suppose a discrete random variable\ $D$ has the mgf
 $$
    M_D(t) = \frac{1}{3} \exp(2t) + \frac{1}{6}\exp(3t) + \frac{1}{12}\exp(6t)
    + \frac{5}{12}\exp(7t).
 $$
-Then, by the definition of the mgf in the discrete case given above, the coefficient of $t$ in the exponential indicates values of $D$, and the coefficient indicates the probability of that value of $y$:  
+Then, by the definition of the mgf in the discrete case given above, the coefficient of\ $t$ in the exponential indicates values of\ $D$, and the coefficient indicates the probability of that value of\ $Y$:  
 \begin{align*}
    M_D(t)
    &= \overbrace{\frac{1}{3} \exp(2t)}^{D = 2} + \overbrace{\frac{1}{6}\exp(3t)}^{D = 3} +
@@ -1106,7 +1296,7 @@ Then, by the definition of the mgf in the discrete case given above, the coeffic
    &= \Pr(D = 2)\exp(2t) + \Pr(D = 3)\exp(3t) + \\
    & \quad \Pr(D = 6)\exp(6t) + \Pr(D = 7)\exp(7t).
 \end{align*}
-So the pf is
+So the pmf is
 $$
    p_D(d) =
    \begin{cases}
@@ -1117,7 +1307,7 @@ $$
       0 & \text{otherwise}
    \end{cases}
 $$
-(Of course, it is easy to check by computing the mgf for $D$ from the pf found above; you should get the original mgf.)
+(Of course, it is easy to check by computing the mgf for\ $D$ from the pf found above; you should get the original mgf.)
 :::
 
 
@@ -1145,7 +1335,7 @@ $$
    \frac{1}{3}\left(\frac{2}{3}\right) \exp(2t) + 
    \frac{1}{3}\left(\frac{2}{3}\right)^2 \exp(3t) + \dots
 $$
-so that the probability function can be deduced as  
+so that the probability function can be deduced as
 \begin{align*}
    \Pr(X = 1) &= \frac{1}{3};\\
    \Pr(X = 2) &= \frac{1}{3}\left(\frac{2}{3}\right);\\
@@ -1155,13 +1345,13 @@ or, in general,
 $$
    p_x(x) = \frac{1}{3}\left( \frac{2}{3}\right)^{x - 1}\quad\text{for $x = 1, 2, 3, \dots$}.
 $$
-(Later, this will be identified as a [geometric distribution](#GeometricDistribution).)
+(Later, this will be identified as a [geometric distribution](#GeometricDistribution).)\index{Geometric distribution}
 :::
 
 
 The case of a **continuous random variable** is more involved.
-Suppose the continuous random variable $X$ has the mgf $M_X(t)$.
-Then the probability density function is (see @abramowitz1964handbook, \S26.1.10)  
+Suppose the continuous random variable\ $X$ has the mgf $M_X(t)$.
+Then the probability density function is (see @abramowitz1964handbook, \S26.1.10)
 \begin{equation}
    f_X(x) = 
    \frac{1}{2\pi} \int_{-\infty}^{\infty} M_X(it) \exp(-itx)\, dt,
@@ -1171,30 +1361,29 @@ where $i = \sqrt{-1}$.
 
 
 :::{.example #DistFromMGFContinuous name="Distribution from the mgf"}
-Consider the mgf for a continuous random variable $X$ such that $M_X(t) = \exp(t^2/2)$, for $y\in\mathbb{R}$ and $t\in\mathbb{R}$.
+Consider the mgf for a continuous random variable\ $X$ such that $M_X(t) = \exp(t^2/2)$, for $y\in\mathbb{R}$ and $t\in\mathbb{R}$.
 Then, $M_X(it) = \exp\left( (it)^2/2 \right) = \exp(-t^2/2)$. 
-Using Eq.\ \@ref(eq:MGFtoPDFcontinuous), the pdf is:  
+Using Eq.\ \@ref(eq:MGFtoPDFcontinuous), the pdf is:
 \begin{align*}
  f_X(x) 
  &= \frac{1}{2\pi} \int_{-\infty}^{\infty} \exp(-t^2/2) \exp(-itx)\, dt,\\
  &= \frac{1}{2\pi} \int_{-\infty}^{\infty} \exp(-t^2/2)\left[ \cos(-tx) + i\sin(-itx)\right]\, dt,
 \end{align*}
 since $x\in\mathbb{R}$ and $t\in\mathbb{R}$.
-Extracting just the real components:  
+Extracting just the real components:
 \begin{align*}
  f_X(x) 
  &= \frac{1}{2\pi} \int_{-\infty}^{\infty} \exp(-t^2/2) \cos(-tx) \, dt\\
  &= \frac{1}{2\pi} \left( \sqrt{2\pi} \exp( -x^2/2 ) \right)
   = \frac{1}{ \sqrt{2\pi} } \exp( -x^2/2 ),
 \end{align*}
-which will later be identified as a [normal distribution](#StandardNormal) with a mean of zero, and standard deviation of one.
+which will later be identified as a [normal distribution](#StandardNormal)\index{Normal distribution} with a mean of zero, and standard deviation of one.
 :::
 
 
 In practice, using Eq.\ \@ref(eq:MGFtoPDFcontinuous) can become tedious or intractable for producing a closed form expression for the pdf.
 However, Eq.\ \@ref(eq:MGFtoPDFcontinuous) has been used to compute numerical values of the probability density function.
-For example, @mypapers:Dunn:fourier used Eq.\ \@ref(eq:MGFtoPDFcontinuous) to evaluate the *Tweedie distributions* [@mypapers:DunnSmyth:IWSM:2001], for which (in general) the pdf has no closed form, but does have a simple mgf.
-
+For example, @mypapers:Dunn:fourier used Eq.\ \@ref(eq:MGFtoPDFcontinuous) to evaluate the *Tweedie distributions*\index{Tweedie distribution} [@mypapers:DunnSmyth:IWSM:2001], for which (in general) the pdf has no closed form, but does have a simple mgf.
 
 
 ## Tchebysheff's inequality {#Tchebysheff}
@@ -1203,8 +1392,8 @@ Tchebysheff's inequality applies to any probability distribution, and is sometim
 
 
 :::{.theorem #Tchebysheff name="Tchebysheff's theorem"}
-Let $X$ be a random variable with finite mean $\mu$ and variance $\sigma^2$.
-Then for any positive $k$,  
+Let\ $X$ be a random variable with finite mean\ $\mu$ and variance\ $\sigma^2$.
+Then for any positive\ $k$,
 \begin{equation}
    \Pr\big(|X - \mu| \geq k\sigma \big)\leq \frac{1}{k^2}
    (\#eq:Tchebysheff)
@@ -1217,7 +1406,7 @@ or, equivalently
 
 :::{.proof}
 The proof for the continuous case only is given.
-Let $X$ be continuous with pdf $f(x)$.
+Let\ $X$ be continuous with pdf\ $f(x)$.
 For some $c > 0$, then  
 \begin{align*}
      \sigma^2 
@@ -1230,384 +1419,20 @@ For some $c > 0$, then
 \end{align*}
 since the second integral is non-negative.
 Now $(x - \mu )^2 \geq c$ if $x \leq \mu -\sqrt{c}$ or $x\geq \mu + \sqrt{c}$.
-So in both the remaining integrals above, replace $(x - \mu )^2$ by $c$ without altering the direction of the inequality:  
+So in both the remaining integrals above, replace $(x - \mu )^2$ by $c$ without altering the direction of the inequality:
 \begin{align*}
-     \sigma^2 
-     &\geq  c \int^{\mu -\sqrt{c}}_{-\infty} f(x)\,dx + c\int^\infty_{\mu + \sqrt{c}}f(x)\,dx\\
-     &=  c\,\Pr(X \leq \mu - \sqrt{c}\,) + c\,\Pr(X \geq \mu + \sqrt{c}\,)\\
-     &=  c\,\Pr(|X - \mu| \geq \sqrt{c}\,).
+  \sigma^2 
+  &\geq  c \int^{\mu -\sqrt{c}}_{-\infty} f(x)\,dx + c\int^\infty_{\mu + \sqrt{c}}f(x)\,dx\\
+  &=  c\,\Pr(X \leq \mu - \sqrt{c}\,) + c\,\Pr(X \geq \mu + \sqrt{c}\,)\\
+  &=  c\,\Pr(|X - \mu| \geq \sqrt{c}\,).
 \end{align*}
 Putting $\sqrt{c} = k\sigma$, Eq.\ \@ref(eq:Tchebysheff) is obtained.
 :::
 
-With the probability function or pdf of a random variable $X$, then $\text{E}(X)$ and $\text{var}(X)$ can be found, but the converse is not true. 
-That is, from a knowledge of $\text{E}(X)$ and $\text{var}(X)$ we cannot reconstruct the probability distribution of $X$ and hence cannot compute probabilities such as $\Pr(|X - \mu| \geq k\sigma)$.
+
+With the probability function or pdf of a random variable\ $X$, then $\text{E}(X)$ and $\text{var}(X)$ can be found, but the converse is not true. 
+That is, from a knowledge of $\text{E}(X)$ and $\text{var}(X)$ we cannot reconstruct the probability distribution of\ $X$ and hence cannot compute probabilities such as $\Pr(|X - \mu| \geq k\sigma)$.
 Nonetheless, using Tchebysheff's inequality we can find a useful *bound* to either the probability outside or inside of $\mu \pm k\sigma$.
-
-
-
-## Other measures of location {#FeaturesLocation}
-
-Having introduced the idea of mathematical expectation, other descriptions of a random variable can now be introduced.
-
-Two general features of a distribution are the location or centre, and the variability.
-We have already met the mean (or expected value) as one measure of location.
-
-
-### The mean {#Mean}
-
-The most important measure of location is the mean $\mu = \text{E}(X)$, which has already been defined (Sect.\ \@ref(def:Expectation)).
-The mean is the *balance point* of the distribution: the expected mean deviation of the random variable from $\mu$ is zero.
-In other words, $\text{E}(X - \mu) = 0$.
-
-While the mean is commonly used, it is not always a suitable measure of centre: the balance point can be unduly affected by outliers and extreme skewness.
-We have also seen a situation where the mean is undefined (Example\ \@ref(exm:InfiniteMean)).
-
-
-### The mode and median {#ModeMedian}
-
-Other measures of centre sometimes may be more appropriate.
-The mode and median are two common alternatives.
-The mean, when it is defined, is more useful in theoretical work due to nicer mathematical properties,
-
-
-:::{.definition #Mode name="Mode"}
-The *mode(s)* is a value(s) $x\in R_X$ such that:
-
-* $p_X(x)$ attains its maximum (for the discrete case); or 
-* the value(s) of $x$ at which $f_X(x)$ attains its maximum (for the continuous case).
-:::
-
-
-The mode is not necessarily unique.
-
-
-:::{.definition #Median name="Median"}
-The *median* of a random variable $X$ (or of a distribution) is a number $\nu$ such that  
-\begin{equation}
-   \Pr(X\leq \nu )\geq \frac{1}{2}\text{ and }\Pr(X \geq \nu )\geq \frac{1}{2}.
-\end{equation}
-:::
-
-For $X$ discrete, the median is not necessarily unique.
-
-
-:::{.example #ModeDiscrete name="Mode and median for discrete distributions"}
-If $X$ is a discrete random variable with probability function defined in Table\ \@ref(tab:ProbDeg1r) (and shown in Fig.\ \@ref(fig:DiscreteMedian)), the distribution is bimodal (i.e., has two modes), with modes at $x = 3$ and $x = 4$.
-
-The median, say $\nu$, is any value of $X$ in the range $3 < x < 4$, since *any* number in this range satisfies $\Pr(X \le x) = 0.5$ and $\Pr(X \ge x) = 0.5$. 
-The median is not unique.
-:::
-
-```{r ProbDeg1r, echo=FALSE}
-eg1Table <- array( dim = c(2, 8))
-
-eg1Table[1, ] <- 0:7
-eg1Table[2, ] <- c("$\\frac{1}{128}$", "$\\frac{7}{128}$", "$\\frac{21}{128}$", "$\\frac{35}{128}$", "$\\frac{35}{128}$", "$\\frac{21}{128}$", "$\\frac{7}{128}$", "$\\frac{1}{128}$")
-
-rownames(eg1Table) <- c("$x$",
-                        "$\\Pr(X = x)$")
-
-
-if( knitr::is_latex_output() ) {
-  knitr::kable(eg1Table,
-               format = "latex",
-               booktabs = TRUE,
-               align = "c",
-               longtable = FALSE,                
-               escape = FALSE,
-               caption = "A probability distribution") %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) 
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(eg1Table,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "c",
-               longtable = FALSE,                
-               caption = "A probability distribution") %>%
-    row_spec(1, bold = TRUE) 
-}
-
-```
-
-
-```{r DiscreteMedian, echo=FALSE, fig.cap="Finding the median, when it is not unique", fig.align="center", fig.height = 8,out.width='70%'}
-par( mfrow = c(2, 1))
-
-x <- 0:7
-fx <- c(1, 7, 21, 35, 35, 21, 7, 1) / 128
-
-plot(x = x,
-     y = fx,
-     las = 1,
-     lty = 3,
-     ylim = c(0, 0.30 ),
-     type = "h",
-     col = "grey",
-     sub = "Each half contains a probability of 0.5",
-     xlab = expression( italic(X) ),
-     ylab = expression(
-       paste(italic(p)[italic(X)](italic(x)))
-     ),
-     main = "Probability mass function")
-polygon( x = c(-10, -10, 3.5, 3.5),
-         y = c(0, 1, 1, 0),
-         col = plotColour)
-         #col = gray(0.9) )
-
-polygon( x = c(3.5, 3.5,10, 10),
-         y = c(0, 1, 1, 0),
-         col = gray(0.95) )
-
-points( x = x,
-        y = fx,
-        pch = 19)
-points(x = x,
-     y = fx,
-     type = "h",
-     lty = 3,
-     col = grey(0.2))
-box()
-
-
-plot( x = x,
-      y = cumsum(fx),
-      las = 1,
-      axes = FALSE,
-      xlim = c(-2, 9),
-      xlab = expression( italic(X) ),
-      ylab = expression(
-       paste(italic(F)[italic(X)](italic(x)))
-      ),
-      main = "Distribution function",
-      sub = "Any number between 3 and 4 has a cumulative probability of 0.5",
-      type = "n")
-polygon( x = c(3, 3, 4, 4),
-         y = c(0, 0.5, 0.5, 0),
-      col = plotColour)
-#         col = gray(0.9))
-abline( h = c(0, 1),
-        col = "grey")
-axis(side = 1,
-     at = c(-2, 0, 2, 3, 4, 6, 8))
-axis(side = 2,
-     at = c(0, 0.2, 0.5, 0.8, 1),
-     las = 1)
-box()
-points( x = x,
-        y = cumsum(fx),
-        pch = 19)
-points( x = x[2: length(x)],
-        y = cumsum(fx)[1:(length(x) - 1)],
-        pch = 1)
-
-for (i in (1 : (length(x) - 1)) ){
-   lines( x = x[i:(i + 1)],
-          y = c(cumsum(fx)[i],
-                cumsum(fx)[i]),
-          lwd = 2)
-}
-
-# Now add edge cases
-lines( x = c(-1, 0),
-       y = c(0, 0),
-      lwd = 2)
-lines(x = c(-2, -1),
-      y = c(0, 0),
-      lty = 2,
-      lwd = 2)
-points(0, 0, 
-       pch = 1)
-lines(x = c(7, 8),
-      y = c(1, 1),
-      lwd = 2)
-lines(x = c(8, 9),
-      y = c(1, 1),
-      lty = 2,
-      lwd = 2)
-
-lines( x = c(-10, 3),
-       y = c(0.5, 0.5),
-       lty = 3)
-```
-
-
-:::{.example #ExpectationDiscrete2 name="Expectation for discrete variables"}
-Let $X$ be a discrete random variable with the probability function shown in Table\ \@ref(tab:ProbDeg2r) (and Fig.\ \@ref(fig:DiscreteMedian2)).
-The *mode* of this distribution is at $x = 3$.
-The *median* is $\nu = 3$ since this is the only value of $X$ that will satisfy Def.\ \@ref(def:Median).
-:::
-
-
-
-```{r ProbDeg2r, echo=FALSE}
-eg2Table <- array( dim = c(2, 7))
-
-eg2Table[1, ] <- 0:6
-eg2Table[2, ] <- c("$\\frac{1}{64}$", "$\\frac{6}{64}$", "$\\frac{15}{64}$", "$\\frac{20}{64}$", "$\\frac{15}{64}$", "$\\frac{6}{64}$", "$\\frac{1}{64}$")
-
-rownames(eg2Table) <- c("$x$",
-                        "$\\Pr(X = x)$")
-eg2Table.caption <- "A probability distribution"
-
-
-if( knitr::is_latex_output() ) {
-  knitr::kable(eg2Table,
-               format = "latex",
-               booktabs = TRUE,
-               align = "c",
-               longtable = FALSE,                
-               escape = FALSE,
-               caption = eg2Table.caption ) %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) 
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(eg2Table,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "c",
-               longtable = FALSE,                
-               caption = eg2Table.caption) %>%
-    row_spec(1, bold = TRUE) 
-}
-```
-
-```{r DiscreteMedian2, echo=FALSE, fig.align="center", fig.cap="The probability function and distribution function for $H$", fig.height = 8, out.width='70%'}
-par( mfrow = c(2, 1))
-
-x <- 0:6
-fx <- c(1, 6, 15, 20, 15, 6, 1) / 64
-
-plot(x = x,
-     y = fx,
-     las = 1,
-     xlim = c(-2, 8),
-     type = "h",
-     col = "grey",
-     xlab = expression(italic(X)),
-     ylab = expression(
-       paste(italic(p)[italic(X)](italic(x)))
-       ),
-     main = "Probability mass function")
-points( x = x,
-        y = fx,
-        pch = 19)
-
-
-
-
-plot( x = x,
-      y = cumsum(fx),
-      las = 1,
-      xlim = c(-2, 8),
-      axes = FALSE,
-      xlab = expression(italic(X)),
-      ylab = expression(
-       paste(italic(F)[italic(X)](italic(x)))
-       ),
-      main = "Distribution function",
-      type = "n")
-axis(side = 1,
-     at = c(-2, 0, 2, 3, 4, 6, 8))
-axis(side = 2,
-     at = c(0, 0.2, 0.5, 0.8, 1),
-     las = 1)
-box()
-#polygon( x = c(2.75, 2.75, 3.25, 3.25),
-#         y = c(22/64, 42/64, 42/64, 22/64),
-#         col = grey(0.9),
-#         border = NA) # Omits borders
-lines( x = c(-10, 3),
-       y = c(0.5, 0.5),
-       lty = 3)
-lines( x = c(3, 3),
-       y = c(42/64, 0),
-       lty = 3)
-
-abline( h = c(0, 1),
-        col = "grey")
-points( x = x,
-        y = cumsum(fx),
-        pch = 19)
-points( x = x[2: length(x)],
-        y = cumsum(fx)[1:(length(x) - 1)],
-        pch = 1)
-
-for (i in (1 : (length(x) - 1)) ){
-   lines( x = x[i:(i + 1)],
-          y = c(cumsum(fx)[i],
-                cumsum(fx)[i]),
-          lwd = 2)
-}
-
-# Now add edge cases
-lines( x = c(-1, 0),
-       y = c(0, 0),
-       lwd = 2)
-lines(x = c(-2, -1),
-      y = c(0, 0),
-      lty = 2,
-      lwd = 2)
-points(0, 0, 
-       pch = 1)
-lines(x = c(6, 7),
-      y = c(1, 1),
-      lwd = 2)
-lines(x = c(7, 8),
-      y = c(1, 1),
-      lty = 2,
-      lwd = 2)
-
-```
-
-
-## Other measures of variability  {#Dispersion}
-
-Apart from the mean, the most important description of a random variable is the *variability*: quantifying how the values of the random variable are dispersed.
-The most important measure of variability is the *variance*.
-
-
-### The mean absolute deviation {#Variance}
-
-We have already seen variance and standard deviation are suitable measures of dispersion.
-Another alternative is the following.
-
-
-:::{.definition #MAD name="Mean absolute deviation"}
-The *mean absolute deviation* (MAD) is defined as:
-
-* $\displaystyle 
-   \text{E}(|X - \mu|) 
-      = \sum_x |x - \mu| p_X(x)$ for a discrete random variable $X$;
-* $\displaystyle 
-    \text{E}(|X - \mu|) 
-      = 
-         \int_{-\infty}^\infty |x - \mu| f_X(x)\,dx$ for a continuous random variable $X$.
-:::
-
-
-
-:::{.example #MADDie name="MAD of die toss"}
-Consider the fair die described in Example\ \@ref(exm:VarianceDice).
-Then $\mu = \text{E}(X) = 7/2$ and thus the MAD of $X$ is  
-\begin{align*}
-   \text{E}(|X - \mu|) 
-   &= \sum |x - \mu| \Pr(X = x)\\
-   &= \frac{1}{6}\left[ \left|1 - \frac{7}{2}\right| +\left|2 - \frac{7}{2}\right| + \dots + \left|6 - \frac{7}{2}\right|\right]\\
-   &= 1.5.
-\end{align*}
-:::
-
-
-Like the median, the MAD is difficult to use in theoretical work (due to the absolute value).
-The most-used measure of dispersion is the variance (or standard deviation).
-
-
 
 
 
@@ -1615,6 +1440,38 @@ The most-used measure of dispersion is the variance (or standard deviation).
 ## Exercises
 
 Selected answers appear in Sect.\ \@ref(AnswersChap3).
+
+
+:::{.exercise #MeanAbsDev}
+We have already seen variance and standard deviation are suitable measures of dispersion.
+Another alternative is the *mean absolute deviation* (MAD), defined as:
+
+* $\displaystyle 
+   \text{E}[|X - \mu|] 
+      = \sum_x |x - \mu| p_X(x)$ for a discrete random variable\ $X$;
+* $\displaystyle 
+    \text{E}[|X - \mu|] 
+      = 
+         \int_{-\infty}^\infty |x - \mu| f_X(x)\,dx$ for a continuous random variable\ $X$.
+
+Consider the fair die described in Example\ \@ref(exm:VarianceDice).
+Then $\mu = \text{E}[X] = 7/2$ and thus the MAD of\ $X$ is  
+\begin{align*}
+   \text{E}[|X - \mu|] 
+   &= \sum |x - \mu| \Pr(X = x)\\
+   &= \frac{1}{6}\left[ \left|1 - \frac{7}{2}\right| +\left|2 - \frac{7}{2}\right| + \dots + \left|6 - \frac{7}{2}\right|\right]\\
+   &= 1.5.
+\end{align*}
+
+Like the median, the MAD is difficult to use in theoretical work (due to the absolute value).
+The most-used measure of dispersion is the variance (or standard deviation).
+:::
+
+
+
+
+
+
 
 :::{.exercise #C3ContA}
 The pdf for the random variable $Y$ is defined as
