@@ -11,3 +11,17 @@ show_md_Code <- function(code_expr, language = "r") {
   knitr::asis_output(code_block)
 }
 
+
+
+
+
+
+show_code_from_file <- function(path) {
+  lines <- readLines(path, warn = FALSE)
+  #code <- paste(lines, collapse = "\n")
+  lines <- c('<pre><code class="r">\n', lines, '\n</code></pre>\n')
+  return(lines)
+}
+
+
+
