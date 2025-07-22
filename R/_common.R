@@ -38,5 +38,6 @@ plotColour1 <- rgb(red = 129/256,
 ### 
 source("R/triangular.R")
 source("R/gnormal.R")
+source("R/hbsecant.R")
 source("R/kurtosis.R")
 
