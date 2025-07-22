@@ -5,12 +5,11 @@ dtriangular <- function(x, xMin = 0, xMax = 2, xMode = 1){
 
   xRange <- xMax - xMin
   yHeight <- 2 / xRange
-  
+
   y <- rep(0, length = length(x) )
   
   xLeft  <- (x > xMin) & (x < xMode)
   xRight <- (x < xMax) & (x >= xMode)
-  
   
   y[ xLeft ]  <- yHeight/(xMode - xMin) * (x[ xLeft ] - xMin)
   y[ xRight ] <- yHeight/(xMax - xMode) * (xMax - x[ xRight ])
