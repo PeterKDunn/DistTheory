@@ -1,4 +1,6 @@
-z <- seq(1, 6, length = 100)
+
+# Define values of z > 1 to plot over
+z <- seq(1, 6, length.out = 100)
 
 # Plot for z > 1
 plot(x = z, y = z^(-2),
