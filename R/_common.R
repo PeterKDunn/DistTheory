@@ -41,4 +41,6 @@ source("R/gnormal.R")
 source("R/hbsecant.R")
 
 source("R/kurtosis.R")
+
 source("R/myDeparse.R")
+source("R/showHTMLCode.R")
