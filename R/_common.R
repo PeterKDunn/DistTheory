@@ -4,10 +4,12 @@ library(rgl)
 library(kableExtra)
 library(plotrix)
 library(mnormt) # Multivariate normal
+library(mnorm)  # Multivariate normal
 library(countries) # Sets of countries
 library(shape)
 library("diagram")
 library("plotrix") # draw.circle()
+library("fitdistrplus")
 
 
 # example R options set globally
