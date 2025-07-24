@@ -2442,9 +2442,9 @@ sigma <- matrix(c(1, 0.5,
                 nrow = 2)
 
 f <- function(x, y, mn, sigma) {
-  dmnorm(cbind(x, y), 
-         mean = mn, 
-         varcov = sigma)
+  mnormt::dmnorm(cbind(x, y), 
+                mean = mn, 
+                varcov = sigma)
 }
 
 if( knitr::is_latex_output() ) {
@@ -2823,73 +2823,70 @@ cov <- corr * sqrt(sigma[1, 1] * sigma[2, 2] )
 sigma[1, 2] <- sigma[2, 1] <- cov
 
 f <- function(x, y, mn, sigma) {
-  mnormt::dmnorm(cbind(x, y), 
+  cat("INSIDE\n")
+  mnormt::dmnorm( matrix( cbind(x, y),
+                         byrow = FALSE,
+                         ncol = 2),
                  mean = mn,
                  varcov = sigma)
 }
-
-
-
-
-if( knitr::is_latex_output() ) {
 
 zz <- seq(-4, 4, 
           length = 50)
 x <- mu[1] + zz * sqrt(sigma[1, 1])
 y <- mu[2] + zz * sqrt(sigma[2, 2]) 
 
-z <- outer(x, y, f,
-           mn = mu,
-           sigma = sigma)
 
-contour(x, y, z,
-        asp = 1,
-        las = 1,
-        xlim = c(1550, 1900),
-        ylim = c(1450, 1750),
+if( knitr::is_latex_output() ) {
+  
+  z <- outer(x, y, 
+             FUN = "f",
+             mn = mu,
+             sigma = sigma)
+  
+  contour(x, y, z,
+          asp = 1,
+          las = 1,
+          xlim = c(1550, 1900),
+          ylim = c(1450, 1750),
+          xlab = "Husband heights (in mm)",
+          ylab = "Wife heights (in mm)")
+  
+  persp(x, y, z, 
+        theta = -30, 
+        phi = 45, 
+        shade = 0.75, 
+        col = plotColour, 
+        expand = 0.5, 
+        r = 2, 
+        ltheta = 25, 
         xlab = "Husband heights (in mm)",
-        ylab = "Wife heights (in mm)")
-
-persp(x, y, z, 
-      theta = -30, 
-      phi = 45, 
-      shade = 0.75, 
-      col = plotColour, 
-      expand = 0.5, 
-      r = 2, 
-      ltheta = 25, 
-      xlab = "Husband heights (in mm)",
-      ylab = "Wife heights (in mm)",
-      ticktype = "simple")
+        ylab = "Wife heights (in mm)",
+        ticktype = "simple")
 }
 if( knitr::is_html_output() ) {
-  zz <- seq(-4, 4, 
-            length = 40)
-  x <- mu[1] + zz * sqrt(sigma[1, 1])
-  y <- mu[2] + zz * sqrt(sigma[2, 2]) 
-
 
   M <- plot3D::mesh(x = x,
-                   y = y)
+                    y = y)
   
   z <- outer(x, y, f,
              mn = mu,
              sigma = sigma)
-
-
-rgl::persp3d(x = M$x, 
-            y = M$y, 
-            z = z,
-            xlim = c(1450, 2050),
-            ylim = c(1350, 1900),
-            zlim = c(0, 4e-05),
-            col = plotColour,
-            colkey = FALSE,
-            phi = 40,
-            xlab = "Husband heights (in mm)",
-            ylab = "Wife heights (in mm)",
-            theta = 30,
-            main = "Bivariate normal")
+  
+  
+  rgl::persp3d(x = M$x, 
+               y = M$y, 
+               z = z,
+               xlim = c(1450, 2050),
+               ylim = c(1350, 1900),
+               zlim = c(0, 4e-05),
+               col = plotColour,
+               colkey = FALSE,
+               phi = 40,
+               xlab = "Husband heights (in mm)",
+               ylab = "Wife heights (in mm)",
+               theta = 30,
+               main = "Bivariate normal")
 }
 ```
 \index{Bivariate normal distribution|)}
