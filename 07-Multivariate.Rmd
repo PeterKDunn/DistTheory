@@ -36,7 +36,7 @@ This chapter begins discussing the two-variable (bivariate) case, and then the m
 
 ### Probability function {#BivariateProbFunction}
 
-The range space of $(X, Y)$, $R_{X \times Y}$, will be a subset of the Euclidean plane. 
+The range space of $(X, Y)$, written $R_{X \times Y}$, will be a subset of the Euclidean plane. 
 Each outcome\ $X(s)$, $Y(s)$ may be represented as a point $(x, y)$ in the plane. 
 As in the one-dimensional case, distinguishing between discrete and continuous random variables is necessary.
 
@@ -99,9 +99,9 @@ Probabilities of events can be determined by the probability function or the pro
 For any event\ $A$, *the probability of\ $A$* is given by
 \begin{align*}
    \Pr(A) 
-   &= \sum_{(x, y) \in A} p(x, y),                       &\text{ for $(X, Y)$ discrete;}\\
+   &= \sum_{(x, y) \in A} p(x, y),                       &&\text{for $(X, Y)$ discrete;}\\
    \Pr(A)
-   &= \int \!\! \int_{(x, y) \in A}f(x, y) \, dx \, dy   & \text{for $(X, Y)$ continuous.}
+   &= \int \!\! \int_{(x, y) \in A}f(x, y) \, dx \, dy   &&\text{for $(X, Y)$ continuous.}
 \end{align*}
 :::
 
@@ -148,7 +148,7 @@ pmf1 <- data.frame(
 )
 ```
 
-```{r Bivar1graph, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="A bivariate probability function.", fig.align="center", out.width='80%',fig.width=6}
+```{r Bivar1graph, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="A bivariate discrete probability function.", fig.align="center", out.width='80%',fig.width=6}
 
 # Plot
 if (knitr::is_html_output()) {
@@ -188,12 +188,12 @@ if (knitr::is_html_output()) {
 
 
 
-```{r Bivar1graphlatex, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="A bivariate probability function.", fig.align="center", out.width='60%',fig.width=7}
+```{r Bivar1graphlatex, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="A bivariate discrete probability function.", fig.align="center", out.width='70%',fig.width=11}
 
 # Plot
 if (knitr::is_latex_output()) {
   plot3D::scatter3D(x = pmf1$x,
-                 y = pmf1$y, 
+                 y = pmf1$y,  
                  z = pmf1$f,
                  cex.lab = 0.75,
                  xlim = c(-0.5, 2.5),
@@ -250,7 +250,7 @@ colnames(Bivar1Table) <- c( "$x = 0$",
                             "$x = 2$")
 
 
-Bivar1Table.caption <- "A bivariate probability function"
+Bivar1Table.caption <- "A bivariate discrete probability function"
 if( knitr::is_latex_output() ) {
   knitr::kable(Bivar1Table,
                format = "latex",
@@ -978,7 +978,8 @@ plot(fy(y) ~ y,
      las = 1,
      lwd = 2,
      ylim = c(0, 1),
-     main = expression(Marginal~distn~of~italic(Y)))
+     main = expression(atop(Marginal~distribution,
+                            of~italic(Y))) )
 grid(nx = NULL)
 
 
@@ -997,7 +998,8 @@ plot(fyx(y, x = 0.1) ~ y,
      las = 1,
      lwd = 2,
      ylim = c(0, 1),
-     main = expression(Cond.~distn~of~italic(Y)~"|"~italic(X)==0.1) )
+     main = expression(atop(Conditional~distribution,
+                            of~italic(Y)~"|"~italic(X)==0.1) ) )
 grid(nx = NULL)
 
 # Conditional f(x | y = 1)
@@ -1008,7 +1010,8 @@ plot(fyx(y, x = 0.9) ~ y,
      las = 1,
      lwd = 2,
      ylim = c(0, 1),
-     main = expression(Cond.~distn~of~italic(Y)~"|"~italic(X)==0.9) )
+     main = expression(atop(Conditional~distribution,
+                            of~italic(Y)~"|"~italic(X)==0.9) ) )
 grid(nx = NULL)
 
 ```
@@ -1034,68 +1037,66 @@ f <- function(x, y){
 }
 
 if ( knitr::is_latex_output() ) {
-
-x <- seq(0, 1, 
-         length = 30)
-y <- seq(0, 2, 
-         length = 30)
-
-z <- zc <- outer(x, y, f)
-
-
-Cut <- which( x < 0.5 )
-zc[, Cut] <- 0
-
-persp(x, y, z, 
-      theta = -60, 
-      phi = 25, 
-      shade = 0.75, 
-      col = plotColour1, 
-      expand = 0.5, 
-      r = 2, 
-      ltheta = 25, 
-      xlab = "X",
-      ylab = "Y",
-      zlab = "f(x, y)",
-      main = "Joint distribution",
-      ticktype = "simple")
-
-
+  
+  x <- seq(0, 1, 
+           length = 30)
+  y <- seq(0, 2, 
+           length = 30)
+  
+  z <- zc <- outer(x, y, f)
+  
+  
+  Cut <- which( x < 0.5 )
+  zc[, Cut] <- 0
+  
+  persp(x, y, z, 
+        theta = -60, 
+        phi = 25, 
+        shade = 0.75, 
+        col = plotColour1, 
+        expand = 0.5, 
+        r = 2, 
+        ltheta = 25, 
+        xlab = "X",
+        ylab = "Y",
+        zlab = "f(x, y)",
+        main = "Joint distribution",
+        ticktype = "simple")
+  
+  
 }
 if( knitr::is_html_output() ) {
-x <- seq(0, 1, 
-         length = 50)
-y <- seq(0, 2, 
-         length = 50)
-
-z <- outer(x, y, f)
-
-
-Cut <- which( x < 0.5 )
-z[, Cut] <- 0
-
-
+  x <- seq(0, 1, 
+           length = 50)
+  y <- seq(0, 2, 
+           length = 50)
+  
+  z <- outer(x, y, f)
+  
+  
+  Cut <- which( x < 0.5 )
+  z[, Cut] <- 0
+  
+  
   M <- plot3D::mesh(x = x,
-                   y = y)
+                    y = y)
   
   z <- zc <- outer(x, y, f)
   Cut <- which( M$y < -1 )  
   zc[Cut] <- 0
-
-
-rgl::persp3d(x = M$x, 
-            y = M$y, 
-            z = z,
-            col = "grey",
-            colkey = FALSE,
-            phi = 40,
-            xlab = "X",
-            ylab = "Y",
-            zlab = "f(x, y)",
-            theta = 30,
-            main = "Joint distribution")
-
-
+  
+  
+  rgl::persp3d(x = M$x, 
+               y = M$y, 
+               z = z,
+               col = "grey",
+               colkey = FALSE,
+               phi = 40,
+               xlab = "X",
+               ylab = "Y",
+               zlab = "f(x, y)",
+               theta = 30,
+               main = "Joint distribution")
 }
 ```
 
@@ -1461,15 +1462,17 @@ In a manner analogous to the univariate case, the expectation of functions of tw
 
 :::{.definition #BVExpectation name="Expectation for bivariate distributions"}
 Let $(X, Y)$ be a $2$-dimensional random variable and let $u(X, Y)$ be a function of\ $X$ and\ $Y$. 
-Then the *expectation* or *expected value* of $\operatorname{E}[u(X, Y)]$ is
 
-* $\displaystyle
-      \operatorname{E}[u(X, Y)]
-      = \sum\sum_{(x, y)\in R}u(x, y) p_{X, Y}(x, y)$ for $(X, Y)$ discrete with probability function $p_{X, Y}(x, y)$ for $(x, y) \in R$;
-
-* $\displaystyle
-      \operatorname{E}[(u(X, Y)]
-      = \int \!\!\int_R u(x, y) f_{X, Y}(x, y) \, dx \, dy$ for $(X, Y)$ continuous with pdf $f_{X, Y}(x, y)$ for $(x, y) \in R$.
+For a *discrete* bivariate distribution with probability mass function $p_{X, Y}(x, y)$ defined over $(x, y) \in R$, the *expectation* or *expected value* of $\operatorname{E}[u(X, Y)]$ is
+$$
+   \operatorname{E}[u(X, Y)]
+   = \mathop{\sum\sum}_{(x, y)\in R} u(x, y)\, p_{X, Y}(x, y).
+$$
+For a *continuous* bivariate distribution with probability density function $f_{X, Y}(x, y)$ defined over $(x, y) \in R$, the *expectation* or *expected value* of $\operatorname{E}[u(X, Y)]$ is
+$$
+   \operatorname{E}[u(X, Y)]
+   = \mathop{\sum\sum}_{(x, y)\in R} u(x, y)\, p_{X, Y}(x, y).
+$$
 :::
 
 
@@ -1483,7 +1486,7 @@ Determine $\operatorname{E}[X + Y]$; i.e., the mean of the number of heads plus 
 From Def.\ \@ref(def:BVExpectation), write $u(X, Y) = X + Y$ and so
 \begin{align*}
    \operatorname{E}[X + Y] 
-   &= \sum_{x = 0}^2 \sum_{y = 1}^6 (x + y) p_{X, Y}(x, y)\\
+   &= \sum_{x = 0}^2 \sum_{y = 1}^6 (x + y)\, p_{X, Y}(x, y)\\
    &= 1\times(1/24) + 2\times(1/24) + \dots + 6\times(1/24)\\
    & \qquad + 2\times(1/12) + 3\times(1/12) + \dots + 7\times(1/12)\\
    & \qquad + 3\times(1/24) + 4\times(1/24) + \dots + 8\times(1/24)\\
@@ -1520,9 +1523,9 @@ The proof given here is for the discrete case; the continuous case is analogous.
 
 :::{.proof}
 \begin{align*}
-   \operatorname{E}[aX + bY]
-   &= \sum\sum_{(x, y) \in R}(ax + by) \, p_{X, Y}(x, y), \text{ by definition}\\
-  &= \sum_x \sum_y ax p_{X, Y}(x, y) + \sum_x \sum_y by p_{X, Y}(x, y)\\
+  \operatorname{E}[aX + bY]
+  &= \mathop{\sum\sum}_{(x, y) \in R}(ax + by) \, p_{X, Y}(x, y), \text{ by definition}\\
+  &= \sum_x \sum_y ax\, p_{X, Y}(x, y) + \sum_x \sum_y by\, p_{X, Y}(x, y)\\
   &= a\sum_x x\sum_y p_{X, Y}(x, y) + b\sum_y y\sum_x p_{X, Y}(x, y)\\
   &= a\sum_x x \Pr(X = x) + b\sum_y y \Pr(Y = y)\\
   &= a\operatorname{E}[X] + b\operatorname{E}[Y].
@@ -1543,17 +1546,20 @@ Hence, define $\mu'_{rs} = \operatorname{E}[X^r Y^s]$ or $\mu_{rs} = \operatorna
 The most important of these moments is the covariance.
 
 :::{.definition #BVCovariance name="Covariance"}
-The *covariance* of\ $X$ and\ $Y$ is defined as
-\begin{align*}
-   \operatorname{Cov}(X, Y) 
-   &= \operatorname{E}[(X - \mu_X)(Y - \mu_Y)]\\
-   &= \begin{cases}
-      \displaystyle
-         \sum_{x} \sum_{y} (x - \mu_X)(y - \mu_Y) p_{X, Y}(x, y) & \text{for $X, Y$ discrete};\\[6pt]
-         \displaystyle
-         \int_{-\infty}^\infty\!\int_{-\infty}^\infty (x - \mu_X)(y - \mu_Y) f_{X, Y}(x, y)\, dx\, dy & \text{for $X, Y$ continuous}.
-       \end{cases}
-\end{align*}
+The *covariance* of\ $X$ and\ $Y$ is defined as 
+$$
+   \operatorname{Cov}(X, Y) = \operatorname{E}[(X - \mu_X)(Y - \mu_Y)].
+$$
+When\ $X$ and\ $Y$ are discrete,
+$$
+   \operatorname{Cov}(X, Y) =
+   \sum_{x} \sum_{y} (x - \mu_X)(y - \mu_Y)\, p_{X, Y}(x, y).
+$$
+When\ $X$ and\ $Y$ are continuous,
+$$
+   \operatorname{Cov}(X, Y) =
+   \int_{-\infty}^\infty\!\int_{-\infty}^\infty (x - \mu_X)(y - \mu_Y)\, f_{X, Y}(x, y)\, dx\, dy.
+$$
 :::
 
 The covariance is a measure of how\ $X$ and\ $Y$ vary jointly, in the sense that a positive covariance indicates that 'on average'\ $X$ and\ $Y$ increase (or decrease) together whereas a negative covariance indicates that `on average' as\ $X$ increases and\ $Y$ decreases (and vice versa). 
@@ -1758,7 +1764,7 @@ Then
    = 0 - 0\times 2/3 = 0
 \end{equation*}
 so $\text{Corr}(X_1, X_2) = 0$. 
-But\ $X_1$ and\ $X_2$ *are certainly related* as\ $X_2$ was explicitly defined as a function of\ $X_1$.
+But\ $X_1$ and\ $X_2$ are *certainly related*, because\ $X_2$ was explicitly defined as a function of\ $X_1$.
 
 Since the correlation is a measure of the strength of the *linear* relationship between two random variables, a correlation of zero simply is indication of no *linear* relationship between\ $X_1$ and\ $X_2$. 
 (As is the case in this example, there may be a different relationship between the variables, but no linear relationship.)
@@ -1823,15 +1829,18 @@ Conditional expectations are simply expectations computed from a conditional dis
 The conditional mean is the expected value computed from a conditional distribution.
 
 :::{.definition #ConditionalExpectation name="Conditional expectation"}
-The *conditional expected value* or *conditional mean* of a random variable\ $X$ for given $Y = y$ is denoted by $\operatorname{E}[X \mid Y = y]$ and is defined as
-\begin{align*}
-   \operatorname{E}[X \mid Y = y]
-   &=
-   \begin{cases}
-      \displaystyle \sum_{x} x p_{X\mid Y}(x\mid y) & \text{if $p_{X\mid Y}(x\mid y)$ is the conditional pf};\\[6pt]
-      \displaystyle \int_{-\infty}^\infty x f_{X\mid Y}(x\mid y)\, dx & \text{if $f_{X\mid Y}(x\mid y)$ is the conditional pdf}.\\
-   \end{cases}
-\end{align*}
+The *conditional expected value* or *conditional mean* of a random variable\ $X$ for given $Y = y$ is denoted by $\operatorname{E}[X \mid Y = y]$.
+
+If the conditional distribution is discrete with probability mass function $p_{X\mid Y}(x\mid y)$, then
+$$
+  \operatorname{E}[X \mid Y = y] =
+  \displaystyle \sum_{x} x p_{X\mid Y}(x\mid y).
+$$
+If the conditional distribution is continuous with probability density function $f_{X\mid Y}(x\mid y)$, then
+$$
+  \operatorname{E}[X \mid Y = y] =
+  \int_{-\infty}^\infty x f_{X\mid Y}(x\mid y)\, dx.
+$$
 :::
 
 
@@ -1879,22 +1888,25 @@ Since $\operatorname{E}[Y\mid X = x]$ depends on the value of\ $X$, this means\ 
 The conditional variance is the variance computed from a conditional distribution.
 
 :::{.definition #ConditionalVariance name="Conditional variance"}
-The *conditional variance* of a random variable\ $X$ for given $Y = y$ is denoted by $\operatorname{var}[X \mid Y = y]$ and is defined as
-\begin{align*}
-   \operatorname{var}[X \mid Y = y]
-   &=
-   \begin{cases}
-      \displaystyle
-      \sum_{x} (x-\mu_{X\mid y})^2 p(x\mid y) & \text{if $p(x\mid y)$ is the conditional pf};\\[6pt]
-      \displaystyle
-      \int_{-\infty}^\infty (x-\mu_{X\mid y})^2 f(x\mid y)\, dx & \text{if $f(x\mid y)$ is the conditional pdf}.\\
-   \end{cases}
-\end{align*}
+The *conditional variance* of a random variable\ $X$ for given $Y = y$ is denoted by $\operatorname{var}[X \mid Y = y]$.
+
+If the conditional distribution is discrete with probability mass function $p_{X\mid Y}(x\mid y)$, then
+$$
+  \operatorname{var}[X \mid Y = y] =
+  \displaystyle \sum_{x} (x - \mu_{X\mid y})^2\, p_{X\mid Y}(x\mid y),
+$$
+where $\mu_{X \mid y}$ is the *conditional mean* of\ $X$ given $Y = y$.
+
+If the conditional distribution is continuous with probability density function $f_{X\mid Y}(x\mid y)$, then
+$$
+  \operatorname{var}[X \mid Y = y] =
+  \int_{-\infty}^\infty (x - \mu_{X\mid y})^2\, f_{X\mid Y}(x\mid y)\, dx.
+$$
 where $\mu_{X \mid y}$ is the *conditional mean* of\ $X$ given $Y = y$.
 :::
 
 
-$\operatorname{var}[X \mid Y = y]$ is typically denoted $\sigma^2_{X \mid Y = y}$.
+For brevity, $\operatorname{var}[X \mid Y = y]$ is often denoted $\sigma^2_{X \mid Y = y}$.
 
 
 :::{.example #ConditionVariance name="Conditional variance (continuous)"}
@@ -1926,17 +1938,17 @@ Hence the variance of\ $Y$ depends on the value of\ $X$ that is given; for examp
 In general, to compute the conditional variance of $X\mid Y = y$ given a joint probability function, the following steps are required.
 
 * Find the marginal distribution of\ $Y$.
-* Use this to compute the conditional probability function $f_{X \mid Y = y}(x \mid y) = f_{X, Y}(x, y)/f_{X}(x)$.
+* Use this to compute the conditional probability function $p_{X \mid Y = y}(x \mid y) = p_{X, Y}(x, y)/p_{X}(x)$.
 * Find the conditional mean $\operatorname{E}[X \mid Y = y]$.
 * Find the conditional second raw moment $\operatorname{E}[X^2 \mid Y = y]$.
-* Finally, compute $\operatorname{var}(X\mid Y = y) = \operatorname{E}[X^2\mid Y=y] - (\operatorname{E}[X\mid Y=y])^2$.
+* Finally, compute $\operatorname{var}[X\mid Y = y] = \operatorname{E}[X^2\mid Y=y] - (\operatorname{E}[X\mid Y=y])^2$.
 
 
 :::{.example #ConditionalVar name="Conditional variance (discrete)"}
 Two discrete random variables\ $U$ and\ $V$ have the joint probability function given in Table\ \@ref(tab:CondVar).
 To find the conditional variance of\ $V$ given $U = 11$, use the steps above.
 
-1. First, find the marginal distribution of\ $U$:
+First, find the marginal distribution of\ $U$:
 $$
       p_U(u) = \begin{cases}
          4/9 & \text{for $u = 10$};\\
@@ -1945,7 +1957,7 @@ $$
          0 & \text{otherwise.}\\
          \end{cases}
 $$
-2. Secondly, compute the conditional probability function:
+Secondly, compute the conditional probability function:
    \begin{align*}
       p_{V\mid U = 11}(v \mid u = 11)
       &= p_{U, V}(u,v)/p_{U}(u = 11) \\
@@ -1956,17 +1968,17 @@ $$
    \end{align*}
    using $p_U(u = 11) = 7/18$ from the Step\ 1.
 
-3. Thirdly, find the conditional mean:
+Thirdly, find the conditional mean:
 $$
       \operatorname{E}[V\mid U = 11] = \sum_v v p_{V\mid U = 11}(v\mid u) =
          \left(\frac{1}{7}\times 0\right) + \left(\frac{6}{7}\times 1\right)  = 6/7.
 $$
-4. Fourthly, find the conditional second raw moment:
+Fourthly, find the conditional second raw moment:
 $$
       \operatorname{E}[V^2\mid U = 11] = \sum_v v^2 p_{V\mid U = 11}(v\mid u) =
          \left(\frac{1}{7}\times 0^2\right) + \left(\frac{6}{7}\times 1^2\right)  = 6/7.
 $$
-5. Finally, compute:
+Finally, compute:
    \begin{align*}
       \operatorname{var}[V\mid U = 11] 
       &= \operatorname{E}[V\mid U = 11] - (\operatorname{E}[V\mid U = 11])^2\\
@@ -2069,10 +2081,10 @@ Then by definition of variance
      &= \operatorname{E}\big[Y - \operatorname{E}(Y)\big]^2\\
      &= \operatorname{E}[a_1 X_1 + \dots + a_n X_n - a_1\mu_1 - \dots a_n\mu_n]^2\\
      &= \operatorname{E}[a_1(X_1 - \mu_1) + \dots + a_n(X_n - \mu_n)]^2\\
-     &= \operatorname{E}\left[ \sum_i a^2_i(X_i - \mu_i)^2 + 2\sum\sum_{i < j}a_i a_j(X_i - \mu_i)X_j - \mu_j)\right]\\
-     &= \sum_i a^2_i\operatorname{E}[X_i - \mu_i]^2 + 2{\sum\sum}_{i < j}a_i a_j\operatorname{E}[X_i - \mu_i] (X_j - \mu_j)\\
+     &= \operatorname{E}\left[ \sum_i a^2_i(X_i - \mu_i)^2 + 2\mathop{\sum\sum}_{i < j}a_i a_j(X_i - \mu_i)X_j - \mu_j)\right]\\
+     &= \sum_i a^2_i\operatorname{E}[X_i - \mu_i]^2 + 2\mathop{\sum\sum}_{i < j}a_i a_j\operatorname{E}[X_i - \mu_i] (X_j - \mu_j)\\
         %\quad \text{using Theorem\ \@ref(thm:ExpLinear)}\\
-     &= \sum_i a^2_i\sigma^2_i + 2{\sum\sum}_{i<j}a_i a_j\operatorname{Cov}(X_i, X_j).
+     &= \sum_i a^2_i\sigma^2_i + 2\mathop{\sum\sum}_{i<j}a_i a_j\operatorname{Cov}(X_i, X_j).
 \end{align*}
 :::
 
@@ -2102,32 +2114,35 @@ Linear combinations of random variables are most elegantly dealt with using the 
 In the bivariate case we define
 \begin{align}
    \mathbf{X} 
-   &= \left[ \begin{array}{c} X_1 \\ X_2 \end{array} \right];
+   &= \left( \begin{array}{c} X_1 \\ X_2 \end{array} \right);
   \label{EQN:matrix1} \\
   \operatorname{E}[\mathbf{X}] 
-  & =  \operatorname{E} \left[ \left[ 
+  & =  \operatorname{E} \left[ 
+  \left( 
    \begin{array}{c} 
       X_1 \\ 
       X_2
-   \end{array} \right] \right]
+   \end{array} 
+   \right) \right]
    =  
-   \left[ 
+   \left(
    \begin{array}{c} 
      \mu_1 \\
      \mu_2 
-   \end{array} \right] =
+   \end{array} \right) =
   \boldsymbol{\mu};\label{EQN:matrix2} \\
   \operatorname{var}[\mathbf{X}] 
-  & = \operatorname{var}\left[] \left[ 
+  & = \operatorname{var}\left[ \left(
   \begin{array}{c} 
      X_1 \\ 
      X_2
-  \end{array} \right] \right]
-  = \left[ 
+  \end{array} 
+  \right) \right]
+  = \left( 
   \begin{array}{cc} 
      \sigma^2_1  & \sigma_{12} \\
      \sigma_{21} & \sigma^2_2 
-  \end{array} \right]
+  \end{array} \right)
   = \mathbf{\Sigma}.\label{EQN:matrix3}
 \end{align}
 
@@ -2137,44 +2152,44 @@ The linear combination $Y = a_1 X_1 + a_2 X_2$ can be expressed
 \begin{equation}
    Y 
    = a_1 X_1 + a_2 X_2 
-   = [a_1, a_2] 
-   \left[ 
+   = (a_1, a_2)
+   \left( 
    \begin{array}{c} 
       X_1 \\ 
       X_2 
    \end{array} 
-   \right] 
+   \right) 
    = \mathbf{a}^T\mathbf{X}
    (\#eq:BivarCombination)
 \end{equation}
-where the (column) vector $\mathbf{a}=\left[ \begin{array}{c} a_1 \\ a_2 \end{array} \right]$, and the superscript\ $T$ means 'transpose'.
+where the (column) vector $\mathbf{a}=\left( \begin{array}{c} a_1 \\ a_2 \end{array} \right)$, and the superscript\ $T$ means 'transpose'.
 
 With the standard rules of matrix multiplication, Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance) applied to Eq.\ \@ref(eq:BivarCombination) then give respectively (check!)
 \begin{equation}
    \operatorname{E}[Y]
    = \operatorname{E}[\mathbf{a}^T\mathbf{X}]
-   = [a_1, a_2]
-   \left[ 
+   = (a_1, a_2)
+   \left( 
    \begin{array}{c} 
       \mu_1 \\ 
       \mu_2 
     \end{array} 
-    \right]
+    \right)
    = \mathbf{a}^T\boldsymbol{\mu}
 \end{equation}
 and
 \begin{align}
   \operatorname{var}[Y]
   &= \operatorname{var}[\mathbf{a}^T\mathbf{X}\mathbf{a}]\nonumber\\
-  &= [a_1,a_2]
+  &= (a_1,a_2)
   \left[ \begin{array}{cc} 
      \sigma^2_1 & \sigma_{12} \\
      \sigma_{21}& \sigma^2_2 
   \end{array} \right]
-  \left[ \begin{array}{c} 
+  \left( \begin{array}{c} 
      a_1 \\ 
      a_2
-  \end{array} \right]\nonumber\\
+  \end{array} \right)\nonumber\\
   &= \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}.
 \end{align}
 
@@ -2184,10 +2199,10 @@ Write
   \mathbf{X} 
   & =(X_1, X_2, \ldots, X_n)^T; \\
   \operatorname{E}[\mathbf{X}] 
-  & =(\mu_1, \ldots, \mu_n)' = \boldsymbol{\mu}^T; \\
-  \operatorname{var}[\mathbf{X}] 
-  & = \mathbf{\Sigma} \\
-   \mathbf{a}^T & = \left[a_1,a_2,\ldots, a_n \right].
+  & =(\mu_1, \ldots, \mu_n)^T = \boldsymbol{\mu}^T; \\
+  \operatorname{var}[\mathbf{X}]
+  & = \mathbf{\Sigma}; \\
+   \mathbf{a}^T & = \left(a_1,a_2,\ldots, a_n \right).
 \end{align*}
 Now Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance) can be expressed in vector form.
 
@@ -2240,22 +2255,24 @@ $$
 where $\mathbf{X}^T=(X_1, X_2, X_3)$.
 Also define $\boldsymbol{\mu}^T = (1, 2, 3)$ and 
 $\mathbf{\Sigma} = 
-\left[\begin{array}{ccc} 
+\left(
+\begin{array}{ccc} 
   4 & -1 & 1\\
  -1 & 5 & 0\\
   1 & 0 & 6
-\end{array}\right]$ 
+\end{array}
+\right)$ 
 as the mean and variance--covariance matrix respectively of $\mathbf{X}$.
 Then
 $$
    \operatorname{E}[Y_1]
    = \mathbf{a}^T\boldsymbol{\mu}
    = (3, 2, -1)
-   \left[\begin{array}{c} 
+   \left(\begin{array}{c} 
       1\\
       2\\
       3
-      \end{array}\right] 
+      \end{array}\right) 
    = 4
 $$
 and
@@ -2263,17 +2280,17 @@ $$
    \operatorname{var}[Y_1]
    = \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}
    = (3, 2, -1)
-   \left[ \begin{array}{ccc} 
+   \left( \begin{array}{ccc} 
       4 & -1 & 1\\
       -1 & 5 & 0\\
        1 & 0 & 6
-    \end{array} \right]
-    \left[\begin{array}{c} 
+    \end{array} \right)
+    \left(\begin{array}{c} 
       3\\
       2\\
       -1
    \end{array}
-   \right] 
+   \right) 
    = 44.
 $$
 Similarly $\operatorname{E}[Y_2] = 2$ and $\operatorname{var}[Y_2] = 8$.
@@ -2282,16 +2299,16 @@ $$
    \operatorname{Cov}(Y_1, Y_2)
    = \mathbf{a}^T\mathbf{\Sigma}\mathbf{b}
    = (3, 2, -1)^T
-   \left[ \begin{array}{ccc} 
+   \left( \begin{array}{ccc} 
       4 & -1 & 1\\
       -1 & 5 & 0\\
       1 & 0 & 6
-      \end{array} \right]
-      \left[\begin{array}{c}
+      \end{array} \right)
+      \left(\begin{array}{c}
         -1\\
         0\\
         1
-      \end{array}\right] 
+      \end{array}\right)
   = -12.
 $$
 :::
@@ -2370,7 +2387,7 @@ So $\operatorname{Cov}(X, Y) = n^2 p_1 p_2 - n p_1 p_2 - (n p_1)(n p_2) = -n p_1
 :::
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The two **R** functions for working with the multinomial distribution functions have the form `[dr]multinom(size, prob)` where `size`${}= n$ and `prob`${} = (p_1, p_2, \dots, p_k)$ for $k$ categories (see Appendix \@ref(UseRDistributions)).
+The two **R** functions for working with the multinomial distribution functions have the form `[dr]multinom(size, prob)` where `size`${}= n$ and `prob`${} = (p_1, p_2, \dots, p_k)$ for $k$ categories (see App.\ \@ref(UseRDistributions)).
 Note that the functions `qmultinom()` and `pmultinom()` are not defined.
 :::
 
@@ -3203,12 +3220,12 @@ If the random variables\ $U$ and\ $V$ are defined by $U = 2X_1 + X_2 - X_3$ and 
 
   
 :::{.exercise}
-Let\ $X$ and\ $Y$ be the body mass index (BMI) and percentage body fat for netball playerers attending the AIS. 
+Let\ $X$ and\ $Y$ be the body mass index (BMI) and percentage body fat for netball players attending the AIS. 
 Assume\ $X$ and\ $Y$ have a bivariate normal distribution with $\mu_X = 23$, $\mu_Y = 21$, $\sigma_X = 3$, $\sigma_Y = 6$ and $\rho_{XY} = 0.8$. 
 Find
 
 1. the expected BMI of a netball player who has a percent body fat of\ $30$.
-1. the expected percentage body fat of a netball playerer who has a BMI of\ $19$.
+1. the expected percentage body fat of a netball player who has a BMI of\ $19$.
 :::
 
   
@@ -3222,16 +3239,7 @@ Find
 1. $\Pr(0 < Y < 8 \mid X = 0)$.
 :::
   
-  
-:::{.exercise}
-OUT OF PLACE??
 
-In Sect.\ \@ref(NegativeBinomialDistribution), different forms of the negative binomial distribution were given: one for\ $Y$, the number of trials until\ $r$ successes were observed, and one for\ $X$, the number of failures until\ $r$ successes were observed.
-
-1. Use that $Y = X + r$ to derive the mean and variance of\ $X$, given that $\operatorname{E}[Y] = r/p$ and $\operatorname{var}[Y] = r(1 - p)/p^2$.
-1. Use the MGF for\ $Y$ to prove the MGF for $X$ is $M_X(t) = \left( \frac{p}{1 - (1 - p)\exp(t)}\right)^r$.
-:::
-  
   
 :::{.exercise #FairCoinTossedTwice}
 Consider a random process where a fair coin is tossed twice. 
@@ -3298,7 +3306,7 @@ $x = 3$ | 0.10 | 0.05 | 0.00
 1. Calculate $\Pr(X + Y = 2 \mid X = Y)$.
 1. Are\ $X$ and\ $Y$ independent? 
    Justify your answer.
-1. Calculate the correlation of\ $X$ and\ $Y$, $\text{cor}(X,Y)$.
+1. Calculate the correlation of\ $X$ and\ $Y$; i.e., compute $\text{Cor}(X,Y)$.
 :::
 
 
@@ -3422,14 +3430,35 @@ $$
       0            & \text{elsewhere},
    \end{cases}
 $$
-where the region\ $R$ is shown in Fig.\ \@ref(fig:RegionR).
+where the region\ $R$ is shown in Fig.\ \@ref(fig:RegionRA) (left panel).
 
 1. Determine the value of\ $k$.
 1. Compute $\Pr(X > Y)$.
 1. Compute $\Pr(X > 0.5)$.
 
 
-```{r RegionR, echo=FALSE, fig.align="center", fig.cap = "The region $R$.", out.width = '50%', fig.width=5}
+
+:::{.exercise #JointLinear}
+Consider the joint pdf
+$$
+   f_{X, Y}(x, y) = 
+   \begin{cases}
+      k ( x + 2y) y & \text{for the region $A$ below};\\
+      0             & \text{elsewhere},
+   \end{cases}
+$$
+where the region\ $A$ is shown in Fig.\ \@ref(fig:RegionRA) (right panel).
+
+1. Determine the value of\ $k$.
+1. Compute $\Pr(X > Y)$.
+1. Compute $\Pr(X > 0.5)$.
+
+
+```{r RegionRA, echo=FALSE, fig.align="center", fig.cap = "The region $R$ (left) and the region $A$ (right).", out.width = '100%', fig.width=9}
+par(mfrow = c(1, 2))
+
+###
+
 x <- seq(0, 1, 
          length = 500)
 y <- x^2
@@ -3449,6 +3478,7 @@ text(0.4, 0.6,
      cex = 2)
 text(0.8, 0.3, 
      expression( italic(y) == italic(x)^2),
+     pos = 4,
      cex = 1.2)
 arrows(x0 = 0.74, 
        x1 = 0.6,
@@ -3456,6 +3486,40 @@ arrows(x0 = 0.74,
        y1 = 0.36,
        angle = 15,
        length = 0.2)
+
+
+
+###
+
+x <- seq(0, 1, 
+         length = 500)
+y <- 1 - x 
+
+plot(x = x,
+     y = y,
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y)),
+     type = "l",
+     las = 1,
+     lwd = 3)
+polygon( x = c(0, 0, 1),
+         y = c(0, 1, 0),
+         col = "grey")
+text(0.25, 0.35, 
+     expression(italic(A)),
+     cex = 2)
+text(0.8, 0.6, 
+     expression( italic(y) == 1-italic(x)),
+     pos = 3,
+     cex = 1.2)
+arrows(x0 = 0.8, 
+       x1 = 0.6,
+       y0 = 0.6,
+       y1 = 0.4,
+       angle = 15,
+       length = 0.2)
+
+
 ```
 :::
 
