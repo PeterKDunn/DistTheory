@@ -9,22 +9,239 @@ On completion of this module, you should be able to:
 :::
 
 
+## Introduction
+
+Mixed random variables commonly occur, but are not often studied.
+Mixed random variable appear in diverse applications such as insurance, climatology, fishing, etc.
+
+In most cases in practice, a mixed random variable\ $X$ has a discrete probability at $X = 0$, and then are continuous for $X > 0$; these are the only situation we consider.
+For example:
+
+* When modellimg insurance, the zero probability corresponds to portfolios with zero claims; howevevr, when claims are made, the total claim amount has a continuous distribution.
+* When modelling rainfall, the zero probability corresponds to receiving zero rainfall; howevevr, when rain does fall, the total rainfall recorded has a continuous distribution.
+* When modelling fish catch, the zero probability corresponds to catching zero fish; howevevr, when fish are caught, the mass of fish catch has a continuous distribution.
+
+Continuous data with a discrete probability at zero can be modelled in various different ways, depending on how the zero probability is ?seen?.
+
+*Censored models*\index{Censored models} (Sect.\ \@ref(CensoredModels)) assume the existence of an underlying *latent variable*, defined for all real values.\index{Latent variable}
+Values of the latent variable below zero cannot be observed (called *censoring}\index{Censoring}).
+All the probabilities corrresponding to values of the latent variable below zero are accujulated, and assigned to the probability of observing a value of zero.
+the zeros values represent *censored observations* of the latent variable.
+
+*Hurdle models*\index{Hurdle models} treat the zeros as emerging from a two-step process.
+Step one is a binary process, that models whether the event of interest (i.e., an insurance claim is made; rainfall is recorded; fish are caught) occurs.
+Step two is a model for the continuous data, conditional on the event of interest occurring.
+
+*Poisson-gamma models*\index{Poisson-gamma models} combine the discrete and continuous components in a single probability model.
+Unlike the hurdle model, the discrete and continuous parts are not modelled separately; the entire distribution is modelled using a single probability model.
+
+
+## Censored model {#CensoredModels}
+
+Censored models assume the existence of a *latent variable*,\index{Latent variable} say\ $z$ such that $z\in\mathbb{R}$, with probability function $f_Z(z)$.
+Below some threshold (usually zero), the values of\ $z$ cannot be observed; denote this threshold as $z^*$.
+(EXAMPLE)
+Usually $z^* = 0$, so that any value of\ $Z \le 0$ is recorded as\ $z = 0$.
+That is, we observe the random variable\ $X$ such that
+$$
+  X = 
+  \begin{cases}
+    \Pr(Z < 0) & \text{if $Z \le 0$};\\
+    Z          & \text{if $Z > 0$}. 
+  \end{cases}
+$$
+This means the probability function of\ $X$ is
+$$
+  f_X(x) = 
+  \begin{cases}
+    \Pr(Z < 0) & \text{for $X = 0$};\\
+    f_Z(z)     & \text{for $X > 0$}. 
+  \end{cases}
+$$
+These models are also called *Tobit models*.\index{Tobit models}
+
+
+:::{.example #TobitExamplesLatent name="Latent variables and censoring"}
+Consider household spending on alcohol (which can be observed), which must take a non-negative value.
+We could assume an underlying, unobserved latent variable such as the 'propensity' or 'desire' to purchase alcohol.
+Any negative 'propensity' or 'desire' will result in observing a spend of zero dollars.
+:::
+
+
+:::{.example #TobitExamplesLatent2 name="Latent variables and censoring"}
+Consider the number of hours worked (which can be observed), which must take a non-negative value.
+We could assume an underlying, unobserved latent variable such as 'willingness to work'.
+Any negative 'willingness to work' all result in zero observed hours of work.
+:::
+
+
+
+:::{.example #TobitExample name="Censored model"}
+Consider a latent variable\ $Y$, so that the values $Y < 0$ are recorded as\ $Y = 0$, and where\ $Y$ has the normal distribution\index{Normal distribution} (Fig.\ \@ref(fig:TobitPic), left panel))
+$$
+  Y \sim N(\mu = 1.5, \sigma^2 = 1).
+$$
+Note that 
+$$
+  \Pr(Y < 0) = \Pr\big(Z < (0 - 1.5)/1\big) = \Phi(-1.5) \approx 0.0668.
+$$
+Then, define the random variable\ $X$ as FIX!!
+$$
+  f_X(x) = 
+  \begin{cases}
+    \Phi\big( (0 - \mu)/\sigma\Big) & \text{if $X = 0$};\\
+    Y                               & \text{if $X > 0$},
+  \end{cases}
+$$
+as shown in Fig.\ \@ref(fig:TobitPic) (right panel)).
+:::
+
+
+
+```{r TobitPic, echo=FALSE, fig.align="center", fig.cap="A truncated model, using a normal distribution for the continuous component, truncated at $X = 0$.", fig.width=8, fig.height=4.5, out.width="90%"}
+par( mfrow = c(1, 2))
+
+x.mean <- 1.5
+x.sd <- 1
+p <- pnorm(0,
+            mean = x.mean,
+            sd = x.sd)
+
+x <- seq(from = x.mean - (3.5 * x.sd),
+         to =   x.mean + (3.5 * x.sd),
+         length = 1000)
+
+y <-  dnorm(x,
+            mean = x.mean,
+            sd = x.sd)
+
+plot(y ~ x,
+     xlim = c(-2, 5),
+     type = "n",
+     axes = FALSE,
+     xlab = expression(Latent~variable~italic(Z)),
+     ylab = expression(Prob.~"function"),
+     main = "A mixed distribution: the latent model",
+     lwd = 2)
+axis(side = 1)
+
+# Shade for X < 0
+xNeg <- x[ x <= 0]
+yNeg <- y[ x <= 0]
+
+polygon( x = c(xNeg, rev(xNeg)),
+         y = c(yNeg, rep(0, length(yNeg))),
+         col = "lightgrey",
+         border = NA) # Omit border
+
+# Different colours for x >= 0 and x < 0
+lines( y[x > 0] ~ x[x > 0],
+       lwd = 2,
+       col = "black")
+lines( y[x <= 0] ~ x[x <= 0],
+       lwd = 2,
+       col = "darkgrey")
+
+# x = 0
+abline(v = 0,
+       col = "grey",
+       lty = 2)
+
+box()
+
+
+# Explanatory labels
+arrows(x0 = -1,
+       x1 = -0.5,
+       y0 = 0.2,
+       y1 = 0.08,
+       length = 0.15,
+       angle = 15)
+text(x = -1,
+     y = 0.2,
+     pos = 3,
+     cex = 0.9,
+     label = expression(atop(Where,
+                             italic(Z)<0) ) )
+
+################################################################################
+
+plot(y[x > 0] ~ x[x > 0],
+     xlim = c(-2, 5),
+     type = "l",
+     axes = FALSE,
+     xlab = expression(italic(X)),
+     ylab = expression(Prob.~"function"),
+     main = "A mixed distribution: censored model",
+     lwd = 2)
+axis(side = 1)
+box()
+
+
+points(x = 0,
+       y = p,
+       pch = 19)
+
+
+# Explanatory labels
+arrows(x0 = 1.5,
+       x1 = 0,
+       y0 = p,
+       y1 = p,
+       length = 0.15,
+       angle = 15)
+text(x = 1.5,
+     y = p,
+     pos = 1,
+     cex = 0.9,
+     label = expression( atop(Discrete~part,
+                              at~italic(X)==0) ) )
+
+
+arrows(x0 = 4,
+       x1 = 3,
+       y0 = 0.3,
+       y1 = dnorm(3, mean = x.mean, sd = x.sd),
+       length = 0.15,
+       angle = 15)
+text(x = 4,
+     y = 0.3,
+     pos = 3,
+     cex = 0.9,
+     label = expression( atop(Truncated,
+                              normal)) ) 
+
+# X < 0 part
+lines( y[x <= 0] ~ x[x <= 0],
+       lwd = 1,
+       lty = 3,
+       col = "darkgrey")
+
+# x = 0
+abline(v = 0,
+       col = "grey",
+       lty = 2)
+
+
+```
+
+
+
 
 ## Hurdle models {#HurdleModels}
 
-A point mass at\ $0$, plus truncated distribution for positive values.
+A *hurdle model*\index{Hurdle model} treats the zeros as emerging from a two-step process.
+The first step uses a binomial (OR BERNOULLI?) models to model whether an event of interest occurs or not:
+$$
+  \Pr() = 
+  \begin{cases}
+    p     & \text{if the event of interest \emph{does not} occur;}\\
+    1 - p &\text{if the event of interest \emph{does} occur.}
+  \end{cases}
+$$
+If the event does occur, with probabilty $1 - p$, the continuous component is modelled using a probability model defined for positive real values only, such as an exponential distribution or an exponential distribution. 
 
-* Not censoring
-Concept: Two-stage model:
-
-First, a Bernoulli model decides whether the value is zero or positive.
-
-Then, a truncated distribution (e.g., Poisson or Gamma) is fitted to the positive values only.
-
-* Two-part model: Bernoulli + truncated distn (e.g., gamma).
-* Healthcare costs; heavy zero mass
-* Helpful with structural zeroes
-* Model:
+The probabiluty function for the mixed random variable\ $X$ is therefore
 $$
    f_X(x) = 
    \begin{cases}
@@ -36,74 +253,91 @@ where $g_X(x)$ is continuous distribution defined in $x\in\mathbb{R}_{+}$.
 
 
 :::{.example #HurdleExample name="Hurdle model"}
-Using a normal distribution for $g_X(x)$,
+Consider the random variable\ $X$, where $\Pr(X = 0) = 0.3$.
+Then, use an exponential distribution\index{Exponential distribution} when $X > 0$; that is
 $$
   f_X(x) = 
     \begin{cases}
-       p              & \text{if $X = 0$}\\
+       p              & \text{if $x = 0$}\\
        (1 - p) g_X(x) & \text{if $x > 0$,}
     \end{cases}
 $$
-where $g_X(x)$ is the normal distribution.
+where $g_X(x)$ is the exponential distribution with mean parameter $\lambda = 1/2$ for $X > 0$:
+$$
+  g_X(x) = 2\exp(2x) CHECK!!!.
+$$
+See Fig.\ \@ref(fig.HurdlePic).
 :::
 
+```{r HurdlePic, echo=FALSE, fig.align="center", fig.cap="A hurdle model, showing an exponential distribution for the continuous component.", fig.width=8, fig.height=4, out.width="90%"}
+p <- 0.3
+x.rate = 2
 
-## Tobit model {#CensoredModels}
+x <- seq(0, 3,
+         length = 100)
+y <-  (1 - p) * dexp(x, 
+                     rate = x.rate)
+                     
+plot(y ~ x,
+     type = "l",
+     axes = FALSE,
+     ylim = c(0,
+              max( c(y, p) ) ),
+     xlab = expression(italic(X)),
+     ylab = expression(Prob.~"function"),
+     main = "A mixed distribution: hurdle model",
+     lwd = 2)
+axis(side = 1)
+box()
 
-A censored normal: positive mass at a threshold (e.g.,\ $0$), plus continuous above it.
+points(x = 0, # Included
+       y = p,
+       pch = 19)
+points(x = 0, # Excluded
+       y = max(y),
+       pch = 1)
 
-Concept: A censored regression model, used when there's an underlying latent continuous variable that’s only partially observed.
-
-
-* Joint model
-* Censored economic data; wages; Time use (Jude Brown)
-* Model:
-
-Assume some *latent variable*, say\ $z$, such that $z\in\mathbb{R}$, with probability function $f_Z(z)$.
-When $Z < z^*$, the value of\ $z$ is recorded as\ $Z = z*$.
-Usually $z^* = 0$, so that any value of\ $Z \le 0$ is recorded as\ $z = 0$.
-That is, we observe the random variable\ $X$ such that
-$$
-  X = 
-  \begin{cases}
-    ??   & \text{if $Z \le z^*$};\\
-    X^*  & \text{if $Z > z^*$}. 
-  \end{cases}
-$$
-
-
-:::{.example #TobitExample name="Cnnsoring/Tobit model???"}
-Consider a latent variable\ $Z$, so that the values $Z < 0$ are recorded as\ $Z = 0$, and where
-$$
-  Z \sim N(\mu, signma^2).
-$$.
-Then, define the random variable\ $X$ as FIX!!
-$$
-  X = 
-  \begin{cases}
-    \Phi(z*)   & \text{if $X = 0$};\\
-    X^*        & \text{if $X > 0^*$}. 
-  \end{cases}
-$$
-:::
+# Explanatory labels
+arrows(x0 = 0.35,
+       x1 = 0,
+       y0 = 0.17,
+       y1 = p,
+       length = 0.15,
+       angle = 15)
+text(x = 0.35,
+     y = 0.17,
+     pos = 1,
+     label = expression(Discrete~part~at~italic(X)==0) )
 
 
+arrows(x0 = 1.5,
+       x1 = 1,
+       y0 = 0.8,
+       y1 = dexp(x = 1, 
+                 rate = x.rate) * (1 - p),
+       length = 0.15,
+       angle = 15)
+text(x = 1.5,
+     y = 0.8,
+     pos = 3,
+     label = expression( Exponential~distribution*","~scaled) )
+```
 
 
 ## Poisson sums of gamma distributions: Poisson-gamma distributions {#TweedieModels}
 
-* One part model
-* Rainfall, insurance claims
-* Single model
-
-
-Poisson--gamma distribution take a different approach, but mixed data as a Poisson sum of independent gamma distributions.
-Suppose the number of discrete events is\ $N$, such that
+Poisson--gamma distribution take a different approach, and model mixed random variables as a Poisson sum of independent gamma distributions.
+Suppose the number of events observed (which is discrete) is\ $N$, such that
 $$
   N \sim \text{Pois}(\lambda).
 $$
-That is, an event occurs\ $N$ times.
-Then, for $i = 1, 2, \dots, N$, a continuous random variable is observed, say\ $Y_i$, such that
+That is, an event occurs\ $N$ times, but occurs at random following a Poisson distribution.
+Given that\ $N$ has a Poisson distribution, it follows that
+$$
+  \Pr(N = 0) = \exp(-\lambda)
+$$
+is that probability that zero events are observed (i.e., $N = 0$), from the probability function of a Poisson distribution (Sect.\ \@ref(PoissonDistribution)).
+If, however, $N > 0$, then for $i = 1, 2, \dots, N$, a continuous random variable is observed, say\ $Y_i$, such that
 $$
    Y_i \sim \text{Gamma}(\alpha_i, \beta).
 $$
@@ -112,21 +346,6 @@ $$
   X = \sum_{i = 1}^N Y_i
 $$
 has a continuous distribution.
-Combining, the distribution of\ $X$ is
-$$
-  X = 
-  \begin{cases}
-    exp(-\lambda) & \text{if $X = 0$}\\
-    ???           & \text{if $x > 0$}
-  \end{cases}
-$$
-The distribution of\ $X$ has a *Poisson--gamma* distribution.
-The distribution of\ $X$ cannot be written in a closed form (except for special cases), but it can be shown (POINT) that
-$$
-  \operatorname{E}[X] = \mu = ?? \quad\text{and}\quad \operatorname{var}[X] = \phi \mu*p.
-$$
-
-Construction:
 
 Let
 $$
@@ -136,15 +355,139 @@ $$
 $$
 Then, 
 $$
-  Y = \sum_{i = 1}^N Y_i,
+  X = 
+  \begin{cases}
+    0                   & \text{if $N = 0$};\\
+    \sum_{i = 1}^N Y_i  & \text{if $N > 0$}.
+  \end{cases}
 $$
 and so $\Pr(Y = 0) = \Pr(N = 0)$.
 
+The distribution of the Poisson sum of gamma distributions has a probability function that cannot be written down in closed form.
+
+Combining, the distribution of\ $X$ is
+$$
+  f_X(x) = 
+  \begin{cases}
+    \exp(-\lambda) & \text{if $X = 0$}\\
+                   & \text{if $x > 0$}
+  \end{cases}
+$$
+The distribution of\ $X$ has a *Poisson--gamma* distribution.\index{Poisson--gamma distribution}
+The Poisson-gamma distributiomn has three parameters: the Poisson mean\ $\lambda$, and the two gamma distribution parameters\ $\alpha$ and\ $\beta$, such that
+\begin{align*}
+   \mu &= -\lambda\beta \frac{p-2}{p-1}
+   \quad\text{and}\quad\\
+   p &= \frac{\alpha - 2}{\alpha - 1}
+   \quad\text{and}\quad\\
+  \phi = ...   
+\end{align*}
+and then $\operatorname{var}[X] = \phi\mu^p$.
+
+The probability distribution of\ $X$ cannot be written in a closed form (except for special cases), but it can be shown (POINT) that
+$$
+  \operatorname{E}[X] = \mu = ?? \quad\text{and}\quad \operatorname{var}[X] = \phi \mu*p.
+$$
 
 
-:::{.example #RainfallModelling name="Modelling monthly rainfall}
+:::{.example #PoissonGammaExample name="Poisson--gamma distribution"}
+Suppose 
+$$
+  N\sim\text{Poisson}(\lambda = 2.5)
+  \quad\text{and}\quad
+  Y_i \sim\text{Gamma}(\alpha = 2, \beta = 1).
+$$
+Then the Poisson-gamma distribution is...
+:::
+
+
+
+
+
+```{r PoissonGammaExamples, echo=FALSE, fig.align="center", fig.cap="A truncated model, using a normal distribution for the continuous component, truncated at $X = 0$. The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4.5, out.width="90%"}
+par( mfrow = c(1, 2))
+
+x <- seq(from = 0,
+         to =   5,
+         length = 1000)
+
+xi <- 1.1
+mu <- 1
+phi <- 1
+
+y <-  dtweedie(y = x,
+               xi = xi,
+               mu = mu,
+               phi = phi)
+
+plot(y[x > 0] ~ x[x > 0],
+     type = "l",
+     ylim = c(0, max(y)), 
+     axes = FALSE,
+     xlab = expression(italic(x)),
+     ylab = expression(Prob.~"function"),
+     main = expression(atop(Poisson*"-gamma"~distribution,
+                            with~PARAMETERS)),
+     lwd = 2)
+axis(side = 1)
+
+points(x = 0,
+       y = dtweedie(y = 0,
+                    xi = xi,
+                    mu = mu, 
+                    phi = phi),
+       pch = 19)
+box()
+
+#tweedie.convert(xi = xi,
+#                mu = mu, 
+#                phi = phi)
+
+
+############################ 
+
+xi <- 1.6
+mu <- 1
+phi <- 1
+
+y <- dtweedie(y = x,
+              xi = xi,
+              mu = mu,
+              phi = phi)
+
+
+plot(y[x > 0] ~ x[x > 0],
+     type = "l",
+     ylim = c(0, max(y)), 
+     axes = FALSE,
+     xlab = expression(italic(x)),
+     ylab = expression(Prob.~"function"),
+     main = expression(atop(Poisson*"-gamma"~distribution,
+                            with~PARAMETERS)),
+     lwd = 2)
+axis(side = 1)
+box()
+
+
+points(x = 0,
+       y = dtweedie(y = 0,
+                    xi = xi,
+                    mu = mu,
+                    phi = phi),
+       pch = 19)
+box()
+
+#tweedie.convert(xi = xi,
+#                mu = mu, 
+#                phi = phi)
+
+```
+
+
+
+:::{.example #RainfallModelling name="Modelling monthly rainfall"}
 Modelling rainfall. 
-Using hurdle from Chandler and Wheater? Tobit thing from ISWM, and Poisson--gamma, 
+Using hurdle from Stern and Coe, Chandler and Wheater? Tobit thing from IWSM, and Poisson--gamma, 
 :::
 
 
@@ -154,7 +497,25 @@ Using hurdle from Chandler and Wheater? Tobit thing from ISWM, and Poisson--gamm
 Selected answers appear in Sect.\ \@ref(AnswersChapUnknownAsYet).
 
 
-:::{.exercise #ex1}
-Exercise 1
+:::{.exercise #LatentVar}
+ 4. Medical Costs
+Observed variable: Annual medical expenses.
+
+Latent variable ($z$): Underlying health need or risk.
+
+Censoring: Many people incur $0$ expenses in a given year, despite possibly having latent health risks or needs.
+
+Interpretation: People with latent need below some threshold never seek care (e.g. due to costs, access, or asymptomatic cases), leading to observed $0$.
+:::
+
+:::{.exercise #LatentVar2}
+5. Credit Card Balances
+Observed variable: Balance at end of month.
+
+Latent variable ($z$): Willingness or propensity to use credit.
+
+Censoring: Some users consistently pay in full and carry no balance.
+
+Interpretation: Some people have low latent demand for borrowing; observed balance is zero if the latent borrowing desire is below threshold.
 :::
 

@@ -10,7 +10,7 @@ library(shape)
 library("diagram")
 library("plotrix") # draw.circle()
 library("fitdistrplus")
-
+library("tweedie")
 
 # example R options set globally
 options(width = 50)
