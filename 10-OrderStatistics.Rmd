@@ -66,28 +66,235 @@ The median value is $\left(X_{(3)} X_{(3)}\right)/2 = (2 + 4)/2 = 3$, which is n
 :::
 
 
-## Distribution of the minimum and maximum value {#OrderStatisticsMinMaxDistribution}
-
 As with any statistic, the order statistics have a distribution.
-The easiest order statistics for which to find the distribution are the minimum (first order statistic) and the maximum (the $n$th order statistic).
+The easiest order statistics for which to find the distribution are the maximum value (the $n$th order statistic; Sect.\ \@ref(OrderStatisticsMaxDistribution)) and the minimum value (first order statistic; Sect.\ \@ref(OrderStatisticsMinDistribution)).
 
 
-Minimum:
-$$
-   f_{(X_1)}(x) = n [1 - F_X(x)]^{n - 1} \times f_X(x)
-$$
-and
-$$
-   F_{(X_1)}(x) = 1 - [1 - F_X(x)]^{n}
-$$
-Maximum:
-$$
-   f_{(X_n)}(x) = n [F_X(x)]^{n - 1} \times f_X(x)
-$$
-and
+## Distribution of the maximum value: FIX {#OrderStatisticsMaxDistribution}
+
+Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
+Then define $X_{(n)} = \operatorname{max}\{X_1, X_2, \dots, X_n\}$ as the maximum value in the sample.
+
+The distribution function for $X_{(n)}$ is $F_{X_{(n)}}(x) = \Pr(X_{{(n)}} \le x)$, by definition; the probability that the maximum value is less than some value\ $x$.
+If the value of $X_{(n)}$ is less than or equal to some value\ $x$, then all the values in the sample must be less than that value\ $x$.
+
+Since the observations $X_1, X_2, \dots X_n$ are all independent and identically distributed, the probability that *all* observations are greater than some value\ $x$ is
 $$
    F_{(X_n)}(x) = [F_X(x)]^{n}
 $$
+for $x \in R_X$.
+The density function is found by differentiating $F_{X_{(n)}}(x)$ with respect to\ $x$ (SECT.\ ???), to obtain
+$$
+   f_{(X_n)}(x) = n [F_X(x)]^{n - 1} \times f_X(x)
+$$
+for $x \in R_X$.
+
+
+:::{.definition #OrderStatsMaximumDistn name="Distribution of the maximum value"}
+Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
+Then the distribution function for the maximum value (order statistic $X_{(n)}$) is
+$$
+   F_{(X_1)}(x) = [F_X(x)]^{n}
+$$
+and the density function is
+$$
+   f_{(X_n)}(x) = n [F_X(x)]^{n - 1} \times f_X(x)
+$$
+for $x\in R_X$.
+:::
+
+
+:::{.example #OrderStatsMaxUniform name="Uniforma distribution: maximum value"}
+For the continuous uniform distribution (Sect.\ \@ref(ContinuousUniform)) defined on $[0, 1]$, the density function is
+\begin{equation}
+   f_X(x; 0, 1)  = 1 \quad\text{for $0\le x\le 1$},
+   (\#eq:ContinuousUniformPMForder)
+\end{equation}
+and the distribution function is
+$$
+  F_X(x; 0, 1) = 
+  \begin{cases}
+    0                & \text{for $x < 0$};\\
+    \displaystyle x  & \text{for $0 \le x \le 1$};\\ 
+    1                & \text{for $x > 1$}.
+  \end{cases}
+$$
+Hence, the density function for the maximum value in a sample of size\ $n$ is
+$$
+  f_{X_{(n)}}(x) 
+  = n\, x^{n - 1} \times 1
+  = n \, x^{n - 1},
+$$
+for $0 < x < 1$; see Fig.\ \@ref(fig:OrderStatsMax) (left panel).
+In addition, the distribution function is
+$$
+  F_{X_{(n)}}(x) 
+  = x^n
+$$
+for $0 < x < 1$; see Fig.\ \@ref(fig:OrderStatsMax) (right panel).
+
+For example, the probability that the largest value in a sample of size\ $10$ is smaller than\ $0.7$ is
+$$
+  F_{(1)}(0.3) = 0.7^{10} = 0.02824752\dots
+$$
+Using the density function of the maximum value, the expected value and the variance of the maximum value can be found too (Exercise); for example,
+$$
+  \operatorname{E}[X_{(1)}] = \int_0^1 x\, 10(1 - x)^9\, dx = 1/11 = 0.0909\dots
+$$
+:::
+
+
+```{r OrderStatsMax, echo=FALSE, fig.align="center", fig.cap="The distribution of the maximum value for the uniform distribution on $[0, 1]$ in a sample of size\\ $10$. Left: the probability density function of the maximum value $X_{(10)}$. Right: the distribution function of the maximum value $X_{(10)}$.", fig.width=8, fig.height=4, out.width="90%"}
+
+par(mfrow = c(1, 2))
+
+x <- seq(0, 1,
+         length = 1000)
+
+f_Min <- function(x, n){ n * x ^ (n - 1)}
+F_Min <- function(x, n){ x ^ n }
+
+
+plot( f_Min(x, n = 10) ~ x, 
+     type = "l",
+     lwd = 2,
+     col = plotColour1, 
+     las = 1,
+     axes = FALSE,
+     main = expression( atop(Probability~density~"function",
+                             of~italic(X)[(10)]) ),
+     xlab = expression(italic(X)[(10)]),
+     ylab = "Density")
+axis(side = 1)
+box()
+
+plot( F_Min(x, n = 10) ~ x, 
+     type = "l",
+     lwd = 2,
+     las = 1,
+     col = plotColour1, 
+     las = 1,
+     main = expression( atop(Distribution~"function",
+                             of~italic(X)[(10)]) ),
+     xlab = expression(italic(X)[(10)]),
+     ylab = "Distribution fn")
+```
+
+
+
+## Distribution of the minimum value: CHECK {#OrderStatisticsMinDistribution}
+
+Consider again a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
+Then define $X_{(1)} = \operatorname{min}\{X_1, X_2, \dots, X_n\}$ as the minimum value in the sample.
+
+The distribution function for $X_{(1)}$ is $F_{X_{(1)}}(x) = \Pr(X_{{(1)}} \le x)$, by definition; the probability that the minimum value is less than some value\ $x$.
+If the value of $X_{(1)}$ is less than or equal to some value\ $x$, then there must be *at least* one value less than that value\ $x$.
+That is, one value, or two values, or three values, or up to\ $n$ observations are less than or equal to value] $x$. 
+Equivalently, this means that...
+
+For example, if the minimum value in the sample is less than $x = 2$, then there must be *at least* one value in the sample smaller than (or equal to)\ $2$; equivalently, 1 - all values in the sample are bigger than $x = 2$.
+
+Since the observations $X_1, X_2, \dots X_n$ are all independent and identically distributed, the probability that *all* observations are greater than some value\ $x$ is
+$$
+  F_{X_{(1)}}(x) = \Pr(X_{{(1)}} < x) = 1 - (1 - F_X(x))^n
+$$
+for $x \in R_X$.
+The density function is found by differentiating $F_{X_{(1)}}(x)$ with respect to\ $x$ (SECT.\ ???), to obtain
+$$
+  f_{X_{(1)}}(x) = n (1 - F_X(x))^{n-1} f_X(x)
+$$
+for $x \in R_X$.
+
+
+:::{.definition #OrderStatsMinimumDistn name="Distribution of the minimum value"}
+Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
+Then the distribution function for the minimum value (order statistic $X_{(1)}$) is
+$$
+   F_{(X_1)}(x) = 1 - [1 - F_X(x)]^{n}
+$$
+and the density function is
+$$
+   f_{(X_1)}(x) = n [1 - F_X(x)]^{n - 1} \times f_X(x)
+$$
+for $x\in R_X$.
+:::
+
+
+:::{.example #OrderStatsMinUniform name="Uniforma distribution: minimum value"}
+For the continuous uniform distribution (Sect.\ \@ref(ContinuousUniform)) defined on $[0, 1]$, the density function is
+\begin{equation}
+   f_X(x; 0, 1)  = 1 \quad\text{for $0\le x\le 1$},
+   (\#eq:ContinuousUniformPMForder)
+\end{equation}
+and the distribution function is
+$$
+  F_X(x; 0, 1) = 
+  \begin{cases}
+    0                & \text{for $x < 0$};\\
+    \displaystyle x  & \text{for $0 \le x \le 1$};\\ 
+    1                & \text{for $x > 1$}.
+  \end{cases}
+$$
+Hence, the density function for the minimum value in a sample of size\ $n$ is
+$$
+  f_{X_{(1)}}(x) 
+  = n(1 - x)^{n - 1} \times 1
+  = n (1- x)^{n - 1},
+$$
+for $0 < x < 1$; see Fig.\ \@ref(fig:OrderStatsMin) (left panel).
+In addition, the distribution function is
+$$
+  F_{X_{(1)}}(x) 
+  = 1 - (1 - x)^n
+$$
+for $0 < x < 1$; see Fig.\ \@ref(fig:OrderStatsMin) (right panel).
+
+For example, the probability that the smallest value in a sample if size\ $10$ is smaller than\ $0.3$ is
+$$
+  F_{(1)}(0.3) = 1 - (1 - 0.3)^{10} = 0.9717\dots
+$$
+Using the density function of the minimum value, the expected value and the variance of the minimum value can be found too (Exercise); for example,
+$$
+  \operatorname{E}[X_{(10)}] = \int_0^1 x\, 10(1 - x)^9\, dx = 10/11 = 0.909\dots
+$$
+:::
+
+```{r OrderStatsMin, echo=FALSE, fig.align="center", fig.cap="The distribution of the minimum value for the uniform distribution on $[0, 1]$ in a sample of size\\ $10$. Left: the probability density function of the minimum value $X_{(1)}$. Right: the distribution function of the minimum value $X_{(1)}$.", fig.width=8, fig.height=4, out.width="90%"}
+
+par(mfrow = c(1, 2))
+
+x <- seq(0, 1,
+         length = 1000)
+
+f_Min <- function(x, n){ n * (1 - x) ^ (n - 1)}
+F_Min <- function(x, n){ 1 - (1 - x) ^ n }
+
+
+plot( f_Min(x, n = 10) ~ x, 
+     type = "l",
+     lwd = 2,
+     col = plotColour1, 
+     las = 1,
+     axes = FALSE,
+     main = expression( atop(Probability~density~"function",
+                             of~italic(X)[(1)]) ),
+     xlab = expression(italic(X)[(1)]),
+     ylab = "Density")
+axis(side = 1)
+box()
+
+plot( F_Min(x, n = 10) ~ x, 
+     type = "l",
+     lwd = 2,
+     las = 1,
+     col = plotColour1, 
+     las = 1,
+     main = expression( atop(Distribution~"function",
+                             of~italic(X)[(1)]) ),
+     xlab = expression(italic(X)[(1)]),
+     ylab = "Distribution fn")
+
+```
 
 
 
@@ -105,37 +312,39 @@ where $n > k > 0$ and\ $n$ and\ $k$ are integers.
 
 ::: {.example}
 Consider simulating $1\,000$ samples of size $n = 10$ from a Uniform$(0, 1)$ distribution.
-The distribution of $X_{(2)}$ and $X_{(10)}$ (i.e., the maximum value) are shown in Fig.\  \@ref(fig:OrderStats1).
+The distribution of $X_{(2)}$ and $X_{(6)}$ are shown in Fig.\  \@ref(fig:OrderStats1).
 :::
 
 
-```{r OrderStats1, echo=TRUE, fig.align="center", fig.cap="Simulating the distribution of two order statistics for the uniform distribution. Left: the distribution of $X_{(2)}$. Right: the distribution of  $X_{(10)}$ (i.e., the maximum value).", fig.width=8, fig.height=4, out.width="90%"}
+```{r OrderStats1, echo=TRUE, fig.align="center", fig.cap="Simulating the distribution of two order statistics for the uniform distribution on $[0, 1]$ with a sample of size $10$. Left: the distribution of $X_{(2)}$. Right: the distribution of  $X_{(6)}$.", fig.width=8, fig.height=4, out.width="90%"}
 set.seed(123)  # For reproducibility
 
 n <- 10   # Take samples of size 10
 samples2 <- replicate(1000,               # 1000 repetitions
                       sort(runif(n))[2])  # 2nd order statistic
-samples10 <- replicate(1000,           # 1000 repetitions
-                       max(runif(n)))  # 10th order statistic
+samples6 <- replicate(1000,               # 1000 repetitions
+                      sort(runif(n))[6])  # 6th order statistic
 
 par(mfrow = c(1, 2))
 
 hist(samples2, 
      col = plotColour1, 
+     xlim = c(0, 1),
      las = 1,
      main = expression(Distribution~of~italic(X)[(2)]),
      xlab = expression(italic(X)[(2)]),
      ylab = "Density")
-hist(samples10, 
+hist(samples6, 
      col = plotColour1, 
-     main = expression(atop(Distribution~of~italic(X)[(10)]),
+     xlim = c(0, 1),
+     main = expression(atop(Distribution~of~italic(X)[(6)]),
                             "("*the~maximum~value*")"),
-     xlab = expression(italic(X)[(10)]),
+     xlab = expression(italic(X)[(6)]),
      ylab = "Density")
 ```
 
 
-:::{.example #OrdsrStatisticsUniform name="Order statistics (uniform distribution)"}
+:::{.example #OrderStatisticsUniform name="Order statistics (uniform distribution)"}
 For the continuous uniform distribution (Sect.\ \@ref(ContinuousUniform)) defined on $[0, 1]$, the density function is
 \begin{equation}
    f_X(x; 0, 1)  = 1 \quad\text{for $0\le x\le 1$},
@@ -158,7 +367,7 @@ Hence, Eq. \@ref(eq:OrderStatisticDF) becomes
 \end{equation}
 for the $k$th order statistic $X_{(k)}$ in a sample of size\ $n$.
 Since this is a density function, the total area must be one (Exercise\ \@ref(exr:OrderStatisticsUniform)).
-The distributions are shown in Fig.\ \@ref(OrderStatsUnif) for $k = 2$ and $k = 10$.
+The distributions are shown in Fig.\ \@ref(fig:OrderStatsUnif) for $k = 2$ and $k = 6$.
 The simulated order statistics (Fig.\ \@ref(fig:OrderStats1)) compare favourable with these theoretical distributions.
 
 The mean value of the $k$th order statistic is (Exercise\ \@ref(exr:OrderStatisticsUniformExpectations)):
@@ -199,7 +408,7 @@ mean(samples2)   # Simulated mean of X_{(2)}
 var(samples2)    # Simulated varianceof X_{(2)}
 ```
 
-Likewise, in a sample of size $n = 10$, the tenth order statistic (i.e., $k = 10$) is
+Likewise, in a sample of size $n = 10$, the sixth order statistic (i.e., $k = 6$) is
 $$
    f_{X_{(k)}}(x) 
    = \frac{10!}{9!\, 0!} x^{9} (1 - x)^{0}
@@ -208,28 +417,28 @@ $$
 for $0 < x < 1$, and
 $$
   \operatorname{E}[X] 
-  = \frac{10}{11}
-  \approx 0.909\dots.
+  = \frac{6}{11}
+  \approx 0.5454\dots.
 $$
 and
 $$
   \operatorname{var}[X] 
-  = \frac{10\times (10 + 1 - 10)}{11^2 \times 12}
-  = \frac{10}{1452}
-  \approx 0.006887052\dots.
+  = \frac{6\times (10 + 1 - 6)}{11^2 \times 12}
+  = \frac{15}{726}
+  \approx 0.02066\dots.
 $$
 In **R**:
 
 ```{r}
-# 10th order statistic (i.e., maximum)
-mean(samples10)   # Simulated mean of X_{(10)}
-var(samples10)    # Simulated variance of X_{(10)}
+# 6th order statistic (i.e., maximum)
+mean(samples6)   # Simulated mean of X_{(6)}
+var(samples6)    # Simulated variance of X_{(6)}
 ```
 
 :::
 
 
-```{r OrderStatsUnif, echo=TRUE, fig.align="center", fig.cap="The distribution of two order statistics for the uniform distribution. Left: the distribution of $X_{(2)}$. Right: the distribution of  $X_{(10)}$ (i.e., the maximum value).", fig.width=8, fig.height=4, out.width="90%"}
+```{r OrderStatsUnif, echo=TRUE, fig.align="center", fig.cap="The distribution of two order statistics for the uniform distribution on $[0, 1]$. Left: the distribution of $X_{(2)}$. Right: the distribution of  $X_{(6)}$.", fig.width=8, fig.height=4, out.width="90%"}
 ### Uniform order stats for 2nd and 10th order stats
 f_Order <- function(x, n, k){
   factorial(n)/( factorial(k - 1) * factorial(n - k)) *
@@ -244,6 +453,8 @@ x <- seq(0, 1,
 
 plot( f_Order(x, n = 10, k = 2) ~ x,
       lwd = 2,
+      xlim = c(0, 1),
+      col = plotColour1,
       axes = FALSE,
       xlab = expression(italic(x)),
       ylab = "Density",
@@ -253,12 +464,14 @@ plot( f_Order(x, n = 10, k = 2) ~ x,
 axis(side = 1)
 box()
 
-plot( f_Order(x, n = 10, k = 10) ~ x,
+plot( f_Order(x, n = 10, k = 6) ~ x,
       lwd = 2,
+      xlim = c(0, 1),
+      col = plotColour1,
       axes = FALSE,
       xlab = expression(italic(x)),
       ylab = "Density",
-      main = expression( atop(Distribution~of~"10th",
+      main = expression( atop(Distribution~of~"6th",
                               order~statistic)),
       type = "l")
 axis(side = 1)
@@ -270,7 +483,7 @@ box()
 
 
 
-## Finsihing up...
+## Finishing up...
 
 Order statistics are fundamental in probability and statistics. 
 They underlie robust estimation, reliability analysis, and form the basis of many intuitive statistics.
@@ -305,7 +518,29 @@ Find the distribution of the order statistics for the uniform distribution defin
 :::{.exercise #OrderStatisticsPDF2}
 Find the distribution of the order statistics for the distribution
 $$
-  f_Y(y) = x/2\quad\text{for $0 < y < 2$}
+  f_Y(y) = y/2\quad\text{for $0 < y < 2$}
 $$
 and zero elsewhere.
 :::
+
+
+:::{.exercise #OrderStatisticsExponential}
+Suppose a sample of\ $n$ independent values is taken from the exponential distribution $\text{Exp}(\lambda)$ (REF).
+
+1. Determine the distribution function for the minimum value, $X_{(1)}$.
+2. Hence determine the density function for the minimum value, $X_{(1)}$.
+3. What is the probability that the minimum value in a sample of size\ $n$ is larger than $\lambda/2$?
+4. Compute the expected value of the minimum value in the sample.
+:::
+
+
+:::{.exercise #OrderStatisticsExponential2}
+Suppose a sample of\ $n$ independent values is taken from the exponential distribution $\text{Exp}(\lambda)$ (REF).
+
+1. Determine the distribution function for the maximum value, $X_{(n)}$.
+2. Hence determine the density function for the maximum value, $X_{(n)}$.
+3. What is the probability that the maximum value in a sample of size\ $n$ is larger than $\lambda/2$?
+4. Compute the expected value of the maximum value in the sample.
+:::
+
+
