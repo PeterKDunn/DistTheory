@@ -479,6 +479,78 @@ box()
 ```
 
 
+
+:::{.example #ServerRoom name="Air conditioner servicing"}
+A new server room has four air-conditioning units installed. 
+The lifetime of each unit (in hours) follows an exponential distribution with mean $\lambda = 2000\hs$. 
+The units operate independently.
+A service technician is called when *two* of the units fail. 
+We seek the distribution of the time until the call to the technician is made.
+
+Let $T_1, T_2, T_3, T_4$ denote the lifetimes of the four units. 
+Then:
+$$
+  T_i \sim \text{Exponential}(\lambda)\quad\text{for $i = 1, 2, 3, 4$},
+$$
+where $\lambda = 1/2000$, and the $T_i$ are independent.
+That is,
+$$
+  f_{T_i}(t)= \frac{1}{\lambda}\exp(-t/\lambda)
+  \quad\text{and}\quad
+  F_{T_i}(t)= \exp(-t/\lambda)
+$$
+for $0 < x < \infty$.
+
+Define the order statistics as $T_{(1)} < T_{(2)} < T_{(3)} < T_{(4)}$. 
+The technician is called at time \( T_{(2)} \), the *second failure*.
+Since we have $n = 4$ and $k = 2$, the distribution of $T_{(2)}$ is (from REF)
+$$
+   f_{T_{(2)}}(t) = 
+   6 [\exp(-t/\lambda)]^1 [1 - \exp(-t/\lambda)] ^2 \times \frac{1}{\lambda}\exp(-t/\lambda),
+$$
+which is very complicated.
+
+However, the exponential distribution has the *memoryless property* (REF), so a different approach is much simpler.
+The time to the *first* failure $T_{(1)}$ has the probability density function
+$$
+   T_{(1)} \sim \text{Exponential}(4\lambda)
+$$
+since *any* of the $4$\ units can fail first.
+The time *between* the first and second failure also has an exponential distribution, due to the memoryless property, this means that
+$$
+  T_{(2)} - T_{(1)} \sim \text{Exponential}(3\lambda)
+$$
+because only $3$\ units remain after the first failure.
+
+Thus, the total time until the second failure is:
+$$
+  T_{(2)} = E_1 + E_2
+$$
+where
+$$
+  E_1 \sim \text{Exp}(4\lambda) \quad\text{and}\quad E_2 \sim \text{Exp}(3\lambda).
+$$
+
+This distribution is not exponential, but the *sum of two independent exponentials with different rates*.
+
+The expected value is
+$$
+\operatorname{E}[T_{(2)}] = \frac{1}{4\lambda} + \frac{1}{3\lambda} = \frac{1}{\lambda} \left( \frac{1}{4} + \frac{1}{3} \right) = 2000 \cdot \frac{7}{12} = 1166.6\dots\hs.
+$$
+
+On average, a technician will be called after about\ $1166.67\hs$.
+:::
+
+
+
+The PDF of $T_{(2)}$ can be found using **convolution**:
+$$
+  f_{T_{(2)}}(t) = \int_0^t f_{E_1}(x) f_{E_2}(t - x)\, dx
+$$
+where $f_{E_1}(x) = 4\lambda e^{-4\lambda x}$, and $f_{E_2}(x) = 3\lambda e^{-3\lambda x}$.
+This approach can be extended to *any* $k$th failure out of\ $n$ components.
+
+
 ## Joint distribution
 
 
@@ -543,4 +615,10 @@ Suppose a sample of\ $n$ independent values is taken from the exponential distri
 4. Compute the expected value of the maximum value in the sample.
 :::
 
+:::{.exercise}
+A new computer server room has four air-conditioning units installed.
+The lifetime of each unit follows an exponential, with a mean lifetime of $2000\hs$.
+When two units fail, a service technician is called.
 
+1. Describe the distribution showing the wait time until a technician need to be called. 
+:::
