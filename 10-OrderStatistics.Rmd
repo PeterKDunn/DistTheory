@@ -83,7 +83,7 @@ $$
    F_{(X_n)}(x) = [F_X(x)]^{n}
 $$
 for $x \in R_X$.
-The density function is found by differentiating $F_{X_{(n)}}(x)$ with respect to\ $x$ (SECT.\ ???), to obtain
+The density function is found by differentiating $F_{X_{(n)}}(x)$ with respect to\ $x$ (Sect.\ \@ref(DistributionFunction)), to obtain
 $$
    f_{(X_n)}(x) = n [F_X(x)]^{n - 1} \times f_X(x)
 $$
@@ -104,7 +104,7 @@ for $x\in R_X$.
 :::
 
 
-:::{.example #OrderStatsMaxUniform name="Uniforma distribution: maximum value"}
+:::{.example #OrderStatsMaxUniform name="Uniform distribution: maximum value"}
 For the continuous uniform distribution (Sect.\ \@ref(ContinuousUniform)) defined on $[0, 1]$, the density function is
 \begin{equation}
    f_X(x; 0, 1)  = 1 \quad\text{for $0\le x\le 1$},
@@ -125,37 +125,38 @@ $$
   = n\, x^{n - 1} \times 1
   = n \, x^{n - 1},
 $$
-for $0 < x < 1$; see Fig.\ \@ref(fig:OrderStatsMax) (left panel).
+for $0 < x < 1$.
 In addition, the distribution function is
 $$
   F_{X_{(n)}}(x) 
   = x^n
 $$
-for $0 < x < 1$; see Fig.\ \@ref(fig:OrderStatsMax) (right panel).
+for $0 < x < 1$.
 
-For example, the probability that the largest value in a sample of size\ $10$ is smaller than\ $0.7$ is
+For the case where $n = 10$, Fig.\ \@ref(fig:OrderStatsMax) shows the probability density function (left panel) and the distribution function (right panel).
+For example, the probability that the largest value in a sample of size\ $10$ is smaller than\ $0.8$ is
 $$
-  F_{(1)}(0.3) = 0.7^{10} = 0.02824752\dots
+  F_{(10)}(0.8) = 0.8^{10} = 0.1073742\dots
 $$
 Using the density function of the maximum value, the expected value and the variance of the maximum value can be found too (Exercise); for example,
 $$
-  \operatorname{E}[X_{(1)}] = \int_0^1 x\, 10(1 - x)^9\, dx = 1/11 = 0.0909\dots
+  \operatorname{E}[X_{(10)}] = \int_0^1 x\, 10(1 - x)^9\, dx = 1/11 = 0.0909\dots
 $$
 :::
 
 
-```{r OrderStatsMax, echo=FALSE, fig.align="center", fig.cap="The distribution of the maximum value for the uniform distribution on $[0, 1]$ in a sample of size\\ $10$. Left: the probability density function of the maximum value $X_{(10)}$. Right: the distribution function of the maximum value $X_{(10)}$.", fig.width=8, fig.height=4, out.width="90%"}
+```{r OrderStatsMax, echo=FALSE, fig.align="center", fig.cap="The distribution of the maximum value for the uniform distribution on $[0, 1]$ in a sample of size\\ $10$. Left: the probability density function of the maximum value $X_{(10)}$. Right: the distribution function of the maximum value $X_{(10)}$. The dotted lines show $F_{(10)}(0.8)$.", fig.width=8, fig.height=4, out.width="90%"}
 
 par(mfrow = c(1, 2))
 
 x <- seq(0, 1,
          length = 1000)
 
-f_Min <- function(x, n){ n * x ^ (n - 1)}
-F_Min <- function(x, n){ x ^ n }
+f_Max <- function(x, n){ n * x ^ (n - 1)}
+F_Max <- function(x, n){ x ^ n }
 
 
-plot( f_Min(x, n = 10) ~ x, 
+plot( f_Max(x, n = 10) ~ x, 
      type = "l",
      lwd = 2,
      col = plotColour1, 
@@ -168,7 +169,7 @@ plot( f_Min(x, n = 10) ~ x,
 axis(side = 1)
 box()
 
-plot( F_Min(x, n = 10) ~ x, 
+plot( F_Max(x, n = 10) ~ x, 
      type = "l",
      lwd = 2,
      las = 1,
@@ -178,6 +179,17 @@ plot( F_Min(x, n = 10) ~ x,
                              of~italic(X)[(10)]) ),
      xlab = expression(italic(X)[(10)]),
      ylab = "Distribution fn")
+
+lines( x = c(0, 0.8),
+       y = c(0.1073742, 0.1073742),
+       lwd = 2,
+       col = "grey", 
+       lty = 2)
+lines( x = c(0.8, 0.8),
+       y = c(0, 0.1073742),
+       lwd = 2,
+       col = "grey", 
+       lty = 2)
 ```
 
 
@@ -199,7 +211,7 @@ $$
   F_{X_{(1)}}(x) = \Pr(X_{{(1)}} < x) = 1 - (1 - F_X(x))^n
 $$
 for $x \in R_X$.
-The density function is found by differentiating $F_{X_{(1)}}(x)$ with respect to\ $x$ (SECT.\ ???), to obtain
+The density function is found by differentiating $F_{X_{(1)}}(x)$ with respect to\ $x$ (Sect.\ \@ref(DistributionFunction)), to obtain
 $$
   f_{X_{(1)}}(x) = n (1 - F_X(x))^{n-1} f_X(x)
 $$
@@ -220,7 +232,7 @@ for $x\in R_X$.
 :::
 
 
-:::{.example #OrderStatsMinUniform name="Uniforma distribution: minimum value"}
+:::{.example #OrderStatsMinUniform name="Uniform distribution: minimum value"}
 For the continuous uniform distribution (Sect.\ \@ref(ContinuousUniform)) defined on $[0, 1]$, the density function is
 \begin{equation}
    f_X(x; 0, 1)  = 1 \quad\text{for $0\le x\le 1$},
@@ -241,15 +253,16 @@ $$
   = n(1 - x)^{n - 1} \times 1
   = n (1- x)^{n - 1},
 $$
-for $0 < x < 1$; see Fig.\ \@ref(fig:OrderStatsMin) (left panel).
+for $0 < x < 1$.
 In addition, the distribution function is
 $$
   F_{X_{(1)}}(x) 
   = 1 - (1 - x)^n
 $$
-for $0 < x < 1$; see Fig.\ \@ref(fig:OrderStatsMin) (right panel).
+for $0 < x < 1$.
 
-For example, the probability that the smallest value in a sample if size\ $10$ is smaller than\ $0.3$ is
+For the case where $n = 10$, Fig.\ \@ref(fig:OrderStatsMin) shows the probability density function (left panel) and the distribution function (right panel).
+For example, the probability that the smallest value in a sample of size\ $10$ is smaller than\ $0.3$ is
 $$
   F_{(1)}(0.3) = 1 - (1 - 0.3)^{10} = 0.9717\dots
 $$
@@ -302,12 +315,57 @@ plot( F_Min(x, n = 10) ~ x,
 ## Distribution of the $k$th order statistic {#OrderStatisticsDistribution}
 
 The ideas developed above for the distribution of the minimum and maximum value in a sample can be applied to other order statistics also.
-If the sample is from a continuous distribution with density function\ $f_X(x)$ and distribution function\ $F_X(x)$, the density function of the $k$th order statistic $X_{(k)}$ is:
+Consider a sample from a continuous distribution with density function\ $f_X(x)$ and distribution function\ $F_X(x)$.
+The $k$th order statistic $X_{(k)}$ has the distribution function $F_{X_(k)}(x) = \Pr(X_{(k)}\le x)$. 
+By definition, this is the probability that the $k$th smallest value in the sample is less than (or equal to) some value\ $x$.
+
+NEEDS FIXING!!
+
+For some given value\ $x$ to be the $k$th smallest, there must be $k$\ observations with a value less than or equal to $x$; the probability of this is
+$$
+  [F_{(k)}(x)]^k
+$$
+In addition, the remaining $n - k$ observations with a value *larger* than $x$; the probability of this is
+$$
+  [1 - F_{X_{(k)}}(x)]^{n -k}
+$$
+Finally, there are $\binom{n}{k}$ ways for the first $k$ observations to be ordered that are equivalent; we also to consider the $\binom{n}{k-1}$ ways... $\binom{n}{1}$ AND SO ON.
+(For instance, consider a sample of size $n = 6$, where we seek the distribution of the $3$rd order statistic (i.e., $k = 3$).
+There are $\binom{6}{3}$ ways to choose\ $k = 3$ of the\ $n = 6$ observation to be smaller than\ $x$; in addition, there are $\binom{6}{2}$ ways to choose\ $k = 2$ of the\ $n = 6$ observation to be smaller than\ $x$; and finally, there are $\binom{6}{1}$ ways to choose\ $k = 1$ of the\ $n = 6$ observation to be smaller than\ $x$.
+
+Combining these elements,
+$$
+  F_{X_{(k)}}(x) = \Pr(X_{(k)}\le x) 
+  = 
+  \sum_{i = k}^n \binom{n}{k}\times [F_{X_{(k)}}(x)]^k \times [1 - F_{X_{(k)}}(x)]^{n -k}
+$$
+
+From the distribution function, the probability density functin can be obtained as
+$$
+  f_{X_{(k)}}(x) = \frac{d}{dx} F_{X_{(k)}} 
+  = 
+  \frac{n!}{(k - 1)!\,(n - r)!}f_{X_{(k)}}[F_{X_{(k)}}]^{k - 1} [1 - F_{X_{(k)}}]^{n - r},
+$$
+for $n > k \ge 1$ and\ $n$ and\ $k$ are integers.
+
+
+:::{.definition #OrderStatsDistn name="Distribution of an order statistic"}
+Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
+Then the distribution function for the $k$th order statistic $X_{(k)}$) is
 \begin{equation}
-   f_{X_{(k)}}(x) = \frac{n!}{(k-1)! (n-k)!} [F(x)]^{k-1} [1 - F(x)]^{n-k} f(x),
+  F_{X_{(k)}}(x) = \Pr(X_{(k)}\le x) 
+  = 
+  \sum_{i = k}^n \binom{n}{k}\times [F_{X_{(k)}}(x)]^k \times [1 - F_{X_{(k)}}(x)]^{n -k}
    (\#eq:OrderStatisticDF)
 \end{equation}
+and the density function of the $k$th order statistic $X_{(k)}$ 
+is:
+\begin{equation}
+   f_{X_{(k)}}(x) = \frac{n!}{(k-1)! (n-k)!} [F(x)]^{k-1} [1 - F(x)]^{n-k} f(x),
+   (\#eq:OrderStatisticPDF)
+\end{equation}
 where $n > k > 0$ and\ $n$ and\ $k$ are integers.
+:::
 
 
 ::: {.example}
@@ -337,6 +395,7 @@ hist(samples2,
 hist(samples6, 
      col = plotColour1, 
      xlim = c(0, 1),
+     las = 1,
      main = expression(atop(Distribution~of~italic(X)[(6)]),
                             "("*the~maximum~value*")"),
      xlab = expression(italic(X)[(6)]),
@@ -553,6 +612,14 @@ This approach can be extended to *any* $k$th failure out of\ $n$ components.
 
 ## Joint distribution
 
+$$
+ f_{X_{(1)}, X_{(2)}, \dots, X_{(n)}}(x_1, x_2, \dots, x_n)  
+ =
+ \begin{cases}
+    n !\, f_{X_{(1)}} \times f_{X_{(2)}}\times \cdot \times f_{X_{(n)}} & \text{for $x_{(1)} < x_{(2)} < \cdots < x_{(n)}$}\\
+    0 & \text{elsewhere}
+ \end{cases}
+$$
 
 
 ## Finishing up...
@@ -567,7 +634,7 @@ They underlie robust estimation, reliability analysis, and form the basis of man
 
 :::{.exercise #OrderStatisticsUniform}
 Prove that the probably density function for the order statistics in the case of the uniform distribution, shown in Eq.\ \@ref(eq:ContinuousUniformPMForder), is a valid density function.
-(Hint: observe the similarity between Eq.\ \@ref(eq:ContinuousUniformPMForder) and the beta desity function in Sect.\ \@ref(BetaDistribution).)
+(Hint: observe the similarity between Eq.\ \@ref(eq:ContinuousUniformPMForder) and the beta density function in Sect.\ \@ref(BetaDistribution).)
 :::
 
 
@@ -577,7 +644,7 @@ $$
   \operatorname{E}[X] = k/(n + 1)\qquad\text{and}\qquad \operatorname{var}[X] = \frac{k (k + 1)}{(n + 1)(n + 2)},
 $$
 as in Sect.\ \@ref(OrderStatisticsDistribution).
-(Hint: observe the similarity between Eq.\ \@ref(eq:ContinuousUniformPMForder) and the beta desity function in Sect.\ \@ref(BetaDistribution).)
+(Hint: observe the similarity between Eq.\ \@ref(eq:ContinuousUniformPMForder) and the beta density function in Sect.\ \@ref(BetaDistribution).)
 :::
 
 
