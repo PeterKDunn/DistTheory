@@ -3,45 +3,201 @@
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
 On completion of this module, you should be able to:
 
-* recognise the probability functions and underlying parameters of mixed variables.
-* know the basic properties of the above mixed distributions.
-* apply these distributions as appropriate to problem solving.
+* recognise mixed random variables.
+* ??? recognise the probability functions and underlying parameters of mixed variables.
+* ??? know the basic properties of the above mixed distributions.
+* ??? apply these distributions as appropriate to problem solving.
 :::
 
 
 ## Introduction
 
 Mixed random variables commonly occur, but are not often studied.
-Mixed random variable appear in diverse applications such as insurance, climatology, fishing, etc.
+Mixed random variables appear in diverse applications such as insurance, agriculture, climatology, fishing, etc.
 
-In most cases in practice, a mixed random variable\ $X$ has a discrete probability at $X = 0$, and then are continuous for $X > 0$; these are the only situation we consider.
+In most practical cases, a mixed random variable\ $X$ has a discrete probability mass at $X = 0$, and then are continuous for $X > 0$; this is the only type of mixed random variable we consider (though extensions to discrete masses occurring for other values of the random variable are often (but not always) similar).
 For example:
 
-* When modellimg insurance, the zero probability corresponds to portfolios with zero claims; howevevr, when claims are made, the total claim amount has a continuous distribution.
-* When modelling rainfall, the zero probability corresponds to receiving zero rainfall; howevevr, when rain does fall, the total rainfall recorded has a continuous distribution.
-* When modelling fish catch, the zero probability corresponds to catching zero fish; howevevr, when fish are caught, the mass of fish catch has a continuous distribution.
+* When modelling insurance, the zero probability corresponds to portfolios with zero claims; however, when claims are made, the total claim amount has a continuous distribution.
+* When modelling rainfall, the zero probability corresponds to receiving zero rainfall; however, when rain does fall, the total rainfall recorded has a continuous distribution.
+* When modelling fish catch, the zero probability corresponds to catching zero fish; however, when fish are caught, the mass of fish catch has a continuous distribution.
 
-Continuous data with a discrete probability at zero can be modelled in various different ways, depending on how the zero probability is ?seen?.
+Continuous data with a discrete probability at zero can be modelled in various ways, depending on how the discrete probability at $X = 0$ is incorporated.
+Three approaches are considered in this chapter.
 
 *Censored models*\index{Censored models} (Sect.\ \@ref(CensoredModels)) assume the existence of an underlying *latent variable*, defined for all real values.\index{Latent variable}
-Values of the latent variable below zero cannot be observed (called *censoring}\index{Censoring}).
-All the probabilities corrresponding to values of the latent variable below zero are accujulated, and assigned to the probability of observing a value of zero.
-the zeros values represent *censored observations* of the latent variable.
+However, values of the latent variable below zero cannot be observed (called *censoring*\index{Censoring}).
+All the probabilities corresponding to values of the latent variable below zero are accumulated, and assigned to the probability of observing a value of zero.
+The value of $X = 0$ represents *censored observations* of the latent variable.
 
-*Hurdle models*\index{Hurdle models} treat the zeros as emerging from a two-step process.
+*Hurdle models*\index{Hurdle models} (Sect.\ \@ref(HurdleModels)) treat the zeros as emerging from a two-step process.
 Step one is a binary process, that models whether the event of interest (i.e., an insurance claim is made; rainfall is recorded; fish are caught) occurs.
-Step two is a model for the continuous data, conditional on the event of interest occurring.
+Step two is a model for the continuous data of interest, conditional on the event of interest occurring.
 
-*Poisson-gamma models*\index{Poisson-gamma models} combine the discrete and continuous components in a single probability model.
-Unlike the hurdle model, the discrete and continuous parts are not modelled separately; the entire distribution is modelled using a single probability model.
+Compound *Poisson-gamma models*\index{Compound Poisson-gamma models} (Sect.\ \@ref(TweedieModels)) combine the discrete and continuous components in a single probability model.
+Unlike the hurdle model, the discrete and continuous parts are not modelled separately; the entire distribution is modelled using a single probability model specific for modeling mixed random variables.
 
 
 ## Censored model {#CensoredModels}
 
-Censored models assume the existence of a *latent variable*,\index{Latent variable} say\ $z$ such that $z\in\mathbb{R}$, with probability function $f_Z(z)$.
-Below some threshold (usually zero), the values of\ $z$ cannot be observed; denote this threshold as $z^*$.
-(EXAMPLE)
-Usually $z^* = 0$, so that any value of\ $Z \le 0$ is recorded as\ $z = 0$.
+### Definitions {#CensoredModelsDefinitions}
+
+\index{Censored models|(}
+Censored models assume the existence of an unobserved *latent variable*,\index{Latent variable} say\ $z$ such that $z\in\mathbb{R}$, with probability function $f_Z(z)$.
+Values of\ $Z$ below some threshold, say $z^*$ (commonly, $z^* = 0$), are not directly observed.
+Instead, $X = \text{max}(z^*, z)$ is observed; that is, values of\ $Z$ less than\ $z^*$ are recorded as\ $z^*$.
+
+
+:::{.example #TobitAlcoholSpend name="Latent variables and censoring"}
+Consider a latent variable defined as the 'desire to purchase alcohol'\ $Z$, where the value $Z = 0$ represents indifference to purchasing alcohol.
+Some people may have a *very* strong aversion to purchasing alcohol, so that the value of\ $Z$ is large and negative.
+Some people may have a *mild* aversion to purchasing alcohol, so that the value of\ $Z$ is small but still negative.
+In both cases however, neither person purchases any alcohol.
+
+The observed variable of interest could be\ $Y$, the average weekly spend on buying alcohol in dollars.
+When $Z \le 0$, we observe $X = 0$; however, when $Z > 0$, a continuous amount is spent on purchasing alcohol (Fig.\ \@ref(fig:AlcoholSpend)).
+:::
+
+```{r AlcoholSpend, echo=FALSE, fig.align="center", fig.cap="Left: the latent variable\\ $Z$, the descire to buy alcohol. Right: the observed variable\\ $X$, the average weekly spend on alcohol. The solid dot is the sum of all probabilities for which $Z \\le 0$.", fig.width=8, fig.height=4.5, out.width="100%"}
+par(mfrow = c(1, 2))
+
+############### Latent
+zz <- seq(-3, 3.5, 
+          length = 1000) + 1 # 1 is the ncp
+z <- zz * 15
+
+fz <- dt(zz, 
+         df = 4, 
+         ncp = 1)
+
+plot(fz ~ z,
+     type = "l",
+     xlim = range(z),
+     ylim = c(0, max(fz)),
+     lwd = 3,
+     col = plotColour1,
+     axes = FALSE,
+     main = expression(atop(Latent~variable~italic(Z)*":",
+                            Desire~to~buy~alcohol)),
+     xlab = expression(Latent~variable~italic(Z)),
+     ylab = expression(Probability~fn.)
+)
+axis(side = 1)
+box()
+abline(v = 0,
+       lty = 2,
+       col = "grey",
+       lwd = 2)
+
+text(x = -18,
+     y = max(fz) * 0.75, 
+     label = "Aversion\nto buying\nalcohol",
+     cex = 0.9)
+text(x = 45,
+     y = max(fz) * 0.75, 
+     label = "Propensity\nto buying\nalcohol",
+     cex = 0.9)
+
+
+############### Observed
+y0 <- pt( 0, 
+          df = 4,
+          ncp = 1)
+
+plot(fz[z >= 0] ~ z[z >= 0],
+     xlim = range(z),
+     ylim = c(0, max(fz)),
+     type = "l",
+     lwd = 3,
+     col = plotColour1,
+     axes = FALSE,
+     main = expression(atop(Observed~variable~italic(X)*":",
+                            Average~weekly~spend~on~alcohol)),
+     xlab = expression(Observed~variable~italic(X)),
+     ylab = expression(Probability~fn.)
+)
+
+axis(side = 1)
+box()
+
+# Grey where latent variable is less than zero
+lines(x = z[z < 0],
+      y = fz[z < 0],
+      col = "grey",
+      lwd = 2,
+      lty = 3)
+
+abline(v = 0,
+       lty = 2,
+       col = "grey",
+       lwd = 2)
+
+# Points for Y = 0
+points(x = 0,
+       y = pt(0, 
+              df = 4,
+              ncp = 1),
+       pch = 19)
+
+#points(x = Z_to_Y(0),
+#       y = dt(0, 
+#              df = 4,
+#              ncp = 1),
+#       pch = 1)
+text(x = 28,
+     y = max(fz)/6,
+     label = "Prob. no alcohol\npurchased",
+     pos = 1,
+     cex = 0.9)
+arrows(x0 = 28,
+       y0 = max(fz)/6,
+       x1 = 0,
+       y1 = pt(0, 
+              df = 4,
+              ncp = 1),
+       angle = 15,
+       length = 0.15)
+
+```
+
+
+In this context, the value of the observed variable\ $X$ is called *censored*.
+
+
+:::{.definition #Censoring name="Censoring"}
+A variable is called *censored*\index{Censoring} if its value is only observed when its above or below a certain threshold.
+
+*Left censoring*\index{Censoring!left} occurs when the true (latent) value is less than or equal to a known threshold, but the exact value is unknown.
+We only know that the true (latent) value is *below* a certain threshold.
+
+*Right censoring*\index{Censoring!right} occurs when the true (latent) value is greater than or equal to a known threshold, but the exact value is unknown.
+We only know that the true 9latent) value is *above* a certain threshold.
+:::
+
+
+:::{.example #AlcoholLeftCensoring name="Left censoring"}
+The latent variable 'desire to purchase alcohol' used in Example\ \@ref(exm:TobitAlcoholSpend) is *left censored*.\index{Censoring!left}
+:::
+
+
+:::{.example #AlcoholLeftCensoring ame="Right censoring"}
+In survival analysis,\index{Survival analysis} the time it takes insects to die (say\ $X$) may be studied.
+If the study ends at time\ $t^*$, the time of death for any insects still alive is some value larger than $t^*$; that is, $X\ge t^*$ but the exact time of death remains unknown.
+The time to death is *right censored*.\index{Censoring!right}
+:::
+
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+*Censoring*\index{Censoring} is not the same as *truncation*.\index{Truncation}
+
+*Censoring* retains observations, but the exact value remains unknown.
+*Truncation* removes observations whose value falls above or below a threshold.
+:::
+
+
+
+Usually $z^* = 0$ (as in Example\ \@ref(exm:TobitAlcoholSpend)), so that any value of\ $Z \le 0$ is recorded as\ $z = 0$.
 That is, we observe the random variable\ $X$ such that
 $$
   X = 
@@ -54,51 +210,111 @@ This means the probability function of\ $X$ is
 $$
   f_X(x) = 
   \begin{cases}
-    \Pr(Z < 0) & \text{for $X = 0$};\\
-    f_Z(z)     & \text{for $X > 0$}. 
+    0       & \text{if $X < 0$}\\
+    F_Z(0)  & \text{if $X = 0$}\\
+    f_Z(z)  & \text{if $X > 0$}
   \end{cases}
 $$
-These models are also called *Tobit models*.\index{Tobit models}
+where $F_Z(z)$ is the distribution function of\ $Z$.
+The probability function for $X\mid X > 0$, the continuous part of the distribution, is
+\begin{equation}
+  f_{X\mid X>0}(x) 
+  = \frac{f_Z(x)}{\Pr(Z > 0)} 
+  = \frac{f_Z(x)}{1 - F_Z(0)}
+  (\#eq:PDFpositiveConditional)
+\end{equation}
+where again $F_Z(z)$ is the distribution function of\ $Z$.
 
 
-:::{.example #TobitExamplesLatent name="Latent variables and censoring"}
-Consider household spending on alcohol (which can be observed), which must take a non-negative value.
-We could assume an underlying, unobserved latent variable such as the 'propensity' or 'desire' to purchase alcohol.
-Any negative 'propensity' or 'desire' will result in observing a spend of zero dollars.
-:::
+
 
 
 :::{.example #TobitExamplesLatent2 name="Latent variables and censoring"}
 Consider the number of hours worked (which can be observed), which must take a non-negative value.
 We could assume an underlying, unobserved latent variable such as 'willingness to work'.
-Any negative 'willingness to work' all result in zero observed hours of work.
+Negative values for 'willingness to work', no matter how small or how large, all result in zero observed hours of work.
 :::
 
+
+### Properties {#CensoredModelsProperties}
+
+The expected value of the censored random variable\ $X$ can be found first separating the discrete and continuous parts of the distribution:
+\begin{align*}
+  \operatorname{E}[X] 
+  &= \operatorname{E}[X\mid X = 0] + \operatorname{E}[X\mid X > 0]\\
+  &= \Pr(X = 0)\times 0 + \operatorname{E}[X\mid X > 0]\\
+  &= 0  + \operatorname{E}[X\mid X > 0]\\
+  &= \operatorname{E}[X\mid X > 0]
+\end{align*}
+Similarly,
+$$
+  \operatorname{E}[X^2] 
+  = \operatorname{E}[X^2 \mid X > 0]
+  = \int_0^\infty x^2 \cdot f_{X\mid X>0}(x)\, dx,
+$$
+from which the variance can be obtained.
+The same approach also gives the MGF as
+$$
+  M_X(t) = M_{X\mid X > 0}(t).
+$$
+Clearly, further progress with these expressions requires knowing the distribution of\ $X$ and hence the distribution of the latent variable\ $Z$.
+It is common, but by no means universal, for the latent variable to be described by a normal distribution (when the models are also called *Tobit models* OR, IS THIS WHEN THRESHOLD AT 0?).\index{Tobit models}
 
 
 :::{.example #TobitExample name="Censored model"}
-Consider a latent variable\ $Y$, so that the values $Y < 0$ are recorded as\ $Y = 0$, and where\ $Y$ has the normal distribution\index{Normal distribution} (Fig.\ \@ref(fig:TobitPic), left panel))
+Consider a latent variable\ $Y$, and an observed variable\ $X = \text{max}(0, y)$.
+[CANT HAVE cap-X and lower-Y there, or similar earlier in this section!]
+Suppose that\ $Y$ has the normal distribution\index{Normal distribution} (Fig.\ \@ref(fig:TobitPic), left panel))
 $$
-  Y \sim N(\mu = 1.5, \sigma^2 = 1).
+  Y \sim N(\mu = 1.5, \sigma^2 = 1),
 $$
+so that $\operatorname{E}[Y] = 1.5$ and $\operatorname{var}[Y] = 1$ 
 Note that 
 $$
-  \Pr(Y < 0) = \Pr\big(Z < (0 - 1.5)/1\big) = \Phi(-1.5) \approx 0.0668.
+  \Pr(Y < 0) = \Pr\big(Z < (0 - 1.5)/1\big) = \Phi(-1.5) \approx 0.0668,
 $$
-Then, define the random variable\ $X$ as FIX!!
+using $Z$ as a standard normal variate (Sect.\ \@ref(StandardNormal)).
+Recall that $\Phi(\cdot)$ is the distribution function for a standard normal variate, and $\phi(\cdot)$ is the density function for a standard normal variate.
+To use the functions $\Phi(\cdot)$ and $\phi(\cdot)$, the standardised version of\ $Y$ must be used; that is, $Z = (Y - 1.5)/1 = (Y - 1.5)$ in these functions.
+
+Then, define the random variable\ $X$ as
 $$
   f_X(x) = 
   \begin{cases}
-    \Phi\big( (0 - \mu)/\sigma\Big) & \text{if $X = 0$};\\
-    Y                               & \text{if $X > 0$},
+    0                & \text{if $X < 0$};\\
+    \Phi(-1.5)       & \text{if $X = 0$};\\
+    \phi(x - 1.5)    & \text{if $X > 0$},
   \end{cases}
 $$
 as shown in Fig.\ \@ref(fig:TobitPic) (right panel)).
+
+From Equation\ \@ref(eq:PDFpositiveConditional),
+$$
+  f_{X\mid X > 0}(x) 
+  = \frac{\phi(x- 1.5)}{1 - \Phi(-1.5)}
+  \approx 1.148\dots \times \phi(x)
+$$
+for $X > 0$.
+From this expression, 
+\begin{align*}
+  \operatorname{E}[X] 
+   = \operatorname{E}[X \mid X>0] 
+  &= \operatorname{E}\left[ \frac{\phi(x - 1.5)}{1 - \Phi(-1.5)} \right] \\
+  &= \frac{1}{1 - \Phi(-1.5)} \operatorname{E}[\phi(x - 1.5)]\\
+  &= \frac{-1.5}{1 - \Phi(-1.5)} \operatorname{E}[\phi(x - 1.5)]\\
+  &\approx -1.607385 \text{  CLEARLY WRONG!!!}
+\end{align*}
+Similarly, 
+$$
+  \operatorname{var}[X] 
+  = \operatorname{var}[X \mid X>0]
+  = ???
+$$
 :::
 
 
 
-```{r TobitPic, echo=FALSE, fig.align="center", fig.cap="A truncated model, using a normal distribution for the continuous component, truncated at $X = 0$.", fig.width=8, fig.height=4.5, out.width="90%"}
+```{r TobitPic, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $X = 0$.", fig.width=8, fig.height=4.5, out.width="90%"}
 par( mfrow = c(1, 2))
 
 x.mean <- 1.5
@@ -121,7 +337,8 @@ plot(y ~ x,
      axes = FALSE,
      xlab = expression(Latent~variable~italic(Z)),
      ylab = expression(Prob.~"function"),
-     main = "A mixed distribution: the latent model",
+     main = expression( atop(A~mixed~distribution*":",
+                             the~latent~model~italic(Z))),
      lwd = 2)
 axis(side = 1)
 
@@ -172,7 +389,9 @@ plot(y[x > 0] ~ x[x > 0],
      axes = FALSE,
      xlab = expression(italic(X)),
      ylab = expression(Prob.~"function"),
-     main = "A mixed distribution: censored model",
+     main = expression( atop(A~mixed~distribution*":",
+                             the~censored~model~italic(X))),
+
      lwd = 2)
 axis(side = 1)
 box()
@@ -190,7 +409,7 @@ arrows(x0 = 1.5,
        y1 = p,
        length = 0.15,
        angle = 15)
-text(x = 1.5,
+text(x = 1.6,
      y = p,
      pos = 1,
      cex = 0.9,
@@ -198,18 +417,17 @@ text(x = 1.5,
                               at~italic(X)==0) ) )
 
 
-arrows(x0 = 4,
-       x1 = 3,
-       y0 = 0.3,
-       y1 = dnorm(3, mean = x.mean, sd = x.sd),
-       length = 0.15,
-       angle = 15)
-text(x = 4,
-     y = 0.3,
-     pos = 3,
-     cex = 0.9,
-     label = expression( atop(Truncated,
-                              normal)) ) 
+# arrows(x0 = 4,
+#        x1 = 3,
+#        y0 = 0.3,
+#        y1 = dnorm(3, mean = x.mean, sd = x.sd),
+#        length = 0.15,
+#        angle = 15)
+# text(x = 4,
+#      y = 0.3,
+#      pos = 3,
+#      cex = 0.9,
+#      label = expression( atop(Normal~distribution)) ) 
 
 # X < 0 part
 lines( y[x <= 0] ~ x[x <= 0],
@@ -224,50 +442,62 @@ abline(v = 0,
 
 
 ```
+\index{Censored models|)}
 
 
 
 
 ## Hurdle models {#HurdleModels}
 
-A *hurdle model*\index{Hurdle model} treats the zeros as emerging from a two-step process.
-The first step uses a binomial (OR BERNOULLI?) models to model whether an event of interest occurs or not:
+### Definitions {#HurdleModelsDefinitions}
+
+\index{Hurdle models|(}
+A *hurdle model*\index{Hurdle model} treats the zero values of the random variable\ $X$ as emerging from a two-step process.
+The first step uses a Bernoulli distribution (Sect.\ \@ref(BernoulliDistribution)\index{Bernoulli distribution} to model whether an event of interest occurs:
 $$
-  \Pr() = 
+  \Pr(X) = 
   \begin{cases}
-    p     & \text{if the event of interest \emph{does not} occur;}\\
-    1 - p &\text{if the event of interest \emph{does} occur.}
+    p      & \text{if the event of interest \emph{does not} occur;}\\
+    1 - p  & \text{if the event of interest \emph{does} occur.}
   \end{cases}
 $$
-If the event does occur, with probabilty $1 - p$, the continuous component is modelled using a probability model defined for positive real values only, such as an exponential distribution or an exponential distribution. 
+If the event does occur, with probability $1 - p$, then the continuous component is modelled using a probability model defined for positive real values only, such as an exponential distribution or an exponential distribution.
 
-The probabiluty function for the mixed random variable\ $X$ is therefore
+The probability function for the mixed random variable\ $X$ is therefore
 $$
    f_X(x) = 
    \begin{cases}
-      p              & \text{if $X = 0$}\\
-      (1 - p) g_X(x) & \text{if $x > 0$,}
+      p              & \text{if $x = 0$}\\
+      (1 - p)\, g_X(x) & \text{if $x > 0$,}
    \end{cases}
 $$
 where $g_X(x)$ is continuous distribution defined in $x\in\mathbb{R}_{+}$.
 
+DIST FN TOO?
 
 :::{.example #HurdleExample name="Hurdle model"}
 Consider the random variable\ $X$, where $\Pr(X = 0) = 0.3$.
 Then, use an exponential distribution\index{Exponential distribution} when $X > 0$; that is
-$$
-  f_X(x) = 
+\begin{align*}
+  f_X(x) 
+  &= 
     \begin{cases}
-       p              & \text{if $x = 0$}\\
-       (1 - p) g_X(x) & \text{if $x > 0$,}
+       0.3           & \text{if $x = 0$}\\
+       0.7\cdot g_X(x)  & \text{if $x > 0$}
+    \end{cases}\\
+  &= 
+    \begin{cases}
+       0.3                   & \text{if $x = 0$}\\
+       0.35\cdot \exp(-x/2)  & \text{if $x > 0$,}
     \end{cases}
-$$
+\end{align*}
 where $g_X(x)$ is the exponential distribution with mean parameter $\lambda = 1/2$ for $X > 0$:
 $$
-  g_X(x) = 2\exp(2x) CHECK!!!.
+  g_X(x) = \exp(x/2)/2;
 $$
-See Fig.\ \@ref(fig.HurdlePic).
+see Fig.\ \@ref(fig:HurdlePic).
 :::
+
 
 ```{r HurdlePic, echo=FALSE, fig.align="center", fig.cap="A hurdle model, showing an exponential distribution for the continuous component.", fig.width=8, fig.height=4, out.width="90%"}
 p <- 0.3
@@ -320,13 +550,54 @@ arrows(x0 = 1.5,
 text(x = 1.5,
      y = 0.8,
      pos = 3,
-     label = expression( Exponential~distribution*","~scaled) )
+     label = expression( Exponential~distribution) )
 ```
 
 
-## Poisson sums of gamma distributions: Poisson-gamma distributions {#TweedieModels}
+The probability function for $X \mid X > 0$, the continuous part of the distribution, is
+$$
+  f_{X\mid X > 0} = (1 - p) g_X(x)???.
+$$
 
-Poisson--gamma distribution take a different approach, and model mixed random variables as a Poisson sum of independent gamma distributions.
+
+### Properties {#HurdleModelsProperties}
+
+The expected value of the random variable\ $X$ can be found first separating the discrete and continuous parts of the distribution: STOLEN FROM CENSORED AT MOMENT!
+\begin{align*}
+  \operatorname{E}[X] 
+  &= \operatorname{E}[X\mid X = 0] + \operatorname{E}[X\mid X > 0]\\
+  &= \Pr(X = 0)\times 0 + \operatorname{E}[X\mid X > 0]\\
+  &= 0  + \operatorname{E}[X\mid X > 0]\\
+  &= \operatorname{E}[X\mid X > 0]
+\end{align*}
+Similarly,
+$$
+  \operatorname{E}[X^2] 
+  = \operatorname{E}[X^2 \mid X > 0]
+  = \int_0^\infty x^2 \cdot f_{X\mid X>0}(x)\, dx,
+$$
+from which the variance can be obtained.
+The same approach also gives the MGF as
+$$
+  M_X(t) = M_{X\mid X > 0}(t).
+$$
+Clearly, further progress with these expressions requires knowing the distribution of\ $X$ and hence the distribution of the latent variable\ $Z$.
+It is common, but by no means universal, for the latent variable to be described by a normal distribution (when the models are also called *Tobit models* OR, IS THIS WHEN THRESHOLD AT 0?).\index{Tobit models}
+
+
+:::{.example}
+STUFF
+:::
+
+
+
+\index{Hurdle models|)}
+
+
+## Compound Poisson-gamma distributions {#TweedieModels}
+
+\index{Compound Poisson-gamma models|(}
+Compound Poisson--gamma distribution take a different approach to modelling mixed random variables: they model mixed random variables as a Poisson sum of independent gamma distributions.
 Suppose the number of events observed (which is discrete) is\ $N$, such that
 $$
   N \sim \text{Pois}(\lambda).
@@ -482,6 +753,7 @@ box()
 #                phi = phi)
 
 ```
+\index{Compound Poisson-gamma models|)}
 
 
 
