@@ -45,14 +45,14 @@ Unlike the hurdle model, the discrete and continuous parts are not modelled sepa
 \index{Censored models|(}
 Censored models assume the existence of an unobserved *latent variable*,\index{Latent variable} say\ $z$ such that $z\in\mathbb{R}$, with probability function $f_Z(z)$.
 Values of\ $Z$ below some threshold, say $z^*$ (commonly, $z^* = 0$), are not directly observed.
-Instead, $X = \text{max}(z^*, z)$ is observed; that is, values of\ $Z$ less than\ $z^*$ are recorded as\ $z^*$.
+Instead, $X = \text{max}(Z^*, Z)$ is observed; that is, values of\ $Z$ less than\ $z^*$ are recorded as\ $z^*$.
 
 
 :::{.example #TobitAlcoholSpend name="Latent variables and censoring"}
 Consider a latent variable defined as the 'desire to purchase alcohol'\ $Z$, where the value $Z = 0$ represents indifference to purchasing alcohol.
 Some people may have a *very* strong aversion to purchasing alcohol, so that the value of\ $Z$ is large and negative.
 Some people may have a *mild* aversion to purchasing alcohol, so that the value of\ $Z$ is small but still negative.
-In both cases however, neither person purchases any alcohol.
+In both cases however, alcohol is not purchased.
 
 The observed variable of interest could be\ $Y$, the average weekly spend on buying alcohol in dollars.
 When $Z \le 0$, we observe $X = 0$; however, when $Z > 0$, a continuous amount is spent on purchasing alcohol (Fig.\ \@ref(fig:AlcoholSpend)).
@@ -118,6 +118,9 @@ plot(fz[z >= 0] ~ z[z >= 0],
 )
 
 axis(side = 1)
+axis(side = 2,
+     at = round(y0, 2),
+     las = 2)
 box()
 
 # Grey where latent variable is less than zero
@@ -134,9 +137,7 @@ abline(v = 0,
 
 # Points for Y = 0
 points(x = 0,
-       y = pt(0, 
-              df = 4,
-              ncp = 1),
+       y = y0,
        pch = 19)
 
 #points(x = Z_to_Y(0),
@@ -216,7 +217,7 @@ $$
   \end{cases}
 $$
 where $F_Z(z)$ is the distribution function of\ $Z$.
-The probability function for $X\mid X > 0$, the continuous part of the distribution, is
+The probability function for $X\mid X > 0$, the continuous part of the distribution only, is
 \begin{equation}
   f_{X\mid X>0}(x) 
   = \frac{f_Z(x)}{\Pr(Z > 0)} 
@@ -225,7 +226,15 @@ The probability function for $X\mid X > 0$, the continuous part of the distribut
 \end{equation}
 where again $F_Z(z)$ is the distribution function of\ $Z$.
 
-
+The distribution function of] $X$ is
+$$
+  f_{X\mid X>0}(x) =
+  \begin{cases}
+    0             & \text{for $x < 0$}\\
+    F_Z(0)        & \text{for $x = 0$}\\ 
+    F_Z(x)        & \text{for $x > 0$}
+  \end{cases}
+$$
 
 
 
@@ -243,8 +252,7 @@ The expected value of the censored random variable\ $X$ can be found first separ
   \operatorname{E}[X] 
   &= \operatorname{E}[X\mid X = 0] + \operatorname{E}[X\mid X > 0]\\
   &= \Pr(X = 0)\times 0 + \operatorname{E}[X\mid X > 0]\\
-  &= 0  + \operatorname{E}[X\mid X > 0]\\
-  &= \operatorname{E}[X\mid X > 0]
+  &= \operatorname{E}[X\mid X > 0].
 \end{align*}
 Similarly,
 $$
@@ -258,23 +266,220 @@ $$
   M_X(t) = M_{X\mid X > 0}(t).
 $$
 Clearly, further progress with these expressions requires knowing the distribution of\ $X$ and hence the distribution of the latent variable\ $Z$.
-It is common, but by no means universal, for the latent variable to be described by a normal distribution (when the models are also called *Tobit models* OR, IS THIS WHEN THRESHOLD AT 0?).\index{Tobit models}
+It is common, but by no means universal, for the latent variable to be described by a normal distribution (when the models are also called *Tobit models*).\index{Tobit models}
+
+
+:::{.example #TobitExample0 name="Censored model"}
+Consider a latent variable\ $Y$, and an observed variable\ $X = \text{max}(0, Z)$.
+Suppose that\ $Z$ has the normal distribution\index{Normal distribution} (Fig.\ \@ref(fig:TobitPic0), left panel))
+$$
+  Z \sim N(\mu = 0, \sigma^2 = 1),
+$$
+so that $\operatorname{E}[Z] = 0$ and $\operatorname{var}[Z] = 1$.
+That is, $Z$ has a standard normal distribution (Sect\ \@ref(StandardNormal)).
+Note that 
+$$
+  \Pr(Z < 0) = \Phi(0) = 0.5.
+$$
+Recall the notation: $\Phi(\cdot)$ is the distribution function for a standard normal variate, and $\phi(\cdot)$ is the density function for a standard normal variate.
+
+Then, define the random variable\ $X$ as
+$$
+  f_X(x) = 
+  \begin{cases}
+    0          & \text{if $Z < 0$};\\
+    \Phi(0)    & \text{if $Z = 0$};\\
+    \phi(x)    & \text{if $Z > 0$},
+  \end{cases}
+$$
+as shown in Fig.\ \@ref(fig:TobitPic0) (right panel).
+
+From Equation\ \@ref(eq:PDFpositiveConditional),
+$$
+  f_{X\mid X > 0}(x) 
+  = \frac{\phi(x)}{1 - \Phi(0)}
+  = 2 \phi(x)
+$$
+for $X > 0$.
+From this expression, 
+$$
+  \operatorname{E}[X] 
+   = \operatorname{E}[X \mid X > 0] 
+  = 2 \int_0^\infty x\cdot \phi(x)\, dx 
+  = \frac{2}{\sqrt{2\pi}} 
+  \approx 0.7979,
+$$
+integrating the expression for $\phi(x)$ (Equation\ \@ref(eq:StandardNormalPMF)).
+
+Similarly, using integration by parts,
+$$
+  \operatorname{E}[X^2] 
+   = \operatorname{E}[X^2 \mid X > 0] 
+  = 2 \int_0^\infty x^2\cdot \phi(x)\, dx 
+  = 1/2.
+$$
+Combining, this means that 
+$$
+  \operatorname{var}[X] 
+  = \frac{1}{2} - \left(\frac{2}{\sqrt{2\pi}}\right)^2 
+  = \frac{1}{2} - \frac{1}{\pi} 
+  \approx 0.182.
+$$
+:::
+
+
+
+```{r TobitPic0b, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $Z = 0$.", fig.width=8, fig.height=4.5, out.width="90%"}
+par( mfrow = c(1, 2))
+
+x.mean <- 0
+x.sd <- 1
+p <- pnorm(0,
+            mean = x.mean,
+            sd = x.sd)
+
+x <- seq(from = x.mean - (3.5 * x.sd),
+         to =   x.mean + (3.5 * x.sd),
+         length = 1000)
+
+y <-  dnorm(x,
+            mean = x.mean,
+            sd = x.sd)
+
+plot(y ~ x,
+     xlim = range(x),
+     ylim = c(0, 0.5),
+     type = "n",
+     axes = FALSE,
+     xlab = expression(Latent~variable~italic(Z)),
+     ylab = expression(Prob.~"function"),
+     main = expression( atop(A~mixed~distribution*":",
+                             the~latent~model~italic(Z))),
+     lwd = 3)
+axis(side = 1)
+
+# Shade for X < 0
+xNeg <- x[ x <= 0]
+yNeg <- y[ x <= 0]
+
+polygon( x = c(xNeg, rev(xNeg)),
+         y = c(yNeg, rep(0, length(yNeg))),
+         col = "lightgrey",
+         border = NA) # Omit border
+
+# Different colours for x >= 0 and x < 0
+lines( y[x > 0] ~ x[x > 0],
+       lwd = 2,
+       col = "black")
+lines( y[x <= 0] ~ x[x <= 0],
+       lwd = 2,
+       col = "darkgrey")
+
+# x = 0
+abline(v = 0,
+       col = "grey",
+       lty = 2)
+
+box()
+
+
+# Explanatory labels
+arrows(x0 = -2,
+       x1 = -1,
+       y0 = 0.2,
+       y1 = 0.08,
+       length = 0.15,
+       angle = 15)
+text(x = -2,
+     y = 0.2,
+     pos = 3,
+     cex = 0.9,
+     label = expression(atop(Where,
+                             italic(Z)<0) ) )
+
+################################################################################
+
+plot(y[x > 0] ~ x[x > 0],
+     xlim = range(x),
+     ylim = c(0, 0.5),
+     type = "l",
+     axes = FALSE,
+     xlab = expression(Observed~variable~italic(X)),
+     ylab = expression(Prob.~"function"),
+     main = expression( atop(A~mixed~distribution*":",
+                             the~censored~model~italic(X))),
+
+     lwd = 3)
+axis(side = 1)
+axis(side = 2,
+     at = p)
+box()
+
+
+points(x = 0,
+       y = p,
+       pch = 19)
+
+
+# Explanatory labels
+arrows(x0 = 2.25,
+       x1 = 0,
+       y0 = 0.4,
+       y1 = p,
+       length = 0.15,
+       angle = 15)
+text(x = 2.25,
+     y = 0.4,
+     pos = 1,
+     cex = 0.9,
+     label = expression( atop(Discrete~prob.,
+                              at~italic(X)==0) ) )
+
+
+# arrows(x0 = 4,
+#        x1 = 3,
+#        y0 = 0.3,
+#        y1 = dnorm(3, mean = x.mean, sd = x.sd),
+#        length = 0.15,
+#        angle = 15)
+# text(x = 4,
+#      y = 0.3,
+#      pos = 3,
+#      cex = 0.9,
+#      label = expression( atop(Normal~distribution)) ) 
+
+# X < 0 part
+lines( y[x <= 0] ~ x[x <= 0],
+       lwd = 1,
+       lty = 3,
+       col = "darkgrey")
+
+# x = 0
+abline(v = 0,
+       col = "grey",
+       lty = 2)
+
+
+```
+
+
+
 
 
 :::{.example #TobitExample name="Censored model"}
-Consider a latent variable\ $Y$, and an observed variable\ $X = \text{max}(0, y)$.
-[CANT HAVE cap-X and lower-Y there, or similar earlier in this section!]
+EXECRISE??
+
+Consider a latent variable\ $Y$, and an observed variable\ $X = \text{max}(0, Y)$.
 Suppose that\ $Y$ has the normal distribution\index{Normal distribution} (Fig.\ \@ref(fig:TobitPic), left panel))
 $$
   Y \sim N(\mu = 1.5, \sigma^2 = 1),
 $$
-so that $\operatorname{E}[Y] = 1.5$ and $\operatorname{var}[Y] = 1$ 
+so that $\operatorname{E}[Y] = 1.5$ and $\operatorname{var}[Y] = 1$.
 Note that 
 $$
   \Pr(Y < 0) = \Pr\big(Z < (0 - 1.5)/1\big) = \Phi(-1.5) \approx 0.0668,
 $$
 using $Z$ as a standard normal variate (Sect.\ \@ref(StandardNormal)).
-Recall that $\Phi(\cdot)$ is the distribution function for a standard normal variate, and $\phi(\cdot)$ is the density function for a standard normal variate.
 To use the functions $\Phi(\cdot)$ and $\phi(\cdot)$, the standardised version of\ $Y$ must be used; that is, $Z = (Y - 1.5)/1 = (Y - 1.5)$ in these functions.
 
 Then, define the random variable\ $X$ as
@@ -299,10 +504,8 @@ From this expression,
 \begin{align*}
   \operatorname{E}[X] 
    = \operatorname{E}[X \mid X>0] 
-  &= \operatorname{E}\left[ \frac{\phi(x - 1.5)}{1 - \Phi(-1.5)} \right] \\
-  &= \frac{1}{1 - \Phi(-1.5)} \operatorname{E}[\phi(x - 1.5)]\\
-  &= \frac{-1.5}{1 - \Phi(-1.5)} \operatorname{E}[\phi(x - 1.5)]\\
-  &\approx -1.607385 \text{  CLEARLY WRONG!!!}
+  &= \int_0^\infty ???\,dx \\
+  & \text{FIX!}
 \end{align*}
 Similarly, 
 $$
@@ -442,6 +645,9 @@ abline(v = 0,
 
 
 ```
+
+
+
 \index{Censored models|)}
 
 
@@ -453,75 +659,87 @@ abline(v = 0,
 
 \index{Hurdle models|(}
 A *hurdle model*\index{Hurdle models} treats the zero values of the random variable\ $X$ as emerging from a two-step process.
-The first step uses a Bernoulli distribution (Sect.\ \@ref(BernoulliDistribution)\index{Bernoulli distribution} to model whether an event of interest occurs:
+The first step uses a Bernoulli distribution (Sect.\ \@ref(BernoulliDistribution)\index{Bernoulli distribution} to model a random variable\ $Y$ that defines whether an event of interest occurs:
 $$
-  \Pr(X) = 
+  \Pr(Y) = 
   \begin{cases}
-    p      & \text{if the event of interest \emph{does not} occur;}\\
-    1 - p  & \text{if the event of interest \emph{does} occur.}
+    1 - p    & \text{if the event of interest \emph{does not} occur;}\\
+    p        & \text{if the event of interest \emph{does} occur.}
   \end{cases}
 $$
-If the event does occur, with probability $1 - p$, then the continuous component is modelled using a probability model defined for positive real values only, such as an exponential distribution or an exponential distribution.
+If the event does occur (i.e., conditional on $X > 0$), with probability $1 - p$, then the continuous component is modelled using a probability density function $f^+_X(x)$ model defined for positive real values only, such as an exponential distribution or an exponential distribution.
 
 The probability function for the mixed random variable\ $X$ is therefore
 $$
    f_X(x) = 
-   \begin{cases}
-      p              & \text{if $x = 0$}\\
-      (1 - p)\, g_X(x) & \text{if $x > 0$,}
+   \begin{cases} 
+      1 - p           & \text{if $x = 0$}\\
+      p\cdot f^+_X(x)    & \text{if $x > 0$,}
    \end{cases}
 $$
-where $g_X(x)$ is continuous distribution defined in $x\in\mathbb{R}_{+}$.
+where $f^+_X(x) = f_{X \mid X > 0}(x)$ is the density function for the continuous distribution defined in $x\in\mathbb{R}_{+}$.
 
-DIST FN TOO?
+The distribution function is
+$$
+   F_X(x) = 
+   \begin{cases} 
+      0                             & \text{if $x < 0$}\\
+      1 - p                         & \text{if $x = 0$}\\
+      (1 - p) + p\cdot F^+_X(x)    & \text{if $x > 0$,}
+   \end{cases}
+$$
+where $F^+_X(x) = F_{X\mid X > 0}(x)$ is the distribution function for the continuous distribution defined in $x\in\mathbb{R}_{+}$.
+
 
 :::{.example #HurdleExample name="Hurdle model"}
-Consider the random variable\ $X$, where $\Pr(X = 0) = 0.3$.
-Then, use an exponential distribution\index{Exponential distribution} when $X > 0$; that is
-\begin{align*}
-  f_X(x) 
-  &= 
-    \begin{cases}
-       0.3           & \text{if $x = 0$}\\
-       0.7\cdot g_X(x)  & \text{if $x > 0$}
-    \end{cases}\\
-  &= 
+Consider the mixed random variable\ $X$, with probability function $f_X(x)$.
+Suppose that, when $X > 0$, an exponential distribution\index{Exponential distribution} is used to describe the distribution; that is
+$$
+  f^+_X(x) = \frac{1}{\lambda}\exp(-x/\lambda)\quad\text{for $x > 0$}.
+$$
+Then, using $p = 0.7$ and $\lambda = 1/2$, the probability function of\ $X$ is
+$$
+  f_X(x)
+  =
     \begin{cases}
        0.3                   & \text{if $x = 0$}\\
-       0.35\cdot \exp(-x/2)  & \text{if $x > 0$,}
+       0.35\cdot \exp(-x/2)  & \text{if $x > 0$;}
     \end{cases}
-\end{align*}
-where $g_X(x)$ is the exponential distribution with mean parameter $\lambda = 1/2$ for $X > 0$:
-$$
-  g_X(x) = \exp(x/2)/2;
 $$
 see Fig.\ \@ref(fig:HurdlePic).
 :::
 
 
 ```{r HurdlePic, echo=FALSE, fig.align="center", fig.cap="A hurdle model, showing an exponential distribution for the continuous component.", fig.width=8, fig.height=4, out.width="90%"}
-p <- 0.3
+p <- 0.7
 x.rate = 2
 
 x <- seq(0, 3,
          length = 100)
-y <-  (1 - p) * dexp(x, 
-                     rate = x.rate)
+y <-  p * dexp(x, 
+               rate = x.rate)
                      
+
+par( mfrow = c(1, 2))
 plot(y ~ x,
      type = "l",
      axes = FALSE,
      ylim = c(0,
-              max( c(y, p) ) ),
+              max( c(y, 1 - p) ) ),
      xlab = expression(italic(X)),
      ylab = expression(Prob.~"function"),
-     main = "A mixed distribution: hurdle model",
+     main = expression(atop(Mixed~distribution,
+                            hurdle~ model)),
      lwd = 2)
 axis(side = 1)
+axis(side = 2,
+     at = c(0, 
+            1 - p),
+     las = 2)
 box()
 
 points(x = 0, # Included
-       y = p,
+       y = 1 - p,
        pch = 19)
 points(x = 0, # Excluded
        y = max(y),
@@ -531,63 +749,209 @@ points(x = 0, # Excluded
 arrows(x0 = 0.35,
        x1 = 0,
        y0 = 0.17,
-       y1 = p,
+       y1 = 1 - p,
        length = 0.15,
        angle = 15)
 text(x = 0.35,
      y = 0.17,
      pos = 1,
-     label = expression(Discrete~part~at~italic(X)==0) )
+     label = expression(Pr*"("*italic(X)==0*")" ) )
 
 
 arrows(x0 = 1.5,
        x1 = 1,
        y0 = 0.8,
        y1 = dexp(x = 1, 
-                 rate = x.rate) * (1 - p),
+                 rate = x.rate) * p,
        length = 0.15,
        angle = 15)
 text(x = 1.5,
      y = 0.8,
      pos = 3,
      label = expression( Exponential~distribution) )
+
+
+#############################################
+
+Fy <- (1 - p)  + p * pexp( x,
+                           rate = x.rate)
+plot(Fy ~ x,
+     type = "l",
+     axes = FALSE,
+     ylim = c(0, 1),
+     xlim = c(-1, max(x)),
+     xlab = expression(italic(X)),
+     ylab = expression(Distribution.~"function"),
+     main = expression(atop(Mixed~distribution,
+                            hurdle~ model)),
+     lwd = 2)
+lines(x = c(-1, 0),
+      y = c(0, 0),
+      lwd = 2)
+points(x = 0, 
+       y = 0,
+       pch = 1) # Not incuded
+
+
+axis(side = 1)
+axis(side = 2,
+     at = c(0, 
+            1 - p, 
+            1),
+     las = 2)
+box()
+
+points(x = 0, # Included
+       y = 1 - p,
+       pch = 19)
+
 ```
 
 
-The probability function for $X \mid X > 0$, the continuous part of the distribution, is
-$$
-  f_{X\mid X > 0} = (1 - p) g_X(x)???.
-$$
 
 
 ### Properties {#HurdleModelsProperties}
 
-The expected value of the random variable\ $X$ can be found first separating the discrete and continuous parts of the distribution: STOLEN FROM CENSORED AT MOMENT!
+The expected value of the random variable\ $X$ can be found first separating the discrete and continuous parts of the distribution:
 \begin{align*}
   \operatorname{E}[X] 
   &= \operatorname{E}[X\mid X = 0] + \operatorname{E}[X\mid X > 0]\\
-  &= \Pr(X = 0)\times 0 + \operatorname{E}[X\mid X > 0]\\
-  &= 0  + \operatorname{E}[X\mid X > 0]\\
-  &= \operatorname{E}[X\mid X > 0]
+  &= (1 - p)\times 0 + p \operatorname{E}[X\mid X > 0]\\
+  &= p \mu^+,
 \end{align*}
+where $\mu^+$ denotes $\operatorname{E}[X\mid X > 0]$, the expected value of the distribution defined for $X > 0$.
 Similarly,
 $$
   \operatorname{E}[X^2] 
   = \operatorname{E}[X^2 \mid X > 0]
-  = \int_0^\infty x^2 \cdot f_{X\mid X>0}(x)\, dx,
+  = p (\mu^2)^+,
 $$
-from which the variance can be obtained.
+where $(\mu^2)^+$ denotes $\operatorname{E}[X^2\mid X > 0]$.
+Then, the variance of\ $X$ is
+\begin{align*}
+  \operatorname{var}[X]
+  &=  p[(\mu^2)^+ - p(\mu^+)^2]\\
+  &=  p(\sigma^2)^+ + p(1 - p)(\mu^+)^2.
+\end{align*}
+from which the variance can be obtained. DEFINE BITS!
 The same approach also gives the MGF as
 $$
-  M_X(t) = M_{X\mid X > 0}(t).
+  M_X(t) 
+  = (1 - p) + p\cdot M_{X^"}(t).
+  = (1 - p) + p\cdot M_{X\mid X > 0}(t),
 $$
-Clearly, further progress with these expressions requires knowing the distribution of\ $X$ and hence the distribution of the latent variable\ $Z$.
-It is common, but by no means universal, for the latent variable to be described by a normal distribution (when the models are also called *Tobit models* OR, IS THIS WHEN THRESHOLD AT 0?).\index{Tobit models}
+where $M_{X^"}(t)$ is the MGF of the distribution defined for $X > 0$.
+
+Clearly, further progress with these expressions requires knowing the distribution of\ $X | X > 0$
 
 
-:::{.example}
-STUFF
+
+:::{.example #HurdleGamma name="Hurdle model, using gamma distribution"}
+Consider a random variable\ $X$ such that $p = 0.75$ (and hence $\Pr(X = 0) = 1 - p = 0.25$), and where the distribution when $X > 0$ follows a gamma distribution (Sect.\ \@ref(GammaDistribution)) having $\alpha = 2$ and $\beta = 1$, with the density function
+$$
+  f_X^{+}(x; \alpha, \beta) 
+  = f_{X\mid X > 0}(x; \alpha, \beta) 
+  = \frac{1}{\Gamma(2)} x \exp(-x)
+  \quad\text{for $x > 0$}.
+$$
+with $\mu^+ = \operatorname{E}[X\mid X > 0] = \alpha\beta = 2$ and $\operatorname{var}[X\mid X > 0] = \alpha\beta^2 = 2$.
+Then, the probability function for\ $X$ is
+$$
+  f_{X}(x) 
+  = 
+  \begin{cases}
+     0.25                                & \text{for $x = 0$}\\
+     0.75 \times f_X^{+}(x; \alpha, \beta) & \text{for $x > 0$.}
+  \end{cases}
+$$
+Then 
+\begin{align*}
+  \operatorname{E}[X] 
+   &= p\cdot \mu^+ = 0.75 * 2 = 1.5\\
+  \operatorname{var}[X] 
+   &= p\cdot \mu^+ = 0.75 * 2 = 1.5
+\end{align*}
+from CROSS REF.
 :::
+
+
+
+```{r HurdleGamma, echo=FALSE, fig.align="center", fig.cap="A hurdle model, using a gamma distribution for the continuous component.", fig.width=8, fig.height=4.5, out.width="90%"}
+p <- 0.75
+x.shape <- 2 # shape = alpha
+x.scale <- 1 # scale = beta
+
+x <- seq(0, 5,
+         length = 100)
+y <-  p * dgamma(x, 
+                 shape = x.shape,
+                 scale = x.scale)
+                     
+
+par( mfrow = c(1, 2))
+plot(y ~ x,
+     type = "l",
+     axes = FALSE,
+     ylim = c(0,
+              max( c(y, 1 - p) ) ),
+     xlab = expression(italic(X)),
+     ylab = expression(Prob.~"function"),
+     main = expression(atop(Hurdle~model,
+                            probability~"function")),
+     lwd = 2)
+axis(side = 1)
+axis(side = 2,
+     at = c(0, 
+            1 - p),
+     las = 2)
+box()
+
+points(x = 0, # Included
+       y = 1 - p,
+       pch = 19)
+points(x = 0, # Excluded
+       y = y[1],
+       pch = 1)
+
+
+
+#############################################
+
+Fy <- (1 - p)  + p * pgamma(x, 
+                            shape = x.shape, 
+                            scale = x.scale)
+plot(Fy ~ x,
+     type = "l",
+     axes = FALSE,
+     ylim = c(0, 1),
+     xlim = c(-1, max(x)),
+     xlab = expression(italic(X)),
+     ylab = expression(Distribution.~"function"),
+     main = expression(atop(Hurdle~model,
+                            distribution~"function")),
+     lwd = 2)
+lines(x = c(-1, 0),
+      y = c(0, 0),
+      lwd = 2)
+points(x = 0, 
+       y = 0,
+       pch = 1) # Not incuded
+
+
+axis(side = 1)
+axis(side = 2,
+     at = c(0, 
+            1 - p, 
+            1),
+     las = 2)
+box()
+
+points(x = 0, # Included
+       y = 1 - p,
+       pch = 19)
+```
+
+
 
 
 
@@ -761,6 +1125,10 @@ box()
 Modelling rainfall. 
 Using hurdle from Stern and Coe, Chandler and Wheater? Tobit thing from IWSM, and Poisson--gamma, 
 :::
+
+
+
+## Simulation {#MixedVariablesSimulation}
 
 
 ## Exercises  {#MixedDistributionsExercises}
