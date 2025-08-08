@@ -52,13 +52,13 @@ Instead, $X = \text{max}(Z^*, Z)$ is observed; that is, values of\ $Z$ less than
 Consider a latent variable defined as the 'desire to purchase alcohol'\ $Z$, where the value $Z = 0$ represents indifference to purchasing alcohol.
 Some people may have a *very* strong aversion to purchasing alcohol, so that the value of\ $Z$ is large and negative.
 Some people may have a *mild* aversion to purchasing alcohol, so that the value of\ $Z$ is small but still negative.
-In both cases however, alcohol is not purchased.
+In both cases, however, an aversion to purchasing alcohol is present, and no alcohol is purchased.
 
 The observed variable of interest could be\ $Y$, the average weekly spend on buying alcohol in dollars.
 When $Z \le 0$, we observe $X = 0$; however, when $Z > 0$, a continuous amount is spent on purchasing alcohol (Fig.\ \@ref(fig:AlcoholSpend)).
 :::
 
-```{r AlcoholSpend, echo=FALSE, fig.align="center", fig.cap="Left: the latent variable\\ $Z$, the descire to buy alcohol. Right: the observed variable\\ $X$, the average weekly spend on alcohol. The solid dot is the sum of all probabilities for which $Z \\le 0$.", fig.width=8, fig.height=4.5, out.width="100%"}
+```{r AlcoholSpend, echo=FALSE, fig.align="center", fig.cap="Left: the latent variable\\ $Z$, the desire to buy alcohol. Right: the observed variable\\ $X$, the average weekly spend on alcohol. The solid dot is the sum of all probabilities for which $Z \\le 0$.", fig.width=8, fig.height=4, out.width="100%"}
 par(mfrow = c(1, 2))
 
 ############### Latent
@@ -147,7 +147,7 @@ points(x = 0,
 #       pch = 1)
 text(x = 28,
      y = max(fz)/6,
-     label = "Prob. no alcohol\npurchased",
+     label = "Prob. that no\nalcohol purchased",
      pos = 1,
      cex = 0.9)
 arrows(x0 = 28,
@@ -226,9 +226,9 @@ The probability function for $X\mid X > 0$, the continuous part of the distribut
 \end{equation}
 where again $F_Z(z)$ is the distribution function of\ $Z$.
 
-The distribution function of] $X$ is
+The distribution function of\ $X$ is
 $$
-  f_{X\mid X>0}(x) =
+  F_{X\mid X>0}(x) =
   \begin{cases}
     0             & \text{for $x < 0$}\\
     F_Z(0)        & \text{for $x = 0$}\\ 
@@ -276,8 +276,7 @@ $$
   Z \sim N(\mu = 0, \sigma^2 = 1),
 $$
 so that $\operatorname{E}[Z] = 0$ and $\operatorname{var}[Z] = 1$.
-That is, $Z$ has a standard normal distribution (Sect\ \@ref(StandardNormal)).
-Note that 
+That is, $Z$ has a standard normal distribution (Sect\ \@ref(StandardNormal)), and so
 $$
   \Pr(Z < 0) = \Phi(0) = 0.5.
 $$
@@ -310,7 +309,6 @@ $$
   \approx 0.7979,
 $$
 integrating the expression for $\phi(x)$ (Equation\ \@ref(eq:StandardNormalPMF)).
-
 Similarly, using integration by parts,
 $$
   \operatorname{E}[X^2] 
@@ -329,7 +327,7 @@ $$
 
 
 
-```{r TobitPic0b, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $Z = 0$.", fig.width=8, fig.height=4.5, out.width="90%"}
+```{r TobitPic0, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $Z = 0$.", fig.width=8, fig.height=4, out.width="90%"}
 par( mfrow = c(1, 2))
 
 x.mean <- 0
@@ -353,7 +351,7 @@ plot(y ~ x,
      axes = FALSE,
      xlab = expression(Latent~variable~italic(Z)),
      ylab = expression(Prob.~"function"),
-     main = expression( atop(A~mixed~distribution*":",
+     main = expression( atop(A~censored~model*":",
                              the~latent~model~italic(Z))),
      lwd = 3)
 axis(side = 1)
@@ -406,7 +404,7 @@ plot(y[x > 0] ~ x[x > 0],
      axes = FALSE,
      xlab = expression(Observed~variable~italic(X)),
      ylab = expression(Prob.~"function"),
-     main = expression( atop(A~mixed~distribution*":",
+     main = expression( atop(A~censored~model*":",
                              the~censored~model~italic(X))),
 
      lwd = 3)
@@ -467,7 +465,7 @@ abline(v = 0,
 
 
 :::{.example #TobitExample name="Censored model"}
-EXECRISE??
+EXERISE??
 
 Consider a latent variable\ $Y$, and an observed variable\ $X = \text{max}(0, Y)$.
 Suppose that\ $Y$ has the normal distribution\index{Normal distribution} (Fig.\ \@ref(fig:TobitPic), left panel))
@@ -517,7 +515,7 @@ $$
 
 
 
-```{r TobitPic, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $X = 0$.", fig.width=8, fig.height=4.5, out.width="90%"}
+```{r TobitPic, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $X = 0$.", fig.width=8, fig.height=4, out.width="90%"}
 par( mfrow = c(1, 2))
 
 x.mean <- 1.5
@@ -659,7 +657,7 @@ abline(v = 0,
 
 \index{Hurdle models|(}
 A *hurdle model*\index{Hurdle models} treats the zero values of the random variable\ $X$ as emerging from a two-step process.
-The first step uses a Bernoulli distribution (Sect.\ \@ref(BernoulliDistribution)\index{Bernoulli distribution} to model a random variable\ $Y$ that defines whether an event of interest occurs:
+The first step uses a Bernoulli distribution (Sect.\ \@ref(BernoulliDistribution))\index{Bernoulli distribution} to model a random variable\ $Y$ that defines whether an event of interest occurs:
 $$
   \Pr(Y) = 
   \begin{cases}
@@ -667,7 +665,7 @@ $$
     p        & \text{if the event of interest \emph{does} occur.}
   \end{cases}
 $$
-If the event does occur (i.e., conditional on $X > 0$), with probability $1 - p$, then the continuous component is modelled using a probability density function $f^+_X(x)$ model defined for positive real values only, such as an exponential distribution or an exponential distribution.
+If the event does occur (i.e., conditional on $X > 0$), with probability $1 - p$, then the continuous component is modelled using a probability density function $f^+_X(x)$ defined for positive real values only (such as an exponential distribution or a gamma distribution).
 
 The probability function for the mixed random variable\ $X$ is therefore
 $$
@@ -677,8 +675,7 @@ $$
       p\cdot f^+_X(x)    & \text{if $x > 0$,}
    \end{cases}
 $$
-where $f^+_X(x) = f_{X \mid X > 0}(x)$ is the density function for the continuous distribution defined in $x\in\mathbb{R}_{+}$.
-
+where $f^+_X(x) = f_{X \mid X > 0}(x)$ is the density function for the continuous distribution defined for $x\in\mathbb{R}_{+}$.
 The distribution function is
 $$
    F_X(x) = 
@@ -688,7 +685,7 @@ $$
       (1 - p) + p\cdot F^+_X(x)    & \text{if $x > 0$,}
    \end{cases}
 $$
-where $F^+_X(x) = F_{X\mid X > 0}(x)$ is the distribution function for the continuous distribution defined in $x\in\mathbb{R}_{+}$.
+where $F^+_X(x) = F_{X\mid X > 0}(x)$ is the distribution function for the continuous distribution defined for $x\in\mathbb{R}_{+}$.
 
 
 :::{.example #HurdleExample name="Hurdle model"}
@@ -833,14 +830,14 @@ Then, the variance of\ $X$ is
   &=  p[(\mu^2)^+ - p(\mu^+)^2]\\
   &=  p(\sigma^2)^+ + p(1 - p)(\mu^+)^2.
 \end{align*}
-from which the variance can be obtained. DEFINE BITS!
+where $\sigma^2 = \operatorname{var}[X \mid X > 0]$
 The same approach also gives the MGF as
-$$
+\begin{align*}
   M_X(t) 
-  = (1 - p) + p\cdot M_{X^"}(t).
-  = (1 - p) + p\cdot M_{X\mid X > 0}(t),
-$$
-where $M_{X^"}(t)$ is the MGF of the distribution defined for $X > 0$.
+  &= (1 - p) + p\cdot M_{X^+}(t)\\
+  &= (1 - p) + p\cdot M_{X\mid X > 0}(t),
+\end{align*}
+where $M_{X^+}(t)$ is the MGF of the distribution defined for $X > 0$.
 
 Clearly, further progress with these expressions requires knowing the distribution of\ $X | X > 0$
 
@@ -854,7 +851,7 @@ $$
   = \frac{1}{\Gamma(2)} x \exp(-x)
   \quad\text{for $x > 0$}.
 $$
-with $\mu^+ = \operatorname{E}[X\mid X > 0] = \alpha\beta = 2$ and $\operatorname{var}[X\mid X > 0] = \alpha\beta^2 = 2$.
+For this gamma distribution, using results from Sect.\ \@ref(GammaDistribution), $\mu^+ = \operatorname{E}[X\mid X > 0] = \alpha\beta = 2$ and $\operatorname{var}[X\mid X > 0] = \alpha\beta^2 = 2$.
 Then, the probability function for\ $X$ is
 $$
   f_{X}(x) 
@@ -867,16 +864,19 @@ $$
 Then 
 \begin{align*}
   \operatorname{E}[X] 
-   &= p\cdot \mu^+ = 0.75 * 2 = 1.5\\
+   &= p\cdot \mu^+ 
+    = 0.75 \times 2 
+    = 1.5\\
   \operatorname{var}[X] 
-   &= p\cdot \mu^+ = 0.75 * 2 = 1.5
+   &= p(\sigma^2)^+ + p(1 - p)(\mu^+)^2
+   = 0.75\times 2 + 0.75\times 0.25\times 1.5^2
+   \approx 1.921.
 \end{align*}
-from CROSS REF.
 :::
 
 
 
-```{r HurdleGamma, echo=FALSE, fig.align="center", fig.cap="A hurdle model, using a gamma distribution for the continuous component.", fig.width=8, fig.height=4.5, out.width="90%"}
+```{r HurdleGamma, echo=FALSE, fig.align="center", fig.cap="A hurdle model, using a gamma distribution for the continuous component.", fig.width=8, fig.height=4, out.width="90%"}
 p <- 0.75
 x.shape <- 2 # shape = alpha
 x.scale <- 1 # scale = beta
@@ -961,22 +961,22 @@ points(x = 0, # Included
 ## Compound Poisson-gamma distributions {#TweedieModels}
 
 \index{Compound Poisson-gamma models|(}
-Compound Poisson--gamma distribution take a different approach to modelling mixed random variables: they model mixed random variables as a Poisson sum of independent gamma distributions.
+Compound Poisson--gamma distribution take a different approach to modelling mixed random variables: Compound Poisson--gamma distributions model mixed random variables as a Poisson sum of independent gamma distributions.
 Suppose the number of events observed (which is discrete) is\ $N$, such that
 $$
   N \sim \text{Pois}(\lambda).
 $$
 That is, an event occurs\ $N$ times, but occurs at random following a Poisson distribution.
-Given that\ $N$ has a Poisson distribution, it follows that
+Given that\ $N$ has a Poisson distribution, it follows (from Sect.\ \@ref(PoissonDistribution)) that
 $$
   \Pr(N = 0) = \exp(-\lambda)
 $$
-is that probability that zero events are observed (i.e., $N = 0$), from the probability function of a Poisson distribution (Sect.\ \@ref(PoissonDistribution)).
-If, however, $N > 0$, then for $i = 1, 2, \dots, N$, a continuous random variable is observed, say\ $Y_i$, such that
+is the probability that zero events are observed (i.e., $N = 0$).
+If, however, $N > 0$, then for $i = 1, 2, \dots, N$, a continuous random variable\ $Y_i$ is observed, such that
 $$
-   Y_i \sim \text{Gamma}(\alpha_i, \beta).
+   Y_i \sim \text{Gam}(\alpha_i, \beta).
 $$
-If $N = 0$, then no events, $Y_i$ are observed at all; however, if $N > 0$ then
+If $N = 0$, then no events $Y_i$ are observed at all; however, if $N > 0$ then\ $N$ events are observed and
 $$
   X = \sum_{i = 1}^N Y_i
 $$
@@ -984,9 +984,9 @@ has a continuous distribution.
 
 Let
 $$
-  N \sim \text{Poisson}(\lambda)
+  N \sim \text{Pois}(\lambda)
   \quad\text{and}\quad
-  Y_i \sim \text{Gamma}(\alpha, \beta).
+  Y_i \sim \text{Gam}(\alpha, \beta),
 $$
 Then, 
 $$
@@ -996,59 +996,138 @@ $$
     \sum_{i = 1}^N Y_i  & \text{if $N > 0$}.
   \end{cases}
 $$
-and so $\Pr(Y = 0) = \Pr(N = 0)$.
+The distribution of\ $X$ has a probability mass at $X = 0$ where $\Pr(Y = 0) = \Pr(N = 0) = \exp(-\lambda)$.
 
-The distribution of the Poisson sum of gamma distributions has a probability function that cannot be written down in closed form.
-
-Combining, the distribution of\ $X$ is
-$$
-  f_X(x) = 
-  \begin{cases}
-    \exp(-\lambda) & \text{if $X = 0$}\\
-                   & \text{if $x > 0$}
-  \end{cases}
-$$
-The distribution of\ $X$ has a *Poisson--gamma* distribution.\index{Poisson--gamma distribution}
-The Poisson-gamma distributiomn has three parameters: the Poisson mean\ $\lambda$, and the two gamma distribution parameters\ $\alpha$ and\ $\beta$, such that
+The distribution of the Poisson sum of gamma distributions has a probability function that cannot be written down in closed form, but has a very simple MGF.
+The probability function is
 \begin{align*}
-   \mu &= -\lambda\beta \frac{p-2}{p-1}
-   \quad\text{and}\quad\\
-   p &= \frac{\alpha - 2}{\alpha - 1}
-   \quad\text{and}\quad\\
-  \phi = ...   
+  f_X(x) 
+  &= \sum_{n = 1}^\infty \Pr(N = n) \times f_{X\mid N = n}(x)\\
+  &= \sum_{n = 1}^\infty  \frac{\exp(-\lambda)\lambda^n}{n!} \times \frac{\beta^{n\alpha}}{\Gamma(n\alpha)} x^{n\alpha - 1} \exp(-\beta x) \\
+  &= \exp(-\lambda - \beta x) \sum_{n = 1}^\infty \frac{\lambda^n}{n!} \frac{\beta^{n\alpha}}{\Gamma(n\alpha)} x^{n\alpha - 1} 
 \end{align*}
-and then $\operatorname{var}[X] = \phi\mu^p$.
+when $x > 0$.
 
-The probability distribution of\ $X$ cannot be written in a closed form (except for special cases), but it can be shown (POINT) that
+To find the MGF, first consider the value of\ $N$ as fixed; then, $X = Y_1 + Y_2 + \cdots + Y_N$ the MGF of\ $X$ is 
 $$
-  \operatorname{E}[X] = \mu = ?? \quad\text{and}\quad \operatorname{var}[X] = \phi \mu*p.
+  M_{X\mid N}(t) = \operatorname{E}[\exp(tX)\mid N].
 $$
+Since the MGF of a sum of independent random variables is the product of their MGFs (Theorem\ \@ref(thm:MGFIndependent)), we can assume that $N$ takes some specific value\ $n$ and write
+\begin{align*}
+  M_{X\mid N}(t) 
+  &= \operatorname{E}\left[ \exp\big(t(Y_2 + Y_2 + \cdots + Y_n)\big)\right] \\
+  &= \prod_{i = 1}^n \operatorname{E}[\exp(t Y_i)] \\
+  &= \left( M_Y(t)\right)^n
+\end{align*}
+So the MGF of $X$ (rather than $X\mid N$ as above) is
+\begin{align*}
+  M_X(t) 
+  &= \operatorname{E}\left[ \operatorname{E}[ \exp(tX\mid N)]\right] \\
+  &= \operatorname{E}\left[ M_{X\mid N}(t))\right] \\
+  &= \operatorname{E}\left[ M_Y(t))^N\right] \\
+\end{align*}
+and so
+$$
+  M_X(t)=\exp\!\left\{\lambda\left[\Big(\frac{\beta}{\beta-t}\Big)^{\!\alpha}-1\right]\right\},\qquad t<\beta
+$$
+
+---
+
+We have
+$$
+M_X(t) = \mathbb{E}[e^{tX}] 
+        = \mathbb{E}\!\left[ \big(M_Y(t)\big)^{N} \right].
+$$
+Writing the expectation as a sum over the possible values of\ $N$,
+$$
+  M_X(t) 
+  = \sum_{n=0}^\infty \big(M_Y(t)\big)^{n} \, \Pr(N = n).
+$$
+Since $N \sim \mathrm{Pois}(\lambda)$,
+$$
+  \Pr(N = n) = \frac{\exp(-\lambda) \lambda^n}{n!}.
+$$
+Substituting this expression into XREF
+\begin{align*}
+  M_X(t) 
+  &= \sum_{n = 0}^\infty 
+  \big(M_Y(t)\big)^{n} \cdot \frac{\exp(-\lambda) \lambda^n}{n!}\\
+  &= \exp(-\lambda) \sum_{n = 0}^\infty \frac{\left[\lambda \, M_Y(t)\right]^n}{n!}.
+\end{align*}
+Using the series expansion $\sum_{n = 0}^\infty z^n/n! = \exp(z)$ (from Equation\ \@ref(eq:Exponential)) with $z = \lambda M_Y(t)$, this gives
+\begin{align*}
+  M_X(t) 
+  &= \exp(-\lambda) \cdot \exp\big(\lambda M_Y(t)\big)\\
+  &= \exp\{\lambda(M_Y(t) - 1) \\
+  &= \exp\!\left\{\lambda\left[\Big(\frac{\beta}{\beta-t}\Big)^{\!\alpha}-1\right]\right\},
+\end{align*}
+provided $t < \beta$.
+
+---
+
+
+
+From the MGF we can deduce
+\begin{align*}
+  \operatorname{E}[X] 
+  &= \lambda\alpha\/\beta\\
+  \operatorname{var}[X]
+  &= \lambda\alpha(\alpha + 1)/\beta^2.
+\end{align*}
+
 
 
 :::{.example #PoissonGammaExample name="Poisson--gamma distribution"}
 Suppose 
 $$
-  N\sim\text{Poisson}(\lambda = 2.5)
+  N\sim\text{Pois}(\lambda = 3)
   \quad\text{and}\quad
-  Y_i \sim\text{Gamma}(\alpha = 2, \beta = 1).
+  Y_i \sim\text{Gam}(\alpha = 5/3, \beta = 2/3).
 $$
+The mean and variance of\ $X$ is
+\begin{align*}
+  \operatorname{E} 
+  &= \lambda\alpha\/\beta
+   = 3\times \frac{5}{3}\times\frac{2}{3} = 3.333\text{(SHOULD BE 1!)}\\
+  \operatorname{var} 
+  &= \lambda\alpha(\alpha + 1)\/\beta^2
+   = 3\times (5/3\times 8/3)/(5/3)^-2 = \text{SHOULD BE 1}
+\end{align*}
 Then the Poisson-gamma distribution is...
 :::
 
 
+<!-- The parameters in the (alpha, beta, lambda) space:
+\alpha = (2 - \xi)/(\xi - 1) [Not a function of (phi, mu)]
+\beta = \phi(\xi - 1) / \mu^{\xi - 1}
+\lambda = \mu^(2-\xi) / ( \phi (2-\xi))
 
 
+So for instance:
+alpha = 12 => xi = 5/3
+alpha = 20 => xi = 22/21
 
-```{r PoissonGammaExamples, echo=FALSE, fig.align="center", fig.cap="A truncated model, using a normal distribution for the continuous component, truncated at $X = 0$. The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4.5, out.width="90%"}
+-->
+
+
+```{r PoissonGammaExamples, echo=FALSE, fig.align="center", fig.cap="Two compound Poisson--gamma models, both with mean and varaince set to $1$. The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4, out.width="90%"}
 par( mfrow = c(1, 2))
 
 x <- seq(from = 0,
          to =   5,
          length = 1000)
 
-xi <- 1.1
+xi <- 22/21
+alpha <- 20
+
 mu <- 1
 phi <- 1
+
+alpha <- (2 - xi)/(xi - 1)
+lambda <- mu^(2 - xi) / ( phi * (2 - xi))
+beta <- phi * (xi - 1) / mu^(xi - 1)
+
+cat(alpha, beta, lambda, "\n")
 
 y <-  dtweedie(y = x,
                xi = xi,
@@ -1062,7 +1141,7 @@ plot(y[x > 0] ~ x[x > 0],
      xlab = expression(italic(x)),
      ylab = expression(Prob.~"function"),
      main = expression(atop(Poisson*"-gamma"~distribution,
-                            with~PARAMETERS)),
+                            with~alpha==20)),
      lwd = 2)
 axis(side = 1)
 
@@ -1081,9 +1160,18 @@ box()
 
 ############################ 
 
-xi <- 1.6
+xi <- 5/3 # ALPHA = 0.5
+alpha <- 0.5
+
 mu <- 1
 phi <- 1
+
+alpha <- (2 - xi)/(xi - 1)
+lambda <- mu^(2 - xi) / ( phi * (2 - xi))
+beta <- phi * (xi - 1) / mu^(xi - 1)
+
+cat(alpha, beta, lambda, "\n")
+
 
 y <- dtweedie(y = x,
               xi = xi,
@@ -1098,7 +1186,7 @@ plot(y[x > 0] ~ x[x > 0],
      xlab = expression(italic(x)),
      ylab = expression(Prob.~"function"),
      main = expression(atop(Poisson*"-gamma"~distribution,
-                            with~PARAMETERS)),
+                            with~alpha==0.5)),
      lwd = 2)
 axis(side = 1)
 box()
@@ -1116,6 +1204,43 @@ box()
 #                mu = mu, 
 #                phi = phi)
 
+```
+
+```{r}
+
+## SIMULATION
+num_Sims <- 1000
+set.seed(75101) # For reproducibility
+
+# Set parameters
+lambda <- 2
+alpha <- 2
+beta <- 1
+  
+N <- rpois(num_Sims,
+           lambda = lambda)
+X <- array( dim = num_Sims)
+
+for (i in 1:num_Sims){
+  if ( N[i] == 0) {
+    X[i] <- 0 
+  } else {
+     X[i] <- sum( rgamma(N[i], 
+                         shape = alpha,
+                         scale = beta) )
+  }
+}
+
+
+
+MASS::truehist(X [X > 0],
+               las = 1,
+               xlab = expression(italic(X)),
+               ylab = expression(Density),
+               col = plotColour1)
+points(x = 0,
+       y = length(X[X==0]))
+  
 ```
 \index{Compound Poisson-gamma models|)}
 
