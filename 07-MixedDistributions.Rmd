@@ -963,9 +963,10 @@ points(x = 0, # Included
 \index{Compound Poisson-gamma models|(}
 Compound Poisson--gamma distribution take a different approach to modelling mixed random variables: Compound Poisson--gamma distributions model mixed random variables as a Poisson sum of independent gamma distributions.
 Suppose the number of events observed (which is discrete) is\ $N$, such that
-$$
+\begin{equation}
   N \sim \text{Pois}(\lambda).
-$$
+   (\#eq:PGp0)
+\end{equation}
 That is, an event occurs\ $N$ times, but occurs at random following a Poisson distribution.
 Given that\ $N$ has a Poisson distribution, it follows (from Sect.\ \@ref(PoissonDistribution)) that
 $$
@@ -998,8 +999,7 @@ $$
 $$
 The distribution of\ $X$ has a probability mass at $X = 0$ where $\Pr(Y = 0) = \Pr(N = 0) = \exp(-\lambda)$.
 
-The distribution of the Poisson sum of gamma distributions has a probability function that cannot be written down in closed form, but has a very simple MGF.
-The probability function is
+The distribution of the Poisson sum of gamma distributions has a probability function that cannot be written down in closed form, but can be expressed as an infinite sum:
 \begin{align*}
   f_X(x) 
   &= \sum_{n = 1}^\infty \Pr(N = n) \times f_{X\mid N = n}(x)\\
@@ -1008,6 +1008,7 @@ The probability function is
 \end{align*}
 when $x > 0$.
 
+Even though the probability function has no closde form, the MGF is reasonably simple.
 To find the MGF, first consider the value of\ $N$ as fixed; then, $X = Y_1 + Y_2 + \cdots + Y_N$ the MGF of\ $X$ is 
 $$
   M_{X\mid N}(t) = \operatorname{E}[\exp(tX)\mid N].
@@ -1072,7 +1073,7 @@ From the MGF we can deduce
   \operatorname{E}[X] 
   &= \lambda\alpha\/\beta\\
   \operatorname{var}[X]
-  &= \lambda\alpha(\alpha + 1)/\beta^2.
+  &= \lambda\alpha(\alpha + 1)\beta^2.
 \end{align*}
 
 
@@ -1082,18 +1083,23 @@ Suppose
 $$
   N\sim\text{Pois}(\lambda = 3)
   \quad\text{and}\quad
-  Y_i \sim\text{Gam}(\alpha = 5/3, \beta = 2/3).
+  Y_i \sim\text{Gam}(\alpha = 1/2, \beta = 2/3)
 $$
+(where $\beta$ is the scale parameter).
 The mean and variance of\ $X$ is
 \begin{align*}
-  \operatorname{E} 
+  \operatorname{E}[X]
   &= \lambda\alpha\/\beta
-   = 3\times \frac{5}{3}\times\frac{2}{3} = 3.333\text{(SHOULD BE 1!)}\\
-  \operatorname{var} 
-  &= \lambda\alpha(\alpha + 1)\/\beta^2
-   = 3\times (5/3\times 8/3)/(5/3)^-2 = \text{SHOULD BE 1}
+   = 3\times \frac{1}{2}\times\frac{2}{3} = 1;\\
+  \operatorname{var}[X] 
+  &= \lambda\alpha(\alpha + 1)\beta^2
+   = 3\times \left(\frac{1}{2}\times \frac{3}{2}\right)\left(\frac{5}{3}\right)^2 = 1.
 \end{align*}
-Then the Poisson-gamma distribution is...
+Furthermore, from Equation\ \@ref(eq:PGp0),
+$$
+  \Pr(X = 0) = \exp(-\lambda) = 0.0498.
+$$
+This Poisson-gamma distribution is shown in Fig.\ \@ref(fig:PoissonGammaExamples) (right panel).
 :::
 
 
@@ -1118,16 +1124,16 @@ x <- seq(from = 0,
          length = 1000)
 
 xi <- 22/21
-alpha <- 20
-
 mu <- 1
 phi <- 1
 
 alpha <- (2 - xi)/(xi - 1)
 lambda <- mu^(2 - xi) / ( phi * (2 - xi))
 beta <- phi * (xi - 1) / mu^(xi - 1)
+p0 <- exp(-lambda)
 
-cat(alpha, beta, lambda, "\n")
+cat("alpha, beta, lambda, p0\n")
+cat(alpha, beta, lambda, p0, "\n")
 
 y <-  dtweedie(y = x,
                xi = xi,
@@ -1144,12 +1150,13 @@ plot(y[x > 0] ~ x[x > 0],
                             with~alpha==20)),
      lwd = 2)
 axis(side = 1)
+axis(side = 2,
+     at = p0,
+     las = 1,
+     labels = round(p0, 3))
 
 points(x = 0,
-       y = dtweedie(y = 0,
-                    xi = xi,
-                    mu = mu, 
-                    phi = phi),
+       y = p0,
        pch = 19)
 box()
 
@@ -1169,8 +1176,9 @@ phi <- 1
 alpha <- (2 - xi)/(xi - 1)
 lambda <- mu^(2 - xi) / ( phi * (2 - xi))
 beta <- phi * (xi - 1) / mu^(xi - 1)
+p0 <- exp(-lambda)
 
-cat(alpha, beta, lambda, "\n")
+cat(alpha, beta, lambda, p0, "\n")
 
 
 y <- dtweedie(y = x,
@@ -1181,7 +1189,7 @@ y <- dtweedie(y = x,
 
 plot(y[x > 0] ~ x[x > 0],
      type = "l",
-     ylim = c(0, max(y)), 
+     ylim = c(0, max( c(y, p0))), 
      axes = FALSE,
      xlab = expression(italic(x)),
      ylab = expression(Prob.~"function"),
@@ -1189,14 +1197,15 @@ plot(y[x > 0] ~ x[x > 0],
                             with~alpha==0.5)),
      lwd = 2)
 axis(side = 1)
+axis(side = 2,
+     at = p0,
+     las = 1,
+     labels = round(p0, 3))
 box()
 
 
 points(x = 0,
-       y = dtweedie(y = 0,
-                    xi = xi,
-                    mu = mu,
-                    phi = phi),
+       y = p0,
        pch = 19)
 box()
 
@@ -1206,16 +1215,81 @@ box()
 
 ```
 
-```{r}
+\index{Compound Poisson-gamma models|)}
+
+
+
+:::{.example #RainfallModelling name="Modelling monthly rainfall"}
+Modelling rainfall. 
+Using hurdle from Stern and Coe, Chandler and Wheater? Tobit thing from IWSM, and Poisson--gamma, 
+:::
+
+
+
+## Simulation {#MixedVariablesSimulation}
+
+Simulation for the censored, hurdle and compound Poisson-gamma models can all be achieved through modelling the zeros according to the model incorporartes them.
+
+
+
+:::{.exercise}
+Censored:
+:::
+
+
+```{r CensoredSim, echo=FALSE, fig.align="center", fig.cap="FIX!!!!! The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4, out.width="90%"}
+set.seed(76103) # For reproducibility
+num_Sims <- 1000
+
+Y <- rnorm(num_Sims,
+           mean = 1,
+           sd = 1.5)
+Yneg <- Y < 0  ### OR LESS THAN OR EQUAL TO????????????????????????????/
+X <- Y
+X[Yneg] <- 0
+p0 <- sum(Yneg)/num_Sims
+
+par(mfrow = c(1, 2))
+MASS::truehist(Y,
+               las = 1,
+               col = plotColour1,
+               main = expression(Latent~variable),
+               ylab = "Probabiity fn",
+               xlab = expression(Observed~variable~italic(X)) )
+#MASS::truehist(Y, add=TRUE, col="grey") CANNOT ADD
+
+abline(v = 0,
+       lwd = 2,
+       col = "grey",
+       lty = 2)
+
+MASS::truehist(X[Y>0],
+               las = 1,
+               col = plotColour1,
+               main = expression(Observed~variable),
+               ylab = "Probabiity fn",
+               xlab = expression(Observed~variable~italic(X)) )
+points(x = 0,
+       y = p0,
+       pch = 19)
+```
+
+
+:::{.example}
+Compound P--G; see Fig.\ \@ref(fig:PoissonGammaSim)
+:::
+
+
+```{r PoissonGammaSim, echo=FALSE, fig.align="center", fig.cap="A simulatiion of the compound Poisson--gamma models, both with mean and varaince set to $1$. FIX!!!!! The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4, out.width="90%"}
 
 ## SIMULATION
 num_Sims <- 1000
 set.seed(75101) # For reproducibility
 
 # Set parameters
-lambda <- 2
-alpha <- 2
-beta <- 1
+lambda <- 3
+alpha <- 1/2
+beta <- 2/3
   
 N <- rpois(num_Sims,
            lambda = lambda)
@@ -1231,29 +1305,30 @@ for (i in 1:num_Sims){
   }
 }
 
+par(mfrow = c(1, 2))
 
-
-MASS::truehist(X [X > 0],
+barplot( table( N ),
+         xlab = expression(italic(N)),
+         ylab = "Counts",
+         las = 1,
+         col = plotColour1,
+         main = expression(atop(Distribution~of~italic(N)*":",
+                                Number~of~events)) )
+         
+MASS::truehist(X[X > 0],
                las = 1,
+               breaks = seq(0, max(X) + 0.5, 
+                            by = 0.5),
                xlab = expression(italic(X)),
                ylab = expression(Density),
+               main = expression(atop(Distribution~of~italic(X)*":",
+                                      Mixed~random~variable)),
                col = plotColour1)
 points(x = 0,
-       y = length(X[X==0]))
+       y = length(X[X==0])/num_Sims,
+       pch = 19)
   
 ```
-\index{Compound Poisson-gamma models|)}
-
-
-
-:::{.example #RainfallModelling name="Modelling monthly rainfall"}
-Modelling rainfall. 
-Using hurdle from Stern and Coe, Chandler and Wheater? Tobit thing from IWSM, and Poisson--gamma, 
-:::
-
-
-
-## Simulation {#MixedVariablesSimulation}
 
 
 ## Exercises  {#MixedDistributionsExercises}
