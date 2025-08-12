@@ -1879,18 +1879,7 @@ Of course, $t$ ad $\chi^2$ and co...
 
 ## Simulation {#SimulationContinuous}
 
-
-### GENERATE OTHER DIST
-
-Show $X = sum_(i=1}^k X$ where $X\sim \exp(lambda)$ and gives Gam($k, lambda$)
-
-Show X / (X + Y)\si, Beta(\alpha, \beta)$ if $X\sim Gam(alpha, 1)$ and $Y \sim Gam(\beta, 1)$.
-
-See CHap (RVs): Beta prime distribution: If $p$ has a beta distribution, th4 odds $p/(1- p)$ has beta prime distribution
-
-
-
-### SIM
+### Examples
 
 As with discrete distributions (Sect. \@ref(SimulationDiscrete)), simulation can be used with continuous distributions.
 Again, in **R**, random numbers from a specific distribution use functions that start with the letter `r`; for example, to generate random numbers from a normal distribution, use `rnorm()`:
@@ -1978,6 +1967,68 @@ hist( htP,
       ylim = c(0, 400),
       las = 1)
 ```
+
+
+### Relationships between distributions
+
+As seen before (Sect.\ \@ref(RVsStatisticalComputing)), many statistical distributions are generated from existing distributions.
+These relationships can be shown using computer simulation.
+
+As an example, the gamma distribution\index{Gamma distribution} is related to the exponential distribution.\index{Exponential distribution}
+If a random variable\ $Y$ has an exponential distribution with rate parameter $\lambda$, then the distribution of
+$$
+  X = \sum_{i = 1}^k Y
+$$
+has a gamma distribution, with shape parameter $\alpha = k$ and rate parameter $\lambda$.
+This can be shown using simulation (Fig.\ \@ref(fig:GammaExpSimFig)):
+
+
+```{r GammaExpSim, fig.show='hide'}
+set.seed(67433)
+
+### An exponential variate with  rate = 2 
+Y <- rexp(n = 5000,
+          rate = 2)
+X <- matrix( data = Y,
+             ncol = 5, # Place 5 values in each of 1000 rows
+             nrow = 1000)
+X <- rowSums(X) # Sum five values in each row
+
+### Set up for two plots, side-by-side
+par(mfrow = c(1, 2) )
+
+### Plot two histograms: Y and X
+MASS::truehist(Y,
+               las = 1,
+               main = "Exponential density",
+               xlab = expression(italic(Y) ),
+               ylab = "Density")
+MASS::truehist(X,
+               las = 1,
+               main = "Gamma density",
+               xlab = expression(italic(X) ),
+               ylab = "Density")
+
+### Now plot the theoretical gamma distribution
+# Use these values of X:
+x_Plot <- seq(0, 10,
+              length = 100)
+# Add lines to the histogram of chi-square random values
+lines( dgamma(x_Plot, shape = 5, rate = 2) ~ x_Plot,
+       type = "l",
+       lwd = 3)
+# dgamma()  is the density function for a gamma distribution
+```
+
+
+```{r GammaExpSimFig, fig.cap="Left: histogram of $5000$ simulated values from an exponential distribution. Right: histogram of the sum of five independent exponential distributions. The solid lines on the right panel is the theoretical distribution of a gamma distribution with a shape parameter of\\ $5$.",  out.width="100%", fig.align='centre', echo=FALSE, fig.width=10}
+<<GammaExpSim>>
+```
+
+
+
+
+
 
 
 ## Exercises {#ContinuousExercises}
@@ -2303,7 +2354,7 @@ When the wheel is spun hard, what is the probability that the point finishes bet
 :::
 
 
-```{r OneMCircle, echo=FALSE, fig.align="center", fig.cap="A wheel to spin.", fig.align="center", fig.width=5, out.width="50%"}
+```{r OneMCircle, echo=FALSE, fig.align="center", fig.cap="A wheel to spin.", fig.align="center", fig.width=5, out.width="40%"}
 par( mar = c(1, 1, 1, 1) )
 
 #theta <- seq(0, 2 * pi, 
@@ -2395,4 +2446,17 @@ points( x = 0,
 
 ```
 
+:::{.exercise #BetaPrime}
+Suppose a random variable\ $Y$ has a beta distribution (Sect.\ \@ref(BetaDistribution)), which can be used for modelling proportions.
+Proportions are related to *odds*,\index{Odds} where
+$$
+  \text{odds} = \frac{p}{1 - p}
+$$
+for $0 \le p < 1$.
+
+1. Using simulation, find and plot the density function for the distribution of the odds for $p = 0.5$.
+1. Using simulation, find and plot the density function for the distribution of the odds for $p = 0.25$.
+
+(This is the beta prime distribution.)\index{Beta prime distribution}
+:::
 

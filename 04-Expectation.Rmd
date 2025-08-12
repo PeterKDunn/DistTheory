@@ -1520,34 +1520,42 @@ Nonetheless, using Tchebysheff's inequality we can find a useful *bound* to eith
 
 ## Numerical approaches
 
+Some distributions cannot be written in closed form (i.e., a neat function of standard mathematical function), which makes (for example) evaluation of probability and computation of means difficult.
+In these cases, numerical methods, such as numerical integration, may be needed.
+
 Consider the random variable\ $X$ with density function
 $$
-  f_X(x) = \frac{c}{\sqrt{x}}\exp( -x - \sqrt{x})\quad \text{for $x > 0$}.
+  f_X(x) = \frac{c}{\sqrt{x}}\exp( -x - \sqrt{2x})\quad \text{for $x > 0$}.
 $$
 for some normalising constant\ $c$.
 This density function has no closed form, and the value of\ $c$ cannot be found via integration.
-The value of\ $c$ could be found using numerical integration:
+Howevevr, the value of\ $c$ could be found using numerical integration in **R**:
 
 ```{r}
-# Define the function without the constant
+### Define the function, without the constant term
 g <- function(x){
-  ifelse(x>0, x^(-0.5) * exp(-x - sqrt(x)), 0)
+  ifelse(x > 0, 
+         x^(-0.5) * exp(-x - sqrt(2 * x)), # When x > 0
+         0)                                # When x <= 0
 }
 
-# Integrate between 0 and infinity:
+### Integrate between 0 and infinity:
+#\n adds a "new line"
 Const <- 1 / integrate(g, 
                        lower = 0, 
                        upper = Inf)$value
-cat("The value of  c  is about", round(Const), "\n")
-#\n add a "new line"
+cat("\n\n The value of  c  is about", round(Const, 4), "\n\n")
 
-# Now define f(x):
+# So now define f(x):
 f <- function(x){
-  ifelse(x>0, x^(-0.5) * exp(-x - sqrt(x)) * Const, 0)
+  ifelse(x > 0, 
+         x^(-0.5) * exp(-x - sqrt(2 * x)) * Const,  # When x > 0
+         0)                                         # When x <= 0
 }
 ```
 
-The density can bn-w be plotted, and the distribution function can even be found:
+That is, $c = 1.0784\dots$.
+The distribution function can even be found:
 
 ```{r}
 F <- function(x){
@@ -1557,27 +1565,54 @@ F <- function(x){
                        lower = 0,
                        upper = x[i])$value
   }
-  F
+  return(F)
 }
 
+```
 
+So now the density and the distribution function can be plotted (Fig.\ \@ref(fig:plotOddFnFig)):
+
+
+```{r plotOddFn, fig.show='hide'}
+### Make room for two plots side-by-side
 par( mfrow = c(1, 2))
-x <- seq(0.01, 1.5, 
+
+
+### Evaluate over these values of x
+x <- seq(0.01, 2, 
          length = 1000)
+
+### Now plot
 plot( f(x) ~ x,
-      type = "l")
+      type = "l",
+      las = 1,
+      lwd = 3,
+      main = "Density function",
+      xlab = expression(italic(x)),
+      ylab = "Density fn.")
 plot( F(x) ~ x,
-      type = "l")
+      type = "l",
+      las = 1,
+      lwd = 3,
+      main = "Distribution function",
+      xlab = expression(italic(x)),
+      ylab = "Distribution fn.")
+```
+
+```{r, plotOddFnFig, fig.cap='The density function (left) and distribution function (right) of a distribution that cannot be ', fig.align='center', out.width='100%', fig.width=10, echo=FALSE}
+<<plotOddFn>>
 ```
 
 
+Probabilities can then be computed; for example, we can find $\Pr(X > 0.5)$:
 
+```{r}
+integrate(f,
+          lower = 0.5,
+          upper = Inf)
+```
 
-Probabilities can then be computed:
-
-???
-
-And the expected value can be found:
+And the expected value of\ $X$, $\operatorname{E}[X]$, can be found:
 
 ```{r}
 f_Expected <- function(x){
@@ -1588,11 +1623,6 @@ integrate(f_Expected,
           upper = Inf)
 ```
 
-???
-
-
-
-AND SO ON.
 
 
 
@@ -2187,7 +2217,7 @@ The 'running total' is the total of all the numbers rolled on the die.
 
 
 :::{.exercise #MeanAbsDev}
-Besides the variance, an alternative measure of variation is the *mean absolute deviation* (MAD), defined as $\operatorname{E}[|X - \mu|]$.
+Besides the variance, an alternative measure of variation is the *mean absolute deviation* (MAD), defined as $\operatorname{E}[\,|X - \mu|\,]$.
 
 Consider the fair die described in Example\ \@ref(exm:VarianceDice).
 
@@ -2197,14 +2227,26 @@ Consider the fair die described in Example\ \@ref(exm:VarianceDice).
 
 
 
+<!-- Beta prime distribution\index{Beta prime distribution}-->
+<!-- f\ $p$ has a beta distribution, the odds $p/(1 - p)$ has beta prime distribution)) -->
 
 :::{.exercise #BetaPrime}
-Beta prime distribution\index{Beta prime distribution}
-If\ $p$ has a beta distribution, the odds $p/(1 - p)$ has beta prime distribution))
+Suppose a random variable\ $Y$ has the probability density function\index{Beta prime distribution}
 $$
-  f_x() = \frac{x^{\alpha - 1} (1+x)^{-\alpha-\beta}}{B(\alpha, \beta)}
+  f_Y(y) = k\, y^{\alpha - 1} (1 + y)^{-\alpha-\beta}\quad\text{for $y > 0$,}
 $$
-1. Using simulation, ...
-1. Using the simulation, find the mean...
+for some normalising constant\ $k$, where $\alpha > 0$ and $\beta > 0$.
+
+1. Using a computer, determine a value for\ $k$ when $\alpha = 0.5$ and $\beta = 2.5$.
+2. Plot the density function and the distribution function of\ $Y$.
+3. Using a computer, find the mean of the distribution.
+   (Compare to the theoretical mean of $\operatorname{E}[Y] = \alpha/(\beta - 1)$ provided $\beta > 1$.)
+4. Using a computer, find the variance of the distribution.
+5. Using a computer, find $\Pr(Y < 1)$.
+
+The mean is not defined if $\beta < 1$.
+
+6. What happens if you use a computer to produce the density function for $\alpha = 0.5$ and $\beta = 0.5$?
+7. What does the simulation suggest for the value of $\operatorname{E}[Y]$ for $\alpha = 0.5$ and $\beta = 0.5$?
 :::
 

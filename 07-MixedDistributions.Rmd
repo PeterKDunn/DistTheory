@@ -976,7 +976,7 @@ points(x = 0, # Included
 
 ## Compound Poisson-gamma distributions {#TweedieModels}
 
-\index{Compound Poisson-gamma models|(}
+\index{Compound Poisson-gamma distributions|(}
 Compound Poisson--gamma distribution take a different approach to modelling mixed random variables: Compound Poisson--gamma distributions model mixed random variables as a Poisson sum of independent gamma distributions.
 Suppose the number of events observed (which is discrete) is\ $N$, such that
 \begin{equation}
@@ -1235,7 +1235,7 @@ box()
 
 ```
 
-\index{Compound Poisson-gamma models|)}
+\index{Compound Poisson-gamma distributions|)}
 
 
 
@@ -1433,9 +1433,12 @@ The distribution of monthly rainfall obviously varies depending on location and 
 
 Suppose we seek to model the monthly rainfall (im mm)\ $R$ at given location for a certain month, where about\ $30$% of months record zero rainfall (i.e., $\Pr(X = 0) = 0.30$), and the mean monthly rainfall (when rain is recorded) is about $\mu_R = 50$.
 
-We could model the situation using a (censored) normal distribution for the monthly rainfall.
-The latent variable\ $Y\sim N(\mu_R = 50, \sigma_R^2)$, with $\Phi(0) = \Pr(Y < 0) = 0.30$, for some variance $\sigma_R^2$.
+We could model the monthly rainfall using a censored model (e.g., @sanso2000nonstationary), a hurdle model (e.g, @kenabatho2012stochastic) or a Poisson-gamma distribution (e.g., @hasan2010simple).
+
+First consider a censored model.
+The latent variable could represent how favourable the conditions are for rainfall' say $Y\sim N(\mu_R = 50, \sigma_R^2)$, with $\Phi(0) = \Pr(Y < 0) = 0.30$, for some variance $\sigma_R^2$.
 First, we can find the value of the standard normal variate\ $Z$ such that $\Phi(z) = 0.30 = \Pr(Y < 0)$:
+
 
 ```{r}
 p_Zero_Rainfall <- 0.30
@@ -1449,17 +1452,15 @@ $$
 from which we find $\sigma_R = 95.35$.
 Thus, the monthly rainfall can be simulated:
 
-BUT WHY? JUST USE THEORETICAL DISTN!
-MAXIMUM RAINFALL, with CI-like interval? Again... could do with distribution
-
-PERHAPS CONNECT TO SOI
 
 
-```{r eval=FALSE}
+
+```{r}
 set.seed(76103) # For reproducibility
 num_Sims <- 1000
 
 mean_R <- 50
+sd_R <- -mean_R / qnorm(p0) 
 
 Y <- rnorm(num_Sims,
            mean = mean_R,
@@ -1467,30 +1468,28 @@ Y <- rnorm(num_Sims,
 p0 <- 0.30
 
 # To get sd_R, note: z = (0 - mu)/sigma = \Phi(p0) => -mu/sigma = qnorm(p0)
-sd_R <- mean_R / qnorm(p0) 
 threshold_R <- mean_R  - qnorm(p0) * sd_R # SHOULD BE AT ZERO
 
 ###
 
 par(mfrow = c(1, 2))
-latent_Breaks <- seq(-5, 8,
-                     by = 1)
+latent_Breaks <- seq(-250, 450,
+                     by = 50)
 MASS::truehist(Y,
                las = 1,
                breaks = latent_Breaks,
-               col = c( rep( "grey", length(latent_Breaks[latent_Breaks<0])),
-                        rep(plotColour1, length(latent_Breaks[latent_Breaks>=0])) ),  
+               col = c( rep( "grey", length(latent_Breaks[latent_Breaks < 0])),
+                        rep(plotColour1, length(latent_Breaks[latent_Breaks >= 0])) ),  
                main = expression(Latent~variable),
                ylab = "Probabiity fn",
                xlab = expression(Observed~variable~italic(X)) )
-#MASS::truehist(Y, add=TRUE, col="grey") CANNOT ADD
 
 abline(v = 0,
        lwd = 2,
        col = "grey",
        lty = 2)
 
-MASS::truehist(X[Y>0],
+MASS::truehist(Y[Y>0],
                las = 1,
                col = plotColour1,
                breaks = latent_Breaks[latent_Breaks>=0],
@@ -1508,21 +1507,125 @@ num_Sims <- 1000
 
 #Simulate
 
-# Compute max monthky rainfall
+# Compute max monthly rainfall
 
 ```
 
 
-For example, the rainfall could be modelled using a censored model (e.g., @glasbey1997rainfall).
-The latent variable could represent how favourable the conditions are for rainfall.
+---
 
-BUT NOT INDEPENDENT!! SO USE MONTHLY?
 
-*Monthly* hurdle: @kenabatho2012stochastic
+HURDLE:
 
-*Monthly* censored: @sanso2000nonstationary
+To model the rainfall using a hurdle model, we use $1 - p = 0.3$ for the probability that no monthly rainfall is recorded; that is, $p = 0.7$.
+The information also gives $\mu = \operatorname{E} = 50$; from Sect.\ \@ref(HurdleModelsProperties)
+$$
+  \mu = p \mu^+,
+$$
+and so $\mu^+ = \mu/p = 50/0.7 approx 71.43$ is the mean rainfall, conditional on rain being recorded. 
+We could suppose an exponential distribution (with rate parameter\ $\lambda$) for the rainfall amounts when rain is recorded; thus $\operatorname{E}[X] = 1\lambda = 71.43$ and so $\lambda = 0.01399972$.
+So the hurdle model is:
+\begin{align*}
+  f_R(r)
+  &= 
+  \begin{cases}
+    0.3 & \\
+    0.3\lambda \exp(-r/\lambda)
+  \end{cases}\\
+  &= 
+  \begin{cases}
+    0.3 & \\
+    0.004199916 \exp(-r/0.01399972).
+  \end{cases}
+\end{align*}
 
-*Monthly* P--G: @hasan2010simple
+
+
+
+```{r fig.cap="HURDLE MODEL"}
+set.seed(76103) # For reproducibility
+num_Sims <- 1000
+
+p0 <- 0.30
+p <- 1 - p0
+
+mean_R <- 50
+mean_Rpositive <- mean_R/p
+lambda_Exp <- 1 / mean_Rpositive
+  
+R <- matrix( NA, ncol = 1, nrow = num_Sims)
+p_Each_Month <- rbinom(num_Sims,
+                       size = 1,
+                       prob = p)
+
+for (i in 1:num_Sims){
+  if ((p_Each_Month[i]) == 0){
+    R[i] <- 0 # No rainfall recorded
+  }  else {
+    R[i] <- rexp(1, rate = lambda_Exp)    
+  }
+}
+
+
+
+###
+MASS::truehist(R,
+               las = 1,
+               main = expression(Hurdle~model),
+               ylab = "Probabiity fn",
+               xlab = expression(Observed~rainfall~italic(R)) )
+
+points(x = 0,
+       y = p0,
+       pch = 19)
+```
+
+
+**GAMMA SEEMS TO FAIL WITH THESE PARAMETERS ANYWAY: but check**
+
+
+If we use the variance from the censored model (i.e., $\sigma^2 = 95.35$), we can find the variance of the gamma distribution:
+\begin{align*}
+  \operatorname{var}[X] 
+  &= p(\sigma^2)^+ + p(1 - p)(\mu^+)^2\\
+  95.35
+  &= 0.7(\sigma^2)^+ + 0.7\times 0.3(71.43)^2;
+\end{align*}
+solving shows that we should use $(\sigma^2)^ = ??$ for the variance of the gamma distribution (when $X > 0$).
+
+
+
+We could suppose a gamma distribution for the rainfall amounts when rain is recorded; thus $\alpha\beta = 71.43$. 
+If we use the variance from the censored model (i.e., $\sigma^2 = 95.35$), we can find the variance of the gamma distribution:
+\begin{align*}
+  \operatorname{var}[X] 
+  &= p(\sigma^2)^+ + p(1 - p)(\mu^+)^2\\
+  95.35
+  &= 0.7(\sigma^2)^+ + 0.7\times 0.3(71.43)^2;
+\end{align*}
+solving shows that we should use $(\sigma^2)^ = ??$ for the variance of the gamma distribution (when $X > 0$).
+
+```{r}
+( 95.35 - 0.7*0.3*(71.43)^2 )/0.7
+```
+
+OOPS!!
+
+---
+
+P--G DSTN:
+
+Need to convert $p_0$, $\mu$ and $\sigma^2$ into $\lambda, \alpha, \beta$. How (easily)?
+
+---
+
+
+BUT WHY? JUST USE THEORETICAL DISTN! Well, we wan rainfall values to use upstream in a simulation for (eg) cropping.
+MAXIMUM RAINFALL, with CI-like interval? Again... could do with distribution
+
+PERHAPS CONNECT TO SOI
+
+
 
 
 

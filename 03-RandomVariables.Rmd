@@ -1647,49 +1647,81 @@ hist(rSpecified,
 
 ## Statistical computing {#RVsStatisticalComputing}
 
-Many statistical distributions are generated from existing distributions.
-Many of these connections are explored later.
-These connection can also be shown using computer simulation.
+Many statistical distributions are generated from existing distributions, and many of these relationships are explored later.
+These relationships can also be shown using computer simulation.
 
-As an example, the chi-squared distribution\index{Chi-squared distribution} is related to the normal distribution,\index{Normal distribution} and is discussed later (XREF: SECT).
-Suppose a random variable\ $Z$ has a standard normal distribution: $Z\sim N(0, 1)$.
-Then, a chi-squared distribution (with one *degree of freedom*) is the distribution of\ $Z^2$: 
+As an example, the chi-squared distribution\index{Chi-squared distribution} is related to the normal distribution,\index{Normal distribution} and is discussed later (Sect.\ \@ref(ChiSquareDistribution)).
+If a random variable\ $Z$ has a standard normal distribution $Z\sim N(0, 1)$, then\ $Z^2$ has a chi-squared distribution (with one *degree of freedom*).
+This can be shown using simulation (Fig.\ \@ref(fig:SimChiSq1Fig)).
 
 
-```{r}
-X <- rnorm(n = 1000,
+```{r SimChiSq1, fig.show='hide'}
+### A standard normal variate: 1000 random values 
+Z <- rnorm(n = 1000,
            mean = 0, 
            sd = 1)
 
+### Set up for two plots, side-by-side
 par(mfrow = c(1, 2) )
-MASS::truehist(X)
-MASS::truehist(X^2)
 
+### Plot two histograms: Z and Z^2
+MASS::truehist(Z,
+               las = 1,
+               xlab = expression(italic(Z) ),
+               ylab = "Density")
+MASS::truehist(Z^2,
+                              las = 1,
+               xlab = expression(sum(italic(Z^2)) ),
+               ylab = "Density")
+
+### Now plot the theoretical chi-squared distribution (with one df)
+# Use these values of X:
 x_Plot <- seq(0, 10,
               length = 100)
+# Add lines to the histogram of chi-square random values
 lines( dchisq(x_Plot, df = 1) ~ x_Plot,
        type = "l",
        lwd = 3)
+# dchisq()  is the density function for a chi-squared distribution
 ```
 
-Furthermore, the sum of\ $k$ independent standard normal distributions is a chi-squared distribution with $k$\ dgrees of freedom:
+
+```{r SimChiSq1Fig, fig.cap="Left: histogram of $1000$ simulated normal variates. Right: histogram of the squared normal variates. The solid lines on the right panel is the theoretical distribution of a chi-squared distribution with $1$\\ degree of freedom.",  out.width="100%", fig.align='centre', echo=FALSE, fig.width=10}
+<<SimChiSq1>>
+```
 
 
+Furthermore, the sum of\ $k$ independent standard normal distributions is a chi-squared distribution with $k$\ degrees of freedom (Fig.\ @ref(fig:SimChiSq5Fig)):
 
-```{r}
-X <- matrix( data = rnorm(n = 5000,
+
+```{r SimChiSq5, fig.show='hide'}
+### Standard normal variate: in 100 rows of 5 columns each 
+Z <- matrix( data = rnorm(n = 5000,
                           mean = 0, 
                           sd = 1),
              nrow = 1000,
              ncol = 5)
-head(X)
 
-X_Sums <- rowSums(X^2)
+### Add the squared values, across rows (so each value is the
+### sum of *five* standard normal variates)
+Z_SumsSq <- rowSums(Z^2)
 
+### Set up for two plots, side-by-side
 par(mfrow = c(1, 2) )
-MASS::truehist(X)
-MASS::truehist(X_Sums)
 
+### Plot two histograms: Z and Z^2
+MASS::truehist(Z,
+               las = 1,
+               xlab = expression(italic(Z)),
+               ylab = "Density")
+MASS::truehist(Z_SumsSq,
+               las = 1,
+               ylim = c(0, 0.16),
+               xlab = expression(sum(italic(Z^2))~over~five~values ),
+               ylab = "Density")
+
+### Now plot the theoretical chi-squared distribution (with *five* df)
+# Use these values of X:
 x_Plot <- seq(0, 20,
               length = 100)
 lines( dchisq(x_Plot, df = 5) ~ x_Plot,
@@ -1698,6 +1730,10 @@ lines( dchisq(x_Plot, df = 5) ~ x_Plot,
 ```
 
 
+
+```{r SimChiSq5Fig, fig.cap="Left: histogram of $5000$ simulated normal variates. Right: histogram of the sum of five squared normal variates. The solid lines on the right panel is the theoretical distribution of a chi-squared distribution with $5$\\ degrees of freedom.",  out.width="100%", fig.align='centre', echo=FALSE, fig.width=10}
+<<SimChiSq5>>
+```
 
 
 
@@ -2175,7 +2211,7 @@ then show this is a $t$-distribution with\ $\nu$ degrees of freedom.
 :::{.exercise #SimTriangular}
 Consider two random variables\ $X$ and\ $Y$ that have *uniform distributions*,\index{Uniform distribution} with probability density functions
 \begin{align*}
-  f_X(x) = 1\quad\text{for $0< x < 1$}\\
+  f_X(x) = 1\quad\text{for $0< x < 1$; and}\\
   f_Y(y) = 1\quad\text{for $0< y < 1$}
 \end{align*}
 
@@ -2189,13 +2225,13 @@ $$
 
 
 :::{.exercise #SimTdist}
-Consider a random variable\ $Z$ with a standard normal distribution $N(0, 1)$, and a random variable\ $V$ with a chi-squared distribution on\ $v$ degrees of freedom.
+Consider a random variable\ $Z$ with a standard normal distribution $N(0, 1)$, and a random variable\ $V_\nu$ with a chi-squared distribution on\ $\nu$ degrees of freedom.
 
 Simulate the distribution of
 $$
-  T = \frac{Z}{\sqrt{V/\nu}},
+  T = \frac{Z}{\sqrt{V_9/9}},
 $$
-then show this is a $t$-distribution with\ $\nu$ degrees of freedom.
+then show this is a $t$-distribution with\ $\nu = 9$ degrees of freedom.
 *Hint*: use the **R** functions for the $t$-distribution (e.g., `dt()`) and the chi-squared distribution (e.g, `dchisq()`). 
 :::
 
