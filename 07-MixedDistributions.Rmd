@@ -1274,7 +1274,6 @@ MASS::truehist(Y,
                main = expression(Latent~variable),
                ylab = "Probabiity fn",
                xlab = expression(Observed~variable~italic(X)) )
-#MASS::truehist(Y, add=TRUE, col="grey") CANNOT ADD
 
 abline(v = 0,
        lwd = 2,
@@ -1432,33 +1431,46 @@ Monthly rainfall is a mixed random variable; some months will record exactly zer
 Simulating monthly rainfall has uses in agriculture, hydrology, forestry and elsewhere (often as an input to other models).
 The distribution of monthly rainfall obviously varies depending on location and the month selected for modelling; however, monthly rainfall at many locations typically contain some months (historically) that record zero rainfall (see, for example, @hasan2010simple).
 
-Suppose we seek to model the monthly rainfall at given location for a certain month, where about\ $35$% of months record zero rainfall, and the mean monthly rainfall (when rain is recorded) is about $100\mms$.
-This scenarios could be modelled using a censored model.
+Suppose we seek to model the monthly rainfall (im mm)\ $R$ at given location for a certain month, where about\ $30$% of months record zero rainfall (i.e., $\Pr(X = 0) = 0.30$), and the mean monthly rainfall (when rain is recorded) is about $\mu_R = 50$.
 
-We could suppose a (censored) normal distribution for the monthly rainfall.
-The latent variable\ $Y\sim N(\mu, \sigma)$ perhaps, then rainfall.
+We could model the situation using a (censored) normal distribution for the monthly rainfall.
+The latent variable\ $Y\sim N(\mu_R = 50, \sigma_R^2)$, with $\Phi(0) = \Pr(Y < 0) = 0.30$, for some variance $\sigma_R^2$.
+First, we can find the value of the standard normal variate\ $Z$ such that $\Phi(z) = 0.30 = \Pr(Y < 0)$:
 
+```{r}
+p_Zero_Rainfall <- 0.30
+qnorm(p_Zero_Rainfall) # This find z such that Phi(z) = 0.30
+```
 
+This value of\ $z$ is the value such that
+$$
+  z = -0.5244 = \frac{x^* - \mu_R}{\sigma^2_R} = \frac{0 - 50}{\sigma_R^2},
+$$
+from which we find $\sigma_R = 95.35$.
+Thus, the monthly rainfall can be simulated:
 
+BUT WHY? JUST USE THEORETICAL DISTN!
+MAXIMUM RAINFALL, with CI-like interval? Again... could do with distribution
 
+PERHAPS CONNECT TO SOI
 
 
 ```{r eval=FALSE}
 set.seed(76103) # For reproducibility
 num_Sims <- 1000
 
+mean_R <- 50
+
 Y <- rnorm(num_Sims,
-           mean = 100,
-           sd = 20)
-mean_R <- 100
-sd_R <- 20
-threshold_R <- mean_R  + qnorm(0.35) * sd_R
+           mean = mean_R,
+           sd = sd_R)
+p0 <- 0.30
 
+# To get sd_R, note: z = (0 - mu)/sigma = \Phi(p0) => -mu/sigma = qnorm(p0)
+sd_R <- mean_R / qnorm(p0) 
+threshold_R <- mean_R  - qnorm(p0) * sd_R # SHOULD BE AT ZERO
 
-Yneg <- Y < 0  ### OR LESS THAN OR EQUAL TO????????????????????????????/
-X <- Y
-X[Yneg] <- 0
-p0 <- sum(Yneg)/num_Sims
+###
 
 par(mfrow = c(1, 2))
 latent_Breaks <- seq(-5, 8,
@@ -1488,6 +1500,16 @@ MASS::truehist(X[Y>0],
 points(x = 0,
        y = p0,
        pch = 19)
+```
+
+
+```{r}
+num_Sims <- 1000
+
+#Simulate
+
+# Compute max monthky rainfall
+
 ```
 
 

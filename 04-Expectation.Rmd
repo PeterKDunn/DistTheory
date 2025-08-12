@@ -1518,6 +1518,83 @@ Nonetheless, using Tchebysheff's inequality we can find a useful *bound* to eith
 
 
 
+## Numerical approaches
+
+Consider the random variable\ $X$ with density function
+$$
+  f_X(x) = \frac{c}{\sqrt{x}}\exp( -x - \sqrt{x})\quad \text{for $x > 0$}.
+$$
+for some normalising constant\ $c$.
+This density function has no closed form, and the value of\ $c$ cannot be found via integration.
+The value of\ $c$ could be found using numerical integration:
+
+```{r}
+# Define the function without the constant
+g <- function(x){
+  ifelse(x>0, x^(-0.5) * exp(-x - sqrt(x)), 0)
+}
+
+# Integrate between 0 and infinity:
+Const <- 1 / integrate(g, 
+                       lower = 0, 
+                       upper = Inf)$value
+cat("The value of  c  is about", round(Const), "\n")
+#\n add a "new line"
+
+# Now define f(x):
+f <- function(x){
+  ifelse(x>0, x^(-0.5) * exp(-x - sqrt(x)) * Const, 0)
+}
+```
+
+The density can bn-w be plotted, and the distribution function can even be found:
+
+```{r}
+F <- function(x){
+  F <- array(dim = length(x) )
+  for (i in 1:length(x)){
+    F[i] <- integrate( f, 
+                       lower = 0,
+                       upper = x[i])$value
+  }
+  F
+}
+
+
+par( mfrow = c(1, 2))
+x <- seq(0.01, 1.5, 
+         length = 1000)
+plot( f(x) ~ x,
+      type = "l")
+plot( F(x) ~ x,
+      type = "l")
+```
+
+
+
+
+Probabilities can then be computed:
+
+???
+
+And the expected value can be found:
+
+```{r}
+f_Expected <- function(x){
+  x * f(x)
+}
+integrate(f_Expected, 
+          lower = 0,
+          upper = Inf)
+```
+
+???
+
+
+
+AND SO ON.
+
+
 
 ## Exercises
 
@@ -2121,4 +2198,13 @@ Consider the fair die described in Example\ \@ref(exm:VarianceDice).
 
 
 
+:::{.exercise #BetaPrime}
+Beta prime distribution\index{Beta prime distribution}
+If\ $p$ has a beta distribution, the odds $p/(1 - p)$ has beta prime distribution))
+$$
+  f_x() = \frac{x^{\alpha - 1} (1+x)^{-\alpha-\beta}}{B(\alpha, \beta)}
+$$
+1. Using simulation, ...
+1. Using the simulation, find the mean...
+:::
 
