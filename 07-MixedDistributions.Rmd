@@ -43,23 +43,23 @@ Unlike the hurdle model, the discrete and continuous parts are not modelled sepa
 ### Definitions {#CensoredModelsDefinitions}
 
 \index{Censored models|(}
-Censored models assume the existence of an unobserved *latent variable*,\index{Latent variable} say\ $z$, such that $z\in\mathbb{R}$ with probability function $f_Z(z)$.
-Values of\ $Z$ below some threshold, say $z^*$ (commonly, $z^* = 0$), are not directly observed.
-Instead, $X = \text{max}(Z^*, Z)$ is observed; that is, values of\ $Z$ less than\ $z^*$ are recorded as\ $z^*$.
-We will focus on the case where $z^* = 0$.
+Censored models assume the existence of an unobserved *latent variable*,\index{Latent variable} say\ $Y$, such that $Y\in\mathbb{R}$ with probability function $f_Y(y)$.
+Values of\ $Y$ below some threshold, say $y^*$ (commonly, $y^* = 0$), are not directly observed.
+Instead, $X = \max(Y^*, Y)$ is observed; that is, values of\ $Y$ less than\ $y^*$ are recorded as\ $y^*$.
+We will focus on the case where $y^* = 0$.
 
 
 :::{.example #TobitAlcoholSpend name="Latent variables and censoring"}
-Consider a latent variable defined as the 'desire to purchase alcohol'\ $Z$, where the value $Z = 0$ represents indifference to purchasing alcohol.
-Some people may have a *very* strong aversion to purchasing alcohol, so that the value of\ $Z$ is large and negative.
-Some people may have a *mild* aversion to purchasing alcohol, so that the value of\ $Z$ is small but still negative.
+Consider a latent variable defined as the 'desire to purchase alcohol'\ $Y$, where the value $Y = 0$ represents indifference to purchasing alcohol.
+Some people may have a *very* strong aversion to purchasing alcohol, so that the value of\ $Y$ is large and negative.
+Some people may have a *mild* aversion to purchasing alcohol, so that the value of\ $Y$ is small but still negative.
 In both cases, however, an aversion to purchasing alcohol is present, and no alcohol is purchased.
 
-The observed variable of interest could be\ $Y$, the average weekly spend on buying alcohol in dollars.
-When $Z \le 0$, we observe $X = 0$; however, when $Z > 0$, a continuous amount is spent on purchasing alcohol (Fig.\ \@ref(fig:AlcoholSpend)).
+The observed variable of interest could be\ $X$, the average weekly spend on buying alcohol in dollars.
+When $Y \le 0$, we observe $X = 0$; however, when $Y > 0$, a continuous amount is spent on purchasing alcohol (Fig.\ \@ref(fig:AlcoholSpend)).
 :::
 
-```{r AlcoholSpend, echo=FALSE, fig.align="center", fig.cap="Left: the latent variable\\ $Z$, the desire to buy alcohol. Right: the observed variable\\ $X$, the average weekly spend on alcohol. The solid dot is the sum of all probabilities for which $Z \\le 0$.", fig.width=8, fig.height=4, out.width="100%"}
+```{r AlcoholSpend, echo=FALSE, fig.align="center", fig.cap="Left: the latent variable\\ $Y$, the desire to buy alcohol. Right: the observed variable\\ $X$, the average weekly spend on alcohol. The solid dot is the sum of all probabilities for which $Z \\le 0$.", fig.width=8, fig.height=4, out.width="100%"}
 par(mfrow = c(1, 2))
 
 ############### Latent
@@ -78,9 +78,9 @@ plot(fz ~ z,
      lwd = 3,
      col = plotColour1,
      axes = FALSE,
-     main = expression(atop(Latent~variable~italic(Z)*":",
+     main = expression(atop(Latent~variable~italic(Y)*":",
                             Desire~to~buy~alcohol)),
-     xlab = expression(Latent~variable~italic(Z)),
+     xlab = expression(Latent~variable~italic(Y)),
      ylab = expression(Probability~fn.)
 )
 lines(fz[z<0] ~ z[z<0],
@@ -169,7 +169,7 @@ arrows(x0 = 28,
 ```
 
 
-In this context, the value of the observed variable\ $X$ is called *censored*.
+In this context, the value of the observed variable\ $X$ is said to be *censored*.
 
 
 :::{.definition #Censoring name="Censoring"}
@@ -179,7 +179,7 @@ A variable is called *censored*\index{Censoring} if its value is only observed w
 We only know that the true (latent) value is *below* a certain threshold.
 
 *Right censoring*\index{Censoring!right} occurs when the true (latent) value is greater than or equal to a known threshold, but the exact value is unknown.
-We only know that the true 9latent) value is *above* a certain threshold.
+We only know that the true (latent) value is *above* a certain threshold.
 :::
 
 
@@ -205,43 +205,66 @@ The time to death is *right censored*.\index{Censoring!right}
 
 
 
-Usually $z^* = 0$ (as in Example\ \@ref(exm:TobitAlcoholSpend)), so that any value of\ $Z \le 0$ is recorded as\ $z = 0$.
+Usually $y^* = 0$ (as in Example\ \@ref(exm:TobitAlcoholSpend)), so that any value of\ $Y \le 0$ is recorded as\ $y = 0$.
 That is, we observe the random variable\ $X$ such that
 $$
-  X = 
-  \begin{cases}
-    \Pr(Z < 0) & \text{if $Z \le 0$};\\
-    Z          & \text{if $Z > 0$}. 
-  \end{cases}
+  X = \max(Y, 0).
 $$
 This means the probability function of\ $X$ is
 $$
   f_X(x) = 
   \begin{cases}
     0       & \text{if $X < 0$}\\
-    F_Z(0)  & \text{if $X = 0$}\\
-    f_Z(z)  & \text{if $X > 0$}
+    F_Y(0)  & \text{if $X = 0$}\\
+    f_Y(y)  & \text{if $X > 0$}
   \end{cases}
 $$
-where $F_Z(z)$ is the distribution function of\ $Z$.
+where $F_Y(y)$ is the distribution function of\ $Y$.
 The probability function for $X\mid X > 0$, the continuous part of the distribution only, is
 \begin{equation}
-  f_{X\mid X>0}(x) 
-  = \frac{f_Z(x)}{\Pr(Z > 0)} 
-  = \frac{f_Z(x)}{1 - F_Z(0)}
+  f_{X\mid X > 0}(x) 
+  = \frac{f_Y(x)}{\Pr(X > 0)} 
+  = \frac{f_Y(x)}{1 - F_Y(0)}
   (\#eq:PDFpositiveConditional)
 \end{equation}
-where again $F_Z(z)$ is the distribution function of\ $Z$.
-
+where again $F_Y(y)$ is the distribution function of\ $Y$.
 The distribution function of\ $X$ is
 $$
   F_{X\mid X>0}(x) =
   \begin{cases}
     0             & \text{for $x < 0$}\\
-    F_Z(0)        & \text{for $x = 0$}\\ 
-    F_Z(x)        & \text{for $x > 0$}
+    F_Y(0)        & \text{for $x = 0$}\\ 
+    F_Y(x)        & \text{for $x > 0$}
   \end{cases}
 $$
+
+
+If the latent distribution is a normal distribution,\index{Normal distribution} Equation\ \@ref(eq:PDFpositiveConditional) can be written in terms of the standard normal density function $\phi(\cdot)$ and the standard normal distribution function $\Phi(\cdot)$ (see Sect.\ \@ref(StandardNormal)).
+In this case only, notice that 
+\begin{align*}
+   \Pr(X > 0) 
+   &= \Pr(Z > (0 - \mu)/\sigma)\quad\text{(where $Z$ is a standard normal variate)} \\ 
+   &= \Pr(Z > -\mu/\sigma) \\
+   &= 1 - \Phi( -\mu/\sigma) \\
+   &= \Phi(\mu/\sigma) \quad\text{(using the symmetry of the normal distribution)},
+\end{align*}
+and hence Equation\ \@ref(eq:PDFpositiveConditional) can be written as
+\begin{equation}
+  f_{X\mid X>0}(x) 
+  = \frac{\phi\big((x-\mu)/\sigma\big)}{\Phi(\mu/\sigma)}.
+  (\#eq:PDFpositiveConditional2)
+\end{equation}
+If we write $t = \mu/\sigma$ and define $\lambda(t) = \phi(t)/\Phi(t)$, this expression becomes
+$$
+  f_{X\mid X>0}(x) = ?????????????
+$$
+LOST:
+$$
+  f_{X\mid X>0}(x) 
+  = \frac{f_Z(x)}{\Pr(Z > 0)} 
+  = \frac{f_Z(x)}{1 - F_Z(0)}
+$$
+
 
 
 
@@ -259,8 +282,21 @@ The expected value of the censored random variable\ $X$ can be found first separ
   \operatorname{E}[X] 
   &= \operatorname{E}[X\mid X = 0] + \operatorname{E}[X\mid X > 0]\\
   &= \Pr(X = 0)\times 0 + \operatorname{E}[X\mid X > 0]\\
-  &= \operatorname{E}[X\mid X > 0].
+  &= \operatorname{E}[X\mid X > 0]\\
+  &= \int_0^\infty x\cdot f_{X\mid X > 0}(x)\,dx,\\
+  &= \frac{1}{\Phi()} \int_0^\infty x\cdot f_{X}(x)\,dx,
 \end{align*}
+where $f_{X\mid X > 0}(x)$ is given in Equation\ \@ref(eq:PDFpositiveConditional2)).
+
+When the censoring happens at $x^* = 0$, the standardised score is $(x^* - \mu)/\sigma = -t$, where defining $t = \mu/\sigma$ proves useful.
+Then $1 - \Phi()$
+Thus,
+\begin{align*}
+  \operatorname{E}[X] 
+  &= \int_0^\infty x\cdot f_{X\mid X > 0}(x)\,dx,
+  &= \int_0^\infty x\cdot f_{X\mid X > 0}(x)\,dx,
+\end{align*}
+
 Similarly,
 $$
   \operatorname{E}[X^2] 
