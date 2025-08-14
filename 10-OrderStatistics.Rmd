@@ -407,61 +407,36 @@ lines( x = c(0.2, 0.2),
 ## Sampling distribution of the $k$th order statistic {#OrderStatisticsDistribution}
 
 The ideas developed above for the distribution of the minimum and maximum value in a sample can be applied to other order statistics also.
-Consider a sample from a continuous distribution with density function\ $f_X(x)$ and distribution function\ $F_X(x)$.
-The $k$th order statistic $X_{(k)}$ has the distribution function $F_{X_(k)}(x) = \Pr(X_{(k)}\le x)$. 
+
+Consider a sample of size\ $n$ from a continuous distribution with density function\ $f_X(x)$ and distribution function\ $F_X(x)$.
+Then, the $k$th order statistic $X_{(k)}$ has the distribution function $F_{X_{(k)}}(x) = \Pr(X_{(k)}\le x)$. 
 By definition, this is the probability that the $k$th smallest value in the sample is less than (or equal to) some value\ $x$.
 
----
+Writing $X_{(k)} \le x$ means that there must be *at least*\ $k$ of the\ $n$ observations smaller than the value\ $x$; that is, $k, k+1, k+2, \dots, n$ values values smaller than $x$.
+We can denote the probability than a single observation has a value less than\ $x$ as $p = F_X(x)$, and then think of a 'success' as an observation having a value less than or equal to\ $x$.
+Then, the number of successes (the number of values less than or equal to\ $x$, say\ $Y$) is
+$$
+   Y \sim \text{Binom}(n, p).
+$$
+Then, since $X_{(k)} \le x$ means *at least*\ $k$ of the\ $n$ observations are smaller than the value\ $x$, this means $k, k + 1, \dots n$ of the observations are smaller than\ $x$.
 
-Writing $X_{(k)} \le x$ means that *at least*\ $k$ of the\ $n$ observations are smaller than the value\ $x$.
-In addition, the probability than an observations has a value less than\ $x$ is $p = F_X(x)$.
-The distribution of the $k$th order statistic is therefore like a binomial problem (Sect.\ \@ref(BinomialDistribution)): the $k$th order statistic (REWORD) is the binomial probability  of observing $k$ values in the samples with a value smaller than\ $x$ (with probability\ $p$), and $n - k$ with a value larger than\ $x$.
-That is, at least $1$ values is less than $x$ is the binomial probability
+Then,
+\begin{align*}
+  \Pr(X_{(k)} \le x) 
+  &= \Pr(\text{at least $k$ successes}) \\
+  &= \Pr( Y\ge k) \\
+  &= \Pr(Y = k) + \Pr(Y = k+1) + \cdots + \Pr(Y = n),
+\end{align*}
+where each probability in the final line is a binomial probability.
+That is, adding up the corresponding binomial probability mass functions,
 $$
-     p_X(x = 1; n, p) = \binom{n}{x} p^1 q^{n - 1}.
+  F_{X_{(k)}}(x) 
+  = \Pr(X_{(k)} \le x)
+  = \Pr( Y\ge k)
+  = \sum_{i = k}^n \binom{n}{i} p^i (1 - p)^{n - i}
 $$
-That is, at least $2$ values is less than $x$ is the binomial probability
-$$
-     p_X(x = 2; n, p) = \binom{n}{2} p^2 q^{n - 2}.
-$$
-In general, at least $k$ values is less than $x$ is the binomial probability
-$$
-     p_X(x = k; n, p) = \binom{n}{k} p^k q^{n - k}.
-$$
-So we need to add these probabilities from\ $1$ to\ $k$:
-\begin{equation}
-  F_{X_{(k)}}(x) = \Pr(X_{(k)}\le x) 
-  = 
-  \sum_{i = k}^n \binom{n}{k}\times [F_{X_{(k)}}(x)]^k \times [1 - F_{X_{(k)}}(x)]^{n -k}
-\end{equation}
-
-
-
-
-----
-
-NEEDS FIXING!!
-
-For some given value\ $x$ to be the $k$th smallest, there must be $k$\ observations with a value less than or equal to $x$; the probability of this is
-$$
-  [F_{(k)}(x)]^k
-$$
-In addition, the remaining $n - k$ observations with a value *larger* than $x$; the probability of this is
-$$
-  [1 - F_{X_{(k)}}(x)]^{n -k}
-$$
-Finally, there are $\binom{n}{k}$ ways for the first $k$ observations to be ordered that are equivalent; we also to consider the $\binom{n}{k-1}$ ways... $\binom{n}{1}$ AND SO ON.
-(For instance, consider a sample of size $n = 6$, where we seek the distribution of the $3$rd order statistic (i.e., $k = 3$).
-There are $\binom{6}{3}$ ways to choose\ $k = 3$ of the\ $n = 6$ observation to be smaller than\ $x$; in addition, there are $\binom{6}{2}$ ways to choose\ $k = 2$ of the\ $n = 6$ observation to be smaller than\ $x$; and finally, there are $\binom{6}{1}$ ways to choose\ $k = 1$ of the\ $n = 6$ observation to be smaller than\ $x$.
-
-Combining these elements,
-$$
-  F_{X_{(k)}}(x) = \Pr(X_{(k)}\le x) 
-  = 
-  \sum_{i = k}^n \binom{n}{k}\times [F_{X_{(k)}}(x)]^k \times [1 - F_{X_{(k)}}(x)]^{n -k}
-$$
-
-From the distribution function, the probability density functin can be obtained as
+for $x\in R$.
+From this distribution function, the probability density function can be obtained as
 $$
   f_{X_{(k)}}(x) = \frac{d}{dx} F_{X_{(k)}} 
   = 
@@ -489,39 +464,71 @@ where $n > k > 0$ and\ $n$ and\ $k$ are integers.
 :::
 
 
-::: {.example}
-Consider simulating $1\,000$ samples of size $n = 10$ from a Uniform$(0, 1)$ distribution.
-The distribution of $X_{(2)}$ and $X_{(6)}$ are shown in Fig.\  \@ref(fig:OrderStats1).
+::: {.example #UniformkOrderStats name="Other order statistics"}
+Consider the second and sixth order statistics from sample of size $n = 10$ from a Unif$(0, 1)$ distribution (where $f_X(x)$ and $F_X(x)$ are given in Example\ \@ref(exm:OrderStatsMaxUniform)); using Equation\@ref(eq:OrderStatisticPDF):
+\begin{align*}
+   f_{X_{(2)}}(x) 
+   &= \frac{10!}{1!\, 8!} x (1 - x)^8
+    = 90 x (1 - x)^8\quad\text{and}\\
+   f_{X_{(6)}}(x) 
+   &= \frac{10!}{5!\, 4!} x^5 (1 - x)^4
+    = 1260 x^5 (1 - x)^4.
+\end{align*}
+
+Consider simulating $5\,000$ samples of size $n = 10$ from a Unif$(0, 1)$ distribution:
+
+```{r OrderStatsSimOnly}
+n <- 10   # Take samples of size 10
+
+samples2 <- replicate(5000,               # 1000 repetitions
+                      sort(runif(n))[2])  # 2nd order statistic
+samples6 <- replicate(5000,               # 1000 repetitions
+                      sort(runif(n))[6])  # 6th order statistic
+```
+
+The distribution of $X_{(2)}$ (i.e., `samples2`) and $X_{(6)}$ (i.e., `samples6`) are shown in Fig.\  \@ref(fig:OrderStats1).
 :::
 
 
-```{r OrderStats1, echo=TRUE, fig.align="center", fig.cap="Simulating the distribution of two order statistics for the uniform distribution on $[0, 1]$ with a sample of size $10$. Left: the distribution of $X_{(2)}$. Right: the distribution of  $X_{(6)}$.", fig.width=8, fig.height=4, out.width="90%"}
+```{r OrderStats1, echo=FALSE, fig.align="center", fig.cap="Simulating the distribution of two order statistics for the uniform distribution on $[0, 1]$ with a sample of size $10$. Left: the distribution of $X_{(2)}$. Right: the distribution of  $X_{(6)}$. The solid lines show the theoretical distributions.", fig.width=8, fig.height=4, out.width="90%"}
 set.seed(123)  # For reproducibility
 
-n <- 10   # Take samples of size 10
-samples2 <- replicate(1000,               # 1000 repetitions
-                      sort(runif(n))[2])  # 2nd order statistic
-samples6 <- replicate(1000,               # 1000 repetitions
-                      sort(runif(n))[6])  # 6th order statistic
+<<OrderStatsSimOnly>>
+
+os2 <- function(x){ 90 * x * (1 - x)^8 }
+os6 <- function(x){ 1260 * x^5 * (1 - x)^4 }
+
+x_Plot <- seq(0, 1,
+              length = 500)
+breaks <- seq(0, 1,
+              by = 0.05)
 
 par(mfrow = c(1, 2))
 
-hist(samples2, 
+MASS::truehist(samples2, 
      col = plotColour1, 
+     breaks = breaks,
      xlim = c(0, 1),
      las = 1,
      main = expression(Distribution~of~italic(X)[(2)]),
      xlab = expression(italic(X)[(2)]),
      ylab = "Density")
-hist(samples6, 
+lines( os2(x_Plot) ~ x_Plot,
+       lwd = 2)
+
+MASS::truehist(samples6, 
      col = plotColour1, 
+     breaks = breaks,
      xlim = c(0, 1),
      las = 1,
      main = expression(atop(Distribution~of~italic(X)[(6)]),
                             "("*the~maximum~value*")"),
      xlab = expression(italic(X)[(6)]),
      ylab = "Density")
+lines( os6(x_Plot) ~ x_Plot,
+       lwd = 2)
 ```
+
 
 
 :::{.example #OrderStatisticsUniform name="Order statistics (uniform distribution)"}
@@ -733,31 +740,113 @@ This approach can be extended to *any* $k$th failure out of\ $n$ components.
 
 ## Discrete random variables
 
-Bit trickier, esp for general order stat.
-Perhaps just give min and max?
+For continuous random variables, discussing order statistics is easier than for discrete random variables, because ties are not possible (since $\Pr(X = x)$ for some value\ $x$ is zero).
+As a result, the formulas for discrete random variables are more complicated to accommodate the non-zero probability of ties.
 
-Let $F(x^{-}) = \Pr(X<x)$.
- 
-Min:
+Let $X_1, X_2, \dots, X_n$ be i.i.d.\ from a discrete distribution with probability mass function
+$$
+   p_X(x) = \Pr(X = x),
+$$
+and distribution function
+$$
+   F_X(x) = \Pr(X \le x).
+$$
+In the discrete case, defining $F(x^{-}) = \Pr(X < x)$ is convenient.
+
+The first order statistic is
+$$
+   X_{(1)} = \min\{ X_1, X_2, \dots, X_n \}.
+$$
+We can proceed:
+\begin{align*}
+F_{X_{(1)}}(x) 
+  &= \Pr(X_{(1)} \le x) \\
+  &= 1 - \Pr(X_{(1)} > x) \\
+  &= 1 - \Pr(X_1 > x, X_2 > x, \dots, X_n > x) \\
+  &= 1 - \big[ 1 - F_X(x) \big]^n.
+\end{align*}
+The probability mass function is the probability that all observations are at least\ $x$, but not all are greater than\ $x$:
+\begin{align*}
+  p_{X_{(1)}}(x) 
+    &= \Pr(X_{(1)} \ge x) - \Pr(X_{(1)} \ge x+1) \\
+    &= \big[ 1 - F_X(x^-) \big]^n - \big[ 1 - F_X(x) \big]^n,
+\end{align*}
+where
+$$
+  F_X(x^-) = \lim_{t \uparrow x} F_X(t) = \Pr(X < x).
+$$
+
+
+---
+
+????\textbf{Step 3: Special case for integer-valued \(X\).}  
+If the support is \(a_1 < a_2 < \dots\), then
 \[
-\Pr(X_{(1)} = x) = \left[1 - F(x^-)\right]^n - \left[1 - F(x)\right]^n
+p_{X_{(1)}}(a_j) 
+= \big[ 1 - F_X(a_{j-1}) \big]^n - \big[ 1 - F_X(a_j) \big]^n,
+\]
+with the convention \(F_X(a_0) := 0\).
+---
+
+### General order stat from c
+
+Let \(X_1, X_2, \dots, X_n\) be i.i.d.\ from a discrete distribution with
+\[
+p_X(x)=\Pr(X=x), \qquad F_X(x)=\Pr(X\le x), \qquad F_X(x^-)=\Pr(X<x).
+\]
+Denote the \(k\)-th order statistic by \(X_{(k)}\).
+
+\textbf{Step 1: CDF of \(X_{(k)}\).}
+Define the count of observations \(\le x\) as
+\[
+Y=\sum_{j=1}^n I\{X_j\le x\} \sim \mathrm{Binomial}\!\left(n,\,F_X(x)\right).
+\]
+Then
+\begin{align*}
+F_{X_{(k)}}(x)
+  &= \Pr\bigl(X_{(k)} \le x\bigr)
+   = \Pr(Y \ge k) \\
+  &= \sum_{i=k}^n \binom{n}{i}\,[F_X(x)]^{i}\,[1-F_X(x)]^{\,n-i}.
+\end{align*}
+
+\textbf{Step 2: PMF (discrete “pdf”) of \(X_{(k)}\).}
+For a discrete \(x\), the PMF is the jump of the CDF at \(x\):
+\begin{align*}
+p_{X_{(k)}}(x)
+  &= \Pr\bigl(X_{(k)}=x\bigr)
+   = F_{X_{(k)}}(x) - F_{X_{(k)}}(x^-) \\
+  &= \sum_{i=k}^n \binom{n}{i}\,[F_X(x)]^{i}\,[1-F_X(x)]^{\,n-i}
+   \;-\;
+     \sum_{i=k}^n \binom{n}{i}\,[F_X(x^-)]^{i}\,[1-F_X(x^-)]^{\,n-i}.
+\end{align*}
+
+\textbf{Step 3: Explicit multinomial form (optional).}
+Write
+\[
+a=F_X(x^-)=\Pr(X<x),\quad b=p_X(x)=\Pr(X=x),\quad c=1-a-b=\Pr(X>x).
+\]
+Let \((R,S,T)\) be the counts of observations that are \(<x\), \(=x\), and \(>x\), respectively; then
+\((R,S,T) \sim \mathrm{Multinomial}\bigl(n; a,b,c\bigr)\).
+The event \(\{X_{(k)}=x\}\) occurs iff \(R\le k-1\) and \(R+S\ge k\).
+Thus
+\[
+p_{X_{(k)}}(x)
+  = \sum_{r=0}^{k-1}
+      \sum_{s=k-r}^{\,n-r}
+      \frac{n!}{\,r!\,s!\,(n-r-s)!\,}\;
+      a^{\,r}\, b^{\,s}\, c^{\,n-r-s}.
 \]
 
-Max; 
-\[
-\Pr(X_{(n)} = x) = F(x)^n - F(x^-)^n
-\]
-
-kth order stats
-
-\[
-\Pr(X_{(k)} = x) = \sum_{j = k}^{n} \binom{n}{j} \binom{j}{1} 
-\left[F(x^-)\right]^{n - j} \cdot p(x) \cdot \left[1 - F(x)\right]^{j - 1}
-\]
-
-\[
-\Pr(X_{(k)} = x) = \binom{n}{k} p(x) \left[F(x^-)\right]^{k - 1} \left[1 - F(x)\right]^{n - k}
-\]
+\textbf{Checks / special cases.}
+\begin{itemize}
+  \item \(k=1\): recovers the discrete minimum
+    \[
+    p_{X_{(1)}}(x)
+    = \bigl[1-F_X(x^-)\bigr]^n - \bigl[1-F_X(x)\bigr]^n.
+    \]
+  \item If \(X\) is continuous (so \(b=0\) and \(F_X(x^-)=F_X(x)\)), the PMF vanishes and one uses the usual density
+    \(f_{X_{(k)}}(x)=\dfrac{n!}{(k-1)!(n-k)!}\,[F_X(x)]^{k-1}[1-F_X(x)]^{n-k} f_X(x)\).
+\end{itemize}
 
 
 ## Joint distribution
@@ -838,4 +927,13 @@ The lifetime of each unit follows an exponential, with a mean lifetime of $2000\
 When two units fail, a service technician is called.
 
 1. Describe the distribution showing the wait time until a technician need to be called. 
+:::
+
+
+:::{.exercise #OrderStatisticsSim1}
+aaa
+:::
+
+:::{.exercise #OrderStatisticsSim2}
+bbb
 :::
