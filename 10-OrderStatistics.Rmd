@@ -261,10 +261,10 @@ The distribution function for $X_{(1)}$ is $F_{X_{(1)}}(x) = \Pr(X_{{(1)}} \le x
 If the value of $X_{(1)}$ is less than or equal to some value\ $x$, then there must be *at least* one value less than that value\ $x$.
 Alternatively, this means that we cannot have *all* the sample values larger than the value\ $x$ (as then there must be *none* that are less than\ $x$).
 
-The probability that *all* values are larger than\ $x$ is $(1 - F_X(x))^n$ (since all\ $n$ values have identical, independent distributions).
+The probability that *all* values are larger than\ $x$ is $[1 - F_X(x)]^n$ (since all\ $n$ values have identical, independent distributions).
 Hence, the probability that *all* values are *not* larger than\ $x$ is
 $$
-  1 - (1 - F_X(x))^n
+  1 - [1 - F_X(x)]^n
 $$
 for $x \in R_X$.
 The density function is found by differentiating $F_{X_{(1)}}(x)$ with respect to\ $x$ (Sect.\ \@ref(DistributionFunction)), to obtain
@@ -342,7 +342,7 @@ for (i in 1:num_Sims){
   x_Min[i] <- max(x) 
 }
 
-cat("Proportion of smallest valuess less than 0.2: ", 
+cat("Proportion of smallest values less than 0.2: ", 
     round(sum(x_Min) / num_Sims, 3), "\n")
 ```
 
@@ -407,65 +407,72 @@ lines( x = c(0.2, 0.2),
 ## Sampling distribution of the $k$th order statistic {#OrderStatisticsDistribution}
 
 The ideas developed above for the distribution of the minimum and maximum value in a sample can be applied to other order statistics also.
-
-Consider a sample of size\ $n$ from a continuous distribution with density function\ $f_X(x)$ and distribution function\ $F_X(x)$.
-Then, the $k$th order statistic $X_{(k)}$ has the distribution function $F_{X_{(k)}}(x) = \Pr(X_{(k)}\le x)$. 
+Consider a sample from a continuous distribution with density function\ $f_X(x)$ and distribution function\ $F_X(x)$.
+The $k$th order statistic $X_{(k)}$ has the distribution function $F_{X_(k)}(x) = \Pr(X_{(k)}\le x)$. 
 By definition, this is the probability that the $k$th smallest value in the sample is less than (or equal to) some value\ $x$.
 
-Writing $X_{(k)} \le x$ means that there must be *at least*\ $k$ of the\ $n$ observations smaller than the value\ $x$; that is, $k, k+1, k+2, \dots, n$ values values smaller than $x$.
-We can denote the probability than a single observation has a value less than\ $x$ as $p = F_X(x)$, and then think of a 'success' as an observation having a value less than or equal to\ $x$.
-Then, the number of successes (the number of values less than or equal to\ $x$, say\ $Y$) is
-$$
-   Y \sim \text{Binom}(n, p).
-$$
-Then, since $X_{(k)} \le x$ means *at least*\ $k$ of the\ $n$ observations are smaller than the value\ $x$, this means $k, k + 1, \dots n$ of the observations are smaller than\ $x$.
+Writing $X_{(k)} \le x$ means that *at least*\ $k$ of the\ $n$ observations are smaller than the value\ $x$; that is, $k, k + 1, \dots n$ of the\ $n$ observations are smaller than\ $x$.
 
-Then,
-\begin{align*}
-  \Pr(X_{(k)} \le x) 
-  &= \Pr(\text{at least $k$ successes}) \\
-  &= \Pr( Y\ge k) \\
-  &= \Pr(Y = k) + \Pr(Y = k+1) + \cdots + \Pr(Y = n),
-\end{align*}
-where each probability in the final line is a binomial probability.
-That is, adding up the corresponding binomial probability mass functions,
+First, consider the case where exactly\ $k$ observations are smaller than\ $x$.
+This means there must be $k$\ observations with a value less than or equal to $x$; the probability of this is
 $$
-  F_{X_{(k)}}(x) 
-  = \Pr(X_{(k)} \le x)
-  = \Pr( Y\ge k)
-  = \sum_{i = k}^n \binom{n}{i} p^i (1 - p)^{n - i}
+  [F_X(x)]^k
 $$
-for $x\in R$.
+In addition, the remaining $n - k$ observations must have a value *larger* than $x$; the probability of this is
+$$
+  [1 - F_{X}(x)]^{n -k}
+$$
+The\ $k$ observations that are smaller than\ $x$ could be located in many different places among the\ $n$ values; these\ $k$ observations could be in $\binom{n}{k}$ different arrangements among the sample of size\ $n$.
+
+Combining, the probability that exactly\ $k$ observations are smaller than\ $x$ is
+$$
+  \binom{n}{k} \cdot [F_X(x)]^k \cdot [1 - F_{X}(x)]^{n - k}.
+$$
+
+However, as noted above, there may be *more* than\ $k$ observations smaller than\ $x$ also.
+Following the above ideas, the probability that exactly\ $k + 1$ observations are smaller than\ $x$ is
+$$
+  \binom{n}{k + 1} \cdot [F_X(x)]^{k+1} \cdot [1 - F_{X}(x)]^{n - (k+1)}
+$$
+and so on, up to all\ $n$ observations being less than\ $x$.
+Summing these probabilities gives
+$$
+  \Pr(X_{(k)} \le x) = \sum_{i = k}^n \binom{n}{i} \cdot [F_X(x)]^i \cdot [1 - F_{X}(x)]^{n - i}.
+$$
+
 From this distribution function, the probability density function can be obtained as
 $$
-  f_{X_{(k)}}(x) = \frac{d}{dx} F_{X_{(k)}} 
-  = 
-  \frac{n!}{(k - 1)!\,(n - r)!}f_{X_{(k)}}[F_{X_{(k)}}]^{k - 1} [1 - F_{X_{(k)}}]^{n - r},
+  f_{X_{(k)}}(x) 
+  = \frac{d}{dx} F_{X_{(k)}}(x) 
+  = \frac{n!}{(k - 1)!\,(n - r)!}f_{X}(x) [F_{X}(x)]^{k - 1} [1 - F_{X}(x)]^{n - r},
 $$
 for $n > k \ge 1$ and\ $n$ and\ $k$ are integers.
 
 
 :::{.definition #OrderStatsDistn name="Distribution of an order statistic"}
 Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
-Then the distribution function for the $k$th order statistic $X_{(k)}$) is
+Then the distribution function for the $k$th order statistic $X_{(k)}$ is
 \begin{equation}
   F_{X_{(k)}}(x) = \Pr(X_{(k)}\le x) 
   = 
-  \sum_{i = k}^n \binom{n}{k}\times [F_{X_{(k)}}(x)]^k \times [1 - F_{X_{(k)}}(x)]^{n -k}
+  \sum_{i = k}^n \binom{n}{k}\times [F_{X}(x)]^i \times [1 - F_{X}(x)]^{n - i}
    (\#eq:OrderStatisticDF)
 \end{equation}
 and the density function of the $k$th order statistic $X_{(k)}$ 
 is:
 \begin{equation}
-   f_{X_{(k)}}(x) = \frac{n!}{(k-1)! (n-k)!} [F(x)]^{k-1} [1 - F(x)]^{n-k} f(x),
+   f_{X_{(k)}}(x) = \frac{n!}{(k - 1)! (n - k)!} [F_X(x)]^{k-1} [1 - F_X(x)]^{n-k} f(x),
    (\#eq:OrderStatisticPDF)
 \end{equation}
 where $n > k > 0$ and\ $n$ and\ $k$ are integers.
 :::
 
 
-::: {.example #UniformkOrderStats name="Other order statistics"}
-Consider the second and sixth order statistics from sample of size $n = 10$ from a Unif$(0, 1)$ distribution (where $f_X(x)$ and $F_X(x)$ are given in Example\ \@ref(exm:OrderStatsMaxUniform)); using Equation\@ref(eq:OrderStatisticPDF):
+
+
+
+::: {.example #UniformkOrderStats name="Uniform distribution: other order statistics"}
+Consider the second and sixth order statistics from sample of size $n = 10$ from a Unif$(0, 1)$ distribution (where $f_X(x)$ and $F_X(x)$ are given in Example\ \@ref(exm:OrderStatsMaxUniform)); using Equation\ \@ref(eq:OrderStatisticPDF):
 \begin{align*}
    f_{X_{(2)}}(x) 
    &= \frac{10!}{1!\, 8!} x (1 - x)^8
@@ -529,141 +536,6 @@ lines( os6(x_Plot) ~ x_Plot,
        lwd = 2)
 ```
 
-
-
-:::{.example #OrderStatisticsUniform name="Order statistics (uniform distribution)"}
-For the continuous uniform distribution (Sect.\ \@ref(ContinuousUniform)) defined on $[0, 1]$, the density function is
-\begin{equation}
-   f_X(x; 0, 1)  = 1 \quad\text{for $0\le x\le 1$},
-   (\#eq:ContinuousUniformPMForder)
-\end{equation}
-and the distribution function is
-$$
-  F_X(x; 0, 1) = 
-  \begin{cases}
-    0                & \text{for $x < 0$};\\
-    \displaystyle x  & \text{for $0 \le x \le 1$};\\ 
-    1                & \text{for $x > 1$}.
-  \end{cases}
-$$
-Hence, Eq. \@ref(eq:OrderStatisticDF) becomes
-\begin{equation}
-   f_{X_{(k)}}(x) 
-   = \frac{n!}{(k - 1)!\, (n - k)!} x^{k-1} (1 - x)^{n-k},
-   (\#eq:OrderStatisticUniformPDF)
-\end{equation}
-for the $k$th order statistic $X_{(k)}$ in a sample of size\ $n$.
-Since this is a density function, the total area must be one (Exercise\ \@ref(exr:OrderStatisticsUniform)).
-The distributions are shown in Fig.\ \@ref(fig:OrderStatsUnif) for $k = 2$ and $k = 6$.
-The simulated order statistics (Fig.\ \@ref(fig:OrderStats1)) compare favourable with these theoretical distributions.
-
-The mean value of the $k$th order statistic is (Exercise\ \@ref(exr:OrderStatisticsUniformExpectations)):
-$$
-  \operatorname{E}[X] 
-  = \frac{n!}{(k - 1)!\, (n - k)!} \int_0^1 x^k (1 - x)^{n-k}\,dx
-  = \frac{k}{n + 1}.
-$$
-Similarly (Exercise\ \@ref(exr:OrderStatisticsUniformExpectations)), 
-$$
-  \operatorname{var}[X] = \frac{k(n + 1 - k)}{(n + 1)^2\, (n + 2)}.
-$$
-
-For example, in a sample of size $n = 10$, the second order statistic (i.e., $k = 2$) is
-$$
-   f_{X_{(k)}}(x) 
-   = \frac{10!}{1!\, 8!} x^{1} (1 - x)^{8}
-   = 90 x (1 - x)^{8}
-$$
-for $0 < x < 1$, where 
-$$
-  \operatorname{E}[X] 
-  = \frac{2}{11}
-  \approx 0.1818\dots.
-$$
-and
-$$
-  \operatorname{var}[X] 
-  = \frac{2\times (10 + 1 - 2)}{11^2 \times 12}
-  = \frac{18}{1452}
-  \approx 0.01239\dots.
-$$
-In **R**
-
-```{r}
-# 2nd order statistic
-mean(samples2)   # Simulated mean of X_{(2)}
-var(samples2)    # Simulated varianceof X_{(2)}
-```
-
-Likewise, in a sample of size $n = 10$, the sixth order statistic (i.e., $k = 6$) is
-$$
-   f_{X_{(k)}}(x) 
-   = \frac{10!}{9!\, 0!} x^{9} (1 - x)^{0}
-   = 10 x^{9}
-$$
-for $0 < x < 1$, and
-$$
-  \operatorname{E}[X] 
-  = \frac{6}{11}
-  \approx 0.5454\dots.
-$$
-and
-$$
-  \operatorname{var}[X] 
-  = \frac{6\times (10 + 1 - 6)}{11^2 \times 12}
-  = \frac{15}{726}
-  \approx 0.02066\dots.
-$$
-In **R**:
-
-```{r}
-# 6th order statistic (i.e., maximum)
-mean(samples6)   # Simulated mean of X_{(6)}
-var(samples6)    # Simulated variance of X_{(6)}
-```
-
-:::
-
-
-```{r OrderStatsUnif, echo=TRUE, fig.align="center", fig.cap="The distribution of two order statistics for the uniform distribution on $[0, 1]$. Left: the density function of $X_{(2)}$. Right: the density function of  $X_{(6)}$.", fig.width=8, fig.height=4, out.width="90%"}
-### Uniform order stats for 2nd and 10th order stats
-f_Order <- function(x, n, k){
-  factorial(n)/( factorial(k - 1) * factorial(n - k)) *
-    x^(k - 1) * 
-    (1 - x)^(n - k)
-}
-
-par(mfrow = c(1, 2))
-
-x <- seq(0, 1,
-         length = 100)
-
-plot( f_Order(x, n = 10, k = 2) ~ x,
-      lwd = 3,
-      xlim = c(0, 1),
-      col = plotColour1,
-      axes = FALSE,
-      xlab = expression(italic(x)),
-      ylab = "Density",
-      main = expression( atop(Distribution~of~"2nd",
-                              order~statistic)),
-      type = "l")
-axis(side = 1)
-box()
-
-plot( f_Order(x, n = 10, k = 6) ~ x,
-      lwd = 3,
-      xlim = c(0, 1),
-      col = plotColour1,
-      axes = FALSE,
-      xlab = expression(italic(x)),
-      ylab = "Density",
-      main = expression( atop(Distribution~of~"6th",
-                              order~statistic)),
-      type = "l")
-axis(side = 1)
-box()
-```
 
 
 
@@ -740,8 +612,8 @@ This approach can be extended to *any* $k$th failure out of\ $n$ components.
 
 ## Discrete random variables
 
-For continuous random variables, discussing order statistics is easier than for discrete random variables, because ties are not possible (since $\Pr(X = x)$ for some value\ $x$ is zero).
-As a result, the formulas for discrete random variables are more complicated to accommodate the non-zero probability of ties.
+Working with order statistics is easier with continuous random variables than for discrete random variables, because ties are not possible (since $\Pr(X = x)$ for some value\ $x$ is zero when $X$ is a continuous random variable).
+As a result, the formulas for discrete random variables are more complicated since they need to allow for the presence of ties.
 
 Let $X_1, X_2, \dots, X_n$ be i.i.d.\ from a discrete distribution with probability mass function
 $$
@@ -927,13 +799,4 @@ The lifetime of each unit follows an exponential, with a mean lifetime of $2000\
 When two units fail, a service technician is called.
 
 1. Describe the distribution showing the wait time until a technician need to be called. 
-:::
-
-
-:::{.exercise #OrderStatisticsSim1}
-aaa
-:::
-
-:::{.exercise #OrderStatisticsSim2}
-bbb
 :::
