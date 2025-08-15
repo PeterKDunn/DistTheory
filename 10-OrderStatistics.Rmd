@@ -610,10 +610,10 @@ where $f_{E_1}(x) = 4\lambda e^{-4\lambda x}$, and $f_{E_2}(x) = 3\lambda e^{-3\
 This approach can be extended to *any* $k$th failure out of\ $n$ components.
 
 
-## Discrete random variables
+## Discrete random variables {#OrderStatisticsDiscrete}
 
-Working with order statistics is easier with continuous random variables than for discrete random variables, because ties are not possible (since $\Pr(X = x)$ for some value\ $x$ is zero when $X$ is a continuous random variable).
-As a result, the formulas for discrete random variables are more complicated since they need to allow for the presence of ties.
+Working with order statistics is easier with continuous random variables than for discrete random variables, because ties are not possible for continuous random variables (since $\Pr(X = x)$ for some value\ $x$ is zero when $X$ is a continuous random variable).
+As a result, the formulas for discrete random variables are more complicated since they need to accommodate ties.
 
 Let $X_1, X_2, \dots, X_n$ be i.i.d.\ from a discrete distribution with probability mass function
 $$
@@ -623,9 +623,14 @@ and distribution function
 $$
    F_X(x) = \Pr(X \le x).
 $$
-In the discrete case, defining $F(x^{-}) = \Pr(X < x)$ is convenient.
+In the discrete case, defining
+$$
+   F_X(x^-) = \lim_{t \uparrow x} F_X(t) = \Pr(X < x).
+$$
+proves helpful in what follows.
 
-The first order statistic is $X_{(1)} = \min\{ X_1, X_2, \dots, X_n \}$; then
+We begin with the first order statistic (the minimum value) to establish the general ideas of working with discrete random variables.
+The first order statistic is $X_{(1)} = \min\{ X_1, X_2, \dots, X_n \}$; then, following similar logic to the continuous case,
 \begin{align*}
 F_{X_{(1)}}(x) 
   &= \Pr(X_{(1)} \le x) \\
@@ -637,29 +642,21 @@ The probability mass function is the probability that all observations are at le
 \begin{align*}
   p_{X_{(1)}}(x) 
     &= \Pr(X_{(1)} \ge x) - \Pr(X_{(1)} \ge x+1) \\
-    &= \big[ 1 - F_X(x^-) \big]^n - \big[ 1 - F_X(x) \big]^n,
+    &= \big[ 1 - F_X(x^-) \big]^n - \big[ 1 - F_X(x) \big]^n.
 \end{align*}
-where
+
+
+More generally, for the $k$th order statistic\ $X_{(k)}$ for a discrete random variable\ $X$,  let $X_1, X_2, \dots, X_n$ be i.i.d.\ from a discrete distribution with
+\begin{align*}
+  p_X(x)   &= \Pr(X = x);\\
+  F_X(x)   &= \Pr(X \le x); \text{and}\\
+  F_X(x^-) &=\Pr(X < x).
+\end{align*}
+
+First, define the *number* of observations less than or equal to\ $x$ as
 $$
-  F_X(x^-) = \lim_{t \uparrow x} F_X(t) = \Pr(X < x).
+  Y = \sum_{j = 1}^n I\{X_j\le x\} \sim \mathrm{Binom}\!\left(n,\,F_X(x)\right).
 $$
-
-
----
-
-The case of the general order statistic:
-
-Let \(X_1, X_2, \dots, X_n\) be i.i.d.\ from a discrete distribution with
-\[
-p_X(x)=\Pr(X=x), \qquad F_X(x)=\Pr(X\le x), \qquad F_X(x^-)=\Pr(X<x).
-\]
-Denote the \(k\)-th order statistic by \(X_{(k)}\).
-
-\textbf{Step 1: CDF of \(X_{(k)}\).}
-Define the count of observations \(\le x\) as
-\[
-Y=\sum_{j=1}^n I\{X_j\le x\} \sim \mathrm{Binomial}\!\left(n,\,F_X(x)\right).
-\]
 Then
 \begin{align*}
 F_{X_{(k)}}(x)
@@ -668,44 +665,25 @@ F_{X_{(k)}}(x)
   &= \sum_{i=k}^n \binom{n}{i}\,[F_X(x)]^{i}\,[1-F_X(x)]^{\,n-i}.
 \end{align*}
 
-\textbf{Step 2: PMF (discrete “pdf”) of \(X_{(k)}\).}
-For a discrete \(x\), the PMF is the jump of the CDF at \(x\):
-\begin{align*}
-p_{X_{(k)}}(x)
-  &= \Pr\bigl(X_{(k)}=x\bigr)
-   = F_{X_{(k)}}(x) - F_{X_{(k)}}(x^-) \\
-  &= \sum_{i=k}^n \binom{n}{i}\,[F_X(x)]^{i}\,[1-F_X(x)]^{\,n-i}
-   \;-\;
-     \sum_{i=k}^n \binom{n}{i}\,[F_X(x^-)]^{i}\,[1-F_X(x^-)]^{\,n-i}.
-\end{align*}
 
-\textbf{Step 3: Explicit multinomial form (optional).}
-Write
-\[
-a=F_X(x^-)=\Pr(X<x),\quad b=p_X(x)=\Pr(X=x),\quad c=1-a-b=\Pr(X>x).
-\]
-Let \((R,S,T)\) be the counts of observations that are \(<x\), \(=x\), and \(>x\), respectively; then
-\((R,S,T) \sim \mathrm{Multinomial}\bigl(n; a,b,c\bigr)\).
-The event \(\{X_{(k)}=x\}\) occurs iff \(R\le k-1\) and \(R+S\ge k\).
-Thus
-\[
-p_{X_{(k)}}(x)
-  = \sum_{r=0}^{k-1}
-      \sum_{s=k-r}^{\,n-r}
-      \frac{n!}{\,r!\,s!\,(n-r-s)!\,}\;
-      a^{\,r}\, b^{\,s}\, c^{\,n-r-s}.
-\]
+For a discrete random variable\ $X$, the probability mass function is how much the distributions function 'jumps' at the values of\ $x$.
+So, the probability mass function for $X_{(k)}$ can be found from the distribution function as
+\begin{align}
+  p_{X_{(k)}}(x)
+    &= \Pr\bigl(X_{(k)}=x\bigr)
+     = F_{X_{(k)}}(x) - F_{X_{(k)}}(x^-) \notag\\
+    &= \sum_{i=k}^n \binom{n}{i}\,[F_X(x)]^{i}\,[1-F_X(x)]^{\,n-i}
+     \;- \notag\\
+    &\qquad \qquad
+       \sum_{i=k}^n \binom{n}{i}\,[F_X(x^-)]^{i}\,[1-F_X(x^-)]^{\,n-i}.
+       (\#eq:OrderStatsDiscrete)
+\end{align}
 
-\textbf{Checks / special cases.}
-\begin{itemize}
-  \item \(k=1\): recovers the discrete minimum
-    \[
-    p_{X_{(1)}}(x)
-    = \bigl[1-F_X(x^-)\bigr]^n - \bigl[1-F_X(x)\bigr]^n.
-    \]
-  \item If \(X\) is continuous (so \(b=0\) and \(F_X(x^-)=F_X(x)\)), the PMF vanishes and one uses the usual density
-    \(f_{X_{(k)}}(x)=\dfrac{n!}{(k-1)!(n-k)!}\,[F_X(x)]^{k-1}[1-F_X(x)]^{n-k} f_X(x)\).
-\end{itemize}
+
+
+:::{.example}
+??????
+:::
 
 
 ## Joint distribution
@@ -786,4 +764,39 @@ The lifetime of each unit follows an exponential, with a mean lifetime of $2000\
 When two units fail, a service technician is called.
 
 1. Describe the distribution showing the wait time until a technician need to be called. 
+:::
+
+
+
+:::{.exercise #OrderStatsDiscreteSpecialCases}
+Consider Equation\ \@ref(eq:OrderStatsDiscrete), which gives the $k$th order statistic for a discrete random variable.
+
+1. Show that the expression given for the probability mass function for the *minimum* value is given by using $k = 1$ in Equation\ \@ref(eq:OrderStatsDiscrete).
+1. Use Equation\ \@ref(eq:OrderStatsDiscrete) to find a formula for the probability mass function for the *maximum* value.
+:::
+
+
+
+:::{.exercise #OrderStatsDiscreteMultinomial}
+The probability mass function for the $k$th order statistic can be found in a different way than shown in Sect.\ \@ref(OrderStatisticsDiscrete).
+First, define 
+\begin{align*}
+  a &= F_X(x^-) = \Pr(X < x);\\
+  b & = p_X(x) = \Pr(X = x); \text{and}\\
+  c &= 1 - a - b = \Pr(X > x),
+\end{align*}
+and use $(R, S, T)$ to denote the *number* of observations that are less than, equal to, and greater than\ $x$, respectively.
+
+1. Show that $(R,S,T) \sim \mathrm{Multinomial}\big(n; a,b,c\big)$.
+2. Consider the discrete random variable\ $X$, where
+  $$
+    p_X(x) =
+    \begin{cases}
+      0.2 & \text{for $x = 1$};\\
+      0.5 & \text{for $x = 2$};\\
+      0.3 & \text{for $x = 3$};\\
+      0   & \text{elsewhere.}
+    \end{cases}
+  $$
+     Show that the above expressions and Equation\ \@ref(eq:OrderStatsDiscrete) are equivalent for the case $n = 3$ and finding the second order statistic $X_{(2)}$.
 :::
