@@ -612,8 +612,8 @@ This approach can be extended to *any* $k$th failure out of\ $n$ components.
 
 ## Discrete random variables {#OrderStatisticsDiscrete}
 
-Working with order statistics is easier with continuous random variables than for discrete random variables, because ties are not possible for continuous random variables (since $\Pr(X = x)$ for some value\ $x$ is zero when $X$ is a continuous random variable).
-As a result, the formulas for discrete random variables are more complicated since they need to accommodate ties.
+Working with order statistics is easier with continuous random variables than for discrete random variables, because ties are not possible for continuous random variables (since $\Pr(X = x) = 0$ for some value\ $x$ when $X$ is a continuous random variable).
+As a result, the formulas for discrete random variables are more complicated than for continuous random variables, since they need to accommodate the possibility of ties in the sample.
 
 Let $X_1, X_2, \dots, X_n$ be i.i.d.\ from a discrete distribution with probability mass function
 $$
@@ -627,7 +627,87 @@ In the discrete case, defining
 $$
    F_X(x^-) = \lim_{t \uparrow x} F_X(t) = \Pr(X < x).
 $$
-proves helpful in what follows.
+proves helpful in what follows (see Fig.\ \@ref(fig:OrderStatsDiscreteDefine)).
+
+
+```{r OrderStatsDiscreteDefine, echo=FALSE, fig.align="center", fig.cap="Explaining the meaning of $F_X(x^-)$.", fig.width=8, fig.height=4, out.width="90%"}
+
+
+plot( x = c(-1.25, 1.25),
+      y = c(-0.25, 1.25),
+      type = "n",
+      axes = FALSE,
+      xlab = expression(Values~of~italic(X)),
+      ylab = expression(italic(F)[italic(X)](italic(x)))
+      )
+axis(side = 2,
+     at = c(1, 0),
+     las = 1,
+     label = c( expression(italic(F)[italic(X)](italic(x))),
+                expression(italic(F)[italic(X)](italic(x^"\u2013"))) ) )
+axis(side = 1,
+     at = 0,
+     label = expression(italic(x)) )
+box()
+
+abline(v = 0,
+       lwd = 1,
+       col = "grey",
+       lty = 3)
+
+# Left side
+lines( x = c( -1, 0),
+       y = c(0, 0),
+       lwd = 3)
+lines( x = c( -1, -1.25),
+       y = c(0, 0),
+       lwd = 3,
+       lty = 2)
+
+points(x = 0,
+       y = 0,
+       cex = 1.25,
+       pch = 1)  # Open circle
+
+# Right side
+lines( x = c( 0, 1),
+       y = c(1, 1),
+       lwd = 3)
+lines( x = c( 1, 1.25),
+       y = c(1, 1),
+       lwd = 3,
+       lty = 2)
+
+points(x = 0,
+       y = 1,
+       cex = 1.25,
+       pch = 19)  # Closed circle
+
+# Explanatory info
+arrows( x0 = -0.5,
+        x1 = -0.05,
+        y0 = 0.9,
+        y1 = 1,
+        angle = 15,
+        length = 0.15)
+text(x = -0.5,
+     y = 0.9,
+     label = expression(italic(F)[italic(X)](italic(x))),
+     pos = 2)
+
+arrows( x0 = 0.5,
+        x1 = 0.05,
+        y0 = 0.1,
+        y1 = 0,
+        angle = 15,
+        length = 0.15)
+text(x = 0.5,
+     y = 0.1,
+     label = expression(italic(F)[italic(X)](italic(x^"\u2013"))), #\u2013 is en-dash; \u2014 is em-dash
+     pos = 4)
+
+```
+
 
 We begin with the first order statistic (the minimum value) to establish the general ideas of working with discrete random variables.
 The first order statistic is $X_{(1)} = \min\{ X_1, X_2, \dots, X_n \}$; then, following similar logic to the continuous case,
@@ -681,9 +761,99 @@ So, the probability mass function for $X_{(k)}$ can be found from the distributi
 
 
 
-:::{.example}
-??????
+:::{.example #DiscreteOrderStatsDice name="Rolling a fair die"}  
+Suppose a fair die is rolled $n = 10$ times, and the number appearing is recorded is denoted by\ $X$.
+Then $X \sim\text{Unif}(1, 6)$ and so
+$$
+  p_X(x)
+  = 
+  \begin{cases}
+    1/6 & \text{for $x = 1, 2, \dots 6$}\\
+    0   & \text{elsewhere}
+  \end{cases}
+  \qquad
+  \text{and}
+  \qquad
+  F_X(x)
+  = 
+  \begin{cases}
+    0                   & \text{for $x < 1$}\\
+    \lfloor x/6 \rfloor & \text{for $1 \le x \le 6$}\\
+    1                   & \text{for $x > 6$.}
+  \end{cases}
+$$
+
+Then the distribution function for the minimum $X_{(1)}$ is
+\begin{align*}
+  \Pr\big(X_{(1)} \ge k\big) 
+  &= \big[1 - F_X(k - 1)\big]^{10} \\
+  &= 
+  \begin{cases}
+    0 & \text{for $x < 1$}\\
+    \displaystyle 1 - \left[1 -\frac{\lfloor{x}\rfloor}{6}\right]^{10} & \text{for $1 \le x\le 6$}\\
+    1 & \text{for $x > 6$}
+  \end{cases}
+\end{align*}
+If we focus on the integer outcomes only,
+$$
+  F_{X_{(1)}}(x) 
+  = 
+  1 - \left(\frac{7 - x}{6}\right)^{10} \qquad\text{at $x = 1, 2\dots, 6$}.
+$$
+Hence the pmfs (for $k=1,\dots,6$):
+$$
+  \Pr\left(X_{(1)} = k\right) = \left(\frac{7-k}{6}\right)^{10} - \left(\frac{6-k}{6}\right)^{10},
+  \qquad
+  \Pr\left(X_{(10)} = k\right) = \left(\frac{k}{6}\right)^{10} - \left(\frac{k-1}{6}\right)^{10}.
+$$
+
+The general $r$-th order statistic $X_{(r)}$, for $r\in\{1,\dots,10\}$ and $k\in\{1,\dots,6\}$, has ????
+$$
+  \Pr\big(X_{(r)} \le k\big)
+  = \sum_{i = r}^{10} \binom{10}{i}\,\left(\frac{k}{6}\right)^{i}\,\left(1 - \frac{k}{6}\right)^{10 - i},
+$$
+and the pmf is the discrete difference
+$$
+  \Pr\big(X_{(r)} =  k\big) 
+  =
+  \Pr\big(X_{(r)}\le k\big) - \Pr\big(X_{(r)}\le k - 1\big).
+$$
+So, for instance, the third order statistic (i.e., where $r = 3$) is
+$$
+  \Pr\big(X_{(3)} \le k\big)
+  =
+  \sum_{i = 3}^{10}\binom{10}{i}\left(\frac{k}{6}\right)^{i}\left(1 - \frac{k}{6}\right)^{10 - i},
+  \quad
+  \Pr\big(X_{(3)} = k\big) 
+  = 
+  \Pr\big(X_{(3)}\le k\big) - \Pr\big(X_{(3)}\le k - 1\big).
+$$
 :::
+
+```{r}
+# Replicate many sets of 10 rolls of a die
+rolls_In_Set <- 10
+num_Sims <- 5000
+
+rolls <- sample( x = 1:6,
+                 size = rolls_In_Set * num_Sims,
+                 replace = TRUE)
+                 
+rolls <- matrix(data = rolls,
+                nrow = num_Sims)
+
+# Find the minimum in each row (i.e., each set of 10 rolls)
+min_Roll <- apply(rolls,
+                  MARGIN = 1,
+                  FUN = "min")
+
+barplot(table(min_Roll)/num_Sims,
+        main = "The distribution of the minimum\n roll, in sets of 10 rolls",
+        xlab = "Minimum roll in 10 rolls",
+        ylab = "Proportion",
+        las = 1)
+
+```
 
 
 ## Joint distribution
