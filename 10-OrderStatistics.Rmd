@@ -778,7 +778,7 @@ $$
   = 
   \begin{cases}
     0                   & \text{for $x < 1$}\\
-    \lfloor x/6 \rfloor & \text{for $1 \le x \le 6$}\\
+    \lfloor x \rfloor/6 & \text{for $1 \le x \le 6$}\\
     1                   & \text{for $x > 6$.}
   \end{cases}
 $$
@@ -789,22 +789,24 @@ Then the distribution function for the minimum $X_{(1)}$ is
   &= \big[1 - F_X(k - 1)\big]^{10} \\
   &= 
   \begin{cases}
-    0 & \text{for $x < 1$}\\
-    \displaystyle 1 - \left[1 -\frac{\lfloor{x}\rfloor}{6}\right]^{10} & \text{for $1 \le x\le 6$}\\
-    1 & \text{for $x > 6$}
+    0 & \text{for $k < 1$}\\
+    \displaystyle 1 - \left[1 -\frac{\lfloor{k - 1}\rfloor}{6}\right]^{10} & \text{for $1 \le k\le 6$}\\
+    1 & \text{for $k > 6$}
   \end{cases}
 \end{align*}
-If we focus on the integer outcomes only,
-$$
+for $1 \le k\le 6$.
+If we focus on the distribution function at *integer outcomes* only,
+\begin{align*}
   F_{X_{(1)}}(x) 
-  = 
-  1 - \left(\frac{7 - x}{6}\right)^{10} \qquad\text{at $x = 1, 2\dots, 6$}.
+  &= 
+  1 - \Pr\big(X_{(1)} \ge k\big)\\
+  &= 
+  \left(\frac{6 - x}{6}\right)^{10} \qquad\text{at $x = 1, 2\dots, 6$}.
+\end{align*}
+Hence the probability mass function (for $k = 1, \dots, 6$) is:
 $$
-Hence the pmfs (for $k=1,\dots,6$):
-$$
-  \Pr\left(X_{(1)} = k\right) = \left(\frac{7-k}{6}\right)^{10} - \left(\frac{6-k}{6}\right)^{10},
-  \qquad
-  \Pr\left(X_{(10)} = k\right) = \left(\frac{k}{6}\right)^{10} - \left(\frac{k-1}{6}\right)^{10}.
+  \Pr\left(X_{(1)} = k\right) 
+  = \left(\frac{7 - k}{6}\right)^{10} - \left(\frac{6 - k}{6}\right)^{10},
 $$
 
 The general $r$-th order statistic $X_{(r)}$, for $r\in\{1,\dots,10\}$ and $k\in\{1,\dots,6\}$, has ????
@@ -823,7 +825,9 @@ $$
   \Pr\big(X_{(3)} \le k\big)
   =
   \sum_{i = 3}^{10}\binom{10}{i}\left(\frac{k}{6}\right)^{i}\left(1 - \frac{k}{6}\right)^{10 - i},
-  \quad
+$$
+nd
+$$
   \Pr\big(X_{(3)} = k\big) 
   = 
   \Pr\big(X_{(3)}\le k\big) - \Pr\big(X_{(3)}\le k - 1\big).
@@ -831,6 +835,7 @@ $$
 :::
 
 ```{r}
+set.seed(62004)
 # Replicate many sets of 10 rolls of a die
 rolls_In_Set <- 10
 num_Sims <- 5000
@@ -846,12 +851,27 @@ rolls <- matrix(data = rolls,
 min_Roll <- apply(rolls,
                   MARGIN = 1,
                   FUN = "min")
+min_Roll <- factor(min_Roll, 
+                   levels = c(1:6))
 
-barplot(table(min_Roll)/num_Sims,
-        main = "The distribution of the minimum\n roll, in sets of 10 rolls",
-        xlab = "Minimum roll in 10 rolls",
-        ylab = "Proportion",
-        las = 1)
+### Theoretical
+k <- 1:6
+CDF <- c(0,
+         1 - ((6 - k)/6)^10)
+PDF <- diff(CDF)
+
+### Graph
+out <- barplot(table(min_Roll)/num_Sims,
+               xlim = c(0, 7),
+               main = "The distribution of the minimum\n roll, in sets of 10 rolls",
+               xlab = "Minimum roll in 10 rolls", 
+               ylab = "Proportion",
+               las = 1)
+
+points( y = PDF, 
+        x = out,
+        pch = 19)
+round(PDF, 3)
 
 ```
 
