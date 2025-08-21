@@ -97,7 +97,7 @@ for $x \in R_X$.
 
 
 :::{.definition #OrderStatsMaximumDistn name="Distribution of the maximum value"}
-Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
+Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a continuous distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
 Then the distribution function for the maximum value (order statistic $X_{(n)}$) is
 $$
    F_{X_{(n)}}(x) = 
@@ -275,7 +275,7 @@ for $x \in R_X$.
 
 
 :::{.definition #OrderStatsMinimumDistn name="Distribution of the minimum value"}
-Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
+Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a continuous distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
 Then the distribution function for the minimum value (order statistic $X_{(1)}$) is
 $$
    F_{(X_1)}(x) = 1 - [1 - F_X(x)]^{n}
@@ -449,8 +449,8 @@ $$
 for $n > k \ge 1$ and\ $n$ and\ $k$ are integers.
 
 
-:::{.definition #OrderStatsDistn name="Distribution of an order statistic"}
-Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
+:::{.definition #OrderStatsDistn name="Distribution of an order statistic: continuous rv"}
+Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a continuous distribution with density function $f_X(x)$ and distribution function $F_X(x)$.
 Then the distribution function for the $k$th order statistic $X_{(k)}$ is
 \begin{equation}
   F_{X_{(k)}}(x) = \Pr(X_{(k)}\le x) 
@@ -466,9 +466,6 @@ is:
 \end{equation}
 where $n > k > 0$ and\ $n$ and\ $k$ are integers.
 :::
-
-
-
 
 
 ::: {.example #UniformkOrderStats name="Uniform distribution: other order statistics"}
@@ -535,8 +532,6 @@ MASS::truehist(samples6,
 lines( os6(x_Plot) ~ x_Plot,
        lwd = 2)
 ```
-
-
 
 
 :::{.example #ServerRoom name="Air conditioner servicing"}
@@ -630,24 +625,25 @@ $$
 proves helpful in what follows (see Fig.\ \@ref(fig:OrderStatsDiscreteDefine)).
 
 
-```{r OrderStatsDiscreteDefine, echo=FALSE, fig.align="center", fig.cap="Explaining the meaning of $F_X(x^-)$.", fig.width=8, fig.height=4, out.width="90%"}
+```{r OrderStatsDiscreteDefine, echo=FALSE, fig.align="center", fig.cap="Explaining the meaning of $F_X(a^-)$.", fig.width=8, fig.height=4, out.width="90%"}
 
 
-plot( x = c(-1.25, 1.25),
-      y = c(-0.25, 1.25),
+par(mar = c(5, 5, 4, 1) + 0.1) # Left side: more space
+plot( x = c(-2.25, 1.25),
+      y = c(-1.25, 1.25),
       type = "n",
       axes = FALSE,
       xlab = expression(Values~of~italic(X)),
-      ylab = expression(italic(F)[italic(X)](italic(x)))
+      ylab = "Distribution function\n"
       )
 axis(side = 2,
      at = c(1, 0),
      las = 1,
-     label = c( expression(italic(F)[italic(X)](italic(x))),
-                expression(italic(F)[italic(X)](italic(x^"\u2013"))) ) )
+     label = c( expression(italic(F)[italic(X)](italic(a))),
+                expression(italic(F)[italic(X)](italic(a^"\u2013"))) ) )
 axis(side = 1,
      at = 0,
-     label = expression(italic(x)) )
+     label = expression(italic(a)) )
 box()
 
 abline(v = 0,
@@ -659,8 +655,12 @@ abline(v = 0,
 lines( x = c( -1, 0),
        y = c(0, 0),
        lwd = 3)
-lines( x = c( -1, -1.25),
-       y = c(0, 0),
+lines( x = c( -2, -1),
+       y = c(-1, -1),
+       lwd = 3)
+
+lines( x = c( -2, -2.25),
+       y = c(-1, -1),
        lwd = 3,
        lty = 2)
 
@@ -668,6 +668,10 @@ points(x = 0,
        y = 0,
        cex = 1.25,
        pch = 1)  # Open circle
+points(x = -1,
+       y = 0,
+       cex = 1.25,
+       pch = 19)  # Closed circle
 
 # Right side
 lines( x = c( 0, 1),
@@ -682,6 +686,10 @@ points(x = 0,
        y = 1,
        cex = 1.25,
        pch = 19)  # Closed circle
+points(x = -1,
+       y = -1,
+       cex = 1.25,
+       pch = 1)  # Open circle
 
 # Explanatory info
 arrows( x0 = -0.5,
@@ -692,7 +700,7 @@ arrows( x0 = -0.5,
         length = 0.15)
 text(x = -0.5,
      y = 0.9,
-     label = expression(italic(F)[italic(X)](italic(x))),
+     label = expression(italic(F)[italic(X)](italic(a))),
      pos = 2)
 
 arrows( x0 = 0.5,
@@ -703,7 +711,7 @@ arrows( x0 = 0.5,
         length = 0.15)
 text(x = 0.5,
      y = 0.1,
-     label = expression(italic(F)[italic(X)](italic(x^"\u2013"))), #\u2013 is en-dash; \u2014 is em-dash
+     label = expression(italic(F)[italic(X)](italic(a^"\u2013"))), #\u2013 is en-dash; \u2014 is em-dash
      pos = 4)
 
 ```
@@ -739,30 +747,48 @@ $$
 $$
 Then
 \begin{align*}
-F_{X_{(k)}}(x)
+  F_{X_{(k)}}(x)
   &= \Pr\bigl(X_{(k)} \le x\bigr)
    = \Pr(Y \ge k) \\
-  &= \sum_{i=k}^n \binom{n}{i}\,[F_X(x)]^{i}\,[1-F_X(x)]^{\,n-i}.
+  &= \sum_{i = k}^n \binom{n}{i}\,F_X(x)^{i}\,[1 - F_X(x)]^{\,n - i}.
 \end{align*}
-
 
 For a discrete random variable\ $X$, the probability mass function is how much the distributions function 'jumps' at the values of\ $x$.
 So, the probability mass function for $X_{(k)}$ can be found from the distribution function as
-\begin{align}
+\begin{align*}
   p_{X_{(k)}}(x)
-    &= \Pr\bigl(X_{(k)}=x\bigr)
-     = F_{X_{(k)}}(x) - F_{X_{(k)}}(x^-) \notag\\
+    &= \Pr\bigl(X_{(k)}=x\bigr)\\
+    &= F_{X_{(k)}}(x) - F_{X_{(k)}}(x^-) \notag\\
     &= \sum_{i=k}^n \binom{n}{i}\,[F_X(x)]^{i}\,[1-F_X(x)]^{\,n-i}
      \;- \notag\\
     &\qquad \qquad
-       \sum_{i=k}^n \binom{n}{i}\,[F_X(x^-)]^{i}\,[1-F_X(x^-)]^{\,n-i}.
-       (\#eq:OrderStatsDiscrete)
-\end{align}
+       \sum_{i = k}^n \binom{n}{i}\,[F_X(x^-)]^{i}\,[1 - F_X(x^-)]^{\,n - i}.
+\end{align*}
 
 
+:::{.definition #OrderStatsDistn name="Distribution of an order statistic: discrete rv"}
+Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a discrete distribution with probability mass function $f_X(x)$ and distribution function $F_X(x)$.
+Then the distribution function for the $k$th order statistic $X_{(k)}$ is
+\begin{equation}
+  F_{X_{(k)}}(x) 
+  = \Pr\bigl(X_{(k)} \le x\bigr)
+  = \sum_{i = k}^n \binom{n}{i}\,[F_X(x)]^{i}\,[1 - F_X(x)]^{\,n - i}
+  (\#eq:OrderStatisticDFdiscrete)
+\end{equation}
+and the density function of the $k$th order statistic $X_{(k)}$ is:
+\begin{equation}
+  p_X(x) 
+    = \sum_{i=k}^n \binom{n}{i}\,[F_X(x)]^{i}\,[1-F_X(x)]^{\,n-i}
+     \;-
+       \sum_{i = k}^n \binom{n}{i}\,[F_X(x^-)]^{i}\,[1 - F_X(x^-)]^{\,n - i}.
+   (\#eq:OrderStatisticPMF)
+\end{equation}
+where $n > k > 0$ and\ $n$ and\ $k$ are integers.
+:::
 
-:::{.example #DiscreteOrderStatsDice name="Rolling a fair die"}  
-Suppose a fair die is rolled $n = 10$ times, and the number appearing is recorded is denoted by\ $X$.
+
+:::{.example #DiscreteOrderStatsDiceMin name="Rolling a fair die"}  
+Suppose a fair die is rolled $n = 10$ times, and the number\ $X$ appearing is recorded.
 Then $X \sim\text{Unif}(1, 6)$ and so
 $$
   p_X(x)
@@ -806,45 +832,36 @@ If we focus on the distribution function at *integer outcomes* only,
 Hence the probability mass function (for $k = 1, \dots, 6$) is:
 $$
   \Pr\left(X_{(1)} = k\right) 
-  = \left(\frac{7 - k}{6}\right)^{10} - \left(\frac{6 - k}{6}\right)^{10},
+  = \left(\frac{7 - k}{6}\right)^{10} - \left(\frac{6 - k}{6}\right)^{10}.
 $$
+These can be computed in **R**, then plotted (the dots in Fig.\ \@ref(fig:OrderStatsDiscreteExample)):
 
-The general $r$-th order statistic $X_{(r)}$, for $r\in\{1,\dots,10\}$ and $k\in\{1,\dots,6\}$, has ????
-$$
-  \Pr\big(X_{(r)} \le k\big)
-  = \sum_{i = r}^{10} \binom{10}{i}\,\left(\frac{k}{6}\right)^{i}\,\left(1 - \frac{k}{6}\right)^{10 - i},
-$$
-and the pmf is the discrete difference
-$$
-  \Pr\big(X_{(r)} =  k\big) 
-  =
-  \Pr\big(X_{(r)}\le k\big) - \Pr\big(X_{(r)}\le k - 1\big).
-$$
-So, for instance, the third order statistic (i.e., where $r = 3$) is
-$$
-  \Pr\big(X_{(3)} \le k\big)
-  =
-  \sum_{i = 3}^{10}\binom{10}{i}\left(\frac{k}{6}\right)^{i}\left(1 - \frac{k}{6}\right)^{10 - i},
-$$
-nd
-$$
-  \Pr\big(X_{(3)} = k\big) 
-  = 
-  \Pr\big(X_{(3)}\le k\big) - \Pr\big(X_{(3)}\le k - 1\big).
-$$
-:::
 
-```{r}
-set.seed(62004)
+```{r OrderStatsDiscreteExampleSetupTheory}
+### Theoretical probabilities
+k <- 1:6
+CDF <- c(0,
+         1 - ((6 - k)/6)^10)
+round(CDF, 4)
+
+PMF <- diff(CDF)
+round(PMF, 4)
+```
+
+The situation can be simulated and plotted also (the bars in Fig.\ \@ref(fig:OrderStatsDiscreteExample)): 
+
+```{r OrderStatsDiscreteExampleSetupSim}
+set.seed(62004) # For reproducibility
 
 # Replicate many sets of 10 rolls of a die
-rolls_In_Set <- 10
-num_Sims <- 5000
+rolls_In_Set <- 10  # Sets f 10 rolls
+num_Sims <- 5000    # Number of simulations
 
 rolls <- sample( x = 1:6,
                  size = rolls_In_Set * num_Sims,
                  replace = TRUE)
                  
+# Arrange each set of 10 as a row 
 rolls <- matrix(data = rolls,
                 nrow = num_Sims)
 
@@ -854,25 +871,62 @@ min_Roll <- apply(rolls,
                   FUN = "min")
 min_Roll <- factor(min_Roll, 
                    levels = c(1:6))
+```
+:::
 
-### Theoretical
-k <- 1:6
-CDF <- c(0,
-         1 - ((6 - k)/6)^10)
-PDF <- diff(CDF)
+
+:::{.example #DiscreteOrderStatsDiceAny name="Rolling a fair die"}  
+Continuing the previous example, the general $r$-th order statistic $X_{(r)}$ is 
+$$
+  F_{X_{(r)}}(x)
+  = \Pr\big(X_{(r)} \le k\big)
+  = \sum_{i = r}^{10} \binom{10}{i}\,\left(\frac{k}{6}\right)^{i}\,\left(1 - \frac{k}{6}\right)^{10 - i},
+$$
+for $k\in\{1,\dots,6\}$.
+The corresponding probability mass function is the discrete difference
+\begin{align*}
+  \Pr\big(X_{(r)} =  k\big) 
+  &=
+  \Pr\big(X_{(r)}\le k\big) - \Pr\big(X_{(r)}\le k - 1\big)\\
+  &= \sum_{i = r}^{10} \binom{10}{i}\,\left(\frac{k}{6}\right)^{i}\,\left(1 - \frac{k}{6}\right)^{10 - i} -\\
+  &\phantom{={}}
+     \sum_{i = (r - 1)}^{10} \binom{10}{i}\,\left(\frac{k}{6}\right)^{i}\,\left(1 - \frac{k}{6}\right)^{10 - i}\\
+  &=  \binom{10}{r}\,\left(\frac{k}{6}\right)^{r}\,\left(1 - \frac{k}{6}\right)^{10 - r}.
+\end{align*}
+So, for instance, the seventh order statistic (i.e., where $r = 7$) is
+$$
+  \Pr\big(X_{(7)} \le k\big)
+  =
+  \binom{10}{7}\left(\frac{k}{6}\right)^{7}\left(1 - \frac{k}{6}\right)^{10 - 7}
+  =
+  \binom{10}{7}\left(\frac{k}{6}\right)^{7}\left(\frac{6 - k}{6}\right)^{3}.
+$$
+CHECK; SIMULATE!!!!!!!!!!!
+:::
+
+
+
+
+
+```{r OrderStatsDiscreteExample, echo=FALSE, fig.align="center", fig.cap="The distribution of the first order statistic (the minimum roll), in sets of $10$\\ rolls. The bars show the values from $5000$ simulated sets of $10$\\ rolls ; the solid dots are the theoretical values.", fig.width=8, fig.height=4, out.width="90%"}
+
+<<OrderStatsDiscreteExampleSetupTheory>>
+<<OrderStatsDiscreteExampleSetupSim>>
 
 ### Graph
 out <- barplot(table(min_Roll)/num_Sims,
                xlim = c(0, 7),
+               ylim = c(0, 0.9),
                main = "The distribution of the minimum\n roll, in sets of 10 rolls",
                xlab = "Minimum roll in 10 rolls", 
                ylab = "Proportion",
+               col = plotColour1,
                las = 1)
 
-points( y = PDF, 
+points( y = PMF, 
         x = out,
+        cex = 1.25,
         pch = 19)
-round(PDF, 3)
 
 ```
 
