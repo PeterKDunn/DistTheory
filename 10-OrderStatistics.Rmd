@@ -768,21 +768,26 @@ So, the probability mass function for $X_{(k)}$ can be found from the distributi
 
 :::{.definition #OrderStatsDistn name="Distribution of an order statistic: discrete rv"}
 Consider a sample of size\ $n$, say $X_1, X_2, \dots, X_n$, with all $X_i$ drawn independently from a discrete distribution with probability mass function $f_X(x)$ and distribution function $F_X(x)$.
-Then the distribution function for the $k$th order statistic $X_{(k)}$ is
+Then the distribution function of the $k$th order statistic $X_{(k)}$ is
 \begin{equation}
   F_{X_{(k)}}(x) 
-  = \Pr\bigl(X_{(k)} \le x\bigr)
-  = \sum_{i = k}^n \binom{n}{i}\,[F_X(x)]^{i}\,[1 - F_X(x)]^{\,n - i}
+  = \Pr\big(X_{(k)} \le x\big)
+  = \sum_{i = k}^n \binom{n}{i}\, F_X(x)^{i}\,[1 - F_X(x)]^{n - i}
   (\#eq:OrderStatisticDFdiscrete)
 \end{equation}
-and the density function of the $k$th order statistic $X_{(k)}$ is:
-\begin{equation}
-  p_X(x) 
-    = \sum_{i=k}^n \binom{n}{i}\,[F_X(x)]^{i}\,[1-F_X(x)]^{\,n-i}
-     \;-
-       \sum_{i = k}^n \binom{n}{i}\,[F_X(x^-)]^{i}\,[1 - F_X(x^-)]^{\,n - i}.
+The probability mass function of the $k$th order statistic $X_{(k)}$ at integer values of\ $x\in R$ is:
+\begin{align*}
+  p_{X_{(k)}}(x) 
+  &= F_{X_{(k)}}(x) - F_{X_{(k)}}(x^-)\notag \\
+  &= \sum_{i = k}^n 
+         \binom{n}{i}
+         \left\{
+           F_X(x)^{i}\,[1 - F_X(x)]^{\,n - i} 
+           -
+           F_X(x^-)^{i}\,[1 - F_X(x^-)]^{\,n - i}
+         \right\}
    (\#eq:OrderStatisticPMF)
-\end{equation}
+\end{align*}
 where $n > k > 0$ and\ $n$ and\ $k$ are integers.
 :::
 
@@ -876,36 +881,72 @@ min_Roll <- factor(min_Roll,
 
 
 :::{.example #DiscreteOrderStatsDiceAny name="Rolling a fair die"}  
-Continuing the previous example, the general $r$-th order statistic $X_{(r)}$ is 
+Continuing the previous example, the general $k$-th order statistic $X_{(k)}$ is 
 $$
-  F_{X_{(r)}}(x)
-  = \Pr\big(X_{(r)} \le k\big)
-  = \sum_{i = r}^{10} \binom{10}{i}\,\left(\frac{k}{6}\right)^{i}\,\left(1 - \frac{k}{6}\right)^{10 - i},
+  F_{X_{(k)}}(x)
+  = \Pr\big(X_{(k)} \le x\big)
+  = \sum_{i = k}^{10} \binom{10}{i}\,\left(\frac{x}{6}\right)^{i}\,\left(1 - \frac{x}{6}\right)^{10 - i},
 $$
-for $k\in\{1,\dots,6\}$.
-The corresponding probability mass function is the discrete difference
+for $x\in\{1,\dots,6\}$.
+
+Since, for dice, the outcomes from rolling are consecutive integers, $x^- = x - 1$, the corresponding probability mass function is found using the discrete difference
 \begin{align*}
-  \Pr\big(X_{(r)} =  k\big) 
+  \Pr\big(X_{(k)} =  x\big) 
   &=
-  \Pr\big(X_{(r)}\le k\big) - \Pr\big(X_{(r)}\le k - 1\big)\\
-  &= \sum_{i = r}^{10} \binom{10}{i}\,\left(\frac{k}{6}\right)^{i}\,\left(1 - \frac{k}{6}\right)^{10 - i} -\\
-  &\phantom{={}}
-     \sum_{i = (r - 1)}^{10} \binom{10}{i}\,\left(\frac{k}{6}\right)^{i}\,\left(1 - \frac{k}{6}\right)^{10 - i}\\
-  &=  \binom{10}{r}\,\left(\frac{k}{6}\right)^{r}\,\left(1 - \frac{k}{6}\right)^{10 - r}.
+  \Pr\big(X_{(k)}\le x\big) - \Pr\big(X_{(k)}\le x - 1\big)\\
+  &= \sum_{i = k}^{10} \binom{10}{i}
+     \left\{\left(\frac{x}{6}\right)^{i}\,\left(1 - \frac{x}{6}\right)^{10 - i} - \right.\\
+  &\phantom{={}\sum_{i = k}^{10} \binom{10}{i}\Huge\{}
+     \left.\left(\frac{x - 1}{6}\right)^{i}\,\left(1 - \frac{x - 1}{6}\right)^{10 - i}\right\}
 \end{align*}
-So, for instance, the seventh order statistic (i.e., where $r = 7$) is
+So, for instance, the seventh order statistic (i.e., where $k = 7$) is
 $$
-  \Pr\big(X_{(7)} = k\big)
+  \Pr\big(X_{(7)} = x\big)
   =
-  \binom{10}{7}\left(\frac{k}{6}\right)^{7}\left(1 - \frac{k}{6}\right)^{10 - 7}
-  =
-  \binom{10}{7}\left(\frac{k}{6}\right)^{7}\left(\frac{6 - k}{6}\right)^{3}.
+  \sum_{i = 7}^{10} \binom{10}{i}
+     \left\{\left(\frac{x}{6}\right)^{i}\,\left(1 - \frac{x}{6}\right)^{10 - i} 
+     -
+            \left(\frac{x - 1}{6}\right)^{i}\,\left(1 - \frac{x - 1}{6}\right)^{10 - i}\right\}
 $$
-CHECK; SIMULATE!!!!!!!!!!!
+for $x\in\{ 1, 2, 3, 4, 5, 6\}$.
+
+
+```{r}
+# Simulation, using  rolls  from the last Example
+Order_Stats_7 <- apply( rolls,
+                        MARGIN = 1, # i.e., across rows
+                        FUN = function(x){ sort(x)[7]} )
+
+Order_Stats_7 <- factor(Order_Stats_7, 
+                        levels = c(1:6))
+
+out <- barplot(table(Order_Stats_7)/num_Sims,
+               xlim = c(0, 7),
+               ylim = c(0, 0.5),
+               main = expression( atop(The~distribution~of~the~seventh,
+                                       order~statistic,~"in"~sets~of~10~rolls) ),
+               xlab = expression(italic(X)[(7)]), 
+               ylab = "Proportion",
+               col = plotColour1,
+               las = 1)
+
+# THEORY
+x_Index <- 1:6
+i <- 7:10
+DF <- array( dim = 6)
+
+for (x in seq_along(x_Index)){
+   DF[x] <- sum( choose(10, i) *
+                 (x/6)^i * ( (1 - (i/6)))^(10 - i) )
+}
+
+PMF <- diff( c(0, DF) )
+points( x = out,
+        y = PMF,
+        pch = 19,
+        cex = 1.25)
+```
 :::
-
-
-
 
 
 ```{r OrderStatsDiscreteExample, echo=FALSE, fig.align="center", fig.cap="The distribution of the first order statistic (the minimum roll), in sets of $10$\\ rolls. The bars show the values from $5000$ simulated sets of $10$\\ rolls ; the solid dots are the theoretical values.", fig.width=8, fig.height=4, out.width="90%"}
