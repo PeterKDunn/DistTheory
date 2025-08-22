@@ -623,9 +623,10 @@ $$
    F_X(x^-) = \lim_{t \uparrow x} F_X(t) = \Pr(X < x).
 $$
 proves helpful in what follows (see Fig.\ \@ref(fig:OrderStatsDiscreteDefine)).
+For discrete random variables defined over consecutive integers, $x^- = x - 1$. 
 
 
-```{r OrderStatsDiscreteDefine, echo=FALSE, fig.align="center", fig.cap="Explaining the meaning of $F_X(a^-)$.", fig.width=8, fig.height=4, out.width="90%"}
+```{r OrderStatsDiscreteDefine, echo=FALSE, fig.align="center", fig.cap="Explaining the meaning of $F_X(b^-)$.", fig.width=8, fig.height=4, out.width="90%"}
 
 
 par(mar = c(5, 5, 4, 1) + 0.1) # Left side: more space
@@ -639,11 +640,12 @@ plot( x = c(-2.25, 1.25),
 axis(side = 2,
      at = c(1, 0),
      las = 1,
-     label = c( expression(italic(F)[italic(X)](italic(a))),
-                expression(italic(F)[italic(X)](italic(a^"\u2013"))) ) )
+     label = c( expression(italic(F)[italic(X)](italic(b))),
+                expression(italic(F)[italic(X)](italic(a))) ) )
 axis(side = 1,
-     at = 0,
-     label = expression(italic(a)) )
+     at = c(-1, 0),
+     label = c( expression(italic(a)),
+                expression(italic(b)) ) )
 box()
 
 abline(v = 0,
@@ -691,27 +693,35 @@ points(x = -1,
        cex = 1.25,
        pch = 1)  # Open circle
 
+
+# Guiding lines
+abline( h = c(-1, 0, 1),
+        lty = 3,
+        col = "grey")
+
 # Explanatory info
-arrows( x0 = -0.5,
-        x1 = -0.05,
-        y0 = 0.9,
+Gap <- 0.1
+
+arrows( x0 = -0.25 - Gap,
+        x1 = 0 - Gap,
+        y0 = 1,
         y1 = 1,
         angle = 15,
         length = 0.15)
-text(x = -0.5,
+text(x = -0.25 - Gap,
      y = 0.9,
-     label = expression(italic(F)[italic(X)](italic(a))),
+     label = expression(italic(F)[italic(X)](italic(b))),
      pos = 2)
 
-arrows( x0 = 0.5,
-        x1 = 0.05,
-        y0 = 0.1,
+arrows( x0 = 0.25 + Gap,
+        x1 = 0 + Gap,
+        y0 = 0,
         y1 = 0,
         angle = 15,
         length = 0.15)
-text(x = 0.5,
-     y = 0.1,
-     label = expression(italic(F)[italic(X)](italic(a^"\u2013"))), #\u2013 is en-dash; \u2014 is em-dash
+text(x = 0.25 + Gap,
+     y = 0,
+     label = expression(italic(F)[italic(X)](italic(b^"\u2013"))), #\u2013 is en-dash; \u2014 is em-dash
      pos = 4)
 
 ```
@@ -821,9 +831,9 @@ min_Roll <- factor(min_Roll,
                    levels = c(1:6))
 ```
 
-This means that, for example, is a set of $10$\ rolls, the probability that the minimum roll is a two is about
+For example, this means that in a set of $10$\ rolls, the probability that the minimum roll is a two is about
 $$
-  \Pr( X_{(7)})(X = 2) \approx 0.1442 =  14\%.
+  \Pr( X_{(7)})(X = 2) \approx 0.14 =  14\%.
 $$
 :::
 
@@ -963,7 +973,7 @@ PMF <- diff( c(0, DF) )
 round(PMF, 3)
 ```
 
-This means that, for example, is a set of $10$\ rolls, the probability that the seventh smallest roll is a two is about
+For example, this means that, in a set of $10$\ rolls, the probability that the seventh smallest roll is a two is about
 $$
   \Pr( X_{(7)})(X = 2) \approx 0.019 = 1.9\%.
 $$
@@ -978,9 +988,10 @@ par( mfrow = c(1, 2))
 <<OrderStatsDiscreteExampleSetupSim>>
 
 ### Graph
+min_Y <- -0.05  # Allows room for dots to fully appear near y=0
 out <- barplot(table(min_Roll)/num_Sims,
                xlim = c(0, 7),
-               ylim = c(0, 0.9),
+               ylim = c(min_Y, 0.95),
                main = expression( atop(The~distribution~of~the~minimum,
                                        roll~"in"~sets~of~10~rolls)),
                xlab = "Minimum roll in set of 10 rolls", 
@@ -997,7 +1008,7 @@ points( y = PMF,
 <<OrderStatsDiscrete10thSim>>
 out <- barplot(table(Order_Stats_7)/num_Sims,
                xlim = c(0, 7),
-               ylim = c(0, 0.4),
+               ylim = c(min_Y, 0.45),
                main = expression( atop(The~distribution~of~the~seventh,
                                        order~statistic~"in"~sets~of~10~rolls) ),
                xlab = expression(italic(X)[(7)]~"in"~sets~of~10~rolls), 
@@ -1010,18 +1021,6 @@ points( x = out,
         cex = 1.25)
 
 ```
-
-
-## Joint distribution
-
-$$
- f_{X_{(1)}, X_{(2)}, \dots, X_{(n)}}(x_1, x_2, \dots, x_n)  
- =
- \begin{cases}
-    n !\, f_{X_{(1)}} \times f_{X_{(2)}}\times \cdots \times f_{X_{(n)}} & \text{for $x_{(1)} < x_{(2)} < \cdots < x_{(n)}$}\\
-    0 & \text{elsewhere}
- \end{cases}
-$$
 
 
 ## Finishing up...
