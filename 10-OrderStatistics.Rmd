@@ -734,6 +734,100 @@ The probability mass function is the probability that all observations are at le
 \end{align*}
 
 
+:::{.example #DiscreteOrderStatsDiceMin name="Rolling a fair die: minimum"}  
+Suppose a fair die is rolled $n = 10$ times, and the number\ $X$ that appears on each roll is recorded.
+Then $X \sim\text{Unif}(1, 6)$ and so
+$$
+  p_X(x)
+  = 
+  \begin{cases}
+    1/6 & \text{for $x = 1, 2, \dots 6$}\\
+    0   & \text{elsewhere}
+  \end{cases}
+  \qquad
+  \text{and}
+  \qquad
+  F_X(x)
+  = 
+  \begin{cases}
+    0                   & \text{for $x < 1$}\\
+    \lfloor x \rfloor/6 & \text{for $1 \le x \le 6$}\\
+    1                   & \text{for $x > 6$.}
+  \end{cases}
+$$
+
+Then the distribution function for the minimum value (i.e., $X_{(1)}$) is
+\begin{align*}
+  \Pr\big(X_{(1)} \le x\big) 
+  &= \big[1 - F_X(x - 1)\big]^{10} \\
+  &= 
+  \begin{cases}
+    0 & \text{for $x < 1$}\\
+    \displaystyle 1 - \left[1 -\frac{\lfloor{x}\rfloor}{6}\right]^{10} & \text{for $1 \le x\le 6$}\\
+    1 & \text{for $x > 6$}
+  \end{cases}
+\end{align*}
+for $1 \le x\le 6$.
+If we focus on the distribution function at *integer outcomes* only,
+$$
+  F_{X_{(1)}}(x) 
+  = 
+  1 - \left(\frac{6 - x}{6}\right)^{10} \qquad\text{at $x = 1, 2\dots, 6$}.
+$$
+Since, for dice, the outcomes from rolling are consecutive integers, $x^- = x - 1$; hence, the corresponding probability mass function is:
+$$
+  \Pr\left(X_{(1)} = s\right) 
+  = \left(\frac{6 - x}{6}\right)^{10} - \left(\frac{5 - x}{6}\right)^{10}
+  \quad
+  \text{for $x = 1, \dots, 6$.}
+$$
+These can be computed in **R**, then plotted (the dots in Fig.\ \@ref(fig:OrderStatsDiscreteExample), left panel):
+
+
+```{r OrderStatsDiscreteExampleSetupTheory}
+### THEORETICAL
+x <- 1:6
+CDF <- c(0,
+         1 - ((6 - x)/6)^10)
+round(CDF, 4)
+
+PMF <- diff(CDF)
+round(PMF, 4)
+```
+
+The situation can be simulated and plotted also (the bars in Fig.\ \@ref(fig:OrderStatsDiscreteExample), left panel): 
+
+```{r OrderStatsDiscreteExampleSetupSim}
+### SIMULATION
+set.seed(62004) # For reproducibility
+
+# Replicate many sets of 10 rolls of a die
+rolls_In_Set <- 10  # Sets f 10 rolls
+num_Sims <- 5000    # Number of simulations
+
+rolls <- sample( x = 1:6,
+                 size = rolls_In_Set * num_Sims,
+                 replace = TRUE)
+                 
+# Arrange each set of 10 as a row 
+rolls <- matrix(data = rolls,
+                nrow = num_Sims)
+
+# Find the minimum in each row (i.e., each set of 10 rolls)
+min_Roll <- apply(rolls,
+                  MARGIN = 1,
+                  FUN = "min")
+min_Roll <- factor(min_Roll, 
+                   levels = c(1:6))
+```
+
+This means that, for example, is a set of $10$\ rolls, the probability that the minimum roll is a two is about
+$$
+  \Pr( X_{(7)})(X = 2) \approx 0.1442 =  14\%.
+$$
+:::
+
+
 More generally, for the $k$th order statistic\ $X_{(k)}$ for a discrete random variable\ $X$,  let $X_1, X_2, \dots, X_n$ be i.i.d.\ from a discrete distribution with
 \begin{align*}
   p_X(x)   &= \Pr(X = x);\\
@@ -792,96 +886,11 @@ where $n > k > 0$ and\ $n$ and\ $k$ are integers.
 :::
 
 
-:::{.example #DiscreteOrderStatsDiceMin name="Rolling a fair die"}  
-Suppose a fair die is rolled $n = 10$ times, and the number\ $X$ appearing is recorded.
-Then $X \sim\text{Unif}(1, 6)$ and so
-$$
-  p_X(x)
-  = 
-  \begin{cases}
-    1/6 & \text{for $x = 1, 2, \dots 6$}\\
-    0   & \text{elsewhere}
-  \end{cases}
-  \qquad
-  \text{and}
-  \qquad
-  F_X(x)
-  = 
-  \begin{cases}
-    0                   & \text{for $x < 1$}\\
-    \lfloor x \rfloor/6 & \text{for $1 \le x \le 6$}\\
-    1                   & \text{for $x > 6$.}
-  \end{cases}
-$$
-
-Then the distribution function for the minimum $X_{(1)}$ is
-\begin{align*}
-  \Pr\big(X_{(1)} \ge k\big) 
-  &= \big[1 - F_X(k - 1)\big]^{10} \\
-  &= 
-  \begin{cases}
-    0 & \text{for $k < 1$}\\
-    \displaystyle 1 - \left[1 -\frac{\lfloor{k - 1}\rfloor}{6}\right]^{10} & \text{for $1 \le k\le 6$}\\
-    1 & \text{for $k > 6$}
-  \end{cases}
-\end{align*}
-for $1 \le k\le 6$.
-If we focus on the distribution function at *integer outcomes* only,
-\begin{align*}
-  F_{X_{(1)}}(x) 
-  &= 
-  1 - \Pr\big(X_{(1)} \ge k\big)\\
-  &= 
-  \left(\frac{6 - x}{6}\right)^{10} \qquad\text{at $x = 1, 2\dots, 6$}.
-\end{align*}
-Hence the probability mass function (for $k = 1, \dots, 6$) is:
-$$
-  \Pr\left(X_{(1)} = k\right) 
-  = \left(\frac{7 - k}{6}\right)^{10} - \left(\frac{6 - k}{6}\right)^{10}.
-$$
-These can be computed in **R**, then plotted (the dots in Fig.\ \@ref(fig:OrderStatsDiscreteExample)):
 
 
-```{r OrderStatsDiscreteExampleSetupTheory}
-### Theoretical probabilities
-k <- 1:6
-CDF <- c(0,
-         1 - ((6 - k)/6)^10)
-round(CDF, 4)
-
-PMF <- diff(CDF)
-round(PMF, 4)
-```
-
-The situation can be simulated and plotted also (the bars in Fig.\ \@ref(fig:OrderStatsDiscreteExample)): 
-
-```{r OrderStatsDiscreteExampleSetupSim}
-set.seed(62004) # For reproducibility
-
-# Replicate many sets of 10 rolls of a die
-rolls_In_Set <- 10  # Sets f 10 rolls
-num_Sims <- 5000    # Number of simulations
-
-rolls <- sample( x = 1:6,
-                 size = rolls_In_Set * num_Sims,
-                 replace = TRUE)
-                 
-# Arrange each set of 10 as a row 
-rolls <- matrix(data = rolls,
-                nrow = num_Sims)
-
-# Find the minimum in each row (i.e., each set of 10 rolls)
-min_Roll <- apply(rolls,
-                  MARGIN = 1,
-                  FUN = "min")
-min_Roll <- factor(min_Roll, 
-                   levels = c(1:6))
-```
-:::
-
-
-:::{.example #DiscreteOrderStatsDiceAny name="Rolling a fair die"}  
-Continuing the previous example, the general $k$-th order statistic $X_{(k)}$ is 
+:::{.example #DiscreteOrderStatsDiceAny name="Rolling a fair die: general order statistic"}  
+Continuing Example\ \@ref(exm:DiscreteOrderStatsDiceMin), where a standard six-sided die is rolled $10$\ times.
+The general $k$-th order statistic $X_{(k)}$ is 
 $$
   F_{X_{(k)}}(x)
   = \Pr\big(X_{(k)} \le x\big)
@@ -909,9 +918,10 @@ $$
             \left(\frac{x - 1}{6}\right)^{i}\,\left(1 - \frac{x - 1}{6}\right)^{10 - i}\right\}
 $$
 for $x\in\{ 1, 2, 3, 4, 5, 6\}$.
+These can be computed in **R**, then plotted (the dots in Fig.\ \@ref(fig:OrderStatsDiscreteExample), right panel):
 
-
-```{r}
+```{r OrderStatsDiscrete10thSim}
+### SIMULATED 
 # Simulation, using  rolls  from the last Example
 Order_Stats_7 <- apply( rolls,
                         MARGIN = 1, # i.e., across rows
@@ -919,37 +929,50 @@ Order_Stats_7 <- apply( rolls,
 
 Order_Stats_7 <- factor(Order_Stats_7, 
                         levels = c(1:6))
+table(Order_Stats_7)/num_Sims
+```
 
-out <- barplot(table(Order_Stats_7)/num_Sims,
-               xlim = c(0, 7),
-               ylim = c(0, 0.5),
-               main = expression( atop(The~distribution~of~the~seventh,
-                                       order~statistic,~"in"~sets~of~10~rolls) ),
-               xlab = expression(italic(X)[(7)]), 
-               ylab = "Proportion",
-               col = plotColour1,
-               las = 1)
 
-# THEORY
-x_Index <- 1:6
+The situation can be simulated and plotted also (the bars in Fig.\ \@ref(fig:OrderStatsDiscreteExample), right panel): 
+
+
+
+```{r OrderStatsDiscrete10thTheory}
+### SIMULATED 
+# Simulation, using  rolls  from the last Example
+Order_Stats_7 <- apply( rolls,
+                        MARGIN = 1, # i.e., across rows
+                        FUN = function(x){ sort(x)[7]} )
+
+Order_Stats_7 <- factor(Order_Stats_7, 
+                        levels = c(1:6))
+table(min_Roll)/num_Sims
+
+
+### THEORETICAL
+x_Values <- 1:6
 i <- 7:10
 DF <- array( dim = 6)
 
-for (x in seq_along(x_Index)){
+for (x in seq_along(x_Values)){
    DF[x] <- sum( choose(10, i) *
-                 (x/6)^i * ( (1 - (i/6)))^(10 - i) )
+                 (x/6)^i * ( (1 - (x/6)))^(10 - i) )
 }
 
 PMF <- diff( c(0, DF) )
-points( x = out,
-        y = PMF,
-        pch = 19,
-        cex = 1.25)
+round(PMF, 3)
 ```
+
+This means that, for example, is a set of $10$\ rolls, the probability that the seventh smallest roll is a two is about
+$$
+  \Pr( X_{(7)})(X = 2) \approx 0.019 = 1.9\%.
+$$
 :::
 
 
-```{r OrderStatsDiscreteExample, echo=FALSE, fig.align="center", fig.cap="The distribution of the first order statistic (the minimum roll), in sets of $10$\\ rolls. The bars show the values from $5000$ simulated sets of $10$\\ rolls ; the solid dots are the theoretical values.", fig.width=8, fig.height=4, out.width="90%"}
+```{r OrderStatsDiscreteExample, echo=FALSE, fig.align="center", fig.cap="Left: the distribution of the first order statistic (the minimum roll), in sets of $10$\\ rolls. Right: the distribution of the $7$th order statistic, in sets of $10$\\ rolls. In both cases, the bars show the values from $5\\,000$ simulated sets of $10$\\ rolls, and the solid dots are the theoretical values.", fig.width=8, fig.height=4, out.width="90%", results='hide', echo=FALSE}
+
+par( mfrow = c(1, 2))
 
 <<OrderStatsDiscreteExampleSetupTheory>>
 <<OrderStatsDiscreteExampleSetupSim>>
@@ -958,8 +981,9 @@ points( x = out,
 out <- barplot(table(min_Roll)/num_Sims,
                xlim = c(0, 7),
                ylim = c(0, 0.9),
-               main = "The distribution of the minimum\n roll, in sets of 10 rolls",
-               xlab = "Minimum roll in 10 rolls", 
+               main = expression( atop(The~distribution~of~the~minimum,
+                                       roll~"in"~sets~of~10~rolls)),
+               xlab = "Minimum roll in set of 10 rolls", 
                ylab = "Proportion",
                col = plotColour1,
                las = 1)
@@ -968,6 +992,22 @@ points( y = PMF,
         x = out,
         cex = 1.25,
         pch = 19)
+
+<<OrderStatsDiscrete10thTheory>>
+<<OrderStatsDiscrete10thSim>>
+out <- barplot(table(Order_Stats_7)/num_Sims,
+               xlim = c(0, 7),
+               ylim = c(0, 0.4),
+               main = expression( atop(The~distribution~of~the~seventh,
+                                       order~statistic~"in"~sets~of~10~rolls) ),
+               xlab = expression(italic(X)[(7)]~"in"~sets~of~10~rolls), 
+               ylab = "Proportion",
+               col = plotColour1,
+               las = 1)
+points( x = out,
+        y = PMF,
+        pch = 19,
+        cex = 1.25)
 
 ```
 
