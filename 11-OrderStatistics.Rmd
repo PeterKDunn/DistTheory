@@ -9,8 +9,6 @@ On completion of this chapter, you should be able to:
 * explain how to find the distributions of order statistics.
 * use order statistics in practical problems.
 :::
-:::
-
 
 
 ## Introduction  {#OrderStatisticsIntro}
@@ -27,11 +25,7 @@ $$
 $$
 $X_{(k)}$ is the $k$th order statistic, the $k$th smallest value in a sample.
 
-Important order statistics in a sample of size\ $n$ include:
-
-* the minimum value: $X_{(1)}$.
-* the maximum value: $X_{(n)}$.
-* the range: $X_{(n)} - X_{(1)}$.
+Important order statistics in a sample of size\ $n$ include the minimum value $X_{(1)}$, the maximum value $X_{(n)}$, and the range $X_{(n)} - X_{(1)}$.
 
 The median is also an important order statistic:
 $$
@@ -42,6 +36,15 @@ $$
   \end{cases}
 $$
 In some circumstances, the median for $n$\ even uses a slightly formula.
+
+The inter-quartile range (IQR)index{Inter-quartile range} is also an order statistic:
+$$
+   \text{IQR} 
+   = 
+   X_{(3n/4)} - X_{(n/4 )}.
+$$
+Unless the sample size\ $n$ is a multiple of four, the exact order statistics $X_{(3n/4)}$ and $X_{(n/4 )}$ may not be defined, and in these situation different ways exist to approximate these order statistics.
+
 
 
 :::{.example #OrderedStatisticsMedianOddn name="Median: $n$ odd"}
@@ -1023,10 +1026,59 @@ points( x = out,
 ```
 
 
-## Finishing up...
+## Quantiles and order statistics {#QuantilesOrderStats}
 
-Order statistics are fundamental in probability and statistics. 
-They underlie robust estimation, reliability analysis, and form the basis of many intuitive statistics.
+So far, order statistics have been defined.
+A similar, but different, concept is that of *quantiles*\index{Quantiles{}}
+
+
+For a random variable\ $X$ with distribution function $F_X(x)$, the *$p$-th quantile* $q_p$ is
+$$
+   q_p 
+   = F^{-1}(p) 
+   = \inf \{x \in \mathbb{R} : F(x) \ge p \} \quad \text{for $0 < p < 1$}.
+$$
+Quantiles are fixed values determined by the *distribution*, whereas order statistics are random variables derived from a *finite sample*.
+*Sample quantiles* are typically estimated from the data using order statistics.  
+For example, the sample median is $X_{(\lceil n/2 \rceil)}$ (or an average of two adjacent order statistics when\ $n$ is even).
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+General order statistics in **R** are found by first *sorting* the sample values using `sort()`, and the selecting the relevant values from the result using *indexing*; for example, `sort(x-Values)[3]` selects the *third sorted* value from the sample.  
+
+
+**R** can also find quantiles,\index{Quantiles} using the `quantile()` function.
+`quantile(x, probs)` computes the order statistics specified as probabilities (called *quantiles*)\index{Quantiles} defined in `prob`.
+Generally, the *exact* quantiles cannot be found, and are approximated.
+**R** offers *nine* different methods for approximating quantiles that cannot be exactly defined [@hyndman1996sample].
+:::
+
+
+:::{.example #RQuantiles name="Quantiles in R"}
+
+```{r}
+set.seed(9901) # For reproducibility
+
+x_Sample <- runif(50, 
+                  min = 0, 
+                  max = 1)
+# Place sample observations in order
+x_Sort <- sort(x_Sample)
+
+# Examine first few values:
+head( round( x_Sort, 4) )
+
+# Compute 25th quantiles (first quartile)
+# Using each of the none different methods in R:
+for (method in (1:9)){
+  cat("Method ", method, ": ",
+      round( quantile(x_Sort, 0.25, type = method), 5),
+      "\n",
+      sep = "")
+}
+```
+:::
+
 
 \index{Order statistics|)}
 
