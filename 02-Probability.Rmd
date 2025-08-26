@@ -111,12 +111,12 @@ If the sample space is a finite or countable infinite set, then an event is a co
 Consider the simple random process of tossing a coin twice.
 The [sample space](#def:SampleSpace) is the set
 `r if (knitr::is_latex_output()) {
-   '$$S = \\{ (\\Heads, \\Heads), 
-              (\\Heads, \\Tails),
-              (\\Tails, \\Heads),
+   '$$S = \\{ (\\Heads, \\Heads), \\enskip
+              (\\Heads, \\Tails), \\enskip
+              (\\Tails, \\Heads), \\enskip
               (\\Tails, \\Tails)\\},$$'
 } else {
-'$$S = \\{ (H, H), (H, T), (T, H), (T, T)\\},$$'
+'$$S = \\{ (H, H), \\enskip(H, T), \\enskip (T, H), \\enskip (T, T)\\},$$'
 }`
 where
 `r if (knitr::is_latex_output()) {
@@ -134,10 +134,10 @@ represents tossing a tail, and the pair lists the result of the two tosses *in o
 
 We can define the event $A$ as 'tossing a head on the second toss', and list the elements:
 `r if (knitr::is_latex_output()) {
-   '$$A = \\{ (\\Heads, \\Heads), 
+   '$$A = \\{ (\\Heads, \\Heads), \\enskip
               (\\Tails, \\Heads)\\};$$'
 } else {
-   '$$A = \\{ (H, H), (T, H)\\};$$'
+   '$$A = \\{ (H, H), \\enskip (T, H)\\};$$'
 }`
 notice that $A \subset S$ (i.e., $A$ is a proper subset of\ $S$).
 
@@ -146,8 +146,8 @@ That is, $T = \varnothing$.\index{Empty set}
 :::
 
 
-::: {.definition #ElementaryEvent name="Elementary event"}
-In a sample space with a finite or countable infinite number of elements, an *elementary event* (or a *simple event*)\index{Events!simple} is an event with one sample point, that cannot be decomposed into smaller events.
+::: {.definition #ElementaryEvent name="Simple (elementary) event"}
+In a sample space with a finite or countable infinite number of elements, an *simple event* (or a *elementary event*)\index{Events!simple} is an event with one sample point, that cannot be decomposed into smaller events.
 :::
 
 
@@ -180,7 +180,7 @@ These are called *compound events*.\index{Events!compound}
 
 
 ::: {.definition #CompoundEvents name="Compound event"}
-A collection of elementary events is sometimes called a *compound event*.
+A collection of simple events is sometimes called a *compound event*.
 :::
 
 
@@ -189,7 +189,7 @@ Since compound events, like all events, are *sets*, operations on existing sets 
 
 
 
-:::{.example #ElementaryCompoundEvents name="Elementary and compound events"}
+:::{.example #ElementaryCompoundEvents name="Simple and compound events"}
 Consider observing the outcome on a single roll of a die, as shown in Example\ \@ref(exm:ElementaryEvents).
 
 Define the event $T$ as 'numbers divisible by\ $3$' and event $D$ as 'numbers divisible by\ $2$'. 
@@ -1089,15 +1089,15 @@ ways in which the three medals could be allocated.
 :::
 
 
+<!-- I removed itemising here, as we had thing sthat could be misinterpreted, like  - factorial(n) --> 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-In **R**:
+In **R**, $n!$ is given by `factorial(n)`.
 
-* $n!$ is given by `factorial(n)`.
-
-While there is no function to explicitly compute the number of permutations, two options for computing $^nP_r$ are:
-
-* `factorial(n) / factorial(n - r)`; or
-* `prod( n : (n - r + 1) )` or `prod( (n - r + 1) : n )` (since `prod()` computes the *product* of all given elements).
+While there is no function to explicitly compute the number of permutations, two options for computing $^nP_r$ are to use  
+`factorial(n) / factorial(n - r)`  
+or  
+`prod( n : (n - r + 1) )` or `prod( (n - r + 1) : n )`  
+(since `prod()` computes the *product* of all given elements).
 
 For example, 
 $$
@@ -2910,21 +2910,30 @@ text(x = 0.5,
 
 ### Why use computers?
 
-Using a computer can be useful for many reasons when working with prpbabilities:
+Using a computer can be useful for many reasons when working with probabilities:
 
-1. Simulation can be used to demonstrate theory (e.g., Sect.\ \@ref(SimulationCoinToss)).
-2. Simulation can confirm (not *prove*) counter-intuitive results (such as the Monty Hall problem (Sect.\ \@ref(Gameshow)), the birthday paradox (Exercise\ \@ref(exr:BirthdayProblem)), or non-transitive dice (Exercise\ \@ref(exr:NonTransitiveDice)).
-3. Simulation can make tedious, difficult or complex computations easier, such as "what's the chance of getting at least 2 reds before 3 blues?") counting methods may be tedious or impossible. ???? (POOR EXAMPLE; REF, EXAMPLE?)
+1. Demonstration of theory.  
+   Simulation can be used to demonstrate theory (e.g., Sect.\ \@ref(SimulationCoinToss)).
+2. Confirm results.  
+   Simulation can confirm (not *prove*) counter-intuitive results (such as the Monty Hall problem (Sect.\ \@ref(Gameshow)), the birthday paradox (Exercise\ \@ref(exr:BirthdayProblem)), or non-transitive dice (Exercise\ \@ref(exr:NonTransitiveDice)).
+3. Answers tedious or complex situations.  
+   Simulation can make tedious, difficult or complex computations easier, such as "What is the probability that at least cards 3 are hearts in a randomly-drawn hand of five cards?".
    Simulation gives quick approximations that bypass heavy combinatorial formulas.
-4. Simulation can be used to check answers and reasoning.
+4. Check answers and reasoning. 
+   Simulation can be used to check answers and reasoning.
    Analytic solutions can be verified by comparing to simulation results.
-5. Simulation allows easy tweaking or changing of parameters to see the impacts on the results. (REF; EXAMPLE?)
+5. Sensitivity analysis.  
+   Simulation allows easy tweaking or changing of parameters to see the impacts on the results. (REF; EXAMPLE?)
 
-EXERCISES!!
+An example of each is given below.
 
 
+SECTION ON HOW MANY? WHY LARGER n GIVES BETTER ANSWERS (and point to sampoling chap!)
 
-### Simulation: coin tossing {#SimulationCoinToss}
+set.seed need and so on
+
+
+### Simulation for demonstration of theory
 
 Consider using a computer to simulate large numbers of coin tosses; here, **R** is used to simulate $500$\ tosses.
 
@@ -2941,7 +2950,7 @@ set.seed(966141)                     # For repeatability
 ```{r SimTossesA, echo=TRUE, collapse=TRUE}
 Num_Tosses <- 500 # Simulated tossing a coin 500 times
 Tosses <- sample(x = c("H", "T"),    # Choose "H"  or  "T"
-                 size = Num_Tosses,   # Do this 500 times
+                 size = Num_Tosses,  # Do this 500 times
                  replace = TRUE)     # H and T can be reselected 
 Tosses[1 : 10]                       # Show the first 10 results
 ```
@@ -2980,6 +2989,139 @@ The sample proportion of a random outcome converges (in probability) to the true
 In this case, the sample proportion of heads converges (in probability) to the true probability of a head $p = 0.5$ as the number of trials increases.
 
 
+
+
+### Simulation to confirm results
+
+
+### Simulation to answers tedious or complex situations
+
+Suppose\ $10$ people are invited to a party, and sit at a round table.
+
+Alice and Bob refuse to sit next to each other. (ex-partners?)
+
+What is the probability that a random seating satisfies this constraint?
+
+This is difficult (but not impossible) to compute exactly: the number of circular permutations would need to be counted, while excluding adjacent pairs.
+This becomes a bit messy (???).
+
+
+Simulation approach:
+
+Randomly permute 10 names.
+
+Check if Alice and Bob are neighbors.
+
+Repeat 100\,000 times and compute fraction valid.
+
+```{r}
+set.seed(123)
+n_sim <- 100000  # number of random seatings
+
+# Names of friends
+friends <- c("Alice","Bob","Carol","Dave","Eve","Frank","Grace","Hank","Ivy","Jack")
+
+# Function to check if Alice and Bob are neighbors in a circular table
+neighbors_ok <- function(arrangement) {
+  n <- length(arrangement)
+  # Circular adjacency: first and last are neighbors too
+  for(i in 1:n) {
+    if ((arrangement[i] == "Alice" && arrangement[(i %% n) + 1] == "Bob") ||
+        (arrangement[i] == "Bob"   && arrangement[(i %% n) + 1] == "Alice")) {
+      return(FALSE)
+    }
+  }
+  return(TRUE)
+}
+
+# Run simulation
+valid_count <- sum(replicate(n_sim, neighbors_ok(sample(friends))))
+
+# Estimated probability
+probability <- valid_count / n_sim
+probability
+```
+
+
+
+
+### Simulation to check answers and reasoning
+
+Consider drawing five cards at random from a fair pack; what is the probability that at least cards\ $3$ are hearts?
+
+This question is not too difficult to answer using the counting methods of Sect.\ \@ref(CombsAndPerms); you should show that the answer is about $0.0927$.
+However, is also easy to simulate in **R** to check the answer:
+
+
+```{r}
+# 'Make' the deck of cards.
+# Note: the denomination is not important, just the suit
+Deck <- c(rep("Hearts", 13), 
+          rep("Diamonds", 13), 
+          rep("Clubs", 13), 
+          rep("Spades", 13))
+
+set.seed(12043) # For reproducibility 
+
+num_Sims <- 5000
+
+results <- replicate(num_Sims, {
+  hand <- sample(Deck, 
+                 size = 5,         # A hand of *five* cards 
+                 replace = FALSE)  # Without replacement
+  sum(hand == "Hearts") >= 3.      # Count how many have at least 3 Hearts 
+})
+
+# Print the result
+cat("The probability estimate is", round( mean(results), 4), "\n")
+
+```
+
+This is close to what we computed using theory.
+A better estimate would be found using a larger number of simulations.
+
+
+### Simulation for sensitivity analysis
+
+Suppose a doctor schedules\ $20$ patients per day, but history shows that each patient has a chance of not showing up (a "no-show").
+
+If more than\ $15$ patients show up, the clinic runs late.
+What’s the probability the clinic runs late?
+
+For this scenario, we could vary the probabilty that each patients os a no-show, and se what impact this has on the probability that the doctor runs late (e.g., 10%, 15%, 20%).
+In addition, we could change teh number of patients scheduled each day to see what the impact is (e.g., $18$ or\
+$22$ patients).
+
+
+```{r}
+set.seed(8091) # For reproducibility
+
+num_Sims <- 5000  # number of simulated days
+daily_Patients <- 20
+
+# Create an R function to simulate hwat happens on a day
+simulate_Day <- function(no_Show_Prob = 0.15) {
+  Arrivals <- rbinom(daily_Patients, 
+                     1, 
+                     1 - no_Show_Prob)  # 1 means "shows up"
+  sum(Arrivals) > 15  # TRUE if clinic runs late
+}
+
+# Test different no-show probabilities
+no_show_probs <- c(0.10,  # Look at three different no-show probabilities 
+                   0.15, 
+                   0.20)
+
+sapply(no_show_probs, 
+       function(p) mean(replicate(num_Sims, 
+                                  simulate_Day(p))))
+```
+
+
+
+
+
+### Simulation: coin tossing {#SimulationCoinToss}
 
 
 ### Example: the gameshow (Monty Hall) problem {#Gameshow}
