@@ -2905,7 +2905,7 @@ text(x = 0.5,
 
 
 
-## Statistical computing {#ProbStatisticalComputing}
+## Statistical computing and simulation {#ProbStatisticalComputing}
 
 
 ### Why use computers?
@@ -2996,50 +2996,80 @@ In this case, the sample proportion of heads converges (in probability) to the t
 
 ### Simulation to answers tedious or complex situations
 
-Suppose\ $10$ people are invited to a party, and sit at a round table.
+Suppose\ $10$ people are invited to a party, and sit at a round table; however, two people (say, Anh and Barb) refuse to sit next to each other.
+What is the probability that a random seating arrangement satisfies this constraint?
 
-Alice and Bob refuse to sit next to each other. (ex-partners?)
+This is difficult (but not impossible) to compute exactly: the number of circular permutations need to be counted, while excluding adjacent pairs.
+Simulation, however, can be used.
+The strategy is:
 
-What is the probability that a random seating satisfies this constraint?
+* Set up the simulation.
+* Repeat this numerous times:
+  * Randomly permute\ $10$ seating arrangements.
+  * Check if Anh and Barb are 'neighbours'.
+* Print the result.
 
-This is difficult (but not impossible) to compute exactly: the number of circular permutations would need to be counted, while excluding adjacent pairs.
-This becomes a bit messy (???).
+The process is repeated for numerous randomly-generated seating arrangements, and the proportion of acceptable seating arrangements computed.
 
-
-Simulation approach:
-
-Randomly permute 10 names.
-
-Check if Alice and Bob are neighbors.
-
-Repeat 100\,000 times and compute fraction valid.
+First we set up the scenario:
 
 ```{r}
-set.seed(123)
-n_sim <- 100000  # number of random seatings
+set.seed(8723) # Set the random number seed, for reproducibility
 
-# Names of friends
-friends <- c("Alice","Bob","Carol","Dave","Eve","Frank","Grace","Hank","Ivy","Jack")
+num_Sims <- 5000  # Set the number of simulations
 
-# Function to check if Alice and Bob are neighbors in a circular table
-neighbors_ok <- function(arrangement) {
-  n <- length(arrangement)
-  # Circular adjacency: first and last are neighbors too
-  for(i in 1:n) {
-    if ((arrangement[i] == "Alice" && arrangement[(i %% n) + 1] == "Bob") ||
-        (arrangement[i] == "Bob"   && arrangement[(i %% n) + 1] == "Alice")) {
-      return(FALSE)
-    }
+# Name the 10 people: use the 'initials' of the ten people
+People <- LETTERS[1:10] # The first 10 capital letters
+People
+```
+
+Then, we create an **R** function to determine if Anh (who is `A`) and Barb (who is `B`) are next to each other:
+
+```{r}
+# Function to check, for any given seating arrangement, if
+# Anh and Barb are neighbours.
+#
+# The function takes a seating arrangement as input
+
+check_If_Neighbours <- function(Arrangement) { 
+  n <- length(Arrangement)  # n  is the length of the arrangement (so, n = 10)
+  
+  # We must allow for circular adjacency: first and last are also neighbours.
+  # So, we add the person in the first position to the end as well:
+  extended_Arrangement <- c(Arrangement, 
+                            Arrangement[1])
+  are_Neighbours <- FALSE 
+  # Assume not neighbours, unless we find them adjacent.
+  # TRUE means they *are* neighbours; FALSE means they *are NOT* neighbours.
+  
+  # Loop over the people in the (extended) Arrangement.
+  for (i in 1:n) {
+    # Check if Anh and Barb  are neighbours:
+    if (extended_Arrangement[i] == "A" && 
+        extended_Arrangement[i + 1] == "B") are_Neighbours <- TRUE
+    if (extended_Arrangement[i] == "B" && 
+        extended_Arrangement[i + 1] == "A") are_Neighbours <- TRUE
   }
-  return(TRUE)
+  return(are_Neighbours)
 }
+```
 
+Now, we can run numerous simulations, using the **R** function `replicate()` (which repeatedly evaluates **R** code a specified number of times; in this case, the expression `check_If_Neighbours( sample(People) )` which checks if the given permutation of people has Anh and Barb seated as neighbours):
+
+```{r}
 # Run simulation
-valid_count <- sum(replicate(n_sim, neighbors_ok(sample(friends))))
+# Summing works, because  TRUE  is treated as 1, FALSE  is treated as 0
+invalid_Count <- sum(replicate(num_Sims, 
+                               check_If_Neighbours( sample(People))) )
+   # sample(People) makes a random arrangement of the 10 people
+```
 
+Then we can print the result:
+
+```{r}
 # Estimated probability
-probability <- valid_count / n_sim
-probability
+prob <- invalid_Count / num_Sims
+cat("Prob. of an UNacceptable seating arrangement: approx. ", round(prob, 4), "\n")
 ```
 
 
@@ -3050,8 +3080,10 @@ probability
 Consider drawing five cards at random from a fair pack; what is the probability that at least cards\ $3$ are hearts?
 
 This question is not too difficult to answer using the counting methods of Sect.\ \@ref(CombsAndPerms); you should show that the answer is about $0.0927$.
-However, is also easy to simulate in **R** to check the answer:
+However, it is easy to miscount, or to not allow for certain restructions.
+We could use an **R** simulation to check the answer:
 
+First we set up the simulation:
 
 ```{r}
 # 'Make' the deck of cards.
@@ -3064,14 +3096,23 @@ Deck <- c(rep("Hearts", 13),
 set.seed(12043) # For reproducibility 
 
 num_Sims <- 5000
+```
 
+Then we simulate numerous simulations of a deal of $5$\ cards, and count how many have at least $3$\ hearts:
+
+
+```{r}
 results <- replicate(num_Sims, {
-  hand <- sample(Deck, 
+  Hand <- sample(Deck, 
                  size = 5,         # A hand of *five* cards 
                  replace = FALSE)  # Without replacement
-  sum(hand == "Hearts") >= 3.      # Count how many have at least 3 Hearts 
+  sum( Hand == "Hearts") >= 3      # Count how many have at least 3 Hearts 
 })
+```
 
+The print the result:
+
+```{r}
 # Print the result
 cat("The probability estimate is", round( mean(results), 4), "\n")
 
@@ -3084,13 +3125,14 @@ A better estimate would be found using a larger number of simulations.
 ### Simulation for sensitivity analysis
 
 Suppose a doctor schedules\ $20$ patients per day, but history shows that each patient has a chance of not showing up (a "no-show").
-
 If more than\ $15$ patients show up, the clinic runs late.
 What’s the probability the clinic runs late?
 
-For this scenario, we could vary the probabilty that each patients os a no-show, and se what impact this has on the probability that the doctor runs late (e.g., 10%, 15%, 20%).
+For this scenario, we could vary the probability that each patients os a no-show, and se what impact this has on the probability that the doctor runs late (e.g., 10%, 15%, 20%).
 In addition, we could change teh number of patients scheduled each day to see what the impact is (e.g., $18$ or\
 $22$ patients).
+
+First we set up teh scenario:
 
 
 ```{r}
@@ -3098,7 +3140,11 @@ set.seed(8091) # For reproducibility
 
 num_Sims <- 5000  # number of simulated days
 daily_Patients <- 20
+```
 
+Then we create an **R** function to simulate what happens on a day, for any given no-show probability:
+
+```{r}
 # Create an R function to simulate hwat happens on a day
 simulate_Day <- function(no_Show_Prob = 0.15) {
   Arrivals <- rbinom(daily_Patients, 
@@ -3106,17 +3152,27 @@ simulate_Day <- function(no_Show_Prob = 0.15) {
                      1 - no_Show_Prob)  # 1 means "shows up"
   sum(Arrivals) > 15  # TRUE if clinic runs late
 }
-
-# Test different no-show probabilities
-no_show_probs <- c(0.10,  # Look at three different no-show probabilities 
-                   0.15, 
-                   0.20)
-
-sapply(no_show_probs, 
-       function(p) mean(replicate(num_Sims, 
-                                  simulate_Day(p))))
 ```
 
+
+Then we run the simulation for the various no-show probabilities:
+
+
+```{r}
+no_Show_Prob <- 0.10 
+mean(replicate(num_Sims, 
+               simulate_Day(no_Show_Prob) ) )
+
+no_Show_Prob <- 0.15 
+mean(replicate(num_Sims, 
+               simulate_Day(no_Show_Prob) ) )
+
+no_Show_Prob <- 0.20 
+mean(replicate(num_Sims, 
+               simulate_Day(no_Show_Prob) ) )
+```
+
+Clearly, the greater the no-show probability, the smaller the chance of running late.
 
 
 
