@@ -2910,52 +2910,88 @@ text(x = 0.5,
 
 ### Why use computers?
 
+SEE CHAP 5 SECTION ALSO! And consolidate them, or at least make sure they say different things
+
+Computing and working with probabilities can be hard!
+In many cases, computer *simulation* can be used to help with compouting probabilities.
+
+
+:::{.definition #Simulation name="Simulation"}
+A *simulation* is when a computer is used to imitate a real situation many times, so that probabilities or outcomes can be *estimated*.
+:::
+
+
 Using a computer can be useful for many reasons when working with probabilities:
 
-1. Demonstration of theory.  
+1. **Demonstration of theory.**
    Simulation can be used to demonstrate theory (e.g., Sect.\ \@ref(SimulationCoinToss)).
-2. Confirm results.  
-   Simulation can confirm (not *prove*) counter-intuitive results (such as the Monty Hall problem (Sect.\ \@ref(Gameshow)), the birthday paradox (Exercise\ \@ref(exr:BirthdayProblem)), or non-transitive dice (Exercise\ \@ref(exr:NonTransitiveDice)).
-3. Answers tedious or complex situations.  
-   Simulation can make tedious, difficult or complex computations easier, such as "What is the probability that at least cards 3 are hearts in a randomly-drawn hand of five cards?".
+2. **Confirmation of results.**
+   Simulation can confirm (not *prove*) counter-intuitive results (such as the Monty Hall problem (Exercise\ \@ref(exr:SimulationMontyHall)), the birthday paradox (Exercise\ \@ref(exr:BirthdayProblem)), or non-transitive dice (Exercise\ \@ref(exr:NonTransitiveDice)).
+3. **Answering tedious or complex situations.**
+   Simulation can make tedious, difficult or complex computations easier.
    Simulation gives quick approximations that bypass heavy combinatorial formulas.
-4. Check answers and reasoning. 
+4. **Checking answers and reasoning.**
    Simulation can be used to check answers and reasoning.
    Analytic solutions can be verified by comparing to simulation results.
-5. Sensitivity analysis.  
-   Simulation allows easy tweaking or changing of parameters to see the impacts on the results. (REF; EXAMPLE?)
+5. **Performing sensitivity analysis.**
+   Simulation allows easy tweaking or changing of parameters to see the impacts on the results.
 
 An example of each is given below.
 
+Simulation, by definition, imitates a scenario many times.
+Each scenario uses a computer to replicate the scenario, using a random number (e.g., a random die roll; a random hand of cards; etc.).
+In general, more precise estimates are found using a larger number of replications.
 
-SECTION ON HOW MANY? WHY LARGER n GIVES BETTER ANSWERS (and point to sampoling chap!)
+How many simulations are necessary for useful precision?
+No single answer exists, but since computers are fast using a large number of replications is not usually a imposition.
+For instance, $5\,000$ simulations is a reasonable number for simple scenarios.
+The impact of the number of simulations is covered in more detail in Chap.\ \@ref(SamplingDistributions).
 
-set.seed need and so on
-
-
-### Simulation for demonstration of theory
-
-Consider using a computer to simulate large numbers of coin tosses; here, **R** is used to simulate $500$\ tosses.
-
-Use $\Pr(\text{Toss head}) = 0.5$.
-Then, after each toss, the probability of obtaining a head using all the available information was computed after each toss.
-For one such simulation, these running probabilities are shown in Fig.\ \@ref(fig:SimTosses).
-While the result of any single toss is unpredictable, we see the general pattern emerging: Heads occur about half the time.
+Computers do not produces truly *random numbers*,\index{Random numbers} but rather *pseudo-random numbers*\index{Pseudo-random numbers} that are generated from a random number seed.
+The same random number seed produces the same sequence of pseudo-random numbers.
+In this book, so that examples are reproducible, we set the *random number seed* when using **R** (using `set.seed()`), so that our examples are reproducible.
+(Nonetheless, we call these 'random numbers' with the understanding that they are really pseudo-random numbers...)
+The **R** function `replicate()` allows an **R** expression to be repeated ('replicated') a given number of times, and often proves useful for creating simulations.
 
 
-```{r echo=FALSE}
-set.seed(966141)                     # For repeatability
+### Simulation to demonstrate theory {#SimulationTheoryDemo}
+
+The *Weak Law of Large Numbers*\index{Weak law of large numbers} is an important statistical concept.
+
+
+:::{.definition #WeakLawLargeNumbers name="Weak Law of Large Numbers"}
+The sample proportion of a random outcome converges (in probability) to the true probability as the number of trials increases.\index{Weak law of large numbers}
+:::
+
+
+This can be shown by running a computer simulation, to simulate large numbers of coin tosses.
+First, we set up the scenario:
+
+
+```{r}
+set.seed(966141) # For repeatability
+
+# Set the number of replications to use
+Num_Tosses <- 1000
+
 ```
 
+Then we use the **R** function `sample()` to take a 'sample' of heads and tails (with replacement!) for each replication:
+
+
 ```{r SimTossesA, echo=TRUE, collapse=TRUE}
-Num_Tosses <- 500 # Simulated tossing a coin 500 times
 Tosses <- sample(x = c("H", "T"),    # Choose "H"  or  "T"
-                 size = Num_Tosses,  # Do this 500 times
-                 replace = TRUE)     # H and T can be reselected 
+                 size = Num_Tosses,  # Do this for each replication
+                 replace = TRUE,     # H and T can be reselected 
+                 prob = c(0.5, 0.5)) # Pr(Head) = Pr(Tail) = 0.5
 Tosses[1 : 10]                       # Show the first 10 results
 ```
 
-Now plot the running probabilities:
+
+Notice that the probability of a Head (and Tail) is set as\ $0.5$ in the simulation, to simulate tossing a coin.
+
+Now, after each toss, the probability of obtaining a head using all the available information was computed after each toss:
+
 
 ```{r SimTosses, echo=TRUE, fig.align='center', fig.cap = "A simulation of tossing a fair coin $500$ times. The probability of getting a head is computed from the data after each toss.", fig.width=6, fig.height=3.5, out.width='65%'}
 Toss_Number <- 1:Num_Tosses            # Sequence: from 1 to 500
@@ -2975,26 +3011,164 @@ abline( h = 0.5,       # Draw horizontal line at y = 0.5
         col = "grey")  # Make line grey in colour
 ```
 
+For one such simulation, these running probabilities are shown in Fig.\ \@ref(fig:SimTosses).
+While the result of any single toss is unpredictable, we see the *Weak Law of Large Numbers* in action: the sample proportion of heads approaches\ $0.5$ as the number of tosses increases.
 
 Using the empirical approach shows why probabilities are between\ $0$ and\ $1$ (inclusive), since the proportions $m/n$ are always between\ $0$ and\ $1$ (inclusive).
-
-This simulation demonstrates the Weak Law of Large Numbers,
-
-
-:::{.definition #WeakLawLargeNumbers name="Weak Law of Large Numbers"}
-The sample proportion of a random outcome converges (in probability) to the true probability as the number of trials increases.\index{Weak law of large numbers}
-:::
-
-
 In this case, the sample proportion of heads converges (in probability) to the true probability of a head $p = 0.5$ as the number of trials increases.
 
 
+### Simulation to confirm results {#SimulationConfirmation}
+
+Consider the breast cancer example (Example\ \@ref(exm:BreastCancer)), where we saw that the probability of having breast cancer after a positive test results is quite low.
+This result is surprising, so we could use a computer to confirm that this is correct.
+
+Step\ 1 is to set up the scenario, by setting the random number seed (for reproducibility) and defining some parameters:
+
+```{r}
+population_Size <- 10000
+cancer_Prob <- 0.02
+
+# Test sensitivity and specificity 
+correct_Positive <- 0.75
+correct_Negative <- 0.90
+```
+
+Now we apply a useful 'trick', by first allocating each patient a random number between\ $0$ and\ $1$:
+
+```{r}
+# Allocate a random number between 0 and 1 to each patient
+patient_Probs <- runif( population_Size)
+patient_Probs[1 : 10]
+```
+
+The `runif()` command produces random numbers between\ $0$ and\ $1$ for each person in the population.
+Each time `runif()` is run, different random numbers are allocated to each personin the population.
+
+Now, a number less than\ $0.02$ is equivalent to saying the patient has cancer (the given probability is\ $2$%).
+This is the same as saying about\ $0.02$ of people will have cancer in the population.
+This is like 'So you’ve basically 'flipped a biased coin' for each patient, where the chance of landing on 'cancer' is\ $2$%.
+
+So we can obtain a list of whether each person has cancer or not.
+Each time `runif()` is run, different people, and a different *number* of people in the population, with cancer can vary:
 
 
-### Simulation to confirm results
+```{r}
+cancer_Result <- patient_Probs < cancer_Prob
+cancer_Result[1 :10]
+```
+
+Then, split the population into those *with* cancer and those *without* cancer:
+
+```{r}
+# Now find those *with* cancer who return a positive result
+with_Cancer <- which( cancer_Result) # Indices of people *with* cancer
+no_Cancer   <- which(!cancer_Result) # Indices of people *without* cancer
+```
+
+The test sensitivity and specificity now can be applied (using the same trick as above):
+
+```{r}
+# Patients WITH cancer: 75% chance the test is positive
+with_Cancer_and_Positive <- runif(length(with_Cancer)) < correct_Positive
+
+# Patients WITHOUT cancer: 10% chance the test is (wrongly) positive
+no_Cancer_and_Positive <- runif(length(no_Cancer)) < (1 - correct_Negative)
+
+# Combine results
+positive_Test <- c(
+  with_Cancer[with_Cancer_and_Positive],
+  no_Cancer[no_Cancer_and_Positive]
+)
+```
+
+Again, each time that `runif()` is run, different people, and a different *number* of people in the population, can return positive test results:
+
+```{r}
+# True positives among those who tested positive
+true_positives  <- sum(cancer_Result[positive_Test])
+
+# Total positives
+total_positives <- length(positive_Test)
+
+# Estimated Prob(cancer | positive test)
+ppv_sim <- if (total_positives > 0) {
+  true_positives / total_positives } else {
+    NA
+  }
+ppv_sim
+```
+
+Now print some useful information:
+
+```{r}
+cat("Prob (cancer | positive test) :", ppv_sim, "\n")
+```
+
+The above code has three places where random numbers are used: 
+
+* to randomly allocate people to have cancer or not; 
+* to randomly determine which people *with* cancer return a positive result; and
+* to randomly determine which people *without* cancer return a positive result.
+
+Thus, each time the above code is run will produce different results (unless the random-number seed remains the same).
+
+A *simulation* repeats the above scenario many times, over many replications each with different random numbers used.
+Then, the probability of interest (here, the probability of having cancer, given a positive test result) can be averaged over the many replications.
+To do this (for\ $5\,000$ replications), effectively the above code is repeated and the result of interest stored from each replication (in `ppv`):
+
+```{r}
+num_Reps <- 5000 # The number of replications
+ppv <- array( dim = num_Reps) # Create an array to hold the info we need
+
+population_Size <- 10000
+cancer_Prob <- 0.02
+
+# Test sensitivity and specificity 
+correct_Positive <- 0.75
+correct_Negative <- 0.90
+
+# Now we replicate the scenario  num_Reps  times:
+for (i in 1:num_Reps){
+  # Allocate a random number between 0 and 1 to each patient
+  patient_Probs <- runif( population_Size)
+  cancer_Result <- patient_Probs < cancer_Prob
+
+  # Now find those *with* and *without* cancer who return a positive result
+  with_Cancer <- which( cancer_Result) # Indices of people *with* cancer
+  no_Cancer   <- which(!cancer_Result) # Indices of people *without* cancer
+  
+  # Patients WITH cancer: 75% chance the test is positive
+  with_Cancer_and_Positive <- runif(length(with_Cancer)) < correct_Positive
+  
+  # Patients WITHOUT cancer: 10% chance the test is (wrongly) positive
+  no_Cancer_and_Positive <- runif(length(no_Cancer)) < (1 - correct_Negative)
+  
+  # Combine results
+  positive_Test <- c(
+    with_Cancer[with_Cancer_and_Positive],
+    no_Cancer[no_Cancer_and_Positive]
+  )
+  
+  # True positives among those who tested positive
+  true_positives  <- sum(cancer_Result[positive_Test])
+  
+  # Total positives
+  total_positives <- length(positive_Test)
+  
+  # Estimated Prob(cancer | positive test)
+  ppv_sim[i] <- if (total_positives > 0) {
+    true_positives / total_positives } else {
+      NA
+    }
+}
+mean(ppv_sim)
+```
+
+In Example\ \@ref(exm:BreastCancer), the probability was given as\ $0.1327$, which compares favourably with this simulation answer.
 
 
-### Simulation to answers tedious or complex situations
+### Simulation to answers tedious or complex situations {#SimulationComplex}
 
 Suppose\ $10$ people are invited to a party, and sit at a round table; however, two people (say, Anh and Barb) refuse to sit next to each other.
 What is the probability that a random seating arrangement satisfies this constraint?
@@ -3016,7 +3190,7 @@ First we set up the scenario:
 ```{r}
 set.seed(8723) # Set the random number seed, for reproducibility
 
-num_Sims <- 5000  # Set the number of simulations
+num_Reps <- 5000  # Set the number of simulations
 
 # Name the 10 people: use the 'initials' of the ten people
 People <- LETTERS[1:10] # The first 10 capital letters
@@ -3054,33 +3228,35 @@ check_If_Neighbours <- function(Arrangement) {
 }
 ```
 
-Now, we can run numerous simulations, using the **R** function `replicate()` (which repeatedly evaluates **R** code a specified number of times; in this case, the expression `check_If_Neighbours( sample(People) )` which checks if the given permutation of people has Anh and Barb seated as neighbours):
+Now, we can run numerous simulations, using the **R** function `replicate()` (which repeatedly evaluates **R** code a specified number of times; in this case:
 
 ```{r}
 # Run simulation
 # Summing works, because  TRUE  is treated as 1, FALSE  is treated as 0
-invalid_Count <- sum(replicate(num_Sims, 
+invalid_Count <- sum(replicate(num_Reps, 
                                check_If_Neighbours( sample(People))) )
    # sample(People) makes a random arrangement of the 10 people
 ```
 
-Then we can print the result:
+
+In this code, the expression `check_If_Neighbours( sample(People) )` checks if the given permutation of people has Anh and Barb seated as neighbours.
+Then, print the result:
 
 ```{r}
 # Estimated probability
-prob <- invalid_Count / num_Sims
+prob <- invalid_Count / num_Reps
 cat("Prob. of an UNacceptable seating arrangement: approx. ", round(prob, 4), "\n")
 ```
 
 
 
 
-### Simulation to check answers and reasoning
+### Simulation to check answers and reasoning {#SimulationChecking}
 
 Consider drawing five cards at random from a fair pack; what is the probability that at least cards\ $3$ are hearts?
 
-This question is not too difficult to answer using the counting methods of Sect.\ \@ref(CombsAndPerms); you should show that the answer is about $0.0927$.
-However, it is easy to miscount, or to not allow for certain restructions.
+This question is not too difficult to answer using the counting methods of Sect.\ \@ref(CombsAndPerms); you should show that the answer is about\ $0.0927$.
+However, it is easy to miscount.
 We could use an **R** simulation to check the answer:
 
 First we set up the simulation:
@@ -3088,21 +3264,21 @@ First we set up the simulation:
 ```{r}
 # 'Make' the deck of cards.
 # Note: the denomination is not important, just the suit
-Deck <- c(rep("Hearts", 13), 
+Deck <- c(rep("Hearts", 13),   # 13 cards of each suit
           rep("Diamonds", 13), 
           rep("Clubs", 13), 
           rep("Spades", 13))
 
 set.seed(12043) # For reproducibility 
 
-num_Sims <- 5000
+num_Reps <- 5000
 ```
 
 Then we simulate numerous simulations of a deal of $5$\ cards, and count how many have at least $3$\ hearts:
 
 
 ```{r}
-results <- replicate(num_Sims, {
+results <- replicate(num_Reps, {
   Hand <- sample(Deck, 
                  size = 5,         # A hand of *five* cards 
                  replace = FALSE)  # Without replacement
@@ -3122,15 +3298,15 @@ This is close to what we computed using theory.
 A better estimate would be found using a larger number of simulations.
 
 
-### Simulation for sensitivity analysis
+### Simulation for sensitivity analysis {#SimulationSensitivityAnalysis}
 
-Suppose a doctor schedules\ $20$ patients per day, but history shows that each patient has a chance of not showing up (a "no-show").
+Suppose a doctor schedules\ $20$ patients per day, but history shows that each patient has a chance of not showing up (a 'no-show').
+For simplicity, assume that each patient has the same 'no-show' probability, and that patients operate independently.
 If more than\ $15$ patients show up, the clinic runs late.
-What’s the probability the clinic runs late?
+What is the probability the clinic runs late?
+(In a later chapter, a theoretical approach will be introduced to answering this type of question; Sect.\ \@ref(BinomialDistribution)).
 
-For this scenario, we could vary the probability that each patients os a no-show, and se what impact this has on the probability that the doctor runs late (e.g., 10%, 15%, 20%).
-In addition, we could change teh number of patients scheduled each day to see what the impact is (e.g., $18$ or\
-$22$ patients).
+For this scenario, we could vary the probability that each patients os a no-show, and see what impact this has on the probability that the doctor runs late (e.g., $10$%; $15$%; $20$%).
 
 First we set up the scenario:
 
@@ -3138,19 +3314,27 @@ First we set up the scenario:
 ```{r}
 set.seed(8091) # For reproducibility
 
-num_Sims <- 5000  # number of simulated days
+num_Reps <- 50000  # number of simulated days
 daily_Patients <- 20
 ```
 
 Then we create an **R** function to simulate what happens on a day, for any given no-show probability:
 
-```{r}
-# Create an R function to simulate hwat happens on a day
-simulate_Day <- function(no_Show_Prob = 0.15) {
-  Arrivals <- rbinom(daily_Patients, 
-                     1, 
-                     1 - no_Show_Prob)  # 1 means "shows up"
-  sum(Arrivals) > 15  # TRUE if clinic runs late
+```{r, class.source="mycode", class.output="myoutput"}
+# Create an R function to simulate what happens on a day
+simulate_Day <- function(no_Show_Prob = 0.15, 
+                         num_Patients = 20,
+                         patient_Limit = 15) {
+  
+  # Allocate a random number between 0 and 1 to each patient
+  patient_Probs <- runif( num_Patients)
+  
+  # sum()  works, as R uses that TRUE = 1, and FALSE = 0
+  number_Miss <- sum( patient_Probs < no_Show_Prob )
+
+  running_Late <- ( (num_Patients - number_Miss) > patient_Limit) 
+  
+  return(running_Late)
 }
 ```
 
@@ -3159,156 +3343,52 @@ Then we run the simulation for the various no-show probabilities:
 
 
 ```{r}
-no_Show_Prob <- 0.10 
-mean(replicate(num_Sims, 
-               simulate_Day(no_Show_Prob) ) )
+# Declare the no-show probabilities to use
+no_Show_List <- seq(0.01, 0.20,
+                    by = 0.025)
 
-no_Show_Prob <- 0.15 
-mean(replicate(num_Sims, 
-               simulate_Day(no_Show_Prob) ) )
+# Find the mean of the TRUE and FALSE values returned.
+# This works because  R  treats TRUE as 1, FALSE as 0
+prob_Late <- array(dim = length(no_Show_List))
 
-no_Show_Prob <- 0.20 
-mean(replicate(num_Sims, 
-               simulate_Day(no_Show_Prob) ) )
-```
-
-Clearly, the greater the no-show probability, the smaller the chance of running late.
-
-
-
-
-### Simulation: coin tossing {#SimulationCoinToss}
-
-
-### Example: the gameshow (Monty Hall) problem {#Gameshow}
-
-A game show contestant is told there is a car behind one of three doors, and a goat behind each of the other doors. 
-The contestant is asked to select a door. 
-
-The host of the show (who knows where the car is) now opens one of the doors *not* selected by the contestant, and reveals a goat. 
-The host now gives the contestant the choice of either (a)\ retaining the door chosen first, or (b)\ switching and choosing the other (unopened) door. 
-Which of the following is the contestant's best strategy?
-
-1. Always retain the first choice.
-2. Always change and select the other door.
-3. Choose either unopened door at random.
-
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-What strategy do you think would be best?
-:::
-
-
-Only a brief outline of the method is given here. 
-A more complete solution is given later.
-
-1. Generate a random sequence of length $1000$ of the digits $1$, $2$ and $3$ to represent which door is hiding the car on each of $1000$ nights. 
-2. Generate another such sequence to represent the contestants *first* choice on each of the $1000$ nights (assumed chosen at random).
-3. The number of times the numbers in the two lists of random numbers *do* agree represents the number of times the contestant will win *if the contestant doesn't change doors*.
-   If the numbers in the two columns *don't* agree then the contestant will win *only if the contestant decides to change doors*.
-
-For the $1000$ nights simulated, contestants would have won the car $303$ times if they retained their first choice which means they would have won $697$ times if they had changed. 
-(Does this agree with your intuition?) 
-This implies (correctly!) that the best strategy is to change. 
-You might like to try doing the simulation for yourself.
-
-The correct theoretical probability of winning if you retain the original door is $1/3$, but $2/3$ if you change.) 
-We obtained a reasonable estimate of these probabilities from the simulation: $303/1000$ and $697/1000$. 
-These estimates would improve for larger simulation sizes.
-
-```{r echo=TRUE}
-set.seed(93671)          # For reproducibility
-
-Num_Sims <- 1000          # The number of simulations
-# Choose the door where the car is hiding:
-Car_Door <- sample(1:3,  # Could be behind Door 1, 2 or 3
-                   size = Num_Sims, # Repeat
-                   replace = TRUE)
-# Choose the contestants initial choice:
-First_Choice <- sample(1:3,        # Could guess Door 1, 2 or 3
-                       size = Num_Sims, # Repeat
-                       replace = TRUE)
-
-# Compute the chances of winning the car:
-Win_By_Not_Switching  <- sum( Car_Door == First_Choice)
-Win_By_Switching     <- sum( Car_Door != First_Choice)
-
-c(Win_By_Not_Switching, Win_By_Switching) / Num_Sims
-```
-
-
-In practice, the host selects a door that he or she knows does *not* contains the car.
-So we need to adapt the process:
-
-1. Generate a random sequence of length $1000$ of the digits $1$, $2$ and $3$ to represent which door is hiding the car on each of $1000$ nights. 
-2. Generate another such sequence to represent the contestants *first* choice on each of the $1000$ nights (assumed chosen at random).
-3. The host then opens a door *not* chosen by the contestant, that does *not* contain the car.
-4. The contestant then select from one of the unopened doors.
-5. The number of times the numbers in the two lists of random numbers *do* agree represents the number of times the contestant will win *if the contestant doesn't change doors*.
-   If the numbers in the two columns *don't* agree then the contestant will win *only if the contestant decides to change doors*.
-
-This **R** code simulates this more realistic scenario:
-
-
-```{r}
-set.seed(93671)       # For reproducibility
-Num_Sims <- 1000       # Number of simulations
-
-# Initialize counters
-Win_By_Switching <- 0
-Win_By_Staying   <- 0
-
-for (i in 1:Num_Sims) {
-
-  # Step 1: Randomly place the car
-  Car_Door <- sample(1:3, 1)
-
-  # Step 2: CONTESTANT makes an initial choice
-  First_Choice <- sample(1:3, 
-                         size = 1)
-
-  # Step 3: HOST then chooses to open a goat door and show contestant.
-  #         Host chooses door *not* picked by contestant, or door *not* hiding car
-  Possible_Reveals <- setdiff(1:3, 
-                              c(First_Choice, Car_Door))
-
-  # So Host may now have one or two options of door to open
-  if (length(Possible_Reveals) == 1) {
-    # With one option... just take it
-    Host_Reveal <- Possible_Reveals
-  }
-  if (length(Possible_Reveals) == 2) {
-    # With two options, select one
-    Host_Reveal <- setdiff(1:3, 
-                           First_Choice)
-  }
-
-  # Step 4: CONTESTANT may decide to switch to the other unopened door
-  Remaining_Door <- setdiff(1:3, 
-                            c(First_Choice, Host_Reveal))
-  Switch_Choice <- Remaining_Door
-
-  # Step 5: Check win conditions
-  if (First_Choice == Car_Door) {
-    Win_By_Staying <- Win_By_Staying + 1
-  } else {
-    if (Switch_Choice == Car_Door) {
-       Win_By_Switching <- Win_By_Switching + 1
-    }
-  }
+for (i in (1:length(no_Show_List)) ){ # For each probability:
+  
+  num_Days_Late <- sum(replicate(num_Reps, 
+                                 simulate_Day(no_Show_List[i]) ) )
+  prob_Late[i] <- num_Days_Late / num_Reps
 }
-
-# Results
-c(Win_By_Staying, Win_By_Switching) / Num_Sims
 ```
+
+
+Then we print (and plot; see Fig.\ \@ref(fig:probLate)) the results:
+
+```{r plotProbLate, fig.show='hide'}
+round(prob_Late, 4)
+
+plot(prob_Late ~ no_Show_List,
+     type = "b",  # Plot "both" lines and points
+     las = 1,     # Make axis labels horizontal
+     lwd = 2,     # Line width of 2
+     xlab = "Probability that a patient is a no-show",
+     ylab = "Probability that a day runs late")
+```
+
+Clearly, the greater the no-show probability, the smaller the chance of running late (as expected).
+
+```{r probLate, fig.align="center", fig.cap = "A simulations that shows the probability that a day at a medical clinic runs late.", out.width = "80%", fig.width = 7, fig.height = 4, echo=FALSE, results='hide'}
+<<plotProbLate>>
+```
+
+We could also change the number of patients scheduled each day to see what the impact is (e.g., $18$ or\
+$22$\ patients).
+
 
 
 
 
 ## Exercises {#ProbabilityExercises}
 
-Selected answers appear in Sect.\ \@ref({#AnswersChapProbability}).
+Selected answers appear in Sect.\ \@ref(AnswersChapProbability).
 
 
 :::{.exercise #BasicProbs}
@@ -3855,3 +3935,26 @@ These dice are *non-transitive* (Miwin's dice)\index{Miwin's dice}; that is, in 
 
 Use a computer simulation to confirm these results by 'rolling' them many times, and find the probabilities of each die winning against the other two.
 :::
+
+
+:::{.exercise #SimulationSensivityNumber}
+Adjust the **R** code used in Sect.\ \@ref(SimulationSensitivityAnalysis) so examine how the probability of running late changes as the number of booked patients increases from $15$\ up to $25$ people.
+:::
+
+
+:::{.exercise #SimulationMontyHall}
+A game show contestant is told there is a car behind one of three doors, and a goat behind each of the other doors. 
+The contestant is asked to select a door. 
+
+The host of the show (who knows where the car is) now opens one of the doors *not* selected by the contestant, and reveals a goat. 
+The host now gives the contestant the choice of either (a)\ retaining the door chosen first, or (b)\ switching and choosing the other (unopened) door. 
+
+1. Which of the following *do you think* is the contestant's best strategy?
+  1. Always retain the first choice.
+  2. Always change and select the other door.
+  3. Choose either unopened door at random.
+2. Use a computer simulation to estimate the probabilities to determine the best strategy.
+   *Hint:* crucial information is that the host of the show who knows where the car is, and opens one of the doors *not* selected by the contestant, *and reveals a goat*. 
+:::
+
+
