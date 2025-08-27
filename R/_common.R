@@ -19,7 +19,8 @@ options(width = 50)
 knitr::opts_chunk$set(
   comment = "#>",
   size = 'scriptsize',
-  highlight = TRUE, 
+  class.source = "mycode",
+  class.output = "myoutput",
   collapse = TRUE
   )
 
