@@ -2994,7 +2994,7 @@ Notice that the probability of a Head (and Tail) is set as\ $0.5$ in the simulat
 Now, after each toss, the probability of obtaining a head using all the available information was computed after each toss:
 
 
-```{r SimTosses, echo=TRUE, fig.align='center', fig.cap = "A simulation of tossing a fair coin $500$ times. The probability of getting a head is computed from the data after each toss.", fig.width=6, fig.height=3.5, out.width='65%'}
+```{r SimTosses, echo=TRUE, fig.align='center', fig.cap = "A simulation of tossing a fair coin $500$ times. The probability of getting a head is computed from the data after each toss. The grey horizontal line is at\ $0.5$.", fig.width=8, fig.height=3.5, out.width='100%'}
 Toss_Number <- 1:Num_Tosses            # Sequence: from 1 to 500
 Prop_Heads <- cumsum(Tosses == "H") / Toss_Number  # 'cumulative sum'
                                      # P(Heads) after each toss
@@ -3093,17 +3093,19 @@ true_positives  <- sum(cancer_Result[positive_Test])
 total_positives <- length(positive_Test)
 
 # Estimated Prob(cancer | positive test)
-ppv_sim <- if (total_positives > 0) {
-  true_positives / total_positives } else {
+cancer_Given_Pos <- 
+  if (total_positives > 0) {
+    true_positives / total_positives 
+  } else {
     NA
   }
-ppv_sim
+cancer_Given_Pos
 ```
 
 Now print some useful information:
 
 ```{r}
-cat("Prob (cancer | positive test) :", ppv_sim, "\n")
+cat("Prob (cancer | positive test) :", cancer_Given_Pos, "\n")
 ```
 
 The above code has three places where random numbers are used: 
@@ -3116,11 +3118,11 @@ Thus, each time the above code is run will produce different results (unless the
 
 A *simulation* repeats the above scenario many times, over many replications each with different random numbers used.
 Then, the probability of interest (here, the probability of having cancer, given a positive test result) can be averaged over the many replications.
-To do this (for\ $5\,000$ replications), effectively the above code is repeated and the result of interest stored from each replication (in `ppv`):
+To do this (for\ $5\,000$ replications), effectively the above code is repeated and the result of interest stored from each replication (in `cancer_Given_Pos`):
 
 ```{r}
 num_Reps <- 5000 # The number of replications
-ppv <- array( dim = num_Reps) # Create an array to hold the info we need
+cancer_Given_Pos <- array( dim = num_Reps) # Create an array to hold the info we need
 
 population_Size <- 10000
 cancer_Prob <- 0.02
@@ -3158,12 +3160,14 @@ for (i in 1:num_Reps){
   total_positives <- length(positive_Test)
   
   # Estimated Prob(cancer | positive test)
-  ppv_sim[i] <- if (total_positives > 0) {
-    true_positives / total_positives } else {
+  cancer_Given_Pos[i] <- 
+    if (total_positives > 0) {
+      true_positives / total_positives
+    } else {
       NA
     }
 }
-mean(ppv_sim)
+mean(cancer_Given_Pos)
 ```
 
 In Example\ \@ref(exm:BreastCancer), the probability was given as\ $0.1327$, which compares favourably with this simulation answer.
@@ -3175,7 +3179,7 @@ Suppose\ $10$ people are invited to a party, and sit at a round table; however, 
 What is the probability that a random seating arrangement satisfies this constraint?
 
 This is difficult (but not impossible) to compute exactly: the number of circular permutations need to be counted, while excluding adjacent pairs.
-Simulation, however, can be used.
+Simulation, however, could be used.
 The strategy is:
 
 * Set up the simulation.
@@ -3220,16 +3224,16 @@ check_If_Neighbours <- function(Arrangement) {
   # Loop over the people in the (extended) Arrangement.
   for (i in 1:n) {
     # Check if Anh and Barb  are neighbours:
-    if (extended_Arrangement[i] == "A" && 
+    if (extended_Arrangement[i] == "A" &&  # This checks if A, then B
         extended_Arrangement[i + 1] == "B") are_Neighbours <- TRUE
-    if (extended_Arrangement[i] == "B" && 
+    if (extended_Arrangement[i] == "B" &&  # This checks if B, then A
         extended_Arrangement[i + 1] == "A") are_Neighbours <- TRUE
   }
   return(are_Neighbours)
 }
 ```
 
-Now, we can run numerous simulations, using the **R** function `replicate()` (which repeatedly evaluates **R** code a specified number of times; in this case:
+Now, we can run numerous simulations, using the **R** function `replicate()` (which repeatedly evaluates **R** code a specified number of times); in this case:
 
 ```{r}
 # Run simulation
@@ -3241,6 +3245,7 @@ invalid_Count <- sum(replicate(num_Reps,
 
 
 In this code, the expression `check_If_Neighbours( sample(People) )` checks if the given permutation of people has Anh and Barb seated as neighbours.
+This is then replicated `num_Reps` times, and adds up how many times they are seated together.
 Then, print the result:
 
 ```{r}
@@ -3275,7 +3280,7 @@ set.seed(12043) # For reproducibility
 num_Reps <- 5000
 ```
 
-Then we simulate numerous simulations of a deal of $5$\ cards, and count how many have at least $3$\ hearts:
+Then we simulate numerous simulations of a deal of $5$\ cards using `replicate()`, and count how many hands have at least $3$\ hearts:
 
 
 ```{r}
@@ -3296,7 +3301,7 @@ cat("The probability estimate is", round( mean(results), 4), "\n")
 ```
 
 This is close to what we computed using theory.
-A better estimate would be found using a larger number of simulations.
+A more precise estimate would be found using a larger number of simulations.
 
 
 ### Simulation for sensitivity analysis {#SimulationSensitivityAnalysis}
@@ -3340,7 +3345,7 @@ simulate_Day <- function(no_Show_Prob = 0.15,
 ```
 
 
-Then we run the simulation for the various no-show probabilities:
+Then run the simulation for the various no-show probabilities:
 
 
 ```{r}
@@ -3361,7 +3366,7 @@ for (i in (1:length(no_Show_List)) ){ # For each probability:
 ```
 
 
-Then we print (and plot; see Fig.\ \@ref(fig:probLate)) the results:
+Then\ resukts then can be printed (and plotted; see Fig.\ \@ref(fig:probLate)):
 
 ```{r plotProbLate, fig.show='hide'}
 round(prob_Late, 4)
