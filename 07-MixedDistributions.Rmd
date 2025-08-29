@@ -334,7 +334,7 @@ $$
     \phi(x)    & \text{if $Z > 0$},
   \end{cases}
 $$
-as shown in Fig.\ \@ref(fig:TobitPic0) (right panel).
+as shown in Fig.\ \@ref(fig:TobitPic) (right panel).
 
 From Equation\ \@ref(eq:PDFpositiveConditional),
 $$
@@ -370,7 +370,7 @@ $$
 
 
 
-```{r TobitPic0, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $Z = 0$.", fig.width=8, fig.height=4, out.width="90%"}
+```{r TobitPic, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $Z = 0$.", fig.width=8, fig.height=4, out.width="90%"}
 par( mfrow = c(1, 2))
 
 x.mean <- 0
@@ -509,188 +509,6 @@ abline(v = 0,
 ```
 
 
-
-
-
-:::{.example #TobitExample name="Censored model"}
-EXERISE??
-
-Consider a latent variable\ $Y$, and an observed variable\ $X = \text{max}(0, Y)$.
-Suppose that\ $Y$ has the normal distribution\index{Normal distribution} (Fig.\ \@ref(fig:TobitPic), left panel))
-$$
-  Y \sim N(\mu = 1.5, \sigma^2 = 1),
-$$
-so that $\operatorname{E}[Y] = 1.5$ and $\operatorname{var}[Y] = 1$.
-Note that 
-$$
-  \Pr(Y < 0) = \Pr\big(Z < (0 - 1.5)/1\big) = \Phi(-1.5) \approx 0.0668,
-$$
-using $Z$ as a standard normal variate (Sect.\ \@ref(StandardNormal)).
-To use the functions $\Phi(\cdot)$ and $\phi(\cdot)$, the standardised version of\ $Y$ must be used; that is, $Z = (Y - 1.5)/1 = (Y - 1.5)$ in these functions.
-
-Then, define the random variable\ $X$ as
-$$
-  f_X(x) = 
-  \begin{cases}
-    0                & \text{if $X < 0$};\\
-    \Phi(-1.5)       & \text{if $X = 0$};\\
-    \phi(x - 1.5)    & \text{if $X > 0$},
-  \end{cases}
-$$
-as shown in Fig.\ \@ref(fig:TobitPic) (right panel)).
-
-From Equation\ \@ref(eq:PDFpositiveConditional),
-$$
-  f_{X\mid X > 0}(x) 
-  = \frac{\phi(x- 1.5)}{1 - \Phi(-1.5)}
-  \approx 1.148\dots \times \phi(x)
-$$
-for $X > 0$.
-From this expression, 
-\begin{align*}
-  \operatorname{E}[X] 
-   = \operatorname{E}[X \mid X>0] 
-  &= \int_0^\infty ???\,dx \\
-  & \text{FIX!}
-\end{align*}
-Similarly, 
-$$
-  \operatorname{var}[X] 
-  = \operatorname{var}[X \mid X>0]
-  = ???
-$$
-:::
-
-
-
-```{r TobitPic, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $X = 0$.", fig.width=8, fig.height=4, out.width="90%"}
-par( mfrow = c(1, 2))
-
-x.mean <- 1.5
-x.sd <- 1
-p <- pnorm(0,
-            mean = x.mean,
-            sd = x.sd)
-
-x <- seq(from = x.mean - (3.5 * x.sd),
-         to =   x.mean + (3.5 * x.sd),
-         length = 1000)
-
-y <-  dnorm(x,
-            mean = x.mean,
-            sd = x.sd)
-
-plot(y ~ x,
-     xlim = c(-2, 5),
-     type = "n",
-     axes = FALSE,
-     xlab = expression(Latent~variable~italic(Z)),
-     ylab = expression(Prob.~"function"),
-     main = expression( atop(A~mixed~distribution*":",
-                             the~latent~model~italic(Z))),
-     lwd = 3)
-axis(side = 1)
-
-# Shade for X < 0
-xNeg <- x[ x <= 0]
-yNeg <- y[ x <= 0]
-
-polygon( x = c(xNeg, rev(xNeg)),
-         y = c(yNeg, rep(0, length(yNeg))),
-         col = "lightgrey",
-         border = NA) # Omit border
-
-# Different colours for x >= 0 and x < 0
-lines( y[x > 0] ~ x[x > 0],
-       lwd = 2,
-       col = "black")
-lines( y[x <= 0] ~ x[x <= 0],
-       lwd = 2,
-       col = "darkgrey")
-
-# x = 0
-abline(v = 0,
-       col = "grey",
-       lty = 2)
-
-box()
-
-
-# Explanatory labels
-arrows(x0 = -1,
-       x1 = -0.5,
-       y0 = 0.2,
-       y1 = 0.08,
-       length = 0.15,
-       angle = 15)
-text(x = -1,
-     y = 0.2,
-     pos = 3,
-     cex = 0.9,
-     label = expression(atop(Where,
-                             italic(Z)<0) ) )
-
-################################################################################
-
-plot(y[x > 0] ~ x[x > 0],
-     xlim = c(-2, 5),
-     type = "l",
-     axes = FALSE,
-     xlab = expression(italic(X)),
-     ylab = expression(Prob.~"function"),
-     main = expression( atop(A~mixed~distribution*":",
-                             the~censored~model~italic(X))),
-
-     lwd = 3)
-axis(side = 1)
-box()
-
-
-points(x = 0,
-       y = p,
-       pch = 19)
-
-
-# Explanatory labels
-arrows(x0 = 1.5,
-       x1 = 0,
-       y0 = p,
-       y1 = p,
-       length = 0.15,
-       angle = 15)
-text(x = 1.6,
-     y = p,
-     pos = 1,
-     cex = 0.9,
-     label = expression( atop(Discrete~part,
-                              at~italic(X)==0) ) )
-
-
-# arrows(x0 = 4,
-#        x1 = 3,
-#        y0 = 0.3,
-#        y1 = dnorm(3, mean = x.mean, sd = x.sd),
-#        length = 0.15,
-#        angle = 15)
-# text(x = 4,
-#      y = 0.3,
-#      pos = 3,
-#      cex = 0.9,
-#      label = expression( atop(Normal~distribution)) ) 
-
-# X < 0 part
-lines( y[x <= 0] ~ x[x <= 0],
-       lwd = 1,
-       lty = 3,
-       col = "darkgrey")
-
-# x = 0
-abline(v = 0,
-       col = "grey",
-       lty = 2)
-
-
-```
 
 
 
@@ -1034,13 +852,6 @@ $$
   X = \sum_{i = 1}^N Y_i
 $$
 has a continuous distribution.
-
-Let
-$$
-  N \sim \text{Pois}(\lambda)
-  \quad\text{and}\quad
-  Y_i \sim \text{Gam}(\alpha, \beta),
-$$
 Then, 
 $$
   X = 
@@ -1049,16 +860,48 @@ $$
     \sum_{i = 1}^N Y_i  & \text{if $N > 0$}.
   \end{cases}
 $$
+By this definition $X$ has a *compound Poisson-gamma distribution*.
 The distribution of\ $X$ has a probability mass at $X = 0$ where $\Pr(Y = 0) = \Pr(N = 0) = \exp(-\lambda)$.
 
-The distribution of the Poisson sum of gamma distributions has a probability function that cannot be written down in closed form, but can be expressed as an infinite sum:
+*The probability functions for the compound Poisson-gamma distribution cannot be written in closed form.*
+However, the probability function can be expressed as an infinite sum [@dunn2005series] or by inverting the MGF [@mypapers:Dunn:fourier] as discussed in Sect.\ \@ref(DistributionFromMGF).
+
+The probability function as an infinite series can be determined from the development of the compound Poisson-gamma distribution above.
+If $N = 1$ with $\Pr(N = 1)$ (from the Poisson distribution), then, $X = Y$ has the $\text{Gam}(\alpha, \beta)$ distribution.
+That is,
+$$
+  f_{X\mid N = 1}(x) 
+  = \frac{\beta^{\alpha}}{\Gamma(\alpha)} x^{\alpha -1}\exp(-\beta x) \quad \text{for $x > 0$}.
+$$
+
+If $N = 2$ with $\Pr(N = 2)$ (from the Poisson distribution), then, $X = Y_1 + Y_2$, where $Y_i \sim\text{Gam}(\alpha, \beta)$ for $i = 1, 2$.
+This means that $X \sim \text{Gam}(2\alpha, \beta)$, which is easily shown using MGFS. (WHY; CROSS REF).
+That is, 
+$$
+  f_{X\mid N = 2} (x) 
+  = \frac{\beta^{2\alpha}}{\Gamma(2\alpha)} x^{2\alpha -1}\exp(-\beta x) \quad \text{for $x > 0$}.
+$$
+
+More generally, if $N = n$ with $\Pr(N = n)$ (from the Poisson distribution), then, $X = Y_1 + Y_2+\cdots + Y_n$, and so $X \sim\text{Gam}(n\alpha, \beta)$, so that
+$$
+  f_{X\mid N = n} (x) 
+  = \frac{\beta^{n\alpha}}{\Gamma(n\alpha)} x^{n\alpha -1}\exp(-\beta x) \quad \text{for $x > 0$}.
+$$
+
+Then, using the *Law of total probability* (Theorem\ \@ref(thm:TotalProb)),
 \begin{align*}
-  f_X(x) 
-  &= \sum_{n = 1}^\infty \Pr(N = n) \times f_{X\mid N = n}(x)\\
-  &= \sum_{n = 1}^\infty  \frac{\exp(-\lambda)\lambda^n}{n!} \times \frac{\beta^{n\alpha}}{\Gamma(n\alpha)} x^{n\alpha - 1} \exp(-\beta x) \\
+  f_X(x)
+  &= \sum_{n = 1}^\infty \Pr(N = n) \cdot F_{X\mid N = n}(x)\\
+  &= \sum_{n = 1}^\infty \frac{\exp(-\lambda)\lambda^n}{n!} \cdot \frac{\beta^{n\alpha}}{\Gamma(n\alpha)} x^{n\alpha -1}\exp(-\beta x)\\
   &= \exp(-\lambda - \beta x) \sum_{n = 1}^\infty \frac{\lambda^n}{n!} \frac{\beta^{n\alpha}}{\Gamma(n\alpha)} x^{n\alpha - 1} 
 \end{align*}
-when $x > 0$.
+for $x > 0$.
+In addition, of course, we have that
+$$
+  \Pr(X = 0) = \exp(-\lambda).
+$$
+  
+---
 
 Even though the probability function has no closed form, the MGF is reasonably simple.
 To find the MGF, first consider the value of\ $N$ as fixed; then, $X = Y_1 + Y_2 + \cdots + Y_N$ the MGF of\ $X$ is 
@@ -1693,4 +1536,20 @@ Censoring: Some users consistently pay in full and carry no balance.
 
 Interpretation: Some people have low latent demand for borrowing; observed balance is zero if the latent borrowing desire is below threshold.
 :::
+
+
+:::{.exercise #TobitHarder}
+Consider a latent variable\ $Y$, and an observed variable\ $X = \text{max}(0, Y)$.
+Suppose that\ $Y$ has the normal distribution\index{Normal distribution}
+$$
+  Y \sim N(\mu = 1.5, \sigma^2 = 1),
+$$
+so that $\operatorname{E}[Y] = 1.5$ and $\operatorname{var}[Y] = 1$.
+
+1. Determine $\Pr(Y < 0)$, where $Z$ is a standard normal variate (Sect.\ \@ref(StandardNormal)).
+2. Using the functions $\Phi(\cdot)$ and $\phi(\cdot)$, determine the probability function for\ $X$.
+3. Plot this probability function.
+:::
+
+
 

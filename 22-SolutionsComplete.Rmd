@@ -3985,6 +3985,193 @@ Gamma: $\operatorname{var}(X) = \phi \mu^2$, so $\phi = ???$ and $p = 2$.
 
 
 
+:::{.answer}
+**Answer to Exercise\ \@ref(exr:LatentVar).**
+:::
+
+
+:::{.answer}
+**Answer to Exercise\ \@ref(exr:LatentVar2).**
+:::
+
+
+:::{.answer}
+**Answer to Exercise\ \@ref(exr:TobitHarder).**
+1. We have 
+$$
+  \Pr(Y < 0) = \Pr\big(Z < (0 - 1.5)/1\big) = \Phi(-1.5) \approx 0.0668,
+$$
+using $Z$ as a standard normal variate (Sect.\ \@ref(StandardNormal)).
+2. To use the functions $\Phi(\cdot)$ and $\phi(\cdot)$, the standardised version of\ $Y$ must be used; that is, $Z = (Y - 1.5)/1 = (Y - 1.5)$ in these functions.
+   Then,
+$$
+  f_X(x) = 
+  \begin{cases}
+    0                & \text{if $X < 0$};\\
+    \Phi(-1.5)       & \text{if $X = 0$};\\
+    \phi(x - 1.5)    & \text{if $X > 0$},
+  \end{cases}
+$$
+   From Equation\ \@ref(eq:PDFpositiveConditional),
+$$
+  f_{X\mid X > 0}(x) 
+  = \frac{\phi(x- 1.5)}{1 - \Phi(-1.5)}
+  \approx 1.148\dots \times \phi(x)
+$$
+   for $X > 0$.
+   From this expression, 
+\begin{align*}
+  \operatorname{E}[X] 
+   = \operatorname{E}[X \mid X>0] 
+  &= \int_0^\infty ???\,dx \\
+  & \text{FIX!}
+\end{align*}
+   Similarly, 
+$$
+  \operatorname{var}[X] 
+  = \operatorname{var}[X \mid X>0]
+  = ???
+$$
+3. See Fig.\ \@ref(fig:TobitPicEx).
+
+
+:::
+
+
+
+```{r TobitPicEx, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $X = 0$.", fig.width=8, fig.height=4, out.width="90%"}
+par( mfrow = c(1, 2))
+
+x.mean <- 1.5
+x.sd <- 1
+p <- pnorm(0,
+            mean = x.mean,
+            sd = x.sd)
+
+x <- seq(from = x.mean - (3.5 * x.sd),
+         to =   x.mean + (3.5 * x.sd),
+         length = 1000)
+
+y <-  dnorm(x,
+            mean = x.mean,
+            sd = x.sd)
+
+plot(y ~ x,
+     xlim = c(-2, 5),
+     type = "n",
+     axes = FALSE,
+     xlab = expression(Latent~variable~italic(Z)),
+     ylab = expression(Prob.~"function"),
+     main = expression( atop(A~mixed~distribution*":",
+                             the~latent~model~italic(Z))),
+     lwd = 3)
+axis(side = 1)
+
+# Shade for X < 0
+xNeg <- x[ x <= 0]
+yNeg <- y[ x <= 0]
+
+polygon( x = c(xNeg, rev(xNeg)),
+         y = c(yNeg, rep(0, length(yNeg))),
+         col = "lightgrey",
+         border = NA) # Omit border
+
+# Different colours for x >= 0 and x < 0
+lines( y[x > 0] ~ x[x > 0],
+       lwd = 2,
+       col = "black")
+lines( y[x <= 0] ~ x[x <= 0],
+       lwd = 2,
+       col = "darkgrey")
+
+# x = 0
+abline(v = 0,
+       col = "grey",
+       lty = 2)
+
+box()
+
+
+# Explanatory labels
+arrows(x0 = -1,
+       x1 = -0.5,
+       y0 = 0.2,
+       y1 = 0.08,
+       length = 0.15,
+       angle = 15)
+text(x = -1,
+     y = 0.2,
+     pos = 3,
+     cex = 0.9,
+     label = expression(atop(Where,
+                             italic(Z)<0) ) )
+
+################################################################################
+
+plot(y[x > 0] ~ x[x > 0],
+     xlim = c(-2, 5),
+     type = "l",
+     axes = FALSE,
+     xlab = expression(italic(X)),
+     ylab = expression(Prob.~"function"),
+     main = expression( atop(A~mixed~distribution*":",
+                             the~censored~model~italic(X))),
+
+     lwd = 3)
+axis(side = 1)
+box()
+
+
+points(x = 0,
+       y = p,
+       pch = 19)
+
+
+# Explanatory labels
+arrows(x0 = 1.5,
+       x1 = 0,
+       y0 = p,
+       y1 = p,
+       length = 0.15,
+       angle = 15)
+text(x = 1.6,
+     y = p,
+     pos = 1,
+     cex = 0.9,
+     label = expression( atop(Discrete~part,
+                              at~italic(X)==0) ) )
+
+
+# arrows(x0 = 4,
+#        x1 = 3,
+#        y0 = 0.3,
+#        y1 = dnorm(3, mean = x.mean, sd = x.sd),
+#        length = 0.15,
+#        angle = 15)
+# text(x = 4,
+#      y = 0.3,
+#      pos = 3,
+#      cex = 0.9,
+#      label = expression( atop(Normal~distribution)) ) 
+
+# X < 0 part
+lines( y[x <= 0] ~ x[x <= 0],
+       lwd = 1,
+       lty = 3,
+       col = "darkgrey")
+
+# x = 0
+abline(v = 0,
+       col = "grey",
+       lty = 2)
+
+
+```
+
+
+
+
+
 <!-- *********************************************************************************** -->
 ## Answers for Chap.\ \@ref(ChapMultivariate) {#AnswersChapMultivariate}
 
