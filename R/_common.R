@@ -26,20 +26,32 @@ knitr::opts_chunk$set(
 
 
 # Translucent colour:
-plotColour <- rgb(red = 47/256, 
-                  green = 105/256, 
-                  blue = 113/256, 
-                  alpha = 0.6, 
-                  maxColorValue = 1)
+#plotColour <- rgb(red = 47/256, 
+#                  green = 105/256, 
+#                  blue = 113/256, 
+#                  alpha = 0.6, 
+#                  maxColorValue = 1)
+plotColour <- "cyan4" # 0, 139, 139
 
 # Solid colour:
-plotColour1 <- rgb(red = 129/256, 
-                   green = 194/256, 
-                   blue = 202/256, 
-                   alpha = 1, 
-                   maxColorValue = 1)
+#plotColour1 <- rgb(red = 129/256, 
+#                   green = 194/256, 
+#                   blue = 202/256, 
+#                   alpha = 1, 
+#                   maxColorValue = 1)
+#plotColour1 <- "cyan4" # 0, 139, 139
+plotColour1 <- adjustcolor(plotColour, 
+                           alpha.f = 0.6)
 
-### 
+###
+# Redefine  MASS::truehist  to the default colours used
+truehist <- function(x, ...) {
+  MASS::truehist(x, 
+                 col = plotColour1, 
+                 ...)
+}
+
+###
 source("R/triangular.R")
 source("R/gnormal.R")
 source("R/hbsecant.R")

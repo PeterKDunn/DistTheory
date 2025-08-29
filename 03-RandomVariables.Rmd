@@ -1019,7 +1019,7 @@ A picture of the distribution function is shown in Fig.\ \@ref(fig:DFCont).
 :::
 
 
-```{r DFCont, echo=FALSE, fig.align="center", fig.cap="The probability function (left) and the distribution function (right) for\\ $V$.", fig.width=7, out.width='90%', fig.height=3.5}
+```{r DFCont, echo=FALSE, fig.align="center", fig.cap="The probability function for\\ $V$.", fig.width=7, out.width='90%', fig.height=3.5}
 p <- 0.4
 x <- seq(0, 4, 
          length = 100)
@@ -1505,7 +1505,7 @@ For example, $Q_X(0.3) = 10$, and $Q_X(0.4) = 11$.
 
 
 
-```{r QuantileFnDiscrete, echo=FALSE, fig.align="center", fig.cap="Left: the distribution function of $X$. Right: the probability mass function of $X$.", fig.width=8, fig.height=4, out.width='100%'}
+```{r QuantileFnDiscrete, echo=FALSE, fig.align="center", fig.cap="Left: the distribution function of $X$. Right: the quantile function of $X$.", fig.width=8, fig.height=4, out.width='100%'}
 par(mfrow = c(1, 2))
 
 xDF <-  c(8,  10,  11,  15, 17, 19)
@@ -1636,12 +1636,15 @@ plot( fx(x) ~ x,
       main = "The target distribution",
       xlab = expression(italic(X)),
       ylab = expression(Density~fn) )
-hist(rSpecified, 
-     xlab = expression(italic(X)),
-     ylab = expression(Number~of~values),
-     main = "Random numbers",
-     xlim = c(0, 4.5),
-     las = 1)
+###  truehist  is part of the MASS package,which must be loaded first, using: 
+###  library(MASS)
+truehist(rSpecified, 
+               xlab = expression(italic(X)),
+               ylab = expression(Number~of~values),
+               main = "Random numbers",
+               xlim = c(0, 4.5),
+         breaks = seq(0, 5, by = 0.25),
+               las = 1)
 ```
 
 
@@ -1665,14 +1668,16 @@ Z <- rnorm(n = 1000,
 par(mfrow = c(1, 2) )
 
 ### Plot two histograms: Z and Z^2
-MASS::truehist(Z,
-               las = 1,
-               xlab = expression(italic(Z) ),
-               ylab = "Density")
-MASS::truehist(Z^2,
-                              las = 1,
-               xlab = expression(sum(italic(Z^2)) ),
-               ylab = "Density")
+###  truehist  is part of the MASS package,which must be loaded first, using: 
+###  library(MASS)
+truehist(Z,
+         las = 1,
+         xlab = expression(italic(Z) ),
+         ylab = "Density")
+truehist(Z^2,
+         las = 1,
+         xlab = expression(sum(italic(Z^2)) ),
+         ylab = "Density")
 
 ### Now plot the theoretical chi-squared distribution (with one df)
 # Use these values of X:
@@ -1695,6 +1700,8 @@ Furthermore, the sum of\ $k$ independent standard normal distributions is a chi-
 
 
 ```{r SimChiSq5, fig.show='hide'}
+set.seed(7701)
+
 ### Standard normal variate: in 100 rows of 5 columns each 
 Z <- matrix( data = rnorm(n = 5000,
                           mean = 0, 
@@ -1710,15 +1717,17 @@ Z_SumsSq <- rowSums(Z^2)
 par(mfrow = c(1, 2) )
 
 ### Plot two histograms: Z and Z^2
-MASS::truehist(Z,
-               las = 1,
-               xlab = expression(italic(Z)),
-               ylab = "Density")
-MASS::truehist(Z_SumsSq,
-               las = 1,
-               ylim = c(0, 0.16),
-               xlab = expression(sum(italic(Z^2))~over~five~values ),
-               ylab = "Density")
+###  truehist  is part of the MASS package,which must be loaded first, using: 
+###  library(MASS)
+truehist(Z,
+         las = 1,
+         xlab = expression(italic(Z)),
+         ylab = "Density")
+truehist(Z_SumsSq,
+         las = 1,
+         ylim = c(0, 0.16),
+         xlab = expression(sum(italic(Z^2))~over~five~values ),
+         ylab = "Density")
 
 ### Now plot the theoretical chi-squared distribution (with *five* df)
 # Use these values of X:
@@ -1792,8 +1801,8 @@ $$
 The random variable\ $X$ has the probability mass function
 $$
    p_X(x) = \begin{cases}
-               (1/2)^x & \text{for $x = 1, 2, 3, \dots$};\\
-               0 & \text{elsewhere}.
+               2^{-x} & \text{for $x = 1, 2, 3, \dots$};\\
+               0      & \text{elsewhere}.
             \end{cases}
 $$
 
@@ -1873,6 +1882,150 @@ $$
 1. Find and plot the distribution function of\ $X$.
 1. Find $\Pr(X > 1)$.
 :::
+
+
+
+:::{.exercise #PMFtrickier}
+Consider the random variable\ $Y$ with the probability mass function
+$$
+  f_Y(y)
+  = 
+  \begin{cases}
+    y^\alpha - 2 & \text{for $y = 1, 2$}\\
+    0            & \text{elsewhere.}
+  \end{cases}
+$$
+Find the value(s) of $\alpha$ so that $f_Y(y)$ is a valid probability function.
+:::
+
+
+:::{.exercise #PMFtrickier2}
+Consider the random variable\ $X$ with the probability mass function
+$$
+  f_X(x)
+  = 
+  \begin{cases}
+    x + 1 & \text{for $x = b, b + 1, b + 2$}\\
+    0     & \text{elsewhere.}
+  \end{cases}
+$$
+Find the value(s) of $b$ so that $f_X(x)$ is a valid probability function.
+:::
+
+
+
+:::{.exercise #PDFtrickier}
+Consider the random variable\ $T$ with the probability density function shown in Fig.\ \@ref(fig:TwoDensities) (left panel).
+Find the value(s) of $a$ so that this represents a valid probability function.
+:::
+
+
+
+
+:::{.exercise #PDFtrickier2}
+Consider the random variable\ $W$ with the probability density function shown in Fig.\ \@ref(fig:TwoDensities) (right panel).
+Find the value(s) of $a$ so that this represents a valid probability function.
+:::
+
+```{r TwoDensities, echo=FALSE, fig.cap="Two probability density functions", out.width='100%', fig.width=9, fig.height = 4, fig.align="center"}
+par(mfrow = c(1, 2))
+
+plot( x = c(0, 3),
+      y = c(0, 0.7),
+      type = "n",
+      axes = FALSE,
+      main = "A probability function",
+      xlab = expression(italic(Y)),
+      ylab = "Density function")
+axis(side = 1,
+     at = c(0, 1, 2, 3) )
+axis(side = 2,
+     at = c(0, 2/3),
+     las = 1,
+     label = c(0, 
+               expression(italic(a))) )
+
+lines(x = c(0, 2),
+      y = c(0, 2/3),
+      lwd = 2)
+lines(x = c(2, 3),
+      y = c(2/3, 0),
+      lwd = 2)
+
+abline(h = 0,
+       lty = 1,
+       col = "grey")
+abline(v = 2,
+       lty = 2,
+       col = "grey")
+abline(h = 2/3,
+       lty = 2,
+       col = "grey")
+box()
+
+##############
+
+theta <- seq(pi/2, pi,
+             length = 100)
+r <- 1
+
+plot( x = c(-1, 1),
+      y = c(0, 1.3),
+      type = "n",
+      asp = 1,
+      axes = FALSE,
+      main = "A probability function",
+      xlab = expression(italic(T)),
+      ylab = "Density function")
+lines(x = r * cos(theta),
+      y = r * sin(theta),
+      lwd = 2)
+
+axis(side = 1,
+     at = c(-1, 0, 1, 2) )
+axis(side = 2,
+     at = c(0, 1.3),
+     las = 1,
+     label = c(0, 
+               expression(italic(a) ) ) ) 
+
+#lines(x = c(-1, 1),
+#      y = c(0, 1/3),
+#      lwd = 2)
+lines(x = c(0, 1),
+      y = c(1.3, 0),
+      lwd = 2)
+
+abline(v = 0,
+       lty = 2,
+       col = "grey")
+abline(h = 0,
+       lty = 1,
+       col = "grey")
+abline(h = 1.1,
+       lty = 2,
+       col = "grey")
+points(x = 0,
+       y = 1,
+       pch = 1) # Open circle
+points(x = 0,
+       y = 1.3,
+       pch = 19) # Closed circle
+
+arrows( x0 = -0.5,
+       y0 = 0.5,
+       x1 = r * cos(3 * pi / 4),
+       y1 = r * sin(3 * pi / 4),
+       angle = 15,
+       length = 0.15)
+text( x = -0.5,
+      y = 0.5,
+      pos = 1,
+      labels = "Quarter\ncircle",
+      cex = 0.9)
+box()
+
+```
 
 
 
