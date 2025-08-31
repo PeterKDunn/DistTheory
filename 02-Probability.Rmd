@@ -2908,10 +2908,10 @@ text(x = 0.5,
 ## Statistical computing and simulation {#ProbStatisticalComputing}
 
 
-### Why use computers?
+### Why use computing and simulation? {#SimulationWhyUse}
 
 Computing and working with probabilities can be hard!
-In many cases, computer *simulation* can be used to help with computing probabilities.
+In many cases, using a computer, or a computer *simulation*, can be helpful.
 
 
 :::{.definition #Simulation name="Simulation"}
@@ -2919,10 +2919,10 @@ A *simulation*\index{Simulation} is when a computer is used to imitate a real si
 :::
 
 
-Using a computer can be useful for many reasons when working with probabilities:
+Using a computer can be useful for many reasons when working with probabilities and statistics more generally:
 
 1. **Demonstration of theory.**
-   Simulation can be used to demonstrate theory (e.g., Sect.\ \@ref(SimulationCoinToss)).
+   Simulation can be used to visually demonstrate theory (e.g., Sect.\ \@ref(SimulationCoinToss)).
    Sometimes the theory can be difficult to understand, and a simulation can bridge the gap between formulas and reality.
 2. **Confirmation and validation of results.**
    Simulation can confirm (not *prove*) counter-intuitive results (such as the Monty Hall problem (Exercise\ \@ref(exr:SimulationMontyHall)), the birthday paradox (Exercise\ \@ref(exr:BirthdayProblem)), or non-transitive dice (Exercise\ \@ref(exr:NonTransitiveDice)).
@@ -2966,7 +2966,7 @@ The sample proportion of a random outcome converges (in probability) to the true
 
 
 This can be shown by running a computer simulation, to simulate large numbers of coin tosses.
-First, we set up the scenario:
+First, set up the scenario:
 
 
 ```{r}
@@ -2990,20 +2990,25 @@ Tosses[1 : 10]                       # Show the first 10 results
 
 
 Notice that the probability of a Head (and Tail) is set as\ $0.5$ in the simulation, to simulate tossing a coin.
+After each toss, the probability of obtaining a head using all the available information up to that toss was computed:
 
-Now, after each toss, the probability of obtaining a head using all the available information was computed after each toss:
 
+```{r}
+Toss_Number <- 1:Num_Tosses            # Sequence: from 1 to Num_Tosses
+
+# Compute P(Heads) after each toss
+Prop_Heads <- cumsum(Tosses == "H") / Toss_Number  # cumsum() is the 'cumulative sum'
+Prop_Heads[1 : 8]  # Show the first eight results
+```
+
+The results can be plotted (Fig.\ \@ref(fig:SimTosses)):
 
 ```{r SimTosses, echo=TRUE, fig.align='center', fig.cap = "A simulation of tossing a fair coin $500$ times. The probability of getting a head is computed from the data after each toss. The grey horizontal line is at\ $0.5$.", fig.width=8, fig.height=3.5, out.width='100%'}
-Toss_Number <- 1:Num_Tosses            # Sequence: from 1 to 500
-Prop_Heads <- cumsum(Tosses == "H") / Toss_Number  # 'cumulative sum'
-                                     # P(Heads) after each toss
-
 plot(Prop_Heads,
      main = "The proportion of heads after a given number of tosses",
      xlab = "Toss number",          # Label on x-axis
      ylab = "Proportion of heads",  # Label on y-axis
-     type = "l",       # Draw a "l"ine rather than "p"oints
+     type = "l",       # Show a "l"ine rather than "p"oints
      lwd = 2,          # Make line of width '2'
      ylim = c(0, 1),   # y-axis limits
      las = 1,          # Make axes labels horizontal
@@ -3040,17 +3045,17 @@ Now we apply a useful 'trick', by first allocating each patient a random number 
 ```{r}
 # Allocate a random number between 0 and 1 to each patient
 patient_Probs <- runif( population_Size)
-patient_Probs[1 : 10]
+patient_Probs[1 : 8]
 ```
 
 The `runif()` command produces random numbers between\ $0$ and\ $1$ for each person in the population.
-Each time `runif()` is run, different random numbers are allocated to each personin the population.
+Each time `runif()` is run, different random numbers are allocated to each person in the population.
 
 Now, a number less than\ $0.02$ is equivalent to saying the patient has cancer (the given probability is\ $2$%).
 This is the same as saying about\ $0.02$ of people will have cancer in the population.
-This is like 'So you’ve basically 'flipped a biased coin' for each patient, where the chance of landing on 'cancer' is\ $2$%.
+This is like flipping a biased coin for each patient, where the chance of landing on 'cancer' is\ $2$%.
 
-So we can obtain a list of whether each person has cancer or not.
+Now we can obtain a list of whether each person has cancer or not.
 Each time `runif()` is run, different people, and a different *number* of people in the population, with cancer can vary:
 
 
@@ -3118,24 +3123,27 @@ Thus, each time the above code is run will produce different results (unless the
 
 A *simulation* repeats the above scenario many times, over many replications each with different random numbers used.
 Then, the probability of interest (here, the probability of having cancer, given a positive test result) can be averaged over the many replications.
-To do this (for\ $5\,000$ replications), effectively the above code is repeated and the result of interest stored from each replication (in `cancer_Given_Pos`):
+To do this (for\ $5\,000$ replications), the above code is repeated and the result of interest is retained from each replication (in `cancer_Given_Pos`):
+
 
 ```{r}
+# Set the parameters for the scenario
 num_Reps <- 5000 # The number of replications
-cancer_Given_Pos <- array( dim = num_Reps) # Create an array to hold the info we need
-
 population_Size <- 10000
 cancer_Prob <- 0.02
 
-# Test sensitivity and specificity 
+# Set the test sensitivity and specificity 
 correct_Positive <- 0.75
 correct_Negative <- 0.90
 
-# Now we replicate the scenario  num_Reps  times:
+# Create an array to hold the info we need from each replication
+cancer_Given_Pos <- array( dim = num_Reps)
+
+# Now replicate the scenario  num_Reps  times:
 for (i in 1:num_Reps){
   # Allocate a random number between 0 and 1 to each patient
   patient_Probs <- runif( population_Size)
-  cancer_Result <- patient_Probs < cancer_Prob
+  cancer_Result <- ( patient_Probs < cancer_Prob )
 
   # Now find those *with* and *without* cancer who return a positive result
   with_Cancer <- which( cancer_Result) # Indices of people *with* cancer
@@ -3160,17 +3168,16 @@ for (i in 1:num_Reps){
   total_positives <- length(positive_Test)
   
   # Estimated Prob(cancer | positive test)
-  cancer_Given_Pos[i] <- 
-    if (total_positives > 0) {
-      true_positives / total_positives
-    } else {
-      NA
-    }
+  cancer_Given_Pos[i] <- ifelse( total_positives > 0, 
+                                 true_positives / total_positives, # If  TRUE
+                                 NA)                               # If  FALSE
 }
+
+# Average over the replications
 mean(cancer_Given_Pos)
 ```
 
-In Example\ \@ref(exm:BreastCancer), the probability was given as\ $0.1327$, which compares favourably with this simulation answer.
+In Example\ \@ref(exm:BreastCancer), the probability was given as\ $0.1327$, which compares favourably with this answer from simulation (which is an approximation).
 
 
 ### Simulation to answers tedious or complex situations {#SimulationComplex}
@@ -3184,20 +3191,20 @@ The strategy is:
 
 * Set up the simulation.
 * Repeat this numerous times:
-  * Randomly permute\ $10$ seating arrangements.
-  * Check if Anh and Barb are 'neighbours'.
+  * Create a random permutation of the seating arrangements for\ $10$ people.
+  * Check if Anh and Barb are 'neighbours' for this arrangement.
 * Print the result.
 
 The process is repeated for numerous randomly-generated seating arrangements, and the proportion of acceptable seating arrangements computed.
 
-First we set up the scenario:
+First, set up the scenario:
 
 ```{r}
 set.seed(8723) # Set the random number seed, for reproducibility
 
 num_Reps <- 5000  # Set the number of simulations
 
-# Name the 10 people: use the 'initials' of the ten people
+# 'Name' the 10 people by using the 'initials' of the ten people
 People <- LETTERS[1:10] # The first 10 capital letters
 People
 ```
@@ -3205,10 +3212,8 @@ People
 Then, we create an **R** function to determine if Anh (who is `A`) and Barb (who is `B`) are next to each other:
 
 ```{r}
-# Function to check, for any given seating arrangement, if
-# Anh and Barb are neighbours.
-#
-# The function takes a seating arrangement as input
+# The function takes a seating arrangement as input.
+# It checks, for any given seating arrangement, if Anh and Barb are neighbours.
 
 check_If_Neighbours <- function(Arrangement) { 
   n <- length(Arrangement)  # n  is the length of the arrangement (so, n = 10)
@@ -3219,39 +3224,47 @@ check_If_Neighbours <- function(Arrangement) {
                             Arrangement[1])
   are_Neighbours <- FALSE 
   # Assume not neighbours, unless we find them adjacent.
-  # TRUE means they *are* neighbours; FALSE means they *are NOT* neighbours.
+  # TRUE means they *ARE* neighbours; FALSE means they *ARE NOT* neighbours.
   
-  # Loop over the people in the (extended) Arrangement.
+  # Loop over the  n  people, and check their neighbour to the right.
   for (i in 1:n) {
-    # Check if Anh and Barb  are neighbours:
-    if (extended_Arrangement[i] == "A" &&  # This checks if A, then B
+    # Check if Anh and Barb  are neighbours
+    # First: check if A, then B to he right:
+    if (extended_Arrangement[i] == "A" &&  
         extended_Arrangement[i + 1] == "B") are_Neighbours <- TRUE
-    if (extended_Arrangement[i] == "B" &&  # This checks if B, then A
+
+    # Then: check if B, then A to he right:
+    if (extended_Arrangement[i] == "B" &&
         extended_Arrangement[i + 1] == "A") are_Neighbours <- TRUE
   }
+  # Return the value of are_Neighbours, to state whether the given arrangement
+  # has  A  and  B  as nighbours (TRUE) or not (FALSE):
   return(are_Neighbours)
 }
 ```
 
-Now, we can run numerous simulations, using the **R** function `replicate()` (which repeatedly evaluates **R** code a specified number of times); in this case:
+To replicate this numerous times, the **R** function `replicate()` is used; it repeatedly evaluates given **R** code a specified number of times.
+In this case:
+
 
 ```{r}
 # Run simulation
 # Summing works, because  TRUE  is treated as 1, FALSE  is treated as 0
-invalid_Count <- sum(replicate(num_Reps, 
-                               check_If_Neighbours( sample(People))) )
-   # sample(People) makes a random arrangement of the 10 people
+seated_Together <- sum( replicate(num_Reps, 
+                                  check_If_Neighbours( sample(People))) )
+# sample(People) makes a random arrangement of the 10 people
 ```
 
 
-In this code, the expression `check_If_Neighbours( sample(People) )` checks if the given permutation of people has Anh and Barb seated as neighbours.
-This is then replicated `num_Reps` times, and adds up how many times they are seated together.
-Then, print the result:
+The command first creates a random arrangement of poeple (i.e., `sample(People)`), and then checks if the given permutation of people has Anh and Barb seated as neighbours (using our function `check_If_Neighbours()`).
+This is replicated `num_Reps` times (using `replicate()`), and adds up (using `sum()`) how many times they are seated together.
+Then, the result can be printed:
 
 ```{r}
 # Estimated probability
-prob <- invalid_Count / num_Reps
-cat("Prob. of an UNacceptable seating arrangement: approx. ", round(prob, 4), "\n")
+prob <- seated_Together / num_Reps
+cat("Prob. of an UNacceptable seating arrangement: approx. ", 
+    round(prob, 4), "\n") # Round to four decimal places
 ```
 
 
@@ -3261,11 +3274,12 @@ cat("Prob. of an UNacceptable seating arrangement: approx. ", round(prob, 4), "\
 
 Consider drawing five cards at random from a fair pack; what is the probability that at least cards\ $3$ are hearts?
 
-This question is not too difficult to answer using the counting methods of Sect.\ \@ref(CombsAndPerms); you should show that the answer is about\ $0.0927$.
-However, it is easy to miscount.
-We could use an **R** simulation to check the answer:
+This question is not too difficult to answer using the counting methods of Sect.\ \@ref(CombsAndPerms); you should show that the answer is approximately\ $0.0927$.
+However, it can be easy to miscount.
+We could use an **R** simulation to check the answer.
 
-First we set up the simulation:
+First, set up the simulation:
+
 
 ```{r}
 # 'Make' the deck of cards.
@@ -3275,28 +3289,39 @@ Deck <- c(rep("Hearts", 13),   # 13 cards of each suit
           rep("Clubs", 13), 
           rep("Spades", 13))
 
-set.seed(12043) # For reproducibility 
-
-num_Reps <- 5000
+set.seed(12043)   # For reproducibility 
+num_Reps <- 5000  # Number of replications to use
 ```
 
-Then we simulate numerous simulations of a deal of $5$\ cards using `replicate()`, and count how many hands have at least $3$\ hearts:
+
+Then we simulate numerous hands of $5$\ cards using `replicate()`:
 
 
 ```{r}
-results <- replicate(num_Reps, {
-  Hand <- sample(Deck, 
-                 size = 5,         # A hand of *five* cards 
-                 replace = FALSE)  # Without replacement
-  sum( Hand == "Hearts") >= 3      # Count how many have at least 3 Hearts 
-})
+Results <- replicate(num_Reps, sample(Deck,   # Sample from the  Deck  of cards
+                                      size = 5,  # A hand of *five* cards 
+                                      replace = FALSE)  ) # Without replacement
+Results[, 1:4]  # Show the first four columns; each column is one hand of five cards
+
+# For each Hand (i.e., column), count how many  Hearts
+num_Hearts <- colSums(Results == "Hearts")
+
+# Show the first four hands, and the count of Hearts:
+rbind(Results[, 1:4], 
+      num_Hearts[1: 4])
+
+# Count how mnay have *more than 3* hearts
+more_Than_3_Hearts <- sum( num_Hearts >= 3 )      # Count how many have at least 3 Hearts 
 ```
 
-The print the result:
+
+Then print the result:
 
 ```{r}
 # Print the result
-cat("The probability estimate is", round( mean(results), 4), "\n")
+prob_more_Than_3_Hearts <- more_Than_3_Hearts / num_Reps
+cat("The prob. estimate is", round( mean(prob_more_Than_3_Hearts), 
+                                    4), "\n") # Round to four decimal places
 
 ```
 
@@ -3306,39 +3331,43 @@ A more precise estimate would be found using a larger number of simulations.
 
 ### Simulation for sensitivity analysis {#SimulationSensitivityAnalysis}
 
+*Sensitivity analysis*\index{Sensitivity analysis} refers to the process of checking how (and how much) the results of a problem or model change when the inputs or assumptions are adjusted: how *sensitive* the results are to those inputs.
+
 Suppose a doctor schedules\ $20$ patients per day, but history shows that each patient has a chance of not showing up (a 'no-show').
 For simplicity, assume that each patient has the same 'no-show' probability, and that patients operate independently.
-If more than\ $15$ patients show up, the clinic runs late.
+If more than\ $15$ patients show up on any one day, the clinic runs late.
 What is the probability the clinic runs late?
 (In a later chapter, a theoretical approach will be introduced to answering this type of question; Sect.\ \@ref(BinomialDistribution)).
 
-For this scenario, we could vary the probability that each patients os a no-show, and see what impact this has on the probability that the doctor runs late (e.g., $10$%; $15$%; $20$%).
+For this scenario, the probability that each patients is a no-show could be varied (e.g., $10$%; $15$%; $20$%), to see the impact this has on the probability that the clinic runs late.
 
-First we set up the scenario:
+First, set up the scenario:
 
 
 ```{r}
 set.seed(8091) # For reproducibility
 
-num_Reps <- 50000  # number of simulated days
-daily_Patients <- 20
+num_Reps <- 50000     # Number of replications (i.e., simulated days)
+daily_Patients <- 20  # Number of patients per day
 ```
+
 
 Then we create an **R** function to simulate what happens on a day, for any given no-show probability:
 
 ```{r, class.source="mycode", class.output="myoutput"}
 # Create an R function to simulate what happens on a day
-simulate_Day <- function(no_Show_Prob = 0.15, 
-                         num_Patients = 20,
-                         patient_Limit = 15) {
+simulate_Day <- function(no_Show_Prob = 0.15,  # No-show probability
+                         num_Patients = 20,    # Number of patients per day
+                         patient_Limit = 15) { # More than this many: clinic late
   
   # Allocate a random number between 0 and 1 to each patient
   patient_Probs <- runif( num_Patients)
   
-  # sum()  works, as R uses that TRUE = 1, and FALSE = 0
-  number_Miss <- sum( patient_Probs < no_Show_Prob )
+  # sum()  works, because  TRUE = 1,  and  FALSE = 0
+  number_No_Shows <- sum( patient_Probs < no_Show_Prob )
 
-  running_Late <- ( (num_Patients - number_Miss) > patient_Limit) 
+  running_Late <- ( (num_Patients - number_No_Shows) > patient_Limit) 
+  # TRUE  means clinic will run late.  FALSE  means clinic will NOT run late
   
   return(running_Late)
 }
@@ -3351,7 +3380,7 @@ Then run the simulation for the various no-show probabilities:
 ```{r}
 # Declare the no-show probabilities to use
 no_Show_List <- seq(0.01, 0.20,
-                    by = 0.025)
+                    by = 0.01)
 
 # Find the mean of the TRUE and FALSE values returned.
 # This works because  R  treats TRUE as 1, FALSE as 0
