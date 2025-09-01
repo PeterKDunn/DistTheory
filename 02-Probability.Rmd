@@ -2921,18 +2921,18 @@ A *simulation*\index{Simulation} is when a computer is used to imitate a real si
 
 Using a computer can be useful for many reasons when working with probabilities and statistics more generally:
 
-1. **Demonstration of theory.**
+1. **Checking answers, intuition and reasoning.**
+   Simulation can be used to check answers and reasoning.
+   Analytic solutions can be verified by comparing to simulation results.
+2. **Demonstration of theory.**
    Simulation can be used to visually demonstrate theory (e.g., Sect.\ \@ref(SimulationCoinToss)).
    Sometimes the theory can be difficult to understand, and a simulation can bridge the gap between formulas and reality.
-2. **Confirmation and validation of results.**
+3. **Confirmation and validation of results.**
    Simulation can confirm (not *prove*) counter-intuitive results (such as the Monty Hall problem (Exercise\ \@ref(exr:SimulationMontyHall)), the birthday paradox (Exercise\ \@ref(exr:BirthdayProblem)), or non-transitive dice (Exercise\ \@ref(exr:NonTransitiveDice)).
-3. **Answering tedious or complex situations.**
+4. **Answering tedious or complex situations.**
    Simulation can make tedious, difficult or complex computations easier.
    Simulation gives quick approximations that bypass heavy combinatorial formulas.
    In some cases, simulation can be used for problems with no closed-form solutions.
-4. **Checking answers, intuition and reasoning.**
-   Simulation can be used to check answers and reasoning.
-   Analytic solutions can be verified by comparing to simulation results.
 5. **Performing sensitivity analysis.**
    Simulation allows easy tweaking or changing of parameters to see the impacts on the results.
 
@@ -2953,6 +2953,78 @@ The same random number seed produces the same sequence of pseudo-random numbers.
 In this book, so that examples are reproducible, we set the *random number seed* when using **R** (using `set.seed()`), so that our examples are reproducible.
 (Nonetheless, we call these 'random numbers' with the understanding that they are really pseudo-random numbers...)
 The **R** function `replicate()` allows an **R** expression to be repeated ('replicated') a given number of times, and often proves useful for creating simulations.
+
+
+### Simulation to check answers, intuition and reasoning {#SimulationChecking}
+
+Consider drawing five cards at random from a fair pack; what is the probability that at least cards\ $3$ are hearts?
+
+This question is not too difficult to answer using the counting methods of Sect.\ \@ref(CombsAndPerms); you should show that the answer is approximately\ $0.0927$.
+However, it can be easy to miscount.
+We could use an **R** simulation to check the answer.
+
+First, set up the simulation:
+
+
+```{r}
+# 'Make' the deck of cards.
+# Note: the denomination is not important, just the suit
+Deck <- c(rep("Hearts", 13),   # 13 cards of each suit
+          rep("Diamonds", 13), 
+          rep("Clubs", 13), 
+          rep("Spades", 13))
+
+set.seed(12043)   # For reproducibility 
+num_Reps <- 5000  # Number of replications to use
+```
+
+
+Then we simulate numerous hands of $5$\ cards using `replicate()`.
+The first input is the number of replications (i.e., `num_Reps`) and the second is the command to be replicated (in this case, taking a `sample()` of `size` five from the `Deck` of cards, with `replace`-ment):
+
+
+```{r}
+# Each replication goes into a column of  Hands
+Hands <- replicate(num_Reps, sample(Deck,   # Sample from the  Deck  of cards
+                                    size = 5,  # A hand of *five* cards 
+                                    replace = FALSE)  ) # Without replacement
+Hands[, 1:4]  # Show the first four columns; each col is a hand of five cards
+```
+
+Then count the number of Hearts in each `Hand` (i.e., in each column):
+
+```{r}
+# For each Hand (i.e., column), count how many  Hearts
+num_Hearts <- colSums(Hands == "Hearts")
+
+# Show the count of Hearts in those first four hands:
+num_Hearts[1 : 4]
+```
+
+
+Then determine how many of these `Hands` have at least three hearts:
+
+
+```{r}
+# Count how many have *at least 3* hearts
+at_Least_3_Hearts <- sum( num_Hearts >= 3 )  
+```
+
+
+Then fin dthe probability, and print the result:
+
+```{r}
+# Compute the *probability* of at least three Hearts
+prob_At_Least_3_Hearts <- at_Least_3_Hearts / num_Reps
+
+# Print the (rounded) results (where  "\n"  means to start a new line)
+cat("The prob. estimate is", 
+    round( mean(prob_At_Least_3_Hearts), 
+           4), "\n") # Round to four decimal places
+```
+
+This is close to what we computed using theory.
+A more precise estimate would be found using a larger number of simulations.
 
 
 ### Simulation to demonstrate theory {#SimulationTheoryDemo}
@@ -2996,8 +3068,8 @@ After each toss, the probability of obtaining a head using all the available inf
 ```{r}
 Toss_Number <- 1:Num_Tosses            # Sequence: from 1 to Num_Tosses
 
-# Compute P(Heads) after each toss
-Prop_Heads <- cumsum(Tosses == "H") / Toss_Number  # cumsum() is the 'cumulative sum'
+# Compute P(Heads) after each toss (cumsum()  is the 'cumulative sum')
+Prop_Heads <- cumsum(Tosses == "H") / Toss_Number
 Prop_Heads[1 : 8]  # Show the first eight results
 ```
 
@@ -3270,68 +3342,10 @@ cat("Prob. of an UNacceptable seating arrangement: approx. ",
 
 
 
-### Simulation to check answers, intuition and reasoning {#SimulationChecking}
-
-Consider drawing five cards at random from a fair pack; what is the probability that at least cards\ $3$ are hearts?
-
-This question is not too difficult to answer using the counting methods of Sect.\ \@ref(CombsAndPerms); you should show that the answer is approximately\ $0.0927$.
-However, it can be easy to miscount.
-We could use an **R** simulation to check the answer.
-
-First, set up the simulation:
-
-
-```{r}
-# 'Make' the deck of cards.
-# Note: the denomination is not important, just the suit
-Deck <- c(rep("Hearts", 13),   # 13 cards of each suit
-          rep("Diamonds", 13), 
-          rep("Clubs", 13), 
-          rep("Spades", 13))
-
-set.seed(12043)   # For reproducibility 
-num_Reps <- 5000  # Number of replications to use
-```
-
-
-Then we simulate numerous hands of $5$\ cards using `replicate()`:
-
-
-```{r}
-Results <- replicate(num_Reps, sample(Deck,   # Sample from the  Deck  of cards
-                                      size = 5,  # A hand of *five* cards 
-                                      replace = FALSE)  ) # Without replacement
-Results[, 1:4]  # Show the first four columns; each column is one hand of five cards
-
-# For each Hand (i.e., column), count how many  Hearts
-num_Hearts <- colSums(Results == "Hearts")
-
-# Show the first four hands, and the count of Hearts:
-rbind(Results[, 1:4], 
-      num_Hearts[1: 4])
-
-# Count how mnay have *more than 3* hearts
-more_Than_3_Hearts <- sum( num_Hearts >= 3 )      # Count how many have at least 3 Hearts 
-```
-
-
-Then print the result:
-
-```{r}
-# Print the result
-prob_more_Than_3_Hearts <- more_Than_3_Hearts / num_Reps
-cat("The prob. estimate is", round( mean(prob_more_Than_3_Hearts), 
-                                    4), "\n") # Round to four decimal places
-
-```
-
-This is close to what we computed using theory.
-A more precise estimate would be found using a larger number of simulations.
-
 
 ### Simulation for sensitivity analysis {#SimulationSensitivityAnalysis}
 
-*Sensitivity analysis*\index{Sensitivity analysis} refers to the process of checking how (and how much) the results of a problem or model change when the inputs or assumptions are adjusted: how *sensitive* the results are to those inputs.
+*Sensitivity analysis*\index{Sensitivity analysis} refers to the process of checking how (and by how much) the results of a problem or model change when the inputs or assumptions are adjusted: how *sensitive* the results are to those inputs.
 
 Suppose a doctor schedules\ $20$ patients per day, but history shows that each patient has a chance of not showing up (a 'no-show').
 For simplicity, assume that each patient has the same 'no-show' probability, and that patients operate independently.
@@ -3353,6 +3367,7 @@ daily_Patients <- 20  # Number of patients per day
 
 
 Then we create an **R** function to simulate what happens on a day, for any given no-show probability:
+
 
 ```{r, class.source="mycode", class.output="myoutput"}
 # Create an R function to simulate what happens on a day
@@ -3379,34 +3394,33 @@ Then run the simulation for the various no-show probabilities:
 
 ```{r}
 # Declare the no-show probabilities to use
-no_Show_List <- seq(0.01, 0.20,
-                    by = 0.01)
+no_Show_Probs <- seq(0.0, 0.15,
+                     by = 0.01)
 
 # Find the mean of the TRUE and FALSE values returned.
 # This works because  R  treats TRUE as 1, FALSE as 0
-prob_Late <- array(dim = length(no_Show_List))
+prob_Day_Is_Late <- array(dim = length(no_Show_Probs))
 
-for (i in (1:length(no_Show_List)) ){ # For each probability:
-  
-  num_Days_Late <- sum(replicate(num_Reps, 
-                                 simulate_Day(no_Show_List[i]) ) )
-  prob_Late[i] <- num_Days_Late / num_Reps
+for (i in (1:length(no_Show_Probs)) ){ # For each probability:
+  num_Days_Run_Late <- sum(replicate(num_Reps, 
+                                     simulate_Day(no_Show_Probs[i]) ) )
+  prob_Day_Is_Late[i] <- num_Days_Run_Late / num_Reps
 }
 ```
 
 
-Then\ resukts then can be printed (and plotted; see Fig.\ \@ref(fig:probLate)):
+The results then can be printed (and plotted; see Fig.\ \@ref(fig:probLate)):
 
 ```{r plotProbLate, fig.show='hide'}
-round(prob_Late, 4)
+round(prob_Day_Is_Late, 4)
 
-plot(prob_Late ~ no_Show_List,
+plot(prob_Day_Is_Late ~ no_Show_Probs,
      type = "b",     # Plot "both" lines and points
      las = 1,        # Make axis labels horizontal
      lwd = 2,        # Line width of 2
      col = "cyan4",  # Set colour
      xlab = "Probability that a patient is a no-show",
-     ylab = "Probability that a day runs late")
+     ylab = "Probability that clinic runs late")
 ```
 
 Clearly, the greater the no-show probability, the smaller the chance of running late (as expected).
