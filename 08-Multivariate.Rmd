@@ -31,9 +31,7 @@ Many situations require observing two or more numerical characteristics simultan
 This chapter begins discussing the two-variable (bivariate) case (Sect.\ \@ref(BivariateDistributions)), and then the multi-variable (more than two variable) case (Sect.\ \@ref(Multivariate)).
 
 
-## Bivariate distributions {#BivariateDistributions}
-
-### Joint probability functions {#BivariateProbFunction}
+## Bivariate random variables and their distributions {#BivariateRVs}
 
 The joint probability function is a function that simultaneously describes ho the two random variables vary.
 Hence, the range space of $(X, Y)$, written $R_{X \times Y}$, is a subset of the Euclidean plane. 
@@ -49,7 +47,7 @@ Then $(X, Y)$ is called a *two-dimensional random variable*, or a *random vector
 
 :::{.example #BVDiscreteEG name="Bivariate discrete"}
 Consider a random process where, simultaneously, *two* coins are tossed, and *one* die is rolled. 
-Let $X$ be the number of heads that show on the two coins, and $Y$ the number of rolls needed to roll a `r knitr::include_graphics("Dice/die6.png", dpi=2000)`.
+Let\ $X$ be the number of heads that show on the two coins, and $Y$\ be the number of rolls needed to roll a `r knitr::include_graphics("Dice/die6.png", dpi=2000)`.
 
 $X$ is discrete with $R_X = \{0, 1, 2\}$.
 $Y$ is discrete with a countably infinite range space $R_Y = \{ 1, 2, 3, \dots\}$.
@@ -58,8 +56,13 @@ The range space is $R_{X\times Y} = \{ (x, y): 0 \le x \le 2, y = 1, 2, 3, \dots
 :::
 
 
+As with the univariate case, the description and language for the probability function are different, depending on whether the random variables\ $X$ and\ $Y$ are discrete or continuous case (though the ideas remain similar).
+While not common, the case where one variable, say\ $X$, is continuous and the other, say\ $Y$, is discrete also occurs.
+We defer this case until Sect.\ \@ref(MixedJointPF).
+
+
 :::{.definition #BivariateProbFunction name="Discrete bivariate distribution function"}
-Let $(X, Y)$ be a $2$-dimensional discrete random variable. 
+Let $(X, Y)$ be a $2$-dimensional random variable where\ $X$ and\ $Y$ are both discrete random variables. 
 With each $(x_i, y_j)$ we associate a number $p_{X, Y}(x_i, y_j)$ representing $\Pr(X = x_i, Y = y_j)$ and satisfying
 \begin{align}
    p_{X, Y}(x_i, y_j) &\geq 0, \text{ for all } (x_i, y_j)  \\
@@ -77,7 +80,7 @@ is called the *probability distribution* of $(X, Y)$.
 
 
 :::{.definition #BivariateProbFunctionCont name="Continuous bivariate distribution function"}
-Let $(X, Y)$ be a continuous random variable assuming values in a $2$-dimensional set\ $R$.
+Let $(X, Y)$ be a $2$-dimensional random variable where\ $X$ and\ $Y$ are both continuous random variables.
 The *joint probability density function*, $f_{X, Y}$, is a function satisfying
 \begin{align}
    f_{X, Y}(x, y) &\geq 0, \text{ for all } (x, y) \in R, \\
@@ -86,7 +89,7 @@ The *joint probability density function*, $f_{X, Y}$, is a function satisfying
 :::
 
 
-The second of these indicates that the *volume* under the surface $f_{X,Y}(x,y)$ is one. 
+The second of these indicates that the *volume* under the surface $f_{X, Y}(x, y)$ is one. 
 Also, for $\Delta x, \Delta y$ sufficiently small,
 \begin{equation}
    f_{X, Y}(x, y) \, \Delta x \Delta y \approx \Pr(x \leq X \leq x + \Delta x, y \leq Y \leq y + \Delta y).
@@ -521,7 +524,7 @@ Then,
 :::
 
 
-### Joint distribution function {#BivariateDistributionFunction}
+## Bivariate random variables: joint distribution function {#BivariateDistributionFunction}
 
 The (cumulative) distribution function represents a sum of probabilities, or a volume under a surface, is denoted by $F_{X, Y}(x, y)$, and defined as follows.
 
@@ -638,7 +641,7 @@ $$
 
 
 
-## Marginal distributions {#MarginalDistributions}
+## Bivariate random variables: marginal distributions {#MarginalDistributions}
 
 With each two-dimensional random variable $(X, Y)$ two one-dimensional random variables, namely\ $X$ and\ $Y$, can be described. 
 We can find the probability distributions of each of\ $X$ and\ $Y$ separately.
@@ -830,7 +833,7 @@ In this example, the marginal distribution is easily found from the total column
 :::
 
 
-## Conditional distributions {#ConditionalDistributions}
+## Bivariate random variables: conditional distributions {#ConditionalDistributions}
 
 Consider $(X, Y)$ with joint probability function as in Example\ \@ref(exm:BVDiscrete2), with marginal distributions of\ $X$ and\ $Y$ as shown in Table\ \@ref(tab:JointPFmarginals).
 
@@ -1197,7 +1200,7 @@ Since\ $X_2$ was the number of the top face of the die, this is exactly as we sh
 :::
 
 
-## Independent random variables {#IndependentRVs}
+## Bivariate random variables: independent random variables {#IndependentRVs}
 
 Recall that events\ $A$ and\ $B$ are independent if, and only if,
 $$
@@ -1452,7 +1455,130 @@ lines( x = c(0, 1, 0, 0),
 ```
 
 
-## Multivariate distributions* {#Multivariate}
+## Mixed joint probability functions {#MixedJointPF}
+
+So far, the bivariate cases have included two discrete or two continuous random variables.
+However, in it also possible for one variable, say\ $X$, to be continuous and the other, say\ $Y$, to be discrete.
+
+
+:::{.definition #BivariateProbFunctionCont name="Continuous bivariate distribution function"}
+Let $(X, Y)$ be a random vector where\ $X$ is **continuous** and\ $Y$ is **discrete** with possible values $\{y_1, y_2, \dots\}$.
+
+The **joint density–mass function** of $(X, Y)$ is defined by
+$$
+  f_{X, Y}(x, y_j) 
+  = f_{X \mid Y}(x \mid y_j) \cdot p_Y(y_j),
+$$
+where:
+
+- $p_Y(y_j) = \Pr(Y = y_j)$ is the probability *mass* function of\ $Y$,
+- $f_{X \mid Y}(x \mid y_j)$ is the conditional *density* of\ $X$ given\ $Y = y_j$.
+:::
+
+
+Properties
+
+1. **Nonnegativity**:
+$$
+  f_{X, Y}(x, y_j) \geq 0 \quad \text{for all valid } (x, y_j).
+$$
+
+2. **Normalization**:
+$$
+  \sum_{j} \int_{-\infty}^{\infty} f_{X,Y}(x, y_j)\, dx = 1.
+$$
+
+3. **Probability calculation**:  
+   For any measurable set $A \subseteq \mathbb{R}$,
+$$
+  \Pr(X \in A, Y = y_j) = \int_A f_{X,Y}(x, y_j)\, dx.
+$$
+
+
+
+:::{.example #MixedRV name="Mixed random variable"}
+Suppose a random vector $(X, Y)$ is defined so that $Y \in \{1, 2\}$ with
+$$
+  p_Y(1) = 0.4, \quad P_Y(2) = 0.6.
+$$
+Conditional on $Y = 1$, $X \sim \text{Uniform}(0, 1)$, so that
+$$
+  f_{X \mid Y}(x \mid 1) = 
+  \begin{cases}
+    1 & 0 \le x \le 1, \\
+    0 & \text{otherwise,}
+  \end{cases}
+$$
+and onditional on $Y = 2$, $X \sim \text{Uniform}(0,2)$, so that
+$$
+  f_{X \mid Y}(x \mid 2) 
+  = 
+  \begin{cases}
+    1/2   & 0 \le x \le 2, \\
+    0     & \text{otherwise.}
+  \end{cases}
+$$
+Then the joint density–mass function is
+$$
+  f_{X, Y}(x, y) 
+  = f_{X \mid Y}(x \mid y) \cdot p_Y(y).
+$$
+Explicitly:
+$$
+  f_{X, Y}(x, 1) =
+  \begin{cases}
+    0.4  & 0 \le x \le 1, \\
+    0,   & \text{otherwise;}
+\end{cases}
+\quad
+f_{X, Y}(x, 2) 
+= 
+\begin{cases}
+  0.3 & 0 \le x \le 2, \\
+  0   & \text{otherwise.}
+\end{cases}
+$$
+Notice that 
+$$
+  \sum_{y \in \{1,2\}} \int_{-\infty}^{\infty} f_{X,Y}(x,y)\, dx
+  = \int_0^1 0.4 \, dx + \int_0^2 0.3 \, dx
+  = 0.4 + 0.6 = 1.
+$$
+as required.
+
+Then, for instance, we can find $\Pr(X \le 0.5, Y = 2)$:
+$$
+  \Pr(X \le 0.5, Y = 2) 
+  = \int_0^{0.5} f_{X, Y}(x, 2)\, dx
+  = \int_0^{0.5} 0.3\, dx
+  = 0.15.
+$$
+:::
+
+
+---
+
+This describes a **mixed distribution**, where probabilities are computed by **integrating over the continuous variable**\ $X$ and *summing over the discrete variable*\ $Y$.
+
+
+Let $(X, Y)$ be a $2$-dimensional random variable where\ $X$ is a continuous random variable, and\ $Y$ is a discrete random variable.
+The *mixed joint probability function*, $f_{X, Y}$, 
+$$
+  f_{X, Y}(x, y_j) 
+  = f_{X\mid Y}(x\mid y_j) \cdot \Pr_Y(y_j),
+$$
+where $\Pr_Y(y_j) = \Pr(Y = y_j)$ and $f_{X\mid Y}(x\mid y)$ is a conditional density of\ $X$ given\ $Y = y_j$, such that 
+\begin{align}
+   f_{X, Y}(x, y) 
+   &\geq 0, \text{ for all } (x, y) \in R, \\
+   \int \!\! \int_{R} f_{X, Y}(x, y) \, dx \, dy 
+   &= 1.
+\end{align}
+:::
+
+
+
+## Multivariate random variables* {#Multivariate}
 
 ### Random Vectors {#RandomVectors}
 
