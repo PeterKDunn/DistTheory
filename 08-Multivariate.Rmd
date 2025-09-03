@@ -1560,43 +1560,27 @@ $$
 
 ### Random Vectors {#RandomVectors}
 
-Up to now we have studied *univariate* random variables (i.e., a single random variable) 
+So far, we have studied *univariate* random variables (i.e., a single random variable) 
 and *bivariate* random variables (two jointly distributed random variables). 
 These ideas can be extended to more random variables; the case of *multivariate* random variables, where several random variables are considered simultaneously.  
 
-To do this, we use *random vectors*.
+To do this, using *random vectors* is convenient.\index{Random vector}
 A random vector is a column vector of $n$\ random variables:
 $$
-  \mathbf{X} = (X_1, X_2, \dots, X_n)^T.
+  \mathbf{X} = [X_1, X_2, \dots, X_n]^T,
 $$
+where the superscript\ $T$ means 'transpose'.
 Each\ $X_i$ is a random variable, and together they form an $n$-dimensional random vector.
-
-In the bivariate case, for example,
+In the bivariate case, for example, we could write
 \begin{equation}
    \mathbf{X} 
-   = \left( 
-     \begin{array}{c} 
+   = \begin{bmatrix} 
        X_1 \\ 
        X_2 
-     \end{array} 
-     \right).
+     \end{bmatrix} 
   \label{EQN:matrix1}
 \end{equation}
-The linear combination $Y = a_1 X_1 + a_2 X_2$ can be expressed
-\begin{equation}
-   Y 
-   = a_1 X_1 + a_2 X_2 
-   = (a_1, a_2)
-   \left( 
-   \begin{array}{c} 
-      X_1 \\ 
-      X_2 
-   \end{array} 
-   \right) 
-   = \mathbf{a}^T\mathbf{X}
-   (\#eq:BivarCombination)
-\end{equation}
-where the (column) vector $\mathbf{a} = \left( \begin{array}{c} a_1 \\ a_2 \end{array} \right)$, and the superscript\ $T$ means 'transpose'.
+where the (column) vector $\mathbf{a} = \begin{bmatrix} a_1 \\ a_2 \end{bmatrix}$.
 
 
 ### Joint probability functions {#MultivariateProbFn}
@@ -2414,8 +2398,8 @@ plot(x = x,
      las = 1,
      lwd = 3)
 polygon( x = c(x, rev(x)),
-         y = c(y, rep(1, length(y))) ,
-         col = "grey")
+         y = c(y, rep(1, length(y))),
+         col = plotColour1)
 text(0.4, 0.6, 
      expression(italic(R)),
      cex = 2)
@@ -2447,7 +2431,7 @@ plot(x = x,
      lwd = 3)
 polygon( x = c(0, 0, 1),
          y = c(0, 1, 0),
-         col = "grey")
+         col = plotColour1)
 text(0.25, 0.35, 
      expression(italic(A)),
      cex = 2)
@@ -2521,26 +2505,28 @@ $$
 
 
 :::{.exercise #MixedReliability}
-A machine component can fail in one of three ways:
-- $Y = 1$: failure is due to a mechanical failure, with probability\ $0.5$;
-- $Y = 2$: failure is due to a electrical failure, with probability\ $0.3$;  
-- $Y = 3$: failure is due to a thermal failure, with probability\ $0.2$.
+A machine component can fail for one of three reasons:
+
+- mechanical failure ($Y = 1$), with probability\ $0.5$;
+- electrical failure ($Y = 2$), with probability\ $0.3$;
+- thermal failure ($Y = 3$), with probability\ $0.2$.
 
 The random variable\ $X$ denotes the *time to failure* (in hundreds of hours).
-The time-to-failure has the distribution
+Conditional on knowing the mode of failure, the time-to-failure has the distribution
 $$
   f_{X\mid Y}(x\mid Y = y) 
-  = \frac{1}{\lambda_y}\exp(-\lambda_y x)
-  \quad\text{for $x > 0$}
+  =  \lambda_y \exp(-\lambda_y x)
+    \quad\text{for $x > 0$}
 $$
-where the value of\ $\lambda_y$ is conditional on the failure mode:
-- if failure is due to a mechanical failure, $\lambda_y = 1$;
-- if failure is due to a electrical failure, $\lambda_y = 0.5$;  
-- if failure is due to a thermal failure, $\lambda_y = 0.25$.
+where
 
-1. Write down the joint density--mass function $f_{X, Y}(x, y)$.  
-2. Find the marginal density of the time to failure $f_X(x)$.  
-3. Compute $\Pr(Y = 1 \mid X \leq 2)$, the probability that the failure mode was mechanical given that the component failed within $200$ hours.  
+- $\lambda_y = 1$ if the failure is mechanical;
+- $\lambda_y = 0.5$ if the failure is electrical; and
+- $\lambda_y = 0.25$ if the failure is thermal.
+
+1. Write down the joint density--mass function $f_{X, Y}(x, y)$.
+2. Find the marginal density of the time to failure $f_X(x)$.
+3. Compute $\Pr(Y = 1 \mid X \leq 2)$, the probability that the failure mode was mechanical given that the component failed within $200$ hours.
 4. Interpret the result in words.
 :::
 

@@ -648,7 +648,7 @@ This is expected, since the distribution is symmetric (Fig.\ \@ref(fig:VarianceC
 :::
 
 
-```{r, VarianceComputationalPDF, echo=FALSE, fig.align="center", fig.cap="The probability density function for\\ $X$", fig.height=4, fig.width=5, out.width='60%'}
+```{r, VarianceComputationalPDF, echo=FALSE, fig.align="center", fig.cap="The probability density function for\\ $X$.", fig.height=4, fig.width=5, out.width='60%'}
 xx <- seq(-1, 3, 
           length = 500)
 
@@ -960,7 +960,8 @@ d7 <- dbeta(x_beta, shape1 = 3, shape2 = 3) / a  # Adjust height due to scaling
 # Parameters
 a <- sqrt(24)
 b <- 2 - 0.5 * a
-y <- seq(b + 1e-6, b + a - 1e-6, length.out = 1000)  # avoid infinity at edges
+y <- seq(b + 1e-6, b + a - 1e-6, 
+         length.out = 1000)  # avoid infinity at edges
 x_beta <- (y - b) / a
 d8 <- dbeta(x_beta, 0.5, 0.5) / a
 
@@ -1025,6 +1026,7 @@ plot(y, d8,
      lwd = 2, 
      col = plotColour,
      ylim = c(0, 2),
+     xlim = c(-1, 5),
      axes = FALSE,
      main = expression( atop(Transformed~"beta"~distribution,
                              mu==2*";"~~sigma^2==1*";"~~gamma[1]==0)),
@@ -1519,7 +1521,7 @@ That is, from a knowledge of $\operatorname{E}[X]$ and $\operatorname{var}[X]$ w
 Nonetheless, using Tchebysheff's inequality we can find a useful *bound* to either the probability outside or inside of $\mu \pm k\sigma$.
 
 
-## Multivariate expectations 
+## Expectation for multivariate distributions 
 
 ### Expectations for bivariate distributions
 
@@ -2101,21 +2103,23 @@ if( knitr::is_html_output() ) {
 
 
 
-### The multivariate extension {#MultivariateExtensions}
+## Expectations for multivariate distributions* {#MultivariateExtensions}
 
-#### Expectation and covariance
+### Expectation and covariance
 
 Consider a random vector of $n$\ random variables
 $$
-  \mathbf{X} = (X_1, X_2, \dots, X_n)^T.
+  \mathbf{X} = [X_1, X_2, \dots, X_n]^T.
 $$
 The *mean vector* of $\mathbf{X}$ is
 $$
-  \boldsymbol{\mu} = E[\mathbf{X}] =
+  \boldsymbol{\mu} 
+  = E[\mathbf{X}] 
+  =
   \begin{bmatrix}
-  E[X_1] \\
-  \vdots \\
-  E[X_n]
+    E[X_1] \\
+    \vdots \\
+    E[X_n]
   \end{bmatrix}.
 $$
 
@@ -2133,46 +2137,49 @@ $$
   \rho_{ij} = \frac{\Sigma_{ij}}{\sqrt{\Sigma_{ii}\,\Sigma_{jj}}}.
 $$
 
-#### Independence
+### Independence
 
 The components $X_1, \dots, X_n$ are independent if and only if
 $$
-  f(x_1, \dots, x_n) = \prod_{i=1}^n f_{X_i}(x_i).
+  f(x_1, \dots, x_n) = \prod_{i = 1}^n f_{X_i}(x_i).
 $$
 
 Linear combinations of random variables are most elegantly dealt with using the methods and notation of vectors and matrices, especially as the dimension grows beyond the bivariate case.
 In the bivariate case we define
 \begin{align}
    \mathbf{X} 
-   &= \left( \begin{array}{c} X_1 \\ X_2 \end{array} \right);
+   &= \begin{bmatrix} 
+       X_1 \\ 
+       X_2 
+      \end{bmatrix};
   \label{EQN:matrix1} \\
   \operatorname{E}[\mathbf{X}] 
-  & =  \operatorname{E} \left[ 
-  \left( 
-   \begin{array}{c} 
+  & =  \operatorname{E} 
+  \left[ 
+   \begin{bmatrix} 
       X_1 \\ 
       X_2
-   \end{array} 
-   \right) \right]
+   \end{bmatrix} 
+   \right]
    =  
-   \left(
-   \begin{array}{c} 
+   \begin{bmatrix} 
      \mu_1 \\
      \mu_2 
-   \end{array} \right) =
+   \end{bmatrix} =
   \boldsymbol{\mu};\label{EQN:matrix2} \\
   \operatorname{var}[\mathbf{X}] 
-  & = \operatorname{var}\left[ \left(
-  \begin{array}{c} 
+  & = \operatorname{var}
+  \left[
+  \begin{bmatrix} 
      X_1 \\ 
      X_2
-  \end{array} 
-  \right) \right]
-  = \left( 
-  \begin{array}{cc} 
+  \end{bmatrix} 
+  \right]
+  = 
+  \begin{bmatrix} 
      \sigma^2_1  & \sigma_{12} \\
      \sigma_{21} & \sigma^2_2 
-  \end{array} \right)
+  \end{bmatrix} 
   = \mathbf{\Sigma}.\label{EQN:matrix3}
 \end{align}
 
@@ -2182,19 +2189,18 @@ The linear combination $Y = a_1 X_1 + a_2 X_2$ can be expressed
 \begin{equation}
    Y 
    = a_1 X_1 + a_2 X_2 
-   = (a_1, a_2)
-   \left( 
-   \begin{array}{c} 
+   = [a_1, a_2]
+   \begin{bmatrix} 
       X_1 \\ 
       X_2 
-   \end{array} 
-   \right) 
+   \end{bmatrix} 
    = \mathbf{a}^T\mathbf{X}
    (\#eq:BivarCombination)
 \end{equation}
-where the (column) vector $\mathbf{a} = \left( \begin{array}{c} a_1 \\ a_2 \end{array} \right)$, and the superscript\ $T$ means 'transpose'.
+where the (column) vector $\mathbf{a} = \begin{bmatrix} a_1 \\ a_2 \end{bmatrix}$, and the superscript\ $T$ means 'transpose'.
 
-## Independent random variables {#IndependentRVs}
+
+### Independent random variables {#IndependentRVs}
 
 Recall that events\ $A$ and\ $B$ are independent if, and only if,
 $$
@@ -2524,28 +2530,26 @@ With the standard rules of matrix multiplication, Theorems\ \@ref(thm:ExpLinear)
 \begin{equation}
    \operatorname{E}[Y]
    = \operatorname{E}[\mathbf{a}^T\mathbf{X}]
-   = (a_1, a_2)
-   \left( 
-   \begin{array}{c} 
+   = [a_1, a_2]
+   \begin{bmatrix} 
       \mu_1 \\ 
       \mu_2 
-    \end{array} 
-    \right)
+    \end{bmatrix} 
    = \mathbf{a}^T\boldsymbol{\mu}
 \end{equation}
 and
 \begin{align}
   \operatorname{var}[Y]
   &= \operatorname{var}[\mathbf{a}^T\mathbf{X}\mathbf{a}]\nonumber\\
-  &= (a_1,a_2)
-  \left[ \begin{array}{cc} 
+  &= [a_1, a_2]
+  \begin{bmatrix} 
      \sigma^2_1 & \sigma_{12} \\
      \sigma_{21}& \sigma^2_2 
-  \end{array} \right]
-  \left( \begin{array}{c} 
+  \end{bmatrix}
+  \begin{bmatrix} 
      a_1 \\ 
      a_2
-  \end{array} \right)\nonumber\\
+  \end{bmatrix} \nonumber\\
   &= \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}.
 \end{align}
 
@@ -2553,12 +2557,12 @@ The vector formulation of these results apply directly in the multivariate case 
 Write
 \begin{align*}
   \mathbf{X} 
-  & =(X_1, X_2, \ldots, X_n)^T; \\
-  \operatorname{E}[\mathbf{X}] 
-  & =(\mu_1, \ldots, \mu_n)^T = \boldsymbol{\mu}^T; \\
-  \operatorname{var}[\mathbf{X}]
-  & = \mathbf{\Sigma}; \\
-   \mathbf{a}^T & = \left(a_1,a_2,\ldots, a_n \right).
+  &= [X_1, X_2, \ldots, X_n]^T; \\
+     \operatorname{E}[\mathbf{X}] 
+  &= [\mu_1, \ldots, \mu_n]^T = \boldsymbol{\mu}^T; \\
+     \operatorname{var}[\mathbf{X}]
+  &= \mathbf{\Sigma}; \\
+     \mathbf{a}^T & = \left[a_1,a_2,\ldots, a_n \right].
 \end{align*}
 Now Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance) can be expressed in vector form.
 
@@ -2602,51 +2606,48 @@ Consider the random variables $Y_1 = 3X_1 + 2X_2 - X_3$ and $Y_2 = X_3 - X_1$.
 Determine $\operatorname{E}[Y_1]$, $\operatorname{E}[Y_2]$, $\operatorname{var}[Y_1]$, $\operatorname{var}[Y_2]$ and $\operatorname{Cov}(Y_1,Y_2)$.
 
 A vector formulation of this problem allows us to use Theorems\ \@ref(thm:MeanVarVector) and\ \@ref(thm:LinearCombCovar) directly. 
-Putting $\mathbf{a}^T = (3, 2, -1)$ and $\mathbf{b}^T = (-1, 0, 1)$:
+Putting $\mathbf{a}^T = [3, 2, -1]$ and $\mathbf{b}^T = [-1, 0, 1]$:
 $$
    Y_1 = \mathbf{a}^T\mathbf{X}
    \quad\text{and}\quad 
    Y_2 = \mathbf{b}^T\mathbf{X}
 $$
-where $\mathbf{X}^T=(X_1, X_2, X_3)$.
-Also define $\boldsymbol{\mu}^T = (1, 2, 3)$ and 
+where $\mathbf{X}^T = [X_1, X_2, X_3]$.
+Also define $\boldsymbol{\mu}^T = [1, 2, 3]$ and 
 $\mathbf{\Sigma} = 
-\left(
-\begin{array}{ccc} 
+\begin{bmatrix} 
   4 & -1 & 1\\
  -1 & 5 & 0\\
   1 & 0 & 6
-\end{array}
-\right)$ 
+\end{bmatrix}$ 
 as the mean and variance--covariance matrix respectively of $\mathbf{X}$.
 Then
 $$
    \operatorname{E}[Y_1]
    = \mathbf{a}^T\boldsymbol{\mu}
-   = (3, 2, -1)
-   \left(\begin{array}{c} 
+   = [3, 2, -1]
+   \begin{bmatrix} 
       1\\
       2\\
       3
-      \end{array}\right) 
+      \end{bmatrix} 
    = 4
 $$
 and
 $$
    \operatorname{var}[Y_1]
    = \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}
-   = (3, 2, -1)
-   \left( \begin{array}{ccc} 
+   = [3, 2, -1]
+   \begin{bmatrix} 
       4 & -1 & 1\\
       -1 & 5 & 0\\
        1 & 0 & 6
-    \end{array} \right)
-    \left(\begin{array}{c} 
+    \end{bmatrix}
+    \begin{bmatrix} 
       3\\
       2\\
       -1
-   \end{array}
-   \right) 
+   \end{bmatrix}
    = 44.
 $$
 Similarly $\operatorname{E}[Y_2] = 2$ and $\operatorname{var}[Y_2] = 8$.
@@ -2654,17 +2655,17 @@ Finally:
 $$
    \operatorname{Cov}(Y_1, Y_2)
    = \mathbf{a}^T\mathbf{\Sigma}\mathbf{b}
-   = (3, 2, -1)^T
-   \left( \begin{array}{ccc} 
+   = [3, 2, -1]^T
+   \begin{bmatrix} 
       4 & -1 & 1\\
       -1 & 5 & 0\\
       1 & 0 & 6
-      \end{array} \right)
-      \left(\begin{array}{c}
+      \end{bmatrix}
+      \begin{bmatrix}
         -1\\
         0\\
         1
-      \end{array}\right)
+      \end{bmatrix}
   = -12.
 $$
 :::
@@ -2752,7 +2753,7 @@ plot( F(x) ~ x,
       ylab = "Distribution fn.")
 ```
 
-```{r, plotOddFnFig, fig.cap='The density function (left) and distribution function (right) of a distribution that cannot be ', fig.align='center', out.width='100%', fig.width=10, echo=FALSE}
+```{r, plotOddFnFig, fig.cap='The density function (left) and distribution function (right) of a distribution that cannot be expressed in closed form.', fig.align='center', out.width='100%', fig.width=10, echo=FALSE}
 <<plotOddFn>>
 ```
 
