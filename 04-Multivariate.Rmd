@@ -28,7 +28,7 @@ library(rgl)
 
 Not all random processes are sufficiently simple to have the outcome denoted by a single variable\ $X$. 
 Many situations require observing two or more numerical characteristics simultaneously.
-This chapter begins discussing the two-variable (bivariate) case (Sect.\ \@ref(BivariateDistributions)), and then the multi-variable (more than two variable) case (Sect.\ \@ref(Multivariate)).
+This chapter mainly discusses the two-variable (bivariate) case, but also discusses the multivariable (more than two variables) case using matrix notation (Sect.\ \@ref(Multivariate)).
 
 
 ## Bivariate random variables and their distributions {#BivariateRVs}
@@ -346,11 +346,11 @@ Since the toss of the coin and the roll of the die are independent, the probabil
 \begin{align*}
    \Pr(X = 0, Y = 1) 
    &= \Pr(X = 0) \times \Pr(Y = 1) = \frac{1}{4}\times\frac{1}{6} = \frac{1}{24};\\
-   \Pr(X = 1, Y = 1) 
-   &= \Pr(X_1 = 1) \times \Pr(Y = 2) = \frac{1}{2}\times\frac{1}{6} = \frac{1}{12};
+   \Pr(X = 1, Y = 2) 
+   &= \Pr(X = 1) \times \Pr(Y = 2) = \frac{1}{2}\times\frac{1}{6} = \frac{1}{12};
 \end{align*}
 and so on. 
-The complete joint pf can be displayed in a graph (often tricky), a function, or a table (Table\ \@ref(tab:JointPF)). 
+The complete joint probability function can be displayed in a graph (often tricky), a function, or a table (Table\ \@ref(tab:JointPF)). 
 Here, the joint pf could be given as the function
 $$
    p_{X, Y}(x, y) =
@@ -366,9 +366,9 @@ $$
 ```{r JointPF, echo=FALSE}
 JointPF <- array( dim = c(4, 8))
 
-JointPF[1, ] <- c("$X_1 = 0$",  "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/4$")
-JointPF[2, ] <- c("$X_1 = 1$", "$1/12$", "$1/12$", "$1/12$", "$1/12$", "$1/12$", "$1/12$", "$1/2$")
-JointPF[3, ] <- c("$X_1 = 2$", "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/4$")
+JointPF[1, ] <- c("$X = 0$",  "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/4$")
+JointPF[2, ] <- c("$X = 1$", "$1/12$", "$1/12$", "$1/12$", "$1/12$", "$1/12$", "$1/12$", "$1/2$")
+JointPF[3, ] <- c("$X = 2$", "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/24$", "$1/4$")
 JointPF[4, ] <- c("Total", "$1/6$", "$1/6$", "$1/6$", "$1/6$", "$1/6$", "$1/6$", "$1$")
 
 
@@ -384,28 +384,29 @@ if( knitr::is_latex_output() ) {
                longtable = FALSE,                
                escape = FALSE,
                col.names = c("",
-                             "$X_2 = 1$",
-                             "$X_2 = 2$",
-                             "$X_2 = 3$",
-                             "$X_2 = 4$",
-                             "$X_2 = 5$",
-                             "$X_2 = 6$",
+                             "$Y = 1$",
+                             "$Y = 2$",
+                             "$Y = 3$",
+                             "$Y = 4$",
+                             "$Y = 5$",
+                             "$Y = 6$",
                              "Total"),
                caption = JointPF.caption) %>%
     kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE)   %>%
-    column_spec(1, bold = TRUE)
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE) %>%
+    row_spec(3, hline_after = TRUE)
 }
 if( knitr::is_html_output() ) {
   knitr::kable(JointPF,
                escape = TRUE,
                col.names = c("",
-                             "$X_2 = 1$",
-                             "$X_2 = 2$" ,
-                             "$X_2 = 3$" ,
-                             "$X_2 = 4$" ,
-                             "$X_2 = 5$",
-                             "$X_2 = 6$",
+                             "$Y = 1$",
+                             "$Y = 2$",
+                             "$Y = 3$",
+                             "$Y = 4$",
+                             "$Y = 5$",
+                             "$Y = 6$",
                              "Total"),
                format = "html",
                booktabs = TRUE,
@@ -548,9 +549,9 @@ The probability function is given in Table\ \@ref(tab:JointPF).
 The complete joint distribution function is given in Table\ \@ref(tab:Bivar2TableDF), and complicated even for this simple case.
 As an example, the joint df at $(1, 2)$ would be computed as follows:
 \begin{align*}
-   F_{X_1, X_2}(1, 2)
-   &= \displaystyle \sum_{x_1\le1} \,  \sum_{x_2\le 2} p_{X_1, X_2}(x_1, x_2)\\
-   &= p_{X_1, X_2}(0, 1) + p_{X_1, X_2}(0, 2) +  p_{X_1, X_2}(1, 1) + p_{X_1, X_2}(1, 2) \\
+   F_{X, Y}(1, 2)
+   &= \displaystyle \sum_{x\le1} \,  \sum_{y\le 2} p_{X, Y}(x, y)\\
+   &= p_{X, Y}(0, 1) + p_{X, Y}(0, 2) +  p_{X, Y}(1, 1) + p_{X, Y}(1, 2) \\
    &= 1/24 + 1/24 + 1/12 + 1/12 = 6/24.
 \end{align*}
 :::
@@ -621,20 +622,20 @@ if( knitr::is_html_output() ) {
 :::{.example #BVCont name="Bivariate continuous"}
 From Example\ \@ref(exm:BVDiscreteBank),
 \begin{align*}
-   F_{X_1, X_2}(x_1, x_2)
-   &= \frac{6}{5} \int_0^{x_1} \int_0^{x_2} (t_1 + t_2^2)\, dt_2 dt_1 \\
-   &= \frac{6}{5} \int_0^{x_1} (t_1 t_2 + t_2^3/3)\Big|_{t_2 = 0}^{t_2 = x_2} \, dt_1 \\
-   &= \frac{6}{5} \int_0^{x_1} (t_1 x_2 + x_2^3/3)\, dt_1 \\
-   &= \frac{6}{5} \left( \frac{x_1 x_2}{2} + \frac{x_1 x_2^3}{3}\right)
+   F_{X, Y}(x, y)
+   &= \frac{6}{5} \int_0^{x} \int_0^{y} (t_1 + t_2^2)\, dt_2 dt_1 \\
+   &= \frac{6}{5} \int_0^{x} (t_1 t_2 + t_2^3/3)\Big|_{t_2 = 0}^{t_2 = y} \, dt_1 \\
+   &= \frac{6}{5} \int_0^{x} (t_1 y + x_2^3/3)\, dt_1 \\
+   &= \frac{6}{5} \left( \frac{x y}{2} + \frac{x y^3}{3}\right)
 \end{align*}
-for $0 < x_1 < 1$ and $0 < x_2 < 1$. 
+for $0 < x < 1$ and $0 < y < 1$. 
 So
 $$
-   F_{X_1, X_2}(x_1, x_2)
+   F_{X, Y}(x, y)
    = \begin{cases}
-      0 & \text{if $x_1<0$ or $x_2<0$};\\
-      \frac{6}{5} \left( x_1 x_2/2 + x_1 x_2^3/3\right) & \text{if $0 \le x_1 \le 1$ and $0 \le x_2 \le 1$};\\
-      1 & \text{if $x_1 > 1$ and $x_2 > 1$}.
+      0 & \text{if $x < 0$ or $y < 0$};\\
+      \frac{6}{5} \left( x y/2 + x x_2^3/3\right) & \text{if $0 \le x \le 1$ and $0 \le y \le 1$};\\
+      1 & \text{if $x > 1$ and $y > 1$}.
      \end{cases}
 $$
 :::
@@ -737,7 +738,7 @@ plot(y ~ x,
      )
 polygon( x = c(0, 1, 1, 0),
          y = c(0, 0, 1, 0),
-         col = "grey")
+         col = plotColour1 )
 polygon( x = c(0, 1, 1, 0),
          y = c(0, 0, 2, 2),
          col = NA, # Unfilled
@@ -753,7 +754,11 @@ The probabilities in the first row (where $Y = 0$), for instance, are summed and
 Similarly for the other rows.
 
 Recalling that\ $X$ is the number of times a `r knitr::include_graphics("Dice/die1.png", dpi=2000)` is rolled when two dice are thrown, the distribution of\ $X$ should be $\text{Bin}(2,  1/6$); the probabilities given in the last row of the table agree with this. 
-That is, $\Pr(X = x) = \binom{2}{x}\left(\frac{1}{6}\right)^x \left(\frac{5}{6}\right)^{2 - x}$ for $x = 0, 1, 2$. 
+That is,
+$$
+  \Pr(X = x) = \binom{2}{x}\left(\frac{1}{6}\right)^x \left(\frac{5}{6}\right)^{2 - x}
+$$
+for $x = 0, 1, 2$. 
 Of course, the distribution of\ $Y$ is the same.
 :::
 
@@ -809,24 +814,25 @@ if( knitr::is_html_output() ) {
 
 :::{.example #BVDiscreteMarginal3 name="Bivariate discrete marginal distributions"}
 Consider again the random process in Example\ \@ref(exm:BVDiscrete3DF).
-From Table\ \@ref(tab:JointPF), the marginal distribution for\ $X_1$ is found simply by summing over the values for\ $X_2$ in the table. 
-When $x_1 = 0$,
+From Table\ \@ref(tab:JointPF), the marginal distribution for\ $X$ is found simply by summing over the values for\ $Y$ in the table. 
+When $x = 0$,
 $$
-   p_{X_1}(0) = \sum_{x_2} p_{X_1, X_2}(0,x_2) = 1/24 + 1/24 + 1/24 +\dots = 6/24.
+   p_{X}(0) = \sum_{y} p_{X, Y}(0, y) = 1/24 + 1/24 + 1/24 +\dots = 6/24.
 $$
 Likewise,
 \begin{align*}
-   p_{X_1}(1) &= \sum_{x_2} p_{X_1, X_2}(1,x_2) = 6/12;\\
-   p_{X_1}(2) &= \sum_{x_2} p_{X_1, X_2}(2,x_2) = 6/24.
+   p_{X}(1) &= \sum_{y} p_{X, Y}(1, y) = 6/12;\\
+   p_{X}(2) &= \sum_{y} p_{X, Y}(2, y) = 6/24.
 \end{align*}
-So the marginal distribution of\ $X_1$ is
+So the marginal distribution of\ $X$ is
 $$
-   p_{X_1}(x_1) = \begin{cases}
-            1/4 & \text{if $x_1 = 0$};\\
-            1/2 & \text{if $x_1 = 1$};\\
-            1/4 & \text{if $x_1 = 2$};\\
-            0 & \text{otherwise}.\\
-           \end{cases}
+   p_{X}(x) = 
+   \begin{cases}
+     1/4 & \text{if $x = 0$};\\
+     1/2 & \text{if $x = 1$};\\
+     1/4 & \text{if $x = 2$};\\
+     0 & \text{otherwise}.\\
+  \end{cases}
 $$
 This is equivalent to adding the row probabilities in Table\ \@ref(tab:JointPF). 
 In this example, the marginal distribution is easily found from the total column of Table\ \@ref(tab:JointPF).
@@ -915,7 +921,7 @@ The continuous case is analogous.
 
 
 :::{.definition #BVContinuousMarginal name="Bivariate continuous marginal distributions"}
-If $(X, Y)$ is a continuous $2$-dimensional random variable with joint pdf $f_{X, Y}(x, y)$ and respective marginal pdfs $f_X(x)$, $f_Y(y)$, then the *conditional probability distribution* of\ $X$ given $Y = y$ is defined by
+If $(X, Y)$ is a continuous $2$-dimensional random variable with joint pdf $f_{X, Y}(x, y)$ and respective marginal probability density functions $f_X(x)$, $f_Y(y)$, then the *conditional probability distribution* of\ $X$ given $Y = y$ is defined by
 \begin{equation}
    f_{X \mid Y = y}(x \mid y)
    = \frac{f_{X, Y}(x, y)}{f_Y(y)}
@@ -1032,7 +1038,7 @@ This is a one-dimensional pdf, of\ $X$ given $Y = c$; that is $f_{X \mid Y = c}(
 
 
 
-```{r BivarJointa, echo=FALSE, fig.cap="A bivariate distribution.", fig.align="center", out.width='60%', fig.width = 7}
+```{r BivarJointa, echo=FALSE, fig.cap="A bivariate distribution.", fig.align="center", out.width='50%', fig.width = 7}
 
 f <- function(x, y){
   (3 *x + y)/(2 * (3*x + 1) )
@@ -1105,7 +1111,7 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r BivarConditionala, echo=FALSE, fig.cap="A bivariate distribution, sliced at $Y =  1$, showing the conditional distribution of $X$ when $Y = 0.5$.", fig.align="center", out.width='60%', fig.width = 11}
+```{r BivarConditionala, echo=FALSE, fig.cap="A bivariate distribution, sliced at $Y =  1$, showing the conditional distribution of $X$ when $Y = 0.5$.", fig.align="center", out.width='50%', fig.width = 11}
 
 f <- function(x, y){
   (3 *x + y)/(2 * (3*x + 1) )
@@ -1175,28 +1181,28 @@ if( knitr::is_html_output() ) {
 
 :::{.example #BVDiscreteConditional name="Bivariate discrete conditional distributions"}
 Consider again the random process in Example\ \@ref(exm:BVDiscrete3). 
-The conditional distribution for\ $X_2$ given $X_1 = 0$ can be found from Table\ \@ref(tab:JointPFmarginals).
-First, $p_{X_1}(x_1)$, is needed, which was found in Example\ \@ref(exm:BVDiscreteMarginal3). 
+The conditional distribution for\ $Y$ given $X = 0$ can be found from Table\ \@ref(tab:JointPFmarginals).
+First, $p_{X}(x)$, is needed, which was found in Example\ \@ref(exm:BVDiscreteMarginal3). 
 Then,
 \begin{align*}
-   p_{X_2\mid X_1 = 0}(x_2\mid X_1 = 0)
-   &= \frac{p_{X_1, X_2}(0, x_2)}{p_{X_1}(0)} \\
-   &= \frac{p_{X_1, X_2}(0, x_2)}{1/4},
+   p_{Y\mid X = 0}(y\mid X = 0)
+   &= \frac{p_{X, Y}(0, y)}{p_{X}(0)} \\
+   &= \frac{p_{X, Y}(0, y)}{1/4},
 \end{align*}
 from which we can deduce
 $$
-   p_{X_2 \mid X_1 = 0}(x_2 \mid X_1 = 0) =
+   p_{Y \mid X = 0}(y \mid X = 0) =
    \begin{cases}
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 1$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 2$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 3$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 4$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 5$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 6$}.\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 1$};\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 2$};\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 3$};\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 4$};\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 5$};\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 6$}.\\
    \end{cases}
 $$
-The conditional distribution $p_{X_2\mid X_1 = x_1}(x_2\mid x_1)$ is a probability function for\ $X_2$ (verify!).
-Since\ $X_2$ was the number of the top face of the die, this is exactly as we should expect.
+The conditional distribution $p_{Y\mid X = x}(y\mid x)$ is a probability function for\ $Y$ (verify!).
+Since\ $Y$ was the number of the top face of the die, this is exactly as we should expect.
 :::
 
 
@@ -1336,85 +1342,86 @@ Thus we have $f_X(x) \, f_Y(y) = f(x,y)$, so\ $X$ and\ $Y$ are independent.
 
 :::{.example #BVDiscreteIndependence2 name="Bivariate discrete: Independence"}
 Consider again the random process in Example\ \@ref(exm:BVDiscrete3). 
-The marginal distribution of\ $X_1$ was found in Example\ \@ref(exm:BVDiscreteMarginal3). 
-The marginal distribution of\ $X_2$ is (check!)
+The marginal distribution of\ $X$ was found in Example\ \@ref(exm:BVDiscreteMarginal3). 
+The marginal distribution of\ $Y$ is (check!)
 $$
-   p_{X_2}(x_2) =
+   p_{Y}(y) =
    \begin{cases}
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 1$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 2$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 3$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 4$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 5$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $x_2 = 6$}.\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 1$};\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 2$};\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 3$};\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 4$};\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 5$};\\
+      \frac{1/24}{1/4} = 1/6 & \text{for $y = 6$}.\\
    \end{cases}
 $$
-To determine if\ $X_1$ and\ $X_2$ are independent, *each*\ $x_1$ and\ $x_2$  pair must be considered. 
+To determine if\ $X$ and\ $Y$ are independent, *each*\ $x$ and\ $y$  pair must be considered. 
 As an example, we see
 \begin{align*}
-   p_{X_1}(0) \times p_{X_2}(1) = 1/4 \times 1/6 = 1/24 &= p_{X_1, X_2}(0, 1);\\
-   p_{X_1}(0) \times p_{X_2}(2) = 1/4 \times 1/6 = 1/24 &= p_{X_1, X_2}(0, 2);\\
-   p_{X_1}(1) \times p_{X_2}(1) = 1/2 \times 1/6 = 1/12 &= p_{X_1, X_2}(1, 1);\\
-   p_{X_1}(2) \times p_{X_2}(1) = 1/4 \times 1/6 = 1/24 &= p_{X_1, X_2}(2, 1).
+   p_{X}(0) \times p_{Y}(1) = 1/4 \times 1/6 = 1/24 &= p_{X, Y}(0, 1);\\
+   p_{X}(0) \times p_{Y}(2) = 1/4 \times 1/6 = 1/24 &= p_{X, Y}(0, 2);\\
+   p_{X}(1) \times p_{Y}(1) = 1/2 \times 1/6 = 1/12 &= p_{X, Y}(1, 1);\\
+   p_{X}(2) \times p_{Y}(1) = 1/4 \times 1/6 = 1/24 &= p_{X, Y}(2, 1).
 \end{align*}
-This is true for all pairs, and so\ $X_1$ and\ $X_2$ are independent random variables. 
+This is true for all pairs, and so\ $X$ and\ $Y$ are independent random variables. 
 Independence is, however, obvious from the description of the random process (Example\ \@ref(exm:BVDiscreteEG)), and is easily seen from Table\ \@ref(tab:JointPF).
 :::
 
 
 
 :::{.example #BVContinuousIndependence2 name="Bivariate continuous: Independence"}
-Consider the continuous random variables\ $X_1$ and\ $X_2$ with joint pdf
+Consider the continuous random variables\ $X$ and\ $Y$ with joint pdf
 $$
-   f_{X_1, X_2}(x_1, x_2)  =
+   f_{X, Y}(x, y)  =
    \begin{cases}
-      \frac{2}{7}(x_1 + 2x_2) & \text{for $0 < x_1 < 1$ and $1 < x_2 < 2$};\\
+      \frac{2}{7}(x + 2y) & \text{for $0 < x < 1$ and $1 < y < 2$};\\
       0 & \text{elsewhere.}
    \end{cases}
 $$
-The marginal distribution of\ $X_1$ is
+The marginal distribution of\ $X$ is
 $$
-   f_{X_1}(x_1)
-   = \int_1^2 \frac{2}{7}(x_1 + 2x_2)\,dx_2\\
-   =   \frac{2}{7}(x_1 + 3)
+   f_{X}(x)
+   = \int_1^2 \frac{2}{7}(x + 2y)\,dy\\
+   =   \frac{2}{7}(x + 3)
 $$
-for $0 < x_1 < 1$ (and zero elsewhere). Likewise, the marginal distribution of\ $X_2$ is
+for $0 < x < 1$ (and zero elsewhere). 
+Likewise, the marginal distribution of\ $Y$ is
 $$
-   f_{X_2}(x_2)
-   = \frac{2}{7}(x_1^2/2 + 2 x_1 x_2)\Big|_{x_1 = 0}^1
-   = \frac{1}{7}(1 + 4x_2)
+   f_{Y}(y)
+   = \frac{2}{7}(x^2/2 + 2 x y)\Big|_{x = 0}^1
+   = \frac{1}{7}(1 + 4y)
 $$
-for $1 < x_2 < 2$ (and zero elsewhere). 
+for $1 < y < 2$ (and zero elsewhere). 
 (Both the marginal distributions must be valid density functions; verify!)
 Since
 $$
-   f_{X_1}(x_1) \times f_{X_2}(x_2) = \frac{2}{49}(x_1 + 3)(1 + 4x_2) \ne f_{X_1, X_2}(x_1, x_2),
+   f_{X}(x) \times f_{Y}(y) = \frac{2}{49}(x + 3)(1 + 4y) \ne f_{X, Y}(x, y),
 $$
-the random variables\ $X_1$ and\ $X_2$ are *not independent*.
+the random variables\ $X$ and\ $Y$ are *not independent*.
 
-The conditional distribution of\ $X_1$ given $X_2 = x_2$ is
+The conditional distribution of\ $X$ given $Y = y$ is
 \begin{align*}
-   f_{X_1 \mid X_2 = x_2}(x_1 \mid x_2)
-   &= \frac{ f_{X_1, X_2}(x_1, x_2)}{ f_{X_2}(x_2)} \\
-   &= \frac{ (2/7) (x_1 + 2x_2)}{ (1/7)(1 + 4x_2)}
+   f_{X \mid Y = y}(x \mid y)
+   &= \frac{ f_{X, Y}(x, y)}{ f_{Y}(y)} \\
+   &= \frac{ (2/7) (x + 2y)}{ (1/7)(1 + 4y)}
 \end{align*}
-for $0 < x_1 < 1$ and any given value of $1 < x_2 < 2$. 
+for $0 < x < 1$ and any given value of $1 < y < 2$. 
 (Again, this conditional density must be a valid pdf.) 
 So, for example,
 $$
-   f_{X_1 \mid X_2 = 1.5}(x_1\mid x_2 = 1.5)
-   = \frac{ (2/7) (x_1 + 2\times 1.5)}{ (1/7)(1 + 4\times 1.5)}
-   = \frac{2}{7}(x_1 + 3)
+   f_{X \mid Y = 1.5}(x\mid y = 1.5)
+   = \frac{ (2/7) (x + 2\times 1.5)}{ (1/7)(1 + 4\times 1.5)}
+   = \frac{2}{7}(x + 3)
 $$
-for $0 < x_1 < 1$ and is zero elsewhere. 
+for $0 < x < 1$ and is zero elsewhere. 
 And,
 $$
-   f_{X_1\mid X_2 = 1}(x_1 \mid 1)
-   = \frac{ (2/7) (x_1 + 2\times 1)}{ (1/7)(1 + 4\times 1)}
-   = \frac{2}{5}(x_1 + 2)
+   f_{X\mid Y = 1}(x \mid 1)
+   = \frac{ (2/7) (x + 2\times 1)}{ (1/7)(1 + 4\times 1)}
+   = \frac{2}{5}(x + 2)
 $$
-for $0 < x_1 < 1$ and is zero elsewhere. 
-Since the distribution of\ $X_1$ depends on the given value of\ $X_2$, $X_1$ and\ $X_2$ are *not* independent.
+for $0 < x < 1$ and is zero elsewhere. 
+Since the distribution of\ $X$ depends on the given value of\ $Y$, $X$ and\ $Y$ are *not* independent.
 :::
 
 
@@ -1556,7 +1563,7 @@ $$
 
 
 
-## Multivariate random variables* {#Multivariate}
+## Multivariate random variables using matrix notation* {#Multivariate}
 
 ### Random Vectors {#RandomVectors}
 
