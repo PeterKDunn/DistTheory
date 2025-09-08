@@ -1,4 +1,10 @@
-# Bivariate and multivariate distributions {#ChapMultivariate}
+# (PART) Bivariate and multivariate distributions {-}
+
+
+PERHAPS: a chapter (or more) for bivariate; a chapter (or more) for multivariate with vector/matrix notation.
+
+
+# Bivariate distributions {#ChapBivariate}
 
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
 On completion of this chapter you should be able to:
@@ -1206,7 +1212,7 @@ Since\ $Y$ was the number of the top face of the die, this is exactly as we shou
 :::
 
 
-## Bivariate random variables: independent random variables {#IndependentRVs}
+## Bivariate random variables: independent random variables {#BivariateIndependentRVs}
 
 Recall that events\ $A$ and\ $B$ are independent if, and only if,
 $$
@@ -1564,9 +1570,612 @@ $$
 
 
 
-## Multivariate random variables using matrix notation* {#Multivariate}
+# Standard bivariate distributions
 
-### Random Vectors {#RandomVectors}
+## Multinomial distribution {#MultinomialDistribution}
+
+\index{Multinomial distribution|(}
+A specific example of a *discrete* multivariate distribution is the *multinomial distribution*, a generalization of the binomial distribution. 
+
+
+:::{.definition #MultinomialDistribution name="Multinomial distribution"}
+Consider an experiment with the the sample space partitioned as $S = \{B_1, B_2, \ldots, B_k\}$. 
+Let $p_i = \Pr(B_i), \ i = 1, 2,\ldots k$ where $\sum_{i = 1}^k p_i = 1$. 
+Suppose there are $n$\ repetitions of the experiment in which\ $p_i$ is constant. 
+Let the random variable\ $X_i$ be the number of times (in the $n$\ repetitions) that the event\ $B_i$ occurs. 
+In this situation, the random vector $(X_1, X_2, \dots, X_k)$ is said to have a *multinomial distribution* with probability function
+\begin{equation}
+   \Pr(X_1 = x_1, X_2 = x_2, \ldots, X_k = x_k)
+   = \frac{n!}{x_1! \, x_2! \ldots x_k!} 
+      p_1^{x_1}\, p_2^{x_2} \ldots p_k^{x_k},
+   (\#eq:Multinomial)
+\end{equation}
+where $\mathcal{R}_X = \{(x_1, \ldots x_k) : x_i = 0,1,\ldots,n, \, i = 1, 2, \ldots k, \, \sum_{i = 1}^k x_i = n\}$.
+:::
+
+The part of Eq.\ \@ref(eq:Multinomial) involving factorials arises as the number of ways of arranging $n$\ objects, $x_1$\ of which are of the first kind, $x_2$\ of which are of the second kind, etc. 
+The above distribution is $(k - 1)$-variate since $x_k = n-\sum_{i = 1}^{k - 1}x_i$.
+In particular if $k = 2$, the multinomial distribution reduces to the binomial distribution which is a univariate distribution.
+
+$X_i$\ is the number of times (out of\ $n$) that the event\ $B_i$, which has probability\ $p_i$, occurs. 
+So the random variable\ $X_i$ clearly has a binomial distribution with parameters\ $n$ and\ $p_i$.
+We see then that the marginal probability distribution of one of the components of a multinomial distribution is a binomial distribution.
+
+Notice that the distribution in Example\ \@ref(exm:BVDiscreteTwoDice) is an example of a *trinomial distribution*. 
+The probabilities shown in Table\ \@ref(tab:BVTwoDice) can be expressed algebraically as
+$$
+   \Pr(X = x, Y = y)
+   = \frac{2!}{x! \, y!(2 - x - y)!}
+      \left(\frac{1}{6}\right)^x\left(\frac{1}{6}\right)^y\left(\frac{2}{3}\right)^ {2 - x - y}
+$$
+for $x, y = 0 , 1 , 2$; $x + y \leq 2$.
+
+The following are the basic properties of the multinomial distribution.
+
+
+:::{.theorem #MultinomialProperties name="Multinomial distribution properties"}
+Suppose $(X_1, X_2, \ldots, X_k)$ has the multinomial distribution given in Def.\ \@ref(def:MultinomialDistribution). 
+Then for $i = 1, 2, \ldots, k$:
+
+* $\operatorname{E}[X_i] = np_i$.
+* $\operatorname{var}[X_i] = n p_i(1 - p_i)$.
+* $\operatorname{Cov}(X_i, X_j) = -n p_i p_j$ for $i \neq j$.
+:::
+
+
+:::{.proof}
+The first two results follow from the fact that $X_i \sim \text{Bin}(n, p_i)$.
+
+We will use\ $x$ for\ $x_1$ and\ $y$ for\ $x_2$ in the third for convenience.
+Consider only the case $k = 3$, and note that
+$$
+   \sum_{(x, y) \in R} 
+   \frac{n!}{x! \, y! (n - x - y)!} p_1^x p_2^y (1 - p_1 - p_2)^{n - x - y} = 1.
+$$
+Then, putting $p_3 = 1 - p_1 - p_2$,
+\begin{align*}
+  E(XY)
+  &= \sum_{(x, y)}xy \Pr(X = x, Y = y)\\
+  &= \sum_{(x, y)}\frac{n!}{(x - 1)!(y - 1)!(n - x - y)!} p_1^x  p_2^y p_3^{n - x - y}\\
+  &= n(n - 1) p_1 p_2\underbrace{\sum_{(x,y)}\frac{(n - 2)!}{(x - 1)!(y - 1)!(n - x - y)!} p_1^{x - 1} p_2^{y - 1}p_3^{n - x - y}}_{ = 1}.
+\end{align*}
+So $\operatorname{Cov}(X, Y) = n^2 p_1 p_2 - n p_1 p_2 - (n p_1)(n p_2) = -n p_1 p_2$.
+:::
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+The two **R** functions for working with the multinomial distribution functions have the form `[dr]multinom(size, prob)` where `size`${}= n$ and `prob`${} = (p_1, p_2, \dots, p_k)$ for $k$ categories (see App.\ \@ref(UseRDistributions)).
+Note that the functions `qmultinom()` and `pmultinom()` are not defined.
+:::
+
+
+:::{.example #Multinomial name="Multinomial distribution"}
+Suppose that the four basic blood groups\ O, A, B and\ AB are known to occur in the proportions $9:8:2:1$. 
+Given a random sample of $8$\ individuals, what is the probability that there will be $3$\ each of Types\ O and\ A and $1$\ each of Types\ B and\ AB?
+
+The probabilities are $p_1 = 0.45$, $p_2 = 0.4$, $p_3 = 0.1$, $p_4 = 0.05$, and
+\begin{align*}
+   \Pr(X_O = 3, X_A = 3, X_B = 1, X_{AB} = 1)
+   &= \frac{8!}{3!\,3!\,1!\,1!}(0.45)^3 (0.4)^3 (0.1)(.05)\\
+   &= 0.033.
+\end{align*}
+In **R**:
+
+```{r echo=TRUE}
+dmultinom(x = c(3, 3, 1, 1), 
+          size = 8, 
+          prob = c(0.45, 0.4, 0.1, 0.05))
+```
+:::
+\index{Multinomial distribution|)}
+
+ 
+
+
+
+## The bivariate normal distribution {#BVNormalDistribution}
+
+\index{Bivariate normal distribution|(}
+A specific example of a *continuous* multivariate distribution is the  *bivariate normal distribution*. 
+
+
+:::{.definition #BVNormalDistribution name="The bivariate normal distribution"}
+If a pair of random variables\ $X$ and\ $Y$ have the joint pdf
+\begin{equation}
+   f_{X, Y}(x, y; \mu_x, \mu_Y, \sigma^2_X, \sigma^2_Y, \rho) =
+   \frac{1}{2\pi\sigma_X\sigma_Y\sqrt{1 - \rho^2}}\exp(-Q/2)
+   (\#eq:bivarnormalpdf)
+\end{equation}
+where
+$$
+   Q = \frac{1}{1-\rho^2}\left[
+                      \left(\frac{x-\mu_X}{\sigma_X}\right)^2 -
+                2\rho\left( \frac{x-\mu_X}{\sigma_X}\right)\left(\frac{y-\mu_Y}{\sigma_Y}\right)
+                +     \left(\frac{y-\mu_Y}{\sigma_Y}\right)^2 \right],
+$$
+then\ $X$ and\ $Y$ have a *bivariate normal distribution*.
+We write
+$$
+   (X, Y) \sim N_2(\mu_X, \mu_Y, \sigma^2_X, \sigma^2_Y, \rho ).
+$$
+:::
+
+
+A typical graph of the bivariate normal surface above the $x$--$y$ plane is shown
+`r if( knitr::is_latex_output() ) {
+   'in Figs. \\@ref(fig:BivarNormalPDF).'
+} else {
+   'below.'
+}`
+Showing $\int^\infty_{-\infty}\!\int^\infty_{-\infty}f_{X,Y}(x,y)\,dx\,dy = 1$ is not straightforward and involves writing Eq.\ \@ref(eq:bivarnormalpdf) using polar coordinates.
+
+
+
+```{r BivarNormalPDF, echo=FALSE, fig.cap="A bivariate normal distribution with means of\\ $0$, variances of\\ $1$, and a correlation coefficient of\\ $0.5$.", fig.align="center", out.width='100%'}
+mu <- c(0, 0)
+ 
+sigma <- matrix(c(1, 0.5, 
+                  0.5, 1.5), 
+                nrow = 2)
+
+f <- function(x, y, mn, sigma) {
+  mnormt::dmnorm(cbind(x, y), 
+                mean = mn, 
+                varcov = sigma)
+}
+
+if( knitr::is_latex_output() ) {
+
+  par( mfrow = c(1, 2))
+  
+zz <- seq(-4, 4, 
+          length = 50)
+x <- mu[1] + zz * sqrt(sigma[1, 1])
+y <- mu[2] + zz * sqrt(sigma[2, 2]) 
+
+z <- outer(x, y, f,
+           mn = mu,
+           sigma = sigma)
+ 
+ contour(x, y, z,
+         asp = 1,
+         las = 1,
+         #xlim = c(1550, 1900),
+         #ylim = c(1450, 1750),
+         xlab = "X",
+         ylab = "Y",
+         levels = c( seq( 0, 0.14, by = 0.01), 0.001 )
+        # levels = c(0.0001, 
+        #            0.0005,
+        #            0.0002,
+        #            0.001,
+        #            0.005,
+        #            0.01,
+        #            0.05,
+        #            0.08,
+        #            0.01,
+        #            0.105)
+         )
+
+persp(x, y, z, 
+      theta = -30, 
+      phi = 35, 
+      shade = 0.75, 
+      col = plotColour1, 
+      expand = 0.5, 
+      r = 2, 
+      ltheta = 25, 
+      xlab = "X",
+      ylab = "Y",
+      ticktype = "simple")
+}
+```
+
+```{r BivarNormalHTML, echo=FALSE, fig.cap="A bivariate normal distribution.", fig.align="center", out.width='80%'}
+mu <- c(0, 0)
+
+sigma <- matrix(c(1, 0.5, 
+                  0.5, 1.5), 
+                nrow = 2)
+
+f <- function(x, y, mn, sigma) {
+  mnormt::dmnorm(cbind(x, y), 
+                mean = mn, 
+                varcov = sigma)
+}
+
+if( knitr::is_html_output() ) {
+  zz <- seq(-4, 4, 
+            length = 40)
+  x <- mu[1] + zz * sqrt(sigma[1, 1])
+  y <- mu[2] + zz * sqrt(sigma[2, 2]) 
+
+
+  M <- plot3D::mesh(x = x,
+                   y = y)
+  
+  z <- outer(x, y, f,
+             mn = mu,
+             sigma = sigma)
+
+
+rgl::persp3d(x = M$x, 
+            y = M$y, 
+            z = z,
+            xlim = range(x),
+            ylim = range(y),
+            zlim = c(0, max(z)),
+            col = plotColour,
+            colkey = FALSE,
+            phi = 40,
+            xlab = "X",
+            ylab = "Y",
+            theta = 30,
+            main = "Bivariate normal")
+}
+```
+
+
+Some important facts about the bivariate normal distribution are contained in the theorem below.
+
+
+:::{.theorem #BivarNormalProperties name="Bivariate normal distribution properties"}
+For $(X, Y)$ with pdf given in Eq.\ \@ref(eq:bivarnormalpdf):
+
+1. The marginal distributions of\ $X$ and of\ $Y$ are $N(\mu_X, \sigma^2_X)$ and $N(\mu_Y, \sigma^2_Y)$ respectively.
+2. The parameter\ $\rho$ appearing in Eq.\ \@ref(eq:bivarnormalpdf) is the correlation coefficient between\ $X$ and\ $Y$.
+3. the conditional distributions of\ $X$ given $Y = y$, and of\ $Y$ given $X = x$, are respectively
+  \begin{align*} 
+     &N\left( \mu_X + \rho \sigma_X(y - \mu_Y)/\sigma_Y, \sigma^2_X(1 - \rho^2)\right); \\
+     &N\left( \mu_Y + \rho \sigma_Y(x - \mu_X)/\sigma_X, \sigma^2_Y(1 - \rho^2)\right). 
+  \end{align*}
+:::
+
+
+:::{.proof}
+Recall that the marginal pdf of\ $X$ is $f_X(x) = \int^\infty_{-\infty} f_{X, Y}(x, y)\,dy$. 
+In the integral, put $u = (x - \mu_X)/\sigma_X, v = (y - \mu_Y)/\sigma_Y,\, dy = \sigma_Y\,dv$ and complete the square in the exponent on\ $v$:
+\begin{align*}
+     g(x) 
+     &= \frac{1}{2\pi\sigma_X\sqrt{1 - \rho^2}\sigma_Y}\int^\infty_{-\infty}\exp\left\{ -\frac{1}{2(1 - \rho^2)}\left[ u^2 - 2\rho uv + v^2\right]\right\} \sigma_Y\,dv\\[2mm]
+     &= \frac{1}{2\pi \sigma_X\sqrt{1 - \rho^2}}\int^\infty_{-\infty} \exp\left\{ -\frac{1}{2(1 - \rho^2)}\left[ (v - \rho u)^2 + u^2 - \rho^2u^2\right]\right\}\,dv\\[2mm]
+     &= \frac{e^{-u^2/2}}{\sqrt{2\pi} \sigma_X} \ \underbrace{\int^\infty_{-\infty} \frac{1}{\sqrt{2\pi (1 - \rho^2)}} \exp\left\{ -\frac{1}{2(1 - \rho^2)}(v - \rho u)^2\right\}\,dv}_{=1}.
+\end{align*}
+Replacing\ $u$ by $(x - \mu_X )/\sigma_X$, we see from the pdf that $X \sim N(\mu_X, \sigma^2_X)$. 
+Similarly for the marginal pdf of\ $Y$; i.e., $f_Y(y)$.
+
+To show that\ $\rho$ in Eq.\ \@ref(eq:bivarnormalpdf) is the correlation coefficient of\ $X$ and\ $Y$, recall that
+\begin{align*}
+     \rho_{X,Y} 
+     &= \operatorname{Cov}(X,Y)/\sigma_X\sigma_Y=\operatorname{E}[(X-\mu_X)(Y - \mu_Y)]/\sigma_X\sigma_Y   \\[2mm]
+     & = \int^\infty_{-\infty}\!\int^\infty_{-\infty} \frac{(x - \mu_X)}{\sigma_X}\frac{(y - \mu_Y)}{\sigma_Y}f(x,y)\,dx\,dy\\[2mm]
+     &= \int^\infty_{-\infty}\!\int^\infty_{-\infty} uv\frac{1}{2\pi\sqrt{1 - \rho^2} \sigma_X\sigma_Y}\exp\left\{ -\frac {1}{2(1 - \rho^2)}[u^2 - 2\rho uv + v^2]\right\} \sigma_X\sigma_Y\,du\,dv.
+\end{align*}
+
+The exponent is
+$$
+   -\frac{[(u - \rho v)^2 + v^2 - \rho^2 v^2]}{2(1 - \rho^2)}
+   = - \frac{1}{2} \left\{\frac{(u - \rho v)^2}{(1 - \rho^2)} + v^2\right\}.
+$$
+Then:
+\begin{align*} 
+   \rho_{X, Y}
+   &=\int^\infty_{-\infty}\frac{v e^{-v^2/2}}{\sqrt{2\pi}}\underbrace{\int^\infty_{-\infty} \frac{u}{\sqrt{2\pi
+  (1 - \rho^2)}}\exp\{ -(u - \rho v)^2/2(1 - \rho^2)\}\,du}_{\displaystyle{= \operatorname{E}[U]\text{ where } u \sim N(\rho
+  v, 1 - \rho^2) = \rho v}}\,dv \\[2mm]
+   &= \rho \int^\infty_{-\infty} \frac{v^2}{\sqrt{2\pi}}e^{-v^2/2}\,dv\\[2mm]
+   &= \rho\quad \text{since the integral is $\operatorname{E}[V^2]$ where $V \sim N(0,1)$.}
+\end{align*}
+
+In finding the conditional pdf of\ $X$ given $Y = y$, use
+$$
+   f_{X \mid Y = y}(x) = f_{X, Y}(x, y)/f_Y(y). 
+$$
+Then in this ratio, the constant is
+$$
+  \frac{\sqrt{2\pi} \sigma_Y}{2\pi \sigma_X\sigma_Y \sqrt{1 - \rho^2}}
+  = \frac{1}{\sqrt{2\pi}\sigma_X\sqrt{1 - \rho^2}}.
+$$
+The exponent is
+\begin{align*}
+       & \frac{\exp\left\{ -\left[ \displaystyle{\frac{(x - \mu_X)^2}{\sigma^2_X}} -
+  \displaystyle{\frac{2\rho(x - \mu_X)(y - \mu_Y)}{\sigma_X\sigma_Y}} + 
+  \displaystyle{\frac{(y - \mu_Y)^2}{\sigma^2_Y}}\right] / 2(1 - \rho^2) \right\}  }{\exp\left[ -(y - \mu_Y)^2 / 2\sigma^2_Y\right]}\\[2mm]
+       &= \exp\left\{ - \frac{1}{2(1 - \rho^2)} \left[ \frac{(x - \mu_X)^2}{\sigma^2_X} - \frac{2\rho (x - \mu_X)(y - \mu_Y)}{\sigma_X\sigma_Y} +
+  \frac{(y - \mu_Y)^2}{\sigma^2_Y} (1 - 1 + \rho^2)\right] \right\}\\[2mm]
+       &= \exp\left\{ - \frac{1}{2\sigma^2_X(1 - \rho^2)} 
+       \left[ (x - \mu_X)^2 - 2\rho \frac{\sigma_X}{\sigma_Y} (x - \mu_X)(y - \mu_Y) + 
+       \frac{\rho^2 \sigma^2_X}{\sigma^2_Y}(y - \mu_Y)^2\right]\right\}\\[2mm]
+       &= \exp \left\{ - \frac{1}{2(1 - \rho^2)\sigma^2_X} \left[ x - \mu_X - \rho\frac{\sigma_X}{\sigma_Y}(y - \mu_Y)\right]^2\right\}.
+\end{align*}
+So the conditional distribution of\ $X$ given $Y = y$ is
+$$
+   N\left( \mu_X + \rho\frac{\sigma_X}{\sigma_Y}(y - \mu_Y), \sigma^2_X(1 - \rho^2)\right).
+$$
+Recall the interpretation of the conditional distribution of\ $X$ given $Y = y$ (Sect.\ \@ref(ConditionalDistributions)) and note the shape of this density
+`r if( knitr::is_latex_output() ) {
+   'in Figs. \\@ref(fig:BivarNormalPDF).'
+} else {
+   'below.'
+}`
+:::
+
+Comments about Theorem\ \@ref(thm:BivarNormalProperties):
+
+* From the first and third parts, $\operatorname{E}[X] = \mu_X$ and $\operatorname{E}[X \mid Y = y] = \mu_X + \rho \sigma_X (y - \mu_Y)/\sigma_Y$ (and similarly for\ $Y$). 
+  Notice that $\operatorname{E}[X \mid Y = y]$ is a linear function of\ $y$; i.e., if $(X, Y)$ is bivariate normal, the regression line of\ $Y$ on\ $X$ (and\ $X$ on\ $Y$) is linear.
+*  An important result follows from the second part. 
+   If\ $X$ and\ $Y$ are uncorrelated (i.e., if $\rho = 0$) then $f_{X, Y}(x, y) = f_X(x) f_Y(y)$ and thus\ $X$ and\ $Y$ are independent. 
+   That is, if two normally distributed random variables are uncorrelated, they are also independent.
+
+
+
+:::{.example #BivariateHeights name="Bivariate normal: Heights"}
+[@data:Marsh1988:ExploringData] gives data from $200$\ married men and their wives from the OPCS study of heights and weights of adults in Great Britain in 1980.
+Histograms of the husbands' and wives' heights are given in Fig.\ \@ref(fig:HtsPlots) (left and centre panels); the marginal distributions are approximately normal.
+The scatterplot of the heights is shown in Fig.\ \@ref(fig:HtsPlots) (right panel).
+
+From the histograms, there is reason to suspect that a bivariate normal distribution would be appropriate.
+Using\ $H$ to refer to heights (in mm) of husbands and\ $W$ to the heights (in mm) of wives, the sample statistics are shown below (and where the estimate of the correlation is\ $+0.364$):
+
+
+| Statistic               |  Husbands |  Wives
+|-------------------------|-----------|----------
+| Sample mean (in mm):    | 1732      | 1602
+| Sample std dev (in mm): | 68.8      | 62.4 
+
+Note that\ $\rho$ is positive; this implies taller men marry taller women on average.
+Using this sample information, the bivariate normal distribution can be estimated.
+This $3$-dimensional density function can be difficult to plot on a two-dimensional page, but see 
+`r if( knitr::is_latex_output() ) {
+   'Figs.\\ \\@ref(fig:BivarNormalHts-1) and\\ \\@ref(fig:BivarNormalHts-2).'
+} else {
+   'below.'
+}`
+
+The pdf for the bivariate normal distribution for the heights of the husbands and wives could be written down in the form of \@ref(eq:bivarnormalpdf) for the values of\ $\mu_H$, $\mu_W$, $\sigma^2_H$, $\sigma^2_W$ and\ $\rho$ above, but this is tedious.
+
+Given the information, what is the probability that a randomly chosen man in the UK in 1980 who is $173\cms$ tall had married a woman taller than himself?
+
+The information implies that $H = 1730$ is given (remembering the data are given in millimetres).
+So we need the *conditional distribution* of $W \mid H = 1730$.
+Using the results above, this conditional distribution will have mean
+\begin{align*}
+   b
+   &= \mu_W + \rho\frac{\sigma_W}{\sigma_H}(y_H - \mu_H) \\
+   &= 1602 + 0.364\frac{62.4}{68.8}(1730 - 1732) \\
+   &= 1601.34
+\end{align*}
+and variance
+$$
+   \sigma_2^2(1 - \rho^2) = 62.4^2(1 - 0.364^2) = 377.85.
+$$
+In summary, $W \mid  (H = 1730) \sim N(1601.34, 3377.85)$.
+Note that this conditional distribution has a univariate normal distribution, and so probabilities such as $W > 1730$ are easily determined.
+Then,
+\begin{align*}
+   \Pr(W > 1730 \mid H = 1730)
+   &= \Pr\left( Z > \frac{1730 - 1601.34}{\sqrt{3377.85}}\right) \\
+   &= \Pr( Z > 2.2137)\\
+   &= 0.013.
+\end{align*}
+Approximately $1.3$% of males $173\cms$ tall had married women taller than themselves in the UK in 1980.
+:::
+
+
+
+
+```{r HtsPlots, echo=FALSE, out.width='100%', fig.height=3, fig.width=7, fig.cap="Plots of the heights data."}
+hts <- 
+structure(list(Hage = c(49L, 25L, 40L, 52L, 58L, 32L, 43L, 42L, 
+47L, 31L, 26L, 40L, 35L, 45L, 35L, 35L, 47L, 38L, 33L, 32L, 38L, 
+45L, 29L, 59L, 26L, 50L, 49L, 42L, 33L, 31L, 27L, 57L, 34L, 28L, 
+46L, 37L, 56L, 27L, 36L, 31L, 57L, 55L, 47L, 64L, 60L, 31L, 35L, 
+36L, 40L, 30L, 32L, 27L, 20L, 45L, 59L, 43L, 29L, 48L, 39L, 47L, 
+54L, 43L, 54L, 61L, 27L, 51L, 27L, 32L, 54L, 37L, 55L, 36L, 32L, 
+57L, 51L, 62L, 57L, 51L, 50L, 32L, 54L, 34L, 45L, 64L, 55L, 27L, 
+55L, 27L, 41L, 44L, 22L, 30L, 53L, 42L, 31L, 36L, 56L, 46L, 34L, 
+55L, 44L, 45L, 48L, 44L, 59L, 64L, 34L, 37L, 54L, 49L, 63L, 48L, 
+64L, 33L, 52L, 27L, 33L, 46L, 54L, 27L, 50L, 42L, 54L, 49L, 62L, 
+34L, 23L, 36L, 53L, 32L, 59L, 53L, 55L, 62L, 42L, 50L, 37L, 51L, 
+25L, 54L, 34L, 43L, 43L, 58L, 28L, 45L, 47L, 57L, 27L, 34L, 57L, 
+27L, 54L, 24L, 48L, 37L, 25L, 57L, 40L, 61L, 25L, 32L, 37L, 45L, 
+24L, 47L, 44L, 52L, 45L, 20L, 60L, 36L, 25L, 25L, 35L, 35L, 49L, 
+33L, 50L, 63L, 57L, 41L, 38L, 30L, 52L, 51L, 46L, 50L, 32L, 52L, 
+30L, 33L, 20L, 32L, 51L, 64L, 44L, 40L, 59L), Hht = c(1809L, 
+1841L, 1659L, 1779L, 1616L, 1695L, 1730L, 1753L, 1740L, 1685L, 
+1735L, 1713L, 1736L, 1715L, 1799L, 1785L, 1758L, 1729L, 1720L, 
+1810L, 1725L, 1764L, 1683L, 1585L, 1684L, 1674L, 1724L, 1630L, 
+1855L, 1796L, 1700L, 1765L, 1700L, 1721L, 1823L, 1829L, 1710L, 
+1745L, 1698L, 1853L, 1610L, 1680L, 1809L, 1580L, 1600L, 1585L, 
+1705L, 1675L, 1735L, 1686L, 1768L, 1721L, 1754L, 1739L, 1699L, 
+1825L, 1740L, 1704L, 1719L, 1731L, 1679L, 1755L, 1713L, 1723L, 
+1783L, 1585L, 1749L, 1710L, 1724L, 1620L, 1764L, 1791L, 1795L, 
+1738L, 1639L, 1734L, 1695L, 1666L, 1745L, 1775L, 1669L, 1700L, 
+1804L, 1700L, 1664L, 1753L, 1788L, 1765L, 1680L, 1715L, 1755L, 
+1764L, 1793L, 1731L, 1713L, 1725L, 1828L, 1735L, 1760L, 1685L, 
+1685L, 1559L, 1705L, 1723L, 1700L, 1660L, 1681L, 1803L, 1866L, 
+1884L, 1705L, 1780L, 1801L, 1795L, 1669L, 1708L, 1691L, 1825L, 
+1760L, 1949L, 1685L, 1806L, 1905L, 1739L, 1736L, 1845L, 1868L, 
+1765L, 1736L, 1741L, 1720L, 1871L, 1720L, 1629L, 1624L, 1653L, 
+1786L, 1620L, 1695L, 1674L, 1864L, 1643L, 1705L, 1736L, 1691L, 
+1753L, 1680L, 1724L, 1710L, 1638L, 1725L, 1725L, 1630L, 1810L, 
+1774L, 1771L, 1815L, 1575L, 1729L, 1749L, 1705L, 1875L, 1784L, 
+1584L, 1774L, 1658L, 1790L, 1798L, 1824L, 1796L, 1725L, 1685L, 
+1769L, 1749L, 1716L, 1664L, 1773L, 1760L, 1725L, 1645L, 1694L, 
+1851L, 1691L, 1880L, 1835L, 1730L, 1644L, 1723L, 1758L, 1718L, 
+1723L, 1708L, 1786L, 1764L, 1675L, 1641L, 1743L, 1823L, 1720L
+), Wage = c(43L, 28L, 30L, 57L, 52L, 27L, 52L, NA, 43L, 23L, 
+25L, 39L, 32L, NA, 35L, 33L, 43L, 35L, 32L, 30L, 40L, NA, 29L, 
+55L, 25L, 45L, 44L, 40L, 31L, NA, 25L, 51L, 31L, 25L, NA, 35L, 
+55L, 23L, 35L, 28L, 52L, 53L, 43L, 61L, NA, 23L, 35L, 35L, 39L, 
+24L, 29L, NA, 21L, 39L, 52L, 52L, 26L, NA, NA, 48L, 53L, 42L, 
+50L, 64L, 26L, NA, 32L, 31L, 53L, 39L, 45L, 33L, 32L, 55L, NA, 
+NA, NA, 52L, 50L, 32L, 54L, 32L, 41L, 61L, 43L, 28L, 51L, NA, 
+41L, 41L, 21L, 28L, 47L, 37L, 28L, 35L, 55L, 45L, 34L, 51L, 39L, 
+35L, 45L, 44L, 47L, 57L, 33L, 38L, 59L, 46L, 60L, 47L, 55L, 45L, 
+47L, 24L, 32L, 47L, 57L, NA, NA, NA, 46L, 42L, 63L, 32L, 24L, 
+32L, NA, NA, 56L, 50L, 55L, 58L, 38L, 44L, 35L, 44L, 25L, 43L, 
+31L, 35L, 41L, 50L, 23L, 43L, 49L, 59L, NA, 38L, 42L, 21L, NA, 
+NA, 42L, 35L, 26L, 57L, 34L, 63L, 23L, NA, NA, NA, 23L, 46L, 
+40L, 53L, 40L, 22L, 60L, 32L, 24L, 28L, 40L, NA, 48L, 33L, 49L, 
+64L, 55L, 41L, 38L, 31L, 52L, 43L, 51L, 47L, NA, 32L, 33L, NA, 
+18L, NA, 45L, 64L, 43L, 39L, 56L), Wht = c(1590L, 1560L, 1620L, 
+1540L, 1420L, 1660L, 1610L, 1635L, 1580L, 1610L, 1590L, 1610L, 
+1700L, 1522L, 1680L, 1680L, 1630L, 1570L, 1720L, 1740L, 1600L, 
+1689L, 1600L, 1550L, 1540L, 1640L, 1640L, 1630L, 1560L, 1652L, 
+1580L, 1570L, 1590L, 1650L, 1591L, 1670L, 1600L, 1610L, 1610L, 
+1670L, 1510L, 1520L, 1620L, 1530L, 1451L, 1570L, 1580L, 1590L, 
+1670L, 1630L, 1510L, 1560L, 1660L, 1610L, 1440L, 1570L, 1670L, 
+1635L, 1670L, 1730L, 1560L, 1590L, 1600L, 1490L, 1660L, 1504L, 
+1580L, 1500L, 1640L, 1650L, 1620L, 1550L, 1640L, 1560L, 1552L, 
+1600L, 1545L, 1570L, 1550L, 1600L, 1660L, 1640L, 1670L, 1560L, 
+1760L, 1640L, 1600L, 1571L, 1550L, 1570L, 1590L, 1650L, 1690L, 
+1580L, 1590L, 1510L, 1600L, 1660L, 1700L, 1530L, 1490L, 1580L, 
+1500L, 1600L, 1570L, 1620L, 1410L, 1560L, 1590L, 1710L, 1580L, 
+1690L, 1610L, 1660L, 1610L, 1590L, 1530L, 1690L, 1600L, 1693L, 
+1580L, 1636L, 1670L, 1600L, 1570L, 1700L, 1740L, 1540L, 1555L, 
+1614L, 1530L, 1690L, 1590L, 1610L, 1670L, 1690L, 1550L, 1650L, 
+1540L, 1660L, 1620L, 1630L, 1610L, 1540L, 1610L, 1630L, 1530L, 
+1520L, 1544L, 1570L, 1580L, 1550L, 1570L, 1521L, 1580L, 1630L, 
+1650L, 1640L, 1650L, 1520L, 1620L, 1744L, 1647L, 1615L, 1680L, 
+1670L, 1620L, 1570L, 1660L, 1550L, 1590L, 1620L, 1560L, 1670L, 
+1650L, 1539L, 1470L, 1580L, 1670L, 1520L, 1620L, 1710L, 1530L, 
+1630L, 1720L, 1570L, 1560L, 1650L, 1635L, 1590L, 1590L, 1566L, 
+1590L, 1662L, 1550L, 1570L, 1560L, 1630L, 1530L), Hmarried = c(25L, 
+19L, 38L, 26L, 30L, 23L, 33L, 30L, 26L, 26L, 23L, 23L, 31L, 41L, 
+19L, 24L, 24L, 27L, 28L, 22L, 31L, 24L, 25L, 23L, 18L, 25L, 27L, 
+28L, 22L, 25L, 21L, 32L, 28L, 23L, NA, 22L, 44L, 25L, 22L, 20L, 
+25L, 21L, 25L, 21L, 26L, 28L, 25L, 22L, 23L, 27L, 21L, 26L, 19L, 
+25L, 27L, 25L, 24L, 27L, 25L, 21L, NA, 20L, 23L, 26L, 20L, 50L, 
+24L, 31L, 20L, 21L, 29L, 30L, 25L, 24L, 25L, 33L, 22L, 24L, 22L, 
+20L, 20L, 22L, 27L, 24L, 31L, 23L, 26L, NA, 22L, 24L, 21L, 29L, 
+31L, 23L, 28L, 26L, 30L, 22L, 23L, 34L, 27L, 34L, 28L, 41L, 39L, 
+32L, 22L, 23L, 49L, 25L, 27L, 22L, 37L, 17L, 23L, 26L, 21L, 23L, 
+23L, 25L, 21L, 22L, 32L, 28L, 22L, 24L, 19L, 27L, 30L, 22L, 24L, 
+25L, 21L, 23L, 22L, 35L, 21L, 30L, 19L, 35L, 23L, 29L, 22L, 32L, 
+23L, 21L, 20L, 24L, 20L, 33L, 52L, 24L, 34L, 16L, 30L, 28L, 20L, 
+20L, 26L, 21L, 24L, 22L, 22L, 29L, 22L, 24L, 24L, 25L, 23L, 19L, 
+21L, 25L, 18L, 21L, 17L, 22L, 21L, 20L, 23L, 28L, 24L, 23L, 20L, 
+22L, 30L, 22L, 27L, 25L, 24L, 25L, 22L, 21L, 19L, NA, 25L, 30L, 
+25L, 23L, 24L)), .Names = c("Hage", "Hht", "Wage", "Wht", "Hmarried"
+), class = "data.frame", row.names = c(NA, -199L))
+
+par(mfrow = c(1, 3))
+
+hist(hts$Hht,
+     las = 1,
+     main = "Husbands' heights",
+     xlab = "Heights (in mm)",
+     ylab = "Frequency",
+     col = plotColour)
+hist(hts$Wht,
+     las = 1,
+     main = "Wives' heights",
+     xlab = "Heights (in mm)",
+     ylab = "Frequency",
+     col = plotColour)
+plot(x = hts$Hht,
+     y = hts$Wht,
+     las = 1,
+     main = "Husbands' and wives' heights",
+     xlab = "Husbands' heights (in mm)",
+     ylab = "Wives' heights (in mm)",
+     pch = 19,
+     col = plotColour)
+```
+
+
+
+```{r BivarNormalHts, echo=FALSE, fig.cap="Bivariate normal distribution for heights.", fig.align="center", out.width='80%'}
+
+mu <- c(1732, 1602)
+
+sigma <- matrix(c(68.8^2, 0, 
+                  0, 62.4^2), 
+                nrow = 2)
+corr <- 0.364
+cov <- corr * sqrt(sigma[1, 1] * sigma[2, 2] )
+
+sigma[1, 2] <- sigma[2, 1] <- cov
+
+f <- function(x, y, mn, sigma) {
+  cat("INSIDE\n")
+  mnormt::dmnorm( matrix( cbind(x, y),
+                         byrow = FALSE,
+                         ncol = 2),
+                 mean = mn,
+                 varcov = sigma)
+}
+
+zz <- seq(-4, 4, 
+          length = 50)
+x <- mu[1] + zz * sqrt(sigma[1, 1])
+y <- mu[2] + zz * sqrt(sigma[2, 2]) 
+
+
+if( knitr::is_latex_output() ) {
+  
+  z <- outer(x, y, 
+             FUN = "f",
+             mn = mu,
+             sigma = sigma)
+  
+  contour(x, y, z,
+          asp = 1,
+          las = 1,
+          xlim = c(1550, 1900),
+          ylim = c(1450, 1750),
+          xlab = "Husband heights (in mm)",
+          ylab = "Wife heights (in mm)")
+  
+  persp(x, y, z, 
+        theta = -30, 
+        phi = 45, 
+        shade = 0.75, 
+        col = plotColour, 
+        expand = 0.5, 
+        r = 2, 
+        ltheta = 25, 
+        xlab = "Husband heights (in mm)",
+        ylab = "Wife heights (in mm)",
+        ticktype = "simple")
+}
+if( knitr::is_html_output() ) {
+
+  M <- plot3D::mesh(x = x,
+                    y = y)
+  
+  z <- outer(x, y, f,
+             mn = mu,
+             sigma = sigma)
+  
+  
+  rgl::persp3d(x = M$x, 
+               y = M$y, 
+               z = z,
+               xlim = c(1450, 2050),
+               ylim = c(1350, 1900),
+               zlim = c(0, 4e-05),
+               col = plotColour,
+               colkey = FALSE,
+               phi = 40,
+               xlab = "Husband heights (in mm)",
+               ylab = "Wife heights (in mm)",
+               theta = 30,
+               main = "Bivariate normal")
+}
+```
+\index{Bivariate normal distribution|)}
+
+
+
+
+
+# Multivariate distributions* {#ChapMultivariate}
+
+## Multivariate random variables using matrix notation {#Multivariate}
+
+## Random vectors {#RandomVectors}
 
 So far, we have studied *univariate* random variables (i.e., a single random variable) 
 and *bivariate* random variables (two jointly distributed random variables). 
@@ -1590,7 +2199,7 @@ $$
 where the (column) vector $\mathbf{a} = \begin{bmatrix} a_1 \\ a_2 \end{bmatrix}$.
 
 
-### Joint probability functions {#MultivariateProbFn}
+## Joint probability functions {#MultivariateProbFn}
 
 The *joint probability function* of $\mathbf{X}$ describes the probability distribution for all $n$\ random variables simultaneously.
 
@@ -1738,7 +2347,7 @@ prob_Est
 :::
 
 
-### Joint distribution functions {#MultivariateDistFn}
+## Joint distribution functions {#MultivariateDistFn}
 
 The *multivariate distribution function (CDF)* is
 $$
@@ -1787,7 +2396,7 @@ $$
 :::
 
 
-### Marginal and conditional distributions
+## Marginal and conditional distributions
 
 Marginal distributions are obtained by summing or integrating out unwanted variables. For example,
 $$
@@ -1803,7 +2412,7 @@ $$
 EXAMPLES
 
 
-### Multivariate independence {#MultivariateIndependence}
+## Multivariate independence {#MultivariateIndependence}
 
 In the multivariate case, $n$\ random variables $X_1, \dots, X_n$ are *independent* if knowing the value of any subset of them gives no information about the others.
 Formally, let $\mathbf{X} = (X_1, \dots, X_n)$ be an $n$-dimensional random vector with joint probability distribution. 
@@ -1883,7 +2492,335 @@ $$
 :::
 
 
-## Simulation {#SimulationBivariate}
+# Expectations for multivariate distributions using matrix notation* {#MultivariateExtensions}
+
+## Expectation and covariance
+
+Consider a random vector of $n$\ random variables
+$$
+  \mathbf{X} = [X_1, X_2, \dots, X_n]^T.
+$$
+The *mean vector* of $\mathbf{X}$ is
+$$
+  \boldsymbol{\mu} 
+  = E[\mathbf{X}] 
+  =
+  \begin{bmatrix}
+    E[X_1] \\
+    \vdots \\
+    E[X_n]
+  \end{bmatrix}.
+$$
+
+The *covariance matrix* is
+$$
+  \Sigma = \text{Cov}(\mathbf{X}) 
+  = E\!\left[(\mathbf{X} - \boldsymbol{\mu})(\mathbf{X} - \boldsymbol{\mu})^T\right].
+$$
+
+The entries are $\Sigma_{ij} = \text{Cov}(X_i, X_j)$. 
+The diagonal entries are variances, while the off-diagonal entries are covariances.  
+
+The *correlation matrix* is obtained by normalisation:
+$$
+  \rho_{ij} = \frac{\Sigma_{ij}}{\sqrt{\Sigma_{ii}\,\Sigma_{jj}}}.
+$$
+
+
+## Independence
+
+The components $X_1, \dots, X_n$ are independent if and only if
+$$
+  f(x_1, \dots, x_n) = \prod_{i = 1}^n f_{X_i}(x_i).
+$$
+
+Linear combinations of random variables are most elegantly dealt with using the methods and notation of vectors and matrices, especially as the dimension grows beyond the bivariate case.
+In the bivariate case we define
+\begin{align}
+   \mathbf{X} 
+   &= \begin{bmatrix} 
+       X_1 \\ 
+       X_2 
+      \end{bmatrix};
+  \label{EQN:matrix1} \\
+  \operatorname{E}[\mathbf{X}] 
+  & =
+   \operatorname{E} 
+   \left[
+   \begin{bmatrix} 
+      X_1 \\ 
+      X_2
+   \end{bmatrix} 
+   \right]
+   =
+   \begin{bmatrix} 
+      \operatorname{E}[X_1] \\ 
+      \operatorname{E}[X_2]
+   \end{bmatrix} 
+   =  
+   \begin{bmatrix} 
+     \mu_1 \\
+     \mu_2 
+   \end{bmatrix} =
+  \boldsymbol{\mu};\label{EQN:matrix2} \\
+  \operatorname{var}[\mathbf{X}] 
+  & = \operatorname{var}
+  \left[
+  \begin{bmatrix} 
+     X_1 \\ 
+     X_2
+  \end{bmatrix} 
+  \right]
+  = 
+  \begin{bmatrix} 
+     \sigma^2_1  & \sigma_{12} \\
+     \sigma_{21} & \sigma^2_2 
+  \end{bmatrix} 
+  = \mathbf{\Sigma}.\label{EQN:matrix3}
+\end{align}
+
+The vector\ $\boldsymbol{\mu}$ is the mean vector, and the matrix\ $\mathbf{\Sigma}$ is called the *variance--covariance* matrix, which is square and symmetric since $\sigma_{12} = \sigma_{21}$ (the covariance).
+
+The linear combination $Y = a_1 X_1 + a_2 X_2$ can be expressed as
+\begin{equation}
+   Y 
+   = a_1 X_1 + a_2 X_2 
+   = [a_1, a_2]
+   \begin{bmatrix} 
+      X_1 \\ 
+      X_2 
+   \end{bmatrix} 
+   = \mathbf{a}^T\mathbf{X}
+   (\#eq:BivarCombination)
+\end{equation}
+where the (column) vector $\mathbf{a} = \begin{bmatrix} a_1 \\ a_2 \end{bmatrix}$, and the superscript\ $T$ means 'transpose'.
+
+
+## Independent random variables {#IndependentRVs}
+
+Recall that events\ $A$ and\ $B$ are independent if, and only if,
+$$
+   something nmissing!
+$$
+
+
+## Expectation {#MultivariateExpectation}
+
+Results involving expectations naturally generalise from the bivariate to the multivariate case.
+Firstly, the expectation of a linear combination of random variables. 
+
+
+:::{.theorem #ExpLinear name="Expectation of linear combinations"}
+If $X_1, X_2,\dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any constants then
+$$
+   \operatorname{E}\left[\sum_{i = 1}^n a_i X_i \right]
+   =\sum_{i = 1}^n a_i \, \operatorname{E}[X_i]
+$$
+:::
+
+
+:::{.proof}
+The proof follows directly from Theorem\ \@ref(thm:ExpTwoRV) by induction.
+:::
+
+
+The variance of a linear combination of random variables is given in the following theorem.
+
+
+:::{.theorem #LinearCombVariance name="Variance of a linear combination"}
+If $X_1, X_2, \dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any constants then
+$$
+   \operatorname{var}\left[\sum_{i = 1}^n a_i X_i \right]
+   =
+   \sum^n_{i = 1}a^2_i\operatorname{var}[X_i] + 2{\sum\sum}_{i<j}a_i a_j\operatorname{Cov}(X_i, X_j).
+$$
+:::
+
+:::{.proof}
+For convenience, put $Y = \sum_{i = 1}^n a_iX_i$.
+Then by definition of variance
+\begin{align*}
+     \operatorname{var}[Y] 
+     &= \operatorname{E}\big[Y - \operatorname{E}(Y)\big]^2\\
+     &= \operatorname{E}[a_1 X_1 + \dots + a_n X_n - a_1\mu_1 - \dots a_n\mu_n]^2\\
+     &= \operatorname{E}[a_1(X_1 - \mu_1) + \dots + a_n(X_n - \mu_n)]^2\\
+     &= \operatorname{E}\left[ \sum_i a^2_i(X_i - \mu_i)^2 + 2\mathop{\sum\sum}_{i < j}a_i a_j(X_i - \mu_i)X_j - \mu_j)\right]\\
+     &= \sum_i a^2_i\operatorname{E}[X_i - \mu_i]^2 + 2\mathop{\sum\sum}_{i < j}a_i a_j\operatorname{E}[X_i - \mu_i] (X_j - \mu_j)\\
+        %\quad \text{using Theorem\ \@ref(thm:ExpLinear)}\\
+     &= \sum_i a^2_i\sigma^2_i + 2\mathop{\sum\sum}_{i<j}a_i a_j\operatorname{Cov}(X_i, X_j).
+\end{align*}
+:::
+
+In statistical theory, an important special case of Theorem\ \@ref(thm:LinearCombVariance) occurs when the\ $X_i$ are independently and identically distributed (IID). 
+That is, each of $X_1, X_2, \dots, X_n$ has the same distribution and are independent of each other. 
+(We see the relevance of this in Chap.\ \@ref(SamplingDistributions).)
+Because of its importance this special case is called a corollary of Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance).
+
+:::{.corollary #IID name="IID rvs"}
+If $X_1, X_2, \dots, X_n$ are independently distributed (IID) random variables, each with mean\ $\mu$ and variance\ $\sigma^2$, and $a_1, a_2,\ldots a_n$ are any constants, then
+\begin{align*}
+   \operatorname{E}\left[\sum_{i = 1}^n a_i X_i \right]
+   &= \mu\sum_{i = 1}^n a_i;\\ 
+   \operatorname{var}\left[\sum_{i = 1}^n a_i X_i \right]
+   &= \sigma^2\sum^n_{i = 1}a^2_i.
+\end{align*}
+:::
+
+:::{.proof}
+Exercise!
+:::
+
+
+## Vector formulation {#Vectors}
+
+With the standard rules of matrix multiplication, Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance) applied to Eq.\ \@ref(eq:BivarCombination) then give respectively (check!)
+\begin{equation}
+   \operatorname{E}[Y]
+   = \operatorname{E}[\mathbf{a}^T\mathbf{X}]
+   = [a_1, a_2]
+   \begin{bmatrix} 
+      \mu_1 \\ 
+      \mu_2 
+    \end{bmatrix} 
+   = \mathbf{a}^T\boldsymbol{\mu}
+\end{equation}
+and
+\begin{align}
+  \operatorname{var}[Y]
+  &= \operatorname{var}[\mathbf{a}^T\mathbf{X}\mathbf{a}]\nonumber\\
+  &= [a_1, a_2]
+  \begin{bmatrix} 
+     \sigma^2_1 & \sigma_{12} \\
+     \sigma_{21}& \sigma^2_2 
+  \end{bmatrix}
+  \begin{bmatrix} 
+     a_1 \\ 
+     a_2
+  \end{bmatrix} \nonumber\\
+  &= \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}.
+\end{align}
+
+The vector formulation of these results apply directly in the multivariate case as described below.
+Write
+\begin{align*}
+  \mathbf{X} 
+  &= [X_1, X_2, \ldots, X_n]^T; \\
+     \operatorname{E}[\mathbf{X}] 
+  &= [\mu_1, \ldots, \mu_n]^T = \boldsymbol{\mu}^T; \\
+     \operatorname{var}[\mathbf{X}]
+  &= \mathbf{\Sigma}; \\
+     \mathbf{a}^T & = \left[a_1,a_2,\ldots, a_n \right].
+\end{align*}
+Now Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance) can be expressed in vector form.
+
+
+:::{.theorem #MeanVarVector name="Bivariate mean and variance (vector form)"}
+If\ $\mathbf{X}$ is a random vector of length\ $n$ with mean\ $\boldsymbol{\mu}$ and variance\ $\mathbf{\Sigma}$, and\ $\mathbf{a}$ is any constant vector of length\ $n$, then
+\begin{align*}
+   \operatorname{E}[\mathbf{a}^T\mathbf{X}]
+   &= \mathbf{a}^T\boldsymbol{\mu}; \\
+   \operatorname{var}[\mathbf{a}^T\mathbf{X}] 
+   &= \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}.
+\end{align*}
+:::
+
+:::{.proof}
+Exercise.
+:::
+
+
+These elegant statements concerning linear combinations are a feature of vector formulations that extend to many statistical results in the theory of statistics.
+One obvious advantage of this formulation is the implementation in vector-based computer programming used by packages such as **R**.
+
+One further result is presented (without proof) involving two linear combinations.
+
+
+:::{.theorem #LinearCombCovar name="Covariance of combinations"}
+If\ $\mathbf{X}$ is a random vector of length\ $n$ with mean\ $\boldsymbol{\mu}$ and variance\ $\mathbf{\Sigma}$, and\ $\mathbf{a}$ and\ $\mathbf{b}$ are any constant vectors, each of length\ $n$, then
+$$
+   \operatorname{Cov}(\mathbf{a}^T\mathbf{X},\mathbf{b}^T\mathbf{X}) 
+   = 
+   \mathbf{a}^T\mathbf{\Sigma}\mathbf{b}.
+$$
+:::
+
+
+
+:::{.example #VectorExp name="Expectations using vectors"}
+Suppose the random variables $X_1, X_2, X_3$ have respective means\ $1$, $2$, and\ $3$, respective variances\ $4$, $5$, and\ $6$, and covariances $\operatorname{Cov}(X_1, X_2) = -1$, $\operatorname{Cov}(X_1, X_3) = 1$ and $\operatorname{Cov}(X_2, X_3) = 0$.
+
+Consider the random variables $Y_1 = 3X_1 + 2X_2 - X_3$ and $Y_2 = X_3 - X_1$. 
+Determine $\operatorname{E}[Y_1]$, $\operatorname{E}[Y_2]$, $\operatorname{var}[Y_1]$, $\operatorname{var}[Y_2]$ and $\operatorname{Cov}(Y_1,Y_2)$.
+
+A vector formulation of this problem allows us to use Theorems\ \@ref(thm:MeanVarVector) and\ \@ref(thm:LinearCombCovar) directly. 
+Putting $\mathbf{a}^T = [3, 2, -1]$ and $\mathbf{b}^T = [-1, 0, 1]$:
+$$
+   Y_1 = \mathbf{a}^T\mathbf{X}
+   \quad\text{and}\quad 
+   Y_2 = \mathbf{b}^T\mathbf{X}
+$$
+where $\mathbf{X}^T = [X_1, X_2, X_3]$.
+Also define $\boldsymbol{\mu}^T = [1, 2, 3]$ and 
+$\mathbf{\Sigma} = 
+\begin{bmatrix} 
+  4 & -1 & 1\\
+ -1 & 5 & 0\\
+  1 & 0 & 6
+\end{bmatrix}$ 
+as the mean and variance--covariance matrix respectively of $\mathbf{X}$.
+Then
+$$
+   \operatorname{E}[Y_1]
+   = \mathbf{a}^T\boldsymbol{\mu}
+   = [3, 2, -1]
+   \begin{bmatrix} 
+      1\\
+      2\\
+      3
+      \end{bmatrix} 
+   = 4
+$$
+and
+$$
+   \operatorname{var}[Y_1]
+   = \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}
+   = [3, 2, -1]
+   \begin{bmatrix} 
+      4 & -1 & 1\\
+      -1 & 5 & 0\\
+       1 & 0 & 6
+    \end{bmatrix}
+    \begin{bmatrix} 
+      3\\
+      2\\
+      -1
+   \end{bmatrix}
+   = 44.
+$$
+Similarly $\operatorname{E}[Y_2] = 2$ and $\operatorname{var}[Y_2] = 8$.
+Finally:
+$$
+   \operatorname{Cov}(Y_1, Y_2)
+   = \mathbf{a}^T\mathbf{\Sigma}\mathbf{b}
+   = [3, 2, -1]^T
+   \begin{bmatrix} 
+      4 & -1 & 1\\
+      -1 & 5 & 0\\
+      1 & 0 & 6
+      \end{bmatrix}
+      \begin{bmatrix}
+        -1\\
+        0\\
+        1
+      \end{bmatrix}
+  = -12.
+$$
+:::
+
+
+
+
+# Simulation {#SimulationBivariate}
 
 As with univariate distributions (Sects.\ \@ref(SimulationDiscrete) and\ \@ref(SimulationContinuous)), simulation can be used with bivariate distributions.
 Random numbers from the *bivariate normal* distribution (Sect.\ \@ref(BVNormalDistribution)) are generated using the function `dmnorm()` from the library `mnorm`.
@@ -2514,7 +3451,7 @@ The actually weights of each ingredient vary randomly, depending on seasonality 
 
 :::{.exercise #MixedNuts}
 Mixed nuts come in $250\gs$ packets, and comprise walnuts, almonds and peanuts.
-The actually weights of each ingredient vary randomly, depending on seasonality and availability.
+The actual weights of each ingredient vary randomly, depending on seasonality and availability.
 
 1. Explain why there are really just two variables in this problem.
 2. While peanuts are the cheapest ingredient, guidelines state that the weight of peanuts must not exceed $100\gs$.
@@ -2545,12 +3482,11 @@ What is the expected value of\ $N$, the number of values to draw to exceed the i
 
 :::{.exercise #MixedBiomarker}
 Suppose\ $X$ is the concentration of a biomarker (in mmol.L^$-1$^), and\ $Y$ is a disease indicator where $Y = 1$ refers to a patient with the disease and $Y = 0$ refers to a patient without the disease.  
-
 The prevalence of the disease in the population is
 $$
   \Pr(Y = 1) = 0.10, \quad \Pr(Y = 0) = 0.90.
 $$
-Conditional on disease status, biomarker concentrations follow different ??normal?? distributions.
+Conditional on disease status, biomarker concentrations follow different ??????normal?????? distributions.
 If $Y = 1$:  
 $$
   X \mid Y = 1 \sim \mathcal{N}(\mu_1=8, \, \sigma_1^2 = 1^2),
