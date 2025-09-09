@@ -1325,21 +1325,175 @@ which is usually written as $f_X(x) = 2(1 - x)$ for $0 < x < 1$, and\ $0$ elsewh
 For a random variable\ $X$, the distribution function $F_X(x)$ computes the probability that $X < x$ for some given value of\ $x$.
 The value of\ $F_X(x)$ is a probability, so is a value between\ $0$ and\ $1$.
 
-The *quantile function* $Q_X(p)$ does the opposite of the distribution function.
-The *quantile function* $Q_X(p)$ is the *smallest* value\ $x$ such that $F_X(x) \ge p$ for given values of\ $p$.
+The *quantile function* $Q_X(p)$ is the inverse of the distribution function; it takes a value between\ $0$ and\ $1$ (called\ $p$), and returns the *smallest* value\ $x$ such that $F_X(x) \ge p$ for given values of\ $p$.
 More formally,
 \begin{equation}
-  Q_X(p) = \inf\{x \in \mathbb{R} \mid F_X(x) \ge p\}.
+  Q_X(p) = \inf\{x \in \mathbb{R} \mid F_X(x) \ge p\}\quad\text{for $0 < p < 1$}
   (\#eq:QuantileFunction)
 \end{equation}
-where 'inf' is the 'infimum', the greatest number that is less than or equal to every number in the set. 
+where 'inf' is the 'infimum', the greatest lower bound of the set. 
 In practice this refers to the leftmost value\ $x$ where the distribution function $F_X(x)$ reaches or exceeds a target probability\ $p$.
 
-When\ $X$ is a *continuous* random variable, this becomes an equality, and we can write
+At the endpoints (i.e., at $p = 0$ and $p = 1$), some ambiguity exists.
+
+Some authors set $Q_X(0) = \min\{x \mid F_X(x) > 0\}$, the smallest support point with a positive mass. 
+Other authors define $Q_X(0) = \lim_{p\downarrow} Q_X(p)$, which may give $Q_X(0)\to -\infty$.
+
+Similarly, some authors leave $Q_X(1)$ undefined, while others set $Q_X(1) = \sup\{x \mid F_X(x) < 1\}$, the largest support point (possibly $+\infty$).
+Other authors define $Q_X(1) = \lim_{p\uparrow} Q_X(p)$, which again may be $+\infty$.
+
+When\ $X$ is a *continuous* random variable and $F_X(x)$ is a strictly increasing function, the quantile function is the inverse of the distribution function, and we can write
 $$
    Q_X(p) = F_X^{-1}(p).
 $$
-The quantile function is defined for all $p\in [0, 1]$.
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+For built-in distributions (see Chaps.\ \@ref(DiscreteDistributions) and\ \@ref(ContinuousDistributions)), **R** allows the values `p = 0` and `p = 1`.
+If the distribution is *unbounded*, **R** returns $-\infty$ or $+\infty$ as appropriate.
+If the distribution is *bounded*, **R** returns the actual minimum and maximum of the support.
+:::
+
+
+:::{.example #QuantileFnContinuous1 name="Quantile function: continuous rv"}
+Consider the continuous random variable\ $X$ with the probability density function
+$$
+  f_X(x) 
+  = 
+  \begin{cases}
+    x/2 & \text{for $0 \le x \le 2$}\\
+    0   & \text{elsewhere}.
+  \end{cases}
+$$
+The distribution function is
+$$
+  F_X(x) 
+  = 
+  \begin{cases}
+    0     & \text{for $x < 0$}\\
+    x^2/4 & \text{for $0 \le x \le 2$}\\
+    1     & \text{for $x > 2$}.
+  \end{cases}
+$$
+For $0 < p < 1$, the quantile function $Q_X(p)$ is given by solving $F_X(x) = p$ (i.e., solving $p = x^2 /4$), which gives $Q_X(p) = 2\sqrt{p}$.
+This means the quantile function is
+$$
+  Q_X(p) 
+  = 2\sqrt{p} \quad\text{for $0 < p < 1$.}\\
+$$
+See Fig.\ \@ref(fig:QuantileFnContinuous1).
+:::
+
+
+```{r QuantileFnContinuous1, echo=FALSE, fig.align="center", fig.cap="Left: the distribution function of $X$. Right: the quantile function for $X$.", fig.width=6.5, fig.height=3, out.width='100%'}
+par(mfrow = c(1, 3))
+
+x <- seq(-1, 3, 
+         length = 5000)
+p <- seq(0, 1, 
+         length = 5000)
+yPDF <- function(x){ ifelse( (x >= 0) & (x <= 2), 
+                             x/2, 
+                             0)}
+yDF <- function(x){ ifelse(x < 0, 
+                           0, 
+                           ifelse(x > 2,
+                                  1, 
+                                  x^2 / 4 ) ) }
+yQF <- function(p){ ifelse( (p > 0) & (p < 1), 
+                           2 * sqrt(p),
+                           NA) }
+###
+plot(x, 
+     yPDF(x),
+     las = 1,
+     type = "l",
+     lwd = 3,
+     col = plotColour1,
+     xlab = expression(italic(X)),
+     ylab = expression(PDF~italic(f)[italic(X)](italic(x))),
+     main = expression(PDF~of~italic(X)) )
+
+### 
+plot(x, 
+     yDF(x),
+     las = 1,
+     type = "l",
+     lwd = 3,
+     col = plotColour1,
+     xlab = expression(italic(X)),
+     ylab = expression(Distribution~fn~italic(F)[italic(X)](italic(x))),
+     main = expression(Distribution~"function"~of~italic(X)) )
+
+# Show p = 0.75
+xStar <- 1
+qStar <- 0.25 
+arrows(x0 = min(x),
+       x1 = xStar,
+       y0 = qStar,
+       y1 = qStar,
+       code = 1,
+       angle = 15,
+       length = 0.10)
+text(x = xStar,
+     y = qStar,
+     pos = 4,
+     cex = 0.9,
+     label = expression(italic(F)[italic(x)](italic(x)) == 0.25) )
+
+arrows(x0 = xStar,
+       x1 = xStar,
+       y0 = qStar,
+       y1 = 0,
+       code = 1,
+       angle = 15,
+       length = 0.10)
+text(x = xStar,
+     y = 0.1,
+     pos = 4,
+     cex = 0.9,
+     label = expression(italic(x) == 1) )
+###
+
+plot(p, 
+     yQF(p),
+     las = 1,
+     type = "l",
+     lwd = 3,
+     col = plotColour1,
+     xlab = expression(italic(p)),
+     ylab = expression(Quantile~fn~italic(Q)[italic(X)](italic(p))),
+     main = expression(Quantile~"function"~of~italic(X)) )
+
+# Show p = 0.8
+xStar <- 1
+qStar <- 0.25 
+arrows(x0 = min(p),
+       x1 = qStar,
+       y0 = xStar,
+       y1 = xStar,
+       code = 1,
+       angle = 15,
+       length = 0.10)
+text(x = 0.4,
+     y = xStar,
+     pos = 4,
+     cex = 0.9,
+     label = expression(italic(Q)[italic(x)](italic(p)) == 1) )
+
+arrows(x0 = qStar,
+       x1 = qStar,
+       y0 = xStar,
+       code = 1,
+       y1 = 0,
+       angle = 15,
+       length = 0.10)
+text(x = qStar,
+     y = 0.25,
+     pos = 4,
+     cex = 0.9,
+     label = expression( italic(p) == 0.25))
+```
 
 
 :::{.example #QuantileFnContinuous name="Quantile function: continuous rv"}
@@ -1359,9 +1513,10 @@ $$
       1 - \exp(-2x)        & \text{for $x \ge 0 $}.
    \end{cases}
 $$
-The quantile function\ $Q(p) = F^{-1}_X(p)$ is the solution to $p = 1 - \exp(-2x)$, which is
+For $0 < p < 1$, the quantile function $Q(p)$ is found by solving $F_X(x) = p$; i.e., the solution to $p = 1 - \exp(-2x)$.
+This yields
 $$
-   Q(p) =
+   Q_X(p) =
    F_X^{-1}(p) = 
       -\frac{1}{2}\log(1 - p)
 $$
@@ -1391,6 +1546,7 @@ plot(x,
      las = 1,
      type = "l",
      lwd = 3,
+     col = plotColour1,
      xlab = expression(italic(X)),
      ylab = expression(Distribution~fn~italic(F)[italic(X)](italic(x))),
      main = expression(Distribution~"function"~of~italic(X)) )
@@ -1428,6 +1584,7 @@ plot(p,
      las = 1,
      type = "l",
      lwd = 3,
+     col = plotColour1,
      xlab = expression(italic(p)),
      ylab = expression(Quantile~fn~italic(Q)[italic(X)](italic(p))),
      main = expression(Quantile~"function"~of~italic(X)) )
@@ -1480,15 +1637,8 @@ $$
 $$
 as shown in Fig.\ \@ref(fig:QuantileFnDiscrete) (left panel).
 
-Consider the value $p = 0$; the value of $Q_X(0)$ is the *smallest* value of\ $x$ for which $p = 0$.
-This corresponds to $x = 10$.
-In fact, $x = 10$ is the smallest value of\ $x$ for which $p = 0$ up to $p = 0.1$.
-So,
-$$
-  Q_X(p) = 10\quad\text{for $0 < p \le 0.1$}.
-$$
-Similarly, $x = 11$ is the smallest vaue of\ $x$ for which $0.1 < p \le 0.4$,
-Continuing:
+The quantile function is found by solving $F_X(x) \ge p$ for $0 < p \le 1$.
+This gives:
 $$
   Q_X(p) = 
   \begin{cases}
@@ -1499,7 +1649,13 @@ $$
   \end{cases}
 $$
 as shown in Fig.\ \@ref(fig:QuantileFnDiscrete).
-For example, $Q_X(0.3) = 10$, and $Q_X(0.4) = 11$.
+For example:
+
+* $Q_X(0.02) = 10$.
+* $Q_X(0.3) = 11$.
+* $Q_X(0.4) = 11$, since $F_X(11) = 0.4$ and no value of\ $x$ has a value of $F_X(x)$ greater than or equal to\ $0.4$.
+* $Q_X(1) = 17$.
+
 :::
 
 
@@ -1507,8 +1663,8 @@ For example, $Q_X(0.3) = 10$, and $Q_X(0.4) = 11$.
 ```{r QuantileFnDiscrete, echo=FALSE, fig.align="center", fig.cap="Left: the distribution function of $X$. Right: the quantile function of $X$.", fig.width=8, fig.height=4, out.width='100%'}
 par(mfrow = c(1, 2))
 
-xDF <-  c(8,  10,  11,  15, 17, 19)
-yDF <- c(0, 0.1, 0.4, 0.9,  1,  1)
+xDF <-  c(6,  10,   11,  15, 17,  22)
+yDF <-  c(0,  0.1, 0.4, 0.9,   1,  1)
 
 xPF <- c( 10,  11,  15,  17)
 yPF <- c(0.1, 0.3, 0.5, 0.1)
@@ -1518,7 +1674,8 @@ yPF <- c(0.1, 0.3, 0.5, 0.1)
 
 plot(x = xDF, 
      y = yDF,
-     xlab = expression(italic(X)),
+     xlim = c(8, 20),
+     xlab = expression(italic(p)),
      ylab = expression(Distribution~"function") ,
      main = expression(Distribution~"function"~of~italic(X)),
      las = 1,
@@ -1526,7 +1683,8 @@ plot(x = xDF,
 for (i in (1:(length(xDF) - 1) ) ) {
   lines( x = c(xDF[i], xDF[i + 1]),
          y = c(yDF[i], yDF[i]),
-         lwd = 2)
+         col = plotColour1,
+         lwd = 3)
   if (i > 1 ) {# Add 'include this point' points: solid dots
     points(x = xDF[i], 
            y = yDF[i],
@@ -1543,8 +1701,9 @@ abline(v = xDF,
        lty = 2)
 ###
 
-yQ <- c(0, 5,  10,  11,  15, 17, 18)
-xQ <- c(0, 0, 0.1, 0.4, 0.9,  1,  1)
+xQ <- c(0,  0.1, 0.4, 0.9,  1)
+yQ <- c(10,  11,  15, 17,  17 )
+n <- length(xQ)
 
 plot(x = xQ, 
      y = yQ,
@@ -1554,24 +1713,33 @@ plot(x = xQ,
      las = 1,
      type = "n")
 
-for (i in (1:(length(xQ) - 1))){
+# The 'steps'
+for (i in (1 : (n - 1))){
   lines(x = c(xQ[i], xQ[i + 1]),
         y = c(yQ[i], yQ[i]),
-        lwd = 2)
-  
-  points(x = xQ[i],
-        y = yQ[i],
-        pch = 19)
-  points(x = xQ[i + 1],
-        y = yQ[i],
-        pch = 1)
+        col = plotColour1,
+        lwd = 3)
 }
+
+# Draw points according to left-continuous convention
+for (i in 1:(n-1)) {
+  # Left endpoint of segment: open circle (excluded), except first point
+  if (i == 1) {
+    points(xQ[i], yQ[i], pch = 19)  # first point filled
+  } else {
+    points(xQ[i], yQ[i], pch = 1)   # open circle for interior left ends
+  }
+  
+  # Right endpoint of segment: always filled (included)
+  points(xQ[i+1], yQ[i], pch = 19)
+}
+
+# Guiding lines
 abline(v = xQ,
        col = "grey",
        lty = 2)
 
 ```
-
 
 
 
