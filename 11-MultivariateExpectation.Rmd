@@ -1,0 +1,1038 @@
+
+# Expectations for multivariate distributions* {#MultivariateExtensions}
+
+## Expectation {#MultivariateExpectation}
+
+Results involving expectations naturally generalise from the bivariate to the multivariate case.
+Firstly, the expectation of a linear combination of random variables. 
+
+
+:::{.theorem #ExpLinear name="Expectation of linear combinations"}
+If $X_1, X_2,\dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any constants then
+$$
+   \operatorname{E}\left[\sum_{i = 1}^n a_i X_i \right]
+   =\sum_{i = 1}^n a_i \, \operatorname{E}[X_i]
+$$
+:::
+
+
+:::{.proof}
+The proof follows directly from Theorem\ \@ref(thm:ExpTwoRV) by induction.
+:::
+
+
+The variance of a linear combination of random variables is given in the following theorem.
+
+
+:::{.theorem #LinearCombVariance name="Variance of a linear combination"}
+If $X_1, X_2, \dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any constants then
+$$
+   \operatorname{var}\left[\sum_{i = 1}^n a_i X_i \right]
+   =
+   \sum^n_{i = 1}a^2_i\operatorname{var}[X_i] + 2{\sum\sum}_{i<j}a_i a_j\operatorname{Cov}(X_i, X_j).
+$$
+:::
+
+:::{.proof}
+For convenience, put $Y = \sum_{i = 1}^n a_iX_i$.
+Then by definition of variance
+\begin{align*}
+     \operatorname{var}[Y] 
+     &= \operatorname{E}\big[Y - \operatorname{E}(Y)\big]^2\\
+     &= \operatorname{E}[a_1 X_1 + \dots + a_n X_n - a_1\mu_1 - \dots a_n\mu_n]^2\\
+     &= \operatorname{E}[a_1(X_1 - \mu_1) + \dots + a_n(X_n - \mu_n)]^2\\
+     &= \operatorname{E}\left[ \sum_i a^2_i(X_i - \mu_i)^2 + 2\mathop{\sum\sum}_{i < j}a_i a_j(X_i - \mu_i)X_j - \mu_j)\right]\\
+     &= \sum_i a^2_i\operatorname{E}[X_i - \mu_i]^2 + 2\mathop{\sum\sum}_{i < j}a_i a_j\operatorname{E}[X_i - \mu_i] (X_j - \mu_j)\\
+        %\quad \text{using Theorem\ \@ref(thm:ExpLinear)}\\
+     &= \sum_i a^2_i\sigma^2_i + 2\mathop{\sum\sum}_{i<j}a_i a_j\operatorname{Cov}(X_i, X_j).
+\end{align*}
+:::
+
+In statistical theory, an important special case of Theorem\ \@ref(thm:LinearCombVariance) occurs when the\ $X_i$ are independently and identically distributed (IID). 
+That is, each of $X_1, X_2, \dots, X_n$ has the same distribution and are independent of each other. 
+(We see the relevance of this in Chap.\ \@ref(SamplingDistributions).)
+Because of its importance this special case is called a corollary of Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance).
+
+:::{.corollary #IID name="IID rvs"}
+If $X_1, X_2, \dots, X_n$ are independently distributed (IID) random variables, each with mean\ $\mu$ and variance\ $\sigma^2$, and $a_1, a_2,\ldots a_n$ are any constants, then
+\begin{align*}
+   \operatorname{E}\left[\sum_{i = 1}^n a_i X_i \right]
+   &= \mu\sum_{i = 1}^n a_i;\\ 
+   \operatorname{var}\left[\sum_{i = 1}^n a_i X_i \right]
+   &= \sigma^2\sum^n_{i = 1}a^2_i.
+\end{align*}
+:::
+
+:::{.proof}
+Exercise!
+:::
+
+
+## Vector formulation {#Vectors}
+
+With the standard rules of matrix multiplication, Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance) applied to Eq.\ \@ref(eq:BivarCombination) then give respectively (check!)
+\begin{equation}
+   \operatorname{E}[Y]
+   = \operatorname{E}[\mathbf{a}^T\mathbf{X}]
+   = [a_1, a_2]
+   \begin{bmatrix} 
+      \mu_1 \\ 
+      \mu_2 
+    \end{bmatrix} 
+   = \mathbf{a}^T\boldsymbol{\mu}
+\end{equation}
+and
+\begin{align}
+  \operatorname{var}[Y]
+  &= \operatorname{var}[\mathbf{a}^T\mathbf{X}\mathbf{a}]\nonumber\\
+  &= [a_1, a_2]
+  \begin{bmatrix} 
+     \sigma^2_1 & \sigma_{12} \\
+     \sigma_{21}& \sigma^2_2 
+  \end{bmatrix}
+  \begin{bmatrix} 
+     a_1 \\ 
+     a_2
+  \end{bmatrix} \nonumber\\
+  &= \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}.
+\end{align}
+
+The vector formulation of these results apply directly in the multivariate case as described below.
+Write
+\begin{align*}
+  \mathbf{X} 
+  &= [X_1, X_2, \ldots, X_n]^T; \\
+     \operatorname{E}[\mathbf{X}] 
+  &= [\mu_1, \ldots, \mu_n]^T = \boldsymbol{\mu}^T; \\
+     \operatorname{var}[\mathbf{X}]
+  &= \mathbf{\Sigma}; \\
+     \mathbf{a}^T & = \left[a_1,a_2,\ldots, a_n \right].
+\end{align*}
+Now Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance) can be expressed in vector form.
+
+
+:::{.theorem #MeanVarVector name="Bivariate mean and variance (vector form)"}
+If\ $\mathbf{X}$ is a random vector of length\ $n$ with mean\ $\boldsymbol{\mu}$ and variance\ $\mathbf{\Sigma}$, and\ $\mathbf{a}$ is any constant vector of length\ $n$, then
+\begin{align*}
+   \operatorname{E}[\mathbf{a}^T\mathbf{X}]
+   &= \mathbf{a}^T\boldsymbol{\mu}; \\
+   \operatorname{var}[\mathbf{a}^T\mathbf{X}] 
+   &= \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}.
+\end{align*}
+:::
+
+:::{.proof}
+Exercise.
+:::
+
+
+These elegant statements concerning linear combinations are a feature of vector formulations that extend to many statistical results in the theory of statistics.
+One obvious advantage of this formulation is the implementation in vector-based computer programming used by packages such as **R**.
+
+One further result is presented (without proof) involving two linear combinations.
+
+
+:::{.theorem #LinearCombCovar name="Covariance of combinations"}
+If\ $\mathbf{X}$ is a random vector of length\ $n$ with mean\ $\boldsymbol{\mu}$ and variance\ $\mathbf{\Sigma}$, and\ $\mathbf{a}$ and\ $\mathbf{b}$ are any constant vectors, each of length\ $n$, then
+$$
+   \operatorname{Cov}(\mathbf{a}^T\mathbf{X},\mathbf{b}^T\mathbf{X}) 
+   = 
+   \mathbf{a}^T\mathbf{\Sigma}\mathbf{b}.
+$$
+:::
+
+
+
+:::{.example #VectorExp name="Expectations using vectors"}
+Suppose the random variables $X_1, X_2, X_3$ have respective means\ $1$, $2$, and\ $3$, respective variances\ $4$, $5$, and\ $6$, and covariances $\operatorname{Cov}(X_1, X_2) = -1$, $\operatorname{Cov}(X_1, X_3) = 1$ and $\operatorname{Cov}(X_2, X_3) = 0$.
+
+Consider the random variables $Y_1 = 3X_1 + 2X_2 - X_3$ and $Y_2 = X_3 - X_1$. 
+Determine $\operatorname{E}[Y_1]$, $\operatorname{E}[Y_2]$, $\operatorname{var}[Y_1]$, $\operatorname{var}[Y_2]$ and $\operatorname{Cov}(Y_1,Y_2)$.
+
+A vector formulation of this problem allows us to use Theorems\ \@ref(thm:MeanVarVector) and\ \@ref(thm:LinearCombCovar) directly. 
+Putting $\mathbf{a}^T = [3, 2, -1]$ and $\mathbf{b}^T = [-1, 0, 1]$:
+$$
+   Y_1 = \mathbf{a}^T\mathbf{X}
+   \quad\text{and}\quad 
+   Y_2 = \mathbf{b}^T\mathbf{X}
+$$
+where $\mathbf{X}^T = [X_1, X_2, X_3]$.
+Also define $\boldsymbol{\mu}^T = [1, 2, 3]$ and 
+$\mathbf{\Sigma} = 
+\begin{bmatrix} 
+  4 & -1 & 1\\
+ -1 & 5 & 0\\
+  1 & 0 & 6
+\end{bmatrix}$ 
+as the mean and variance--covariance matrix respectively of $\mathbf{X}$.
+Then
+$$
+   \operatorname{E}[Y_1]
+   = \mathbf{a}^T\boldsymbol{\mu}
+   = [3, 2, -1]
+   \begin{bmatrix} 
+      1\\
+      2\\
+      3
+      \end{bmatrix} 
+   = 4
+$$
+and
+$$
+   \operatorname{var}[Y_1]
+   = \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}
+   = [3, 2, -1]
+   \begin{bmatrix} 
+      4 & -1 & 1\\
+      -1 & 5 & 0\\
+       1 & 0 & 6
+    \end{bmatrix}
+    \begin{bmatrix} 
+      3\\
+      2\\
+      -1
+   \end{bmatrix}
+   = 44.
+$$
+Similarly $\operatorname{E}[Y_2] = 2$ and $\operatorname{var}[Y_2] = 8$.
+Finally:
+$$
+   \operatorname{Cov}(Y_1, Y_2)
+   = \mathbf{a}^T\mathbf{\Sigma}\mathbf{b}
+   = [3, 2, -1]^T
+   \begin{bmatrix} 
+      4 & -1 & 1\\
+      -1 & 5 & 0\\
+      1 & 0 & 6
+      \end{bmatrix}
+      \begin{bmatrix}
+        -1\\
+        0\\
+        1
+      \end{bmatrix}
+  = -12.
+$$
+:::
+
+
+## Expectation and covariance
+
+Consider a random vector of $n$\ random variables
+$$
+  \mathbf{X} = [X_1, X_2, \dots, X_n]^T.
+$$
+The *mean vector* of $\mathbf{X}$ is
+$$
+  \boldsymbol{\mu} 
+  = E[\mathbf{X}] 
+  =
+  \begin{bmatrix}
+    E[X_1] \\
+    \vdots \\
+    E[X_n]
+  \end{bmatrix}.
+$$
+
+The *covariance matrix* is
+$$
+  \Sigma = \text{Cov}(\mathbf{X}) 
+  = E\!\left[(\mathbf{X} - \boldsymbol{\mu})(\mathbf{X} - \boldsymbol{\mu})^T\right].
+$$
+
+The entries are $\Sigma_{ij} = \text{Cov}(X_i, X_j)$. 
+The diagonal entries are variances, while the off-diagonal entries are covariances.  
+
+The *correlation matrix* is obtained by normalisation:
+$$
+  \rho_{ij} = \frac{\Sigma_{ij}}{\sqrt{\Sigma_{ii}\,\Sigma_{jj}}}.
+$$
+
+
+## Independence
+
+The components $X_1, \dots, X_n$ are independent if and only if
+$$
+  f(x_1, \dots, x_n) = \prod_{i = 1}^n f_{X_i}(x_i).
+$$
+
+Linear combinations of random variables are most elegantly dealt with using the methods and notation of vectors and matrices, especially as the dimension grows beyond the bivariate case.
+In the bivariate case we define
+\begin{align}
+   \mathbf{X} 
+   &= \begin{bmatrix} 
+       X_1 \\ 
+       X_2 
+      \end{bmatrix};
+  \label{EQN:matrix1} \\
+  \operatorname{E}[\mathbf{X}] 
+  & =
+   \operatorname{E} 
+   \left[
+   \begin{bmatrix} 
+      X_1 \\ 
+      X_2
+   \end{bmatrix} 
+   \right]
+   =
+   \begin{bmatrix} 
+      \operatorname{E}[X_1] \\ 
+      \operatorname{E}[X_2]
+   \end{bmatrix} 
+   =  
+   \begin{bmatrix} 
+     \mu_1 \\
+     \mu_2 
+   \end{bmatrix} =
+  \boldsymbol{\mu};\label{EQN:matrix2} \\
+  \operatorname{var}[\mathbf{X}] 
+  & = \operatorname{var}
+  \left[
+  \begin{bmatrix} 
+     X_1 \\ 
+     X_2
+  \end{bmatrix} 
+  \right]
+  = 
+  \begin{bmatrix} 
+     \sigma^2_1  & \sigma_{12} \\
+     \sigma_{21} & \sigma^2_2 
+  \end{bmatrix} 
+  = \mathbf{\Sigma}.\label{EQN:matrix3}
+\end{align}
+
+The vector\ $\boldsymbol{\mu}$ is the mean vector, and the matrix\ $\mathbf{\Sigma}$ is called the *variance--covariance* matrix, which is square and symmetric since $\sigma_{12} = \sigma_{21}$ (the covariance).
+
+The linear combination $Y = a_1 X_1 + a_2 X_2$ can be expressed as
+\begin{equation}
+   Y 
+   = a_1 X_1 + a_2 X_2 
+   = [a_1, a_2]
+   \begin{bmatrix} 
+      X_1 \\ 
+      X_2 
+   \end{bmatrix} 
+   = \mathbf{a}^T\mathbf{X}
+   (\#eq:BivarCombination)
+\end{equation}
+where the (column) vector $\mathbf{a} = \begin{bmatrix} a_1 \\ a_2 \end{bmatrix}$, and the superscript\ $T$ means 'transpose'.
+
+
+## Independent random variables {#IndependentRVs}
+
+Recall that events\ $A$ and\ $B$ are independent if, and only if,
+$$
+   something nmissing!
+$$
+
+
+
+
+
+## Simulation {#SimulationBivariate}
+
+As with univariate distributions (Sects.\ \@ref(SimulationDiscrete) and\ \@ref(SimulationContinuous)), simulation can be used with bivariate distributions.
+Random numbers from the *bivariate normal* distribution (Sect.\ \@ref(BVNormalDistribution)) are generated using the function `dmnorm()` from the library `mnorm`.
+Random numbers from the *multinomial* distribution (Sect.\ \@ref(MultinomialDistribution)) are generated using the function `rmultinom()`.
+More commonly, univariate distributions are combined.
+
+Monthly rainfall, for example, is commonly modelled using gamma distributions (for example, @husak2007use).
+Simulating rainfall is then used in others models (such as for cropping simulations; for example @ines2006bias).
+As an example, consider a location where the monthly rainfall is well-modelled by a gamma distribution with a shape parameter $\alpha = 1.6$ and a scale parameter of $\beta = 220$ (Fig.\ \@ref(fig:RainfallSim), left panel):
+
+```{r echo=FALSE}
+set.seed(107283)
+```
+
+```{r echo=TRUE}
+library("mnorm") # Need to explicitly load  mnorm  library
+MRain <- rgamma( 2000,
+                 shape = 1.6,
+                 scale = 220)
+
+cat("Rainfall exceeding 900mm:",
+    sum(MRain > 900) / 2000 * 100, "%\n")
+# Directly:
+round( (1 - pgamma(900, shape = 1.6, scale = 220) ) * 100, 2)
+```
+
+The percentage of months with rainfall exceeding\ $1000\mms$ was also computed. 
+However, now suppose that the shape parameter $\alpha$ also varies, with an exponential distribution with mean\ $2$ (Fig.\ \@ref(fig:RainfallSim), centre panel):
+
+```{r echo=FALSE}
+set.seed(1072823)
+```
+```{r echo=TRUE}
+MRain2 <- rgamma( 1000,
+                  shape = rexp(1000, rate = 1/2),
+                  scale = 220)
+
+cat("Rainfall exceeding 900mm:",
+    sum(MRain2 > 900) / 1000 * 100, "%\n")
+```
+
+Using simulation, it is also easy to simulate the impact of the scale parameter\ $\beta$ varying also, suppose with a normal distribution mean of\ $200$ and variance of\ $16$ (Fig.\ \@ref(fig:RainfallSim), right panel):
+
+```{r echo=FALSE}
+set.seed(1072483)
+```
+
+```{r echo=TRUE}
+MRain3 <- rgamma( 1000,
+                  shape = rexp(1000, rate = 1/2),
+                  scale = rnorm(1000, mean = 200, sd = 4))
+
+cat("Rainfall exceeding 900:",
+    sum(MRain3 > 900) / 1000 * 100, "%\n")
+```
+
+```{r echo=FALSE, RainfallSim, fig.width=6, fig.height = 3, out.width='100%', fig.align="center", fig.cap="Three simulations using the gamma distribution."}
+par( mfrow = c(1, 3))
+
+hist(MRain,
+     las = 1,
+     breaks = seq(0, 4500, by = 250),
+     xlim = c(0, 4500),
+     ylim = c(0, 1000),
+     xlab = "Monthly rainfall (in mm)",
+     main = "Rainfall: Sim 1")
+hist(MRain2,
+     las = 1,
+     breaks = seq(0, 4500, by = 250),
+     xlim = c(0, 4500),
+     ylim = c(0, 1000),
+     xlab = "Monthy rainfall (in mm)",
+     main = "Rainfall: Sim 2")
+hist(MRain3,
+     las = 1,
+     breaks = seq(0, 4500, by = 250),
+     xlim = c(0, 4500),
+     ylim = c(0, 1000),
+     xlab = "Monthly rainfall (in mm)",
+     main = "Rainfall: Sim 3")
+```
+
+
+
+```{r echo=FALSE, results=FALSE, message=FALSE, warning=FALSE}
+# Estimates from here, for instance:
+PCSM <- read.csv("./Data/PlaneCreekSugarMill/IDCJAC0001_033059_Data12.csv",
+                 na.strings = "null")
+PCSMjan <- PCSM$Jan
+
+library(fitdistrplus)
+fitdist(PCSMjan[!is.na(PCSMjan)], "gamma")
+```
+
+
+## Exercises {#MultivariateExercises}
+
+Selected answers appear in Sect.\ \@ref(AnswersChapMultivariate).
+
+
+:::{.exercise #DiscreteXY}
+The discrete random variables\ $X$ and\ $Y$ have the joint probability function shown in Table\ \@ref(tab:TableXY).
+Determine:
+
+1. $\Pr(X = 1, Y = 2)$ 
+1. $\Pr(X + Y \le 1)$.
+1. $\Pr(X > Y)$. 
+1. the marginal probability function of\ $X$.
+1. the pf of $Y \mid X = 1$.
+:::
+
+```{r TableXY, echo=FALSE}
+XYTable <- array( dim = c(2, 4))
+  
+XYTable[1, ] <- c("$X = 0$",
+                  "$1/12$",
+                  "$1/6$",
+                  "$1/24$")
+XYTable[2, ] <- c("$X = 1$",
+                  "$1/4$",
+                  "$1/4$",
+                  "$5/24$")
+
+if( knitr::is_latex_output() ) {
+
+  knitr::kable(XYTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               col.names = c("",
+                             "$Y = 0$",
+                             "$Y = 1$",
+                             "$Y = 2$"),
+               caption = "$X$ and $Y$.") %>%
+#    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+} else{
+
+  knitr::kable(XYTable,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               col.names = c("",
+                             "$Y = 0$",
+                             "$Y = 1$",
+                             "$Y = 2$"),
+               caption = "$X$ and $Y$.") %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+
+:::{.exercise #AandBsimple}
+The random variable\ $A$ has mean\ $13$ and variance\ $5$. 
+The random variable\ $B$ has mean\ $4$ and variance\ $2$. 
+Assuming\ $A$ and\ $B$ are independent, find:
+
+1. $\operatorname{E}[A + B]$.
+1. $\operatorname{var}[A + B]$.
+1. $\operatorname{E}[2A - 3B]$.
+1. $\operatorname{var}[2A - 3B]$.
+:::
+
+
+:::{.exercise #AandBsimple2}
+Repeat Exercise\ \@ref(exr:AandBsimple), but with $\operatorname{Cov}(A, B) = 0.2$.
+:::
+
+:::{.exercise #SampleMean}
+Suppose $X_1, X_2, \dots, X_n$ are independently distributed random variables, each with mean\ $\mu$ and variance\ $\sigma^2$.
+Define the sample mean as $\overline{X} = \left( \sum_{i=1}^n X_i\right)/n$.
+
+1. Prove that $\operatorname{E}[\overline{X}] = \mu$.
+1. Find the variance of\ $\overline{X}$.
+:::
+
+
+
+:::{.exercise #PoissonGammaRainfall}
+The *Poisson-gamma distributions*\index{Poisson--gamma distribution} (e.g., see @mypapers:Hasan:simplePG), used for modelling rainfall, can be developed as follows:
+
+* Let\ $N$ be the number of rainfall events in a month, where $N\sim \text{Pois}(\lambda)$.
+  If no rainfall events are recorded in any month, then the monthly rainfall is $Z = 0$.
+* For each rainfall event (that is, when $N > 0$), say\ $i$ for $i = 1, 2, \dots N$, the *amount* of rain in event\ $i$, say\ $Y_i$, is modelled using a gamma distribution with parameter\ $\alpha$ and\ $\beta$.
+* The total monthly rainfall is then $Z = \sum_{i = 1}^N Y_i$.
+
+Suppose the monthly rainfall station at a particular station can be modelled using $\lambda = 0.78$, $\alpha = 0.5$ and $\beta = 6$.
+
+1. Use a simulation to produce a one-month rainfall total using this model.
+1. Repeat for $1\,000$\ simulations (i.e., simulate $1\,000$\ months), and plot the distribution.
+1. What type of random variable is the monthly rainfall: discrete, continuous, or mixed? 
+   Explain.
+1. Based on the $1\,000$\ simulations, approximately how often does a month have exactly zero rainfall?
+1. Based on the $1\,000$\ simulations, what is the mean monthly rainfall?
+1. Based on the $1\,000$\ simulations, what is the mean monthly rainfall in months where rain is recorded?
+:::
+
+
+:::{.exercise #NBfromPoisGamma}
+Suppose $X \sim \text{Pois}(\lambda)$.
+Show that if $\lambda\sim\text{Gam}(a, p/(1 - p) )$, then the distribution of\ $X$ has a negative binomial distribution.
+:::
+  
+  
+:::{.exercise #JointProbAbsolute}
+$(X, Y)$ has joint probability function given by
+$$
+  \Pr(X = x, Y = y) = k |x - y|
+$$
+for $x = 0, 1, 2$ and $y = 1, 2, 3$.
+
+1. Find the value\ $k$.
+1. Construct a table of probabilities for this distribution.
+1. Find $\Pr(X \le 1, Y = 3)$.
+1. Find $\Pr(X + Y \ge 3)$.
+:::
+
+  
+:::{.exercise #JointPDF}
+For what value of\ $k$ is $f(x,y) = kxy$ (for $0 \le x \le 1$; $0 \le y \le 1$, a valid joint PDF?
+                                           
+1. Then, find $\Pr(X \le x_0, Y\le y_0)$.
+1. Hence evaluate $\Pr\left(X \le (3/8), Y \le (5/8) \right)$.
+:::
+
+  
+  
+:::{.exercise #LinearCombinCovariance}
+$X$, $Y$ and\ $Z$ are uncorrelated random variables with expected values\ $\mu_x$, $\mu_y$ and\ $\mu_z$ and standard deviations\ $\sigma_x$, $\sigma_y$ and\ $\sigma_z$. 
+$U$ and\ $V$ are defined by
+\begin{align*}
+   U&= X - Z;\\
+   V&= X - 2Y + Z.
+\end{align*}
+
+1. Find the expected values of\ $U$ and\ $V$.
+1. Find the variance of\ $U$ and\ $V$.
+1. Find the covariance between\ $U$ and\ $V$.
+1. Under what conditions on\ $\sigma_x$, $\sigma_y$ and\ $\sigma_z$ are\ $U$ and\ $V$ uncorrelated?
+:::
+  
+
+:::{.exercise #JointDiscrete11}
+Suppose $(X, Y)$ has joint probability function given by
+$$
+  \Pr(X = x, Y = y) = \frac{|x - y|}{11}
+$$
+for $x = 0, 1, 2$ and $y = 1, 2, 3$.
+
+1. Find $\operatorname{E}[X \mid Y = 2]$.
+1. Find $\operatorname{E}[Y \mid X\ge 1]$.
+:::
+  
+  
+:::{.exercise #CorrContDist}
+The PDF of $(X, Y)$ is given by
+$$
+   f_{X, Y}(x, y) = 1 - \alpha(1 - 2x)(1 - 2y), 
+$$
+for $0 \le x \le 1$, $0 \le y \le 1$ and $-1 \le \alpha \le 1$.
+
+1. Find the marginal distributions of\ $X$ and\ $Y$.
+1. Evaluate the correlation coefficient\ $\rho_{XY}$.
+1. For what value of\ $\alpha$ are\ $X$ and\ $Y$ independent?
+1. Find $\Pr(X < Y)$.
+:::
+  
+  
+:::{.exercise #Marginal2}
+For the random vector $(X, Y)$, the conditional PDF of\ $Y$ given $X = x$ is
+$$
+  f_{Y \mid X = x}(y\mid x) = \frac{2(x + y)}{2x + 1},
+$$
+for $0 < y <1$.
+The marginal PDF of\ $X$ is given by
+$$
+  g_X(x) = x + \frac{1}{2}
+$$
+for $0 <x < 1$.
+
+1. Find $F_Y(y \mid x)$ and hence evaluate $\Pr(Y < 3/4 \mid  X = 1/3)$.
+1. Find the joint PDF, $f_{X, Y}(x, y)$, of\ $X$ and\ $Y$.
+1. Find $\Pr(Y < X)$.
+:::
+
+  
+  
+:::{.exercise}
+The random variables $X_1$, $X_2$, and $X_3$ have y
+
+* $X_1$: mean\ $\mu_1 = 5$ with standard deviation $\sigma_1 = 2$.
+* $X_2$: mean\ $\mu_2 = 3$ with standard deviation $\sigma_2 = 3$.
+* $X_3$: mean\ $\mu_3 = 6$ with standard deviation $\sigma_3 = 4$.
+
+The correlations are: $\rho_{12} = -\frac{1}{6}$, $\rho_{13} = \frac{1}{6}$ and $\rho_{23} = \frac{1}{2}$. 
+
+If the random variables\ $U$ and\ $V$ are defined by $U = 2X_1 + X_2 - X_3$ and $V = X_1  - 2X_2 - X_3$, find
+
+1. $\operatorname{E}[U]$.
+1. $\operatorname{var}[U]$.
+1. $\operatorname{Cov}(U, V)$.
+:::
+
+  
+:::{.exercise}
+Let\ $X$ and\ $Y$ be the body mass index (BMI) and percentage body fat for netball players attending the AIS. 
+Assume\ $X$ and\ $Y$ have a bivariate normal distribution with $\mu_X = 23$, $\mu_Y = 21$, $\sigma_X = 3$, $\sigma_Y = 6$ and $\rho_{XY} = 0.8$. 
+Find
+
+1. the expected BMI of a netball player who has a percent body fat of\ $30$.
+1. the expected percentage body fat of a netball player who has a BMI of\ $19$.
+:::
+
+  
+:::{.exercise}
+Let\ $X$ and\ $Y$ have a bivariate normal distribution with parameters $\mu_x = 1$, $\mu_y = 4$, $\sigma^2_x = 4$, $\sigma^2_y = 9$ and $\rho = 0.6$. 
+Find
+
+1. $\Pr(-1.5 < X < 2.5)$.
+1. $\Pr(-1.5 < X < 2.5 \mid Y = 3)$.
+1. $\Pr(0 < Y < 8)$.
+1. $\Pr(0 < Y < 8 \mid X = 0)$.
+:::
+  
+
+  
+:::{.exercise #FairCoinTossedTwice}
+Consider a random process where a fair coin is tossed twice. 
+Let\ $X$ be the number of heads observed in the two tosses, and\ $Y$ be the number of heads on the first toss of the coin.
+
+1. Construct the table of the joint probability function for\ $X$ and\ $Y$.
+1. Determine the marginal probability function for\ $X$.
+1. Determine the conditional distribution of\ $X$ given one head appeared on the first toss.
+1. Determine if the variables\ $X$ and\ $Y$ are independent or not, justifying your answer with necessary calculation or argument.
+:::
+  
+  
+:::{.exercise #DiceMinMaxCD}
+Two fair, six-sided dice are rolled, and the numbers on the top faces observed. 
+Event\ $A$ is the maximum of the two numbers, and Event\ $B$ is the minimum of the two numbers.
+Then, define\ $C$ as\ $0$ if the maximum is odd, and as\ $1$ otherwise; and define\ $D$ as\ $0$ if the minimum is divisible by three, and as\ $1$ otherwise.
+
+Construct the joint probability function for\ $C$ and\ $D$.
+:::
+
+  
+  
+:::{.exercise #GammaExp}
+Consider\ $n$ random variables\ $Z_i$ such that $Z_i \sim \text{Exp}(\beta)$ for every $i = 1, \dots, n$. 
+Show that the distribution of $Z_1 + Z_2 + \cdots + Z_n$ has a gamma distribution $\text{Gam}(n, \beta)$, and determine the parameters of this gamma distribution.
+(Hint: See Theorem\ \@ref(thm:MGFIndependent).)
+:::
+
+  
+  
+:::{.exercise #DailyTempBivar}
+@climate:wilks:statmethods (p.\ 101) states that the maximum daily temperatures measured at Ithaca ($I$) and Canandaigua ($C$) in January 1987 are both symmetrical. 
+He also says that the two temperatures could be modelled with a bivariate normal
+distribution with $\mu_I = 29.87$, $\mu_C = 31.77$, $\sigma_I = 7.71$, $\sigma_C = 7.86$ and  $\rho_{IC} = 0.957$.
+(All measurements are in degrees Fahrenheit.)
+
+1. Explain, in context, what a correlation coefficient of\ $0.957$ means.
+1. Determine the marginal distributions of\ $C$ and of\ $I$.
+1. Find the conditional distribution of $C\mid I$.
+1. Plot the PDF of Canandaigua maximum temperature.
+1. Plot the conditional PDF of Canandaigua maximum temperature given that the maximum temperature at Ithaca is\ $25^\circ$F.
+1. Comment on the differences between the two PDFs plotted above.
+1. Find $\Pr(C < 32 \mid I = 25)$.
+1. Find $\Pr(C < 32)$.
+1. Comment on the differences between the last two answers.
+1. If temperature were measured in degrees Celsius instead of degrees Fahrenheit, how would the value of\ $\rho_{IC}$ change?
+:::
+
+
+
+
+:::{.exercise #DiscreteJointTable}
+The discrete random variables\ $X$ and\ $Y$ have the joint probability distribution shown in the following table:
+
+Value of $x$ | $y = 1$ | $y = 2$ | $y = 3$
+--------|------|------|------
+$x = 0$ | 0.20 | 0.15 | 0.05 
+$x = 1$ | 0.20 | 0.25 | 0.00 
+$x = 3$ | 0.10 | 0.05 | 0.00
+
+
+1. Determine the marginal distribution of\ $X$.
+1. Calculate $\Pr(X \ne Y)$.
+1. Calculate $\Pr(X + Y = 2 \mid X = Y)$.
+1. Are\ $X$ and\ $Y$ independent? 
+   Justify your answer.
+1. Calculate the correlation of\ $X$ and\ $Y$; i.e., compute $\text{Cor}(X,Y)$.
+:::
+
+
+:::{.exercise}
+Suppose\ $X$ and\ $Y$ have the joint PDF
+$$
+   f_{X, Y}(x, y) = \frac{2 + x + y}{8} \quad\text{for $-1 < x < 1$ and $-1 < y < 1$}.
+$$
+
+1. Sketch the distribution using **R**.
+1. Determine the marginal PDF of\ $X$.
+1. Are\ $X$ and\ $Y$ independent?
+   Give reasons.
+1. Determine $\Pr(X > 0, Y > 0)$.
+1. Determine $\Pr(X \ge 0, Y \ge 0, X + Y \le 1)$.
+1. Determine $\operatorname{E}[XY]$.
+1. Determine $\operatorname{var}[Y]$.
+1. Determine $\operatorname{Cov}(X, Y)$.
+:::
+
+
+
+
+:::{.exercise}
+Historically, final marks in a certain course are approximately normally distributed with mean of\ $64$ and standard deviation\ $8$.
+Out of fifteen students completing the course, what is the probability that $2$\ obtain HDs, $3$\ Distinctions, $4$\ Credits, $5$\ Passes and $2$\ Fails?
+:::
+
+
+:::{.exercise #IIDcubic}
+Let $X_1, X_2, X_3, \dots, X_n$ denote are independently and identically distributed with PDF
+$$
+   f_X(x) = 4x^3\quad \text{for $0 < x < 1$}.
+$$
+
+1. Write down an expression for the joint PDF of distribution of $X_1, X_2, X_3, \dots, X_n$.
+1. Determine the probability that the first observation\ $X_1$ is less than\ $0.5$.
+1. Determine the probability that *all* observations are less than\ $0.5$.
+1. Use the result above to deduce then the probability that the largest observation is less than\ $0.5$.
+:::
+
+
+:::{.exercise}
+Let\ $X$ and\ $Y$ have a bivariate normal distribution with $\operatorname{E}[X] = 5$, $\operatorname{E}[Y] = -2$, $\operatorname{var}[X] = 4$, $\operatorname{var}[Y] = 9$, and $\operatorname{Cov}(X, Y) = -3$. 
+Determine the joint distribution of $U = 3X + 4Y$ and $V = 5X - 6Y$.
+:::
+
+
+:::{.exercise #TwoFairDie}
+Two fair dice are rolled.
+Let\ $X$ and\ $Y$ denote, respectively, the maximum and minimum of the numbers of spots showing on the two dice.
+
+1. Construct a table that enumerates the sample space.
+1. Determine $E(Y\mid X = 4)$ for $1\le x\le 6$.
+1. Simulate this experiment using **R**.
+   Compare the simulated results with the theoretical results found above.
+:::
+
+
+
+:::{.exercise}
+Let\ $X$ be a random variable for which $\operatorname{E}[X] = \mu$ and $\operatorname{var}[X] = \sigma^2$, and let\ $c$ be an arbitrary constant.
+
+1. Show that
+$$
+      \operatorname{E}[(X - c)^2] = (\mu - c)^2 + \sigma^2.
+$$
+1. What does the result above tell us about the possible size of $\operatorname{E}[(X - c)^2]$?
+:::
+
+
+
+:::{.exercise #DailyRainfallSim}
+In Sect.\ \@ref(SimulationBivariate), simulation was used for monthly rainfall.
+*Daily* rainfall, however, is more difficult to model as some days have exactly zero rainfall, and on some days a continuous amount of rainfalls; i.e., daily monthly is a *mixed* random variable (Sect.\ \@ref(RVsMixed)).
+
+One way to model daily rainfall is to use a two-step process [@climate:chandler:2002].
+Firstly, model whether a day records rainfall or not (using a binomial distribution): the *occurrence model*.
+Then, for days on which rain falls, model the amount of rainfall using a gamma distribution: the *amounts model*.
+
+1. Use this information to model daily rainfall over one year ($365$\ days), for a location where the probability of a wet day is\ $0.32$, and the amount of rainfall on wet days follows a gamma distribution with $\alpha = 2$ and $\beta = 20$.
+   Produce a histogram of the distribution of *annual* rainfall after $1\,000$\ simulations.
+1. Suppose that the probability of rainfall,\ $p$, depends on the day of the year, such that:
+$$
+   p =  \left\{1 + \cos[ 2\pi\times(\text{day of year})/365]\right\} / 2.2.
+$$
+   Plot the change in\ $p$ over the day of the year.
+1. Revise the first model using this value of\ $p$.
+   Produce a histogram of the distribution of *annual* rainfall after $1\,000$\ simulations.
+1. Revise the *initial* model (where the probability of rain of Day\ 1 is still\ $0.32$), so that the value of\ $p$ depends on what happened the day before:
+   If day\ $i$ receives rain, then the probability that the following day receives rain is $p = 0.55$; if day\ $i$ does *not* receive rain, then the probability that the following day receives rain is just $p = 0.15$.
+   Produce a histogram of the distribution of *annual* rainfall after $1\,000$\ simulations.
+:::
+
+
+
+:::{.exercise #JointTriangular}
+Consider the joint PDF
+$$
+   f_{X, Y}(x, y) = 
+   \begin{cases}
+      c x(y + 1)  & \text{where $x + y < 2$ with $x > 0$ and $y > 0$};\\
+      0           & \text{elsewhere}.
+   \end{cases}
+$$
+
+1. Draw the region over which the joint PDF is defined.
+1. Compute the value of\ $c$.
+1. Compute $P(Y < 1 \mid X > 1)$.
+1. Compute $P(Y < 1 \mid X > 0.25)$.
+1. Compute $\Pr(Y < 1)$
+:::
+
+
+:::{.exercise #JointQuad}
+Consider the joint PDF
+$$
+   f_{X, Y}(x, y) = 
+   \begin{cases}
+      k ( 1 - x) y & \text{for the region $R$ below};\\
+      0            & \text{elsewhere},
+   \end{cases}
+$$
+where the region\ $R$ is shown in Fig.\ \@ref(fig:RegionRA) (left panel).
+
+1. Determine the value of\ $k$.
+1. Compute $\Pr(X > Y)$.
+1. Compute $\Pr(X > 0.5)$.
+:::
+
+
+:::{.exercise #JointLinear}
+Consider the joint PDF
+$$
+   f_{X, Y}(x, y) = 
+   \begin{cases}
+      k ( x + 2y) y & \text{for the region $A$ below};\\
+      0             & \text{elsewhere},
+   \end{cases}
+$$
+where the region\ $A$ is shown in Fig.\ \@ref(fig:RegionRA) (right panel).
+
+1. Determine the value of\ $k$.
+1. Compute $\Pr(X > Y)$.
+1. Compute $\Pr(X > 0.5)$.
+
+
+```{r RegionRA, echo=FALSE, fig.align="center", fig.cap = "The region $R$ (left) and the region $A$ (right).", out.width = '100%', fig.width=9}
+par(mfrow = c(1, 2))
+
+###
+
+x <- seq(0, 1, 
+         length = 500)
+y <- x^2
+
+plot(x = x,
+     y = y,
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y)),
+     type = "l",
+     las = 1,
+     lwd = 3)
+polygon( x = c(x, rev(x)),
+         y = c(y, rep(1, length(y))),
+         col = plotColour1)
+text(0.4, 0.6, 
+     expression(italic(R)),
+     cex = 2)
+text(0.8, 0.3, 
+     expression( italic(y) == italic(x)^2),
+     pos = 4,
+     cex = 1.2)
+arrows(x0 = 0.74, 
+       x1 = 0.6,
+       y0 = 0.30,
+       y1 = 0.36,
+       angle = 15,
+       length = 0.2)
+
+
+
+###
+
+x <- seq(0, 1, 
+         length = 500)
+y <- 1 - x 
+
+plot(x = x,
+     y = y,
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y)),
+     type = "l",
+     las = 1,
+     lwd = 3)
+polygon( x = c(0, 0, 1),
+         y = c(0, 1, 0),
+         col = plotColour1)
+text(0.25, 0.35, 
+     expression(italic(A)),
+     cex = 2)
+text(0.8, 0.6, 
+     expression( italic(y) == 1-italic(x)),
+     pos = 3,
+     cex = 1.2)
+arrows(x0 = 0.8, 
+       x1 = 0.6,
+       y0 = 0.6,
+       y1 = 0.4,
+       angle = 15,
+       length = 0.2)
+
+
+```
+:::
+
+
+:::{.exercise #TrailMix}
+A company produces a $500\gs$ packet of 'trail mix' that includes a certain weight of nuts\ $X$, dried fruit\ $Y$, and seeds\ $Z$.
+The actually weights of each ingredient vary randomly, depending on seasonality and availability.
+
+1. Explain why there are really just two variables in this problem.
+2. Suppose the weight of nuts *plus* dried fruit must be between\ $300\gs$ and $400\gs$.
+   Draw the sample space.
+3. *In addition*, suppose the weight of nuts must be *at least*\ $100\gs$, and the weight of dried fruit must be *at least* $100\gs$.
+   Draw the sample space.
+4. Under the above conditions, assume the weights of ingredients used in the trail mix are uniformly distributed.
+   Determine the probability function.
+:::
+
+
+
+:::{.exercise #MixedNuts}
+Mixed nuts come in $250\gs$ packets, and comprise walnuts, almonds and peanuts.
+The actual weights of each ingredient vary randomly, depending on seasonality and availability.
+
+1. Explain why there are really just two variables in this problem.
+2. While peanuts are the cheapest ingredient, guidelines state that the weight of peanuts must not exceed $100\gs$.
+   Draw the sample space.
+3. *In addition*, suppose the weight of almonds must be *at least*\ $25\gs$, and the weight of walnuts must be *at least* $25\gs$.
+   Draw the sample space.
+4. Under the above conditions, assume the weights of ingredients used in the mixed nuts packets are uniformly distributed.
+   Determine the probability function.
+:::
+
+
+
+:::{.exercise #RandomNumbers}
+Suppose you choose a number at random from the continuous uniform distribution between\ $0$ and\ $1$. 
+Then, you keep choosing numbers from this $\text{Unif}(0, 1)$ distribution until you obtain a number larger than the one you started with. 
+You record the number of times you have to select a number before you have success (i.e., a larger number that teh initially-selected number). 
+
+More precisely:
+
+1. Let $X\sim\text{Unif}(0, 1)$, your initial number.
+2. You then draw $Y_1, Y_2, \dots\sim\text{Unif}(0, 1)$, i.i.d., until you get a value $Y_n > X$.
+3. Your score is $N$, the number of trials until this happens.
+
+What is the expected value of\ $N$, the number of values to draw to exceed the initially-selected number?
+:::
+
+
+
+:::{.exercise #MixedBiomarker}
+Suppose\ $X$ is the concentration of a biomarker (in mmol.L^$-1$^), and\ $Y$ is a disease indicator where $Y = 1$ refers to a patient with the disease and $Y = 0$ refers to a patient without the disease.  
+The prevalence of the disease in the population is
+$$
+  \Pr(Y = 1) = 0.10, \quad \Pr(Y = 0) = 0.90.
+$$
+Conditional on disease status, biomarker concentrations follow different ??????normal?????? distributions.
+If $Y = 1$:  
+$$
+  X \mid Y = 1 \sim \mathcal{N}(\mu_1=8, \, \sigma_1^2 = 1^2),
+$$
+and if $Y = 0$:
+$$
+  X \mid Y = 0 \sim \mathcal{N}(\mu_0=5, \, \sigma_0^2 = 1^2).
+$$
+1. Write down the joint density--mass function $f_{X, Y}(x, y)$.  
+2. Derive the marginal density of $X$, $f_X(x)$.  
+3. Compute $\Pr(Y = 1 \mid X = 7)$ (the posterior probability of disease given biomarker level $7$).  
+4. Interpret this probability in plain language.
+:::
+
+
+:::{.exercise #MixedReliability}
+A machine component can fail for one of three reasons:
+
+- mechanical failure ($Y = 1$), with probability\ $0.5$;
+- electrical failure ($Y = 2$), with probability\ $0.3$;
+- thermal failure ($Y = 3$), with probability\ $0.2$.
+
+The random variable\ $X$ denotes the *time to failure* (in hundreds of hours).
+Conditional on knowing the mode of failure, the time-to-failure has the distribution
+$$
+  f_{X\mid Y}(x\mid Y = y) 
+  =  \lambda_y \exp(-\lambda_y x)
+    \quad\text{for $x > 0$}
+$$
+where
+
+- $\lambda_y = 1$ if the failure is mechanical;
+- $\lambda_y = 0.5$ if the failure is electrical; and
+- $\lambda_y = 0.25$ if the failure is thermal.
+
+1. Write down the joint density--mass function $f_{X, Y}(x, y)$.
+2. Find the marginal density of the time to failure $f_X(x)$.
+3. Compute $\Pr(Y = 1 \mid X \leq 2)$, the probability that the failure mode was mechanical given that the component failed within $200$ hours.
+4. Interpret the result in words.
+:::
+

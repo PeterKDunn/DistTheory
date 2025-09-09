@@ -1,6 +1,6 @@
 
 
-plot( x = 1:6,  ### The values for which pmf > 0
+plot( x = 1:6,  ### The values for which PMF > 0
       y = c(0, 0.1, 0.2, 0.3, 0.4, 0),
       xlim = c(0.5, 6.6), ylim = c(0, 0.45),
       type = "h",  ### type = "h": vertical lines

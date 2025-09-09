@@ -1,0 +1,359 @@
+# (PART) Multivariate random variables and distributions* {-}
+
+
+PERHAPS: a chapter (or more) for bivariate; a chapter (or more) for multivariate with vector/matrix notation.
+
+
+# Multivariate distributions* {#ChapMultivariate}
+
+::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
+On completion of this chapter you should be able to:
+
+* apply the concept of bivariate random variables.
+* compute joint probability functions and the distribution function of two random variables.
+* find the marginal and conditional probability functions of random variables in both discrete and continuous cases.
+* apply the concept of independence of two random variables.
+* compute the expectation and variance of linear combinations of random variables.
+* interpret and compute the covariance and the coefficient of correlation between two random variables.
+* compute the conditional mean and conditional variance of a random variable for some given value of another random variable.
+* use the multinomial and bivariate normal distributions.
+:::
+
+
+
+ 
+
+```{r, setup, echo=FALSE, message=FALSE, warning=FALSE}
+### Needed to add the rgl plot to bookdown for bivariate plots in html
+library(rgl)
+#knitr::knit_hooks$set(webgl = hook_webgl)
+```
+
+
+## Introduction {#BivariateIntroduction}
+
+Not all random processes are sufficiently simple to have the outcome denoted by a single variable\ $X$. 
+Many situations require observing two or more numerical characteristics simultaneously.
+This chapter mainly discusses the two-variable (bivariate) case, but also discusses the multivariable (more than two variables) case using matrix notation (Sect.\ \@ref(Multivariate)).
+
+
+## Multivariate random variables and matrix notation {#Multivariate}
+
+## Random vectors {#RandomVectors}
+
+So far, we have studied *univariate* random variables (i.e., a single random variable) 
+and *bivariate* random variables (two jointly distributed random variables). 
+These ideas can be extended to more random variables; the case of *multivariate* random variables, where several random variables are considered simultaneously.  
+
+To do this, using *random vectors* is convenient.\index{Random vector}
+A random vector is a column vector of $n$\ random variables:
+$$
+  \mathbf{X} = [X_1, X_2, \dots, X_n]^T,
+$$
+where the superscript\ $T$ means 'transpose'.
+Each\ $X_i$ is a random variable, and together they form an $n$-dimensional random vector.
+In the bivariate case, for example, we could write
+$$
+   \mathbf{X} 
+   = \begin{bmatrix} 
+       X_1 \\ 
+       X_2 
+     \end{bmatrix} 
+$$
+where the (column) vector $\mathbf{a} = \begin{bmatrix} a_1 \\ a_2 \end{bmatrix}$.
+
+
+## Joint probability functions {#MultivariateProbFn}
+
+The *joint probability function* of $\mathbf{X}$ describes the probability distribution for all $n$\ random variables simultaneously.
+
+
+:::{.definition #JointPMF name="Joint probability function (discrete)"}
+Let $\mathbf{X} = (X_1, \dots, X_n)$ be an $n$-dimensional discrete random variable. 
+The random variable $X_j$ (for $j = 1, \dots, n$) takes values in some set $S_j$ (the range).  
+
+Then, the range space of the random vector is
+$$
+  \mathcal{X} \subseteq S_1\times \cdots \times S_n.
+$$
+Then, the *joint probability mass function* is
+$$
+  p_{X_1, \dots, X_n}(x_1, \dots, x_n) 
+  = \Pr(X_1 = x_1,\, \dots,\, X_n = x_n) \quad \text{for $(x_1, \dots, x_n) \in \mathcal{X}$},
+$$
+such that 
+$$
+  p_{X_1, \dots, X_n}(x_1, \dots, x_n) \geq 0 
+  \quad \text{for all $(x_1, \dots, x_n) \in \mathcal{X}$},
+$$
+and
+$$
+  \sum_{(x_1, \dots, x_n) \in \mathcal{X}} p_{X_1, \dots, X_n}(x_1, \dots, x_n) = 1.
+$$
+:::
+
+
+
+:::{.example #Dice3D name="Three dice"}
+Consider the random vector $\mathbf{X} = (X_1, X_2, X_3)$ representing the outcome of rolling three fair six-sided dice.  
+
+Since each $X_j \in \{1,2,3,4,5,6\}$, the range space is
+$$
+  \mathcal{X} = \{1,2,3,4,5,6\} \times \{1,2,3,4,5,6\} \times \{1,2,3,4,5,6\}.
+$$
+Assuming the dice are independent, the joint probabuility mass function is
+\begin{align*}
+  p_{X_1, X_2, X_3}(x_1, x_2, x_3) 
+  &= 
+  P(X_1 = x_1, X_2 = x_2, X_3 = x_3)\\ 
+  &= \frac{1}{6^3} = \frac{1}{216}
+\end{align*}
+for $(x_1, x_2, x_3) \in \mathcal{X}$.
+
+For instance, the probability that the sum of the three dice equals\ $10$ is
+$$
+  \Pr(X_1 + X_2 + X_3 = 10) 
+  = \sum_{\substack{(x_1, x_2, x_3) \in \mathcal{X}\\ x_1 + x_2 + x_3 = 10}} p(x_1,x_2,x_3).
+$$
+
+To obtain the answer in **R**, use:
+
+```{r}
+# List all possible outcomes of rolling three dice
+dice_Outcomes <- expand.grid(x1 = 1:6, 
+                             x2 = 1:6, 
+                             x3 = 1:6)
+
+# Show the first few rows (outcomes)
+print(head(dice_Outcomes))
+
+# Find where the rows sum to 10
+favourable_Outcome <- subset(dice_Outcomes, 
+                             x1 + x2 + x3 == 10)
+
+# Probability
+prob <- nrow(favourable_Outcome) / nrow(dice_Outcomes)
+prob
+```
+:::
+
+
+In the case of continuous random variables, the definition is similar.
+
+
+:::{.definition #JointPDF name="Joint probability function (continuous)"}
+Let $\mathbf{X} = (X_1, \dots, X_n)$ be an $n$-dimensional continuous random vector.
+For each $j = 1, \dots, n$, the random variable\ $X_j$ takes values in some subset $S_j \subseteq \mathbb{R}$.  
+
+The range space of the vector is therefore
+$$
+  \mathcal{X} \subseteq S_1 \times \cdots \times S_n \subseteq \mathbb{R}^n.
+$$
+The *joint probability density function* of $\mathbf{X}$ is
+$$
+  f_{X_1, \dots, X_n}(x_1, \dots, x_n), \quad \text{for $(x_1, \dots, x_n) \in \mathcal{X}$},
+$$
+such that 
+$$
+  f_{X_1, \dots, X_n}(x_1, \dots, x_n) \geq 0 
+  \quad \text{for all $(x_1, \dots, x_n) \in \mathcal{X}$},
+$$
+and
+$$
+  \int_{\mathcal{X}} f_{X_1, \dots, X_n}(x_1, \dots, x_n)\, dx_1 \cdots dx_n = 1.
+$$
+:::
+
+
+:::{.example #UniformCube3D name="Three-dimensional uniform example (continuous)"}
+Consider the random vector $\mathbf{X} = (X_1, X_2, X_3)$, uniformly distributed on the unit cube $[0, 1]^3$.  
+The range space is
+$$
+  \mathcal{X} = [0, 1] \times [0, 1] \times [0, 1] \subset \mathbb{R}^3.
+$$
+
+The joint probability density function is:
+$$
+  f_{X_1, X_2, X_3}(x_1,x_2,x_3) =
+  \begin{cases} 
+    1 & \text{for $0 \le x_j \le 1$ for all $j = 1, 2, 3$},\\
+    0 & \text{otherwise}.
+  \end{cases}
+$$
+
+The marginal distributions are all uniform on $[0, 1]$; for example:
+$$
+  f_{X_1}(x_1) = \int_0^1 \int_0^1 f(x_1, x_2, x_3)\, dx_2\, dx_3 = 1, \quad 0\le x_1 \le 1.
+$$
+
+For instance, the probability that the sum of the three variables is less than or equal to\ $1$ is
+$$
+  P(X_1 + X_2 + X_3 \le 1) 
+  = \text{volume of the tetrahedron } \{(x_1,x_2,x_3)\in\mathcal{X}: x_1 + x_2 + x_3 \le 1\} 
+  = \frac{1}{6}.
+$$
+
+The answer can be obtained using integration, knowledge of volumes, or using a simulation in **R**:
+
+```{r}
+set.seed(30991) # For reproducibility
+
+# Generate 1 000 000 random points in each dimension of the cube
+N <- 1e6
+X <- matrix(runif(3 * N), 
+            ncol = 3)  # N rows of (x1,x2,x3)
+print(head(X))
+
+# How many of these random points satisfy: sum less than one?
+prob_Est <- mean(rowSums(X) <= 1)
+prob_Est
+```
+:::
+
+
+## Joint distribution functions {#MultivariateDistFn}
+
+The *multivariate distribution function (CDF)* is
+$$
+  F_{X_1, \dots, X_n}(x_1, \dots, x_n) 
+  = \Pr(X_1 \leq x_1, \dots, X_n \leq x_n).
+$$
+
+
+
+:::{.example #Dice3D_CDF name="Three dice"}
+Let $\mathbf{X} = (X_1, X_2, X_3)$ be the random vector representing the outcome of rolling three fair six-sided dice, as in Example\ \@ref(exm:Dice3D) (where the joint probability mass function is given).
+
+The *joint cumulative distribution function* is
+$$
+  F_{X_1, X_2, X_3}(x_1, x_2, x_3) 
+  = P(X_1 \le x_1, X_2 \le x_2, X_3 \le x_3)
+  = \sum_{i = 1}^{\lfloor x_1 \rfloor} 
+    \sum_{j = 1}^{\lfloor x_2 \rfloor} \sum_{k = 1}^{\lfloor x_3 \rfloor} p(i, j, k),
+$$
+where $\lfloor x \rfloor$ is the *floor* function (the greatest integer less than or equal to\ $x$).
+
+For instance, the probability that all dice shows less than or equal to\ $3$ is
+$$
+  F_{X_1, \dots, X_n}(3, 3, 3) 
+  = \sum_{i = 1}^{3} \sum_{j = 1}^{3} \sum_{k = 1}^{3} \frac{1}{216} 
+  = \frac{27}{216} = \frac{1}{8}.
+$$
+:::
+
+
+:::{.example #UniformCube3D_CDF name="Three-Dimensional Uniform Cube: CDF"}
+Let $\mathbf{X} = (X_1, X_2, X_3)$ be uniformly distributed on the unit cube $[0, 1]^3$, as in Example\ \@ref(exm:UniformCube3D) (where the joint probability density function is given)
+
+The *joint cumulative distribution function* is
+\begin{align*}
+  F_{X_1, \dots, X_n}(x_1, x_2, x_3) 
+  &= P(X_1 \le x_1, X_2 \le x_2, X_3 \le x_3)\\
+  &= \int_0^{x_1}\!\! \int_0^{x_2}\!\! \int_0^{x_3} f(u_1, u_2, u_3)\, du_3\, du_2\, du_1,
+\end{align*}
+for $0 \le x_1, x_2, x_3 \le 1$.
+
+For instance, the probability that each variable is less than\ $0.5$ is
+$$
+  Fvs(0.5, 0.5, 0.5) = \int_0^{0.5}\!\! \int_0^{0.5}\!\! \int_0^{0.5} 1 \, du_3\, du_2\, du_1 = 0.5^3 = 0.125.
+$$
+:::
+
+
+## Marginal and conditional distributions
+
+Marginal distributions are obtained by summing or integrating out unwanted variables. For example,
+$$
+  f_{X_1}(x_1) = \int_{\mathbb{R}^{n-1}} f(x_1, x_2, \dots, x_n)\, dx_2 \cdots dx_n.
+$$
+
+Conditional distributions are defined in the natural way:
+$$
+  f_{X_1 \mid X_2, \dots, X_n}(x_1 \mid x_2, \dots, x_n) =
+  \frac{f(x_1, x_2, \dots, x_n)}{f_{X_2,\dots,X_n}(x_2, \dots, x_n)}.
+$$
+
+EXAMPLES
+
+
+## Multivariate independence {#MultivariateIndependence}
+
+In the multivariate case, $n$\ random variables $X_1, \dots, X_n$ are *independent* if knowing the value of any subset of them gives no information about the others.
+Formally, let $\mathbf{X} = (X_1, \dots, X_n)$ be an $n$-dimensional random vector with joint probability distribution. 
+
+In the *discrete case*, the random variables are independent if and only if the joint probability mass function factors as the product of the marginal probability functions:
+$$
+  p_{X_1, \dots, X_n}(x_1, \dots, x_n) 
+  = \prod_{i = 1}^{n} p_{X_i}(x_i),
+  \quad (x_1, \dots, x_n) \in \mathcal{X}.
+$$
+
+The *continuous case* is similar; the random variables are independent if and only if the joint probability density function factors as the product of the marginal densities:
+$$
+  f_{X_1, \dots, X_n}(x_1, \dots, x_n) 
+  = \prod_{i = 1}^{n} f_{X_i}(x_i),
+  \quad (x_1, \dots, x_n) \in \mathcal{X}.
+$$
+
+Independence can also be determined using the distribution functions:
+$$
+  F_{X_1, \dots, X_n}(x_1, \dots, x_n) = \prod_{i=1}^{n} F_{X_i}(x_i),
+$$
+where $F$ is the joint cumulative distribution function.  
+
+In practice, independence allows joint probabilities or volumes to be computed by multiplying the corresponding marginal probabilities or integrating products of marginal densities.  
+
+
+:::{.example #Dice3D_Indep name="Three dice example: independence"}
+Consider the outcomes of rolling three fair six-sided dice, represented by the random vector $\mathbf{X} = (X_1, X_2, X_3)$.  
+Each $X_j \in \{1,2,3,4,5,6\}$, so $\mathcal{X} = \{1,\dots,6\}^3$.
+The dice are independent, so the joint probability mass function can be written as the product of the marginal probability functions:
+$$
+  p_{X_1, X_2, X_3}(x_1, x_2, x_3) 
+  = P(X_1 = x_1, X_2 = x_2, X_3 = x_3) 
+  = \prod_{i = 1}^3 P(X_i = x_i) 
+  = \frac{1}{6}\cdot   \frac{1}{6} \cdot \frac{1}{6} = \frac{1}{216}.
+$$
+Equivalently, the joint distribution factors as
+$$
+  F_{X_1, X_2, X_3}(x_1, x_2, x_3) = P(X_1\le x_1, X_2 \le x_2, X_3 \le x_3) 
+  = \prod_{i = 1}^3 F_{X_i}(x_i).
+$$
+The probability that all dice show a value less than or equal to\ $3$ is
+$$
+  F_{X_1, \dots, X_n}(3, 3, 3) 
+  = \prod_{i = 1}^3 F_{X_i}(3) 
+  = \left(\frac{3}{6}\right)^3 
+  = \frac{27}{216} = \frac{1}{8}.
+$$
+:::
+
+
+:::{.example #UniformCube3D_Indep name="Three-dimensional uniform cube: independence"}
+Let $\mathbf{X} = (X_1, X_2, X_3)$ be uniformly distributed on the unit cube $[0, 1]^3$, with joint probability density function
+$$
+  f_{X_1, X_2, X_3}(x_1, x_2, x_3) = 1, \quad (x_1, x_2, x_3) \in [0, 1]^3.
+$$
+
+The variables $X_1, X_2, X_3$ are independent, so the joint density function can be written as
+$$
+  f(x_1, x_2, x_3) 
+  = f_{X_1}(x_1)\cdot f_{X_2}(x_2)\cdot f_{X_3}(x_3) 
+  = 1 \cdot 1 \cdot 1.
+$$
+
+Equivalently, the joint distribution can be written as
+$$
+  F_{X_1, X_2, X_3}(x_1, x_2, x_3) 
+  = \Pr(X_1 \le x_1, X_2 \le x_2, X_3 \le x_3) 
+  = \prod_{i = 1}^3 F_{X_i}(x_i).
+$$
+
+For example, the probability that the values of all three variables are less than\ $0.5$ is
+$$
+  F_{X_1, X_2, X_3}(0.5, 0.5, 0.5) = 0.5^3 = 0.125.
+$$
+:::
+
+
+
