@@ -5804,6 +5804,136 @@ $$
 :::
 
 
+
+:::{.answer}
+**Answer to Exercise\ \@ref(exr:TrickyXform1).**
+We have
+$$
+  f_X(x) =
+  \begin{cases}
+    2x/3      & \text{for $0 \le x \le 1$}\\
+    (3 - x)/3 & \text{for $1 < x \le 3$}
+  \end{cases}
+$$
+and hence
+$$
+  F_X(x) =
+  \begin{cases}
+    0                 & \text{for $x < 0$}\\
+    x^2/3             & \text{for $0 \le x \le 1$}\\
+    (6x - x^2 - 3)/6  & \text{for $1 < x \le 3$}\\
+    1                 & \text{for $x > 3$.}
+  \end{cases}
+$$
+Since $Y = 6 - 2x$, $\mathcal{R}_X = (0, 3)$ maps to $\mathcal{R}_Y = (0, 6)$; more specifically, $0 \le x \le 1$ maps to $4 \le y \le 6$ and  $1 < x \le 3$ maps to $0 < y \le 4$.
+Then:
+\begin{align*}
+  F_Y(y)
+  &= \Pr(Y \le y)\\
+  &= \Pr\left( x \ge \frac{6 - y}{2}\right)\\
+  &= 1 - \Pr\left( x \le \frac{6 - y}{2}\right)\\
+  &= 1 - F_X\left( x \le \frac{6 - y}{2}\right).
+\end{align*}
+So, when $0 \le x \le 1$ (i.e., $4\le y \le 6$):
+$$
+  F_Y(y) = \frac{12y - y^2 - 24}{12}
+$$
+and when $1 < x \le 3$ (i.e., $0 < y \le 4$):
+$$
+  F_Y(y) = \frac{y^2}{24}
+$$
+so that (CHECK LESS THAN, LESS THAN OR EQUAL signs!!!!!!!!!!!)
+$$
+  f_Y(y) = 
+  \begin{cases}
+    y/12 & \text{for $0 < y \le 4$}\\
+    (6 - y)/6 & \text{for $4 \le y \le 6$.}
+  \end{cases}
+$$
+:::
+
+
+
+
+:::{.answer}
+**Answer to Exercise\ \@ref(exr:TrickyXform2).**
+**Not a 1:1 function** so care is needed.
+$f_X(x) and $F_X(x)$ are given above.
+Since $Z = (X - 2)^2$, $\mathcal{R}_X = (0, 3)$ maps to $\mathcal{R}_Z = (0, 4)$; more specifically, $0 \le x \le 1$ maps to $1 \le z \le 4$ and  $1 < x \le 3$ maps to $0 < z \le 1$.
+First consider the case $0\le z\le 1$:
+\begin{align*}
+  F_Z(z)
+  &= \Pr(Z \le y)\\
+  &= \Pr(2 - \sqrt{Z} \le X \le 2 + \sqrt{Z})\\
+  &= F_X(2 + \sqrt{z}) - F_X(2 - \sqrt{z})\\
+  &= 2\sqrt{z} / 3.
+\end{align*}
+Then, when $1\le z \le 4$:
+\begin{align*}
+  F_Z(z)
+  &= \Pr(Z \le z)\\
+  &= F_Z(1) + \Pr(2 - \sqrt{Z} \le X\le 1)\\
+  &= \frac{2}{3} + \frac{4\sqrt{z} - z - 3}{3}\\
+  &= \frac{4\sqrt{z} - z - 1}{3}.
+\end{align*}
+So we write
+$$
+  F_Z(z) = 
+  \begin{cases}
+    0                     & \text{for $z < 0$}\\
+    2\sqrt{z}/3           & \text{for $0 < z < 1$}\\
+    (4\sqrt{z} - z - 1)/3 & \text{for $1 < z < 4$}\\
+    1                     & \text{for $z > 4$.}
+  \end{cases}
+$$
+Note that $F_Z(4) = 1$ and $F_Z(0) = 0$ as required.
+Furthermore, the two parts both give $F_Z(1) = 2/3$.
+Then, so that (CHECK LESS THAN, LESS THAN OR EQUAL signs!!!!!!!!!!!)
+$$
+  f_Z(z) = 
+  \begin{cases}
+    1/(3\sqrt{z}\,)               & \text{for $0 < z \le 1$}\\
+    \left(2/\sqrt{z} - 1\right)/3 & \text{for $1 \le z \le 4$}\\
+    0                             & \text{elsewhere.}
+  \end{cases}
+$$
+:::
+
+```{r, echo=FALSE, warning=FALSE, out.width='100%', fig.width=8, fig.height=4, fig.align="center", fig.cap="The pdf of the transformed rvs\\ $Y$ and\\ $Z$."}
+par(mfrow = c(1, 2))
+
+x <- seq(-0.5, 6.5,
+         length = 1000)
+fy <- function(y){ ifelse( (y > 0) & ( y < 4),
+                           y/12,
+                           ifelse( (y > 4) & (y < 6),
+                                   (6 - y)/6,
+                                   0) ) }
+fz <- function(z){ ifelse( (z > 0) & (z < 1),
+                           1/(3 * sqrt(z)),
+                           ifelse( (z >= 1) & (z <= 4),
+                                   (2/sqrt(z) - 1) / 3,
+                                   0) ) }
+
+
+plot( fy(x) ~ x,
+      type = "l",
+      las = 1,
+      xlab = expression(italic(Y)),
+      ylab = expression(italic(f)[italic(Y)](italic(y))),
+      main = expression(The~PDF~of~italic(Y)),
+      lwd = 3)
+plot( fz(x) ~ x,
+      type = "l",
+      las = 1,
+      ylim = c(0, 1.5),
+      xlim = c(0, 4.5),
+      xlab = expression(italic(Z)),
+      ylab = expression(italic(f)[italic(Z)](italic(z))),
+      main = expression(The~PDF~of~italic(Z)),
+      lwd = 3)
+```
+
 <!-- ************************************************************************************ -->
 ## Answers for Chap.\ \@ref(SamplingDistributions) {#AnswersChapSampling}
 
