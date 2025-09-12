@@ -4018,6 +4018,81 @@ plot( fz(x) ~ x,
 
 
 
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:RunnerVelocity).**
+$f_V(v) 
+ = f_T(D/v)\left| \frac{dT}{dV}\right|
+ = f_T(D/v)       \frac{D}{v^2}$;
+and so
+$$
+  f_V(v) =
+  \begin{cases}
+    \displaystyle\frac{D(va + v\mu - D)}{a^2\,v^3} & \text{for $D/(\mu + \Delta) < v < D/\mu$}\\[6pt]
+    \displaystyle\frac{D(va - v\mu + D)}{a^2\,v^3} & \text{for $D/\mu < v < D/(\mu - a)$}
+  \end{cases}
+$$
+as shown in Fig.\ \@ref(fig:AnswerRunnerVelocityVoltage) (left panel).
+:::
+
+
+```{r AnswerRunnerVelocityVoltage, echo=FALSE, out.width="100%", fig.width=8, fig.height=4, fig.align="center", fig.cap="The probability density function for the random variable\\ $V$, the run velocity."}
+g <- function(v, mu, a, D){
+  ifelse( ( v <= D/(mu - a) & (v >= D/mu)), 
+          (D * (v*a - v*mu + D ) )/(a^2 * v^3 ),
+          (D * (v*a + v*mu - D ) )/(a^2 * v^3 ) ) 
+}
+          
+
+
+###
+par( mfrow = c(1, 2) )
+
+a <- 0.25
+mu <- 12
+D <- 100
+
+
+v <- seq( D/(mu + a), D/(mu - a),
+          length = 1000)
+plot( g(v, m=mu, a=a, D=D) ~ v,
+      type = "l",
+      lwd = 3,
+      las = 1,
+      xlab = "Velocity",
+      ylab = "PDF")
+
+
+###
+
+R <- 10
+sigma <- 1
+
+# NOTE: P = sigma^2/R * chisq(df=1)
+Pv <- seq( 0, 10,
+          length = 1000)
+PDF <- dchisq(Pv, df = 1) * sigma^2 / R
+
+plot( PDF ~ Pv,
+      type = "l",
+      lwd = 3,
+      xlab = "Power",
+      las = 1)
+
+```
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:VoltagePower).**
+$f_P(p) 
+ = f_V(\sqrt{pR}) \frac{1}{2} \sqrt{\frac{R}{p}}$
+and so
+$$
+  f_P(p) =
+  \frac{\sqrt{R}}{\sqrt{2p\pi\sigma^2}} \exp\left\{-\frac{pR}{2\sigma^2}\right\}
+$$
+as shown in Fig.\ \@ref(fig:AnswerRunnerVelocityVoltage) (right panel).
+:::
 
 
 
