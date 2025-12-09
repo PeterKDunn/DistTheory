@@ -11,6 +11,8 @@ library("diagram")
 library("plotrix") # draw.circle()
 library("fitdistrplus")
 library("tweedie")
+library("downlit")
+library("bookdown")
 
 # example R options set globally
 options(width = 50)
