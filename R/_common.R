@@ -13,7 +13,7 @@ library("fitdistrplus")
 library("tweedie")
 library("downlit")
 library("bookdown")
-library("mnomt")
+library("mnormt")
 
 # example R options set globally
 options(width = 50)
