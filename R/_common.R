@@ -1,18 +1,19 @@
 # Load libraries
-library(plot3D)
-library(rgl)
-library(kableExtra)
-library(plotrix)
-library(mnormt) # Multivariate normal
-library(mnorm)  # Multivariate normal
-library(countries) # Sets of countries
-library(shape)
+library("plot3D")
+library("rgl")
+library("kableExtra")
+library("plotrix")
+library("mnormt") # Multivariate normal
+library("mnorm")  # Multivariate normal
+library("countries") # Sets of countries
+library("shape")
 library("diagram")
 library("plotrix") # draw.circle()
 library("fitdistrplus")
 library("tweedie")
 library("downlit")
 library("bookdown")
+library("mnomt")
 
 # example R options set globally
 options(width = 50)
