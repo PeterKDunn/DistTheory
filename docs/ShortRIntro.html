@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>C Short R introduction | The Theory of Statistical Distributions</title>
+<meta name="author" content="Peter K. Dunn">
+<meta name="description" content="C.1 General ideas Whn you start R, you are presented with a prompt asking you enter an instruction: &gt; We do not show this prompt with the R code in this book, to enable any code that we show do be...">
+<meta name="generator" content="bookdown 0.45 with bs4_book()">
+<meta property="og:title" content="C Short R introduction | The Theory of Statistical Distributions">
+<meta property="og:type" content="book">
+<meta property="og:description" content="C.1 General ideas Whn you start R, you are presented with a prompt asking you enter an instruction: &gt; We do not show this prompt with the R code in this book, to enable any code that we show do be...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C Short R introduction | The Theory of Statistical Distributions">
+<meta name="twitter:description" content="C.1 General ideas Whn you start R, you are presented with a prompt asking you enter an instruction: &gt; We do not show this prompt with the R code in this book, to enable any code that we show do be...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.9.0/transition.js"></script><script src="libs/bs3compat-0.9.0/tabs.js"></script><script src="libs/bs3compat-0.9.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><script src="libs/rglWebGL-binding-1.3.31/rglWebGL.js"></script><link href="libs/rglwidgetClass-1.3.31/rgl.css" rel="stylesheet">
+<script src="libs/rglwidgetClass-1.3.31/rglClass.min.js"></script><script src="libs/CanvasMatrix4-1.3.31/CanvasMatrix.min.js"></script><link rel="shortcut icon" href="icons/iconmonstr-chart-1-240.png">
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Find all R code blocks that should be toggleable.
+      // Our Lua filter adds the 'r-code-box' class to the code block.
+      var codeBlocks = document.querySelectorAll('.r-code-box');
+
+      codeBlocks.forEach(function(codeBlock) {
+        // Create the button element
+        var button = document.createElement('button');
+        button.textContent = 'Show R Code'; // Initial text for the button
+        button.className = 'code-toggle-button'; // Assign CSS class
+
+        // Insert the button directly before the code block.
+        // The codeBlock's parentNode is the div.figure-with-code container.
+        // We insert the button as a sibling of the codeBlock within that container.
+        codeBlock.parentNode.insertBefore(button, codeBlock);
+
+        // Hide the code block initially by default.
+        codeBlock.style.display = 'none';
+
+        // Add a click event listener to the button
+        button.addEventListener('click', function() {
+          if (codeBlock.style.display === 'none') {
+            codeBlock.style.display = 'block'; // Show the code block
+            button.textContent = 'Hide R Code'; // Change button text
+          } else {
+            codeBlock.style.display = 'none'; // Hide the code block
+            button.textContent = 'Show R Code'; // Change button text back
+          }
+        });
+      });
+    });
+    </script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+          margin-bottom: 0em;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+<link rel="stylesheet" href="bs4_style.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/columns.css">
+<link rel="stylesheet" href="html/largerDie.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">The Theory of Statistical Distributions</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Preface</a></li>
+<li class="book-part">Theoretical foundations</li>
+<li><a class="" href="ChapterSetTheory.html"><span class="header-section-number">1</span> Essentials of set theory</a></li>
+<li><a class="" href="ChapterProbability.html"><span class="header-section-number">2</span> Probability</a></li>
+<li><a class="" href="DistributionRandomVariables.html"><span class="header-section-number">3</span> Random variables and their distributions</a></li>
+<li><a class="" href="ChapBivariate.html"><span class="header-section-number">4</span> Bivariate distributions</a></li>
+<li><a class="" href="ChapExpectation.html"><span class="header-section-number">5</span> Mathematical expectation</a></li>
+<li><a class="" href="ChapterTransformations.html"><span class="header-section-number">6</span> Transformations of random variables</a></li>
+<li class="book-part">Standard univariate probability distributions</li>
+<li><a class="" href="DiscreteDistributions.html"><span class="header-section-number">7</span> Standard discrete distributions</a></li>
+<li><a class="" href="ContinuousDistributions.html"><span class="header-section-number">8</span> Standard continuous distributions</a></li>
+<li><a class="" href="ChapterMixedDistributions.html"><span class="header-section-number">9</span> Mixed distributions</a></li>
+<li class="book-part">Multivariate random variables and distributions*</li>
+<li><a class="" href="ChapMultivariate.html"><span class="header-section-number">10</span> Multivariate distributions*</a></li>
+<li><a class="" href="MultivariateExtensions.html"><span class="header-section-number">11</span> Expectations for multivariate distributions*</a></li>
+<li class="book-part">Sampling distributions</li>
+<li><a class="" href="SamplingDistributions.html"><span class="header-section-number">12</span> Describing samples</a></li>
+<li><a class="" href="OrderStatisticsChapter.html"><span class="header-section-number">13</span> Order statistcs</a></li>
+<li><a class="" href="BayesianIntro.html"><span class="header-section-number">14</span> Introduction to Bayesian statistics</a></li>
+<li class="book-part">Appendices</li>
+<li><a class="" href="SymbolsUsed.html"><span class="header-section-number">A</span> Symbols used</a></li>
+<li><a class="" href="UsefulSeries.html"><span class="header-section-number">B</span> Some useful series</a></li>
+<li><a class="active" href="ShortRIntro.html"><span class="header-section-number">C</span> Short R introduction</a></li>
+<li><a class="" href="UseRDistributions.html"><span class="header-section-number">D</span> Using R with distributions</a></li>
+<li><a class="" href="selected-solutions.html"><span class="header-section-number">E</span> Selected solutions</a></li>
+<li><a class="" href="references.html"><span class="header-section-number">F</span> References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/PeterKDunn/DistTheory">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="ShortRIntro" class="section level1" number="17">
+<h1>
+<span class="header-section-number">C</span> Short R introduction<a class="anchor" aria-label="anchor" href="#ShortRIntro"><i class="fas fa-link"></i></a>
+</h1>
+<div id="general-ideas" class="section level2" number="17.1">
+<h2>
+<span class="header-section-number">C.1</span> General ideas<a class="anchor" aria-label="anchor" href="#general-ideas"><i class="fas fa-link"></i></a>
+</h2>
+<p>Whn you start <strong>R</strong>, you are presented with a <em>prompt</em> asking you enter an instruction:</p>
+<pre><code>&gt;</code></pre>
+<p>We do not show this prompt with the <strong>R</strong> code in this book, to enable any code that we show do be cut-and-paste directly into <strong>R</strong> and evaluated.
+The <code>&gt;</code> is how <strong>R</strong> prompts you to enter something for it to do.</p>
+<p><strong>R</strong> can be used a fancy calculator:</p>
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="op">-</span><span class="fl">5</span> <span class="op">+</span> <span class="fl">7</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span></span>
+<span><span class="co">#&gt; [1] 4</span></span>
+<span><span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span> <span class="op">*</span> <span class="fl">3</span></span>
+<span><span class="co">#&gt; [1] 18.84956</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.3678794</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span> <span class="fl">9</span> <span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="va">pi</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] -3</span></span></code></pre></div>
+<p>The output begins with <code>[1]</code> to indicate the first item of output; sometimes, numerous values appear in the output (see Sect. <a href="ShortRIntro.html#RVector">C.4</a> for examples).</p>
+<p>Note that spaces are not important to <strong>R</strong>, so these are all the same to <strong>R</strong>:</p>
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fl">1</span> <span class="op">+</span>                <span class="fl">2</span></span>
+<span><span class="co">#&gt; [1] 3</span></span>
+<span><span class="fl">1</span>          <span class="op">+</span>  <span class="fl">2</span></span>
+<span><span class="co">#&gt; [1] 3</span></span>
+<span><span class="fl">1</span><span class="op">+</span><span class="fl">2</span></span>
+<span><span class="co">#&gt; [1] 3</span></span>
+<span><span class="fl">1</span> <span class="op">+</span> <span class="fl">2</span></span>
+<span><span class="co">#&gt; [1] 3</span></span></code></pre></div>
+<p>The last is better for human readability, so is recommended.</p>
+<p><strong>R</strong> also allows <em>variables</em> to be used, and values can be assigned to variables using <code>=</code> or the more tradiational <code>&lt;-</code> combination of characters.
+Variables cannot start with a digit.</p>
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Radius</span> <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="va">Area</span> <span class="op">=</span> <span class="va">pi</span> <span class="op">*</span> <span class="va">Radius</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="va">Area</span></span>
+<span><span class="co">#&gt; [1] 12.56637</span></span>
+<span></span>
+<span><span class="va">side1</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<span><span class="va">side2</span> <span class="op">&lt;-</span> <span class="fl">4</span></span>
+<span><span class="va">hypot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span> <span class="va">side1</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">side2</span><span class="op">^</span><span class="fl">2</span> <span class="op">)</span></span>
+<span><span class="va">hypot</span></span>
+<span><span class="co">#&gt; [1] 4.472136</span></span></code></pre></div>
+<p>Notice that the <em>value</em> of a variable is displayed by typing the variable name.</p>
+<p>Comments can be added using <code>#</code>; any text following a <code>#</code> is ignored by <strong>R</strong>:</p>
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hourly_Wage</span> <span class="op">&lt;-</span> <span class="fl">20</span>  <span class="co"># Hourly wage, in $ per hr</span></span>
+<span><span class="va">hours_Worked</span> <span class="op">&lt;-</span> <span class="fl">16</span> <span class="co"># Number of hours worked</span></span>
+<span></span>
+<span><span class="co"># This all assumes no overtime rates!</span></span>
+<span></span>
+<span><span class="va">weekly_Income</span> <span class="op">&lt;-</span> <span class="va">hourly_Wage</span> <span class="op">*</span> <span class="va">hours_Worked</span> <span class="co"># Income in dollar for the week</span></span>
+<span><span class="va">weekly_Income</span></span>
+<span><span class="co">#&gt; [1] 320</span></span></code></pre></div>
+<p>In complete lines of instructions cause <strong>R</strong> to wait for the instruction to be completed.
+For instance, suppose you type:</p>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r mycode"><code class="sourceCode r"><span id="cb122-1"><a href="ShortRIntro.html#cb122-1" tabindex="-1"></a><span class="fu">sqrt</span>( <span class="dv">4</span>  <span class="co"># Notce: no closing of parentheses</span></span></code></pre></div>
+<p><strong>R</strong> will change the prompt from a <code>&gt;</code> to <code>+</code>, indicating that you need to <em>add</em> more information to complete the command.
+Once the command is complete, <strong>R</strong> evaluates the instruction:</p>
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">4</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
+</div>
+<div id="FunctionsInR" class="section level2" number="17.2">
+<h2>
+<span class="header-section-number">C.2</span> Using functions in R<a class="anchor" aria-label="anchor" href="#FunctionsInR"><i class="fas fa-link"></i></a>
+</h2>
+<p><strong>R</strong> has thousands of functions to perform specific tasks.
+We have already seen two being used above:</p>
+<ul>
+<li>
+<code><a href="https://rdrr.io/r/base/MathFun.html">sqrt()</a></code> takes the <strong>sq</strong>uare <strong>r</strong>oo<strong>t</strong> of a given value.</li>
+<li>
+<code><a href="https://rdrr.io/r/base/Log.html">exp()</a></code> find the value of <span class="math inline">\(\exp(x) = e^x\)</span> for some given value of <span class="math inline">\(x\)</span>.</li>
+<li>
+<code><a href="https://rdrr.io/r/base/Log.html">log()</a></code> finds the <strong>log</strong>arithm of a function.</li>
+</ul>
+<p>Functions, in general, can take more than one input.
+Consider the function <code><a href="https://rdrr.io/r/base/Log.html">log()</a></code>.
+We can type</p>
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 4.60517</span></span></code></pre></div>
+<p>If we look at the help for the <code><a href="https://rdrr.io/r/base/Log.html">log()</a></code> function (by typing <code><a href="https://rdrr.io/r/base/Log.html">?log</a></code>), we see the usage is described like this:</p>
+<pre><code>Usage
+log(x, base = exp(1))</code></pre>
+<p>That is, the function can take <em>two</em> inputs: one called <code>x</code>, and one called <code>base</code>.
+The help information is starting that the default value of <code>base</code>, if it is not told otherwise, is assumed to be <code>exp(1)</code> (which is <span class="math inline">\(\exp(1)= e^1 = 2.71828\dots\)</span>).
+In other words, the default logarithm is the <em>natural logarithm</em>.</p>
+<p>Since the command above (i.e., <code>log(100)</code>) only gave one input to the <code><a href="https://rdrr.io/r/base/Log.html">log()</a></code> function, the value of the second input (i.e., <code>base</code>) uses the default value of <code>exp(1)</code>.
+That is, <span class="math inline">\(\log_e 100 = \ln 100 = 4.605\dots\)</span>.</p>
+<p>To specify a different base, we can set the value of <code>base</code> explicitly:</p>
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
+<p>The inputs are assumed by <strong>R</strong> to have been given in the order shown in the help; that is <code>x = 100</code> and <code>base = 10</code>.
+It is clearer, though, to <em>name</em> the value of the second input:</p>
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">100</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
+<p>The value of the first input can be named also:</p>
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">100</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
+<p>When inputs are <em>named</em>, they can appear in any order:</p>
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span>base <span class="op">=</span> <span class="fl">10</span>, x <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
+<p>Some functions in <strong>R</strong> have <em>many</em> inputs.
+Some functions are collected into <em><strong>R</strong> packages</em> that provide additional functionality.</p>
+</div>
+<div id="OtherUsefulRGeneral" class="section level2" number="17.3">
+<h2>
+<span class="header-section-number">C.3</span> General functions<a class="anchor" aria-label="anchor" href="#OtherUsefulRGeneral"><i class="fas fa-link"></i></a>
+</h2>
+<ul>
+<li>
+<code><a href="https://rdrr.io/r/base/seq.html">seq()</a></code> produces a <strong>seq</strong>uence of integers:
+<ul>
+<li>
+<code>seq(1, 4)</code> produces the list: <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span>, <span class="math inline">\(3\)</span>, <span class="math inline">\(4\)</span>.</li>
+<li>
+<code>seq(0, 10, by = 2)</code> produces a list going up <strong>by</strong> two each time: <span class="math inline">\(0\)</span>, <span class="math inline">\(2\)</span>, <span class="math inline">\(4\)</span>, <span class="math inline">\(6\)</span>, <span class="math inline">\(8\)</span>, <span class="math inline">\(10\)</span>.</li>
+<li>
+<code>seq(0, 10, length = 3)</code> produces a list of <strong>length</strong> three: <span class="math inline">\(0\)</span>, <span class="math inline">\(5\)</span>, <span class="math inline">\(10\)</span>.</li>
+<li>A colon can also be used in special cases: <code>3 : 7</code> produces: <span class="math inline">\(3\)</span>, <span class="math inline">\(4\)</span>, <span class="math inline">\(5\)</span>, <span class="math inline">\(6\)</span>, <span class="math inline">\(7\)</span>.</li>
+</ul>
+</li>
+<li>
+<code><a href="https://rdrr.io/r/base/c.html">c()</a></code> is used to <strong>c</strong>oncatenate (join together) a series of values:
+<ul>
+<li>
+<code>c("fred", "martha")</code> creates a vector with two text elements.</li>
+<li>
+<code>c(1, 8, 3.14, -2)</code>create a vector with four numerical elements.</li>
+</ul>
+</li>
+<li>
+<code><a href="https://rdrr.io/r/base/cat.html">cat()</a></code> is often used to print information.</li>
+<li>
+<code><a href="https://rdrr.io/r/base/matrix.html">matrix()</a></code> is used to produces matrices (of <span class="math inline">\(2\)</span>-dimensions):
+<ul>
+<li>
+<code>matrix(data = c(1, 2, 3, 4, 5, 6), byrow = TRUE, ncol = 3)</code> produces the <span class="math inline">\(2\times 3\)</span> array (i.e., <code>ncol = 3</code> means the number of columns is <span class="math inline">\(3\)</span>):
+<span class="math display">\[
+\left[
+\begin{array}{ccc}
+1 &amp; 2 &amp; 3\\
+4 &amp; 5 &amp; 6\\
+\end{array}
+\right].
+\]</span>
+</li>
+</ul>
+</li>
+</ul>
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span>, </span>
+<span>       byrow <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>       ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
+<span><span class="co">#&gt; [1,]    1    2    3</span></span>
+<span><span class="co">#&gt; [2,]    4    5    6</span></span></code></pre></div>
+<ul>
+<li>
+<code>matrix(data = c(1, 2, 3, 4, 5, 6), bycol = TRUE, nrow = 2</code> produces the <span class="math inline">\(2\times 3\)</span> array (i.e., <code>nrow = 2</code> means the number of rows is <span class="math inline">\(2\)</span>):
+<span class="math display">\[
+  \left[
+  \begin{array}{ccc}
+1 &amp; 3 &amp; 5\\
+2 &amp; 4 &amp; 6\\
+  \end{array}
+  \right].
+\]</span>
+</li>
+<li>
+<code><a href="https://rdrr.io/r/base/array.html">array()</a></code> produces matrix-like structure, but they can have many dimensions (not just two, like <code><a href="https://rdrr.io/r/base/matrix.html">matrix()</a></code>)
+<ul>
+<li>
+<code>array( dim = c(2, 4))</code> produces an empty <span class="math inline">\(2\times 4\)</span> array.</li>
+<li>
+<code>array( data = c(1, 2, 3, 4, 5, 6, 7, 8), dim = c(2, 2, 2))</code> produces a <span class="math inline">\(2\times 2\times 2\)</span> array:</li>
+</ul>
+</li>
+</ul>
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span> data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">8</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; , , 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      [,1] [,2]</span></span>
+<span><span class="co">#&gt; [1,]    1    3</span></span>
+<span><span class="co">#&gt; [2,]    2    4</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; , , 2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      [,1] [,2]</span></span>
+<span><span class="co">#&gt; [1,]    5    7</span></span>
+<span><span class="co">#&gt; [2,]    6    8</span></span></code></pre></div>
+<ul>
+<li>
+<code><a href="https://rdrr.io/r/base/t.html">t()</a></code> <strong>t</strong>ransposes a matrix or array:</li>
+</ul>
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">20</span>, <span class="fl">3</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">A</span></span>
+<span><span class="co">#&gt;      [,1] [,2]</span></span>
+<span><span class="co">#&gt; [1,]    1  -20</span></span>
+<span><span class="co">#&gt; [2,]   -2    3</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      [,1] [,2]</span></span>
+<span><span class="co">#&gt; [1,]    1   -2</span></span>
+<span><span class="co">#&gt; [2,]  -20    3</span></span></code></pre></div>
+<p>Logical comparison in <strong>R</strong> are possible (notice the use of <code>==</code> rather than <code>=</code>):</p>
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Days_Of_Week</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Mon"</span>, <span class="st">"Tues"</span>, <span class="st">"Wed"</span>, <span class="st">"Thurs"</span>, <span class="st">"Fri"</span>, <span class="st">"Sat"</span>, <span class="st">"Sun"</span><span class="op">)</span></span>
+<span><span class="va">Hours_Sleep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">8</span>, <span class="fl">8</span>, <span class="fl">8</span>, <span class="fl">6</span>, <span class="fl">6</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">Hours_Sleep</span> <span class="op">==</span> <span class="fl">8</span></span>
+<span><span class="co">#&gt; [1]  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE</span></span>
+<span><span class="va">Hours_Sleep</span> <span class="op">&gt;</span> <span class="fl">8</span></span>
+<span><span class="co">#&gt; [1] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE</span></span>
+<span><span class="va">Hours_Sleep</span> <span class="op">&gt;=</span> <span class="fl">8</span></span>
+<span><span class="co">#&gt; [1]  TRUE  TRUE  TRUE  TRUE FALSE FALSE  TRUE</span></span>
+<span></span>
+<span><span class="va">Hours_Sleep</span> <span class="op">==</span> <span class="fl">6</span> <span class="op">|</span> <span class="va">Hours_Sleep</span> <span class="op">==</span> <span class="fl">10</span> <span class="co"># | means "OR"</span></span>
+<span><span class="co">#&gt; [1] FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE</span></span>
+<span></span>
+<span><span class="va">Hours_Sleep</span> <span class="op">&gt;</span> <span class="fl">6</span> <span class="op">&amp;</span> <span class="va">Hours_Sleep</span> <span class="op">&lt;</span> <span class="fl">10</span> <span class="co"># &amp; means "AND"</span></span>
+<span><span class="co">#&gt; [1]  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">Hours_Sleep</span> <span class="op">==</span> <span class="fl">8</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1 2 3 4</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">Hours_Sleep</span> <span class="op">&gt;</span> <span class="fl">8</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 7</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">Hours_Sleep</span> <span class="op">&gt;=</span> <span class="fl">8</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1 2 3 4 7</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">Hours_Sleep</span> <span class="op">==</span> <span class="fl">6</span> <span class="op">|</span> <span class="va">Hours_Sleep</span> <span class="op">==</span> <span class="fl">10</span> <span class="op">)</span> <span class="co"># | means "OR"</span></span>
+<span><span class="co">#&gt; [1] 5 6 7</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">Hours_Sleep</span> <span class="op">&gt;</span> <span class="fl">6</span> <span class="op">&amp;</span> <span class="va">Hours_Sleep</span> <span class="op">&lt;</span> <span class="fl">10</span> <span class="op">)</span> <span class="co"># &amp; means "AND"</span></span>
+<span><span class="co">#&gt; [1] 1 2 3 4</span></span>
+<span></span>
+<span><span class="va">Weekend</span> <span class="op">&lt;-</span> <span class="va">Days_Of_Week</span> <span class="op">==</span> <span class="st">"Sat"</span> <span class="op">|</span> <span class="va">Days_Of_Week</span> <span class="op">==</span> <span class="st">"Sun"</span></span>
+<span></span>
+<span><span class="va">Week_Day</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="va">Weekend</span> <span class="co"># ! means "NOT"</span></span>
+<span></span>
+<span><span class="va">Hours_Sleep</span><span class="op">[</span><span class="va">Week_Day</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 8 8 8 8 6</span></span>
+<span></span>
+<span><span class="va">Hours_Sleep</span><span class="op">[</span><span class="va">Weekend</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1]  6 10</span></span>
+<span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"These are the hours of sleep on weekdays:"</span>, <span class="va">Hours_Sleep</span><span class="op">[</span><span class="va">Week_Day</span><span class="op">]</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; These are the hours of sleep on weekdays: 8 8 8 8 6</span></span>
+<span>   <span class="co"># Notice that  \n  is used to create a new line.</span></span></code></pre></div>
+<p>Specific elements of a vector can be accessed using square brackets:</p>
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Hours_Sleep</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 8</span></span>
+<span><span class="va">Hours_Sleep</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 8 8 6</span></span>
+<span></span>
+<span><span class="va">Hours_Sleep</span><span class="op">[</span><span class="va">Weekend</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1]  6 10</span></span></code></pre></div>
+</div>
+<div id="RVector" class="section level2" number="17.4">
+<h2>
+<span class="header-section-number">C.4</span> Vector operations<a class="anchor" aria-label="anchor" href="#RVector"><i class="fas fa-link"></i></a>
+</h2>
+<p><strong>R</strong> is a <em>vectorised</em> system; that is, operations work on <em>all</em> elements of a vector:</p>
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">0</span> <span class="op">:</span> <span class="fl">9</span></span>
+<span><span class="va">x</span></span>
+<span><span class="co">#&gt;  [1] 0 1 2 3 4 5 6 7 8 9</span></span>
+<span><span class="va">x</span> <span class="op">+</span> <span class="fl">3</span></span>
+<span><span class="co">#&gt;  [1]  3  4  5  6  7  8  9 10 11 12</span></span>
+<span><span class="fl">2</span> <span class="op">*</span> <span class="va">x</span></span>
+<span><span class="co">#&gt;  [1]  0  2  4  6  8 10 12 14 16 18</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="co"># The square root function</span></span>
+<span><span class="co">#&gt;  [1] 0.000000 1.000000 1.414214 1.732051 2.000000</span></span>
+<span><span class="co">#&gt;  [6] 2.236068 2.449490 2.645751 2.828427 3.000000</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>  <span class="co"># The cosine function</span></span>
+<span><span class="co">#&gt;  [1]  1.0000000  0.5403023 -0.4161468 -0.9899925</span></span>
+<span><span class="co">#&gt;  [5] -0.6536436  0.2836622  0.9601703  0.7539023</span></span>
+<span><span class="co">#&gt;  [9] -0.1455000 -0.9111303</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span> <span class="op">-</span><span class="va">x</span> <span class="op">)</span> <span class="co"># The exponential function</span></span>
+<span><span class="co">#&gt;  [1] 1.0000000000 0.3678794412 0.1353352832</span></span>
+<span><span class="co">#&gt;  [4] 0.0497870684 0.0183156389 0.0067379470</span></span>
+<span><span class="co">#&gt;  [7] 0.0024787522 0.0009118820 0.0003354626</span></span>
+<span><span class="co">#&gt; [10] 0.0001234098</span></span></code></pre></div>
+</div>
+<div id="OtherUsefulRStatistical" class="section level2" number="17.5">
+<h2>
+<span class="header-section-number">C.5</span> Statistical functions<a class="anchor" aria-label="anchor" href="#OtherUsefulRStatistical"><i class="fas fa-link"></i></a>
+</h2>
+<p>Because <strong>R</strong> is primarily a statistical package and environment, all the basic statistical functions are available, including</p>
+<ul>
+<li>
+<code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>: Find the <strong>mean</strong> of a <em>sample</em> of values.
+Example: <code>mean( c(1, 2, 3, 4))</code>.</li>
+<li>
+<code><a href="https://rdrr.io/r/stats/median.html">median()</a></code>: Find the <strong>median</strong> of a <em>sample</em> of values.
+Example: <code>median( c(1, 2, 3, 4))</code>.</li>
+<li>
+<code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code>: Finds the <strong>s</strong>tandard <strong>d</strong>eviation of a <em>sample</em> of values.
+Example: <code>sd( c(1, 2, 3, 4))</code>.</li>
+<li>
+<code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code>: Finds the <strong>var</strong>iance of a <em>sample</em> of values.
+Example: <code>var( c(1, 2, 3, 4))</code>.</li>
+<li>
+<code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code>: To fit a <strong>l</strong>inear regression <strong>m</strong>odel:</li>
+</ul>
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">10</span>, <span class="fl">9</span>, <span class="fl">7</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span> <span class="co"># Read: 'y as a function of x'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span><span class="co">#&gt; (Intercept)           x </span></span>
+<span><span class="co">#&gt;        14.1        -1.9</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; lm(formula = y ~ x)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residuals:</span></span>
+<span><span class="co">#&gt;    1    2    3    4    5 </span></span>
+<span><span class="co">#&gt; -0.2 -0.3  0.6  0.5 -0.6 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)</span></span>
+<span><span class="co">#&gt; (Intercept)  14.1000     0.6351  22.202  0.00020</span></span>
+<span><span class="co">#&gt; x            -1.9000     0.1915  -9.922  0.00218</span></span>
+<span><span class="co">#&gt;                </span></span>
+<span><span class="co">#&gt; (Intercept) ***</span></span>
+<span><span class="co">#&gt; x           ** </span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  </span></span>
+<span><span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residual standard error: 0.6055 on 3 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-squared:  0.9704, Adjusted R-squared:  0.9606 </span></span>
+<span><span class="co">#&gt; F-statistic: 98.45 on 1 and 3 DF,  p-value: 0.002178</span></span></code></pre></div>
+</div>
+<div id="RProbCounting" class="section level2" number="17.6">
+<h2>
+<span class="header-section-number">C.6</span> Probability and counting functions<a class="anchor" aria-label="anchor" href="#RProbCounting"><i class="fas fa-link"></i></a>
+</h2>
+<ul>
+<li>the <em>number</em> of <em>combinations</em> of <code>n</code> elements taken <code>k</code> at a time is found using <code>choose(n, k)</code>.</li>
+<li>
+<span class="math inline">\(n!\)</span> is given by <code>factorial(n)</code>.</li>
+<li>the <em>number</em> of <em>permutations</em> of <code>n</code> elements taken <code>k</code> at a time is found using <code>choose(n, k) * factorial(k)</code>.</li>
+<li>a list of all combinations of <code>n</code> elements, <code>m</code> at a time, is given by <code>combn(x, m)</code>.</li>
+<li>
+<span class="math inline">\(\Gamma(x)\)</span> is given by <code>gamma(x)</code>.</li>
+</ul>
+</div>
+<div id="OtherUsefulRPlotting" class="section level2" number="17.7">
+<h2>
+<span class="header-section-number">C.7</span> Plotting functions<a class="anchor" aria-label="anchor" href="#OtherUsefulRPlotting"><i class="fas fa-link"></i></a>
+</h2>
+<p>Three systems exists for plotting in <strong>R</strong>, believe it or not.
+Here, we discuss the base system.</p>
+<p><code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> is the basic function for plotting, with <em>many</em> options:</p>
+<ul>
+<li>
+<code>plot(x, y)</code> and <code>plot(y ~ x)</code> both produce a scatterplot, with <code>y</code> on the vertical axis and <code>x</code> on the horizontal axis.</li>
+<li>
+<code>plot(..., type = "l")</code> plots with <strong>l</strong>ines rather than points.</li>
+<li>
+<code>plot(..., lwd = "3")</code> plots with a <strong>l</strong>ine <strong>w</strong>i<strong>d</strong>th thrice as thick.</li>
+<li>
+<code>plot(..., xlab = "text", ylab = "Info")</code> adds an <strong>lab</strong>el to the <strong>x</strong> and <strong>y</strong> axes respectively.</li>
+<li>
+<code>plot(..., main = "Title")</code> adds a <strong>main</strong> title to the plot.</li>
+<li>
+<code>plot(..., col = "green")</code> plots in green rather than the default (black).</li>
+</ul>
+<p><code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> starts a new canvas every time it is called.
+<code><a href="https://rdrr.io/r/graphics/lines.html">lines()</a></code> and <code><a href="https://rdrr.io/r/graphics/points.html">points()</a></code> add <strong>lines</strong> and <strong>points</strong> respectively to an existing plot.
+<code><a href="https://rdrr.io/r/graphics/legend.html">legend()</a></code> adds a legend to an existing plot.</p>
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span>, length <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html">dexp</a></span><span class="op">(</span><span class="va">x</span>, rate <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="co"># Probability function for an exponential distn</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">y1</span> <span class="op">~</span> <span class="va">x</span>,</span>
+<span>     type <span class="op">=</span> <span class="st">"l"</span>, <span class="co"># Use lines, not points</span></span>
+<span>     lwd <span class="op">=</span> <span class="fl">2</span>, <span class="co"># Make lines a bit thicker</span></span>
+<span>     xlab <span class="op">=</span> <span class="st">"Values of x"</span>,</span>
+<span>     ylab <span class="op">=</span> <span class="st">"Probability function"</span>,</span>
+<span>     main <span class="op">=</span> <span class="st">"Probability function for\nexponential distribution"</span>,</span>
+<span>      <span class="co"># NOTE: using  \n  adds a line break, and # is used for comments</span></span>
+<span>     col <span class="op">=</span> <span class="st">"red"</span>, </span>
+<span>     las <span class="op">=</span> <span class="fl">1</span>, <span class="co"># Makes the axis labels all horizontal</span></span>
+<span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4.5</span><span class="op">)</span>, <span class="co"># Changes the displayed limits of the x-axis</span></span>
+<span>     ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span> <span class="op">)</span> <span class="co"># Changes the displayed limits on the y-axis</span></span>
+<span></span>
+<span><span class="va">y2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html">dexp</a></span><span class="op">(</span><span class="va">x</span>, rate <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span> <span class="va">y2</span> <span class="op">~</span> <span class="va">x</span>, <span class="co"># ADD a line to existing point</span></span>
+<span>       lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>       col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, <span class="co"># The location</span></span>
+<span>       lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>       col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
+<span>       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Rate = 2"</span>,</span>
+<span>                  <span class="st">"Rate = 3"</span><span class="op">)</span></span>
+<span>       <span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-19"></span>
+<img src="20-Appendix_files/figure-html/unnamed-chunk-19-1.png" alt="An example plot: the probability function for two exponential distributions" width="60%"><p class="caption">
+FIGURE C.1: An example plot: the probability function for two exponential distributions
+</p>
+</div>
+</div>
+</div>
+<hr>
+<div class="footer"><span style="color: gray; font-size:0.7em">Peter K. Dunn, 2024: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span></div>
+  <div class="chapter-nav">
+<div class="prev"><a href="UsefulSeries.html"><span class="header-section-number">B</span> Some useful series</a></div>
+<div class="next"><a href="UseRDistributions.html"><span class="header-section-number">D</span> Using R with distributions</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#ShortRIntro"><span class="header-section-number">C</span> Short R introduction</a></li>
+<li><a class="nav-link" href="#general-ideas"><span class="header-section-number">C.1</span> General ideas</a></li>
+<li><a class="nav-link" href="#FunctionsInR"><span class="header-section-number">C.2</span> Using functions in R</a></li>
+<li><a class="nav-link" href="#OtherUsefulRGeneral"><span class="header-section-number">C.3</span> General functions</a></li>
+<li><a class="nav-link" href="#RVector"><span class="header-section-number">C.4</span> Vector operations</a></li>
+<li><a class="nav-link" href="#OtherUsefulRStatistical"><span class="header-section-number">C.5</span> Statistical functions</a></li>
+<li><a class="nav-link" href="#RProbCounting"><span class="header-section-number">C.6</span> Probability and counting functions</a></li>
+<li><a class="nav-link" href="#OtherUsefulRPlotting"><span class="header-section-number">C.7</span> Plotting functions</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/PeterKDunn/DistTheory/blob/main/20-Appendix.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/PeterKDunn/DistTheory/edit/main/20-Appendix.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn. It was last built on Last updated: 2025-12-12.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

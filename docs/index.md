@@ -1,0 +1,159 @@
+--- 
+title: "The Theory of Statistical Distributions"
+author: "Peter K. Dunn"
+date: "Last updated: 2025-12-12"
+knit: "bookdown::render_book"
+documentclass: krantz
+classoption: krantz2
+output: bookdown::pdf_book
+site: bookdown::bookdown_site
+github-repo: PeterKDunn/DistTheory
+bibliography: [book.bib, packages.bib, Reference.bib]
+biblio-style: plain
+link-citations: yes
+colorlinks: yes
+lot: no
+lof: no
+always_allow_html: yes
+links-as-notes: yes
+#output: pdf_document
+description: "An introduction to mathematical statistics, and the theory of statistical distributions."
+fontsize: 10pt
+---
+
+<!-- Best way I have found to get correct spacing for units in LaTeX, without screwing up HTML -->
+\newcommand{\cms}{\,\text{cm}}
+\newcommand{\dLs}{\,\text{dL}}
+\newcommand{\xdLs}{\text{dL}}
+<!-- No space beforehand so useful in place like \\mgs.\\xdLhas^{-1} -->
+\newcommand{\fmols}{\,\text{fmol}}
+\newcommand{\ft}{\,\text{ft}}
+\newcommand{\gs}{\,\text{g}}
+\newcommand{\hs}{\,\text{h}}
+\newcommand{\xhs}{\text{h}}
+<!-- No space beforehand so useful in place like \\km.\\xhs^{-1} -->
+\newcommand{\has}{\,\text{ha}}
+\newcommand{\xhas}{\text{ha}}
+<!-- No space beforehand so useful in place like \\kgs.\\xhas^{-1} -->
+\newcommand{\inches}{\,\text{inches}}
+\newcommand{\kgs}{\,\text{kg}}
+\newcommand{\kms}{\,\text{km}}
+\newcommand{\kWhs}{\,\text{kWh}}
+\newcommand{\lbs}{\,\text{lb}}
+\newcommand{\Ls}{\,\text{L}}
+\newcommand{\xLs}{\text{L}} 
+<!-- No space beforehand so useful in place like \\microgs.\\xLs^{-1} -->
+\newcommand{\mgs}{\,\text{mg}}
+\newcommand{\microgs}{\,\ensuremath{\mu}\text{g}}
+\newcommand{\millis}{\,\text{ms}}
+\newcommand{\mins}{\,\text{mins}}
+\newcommand{\mJs}{\,\text{mJ}}
+\newcommand{\mmols}{\,\text{mmol}}
+\newcommand{\mLs}{\,\text{mL}}
+\newcommand{\mms}{\,\text{mm}}
+\newcommand{\ms}{\,\text{m}}
+\newcommand{\xms}{\text{m}}
+\newcommand{\ozs}{\,\text{oz}}
+\newcommand{\secs}{\,\text{s}}
+\newcommand{\xsecs}{\text{s}}
+\newcommand{\ppms}{\,\text{ppm}}
+\newcommand{\ys}{\,\text{y}}
+\newcommand{\vs}{\,\text{V}}
+
+
+\frontmatter
+#  Preface {-}
+
+This book is an introduction to the theory of statistical probability and distributions.
+
+
+## Statistical software {-}
+
+This book can be read without relying on any specific statistical software, though sometimes **R** code [@R-base] is included to demonstrate ideas, and to discuss simulation.
+
+
+
+## Callouts used on this book {-}
+
+The callouts used in this book have meanings; for example:
+
+::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
+These chunks introduce the objectives for the chapters of the book.
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+These chunks highlight common mistakes or warnings, about a particular concept or about using a formula.
+:::
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+These chunks offer helpful information.
+:::
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+These chunks refer to text that is relevant to using the **R** statistical software.
+:::
+
+
+::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
+These chunks explain how certain concepts and distributions are linked.
+:::
+
+
+::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
+These chunks give  you some questions to think about.
+:::
+
+
+
+
+## Who can use this book? {-}
+
+This textbook is **free** for anyone to use:
+There is no charge for students, instructors or institutions.
+
+Although not essential, an email to the author (explaining how the textbook is being used, who is using the textbook, and your thoughts on the textbook) would be appreciated: `pdunn2 <at> usc.edu.au`.
+
+
+## How this book was made {-}
+
+This book was made using **R** [@R-base], and the **bookdown** package [@R-bookdown], which is based on [Markdown](https://en.wikipedia.org/wiki/Markdown) syntax, using **knitr** [@R-knitr].
+
+
+
+## Learning Outcomes {-}
+
+::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
+In this book, you will learn to:
+
+* apply rules, theorems and concepts to compute probabilities.
+* describe probability and distribution functions.
+* apply concepts of mathematical expectation.
+* apply and work with standard discrete and continuous distributions, including computing of probabilities.
+* apply and work with bivariate and multivariate distributions.
+* determine probability functions and distribution functions of transformed radon variables.
+* apply and work with standard sampling distributions.
+* use **R** to produce relevant plots and compute probabilities.
+:::
+
+
+
+
+
+
+## How to cite this book {-}
+
+Peter K. Dunn (2024). *The theory of statistical distributions*.
+https://bookdown.org/pkaldunn/DistTheory
+
+The [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) licence is applied to this textbook.
+
+
+\BeginKnitrBlock{flushright}<p class="flushright">Peter K. Dunn  
+Sippy Downs, Australia</p>\EndKnitrBlock{flushright}
+
+
+\mainmatter
+
