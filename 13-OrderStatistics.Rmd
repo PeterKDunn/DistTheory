@@ -1209,4 +1209,68 @@ What is the expected value of\ $N$, the number of values to draw to exceed the i
 
 
 
+### Exercise 5.1: The Weakest Link (Material Science)
+
+A fiber cable is composed of $n=5$ independent strands. 
+The breaking strength of each strand $X$ follows an Exponential distribution with mean 100kg ($X \sim \text{Exp}(1/100)$). 
+The cable fails as soon as the **first** strand breaks.
+
+1. Identify the order statistic that represents the cable's breaking strength.
+2. Find the distribution of $X_{(1)}$.
+3. Use R to find the probability the cable breaks under a load of 10kg.
+
+* **Answer:** 1. $X_{(1)}$ (the minimum).
+    2. $X_{(1)} \sim \text{Exp}(n\lambda) = \text{Exp}(5/100)$.
+    3. `pexp(10, rate = 5/100)` $\approx 0.393$.
+
+
+
+### Exercise 5.2: Flood Protection (Hydrology)
+A levee is designed to withstand the maximum annual water level. 
+Suppose the max water levels over the next 10 years are independent and follow a Uniform distribution $U(0, 15)$ feet.
+
+1. What is the CDF of the 10-year maximum, $X_{(10)}$?
+2. Calculate the probability that the 10-year maximum exceeds 14 feet.
+3. In R, simulate 1,000 "decades" and find the empirical median of $X_{(10)}$.
+
+* **Answer:** 1. $F_{X_{(10)}}(x) = [F_X(x)]^{10} = (\frac{x}{15})^{10}$ for $0 < x < 15$.
+    2. $1 - P(X_{(10)} \leq 14) = 1 - (\frac{14}{15})^{10} \approx 0.496$.
+    3. `max_levels <- replicate(1000, max(runif(10, 0, 15))); median(max_levels)`
+
+---
+
+### Exercise 5.3: DNA Sequencing (Bioinformatics)
+A sequencer reads a DNA fragment $n$ times to ensure accuracy. 
+Let $X_i$ be the quality score of the $i$-th read. 
+To filter out noise, the lab uses the **median** score of 3 reads ($X_{(2)}$). 
+Assume $X_i \sim U(0, 100)$.
+
+1. Write the general PDF formula for the $k$-th order statistic from a sample of size $n$.
+2. Specifically, find the PDF of $X_{(2)}$ for $n=3$.
+3. Use R to plot the density of $X_{(2)}$.
+
+* **Answer:** 1. $f_{X_{(k)}}(x) = \frac{n!}{(k-1)!(n-k)!} [F(x)]^{k-1} [1-F(x)]^{n-k} f(x)$.
+    2. $f_{X_{(2)}}(x) = \frac{3!}{1!1!} (\frac{x}{100}) (1 - \frac{x}{100}) (\frac{1}{100}) = \frac{6}{100^3} (100x - x^2)$.
+    3. 
+```{r, eval=FALSE}
+# R Plotting
+x <- seq(0, 100, length.out=100)
+y <- 6 * (100*x - x^2) / 100^3
+plot(x, y, type="l", main="Density of Median (n=3) from U(0,100)")
+```
+
+
+Exercise 5.4: Sensor Redundancy (Aerospace)
+
+A satellite has 3 redundant temperature sensors. 
+The system remains operational as long as at least two sensors provide a reading below 80°C. 
+Let $X_i$ be the temperature read by sensor $i$, where $X_i \sim \text{Normal}(\mu=75, \sigma=5)$.
+
+1. Express the "System Success" event in terms of an order statistic.
+2. Calculate the probability of success using R's pnorm and the binomial logic (or order statistic CDF).
+
+Answer: 
+
+1. The event is $\{X_{(2)} \leq 80\}$.
+2. In R: p_single <- pnorm(80, 75, 5); pbinom(1, 3, p_single, lower.tail=FALSE) + dbinom(3, 3, p_single) (or more simply p_order_2 <- pbeta(p_single, 2, 3-2+1)).
 

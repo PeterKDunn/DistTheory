@@ -527,8 +527,8 @@ The first step uses a Bernoulli distribution (Sect.\ \@ref(BernoulliDistribution
 $$
   \Pr(Y) = 
   \begin{cases}
-    1 - p    & \text{if $Y = 0$; i.e., the event of interest \emph{does not} occur;}\\
-    p        & \text{if $Y = 1$; i.e., the event of interest \emph{does} occur.}
+    1 - p    & \text{if $Y = 0$; i.e., the event of interest does not occur;}\\
+    p        & \text{if $Y = 1$; i.e., the event of interest does occur.}
   \end{cases}
 $$
 If the event does occur (i.e., conditional on $X > 0$), with probability $1 - p$, then the continuous component is modelled using a probability density function $f^+_X(x)$ defined for positive real values only (such as an exponential distribution or a gamma distribution).
@@ -966,7 +966,7 @@ provided $t < \beta$.
 From the MGF we can deduce
 \begin{align*}
   \operatorname{E}[X] 
-  &= \lambda\alpha\/\beta\\
+  &= \lambda\alpha/\beta\\
   \operatorname{var}[X]
   &= \lambda\alpha(\alpha + 1)\beta^2.
 \end{align*}
@@ -984,7 +984,7 @@ $$
 The mean and variance of\ $X$ is
 \begin{align*}
   \operatorname{E}[X]
-  &= \lambda\alpha\/\beta
+  &= \lambda\alpha/\beta
    = 3\times \frac{1}{2}\times\frac{2}{3} = 1;\\
   \operatorname{var}[X] 
   &= \lambda\alpha(\alpha + 1)\beta^2
@@ -1558,3 +1558,73 @@ so that $\operatorname{E}[Y] = 1.5$ and $\operatorname{var}[Y] = 1$.
 
 
 
+
+
+
+---
+
+
+
+Section 2: Hurdle Models (The Zero-Mass)
+
+Exercise 2.1: Hospital Stays
+
+In a "Hurdle" model, we partition the space into $\{0\}$ and $\{x : x > 0\}$. 
+Let $Y$ be hospital stay duration. 
+$P(Y = 0) = 0.4$ and for $y > 0$, $f(y) = 0.6 e^{-y}$.
+
+1. Verify the total probability equals 1.
+2. In R, given `stays <- c(0, 0, 5, 0, 2, 10, 0)`, find the indices of the "Continuous" set.
+Answer: 1. $0.4 + \int_{0}^{\infty} 0.6e^{-y} dy = 0.4 + 0.6 = 1$.2. which(stays > 0).
+
+Exercise 2.2: Ecology Surveys (Parallel)
+An ecologist counts a rare orchid in plots. 
+In many plots, the orchid is absent ($X=0$). 
+If present, the density is modeled by a shifted Gamma. 
+Let $P(X=0) = 0.75$ and the remaining $0.25$ be distributed as $X \sim \text{Gamma}(shape=2, rate=1)$.
+
+1. What is the probability that $X > 0$?
+2. rite an R code snippet to simulate 100 plots using this hurdle logic.
+
+Answer: 1. $P(X > 0) = 0.25$.2. ifelse(runif(100) < 0.75, 0, rgamma(100, 2, 1)).Section 3: Censored Models (The Boundary Mass)
+
+Exercise 3.1: Lightbulb Lifetimes
+
+Let $X \sim \text{Exp}(\lambda)$ be the lifetime of a bulb. 
+If it lasts $> 1000$ hours, we record $Y = 1000$.
+
+1. What is the probability mass at the point $Y=1000$?
+Answer: $P(Y = 1000) = P(X \geq 1000) = e^{-1000\lambda}$.
+
+Exercise 3.2: Rainfall Gauges (Parallel)
+
+A rainfall gauge has a physical capacity of 50mm. 
+Any rain $X > 50$ is recorded as $Y = 50$. 
+Assume $X \sim \text{Rayleigh}(\sigma=20)$.
+
+1. Define the event $Y=50$ as a set.
+2. If $P(X > 50) = 0.043$, what is the height of the "jump" in the CDF at $y=50$?
+
+Answer: 1. $\{x \in \mathbb{R} : x \geq 50\}$.2. The jump size is $0.043$.Section 4: Compound Processes 
+
+Exercise 4.1: Insurance Claims in R
+
+Assume number of claims $N \sim \text{Poisson}(0.5)$. 
+Individual claim sizes are $X_i \sim \text{Gamma}(2, 1)$.
+
+Simulate 1,000 realizations of the total claim amount $S = \sum_{i=1}^N X_i$.
+
+```{r}
+S <- replicate(1000, sum(rgamma(rpois(1, 0.5), 2, 1)))
+mean(S == 0) # Empirical zero mass
+```
+
+Exercise 4.2: Fire Damage (Parallel)
+
+The number of fires in a county per month is $N \sim \text{Poisson}(2)$. 
+The damage (in millions) per fire is $X \sim \text{LogNormal}(0, 1)$.
+
+1. What is the theoretical probability that a month has zero fire damage?
+2. Write R code to find the mean damage for months where damage was greater than zero.
+
+Answer: 1. $P(N=0) = e^{-2} \approx 0.135$.2. mean(S[S > 0]) (using the simulation approach).
