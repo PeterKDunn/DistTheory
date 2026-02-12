@@ -1,7 +1,7 @@
 --- 
 title: "The Theory of Statistical Distributions"
 author: "Peter K. Dunn"
-date: "Last updated: 2025-12-12"
+date: "Last updated: 2026-02-12"
 knit: "bookdown::render_book"
 documentclass: krantz
 classoption: krantz2
