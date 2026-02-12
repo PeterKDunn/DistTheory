@@ -397,8 +397,8 @@ The first step uses a Bernoulli distribution (Sect. <a href="DiscreteDistributi
 <span class="math display">\[
   \Pr(Y) =
   \begin{cases}
-    1 - p    &amp; \text{if $Y = 0$; i.e., the event of interest \emph{does not} occur;}\\
-    p        &amp; \text{if $Y = 1$; i.e., the event of interest \emph{does} occur.}
+    1 - p    &amp; \text{if $Y = 0$; i.e., the event of interest does not occur;}\\
+    p        &amp; \text{if $Y = 1$; i.e., the event of interest does occur.}
   \end{cases}
 \]</span>
 If the event does occur (i.e., conditional on <span class="math inline">\(X &gt; 0\)</span>), with probability <span class="math inline">\(1 - p\)</span>, then the continuous component is modelled using a probability density function <span class="math inline">\(f^+_X(x)\)</span> defined for positive real values only (such as an exponential distribution or a gamma distribution).</p>
@@ -645,7 +645,7 @@ provided <span class="math inline">\(t &lt; \beta\)</span>.</p>
 <p>From the MGF we can deduce
 <span class="math display">\[\begin{align*}
   \operatorname{E}[X]
-  &amp;= \lambda\alpha\/\beta\\
+  &amp;= \lambda\alpha/\beta\\
   \operatorname{var}[X]
   &amp;= \lambda\alpha(\alpha + 1)\beta^2.
 \end{align*}\]</span></p>
@@ -660,7 +660,7 @@ provided <span class="math inline">\(t &lt; \beta\)</span>.</p>
 The mean and variance of <span class="math inline">\(X\)</span> is
 <span class="math display">\[\begin{align*}
   \operatorname{E}[X]
-  &amp;= \lambda\alpha\/\beta
+  &amp;= \lambda\alpha/\beta
    = 3\times \frac{1}{2}\times\frac{2}{3} = 1;\\
   \operatorname{var}[X]
   &amp;= \lambda\alpha(\alpha + 1)\beta^2
@@ -950,6 +950,59 @@ so that <span class="math inline">\(\operatorname{E}[Y] = 1.5\)</span> and <span
 <li>Plot this probability function.</li>
 </ol>
 </div>
+<hr>
+<p>Section 2: Hurdle Models (The Zero-Mass)</p>
+<p>Exercise 2.1: Hospital Stays</p>
+<p>In a “Hurdle” model, we partition the space into <span class="math inline">\(\{0\}\)</span> and <span class="math inline">\(\{x : x &gt; 0\}\)</span>.
+Let <span class="math inline">\(Y\)</span> be hospital stay duration.
+<span class="math inline">\(P(Y = 0) = 0.4\)</span> and for <span class="math inline">\(y &gt; 0\)</span>, <span class="math inline">\(f(y) = 0.6 e^{-y}\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>Verify the total probability equals 1.</li>
+<li>In R, given <code>stays &lt;- c(0, 0, 5, 0, 2, 10, 0)</code>, find the indices of the “Continuous” set.
+Answer: 1. <span class="math inline">\(0.4 + \int_{0}^{\infty} 0.6e^{-y} dy = 0.4 + 0.6 = 1\)</span>.2. which(stays &gt; 0).</li>
+</ol>
+<p>Exercise 2.2: Ecology Surveys (Parallel)
+An ecologist counts a rare orchid in plots.
+In many plots, the orchid is absent (<span class="math inline">\(X=0\)</span>).
+If present, the density is modeled by a shifted Gamma.
+Let <span class="math inline">\(P(X=0) = 0.75\)</span> and the remaining <span class="math inline">\(0.25\)</span> be distributed as <span class="math inline">\(X \sim \text{Gamma}(shape=2, rate=1)\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>What is the probability that <span class="math inline">\(X &gt; 0\)</span>?</li>
+<li>rite an R code snippet to simulate 100 plots using this hurdle logic.</li>
+</ol>
+<p>Answer: 1. <span class="math inline">\(P(X &gt; 0) = 0.25\)</span>.2. ifelse(runif(100) &lt; 0.75, 0, rgamma(100, 2, 1)).Section 3: Censored Models (The Boundary Mass)</p>
+<p>Exercise 3.1: Lightbulb Lifetimes</p>
+<p>Let <span class="math inline">\(X \sim \text{Exp}(\lambda)\)</span> be the lifetime of a bulb.
+If it lasts <span class="math inline">\(&gt; 1000\)</span> hours, we record <span class="math inline">\(Y = 1000\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>What is the probability mass at the point <span class="math inline">\(Y=1000\)</span>?
+Answer: <span class="math inline">\(P(Y = 1000) = P(X \geq 1000) = e^{-1000\lambda}\)</span>.</li>
+</ol>
+<p>Exercise 3.2: Rainfall Gauges (Parallel)</p>
+<p>A rainfall gauge has a physical capacity of 50mm.
+Any rain <span class="math inline">\(X &gt; 50\)</span> is recorded as <span class="math inline">\(Y = 50\)</span>.
+Assume <span class="math inline">\(X \sim \text{Rayleigh}(\sigma=20)\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>Define the event <span class="math inline">\(Y=50\)</span> as a set.</li>
+<li>If <span class="math inline">\(P(X &gt; 50) = 0.043\)</span>, what is the height of the “jump” in the CDF at <span class="math inline">\(y=50\)</span>?</li>
+</ol>
+<p>Answer: 1. <span class="math inline">\(\{x \in \mathbb{R} : x \geq 50\}\)</span>.2. The jump size is <span class="math inline">\(0.043\)</span>.Section 4: Compound Processes</p>
+<p>Exercise 4.1: Insurance Claims in R</p>
+<p>Assume number of claims <span class="math inline">\(N \sim \text{Poisson}(0.5)\)</span>.
+Individual claim sizes are <span class="math inline">\(X_i \sim \text{Gamma}(2, 1)\)</span>.</p>
+<p>Simulate 1,000 realizations of the total claim amount <span class="math inline">\(S = \sum_{i=1}^N X_i\)</span>.</p>
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html">rgamma</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="co"># Empirical zero mass</span></span>
+<span><span class="co">#&gt; [1] 0.611</span></span></code></pre></div>
+<p>Exercise 4.2: Fire Damage (Parallel)</p>
+<p>The number of fires in a county per month is <span class="math inline">\(N \sim \text{Poisson}(2)\)</span>.
+The damage (in millions) per fire is <span class="math inline">\(X \sim \text{LogNormal}(0, 1)\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>What is the theoretical probability that a month has zero fire damage?</li>
+<li>Write R code to find the mean damage for months where damage was greater than zero.</li>
+</ol>
+<p>Answer: 1. <span class="math inline">\(P(N=0) = e^{-2} \approx 0.135\)</span>.2. mean(S[S &gt; 0]) (using the simulation approach).</p>
 
 </div>
 </div>
