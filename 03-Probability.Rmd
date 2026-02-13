@@ -1,0 +1,4006 @@
+
+# Probability {#ChapterProbability}
+
+
+::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
+UpOn completion of this chapter you should be able to:
+
+* understand the concepts of probability, and apply rules of probability.
+* define probability from using different methods and apply them to compute probabilities in various situations.
+* apply the concepts of conditional probability and independence.
+* differentiate between mutually exclusive events and independent events.
+* apply Bayes' Theorem.
+* use combinations and permutations to compute the probabilities of various events involving counting problems.
+:::
+
+
+## Introduction {#IntroductionToProbability}
+
+Probability is a way of describing how likely it is for some event to occur.
+A foundation in set theory allows the idea of probability to be developed, since probability relies heavily on many of the ideas from set theory.
+
+Building upon this foundation, probability relates to the outcomes of *random processes* (or *random experiments*).
+
+
+:::{.definition #RandomProcess name="Random process"}
+A **random process** (or **random experiment**)\index{Random process} is a procedure that:
+
+* can be repeated, in theory, indefinitely under essentially identical conditions; and
+* has well-defined outcomes; and
+* the outcome of any individual repetition is unpredictable.
+:::
+
+
+Examples of simple *random processes* include tossing a coin, or rolling a die.
+While the outcome of any instance of a random process produces is unknown, the possible outcomes are known.
+
+
+## Sample spaces {#SampleSpaces}
+
+When talking about probability, the [*universal set*](#def:UniversalSet) is the set of all possible outcomes that can result from a random process, usually denoted  $S$, $\Omega$ or $U$.
+
+
+::: {.definition #SampleSpace name="Sample space"}
+A *sample space* (or *event space*, or *outcome space*)\index{Sample space} for a random process is a set of all possible outcomes from a random process, usually denoted by $S$, $\Omega$ or $U$ (for the 'universal set').
+:::
+
+
+:::{.example #SampleSpaceDice name="Sample space"}
+Consider rolling a die.
+The sample space is the set of all possible outcomes:
+$$
+  S = \{ 1, 2, 3, 4, 5, 6\}.
+$$
+:::
+
+
+As with sets, the sample space may be finite, or countably infinite, or uncountably infinite.
+When the sample space is finite or countably infinite, the sample space is called *discrete*.
+If a sample space is an uncountably finite set, the sample space is called *continuous*.
+
+
+:::{.example #SampleSpaceDiceDiscrete name="Discrete sample space"}
+The sample space in Example\ \@ref(exm:SampleSpaceDice) is *discrete*.\index{Sample space!discrete}
+:::
+
+
+:::{.example #SampleSpaceCont name="Continuous sample space"}
+Consider the height of students.\index{Sample space!continuous}
+The sample space is *continuous* (see Example\ \@ref(exm:HeightsOfPeople)).
+:::
+
+
+Sample spaces can also be a *mixture* of discrete and continuous sample spaces.\index{Sample space!mixed}
+In these sample spaces, part of the sample space is discrete, and part is continuous.
+The most common example is when the discrete component refers to\ $0$ and the continuous part refers to the positive real numbers\ $\mathbb{R}$.
+
+
+:::{.example #MixedSampleSpace name="Mixed sample space"}
+Consider the random process where we observe the rainfall recorded on any given day, $R$.
+
+If no rain fall, the rainfall recorded is exactly $R = 0$; this is the discrete component.
+However, if rain does fall, the *exact* amount cannot be recorded; this is teh continuous component.
+
+The sample space is
+$$
+  S = \{0\}\cup \mathbb{R}.
+$$
+The sample space is *mixed*.
+:::
+
+
+## Events {#Events}
+\index{Event}
+
+### Simple events {#SimpleEvents}
+
+While\index{Events!simple} the sample space defines the set of *all* possible outcomes, usually we are interested in just some of those elements of the sample space.
+Events are *subsets*\index{Set operations!subset} of the sample space (and hence are also sets).
+
+
+::: {.definition #Event name="Event"}
+An event $E$ is a subset of $S$, and we write $E \subseteq S$.
+:::
+
+
+By this definition, $S$ itself is an event.\index{Event}
+If the sample space is a finite or countable infinite set, then an event is a collection of sample points.
+
+
+:::{.example #TwoCoinToss name="Events"}
+Consider the simple random process of tossing a coin twice.
+The [sample space](#def:SampleSpace) is the set
+`r if (knitr::is_latex_output()) {
+   '$$S = \\{ (\\Heads, \\Heads), \\enskip
+              (\\Heads, \\Tails), \\enskip
+              (\\Tails, \\Heads), \\enskip
+              (\\Tails, \\Tails)\\},$$'
+} else {
+'$$S = \\{ (H, H), \\enskip(H, T), \\enskip (T, H), \\enskip (T, T)\\},$$'
+}`
+where
+`r if (knitr::is_latex_output()) {
+   '$\\Heads$'
+} else {
+   'H'
+}`
+represents tossing a head and 
+`r if (knitr::is_latex_output()) {
+   '$\\Tails$'
+} else {
+   'T'
+}`
+represents tossing a tail, and the pair lists the result of the two tosses *in order*.
+
+We can define the event $A$ as 'tossing a head on the second toss', and list the elements:
+`r if (knitr::is_latex_output()) {
+   '$$A = \\{ (\\Heads, \\Heads), \\enskip
+              (\\Tails, \\Heads)\\};$$'
+} else {
+   '$$A = \\{ (H, H), \\enskip (T, H)\\};$$'
+}`
+notice that $A \subset S$ (i.e., $A$ is a proper subset of\ $S$).
+
+The event $T$, defined as 'the set of outcomes corresponding to tossing *three* heads', is the [*null* or *empty set*](#def:EmptySet); no sample points have three heads.
+That is, $T = \varnothing$.\index{Empty set}
+:::
+
+
+::: {.definition #ElementaryEvent name="Simple (elementary) event"}
+In a sample space with a finite or countable infinite number of elements, an *simple event* (or a *elementary event*)\index{Events!simple} is an event with one sample point, that cannot be decomposed into smaller events.
+:::
+
+
+:::{.example #ElementaryEvents name="Simple events"}
+Consider observing the outcome on a single roll of a die (Example\ \@ref(exm:SampleSpaceDice)), where the sample space is the set of all possible outcomes:
+$$
+  S = \{ 1, 2, 3, 4, 5, 6\}.
+$$
+The six simple events are:
+\begin{align*}
+   E_1 = \{1\}&\quad \text{(i.e., roll a 1)}; & E_2 = \{2\}:&\quad \text{(i.e., roll a 2)};\\
+   E_3 = \{3\}&\quad \text{(i.e., roll a 3)}; & E_2 = \{4\}:&\quad \text{(i.e., roll a 4)};\\
+   E_5 = \{5\}&\quad \text{(i.e., roll a 5)}; & E_2 = \{6\}:&\quad \text{(i.e., roll a 6)}.
+\end{align*}
+:::
+
+
+An important concept is that of an *occurrence* of an event.
+
+
+::: {.definition #Occurrence name="Occurrence"}
+An event $A$ *occurs*\index{Occurrence} on a particular trial of a [random process](#def:RandomProcess)\index{Random process} if the outcome of the trial is an element of the subset\ $A$ from the random process.
+:::
+
+
+### Compound events {#CompoundEvents}
+
+Simple events usually not of great interest; events of interest usually contains many elements of the sample space.
+These are called *compound events*.\index{Events!compound}
+
+
+::: {.definition #CompoundEvents name="Compound event"}
+A collection of simple events is sometimes called a *compound event*.
+:::
+
+
+Since compound events, like all events, are *sets*, operations on existing sets (Sect.\ 
+\@ref(RelationshipsBetweenSets)) can be used to define compound events.
+
+
+
+:::{.example #ElementaryCompoundEvents name="Simple and compound events"}
+Consider observing the outcome on a single roll of a die, as shown in Example\ \@ref(exm:ElementaryEvents).
+
+Define the event $T$ as 'numbers divisible by\ $3$' and event $D$ as 'numbers divisible by\ $2$'. 
+$T$ and $D$ are compound events:
+$$
+   T =\{E_3, E_6\} = \{3, 6 \}
+   \quad
+   \text{and}
+   \quad
+   D = \{E_2, E_4, E_6\} = \{2, 4, 6 \}.
+$$
+:::
+
+
+The set operations in Sect.\ \@ref(RelationshipsBetweenSets) apply to events, because events are sets.
+However, different language is usually used, to indicate that events are real outcomes, whereas as sets are for describing structures more widely and abstractly (Table\ \@ref(tab:CompareLanguage)).
+For example, 'disjoint' is used for *sets*\index{Sets}\index{Sets!disjoint} (Sect.\ \@ref(RelationshipsBetweenSets)), whereas 'mutually exclusive'\index{Mutually exclusive} is used when referring to *events*.\index{Event}
+
+
+::: {.definition #MutuallyExclusive name="Mutually exclusive"}
+Events $A$ and $B$ are *mutually exclusive*\index{Mutually exclusive} if, and only if, $A\cap B = \varnothing$; that is, they have no outcomes in common.
+That is, Events $A$ and $B$ are *mutually exclusive* if the corresponding sets are disjoint. 
+:::
+
+
+```{r CompareLanguage, echo=FALSE}
+languageCompare <- array( dim = c(10, 3) )
+
+colnames(languageCompare) <- c("Set theory",
+                               "Probability",
+                               "Example")
+
+languageCompare[1, ] <- c("Set",
+                          "Event",
+                          "")
+languageCompare[2, ] <- c("Element of set $x \\in A$",
+                          "Simple events",
+                          "$\\{1\\}$")
+languageCompare[3, ] <- c("Universal set $U$",
+                          "Sample space, $S$",
+                          "$\\{1, 2, 3, 4, 5, 6\\}$")
+languageCompare[4, ] <- c("Subset $A\\subseteq S$",
+                          "$A$ is an Event in $S$",
+                          "")
+languageCompare[5, ] <- c("Union $A\\cup B$",
+                          "$A$ \\textbf{or} $B$",
+                          "$\\{1, 2, 3, 6\\}$")
+languageCompare[6, ] <- c("Intersection $A\\cap B$",
+                          "$A$ \\textbf{and} $B$",
+                          "$\\{1\\}$")
+languageCompare[7, ] <- c("Complement $A^c$",
+                          "Not $A$",
+                          "$\\{4, 5, 6\\}$")
+languageCompare[8, ] <- c("Empty set $\\varnothing$",
+                          "Impossible event",
+                          "")
+languageCompare[9, ] <- c("Disjoint sets",
+                          "Mutually exclusive events",
+                          "")
+languageCompare[10, ] <- c("Set difference $A\\setminus B$",
+                           "$A$ occurs, but not $B$",
+                           "")
+if( knitr::is_latex_output() ) {
+knitr::kable(languageCompare,
+             format = "latex",
+             booktabs = TRUE,
+             align = "c",
+             escape = FALSE,
+             longtable = FALSE,
+             caption = "The language used in set theory and probability. The examples are based on the examples of rolling a six-sided die, where the possible outcomes are $\\{1, 2, 3, 4, 5, 6\\}$, $A = \\{1, 2, 3\\}$ and $B = \\{1, 6\\}$.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+languageCompare[5, ] <- c("Union $A\\cup B$",
+                          "$A$ **or** $B$",
+                          "$\\{1, 2, 3, 6\\}$")
+languageCompare[6, ] <- c("Intersection $A\\cap B$",
+                          "$A$ **and** $B$",
+                          "$\\{1\\}$")
+knitr::kable(languageCompare,
+             format = "html",
+             booktabs = TRUE,
+             align = "c",
+             longtable = FALSE,
+             caption = "The language used in set theory and probability. The examples are based on the examples of rolling a six-sided die, where the possible outcomes are $\\{1, 2, 3, 4, 5, 6\\}$, $A = \\{1, 2, 3\\}$ and $B = \\{1, 6\\}$.") %>%
+    row_spec(0, bold = TRUE) 
+}
+
+```
+
+
+
+
+
+:::{.example #TwoCoinToss2 name="Tossing a coin twice"}
+Consider the simple random process of tossing a coin twice (Example\ \@ref(exm:TwoCoinToss)), and define events $M$ and $N$ as follows:
+
+**Event**                 | **Notation** | **Set**
+--------------------------|:------------:|:-----------------:
+'Obtain a Head on Toss 1' |     $M$      | $\{(HT), (HH)\}$
+'Obtain a Tail on Toss 1' |     $N$      | $\{(TT), (TH)\}$
+
+The two sets are *disjoint*, as there are no sample points in common.
+The events are therefore *mutually exclusive*.\index{Mutually exclusive}
+:::
+
+
+Since events are really just sets, the set algebra in Sect.\ \@ref(SetAlgebra) applies to events also.
+
+
+:::{.example #RollDie name="Rolling a die"}
+Suppose we roll a single, six-sided die.
+For rolling a die, the sample space is $S = \{1, 2, 3, 4, 5, 6\}$.
+We can define these two events:
+\begin{align*}
+   E = \text{An even number is thrown}         &= \{2, 4, \phantom{5, }6\};\\
+   G = \text{A number larger than 3 is thrown} &= \{\phantom{2,\ }4, 5, 6\}.
+\end{align*}
+Then, the following compound events could be defined:
+\begin{align*}
+   E \cap G       &= \{4, 6\}      &    E \cup G  &= \{ 2, 4, 5, 6\}\\
+   E^c            &= \{ 1, 3, 5\}  &    G^c       &= \{ 1, 2, 3\}.
+\end{align*}
+We can make other observations too:
+\begin{align*}
+   E \cap G^c
+   &= \{2, 4, 6\} \cap \{ 1, 2, 3\} = \{ 2 \};\\
+   E^c \cap G^c
+   &= \{1, 3, 5\} \cap \{ 1, 2, 3\} = \{ 1, 3 \}.
+\end{align*}
+See the Venn diagram in Fig.\ \@ref(fig:EventsFandG).\index{Venn diagrams}
+:::
+
+
+```{r EventsFandG, echo=FALSE, out.width = '50%', fig.width=6, fig.height=4, fig.align="center", fig.cap="A Venn diagram showing events $E$ and $G$."}
+colourE <- rgb(0, 0, 255, 
+               max = 255, 
+               alpha = 125)
+colourG <- rgb(0, 255, 0, 
+               max = 255, 
+               alpha = 125)
+
+par( mar = c(0.1, 0.1, 3, 0.1))
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(E), " and ", italic(G))) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.ellipse(x = 0.4, 
+                     y = 0.5,
+                     a = 0.2,
+                     b = 0.19,
+                     col = colourE)
+plotrix::draw.ellipse(x = 0.6,
+                     y = 0.5,
+                     a = 0.2,
+                     b = 0.25,
+                     col = colourG)
+text(x = 0.4,
+     y = 0.25,
+     labels = expression(italic(E)), 
+     pos = 1)
+text(x = 0.6,
+     y = 0.25,
+     labels = expression(italic(G)), 
+     pos = 1)
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+# The elements
+text(x = c(0.1, 0.5),
+     y = c(0.6, 0.9),
+     cex = 1.5,
+     labels = c("1",
+                "3"))
+text(x = c(0.52, 0.48),
+     y = c(0.55, 0.42),
+     cex = 1.5,
+     labels = c("4",
+                "6"))
+text(x = 0.25,
+     y = 0.50,
+     cex = 1.5,
+     labels = "2")
+text(x = 0.75,
+     y = 0.55,
+     cex = 1.5,
+     labels = "5" )
+```
+
+
+:::{.example #CricketBallEvents name="Throwing a cricket ball"}
+Consider throwing a cricket ball, where the distance of the throw (in metres) is of interest (Example\ \@ref(exm:CricketBallDefine)).
+We could define the sample space\ $D$ as $D = \{ d \in \mathbb{R} \mid d \ge 0 \}$.
+More practically, we could write\index{Set-builder notation}
+$$
+  D = \{ d \in \mathbb{R} \mid 0 < d < 150 \}
+$$
+given that throwing a cricket ball greater than $150\ms$ is effectively impossible (it has never been recorded), and throwing a cricket ball exactly $0\ms$ is also impossible in practice.
+
+We can define these two events:
+\begin{align*}
+   B_1 &= \{b \in S \mid b \ge 40\} &&\quad \text{(i.e., throw a cricket ball at least $40\ms$)};\\
+   B_2 &= \{b \in S \mid b < 50\}   &&\quad \text{(i.e., throw a cricket ball less than $50\ms$)}.
+\end{align*}
+Then:
+\begin{align*}
+   B_1 \cap B_2   &= \{b\in S \mid 40\le b<50\}\quad \text{(i.e., throw the ball at least $40$m but less than $50\ms$)};\\
+   B_1 \cup B_2   &= S;\\
+   B_1^c          &= \{b\in S \mid b < 40\}\quad \text{(i.e., throw the ball less than $40\ms$)}.
+\end{align*}
+:::
+
+
+```{r CricketBallSpace, out.width='100%', fig.width=8, echo=FALSE, fig.height=3.5, fig.align="center", fig.cap="The two events\\ $B_1$ and\\ $B_2$ defined for throwing a cricket ball, and three other events defined with\\ $B_1$ and\\ $B_2$. When the open, the indicated value is \\emph{not} included in the region."}
+par( mar = c(4, 1, 1, 1) + 0.1 )
+
+plot( x = c(-10, 155),
+      y = c(0, 0),
+      ylim = c(-15, 70),
+      type = "l",
+      lwd = 2,
+      axes = FALSE,
+      xlab = "Distance thrown with cricket ball (in m)",
+      ylab = "")
+
+# Tick marks
+for (i in seq(0, 150, by = 10)){
+   lines( x = c(i, i),
+          y = c(-3, 3),
+          lwd = 2)
+  text(x = i,
+       y = -13,
+       labels = as.character(i))
+}
+
+# Define parameters
+S_Min <- 0
+S_Max <- 150
+b1 <- 40
+b2 <- 50
+
+# 
+b1lo <- 10 # y-limits
+b1hi <- 15
+
+### B1
+polygon(x = c(b1, S_Max, S_Max, b1),
+        y = c(b1lo, b1lo, b1hi, b1hi),
+        col = plotColour1,
+        border = plotColour1) 
+
+
+lines(x = c(S_Max, b1, b1, S_Max),
+      y = c(b1lo, b1lo, b1hi, b1hi),
+      lwd = 2)
+
+#### B2
+b2lo <- 20 # y-limits
+b2hi <- 25
+
+polygon(x = c(0, b2, b2, 0),
+        y = c(b2lo, b2lo, b2hi, b2hi),
+        col = plotColour1,
+        border = plotColour1)
+lines(x = c(0, b2),
+      y = c(b2lo, b2lo),
+      lwd = 2)
+lines(x = c(0, b2),
+      y = c(b2hi, b2hi),
+      lwd = 2)
+
+# Text
+text(0, (b1lo + b1hi)/2, 
+     labels = expression(italic(B)[1]),
+     pos = 2)
+text(0, (b2lo + b2hi)/2, 
+     labels = expression(italic(B)[2]),
+     pos = 2)
+
+
+### B1 \cup B_2
+b1CUPb2lo <- 30 # y-limits
+b1CUPb2hi <- 35
+
+polygon(x = c(S_Min, S_Max, S_Max, S_Min),
+        y = c(b1CUPb2lo, b1CUPb2lo, b1CUPb2hi, b1CUPb2hi),
+        col = plotColour1,
+        border = plotColour1)
+
+lines(x = c(S_Min, S_Max),
+      y = c(b1CUPb2lo, b1CUPb2lo),
+      lwd = 2)
+lines(x = c(S_Min, S_Max),
+      y = c(b1CUPb2hi, b1CUPb2hi),
+      lwd = 2)
+
+
+### B1 \cap B_2
+b1CAPb2lo <- 40 # y-limits
+b1CAPb2hi <- 45
+
+polygon(x = c(b1, b2, b2, b1),
+        y = c(b1CAPb2lo, b1CAPb2lo, b1CAPb2hi, b1CAPb2hi),
+        col = plotColour1,
+        border = plotColour1)
+lines(x = c(b1, b2),
+      y = c(b1CAPb2lo, b1CAPb2lo),
+      lwd = 2)
+lines(x = c(b1, b2),
+      y = c(b1CAPb2hi, b1CAPb2hi),
+      lwd = 2)
+lines(x = c(b1, b1),
+      y = c(b1CAPb2lo, b1CAPb2hi),
+      lwd = 2)
+
+
+### NOT B1 
+NOTb1lo <- 50
+NOTb1hi <- 55
+
+polygon(x = c(0, b1, b1, 0),
+        y = c(NOTb1lo, NOTb1lo, NOTb1hi, NOTb1hi),
+        col = plotColour1,
+        border = plotColour1)
+
+lines(x = c(0, b1),
+      y = c(NOTb1lo, NOTb1lo),
+      lwd = 2)
+lines(x = c(0, b1),
+      y = c(NOTb1hi, NOTb1hi),
+      lwd = 2)
+lines(x = c(0, 0),
+      y = c(NOTb1lo, NOTb1hi),
+      lwd = 2)
+
+
+###
+
+# Text
+text(0, (b1lo + b1hi)/2, 
+     labels = expression(italic(B)[1]),
+     pos = 2)
+text(0, (b2lo + b2hi)/2, 
+     labels = expression(italic(B)[2]),
+     pos = 2)
+text(0, (b1CAPb2lo + b1CAPb2hi)/2, 
+     labels = expression(italic(B)[1]*intersect(italic(B)[2])),
+     pos = 2)
+text(0, (b1CUPb2lo + b1CUPb2hi)/2, 
+     labels = expression(italic(B)[1]*union(italic(B)[2])),
+     pos = 2)
+text(0, (NOTb1lo + NOTb1hi)/2, 
+     labels = expression( italic(B)[1]^c),
+     pos = 2)
+
+
+```
+
+
+
+
+## Probablility {#Probability}
+\index{Probability}
+
+### Definitions {#ProbabilityDefinition}
+
+Usually, we are interested in how likely it is for various outcomes from a random experiment to occur. 
+That is, how likely it is to observe any of the various events defined on the sample space.
+*Probability* is the mathematical term for quantifying this likelihood.
+The *probability* of an event $E$ occurring is denoted $\text{Pr}(E)$.
+
+
+:::{.definition #Probability name="Probability"}
+*Probability*\index{Probability} is a function that assigns a number to an event.
+That is, for some event\ $E$, the value $\Pr(E)$ represents the probability that event\ $E$ occurs.\index{Event}
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The probability\index{Probability} of an event $E$ occurring can be denoted as $\text{P}(E)$, $\text{Pr}(E)$, $\text{Pr}\{E\}$, or using other similar notation.
+:::
+
+
+This definition in Def.\ \@ref(def:Probability) allows *any* number to be assigned to an event, without rules or restrictions ('assigns a number').
+Some restrictions must be placed on the numbers that can be assigned to make this definition workable and practical.
+
+
+### Three axioms of probability {#ProbabilityAxioms}
+
+\index{Axioms of probability|(}\index{Probability}
+While we have defined probability as a function that assigns a number to an event, we have not stated what numbers can be assigned as a 'probability'.
+What values should a probability take?
+How should these numerical likelihoods be assigned?
+
+A rigorous foundation for probability is found by using three fundamental axioms, called the *Axioms of Probability*.
+Using these axioms, *all* other rules about probability can be derived.
+These axioms formally define the rules that apply to all probabilities.
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+An **axiom** is a self-evident truth that does not require proof, or cannot be proven.
+They form the starting point for building further proofs.
+:::
+
+
+:::{.definition #ThreeAxioms name="Kolmogorov's three axioms of probability"}
+Consider a sample space $S$ for a random process, and an event\ $A$ in $S$ so that $A\subseteq S$.
+For every event\ $A$ (a subset of\ $S$), a number $\Pr(A)$ can be assigned which is called the *probability* of event $A$.
+
+Kolmogorov's three axioms of probability are:
+
+1. **Non-negativity**: $\Pr(A) \ge 0$.  
+   The probability of any event is a non-negative real number.
+2. **Exhaustive**: $\Pr(S) = 1$.  
+   The event that *something* happens has probability\ $1$ (i.e., is certain), since the sample space lists *all* possible outcomes. 
+3. **Additivity**: If $A_1$ and $A_2$ are two mutually exclusive events in $S$ (i.e., $A_1 \cap A_2 = \varnothing$), then
+$$
+      \Pr(A_1 \cup A_2) = \Pr(A_1) + \Pr(A_2).
+$$
+:::
+\index{Axioms of probability|)}
+
+
+### Rules of probability {#ProbabilityRules}
+
+These\index{Probability rules|(}
+ purpose of these axioms is to formally define probability and the the rules that apply to probabilities.
+These axioms of probability can be used to develop all other probability formulae.
+For example, these properties follow from these three axioms, for any Events\ $A$ and\ $B$ defined on a sample space\ $S$:
+
+* **Bounds**:  
+  $0 \le \Pr(A)\le 1$; that is, probabilities are numbers between zero and one inclusive for any event\ $A$.
+* **Empty sets**:\index{Empty set}  
+  $\Pr(\varnothing) = 0$; that is, the probability of an impossible event is zero.
+* **Monotonicity**:  
+  If $A\subseteq B$, then $\Pr(A) \le \Pr(B)$; that is, if every outcome in event\ $A$ is also in event\ $B$, then the probability of\ $A$ cannot exceed the probability of\ $B$.
+* **Complements**:\index{Set operations!complement}  
+  $\Pr(A^c) = 1 - Pr(A)$; that is, the probability that event\ $A$ *does not* happens is\ $1$ minus the probability that it *does* happen.
+* **Addition**:  
+  $\Pr(A_1 \cup A_2) = \Pr(A_1) + \Pr(A_2) - \Pr(A_1 \cap A_2)$, a more general result than the third axiom.
+
+All of these can be proven using only the three axioms and the definitions that have been presented so far.
+We giv etwo examoples of using the axiom to prove these results.
+
+::: {.theroem #CompRule name="Empty sets"}
+For the empty set $\varnothing$,: $\Pr(\varnothing) = 0$.\index{Empty set}
+:::
+
+
+:::{.proof}
+While this may appear 'obvious', it is not one of the three axioms.
+By definition, the empty set $\varnothing$ contain no outcomes; hence $\varnothing \cup A = A$ for any event $A$; the two events are [mutually exclusive](#def:MutuallyExclusive).
+
+So, by the third axiom, $\varnothing\cap A = \varnothing$, as $\varnothing$ and $A$ are mutually exclusive.
+Hence, by the [third axiom](#def:ThreeAxioms)
+\begin{equation}
+   \Pr(\varnothing\cup A) = \Pr(\varnothing) + \Pr(A).
+   (\#eq:ByThirdAxiom)
+\end{equation}
+But since $\varnothing \cup A = A$, then $\Pr(\varnothing \cup A) = \Pr(A)$, and so $\Pr(A) = \Pr(\varnothing) + \Pr(A)$ from Eq.\ \@ref(eq:ByThirdAxiom).
+Hence $\Pr(\varnothing) = 0$.
+:::
+
+While this result may have seemed obvious, *all* probability formulae can be developed just from assuming the three axioms of probability.
+
+
+::: {.theorem #CompRule name="Complementary rule of probability"}
+For any event $A$, the probability of 'not $A$' is
+$$
+   \Pr(A^c) = 1 - \Pr(A).
+$$
+:::
+
+:::{.proof}
+By the definition of the [*complement* of an event](#def:IntersectionUnionSubset), $A^c$ and $A$ are mutually exclusive.
+Hence, by the [third axiom](#def:ThreeAxioms), $\Pr(A^c \cup A) = \Pr(A^c) + \Pr(A)$.
+
+As $A^c\cup A = S$ (by definition of the complement) and $\Pr(S) = 1$ (Axiom 2), then $1 = \Pr(A^c) + \Pr(A)$, and the result follows.
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The three axioms dictate that a probability is a real value between\ $0$ and\ $1$.
+Other ways also exists to quantify the likelihood of an event occuring.
+For example, sometimes the chance of an event occurring is expressed as *odds*, which are *not* the same as probabilities.
+Odds are the ratio of how often an event is likely to occur, to how often the event is likely to *not occur*.
+
+Importantly: 'odds' and 'probability' are not the same.
+The three axioms define the rules that all probabilities must follow.
+:::
+
+
+Having seen these axioms, and the rules that follow from them, we can now consider *how* to determine the probability assigned to certain events.
+\index{Probability rules|)}
+
+
+## Assigning probabilities: discrete samples spaces {#AssignProbDiscrete}
+
+Developing a method of assigning a probability to an event is difficult.
+However, for *discrete sample spaces*, two options are:
+
+* finding probabilities using *classical probability* (Sect.\ \@ref(ClassicalProb)).\index{Probability!classical probability}
+  This approach works when the simple events in the sample space are equally likely (i.e., there is no reason to suspect one outcome is more likely that any other).
+* *estimating* probabilities using *relative-frequency* (Sect.\ \@ref(EmpiricalApproach)), when trials can be repeated many times.\index{Probability!relative frequency probability}
+
+
+### Classical probability {#ClassicalProb}
+
+For a discrete sample space,\index{Probability!classical probability} *where all outcomes in the sample space are equally likely* (i.e., there is no reason to suspect one outcome is more likely that any other), the probability of an event\ $E$\index{Event} is defined as
+$$
+  \Pr(E) 
+  = \frac{|E|}{|S|} 
+  = \frac{\text{The number of elements in $E$}}{\text{The number of elements in $S$}},
+$$
+ 
+where $|\cdot|$ refers to the cardinality\index{Cardinality} notation (Sect.\ \@ref(Cardinality)).
+
+A probability of\ $0$ is assigned to an event that *never* occurs (i.e., $E$ corresponds to an *impossible* event), and\ $1$ to an event that is *certain* to occur (i.e., $E$ corresponds to the universal set).
+Notice that this approach conforms to the restriction on probabilities as numbers between\ $0$ and\ $1$ inclusive, a result that follows from the three axioms of probability.
+
+Using the classical approach to probability often requires careful counting of the number of elements in the sample space, and the number of elements in the event of interest. 
+Methods for this careful counting are explored further in Sect.\ \@ref(CombsAndPerms).
+
+
+### Relative frequency (empirical) approach {#EmpiricalApproach}
+
+The mathematical definition\index{Probability!relative frequency probability} of probability through our axioms describe the *properties* of a probability measure. The classical definition of probability naturally satisfies these axioms, but requires equally-likely outcomes in the sample space\ $S$.
+
+However, outcomes are rarely equally likely; the probability of 'receiving rain tomorrow' is not always the same as the probability of 'not receiving rain tomorrow'.
+When a random process can be repeated many times, counting the number of times the event of interest occurs means we can compute the *proportion* of times the event occurs.
+Mathematically, if the random process is repeated\ $n$ times, and event\ $E$ occurs in\ $m$ of these ($m < n$), then the *probability* of the event occurring is
+$$
+   \Pr(E) = \lim_{n\to\infty} \frac{m}{n}.
+$$
+In practice, $n$ needs to be very large---and the repetitions random---to compute probabilities with accuracy.
+In practice then, only approximate probabilities can be found (since\ $n$ is finite in practice).
+
+This is the *relative frequency* (or *empirical*) approach to probability.
+
+This method cannot always be used in practice.
+Consider the probability that the air bag in a car correctly deploys in a crash.
+Crashing thousands of cars is not financially viable to estimate the probability that the air bag is correctly deploying.
+Fortunately, car manufacturers can crash a small numbers of cars to get a very appoximate indications of the probabilities of correct air bag deployment.
+Sometimes, computer simulations can be used to approximate the probabilities.
+
+Again, a probability of\ $0$ is assigned to an event that *never* occurs (i.e., $E$ corresponds to an *impossible* event), and\ $1$ to an event that is *certain* to occur (i.e., $E$ corresponds to the universal set), as $n\to\infty$.
+Notice that this approach conforms to the restriction on probabilities as numbers between\ $0$ and\ $1$ inclusive, a result that follows from the three axioms of probability.
+
+
+::: {.example #SalkVaccine name="Salk vaccine"}
+In 1954, Jonas Salk developed a vaccine against polio (@book:Williams:BioStats, \S1.1.3).
+To test the effectiveness of the vaccine, the data in Table\ \@ref(tab:Polio) were collected.
+
+The relative frequency approach can be used to *estimate* the probabilities of developing polio *with* the vaccine and *without* the vaccine (the control group):
+\begin{align*}
+   \Pr(\text{develop polio in control group}) 
+   &\approx \frac{115}{201\,229} = 0.000571;\\[3pt]
+   \Pr(\text{develop polio in vaccinated group}) 
+   &\approx \frac{33}{200\,745} = 0.000164,
+\end{align*}
+where '$\approx$' means 'approximately equal to'.
+The estimated *probability* of contracting polio in the control group is about 3.5 times greater than in the control group.
+The precision of these sample estimates could be quantified by producing a [confidence interval for the proportions](https://bookdown.org/pkaldunn/SRM-Textbook/CIOneProportion.html).
+:::
+
+
+```{r Polio, echo=FALSE}
+VaccTable <-  array( dim = c(2, 2))
+VaccTable[1, ] <- c("200 745", "33")
+VaccTable[2, ] <- c("201 229", "115")
+
+colnames(VaccTable) <- c("Number treated",
+                         "Paralytic cases")
+rownames(VaccTable) <- c("Vaccinated",
+                         "Control")
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(VaccTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               escape = FALSE,
+               caption = "The number of paralytic cases for two groups of children: one group of controls and another vaccinated with the Salk polio vaccine.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(VaccTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               caption = "The number of paralytic cases for two groups of children: one group of controls and another vaccinated with the Salk polio vaccine.") %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+
+## Counting elements: combinatorics {#CombsAndPerms}
+
+### Basic ideas: multiplication rule {#MultiplicationRule}
+
+Applying the classical approach to probability often requires counting the number of elements in a finite, discrete sample space, and in a given event.
+
+
+:::{.example #CountingElements name="Counting elements"}
+How many outcomes are possible when a coin is flipped $3$\ times?
+Listing the possible outcomes is feasible:
+\begin{align*}
+  &(\text{Head}, \text{Head}, \text{Head}),   & &(\text{Head}, \text{Head}, \text{Tail}),\\
+  &(\text{Head}, \text{Tail}, \text{Head}),   & &(\text{Head}, \text{Tail}, \text{Tail}),\\
+  &(\text{Tail}, \text{Head}, \text{Head}),   & &(\text{Tail}, \text{Head}, \text{Tail}),\\
+  &(\text{Tail}, \text{Tail}, \text{Head}),   & &(\text{Tail}, \text{Tail}, \text{Tail}).
+\end{align*}
+We can also count four outcomes where a Tail is tossed last.
+
+So the probability of the event 'a tail of the final toss of three coin tosses' is (using classical probability) $4/8 = 0.5$.
+:::
+
+
+If we were considering $25$\ tosses of a coin, however, listing all the outcomes and counting them becomes tedious.
+However, we don't even need to know *what* the outcomes are; we only need to know *how many* outcomes there are.
+This is where counting methods are useful.
+
+The basic counting principle is the *multiplication rule*.
+
+
+:::{.definition #MultiplicationRule name="Multiplication rule"}
+If Event\ 1 has $m$\ possible outcomes, and Event\ 2 has $n$\ possible outcomes, then the total number of combined outcomes is $m\times n$.
+:::
+
+
+The principle can be extended to any number of events.
+For example: for three sets of events with\ $m_1$, $m_2$ and\ $m_3$ outcomes respectively, the number of distinct triplets containing one element from each set is $m_1 m_2 m_3$.
+
+
+:::{.example #CountingElements2 name="Counting elements"}
+In Example\ \@ref(exm:CountingElements), we could use the multiplication rule.
+On Flip\ 1, there are two possible outcomes.
+Likewise, on Flips\ 2 and\ 3, there are two possible outcomes.
+So the total number if possible outcomes is $2\times 2\times 2 = 8$, as found in that example.
+
+In $25$\ tosses, there are $2^{25} = 33\, 554\, 432$ possible outcomes.
+:::
+
+
+
+:::{.example #MultiplicationRulemeals name="Multiplication rule"}
+Suppose a restaurants offers five main courses and three desserts.
+If a 'meal' consists of one main plus one dessert, then $5\times 3 = 15$ meal combinations are possible.
+:::
+
+
+
+:::{.example #CountingElementsPasswords name="Counting elements"}
+Consider selecting a random password of *exactly* six characters in length, only using the set of all lower-case letters ('`a`', '`b`', \dots '`z`').
+
+There are $26$\ choices for the first character, and $26$\ choices for the second character, and so on,
+So the total number of passwords is
+$$
+  26^6 = 308\,915\,776.
+$$
+:::
+
+
+
+
+In the example above, notice that the letters can be reused; once a letter is selected, it is effectively returned to the pool of letters and can be chosen again.\index{Selecting!with replacement}
+This called selection *with replacement*; selected elements can be reselected.
+
+The multiplication rule demonstrates the basic idea behind counting (or *enumerating*) events and sample spaces.
+More generally, though, *permutations* and *combinations* are needed when selection are made *without replacement*: that is, once an elements is selected, it cannot be selected again.\index{Selecting!without replacement}
+
+Permutations and combinations are used to count outcomes when selections are made from a fixed number of elements, without replacement,
+If the order of selection *is* important, *permutations* are appropriate.\index{Permutations}
+If the order of selection *is not* important, *combinations* are appropriate.\index{Combinations}
+
+
+:::{.example #CombsAndPerms name="Permutations and combinations"}
+Consider selecting a random six-letter password from the set of lower-case letters only: '`a`', '`b`', \dots '`z`', where *no letter can be repeated* (which is unrealistic).
+In passwords, the order of the characters is important: the passwords `listen` and `silent` are *different* passwords, even though they contain the same characters.
+Since the *order* of the characters is important, *permutations* could be used to count how many passwords are possible.
+
+Consider dealing five cards to two different players in a game.
+The *order* in which the cards are dealt is not important; it only matters what cards have been dealt to each player.
+Since the *order* in which the cards are dealt is not important, *combinations* could be used to count how many ways there are to deal the cards.
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+This may help you remember when to use combinations and permutations: 
+
+* **P**ermutations are used for **p**asswords: order is important.
+* **C**ombinations are used when dealing **c**ards: order is not important.
+:::
+
+
+
+Permutations and combinations are studied further in the following sections (Sect.\ \@ref(CombsAndPerms)).
+However, counting the number of outcomes can also be achieved by listing the possible outcomes in other ways.
+
+
+::: {.example #TwoDice name="Rolling two dice"}
+Consider rolling two standard dice; the sample space is shown in Table\ \@ref(tab:TwoDice), and has $6\times 6 = 36$ elements.
+Then, for example, $\Pr(\text{sum is 5}) = 4/36$ is found by counting the equally-likely outcomes that sum to seven (Table\ \@ref(tab:TwoDiceSum)).
+:::
+
+
+
+```{r TwoDice, echo=FALSE}
+Die1 <- 1:6
+Die2 <- 1:6
+
+DieSS <- outer(Die1, Die2,
+               FUN = function(x, y){paste0("(", 
+                                           x, 
+                                           ", ", 
+                                           y, 
+                                           ")")})
+rownames(DieSS) <- paste("Die 1:", 1:6)
+colnames(DieSS) <- paste("Die 2:", 1:6)
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(DieSS,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               linesep = c("", "", "\\addlinespace"),
+               escape = FALSE,
+               caption = "The sample space for rolling two dice.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(DieSS,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               caption = "The sample space for rolling two dice.") %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE)
+}
+```
+
+
+
+
+
+```{r TwoDiceSum, echo=FALSE}
+Die1 <- 1:6
+Die2 <- 1:6
+
+DieSum <- outer(Die1, Die2,
+                FUN = "+")
+
+rownames(DieSum) <- paste("Die 1:", 1:6)
+colnames(DieSum) <- paste("Die 2:", 1:6)
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(DieSum,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               linesep = c("", "", "\\addlinespace"),
+               escape = FALSE,
+               caption = "The sum of rolling two dice.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(DieSum,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               caption = "The sum of rolling two dice.") %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE)
+}
+```
+
+
+### Permutations {#PermutationSelectWithoutReplacement}
+
+Permutations concern selecting elements from a fixed number of elements (without replacement).
+
+
+:::{.definition #Permutations name="Permutations"}
+A *permutation* is an *ordered* selection of elements (without replacement).\index{Permutation}
+:::
+
+
+Consider a finite, discrete sample space with\ $n$ distinct elements. 
+The first element chosen can be selected in\ $n$ different ways.
+The second element must then be chosen, which can be done in $(n - 1)$ ways (it cannot be the same as the first element, as selection is *without* replacement), using the multiplication rule.
+There are then $(n - 2)$ ways for the third, and so on. 
+Notice that once an element is selected, it cannot be selected again; this is called *selecting without replacement*.
+\index{Selecting!without replacement}
+
+Continuing then, and using the multiplication rule (Def.\ \@ref(def:MultiplicationRule)),\index{Multiplication rule} there are 
+$$
+  n(n - 1)(n - 2)\ldots 2 \times 1
+$$ 
+different ways to order the\ $r$ elements. 
+This is denoted by\ $n!$ and called '$n$-factorial':\index{Factorials}
+$$
+   n! = n(n - 1)(n - 2) \ldots (2)(1)
+$$
+where $n\geq 1$, and we define $0! = 1$.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+By definition, $0! = 1$.
+With this definition, many formulas (some follow) remain valid for all valid choices of\ $n$ and\ $r$.
+:::
+
+
+:::{.example #FactorialBasic name="Factorials"}
+Factorials get large very quickly: $4! = 4\times 3\times 2\times 1 = 24$, but $10! = 3\,628\,800$.
+:::
+
+
+:::{.example #FactorialTrick name="Factorials"}
+Consider the expression
+$$
+   \frac{6!}{3!} =
+   \frac{6\times 5\times 4\times 3!}{3!} =
+   6\times 5\times 4 = 120.
+$$
+Notice that the top line did not need evaluation.
+This trick is often used when working with factorials.
+For instance, we can compute:
+$$
+   \frac{57!}{53!} = 
+   \frac{57\times 56\times 55\times 54\times 53!}{53!} =
+   57\times 56\times 55\times 54 = 9\,480\,240,
+$$
+without needing to compute the value of\ $57!$ (which has the approximate value $4\times 10^{76}$).
+:::
+
+
+Now, consider a finite, discrete sample space\ $S$ with\ $n$ distinct elements again.
+Suppose we wish to count the number of *permutations* of size\ $r$ that can be drawn from\ $S$, when selected items *cannot* be reselected ('*without* replacement').\index{Selecting!without replacement}
+
+As before, there are\ $n$ options for the first item selected, and\ $n - 1$ options for the second item selected, since the element selected first *cannot* be re-selected.
+The same idea applies for all\ $r$ elements.
+Therefore, the number of permutations of size\ $r$, when selection is *without* replacement, is (using the *multiplication rule* in Def.\ \@ref(def:MultiplicationRule) and the idea in Example\ \@ref(exm:FactorialTrick)):
+$$
+   n \times (n - 1)\times (n - 2)\times\cdots\times (n - r + 1) 
+   = \frac{n!}{(n - r)!}.
+$$
+This number is denoted by $^nP_r$, and we write
+$$
+   P^n_r = n(n - 1)(n - 2)\ldots (n - r + 1) = \frac{n!}{(n - r)!}.
+$$
+This expression is referred to as *the number of permutations of\ $r$ elements from\ $n$ elements*.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Notation for permutations varies.
+Other notation for permutations include $nPr$, $^nP_r$, $P_n^r$ or $P(n,r)$.
+:::
+
+
+:::{.example #PermutationBasic name="Permutations"}
+Eight runners compete in a $100\ms$ race.
+In how many ways could the Gold, Silver and Bronze medals be awarded?
+
+This situation is like selecting $r = 3$ of the $n = 8$ runners to award medals.
+In addition, the order is definitely important (the runner coming first would not be happy being given a Bronze medal), so permutations are appropriate.
+There are
+$$
+  P^8_3 = \frac{8!}{(8 - 3)!} = 336
+$$
+ways in which the three medals could be allocated.
+:::
+
+
+<!-- I removed itemising here, as we had thing sthat could be misinterpreted, like  - factorial(n) --> 
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+In **R**, $n!$ is given by `factorial(n)`.
+
+While there is no function to explicitly compute the number of permutations, two options for computing $^nP_r$ are to use  
+`   factorial(n) / factorial(n - r)`  
+or  
+`   prod( n : (n - r + 1) )`  
+or  
+`   prod( (n - r + 1) : n )`   
+(since `prod()` computes the *product* of all given elements).
+
+For example, 
+$$
+   P^{12}_3 =\frac{12\times 11\times 10\times 9!}{9!} = 12\times 11\times 10 = 1320
+$$
+could be computed as follows:
+
+```{r}
+factorial(12) / factorial(12-3)
+prod( 10:12 )
+prod( 12:10 )
+```
+:::
+
+
+Some of the common properties of permutations are given below.
+
+* $P^n_n = n!$.
+* $P^n_0 = 1$.
+* $\displaystyle P^n_1 = n$.
+* $\displaystyle P^n_{n - 1} = n!$.
+* $\displaystyle\frac{P^n_r}{P^n_{r - 1}} = n - r + 1$.
+* $\displaystyle P^n_r = P^{n - 1}_r + r \times P^{n - 1}_{r - 1}$.
+* $\displaystyle P^n_r = n \times P^{n - 1}_{r - 1} = n \times (n - 1) \times P^{n - 2}_{r - 2}$, and so on.
+
+
+### Combinations {#Combinations}
+
+When the selection order is not important (i.e., when dealing a hand of cards), a *combination* is appropriate for counting the number of possibilities.
+
+
+:::{.definition #Combinations name="Combinations"}
+A *combination* is an *unordered* selection of elements (without replacements).\index{Combinations}
+:::
+
+
+Consider a finite, discrete sample space\ $S$ with\ $n$ distinct elements.
+The number of *permutations* of size\ $r$ that can be drawn from the sample space\ $S$ is $^n P_r$.
+But some of these are effectively the same outcomes; for instance, these two hands of cards, shown in the order dealt, are the same since selection order is not important:
+$$
+  (3\spadesuit, 5\heartsuit)\qquad\text{and}\qquad (5\heartsuit, 3\spadesuit).
+$$
+So while both hands are counted separately for permutations, they are considered to be the *same* outcome for combinations.
+(This means that the number of combinations of $r$\ elements from $n$\ elements will never be smaller than the number of permutations of $r$\ elements from $n$\ elements.)
+
+If we have selected $r$\ elements, there are\ $r$ ways to rearrange these elements (by the multiplication rule), all of which are the same of the order is not important.
+So we can state that the number of combinations of $r$\ elements drawn form $n$\ elements, where order is not important, is
+$$
+   C^n_r = \frac{P_r}{r!} = \frac{\text{number of permutations}}{\text{number of equivalent re-arrangements of that permutation}}.
+$$
+More directly, the number of combinations of $r$\ elements from $n$\ elments, where the selection order is not important, is
+\begin{equation}
+   C^n_r = \binom{n}{r} = \frac{n(n - 1)\ldots (n - r + 1)}{r!} = \frac{n!}{(n - r)!\,r!} = \frac{P^n_r}{r!}
+       (\#eq:CombinationPermutation)
+\end{equation}
+when elements are 'selected without replacement'.\index{Selecting!without replacement}
+The two most common notations are shown: $^nC_r$ and $\binom{n}{r}$. 
+
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Notation for combinations varies.
+Other notation for combinations include $nCr$, ${}^nC_r$, $C_n^r$, $\binom{n}{r}$ or $C(n,r)$.
+:::
+
+
+:::{.example #CombinationBasic name="Combinations in cards"}
+Suppose a hand of five cards is drawn from a well-shuffled pack of $52$\ cards.
+Since the order is which the cards are dealt is not important, *combinations* are appropriate.
+The number of possible hands is
+$$
+  P^{52}_5 = \frac{52!}{(52 - 5)!} =
+  \frac{52!}{47!} = \frac{52\times 51\times\cdots \times 48\times 47!}{47!} = 
+  52\times 51\times\cdots \times 48 = 311\,875\,200 
+$$
+Over $311$\ million hands are possible.
+:::
+
+
+:::{.example #CombinationOzLotto name="Oz Lotto combinations"}
+In *Oz Lotto*, players select seven numbers from 47, and try to match these with seven randomly selected numbers.
+The order in which the seven numbers are selected in not important, so *combinations* (not permutations) are appropriate.
+That is, winning numbers drawn in the order, as $\{1, 2, 3, 4, 5, 6, 7\}$ are effectively the same as if they were drawn in the order $\{7, 2, 1, 3, 4, 6, 5\}$.\smallskip
+
+The number of options for players to choose from is
+$$
+   \binom{47}{7} = \frac{47!}{40!\times 7!} = 62\,891\,499;
+$$
+that is, almost $63$\ million combinations are possible.\smallskip
+
+The probability of picking the one correct set of seven numbers in a single guess is therefore
+$$
+   \frac{1}{62\,891\,499} = 1.59\times 10^{-8} = 0.000\,000\,015\,9.
+$$
+:::
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+In **R**:
+
+* the *number* of combinations of `n` elements `k` at a time is found using `choose(n, k)`.
+* a *list* of all combinations of `n` elements, `m` at a time is given by `combn(x, m)`.
+* $n!$ is given by `factorial(n)`.
+:::
+
+
+The binomial expansion
+$$
+  (a + b)^n = \sum^{n}_{r = 0} \binom{n}{r} a^r b^{n - r}
+$$
+for $n$ a positive integer, is often referred to as the *Binomial Theorem*\index{Binomial theorem} and hence $\binom{n}{r}$ is referred to as a *binomial coefficient*.\index{Binomial coefficient}
+This series, and associated properties, is sometimes useful in counting.
+Some of the properties of combinations are stated below.
+
+1. $\binom{n}{r} = \binom{n}{n - r}$, for $r = 0, 1, \ldots, n$.
+2. As a special case of the above, $\binom{n}{0} = 1 = \binom{n}{n}$.
+3. $\sum_{r = 0}^n \binom{n}{r} = 2^n$.
+
+
+
+:::{.example #PermAndCombSizes name=""}
+For any given values\ $n$ and\ $r$, the number of permutations is never smaller than the number of combinations (as is clear from Eq.\ \@ref(eq:CombinationPermutation)).
+This is because many permutation corresponds to a single combination, since the order is important for permutations.
+
+For example, suppose two cards have been dealt, in this order:
+$$
+  3\spadesuit, 5\heartsuit.
+$$
+The hand would be exactly the same if they had been dealt in the opposite order:
+$$
+  5\heartsuit, 3\spadesuit.
+$$
+Both hands count as one combination, since order is not important.
+
+However, if the order *was* important, then the two hands are different, and both should be counted: there are *two* separate outcomes.
+
+As a larger example:
+```{r}
+# The number of *combinations* of r = 3 items from n = 20:
+choose(10, 3)
+
+# The number of *permutations* of r = 3 items from n = 20:
+choose(10, 3) * factorial(3)
+```
+:::
+
+
+::: {.example #ChooseDigits name="Selecting digits"}
+Consider the set of integers ${1, 3, 5, 7}$ (these integers have no common factors).
+Choose two numbers, *without replacement*; call the first $a$ and the second $b$.
+If we then compute $a\times b$, then $C^4_2 = 6$ answers are possible since the *selection order is not important* (e.g., $3 \times 7$ gives the *same* answer as $7 \times 3$).\smallskip
+
+However, if we compute $a\div b$, then $P^4_2 = 12$ answers are possible, since the *selection order is important* (e.g., $3 \div 7$ gives a *different* answer than $7 \div 3$).
+:::
+
+
+Some of the common properties of combinations are given below.
+
+* $\displaystyle\binom{n}{n} = \binom{n}{0} = 1$.
+* $\displaystyle\binom{n}{1} = n$.
+* $\displaystyle\binom{n}{r} = \binom{n}{n - r}$.
+* $\displaystyle\binom{n}{r} + \binom{n}{r - 1} = \binom{n + 1}{r}$.
+
+
+## Assigning probabilities: continuous sample spaces {#AssignProbContinuous}
+
+### Allocating probabilities {#AllocatingProbabilitiesContinuous}
+
+Events defined on a continuous sample space do not have elements that can be counted (Sect.\ \@ref(InfiniteSets)), so different means are needed to compute probabilities in these situations.
+In fact, for a continuous sample space, the probability of observing any specific, individual outcome has probability\ $0$.
+So, for a continuous sample space\ $S = \mathbb{R}$, the events
+\begin{align*}
+   A &= \{x \in S \mid 10 < x < 20\},\\
+   B &= \{x \in S \mid 10 \le x < 20\},\\
+   C &= \{x \in S \mid 10 < x \le 20\}\quad\text{and}\\
+   D &= \{x \in S \mid 10 \le x \le 20\}
+\end{align*}
+all have the same probability.
+In a continuous sample space, the probability of observing any single value (such as observing a value of *exactly*\ $10$) is zero. 
+So, whether these endpoints of the interval are included or excluded, the probability is the same.
+
+This means that a probability is not (and cannot be) based on counting elements for continuous sample spaces.
+Instead, a *probability density function* (or PDF)\index{PDF} is used to describe how the probability is assigned across the sample space.
+A PDF is defined over the sample space, and quantifies the concentration of probability in different regions of the sample space.
+
+For example, consider the heights of adult females (Example\ \@ref(exm:HeightsOfPeople)).
+Every female has a height, so the sample space\ $S$ of the heights of all females can be defined as, for instance,
+$$
+   S = \{ x \in \mathbb{R} \mid 50 < x < 300\},
+$$
+where $x$ is the height in centimetres.
+We have assumed no height less than $50\cms$ (the shortest-ever recorded height of an adult female is greater than this) or greater than $300\cms$ (the tallest-ever recorded height of an adult female is less than this). 
+Since this is the sample space\ $S$, the probability of event\ $S$ is one (by the third axiom of probability; Sect.\ \@ref(ProbabilityAxioms)): we are certain that the height of any given woman is in\ $S$.
+That is, the total probability over\ $S$ is one; every adult female is represented somewhere within\ $S$.
+
+Now consider how that total probability of one could be distributed to various ranges of heights.
+The probability of finding an adult female with a height less than $75\cms$ (or\ $29\inches$) is basically impossible. 
+Almost no probability will be concentrated below\ $75\cms$.
+
+The probability of finding an adult female with a height less than $150\cms$ (or $4\ft$ $11\inches$) is unlikely, but is possible.
+Thus, only a little of the probability will be concentrated below\ $150\cms$.
+
+Likewise, the probability of finding an adult female with a height greater than $300\cms$ (or $9\ft$ $10\inches$) is practically impossible.
+Almost no probability will be concentrated above\ $300\cms$.
+
+The probability of finding an adult female with a height greater than $200\cms$ (or $6\ft$ $7\inches$) is unlikely but not impossible; only a little of the probability will be concentrated above\ $200\cms$.
+
+In contrast, the probability of finding an adult female with a height between\ $150\cms$ and\ $200\cms$ is *very* high; almost all of the probability will be concentrated between\ $150\cms$ and\ $200\cms$. 
+We can draw a picture that represents this concentration of probability (Fig.\ \@ref(fig:HeightsConcentrations), top panel).
+This figure shows how the probability is concentrated, or allocated, or *distributed*, over the sample space.
+
+The total probability over\ $S$ is one; if you computed the area of the five rectangles in  Fig.\ \@ref(fig:HeightsConcentrations) (top panel) you would get one.
+However, the values on the vertical axis are not really that helpful (they are *not* probabilities). 
+In the context of a continuous sample space, this means that the total *area under the graph* (i.e., the shaded areas in Fig.\ \@ref(fig:HeightsConcentrations)) must be equal to one.
+
+Rather than dividing the sample space into just five large intervals of height, a finer division of heights could be used; for instance, Fig.\ \@ref(fig:HeightsConcentrations) (bottom panel) uses the same ideas but with $10\cms$\ intervals of heights.
+This representation shows that most of the probability is concentrated\ $155\cms$ to $165\cms$, suggesting that finding an adult female with a height in this range has a relatively high probability.
+Again, the total probability over\ $S$ is one, so the total *area under the graph* (i.e., the shaded area) must be equal to one.
+Again, the values on the vertical axis are not really that helpful, and are *not* probabilities.
+
+
+```{r HeightsConcentrations, echo=FALSE, fig.align="center", fig.cap="Allocating the concentration of probability over regions of the sample space. The shaded regions have an area of\\ $1$.", fig.width=8, fig.height=8, out.width="90%"}
+par( mfrow = c(2, 1) )
+
+
+# Vertical axis: 
+# we use that the middle is 8 times higher than the two either side: to the total area is
+# 0 + (50a) + (50 * 8a) + (50a) + 0 = 500a, so that a = 1/500
+a <- 1/500
+
+
+plot( x = c(50, 300),
+      y = c(0, 9 * a),
+      type = "n",
+      las = 1,
+      main = "Height of females:\ncrude allocation of probability",
+      xlab = "Heights (in cm)",
+      ylab = "Probability concentration (density)")
+abline(h = 0,
+       col = "grey")
+
+divNever1 <- 100
+divNever2 <- 250
+
+divRare1 <- 150
+divRare2 <- 200
+divOK1 <- 150
+divOK2 <- 200
+
+
+Divisions <- c(divNever1, divRare1, divOK1, 
+               divOK2, divRare2, divNever2)
+
+# Add divisions, from text
+abline( v = Divisions,
+        lwd = 2,
+        lty = 2,
+        col = "grey")
+
+
+# Shading
+polygon(x = c(Divisions[1], Divisions[1], Divisions[2], Divisions[2]),
+        y = c(0, a, a, 0),
+        col = plotColour)
+polygon(x = c(Divisions[3], Divisions[3], Divisions[4], Divisions[4]),
+        y = c(0, 8 * a, 8 * a, 0),
+        col = plotColour)
+polygon(x = c(Divisions[5], Divisions[5], Divisions[6], Divisions[6]),
+        y = c(0, a, a, 0),
+        col = plotColour)
+
+
+# Add horizontal lines for prob concentration
+segments(x0 = 0,
+         x1 = Divisions[1],
+         y0 = 0,
+         y1 = 0,
+         lwd = 3)
+segments(x0 = Divisions[6],
+         x1 = 400,
+         y0 = 0,
+         y1 = 0,
+         lwd = 3)
+
+
+segments(x0 = Divisions[1],
+         x1 = Divisions[2],
+         y0 = a,
+         y1 = a,
+         lwd = 3)
+segments(x0 = Divisions[6],
+         x1 = Divisions[5],
+         y0 = a,
+         y1 = a,
+         lwd = 3)
+
+
+
+segments(x0 = Divisions[3],
+         x1 = Divisions[4],
+         y0 = 8 * a,
+         y1 = 8 * a,
+         lwd = 3)
+
+
+
+
+# Arrows to explain
+# Need to adjust the text to the left (adj does not seem to work):
+text_Adjust <- c(19, 12, 8, 14, 8)
+Divisions <- c(divNever1, divRare1, divOK1, 
+               divOK2, divRare2, divNever2)
+
+text(x = mean( c(Divisions[1], 50)) - text_Adjust[1],
+     y = 1.5 * a,
+     srt = 90,
+     pos = 4,
+     cex = 0.9,
+     labels = "Almost zero prob.\nconcentrated here")
+text(x = mean( c(Divisions[6], 300)) - text_Adjust[5],
+     y = 1.5 * a,
+     srt = 90,
+     pos = 4,
+     cex = 0.9,
+     labels = "Almost zero prob.\nconcentrated here")
+
+
+
+text(x = mean( Divisions[1:2]) - text_Adjust[2],
+     y = 1.5 * a,
+     srt = 90,
+     pos = 4,
+     cex = 0.9,
+     labels = "Small amount prob.\nconcentrated here")
+text(x = mean( Divisions[5:6]) - text_Adjust[4],
+     y = 1.5 * a,
+     srt = 90,
+     pos = 4,
+     cex = 0.9,
+     labels = "Small amount prob.\nconcentrated here")
+
+
+text(x = mean( Divisions[3:4]) - text_Adjust[3],
+     y = 1.5 * a,
+     srt = 90,
+     pos = 4,
+     cex = 0.9,
+     labels = "Large amount prob.\nconcentrated here")
+
+
+######################################################## 
+
+# Mean, sd:
+mn_Height <- 161 # WAS 162
+sd_Height <- 6.5
+
+# Add divisions, from text
+Divisions2 <- seq(50, 300, 
+                 by = 10)
+
+NormalHts <- array( dim = length(Divisions2) - 1 )
+for (i in 1:length(NormalHts)){
+  NormalHts[i] <- mean( c(Divisions2[i], 
+                          Divisions2[i + 1]) )
+}
+y <- dnorm(NormalHts, 
+           mean = mn_Height,
+           sd = sd_Height)
+
+
+plot( x = c(50, 300),
+      y = c(0, max(y)),
+      type = "n",
+      las = 1,
+      main = "Height of females:\nfiner resolution allocation of probability",
+      xlab = "Heights (in cm)",
+      ylab = "Probability concentration (density)")
+abline(h = 0,
+       col = "grey")
+
+# Shading
+for (i in (1:length(NormalHts))){
+
+  polygon(x = c(Divisions2[i], Divisions2[i], Divisions2[i + 1], Divisions2[i + 1]),
+        y = c(0, y[i], y[i], 0),
+        col = plotColour)
+}
+
+
+
+# Add divisions
+abline( v = Divisions2,
+        lwd = 1,
+        lty = 2,
+        col = "grey")
+
+# Add horizontal lines for prob concentration
+for (i in (1:length(NormalHts))){
+  # Horizontal
+  segments(x0 = Divisions2[i],
+           x1 = Divisions2[i + 1],
+           y0 = y[i],
+           y1 = y[i],
+           lwd = 3)
+  # Vertical
+  if (i > 1) {
+    segments(x0 = Divisions2[i],
+             x1 = Divisions2[i],
+             y0 = y[i - 1],
+             y1 = y[i],
+             lty = 2,
+             lwd = 2)
+  }
+}
+
+```
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+For a continuous sample space, intervals of the sample space represent events, and areas under the curve represent probabilities.
+:::
+
+
+### Probability density functions {#PDFs}
+
+As the intervals become smaller, the graph showing the allocations of probability become smoother (Fig.\ \@ref(fig:HeightsConcentrationsSmooth)).
+This smooth curve, say $f(x)$, is called a *probability density function* (or PDF):\index{PDF} it shows the density (or concentration) of probability over various ranges of the sample space.
+Then, the *integral* over the sample space\ $S$ must equal one:
+$$
+   \int_S f(x)\,dx = 1.
+$$
+The vertical axis, as noted above, is not very informative, so is usually not given.
+
+
+
+
+```{r HeightsConcentrationsSmooth, echo=FALSE, fig.align="center", fig.cap="Smoothly allocating the concentration of probability over regions of the sample space. The shaded region has an area of\\ $1$.", fig.width=8, fig.height=4, out.width="90%"}
+
+# Mean, sd:
+mn_Height <- 161 # WAS 162
+sd_Height <- 6.5
+
+out <- plotNormal(mu = mn_Height,
+                  sd = sd_Height,
+                  xlim.lo = 50,
+                  xlim.hi = 300,
+                  showX = seq(50, 300, by = 50))
+
+#plot( y ~ x,
+#      type = "l",
+#      las = 1,
+#      axes = FALSE,
+#      main = "Height of females:\nsmoothed allocation of probability",
+#      xlab = "",
+#      ylab = "Probability density")
+#axis(side = 1)
+#abline(h = 0,
+#       col = "grey")
+
+shadeNormal(out$x, 
+            out$y,
+            lo = 0,
+            hi = 500,
+            col = plotColour)
+
+```
+
+
+With continuous sample spaces,\index{Sample space!cotinuous} the probability of observing some event\ $E$ is assigned to an *interval* on the sample space\ $S$.
+The probability of event\ $E$ is\index{Event}
+$$
+   \Pr(E) = \int_E f(x)\,dx.
+$$
+
+The three axioms of probability (Sect.\ \@ref(ProbabilityAxioms))\index{Axioms of probability} still apply for continuous sample space, though the equivalent statement involves *integration* of the density function $f(x)$ over the sample space\ $S$ rather than *summations* (compare to Sect.\ \@ref(ProbabilityAxioms)):
+
+1. **Non-negativity:**
+   *Integration* over any region of the sample space must never produce a negative value, and so $f(x) \ge 0$ for *all* values of $x$.
+2. **Exhaustive:**
+   Over the whole sample space, the probability function must *integrate* to one:
+$$
+     \int_S f(x)\,dx = 1.
+$$
+3. **Additivity:**
+   The probability of the union of any non-overlapping regions is the sum of the individual regions:
+$$
+  \int_{A_1} f(x)\, dx + \int_{A_2} f(x)\, dx  = \int_{A_1 \cup A_2} f(x)\, dx.
+$$
+
+Using these axioms implies a probability function for some event $A$ is defined on the continuous sample space $S$ as
+$$
+   \Pr(X\in A) = \int_{A(x)} f_X(x)\, dx.
+$$
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The probability function $f_X(x)$ does **not** give the probability of observing the value $X = x$.
+Because the sample space has an infinite number of elements, the probability of observing any single point is zero.
+Instead, probabilities are computed for *intervals*.
+
+This implies that $f_X(x) > 1$ may be true for some values of $x$, provided the total area over the sample space is one.
+:::
+
+
+
+## Assigning probability: subjective approach {#SubjectiveApproach}
+
+'Subjective' probabilities\index{Probability!subjective} are estimated after identifying the information that may influence the probability, and then evaluating and combining this information. 
+You use this method when someone asks you about your team's chance of winning on the weekend.
+
+The final (subjective) probability may, for example, be computed using mathematical models that use the relevant information.
+When different people or systems identify different information as relevant, and combine them differently, different subjective probabilities eventuate.
+
+Some examples include:
+
+* What is the chance that an investment will return a positive yield next year?
+* How likely is it that Auckland will have above average rainfall next year?
+
+Subjective probabilities can be used for discrete or continuous sample space; as always, probabilities can only be allocated to regions for continuous sample spaces.
+
+
+```{r echo=FALSE}
+# http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_nccObsCode=139&p_display_type=dataFile&p_startYear=&p_c=&p_stn_num=044021
+CR <- read.csv("./Data/IDCJAC0001_044021/IDCJAC0001_044021_Data12.csv")
+
+numAprils <- length(CR$Apr)
+numZeros <- sum(CR$Apr == 0)
+probZero <- numZeros/numAprils
+probRain <- 1 - probZero
+
+minYear <- min(CR$Year)
+maxYear <- max(CR$Year)
+numYears <- maxYear - minYear + 1
+```
+
+::: {.example #ChanceRain name="Subjective probability"}
+What is the likelihood of rain in Charleville (a town in western Queensland) during April?
+Many farmers could give a subjective estimate of the probability based on their experience and the conditions on their farm.
+
+Using the classical approach to determine the probability is not possible.
+While two outcomes are possible---it *will* rain, or it *will not* rain---these are almost certainly not *equally likely*.
+
+A relative frequency approach could be adopted.
+Data from the [Bureau of Meterology](http://www.bom.gov.au), from `r minYear` to `r maxYear` (`r numYears` years), shows rain fell in `r numAprils - numZeros` years during April.
+An *approximation* to the probability is therefore $`r numAprils - numZeros` / `r numAprils` = `r round(probRain, 3)`$, or $`r round((probRain) * 100, 1)`$%.
+This approach does not take into account current climatic or weather conditions, that can change every year.
+:::
+
+
+## Using diagrams to visualise outcomes {#DiagramsForProbability}
+
+### Venn diagrams {#VennDiagrams}
+
+Venn diagrams\index{Venn diagrams} can be useful for visualising probabilities, usig regions (often circles) to represent events.
+Venn diagrams are useful for two events, sometimes for three, but become unworkable for more than three.
+Often, tables can be used to better represent situations shown in Venn diagrams (Sect.\ \@ref(Tables)).
+
+
+:::{.example #VennDiagramExample name="Venn diagrams"}
+Suppose Event\ A has probability $\Pr(A) = 0.4$ and Event\ B has $\Pr(B) = 0.3$.
+In addition, $\Pr(A\cap B) = 0.1$.
+A Venn diagram (Fig.\ \@ref(fig:SimpleVenn)) shows the two events in the sample space.
+The intersection (with probability\ $0.1$) includes elements from *both* Event\ $A$ and Event\ $B$.
+
+We can see, for example, that $\Pr(A\setminus B) = 0.3$, and $\Pr(A\cup B) = 0.6$.
+:::
+
+
+```{r SimpleVenn, echo=FALSE, fig.height=4, fig.width=7.25, out.width = '90%', fig.align="center", fig.cap="A Venn diagram for a simple situation with two events. The rectangle represents the sample space\\ $S$; the purple circle represents Event\\ $A$ and the green circle represents Event\\ $B$. Left: the two events. Right: the probabilities for each section of the sample soace."}
+par( mfrow = c(1, 2),
+     mar = c(1, 0.1, 2, 0.1))
+
+colourA <- rgb(0, 0, 255, 
+                    max = 255,
+                    alpha = 125)
+colourB  <- rgb(0, 255, 0, 
+                  max = 255, 
+                  alpha = 125)
+
+##################
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(The~probabilities~of~Events~italic(A)~and~italic(B)),
+      axes = FALSE)
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.45, 
+                     y = 0.6,
+                     radius = 0.3,
+                     col = colourA)
+plotrix::draw.circle(x = 0.55,
+                     y = 0.35,
+                     radius = 0.25,
+                     col = colourB)
+text(x = 0.85,
+     y = 0.9,
+     labels = expression(P*"("*italic(A)*")"==0.4) )
+arrows(x0 = 0.85,
+       x1 = 0.71,
+       y0 = 0.87,
+       y1 = 0.76,
+       angle = 15,
+       length = 0.1)
+text(x = 0.85,
+     y = 0.10,
+     labels = expression(P*"("*italic(B)*")"==0.3) )
+arrows(x0 = 0.85,
+       x1 = 0.78,
+       y0 = 0.15,
+       y1 = 0.25,
+       angle = 15,
+       length = 0.1)
+
+
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+
+########################################
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression("The probabilities in each section"),
+      axes = FALSE)
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.45, 
+                     y = 0.6,
+                     radius = 0.3,
+                     col = colourA)
+plotrix::draw.circle(x = 0.55,
+                     y = 0.35,
+                     radius = 0.25,
+                     col = colourB)
+text(x = 0.5,
+     y = 0.7,
+     labels = "0.3")
+text(x = 0.5,
+     y = 0.2,
+     labels = "0.2")
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+# Intersection
+text(x = 0.5, 
+     y = 0.45, 
+     label = "0.1")
+
+
+# Rest of sample space
+text(x = 0.8, 
+     y = 0.9, 
+     label = expression(P*"("*italic(A)*union()*italic(B)*")"^c==0.4))
+
+
+```
+
+
+### Tables of probability {#Tables}
+
+With two variables of interest, probability tables may be a convenient way of summarizing the information.\index{Probability tables}
+A probability represents the whole sample spacem an shows how the sample space is divided between two events.
+
+
+:::{.example #TableDiagramExample name="Probability tables"}
+The information in Example\ \@ref(exm:VennDiagramExample) can be compiled into a two-way table (Table\ \@ref(tab:SimpleTable)): Events\ $A$ and 'not\ $A$' are shown in the columns, and Events\ $B$ and 'not\ $B$ are shown in the rows.
+:::
+
+```{r SimpleTable, echo=FALSE}
+SimpleTable <- array(dim = c(3, 3))
+
+SimpleTable[1, ] <- c(0.1, 0.2, 0.3)
+SimpleTable[2, ] <- c(0.3, 0.4, 0.7)
+SimpleTable[3, ] <- c(0.4, 0.6, 1.0)
+
+if( knitr::is_latex_output() ) {
+  colnames(SimpleTable) <- c("\\textbf{A}",
+                             "\\textbf{Not A}",
+                             "Total")
+  rownames(SimpleTable) <- c("\\textbf{B}",
+                             "\\textbf{Not B}",
+                             "Total")
+  knitr::kable(SimpleTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = "c",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "The probabilities in a two-way table.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(2, hline_after = TRUE) %>% 
+    row_spec(0, bold = TRUE) %>% 
+    row_spec(3, bold = TRUE) %>% 
+    column_spec(4, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  colnames(SimpleTable) <- c("A",
+                             "Not A",
+                             "Total")
+  rownames(SimpleTable) <- c("B",
+                             "Not B",
+                             "Total")
+  knitr::kable(SimpleTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "The probabilities in a two-way table.") %>%
+    row_spec(0, bold = TRUE) %>% 
+    row_spec(3, bold = TRUE) %>% 
+    column_spec(4, bold = TRUE)
+}
+```
+
+
+### Tree diagrams {#TreeDiagrams}
+
+*Tree diagrams*\index{Tree diagrams} are useful when a [random process](#def:RandomProcess) can be seen, or thought of, as occurring in steps or stages.
+The probabilities in the second step may depend on what happens on the forst step (which are called *conditional probabilities*, which are studied further in Sect.\ \@ref(CondProbIndependence))
+The ideas extend to multiple steps.
+
+
+:::{.example #TreeSimple name="Tree diagrams"}
+Suppose the probability that a customer makes a purchase using the online store is $0.35$; then, the probability that the customer requests a refund is $0.30$.
+However, if a customer makes a purchase using the physical store, the probability that the customer requests a refund is $0.05$.
+That is, most customers make purchases at the physical store, and are less likely to request a refund compared to online customers.
+
+The two events of interest are:
+\begin{align*}
+  O&: \text{The customer makes a purchase online; and}\\
+  R&: \text{The customer requests a refund.}
+\end{align*}
+Using this notation, $\Pr(O) = 0.35$, and so $\Pr(O^c) = 0.65$ is the probability that a customer makes a purchase in a physical store.
+The value of $\Pr(R)$ (and hence $\Pr(R)$) *depends* on whether the purchase was made online or in-store.
+
+The situation can be considered as having two stages.
+Stage\ 1 is where the purchase was made (online, or in a physical store).
+Stage\ 2 is whether the customer requests a refund.
+The tree diagram for the situation is shown in Fig.\ \@ref(fig:SimpleTree).
+The probabilities in Stage\ 2 are different, depending on where the purchase was made.
+:::
+
+To understand how to use tree diagrams requires a stuy of *conditional probability*, which we do next.
+
+
+```{r SimpleTree, echo=FALSE, fig.align="center", fig.height=6, fig.cap="Tree diagram for the customer-satisfaction example.", out.width='67%'}
+par(mar = c(1, 0.5, 1, 0.5) + 0.1)
+
+plot( x = c(0, 1),
+      y = c(-0.05, 1),
+      type = "n",
+      main = "Tree diagram for the customer satisfaction example",
+      xlab = "",
+      ylab = "",
+      axes = FALSE)
+#STEP 1
+lines( x = c(0.1, 0.4),
+       y = c(0.5, 0.75),
+       lwd = 2)
+lines( x = c(0.1, 0.4),
+       y = c(0.5, 0.25),
+       lwd = 2)
+# STEP 2
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.90),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.60),
+       lwd = 2)
+
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.40),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.10),
+       lwd = 2)
+
+# TEXT
+text(x = 0.50,
+     y = 0.75,
+     labels = expression(Online*","~italic(O)))
+text(x = 0.50,
+     y = 0.25,
+     labels = expression(atop(Physical,
+                              store*","~italic(O)^c) ) )
+
+text(x = 0.90,
+     y = 0.90,
+     labels = expression(atop(Refund,
+                              request*","~italic(R)) ) )
+text(x = 0.90,
+     y = 0.60,
+     labels = expression(atop(No~refund,
+                              request*","~italic(R)^c) ))
+
+text(x = 0.90,
+     y = 0.40,
+     labels = expression(atop(Refund,
+                              request*","~italic(R)) ) )
+text(x = 0.90,
+     y = 0.10,
+     labels = expression(atop(No~refund,
+                              request*","~italic(R)^c) ))
+
+# ADD PROBS
+text(x = 0.38,
+     y = 0.63,
+     cex = 0.9,
+     labels = "0.35")
+text(x = 0.38,
+     y = 0.37,
+     cex = 0.9,
+     labels = "0.65")
+
+text(x = 0.65,
+     y = 0.84,
+     cex = 0.9,
+     labels = "0.30")
+text(x = 0.65,
+     y = 0.66,
+     cex = 0.9,
+     labels = "0.70")
+
+text(x = 0.65,
+     y = 0.34,
+     cex = 0.9,
+     labels = "0.05")
+text(x = 0.65,
+     y = 0.16,
+     cex = 0.9,
+     labels = "0.95")
+
+## STEPS
+text(x = 0.50,
+     y = -0.05,
+     label = expression(bold("Stage 1"))
+     )
+text(x = 0.90,
+     y = -0.05,
+     label = expression(bold("Stage 2"))
+     )
+```
+
+
+## Conditional probability and independent events {#CondProbIndependence}
+
+### Conditional probability {#CondProb}
+\index{Probability!conditional|(}
+
+The tree diagram in Example\ \@ref(exm:TreeSimple) is an example of *conditional probability*: the probability of requesting a refund is *conditional on* (or *depends on*) whether the customer made an online or in-store purchase.
+
+In Example\ \@ref(exm:TreeSimple), we see that $\Pr(R) = 0.30$ *if* event $O$ has occurred; we write $\Pr(R \mid O ) = 0.30$, which we read as 'The probability that Event\ $R$ occurs *given that* Event $O$ has occurred'.
+$\Pr(R \mid O )$ is a *conditional probability*.
+
+We see also that $\Pr(R) = 0.05$ *if* event $O$ has *not* occurred; we write $\Pr(R \mid O^c ) = 0.05$, which we read as 'The probability that Event\ $R$ occurs *given that* Event $O$ has *not* occurred'.
+$\Pr(R \mid O^c )$ is also a *conditional probability*.
+
+
+More generally, assume that a sample space\ $S$ for the [random process](#def:RandomProcess)\index{Random process} has been constructed, an event\ $A$ has been identified, and its probability, $\Pr(A)$, has been determined.
+We then receive additional information that some event\ $B$ has occurred.
+Possibly, this new information can change the value of\ $\Pr(A)$.
+
+We now need to determine the probability that\ $A$ will occur, *given* that we know the information provided by event\ $B$.
+We call this probability the *conditional probability of\ $A$ given\ $B$*, denoted by $\Pr(A \mid B)$.
+
+
+:::{.example #ConditionalPrinIntro name="Conditional probability"}
+Suppose I roll a die.
+Define event\ $A$ as 'rolling a 6'.
+Then, you would compute $\Pr(A) = 1/6$ (using the classical approach; Sect.\ \@ref(ClassicalProb)).
+
+However, suppose I provide you with extra information: Event\ $B$ has already occurred, where Event\ $B$ is the event 'the number rolled is even'.
+
+With this extra information, only three numbers could possibly have been rolled; the *reduced sample space*\index{Sample space!reduced} is
+$$
+   S^* = \{2, 4, 6 \}.
+$$
+All of these three outcomes are equally likely.
+However, the probability that the number is a six is now $\Pr(A\mid B) = 1/3$.
+
+Knowing the extra information in Event\ $B$ has changed the calculation of\ $\Pr(A)$.
+:::
+
+
+::: {.example #Planes name="Planes"}
+Consider these two events:
+\begin{align*}
+   D:&\quad \text{A person dies};\\
+   F:&\quad \text{A person falls from an airborne plane with no parachute}.
+\end{align*}
+Consider the probability $\Pr(D \mid F)$.
+If you are told that someone falls out of an airborne plane with no parachute, the probability that they die is very high.
+
+Then, consider the probability $\Pr(F\mid D)$.
+If you are told that some has died, the cause is very unlikely to be a fall from an airborne plane.
+
+Thus, the first probability is very close to one, and the second is very close to zero.
+:::
+
+
+Two methods exist for computing conditional probability: first principles, or a formal definition of $\Pr(A \mid B)$.
+Using first principles, consider the original sample space\ $S$: remove the sample points inconsistent with the new information that\ $B$ has provided; form a new sample space, say\ $S^*$; then recompute the probability of Event\ $A$ relative to\ $S^*$.
+$S^*$ is called the *reduced sample space*.\index{Sample space!reduced}
+
+This method is appropriate when the number of outcomes is relatively small.
+The following formal definition applies more generally.
+
+
+::: {.definition #ConditionalProb name="Conditional probability"}
+Let\ $A$ and\ $B$ be events in\ $S$ with $\Pr(B) > 0$.
+Then
+$$
+   \Pr(A \mid B) = \frac{\Pr(A\cap B)}{\Pr(B)}.
+$$
+:::
+
+
+The definition automatically takes care of the sample space reduction noted earlier.
+
+
+```{r echo=FALSE}
+#https://data.longpaddock.qld.gov.au/SeasonalClimateOutlook/SouthernOscillationIndex/SOIDataFiles/MonthlySOIPhase1887-1989Base.txt
+
+SOIPhases <- read.table("./Data/MonthlySOIPhase1887-1989Base.txt",
+                        header = TRUE)
+SOIPhasesApril <- subset(SOIPhases,
+                         Month == 4)
+CRApril <- data.frame(Year = CR$Year,
+                      Apr = CR$Apr)
+ChApril <- merge(CRApril, SOIPhasesApril, "Year")
+
+ChAprilTable <- xtabs( ~ (Apr > 0) + Phase, 
+                       data = ChApril)
+
+rownames(ChAprilTable) <- c("No rain",
+                            "Rain")
+colnames(ChAprilTable) <- c("Phase 1",
+                            "Phase 2",
+                            "Phase 3",
+                            "Phase 4",
+                            "Phase 5")
+```
+
+```{r echo=FALSE}
+L <- sum(ChApril$Apr > 30)
+R <- sum(ChApril$Apr > 0) 
+Number <- length(ChApril$Apr)
+
+Prob30 <- L / Number
+Prob0 <- R / Number
+
+CProb30 <- Prob30 / Prob0
+```
+
+
+::: {.example #RainfallDF name="Rainfall"}
+Consider again the rainfall at Charleville in April (Example\ \@ref(exm:ChanceRain)).
+Define\ $L$ as the event 'receiving *more than* $30$\ mm in April', and\ $R$ as the event 'receiving *any* rainfall in April'.
+Event\ $L$ occurs `r L` times in the `r numYears` years of data, while Event\ $R$ occurs `r R` times.
+
+Using the relative frequency approach with the [Bureau of Meteorology](http://www.bom.gov.au) data, the probability of obtaining *more than* $30$\ mm in April is:
+$$
+   \Pr(L) = \frac{`r L`}{`r Number`} = `r round(Prob30, 3)`. 
+$$
+However, the *conditional probability* of receiving more than $30$\ mm, *given* that some rainfall was recorded, is:
+$$
+   \Pr(L \mid  R) = \frac{\Pr(L \cap R)}{\Pr(R)} = \frac{\Pr(L)}{\Pr(R)} = \frac{`r round(Prob30, 4)`}{`r round(Prob0, 4)`} = `r round(CProb30, 3)`.
+$$
+If we know rain has fallen, the probability that the amount was greater than $30$\ mm is `r round(CProb30, 3)`.
+Without this prior knowledge, the probability is `r round(Prob30, 3)`.
+That is, the probability of rolling a\ $6$, *given that the rolled number is an even number*, is $1/3$.
+:::
+
+
+:::{.example #MumpsIndependence name="Conditional probability"}
+@data:Soud2009:Mumps discusses the response of students to a mumps outbreaks in Kansas in 2006.
+Students were asked to isolate; Table\ \@ref(tab:MumpsIsolation) shows the behaviour of male and female student in the studied sample.\smallskip
+
+For females, the probability of complying with the isolation request is:
+$$
+   \Pr(\text{Compiled} \mid  \text{Females}) = 63/84 = 0.75.
+$$
+For males, the probability of complying with the isolation request is
+$$
+   \Pr(\text{Compiled} \mid  \text{Males}) = 36/48 = 0.75.
+$$
+
+Whether we look at only females or only males, the probability of selecting a student in the sample that complied with the isolation request is the same: $0.75$.
+Also, the *non-conditional* probability that a student isolated (ignoring their sex) is:
+$$
+   \Pr(\text{Student isolated}) = \frac{99}{132} = 0.75.
+$$
+:::
+
+
+```{r MumpsIsolation, echo=FALSE}
+MumpsTable <- array( dim = c(2, 3))
+
+MumpsTable[1, ] <- c(63, 21, 63 + 21)
+MumpsTable[2, ] <- c(36, 12, 36 + 12)
+
+rownames(MumpsTable) <- c("Females",
+                          "Males")
+colnames(MumpsTable) <- c("Complied with isolation",
+                          "Did not comply with isolation",
+                          "TOTAL")
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(MumpsTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = "c",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "Students response to isolation request at a Kansas university.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(MumpsTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "c",
+               longtable = FALSE,                
+               caption = "Students response to isolation request at a Kansas university.") %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+\index{Probability!conditional|)}
+
+
+### General multiplication rule {#GeneralMultiplicationRule}
+
+A consequence of Def.\ \@ref(def:ConditionalProb) is the following theorem.\index{Probability rules!multiplication rule}
+
+:::{.theorem #GeneralMultRule name="Multiplication rule for probabilities"}
+For any events $A$ and $B$, the probability of $A$ and $B$ is
+\begin{align*}
+     \Pr(A\cap B)
+     &= \Pr(A) \Pr(B \mid A)\\
+     &= \Pr(B) \Pr(A \mid B).
+\end{align*}
+:::
+
+
+This rule can be generalised to any number of events.
+For example, for three events\ $A$, $B$ and\ $C$,
+$$
+  \Pr(A\cap B\cap C) = \Pr(A)\Pr(B\mid A)\Pr(C\mid A\cap B).
+$$
+
+
+:::{.example #MultiplicationCustomers name="General multiplication rule"}
+Consider again the probabilities in Example\ \@ref(exm:TreeSimple).
+We have $\Pr(O) = 0.35$; then:
+\begin{align*}
+  \Pr(R \mid O)   &= 0.30\quad\text{and so}\quad \Pr(R^c \mid O) = 0.70;\\
+  \Pr(R \mid O^c) &= 0.05\quad\text{and so}\quad \Pr(R^c \mid O^c) = 0.95.
+\end{align*}
+Using the general multiplication rule, 
+\begin{align*}
+  \Pr(R \cap O)       &=   \Pr(R \mid O)     \times \Pr(O)   = 0.30\times 0.35 = 0.105;\\ 
+  \Pr(R^c \cap O)     &=   \Pr(R^c \mid O)   \times \Pr(O)   = 0.70\times 0.35 = 0.245;\\ 
+  \Pr(R \cap O^c)     &=   \Pr(R \mid O^c)   \times \Pr(O^c) = 0.05\times 0.65 = 0.0325;\\ 
+  \Pr(R^c \cap O^c)   &=   \Pr(R^c \mid O^c) \times \Pr(O^c) = 0.95\times 0.65 = 0.6175.
+\end{align*}
+These four probabilities represent the 'final destinations' in the tree diagram, which we can now add to (Fig.\ \@ref(fig:SimpleTree2)).
+Notice that these probabilities on the right add to one, as they represent the entire sample space: every customer is represented on one of the four branches.
+
+We can also determine the probability that a customer requests a refund:
+$$
+  \Pr(R) = \Pr(R \cap O) + \Pr(R \cap O^c) = 0.105 + 0.0325 = 0.1375.
+$$
+We can then determine the probability that a customer was an *online* customer, given that a refund was requested
+$$
+  \Pr(O\mid R) = \frac{\Pr(O\cap R)}{\Pr(R)} = \frac{0.105}{0.1375} = 0.7636\dots.
+$$
+If a refund is requested, the probability the customer was an online shopper is about\ $0.76$.
+:::
+
+
+```{r SimpleTree2, echo=FALSE, fig.align="center", fig.height=6, fig.cap="Tree diagram for the customer-satisfaction example, adding the probabilities of the four outcomes.", out.width='75%'}
+par(mar = c(1, 0.5, 1, 0.5) + 0.1)
+
+plot( x = c(0, 1.4),
+      y = c(-0.05, 1),
+      type = "n",
+      main = "Tree diagram for the customer satisfaction example",
+      xlab = "",
+      ylab = "",
+      axes = FALSE)
+#STEP 1
+lines( x = c(0.1, 0.4),
+       y = c(0.5, 0.75),
+       lwd = 2)
+lines( x = c(0.1, 0.4),
+       y = c(0.5, 0.25),
+       lwd = 2)
+# STEP 2
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.90),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.60),
+       lwd = 2)
+
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.40),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.10),
+       lwd = 2)
+
+# TEXT
+text(x = 0.50,
+     y = 0.75,
+     labels = expression(Online*","~italic(O)))
+text(x = 0.50,
+     y = 0.25,
+     labels = expression(atop(Physical,
+                              store*","~italic(O)^c) ) )
+
+text(x = 0.90,
+     y = 0.90,
+     labels = expression(atop(Refund,
+                              request*","~italic(R)) ) )
+text(x = 0.90,
+     y = 0.60,
+     labels = expression(atop(No~refund,
+                              request*","~italic(R)^c) ))
+
+text(x = 0.90,
+     y = 0.40,
+     labels = expression(atop(Refund,
+                              request*","~italic(R)) ) )
+text(x = 0.90,
+     y = 0.10,
+     labels = expression(atop(No~refund,
+                              request*","~italic(R)^c) ))
+
+# ADD PROBS
+text(x = 0.38,
+     y = 0.63,
+     cex = 0.9,
+     labels = "0.35")
+text(x = 0.38,
+     y = 0.37,
+     cex = 0.9,
+     labels = "0.65")
+
+text(x = 0.65,
+     y = 0.84,
+     cex = 0.9,
+     labels = "0.30")
+text(x = 0.65,
+     y = 0.66,
+     cex = 0.9,
+     labels = "0.70")
+
+text(x = 0.65,
+     y = 0.34,
+     cex = 0.9,
+     labels = "0.05")
+text(x = 0.65,
+     y = 0.16,
+     cex = 0.9,
+     labels = "0.95")
+
+
+## FAR RIGHT INTERSECTION PROBS
+text(x = 1.25,
+     y = 0.9,
+     label = expression(P*"("*italic(O)*intersect()*italic(R)*")"==0.105) )
+text(x = 1.25,
+     y = 0.6,
+     label = expression(P*"("*italic(O)*intersect()*italic(R)^c*")"==0.245) )
+text(x = 1.25,
+     y = 0.4,
+     label = expression(P*"("*italic(O)^c*intersect()*italic(R)*")"==0.0325) )
+text(x = 1.25,
+     y = 0.1,
+     label = expression(P*"("*italic(O)^c*intersect()*italic(R)^c*")"==0.6175) )
+
+
+## STEPS
+text(x = 0.50,
+     y = -0.05,
+     label = expression(bold("Stage 1"))
+     )
+text(x = 0.90,
+     y = -0.05,
+     label = expression(bold("Stage 2"))
+     )
+```
+
+
+
+The tree diagram in Example\ \@ref(exm:TreeSimple) is an example of *conditional probability*: the probability of requesting a refund is *conditional on* (or *depends on*) whether the customer made an online or in-store purchase.
+
+### Independent events {#Independence}
+
+The important idea of *independent events* can now be defined.\index{Independent events}
+
+
+
+::: {.definition #Independence name="Independence"}
+Two events\ $A$ and\ $B$ are *independent events* if and only if
+$$
+  \Pr(A\cap B) = \Pr(A)\Pr(B).
+$$
+Otherwise the events *not independent* (or *dependent*).
+:::
+
+
+:::{.proof}
+Exercise.
+:::
+
+
+
+Provided $\Pr(B) > 0$, Defs.\ \@ref(def:ConditionalProb) and\ \@ref(def:Independence) show that\ $A$ and\ $B$ are independent if, and only if, $\Pr(A \mid B) = \Pr(A)$.
+This statement of independence makes sense: $\Pr(A \mid B)$ is the probability of\ $A$ occurring if\ $B$ has already occurred, while $\Pr(A)$ is the probability that\ $A$ occurs without any knowledge of whether\ $B$ has occurred or not. 
+If these are equal, then $B$ has occurring has made no difference to the probability that\ $A$ occurs, which is what *independence* means.
+
+
+
+:::{.example}
+In Example\ \@ref(exm:MumpsIndependence), the probability of males isolating was the *same* as the probability of females isolating.
+The sex of the student is *independent* of whether they isolate.
+That is, whether we look at females or males, the probability that they isolated is the same.
+:::
+
+
+The idea of independence can be generalised to more than two events.
+For three events, the following definition of *mutual independence* applies, which naturally extends to any number of events.
+
+
+::: {.definition #MutualIndependence name="Mutual independence"}
+Three events\ $A$, $B$ and\ $C$ are *mutually independent* if, and only if,
+\begin{align*}
+     \Pr(A\cap B) & = \Pr(A)\Pr(B).\\
+     \Pr(A\cap C) & = \Pr(A)\Pr(C).\\
+     \Pr(B\cap C) & = \Pr(B)\Pr(C).\\
+     \Pr(A\cap B\cap C) & = \Pr(A) \Pr(B) \Pr(C).
+     \end{align*}
+:::
+
+Three events can be *pairwise* independent in the sense of Def.\ \@ref(def:Independence), but not be *mutually independent*.
+
+The following theorem concerning independent events is sometimes useful.
+
+:::{.theorem #IndependenceFeatures name="Independent events"}
+If\ $A$ and\ $B$ are independent events, then
+
+* $A$ and\ $B^c$ are independent.
+* $A^c$ and\ $B$ are independent.
+* $A^c$ and\ $B^c$ are independent.
+:::
+
+:::{.proof}
+Exercise.
+:::
+
+
+
+
+### Independent and mutually exclusive events {#IndependentEvents}
+
+Mutually exclusive evets (Def.\ \@ref(def:MutuallyExclusive))\index{Mutually exclusive} and independent events (Def.\ \@ref(def:Independence))\index{Independent events} sometimes get confused.
+
+The simple events defined by the outcomes in a sample space are mutually exclusive, since only one can occur in any realisation of the random process.
+Mutually exclusive events have no common outcomes: for example, both passing and failing this course is not possible in the one semester.
+Obtaining one excludes the possibility of the other... so *whether one occurs depends on whether the other has occurred*.
+
+In contrast, if two events are *independent*, then whether or not one occurs does not affect the chance of the other happening.
+If event $A$ can occur, then $B$ happening will not influence the chance of $A$ happening if they are independent, so *it does not exclude the possibility of the other occurring*.
+
+Confusion between mutual exclusiveness and independence arises sometimes because the sample space is not clearly identified.
+
+Consider a random process involving tossing two coins *at the same time*.
+The sample space is
+$$
+   S_2 = \{(HH), (HT), (TH), (TT)\}
+$$
+and these outcomes are mutually exclusive, each with probability\ $1/4$ (using the classical approach).
+For example, $\Pr\big( (HH) \big) = 1/4$.
+
+An alternative view of this random process is to think of *repeating the process of tossing a coin once*.
+For one toss of a coin, the sample space
+$$
+   S_1 = \{ H, T \}
+$$
+and $\Pr(H) = 1/2$ is the probability of getting a head on the *first* toss.
+This is also the probability of getting a head on the *second* toss.
+
+The events 'getting a head on the first toss' and 'getting a head on the second toss' are **not mutually exclusive**, because both events can occur together: the event\ $(HH)$ is an outcome in\ $S_2$.
+Whether or not the outcomes\ $(HH)$ occurred *simultaneously*, because the two coins were tossed at the one time, or *sequentially*, in that one coin was tossed twice, is irrelevant.
+
+Our interest is in the *joint* outcomes from two tosses.
+The event 'getting a head on the "first" toss' is:
+$$
+   E_1 = \{ (HH), (HT) \}
+$$
+and 'getting a head on the "second" toss' is
+$$
+   E_2 = \{ (HH), (TH) \},
+$$
+where\ $E_1$ and\ $E_2$ are events defined on\ $S_2$.
+This makes it clear that Events\ $E_1$ and\ $E_2$ are not mutually exclusive because $E_1\cap E_2 \ne \varnothing$.
+
+The two events\ $E_1$ and\ $E_2$ are *independent* because,  whether or not a head occurs on one of the tosses, the probability of a head occurring on the other is still\ $1/2$.
+Seeing that the events are independent provides another way of calculating the probability of the two heads occurring 'together': $1/2\times 1/2 = 1/4$, since the probabilities of *independent* events can be multiplied
+
+
+::: {.example #Mendell name="Mendell's peas"}
+@BIB:Mendel:hybrids conducted famous experiments in genetics.
+In one study, Mendel crossed a pure line of round yellow peas with a pure line of wrinkled green peas.
+Table\ \@ref(tab:PeaTable) shows what happened in the *second* generation.
+For example, $\Pr(\text{round peas}) = 0.7608$.
+Biologically, about $75$% of peas are expected to be round; the data appear reasonably sound in this respect.\smallskip
+
+Is the type of pea (rounded or wrinkled) *independent* of the colour?
+That is, if the pea is rounded, does it impact the colour of the pea?\smallskip
+
+Independence can be evaluated using the formula is $\Pr(\text{round} \mid \text{yellow}) = \Pr(\text{round})$.
+In other words, the fact that the pea is yellow does not affect that probability that the pea is rounded.
+From Table\ \@ref(tab:PeaTable):
+\begin{align*}
+   \Pr(\text{rounded}) 
+   &= 0.5665 + 0.1942 = 0.7608,\\
+   \Pr(\text{round} \mid \text{yellow}) 
+   &= 0.5665/(0.5665 + 0.1817) = 0.757.
+\end{align*}
+
+These two probabilities are very close.
+The data in the table are just a *sample* (from the population of all peas), so assuming the colour and shape of the peas are independent is reasonable.
+:::
+
+```{r PeaTable, echo=FALSE}
+PeaTable <- array(dim = c(2, 2) )
+
+colnames(PeaTable) <- c("Yellow", 
+                        "Green")
+rownames(PeaTable) <- c("Rounded", 
+                        "Wrinkled")
+
+PeaTable[1, ] <- c(0.5665,
+                   0.1942)
+PeaTable[2, ] <- c(0.1817,
+                   0.0576)
+                   
+if( knitr::is_latex_output() ) {
+  knitr::kable(PeaTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "The second generation results from Mendel's experiment, crossing a pure line of round yellow peas with a pure line of wrinkled green peas.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(PeaTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "The second generation results from Mendel's experiment, crossing a pure line of round yellow peas with a pure line of wrinkled green peas.") %>%
+    row_spec(0, bold = TRUE) 
+}
+
+```
+
+
+
+
+### Partitioning the sample space {#SSPartitions}
+
+The concepts introduced in this section allow us to determine the probability of an event using the *event-partioning approach*, which we now discuss.\index{Sample space!partitioning}
+
+
+::: {.definition #Partitioning name="Partitioning"}
+The events $B_1, B_2, \ldots , B_k$ are said to represent a *partition* of the sample space\ $S$ if
+
+1. the events are *mutually exclusive*: $B_i \cap B_j = \varnothing$ for all $i \neq j$.
+2. the events are *exhaustive*: $B_1 \cup B_2 \cup \ldots \cup B_k = S$.
+3. the events have a non-zero probability of occurring: $\Pr(B_i) > 0$ for all $i$.
+:::
+
+
+The implication is that when the random process is performed, exactly one and only one of the events $B_i$ ($i = 1, \ldots, k)$ occurs.
+We use this concept in the following theorem.
+
+
+:::{.theorem #TotalProb name="Law of total probability"}
+Let\ $A$ be an event in\ $S$ and $\{B_1, B_2, \ldots , B_k\}$ a partition of\ $S$.
+Then\index{Law of total probability}
+\begin{align*}
+   \Pr(A) 
+   &= \Pr(A \mid B_1) \Pr(B_1) + \Pr(A \mid B_2)\Pr(B_2) + \ldots \\
+   & \qquad {} + \Pr(A \mid B_k)\Pr(B_k).
+\end{align*}
+:::
+
+:::{.proof}
+The proof follows from writing $A = (A\cap B_1) \cup (A\cap B_2) \cup \ldots \cup (A\cap B_k)$, where the events on the RHS are mutually exclusive.
+The [third axiom](#def:ThreeAxioms) of probability together with the multiplication rule yield the result.
+:::
+
+
+:::{.example #TheroemTotalprob name="Law of total probability"}
+Consider event $A$: 'rolling an even number on a die', and also define the events
+$$
+   B_i:\quad\text{The number $i$ is rolled on a die}
+$$
+where $i = 1, 2, \dots 6$.
+The Events\ $B_i$ represent a [*partition*](#def:Partitioning) of the sample space, as the Events\ $B_i$ are mutually exclusive, exhaustive and all have non-zero probability of occurring.
+
+Then, using the *Law of total probability* (Sect.\ \@ref(thm:TotalProb)):
+\begin{align*}
+   \Pr(A)
+   &= \Pr(A \mid B_1)\times \Pr(B_1)\quad +  \quad\Pr(A \mid B_2)\times \Pr(B_2) \quad+ {}\\
+   &\quad \Pr(A \mid B_3)\times \Pr(B_3)\quad + \quad\Pr(A\mid B_4)\times \Pr(B_4) \quad+ {} \\
+   &\quad \Pr(A \mid B_5)\times \Pr(B_5)\quad +  \quad\Pr(A\mid B_6)\times \Pr(B_6)\\
+   &= \left(0\times \frac{1}{6}\right) + \left(1\times \frac{1}{6}\right) + {} \\
+   &\quad \left(0\times \frac{1}{6}\right) + \left(1\times \frac{1}{6}\right) + {}\\
+   &\quad \left(0\times \frac{1}{6}\right) + \left(1\times \frac{1}{6}\right) 
+    = \frac{1}{2}.
+\end{align*}
+This the same answer obtained using the classical approach.
+:::
+
+
+### Bayes' theorem {#BayesTheorem}
+
+If\index{Bayes theorem|(} an event is known to have occurred (i.e., has non-zero probability), and the sample space is partitioned, a result known as *Bayes' theorem* enables us to determine the probabilities associated with each of the partitioned events.
+
+
+:::{.theorem #Bayes name="Bayes' theorem"}
+Let\ $A$ be an event in\ $S$ such that $\Pr(A) > 0$, and $\{ B_1, B_2, \ldots , B_k\}$ is a [partition](#def:Partitioning) of\ $S$.
+Then
+$$
+   \Pr(B_i \mid A) = \frac{\Pr(B_i) \Pr(A \mid B_i)}
+                          {\displaystyle \sum_{j = 1}^k \Pr(B_j)\Pr(A \mid B_j)}
+$$
+for $i = 1, 2, \dots, k$.
+:::
+
+:::{.proof}
+This is a direct application of Def.\ \@ref(def:ConditionalProb), the multiplication rule and Theorem\ \@ref(thm:TotalProb).
+:::
+
+Notice that the right-side includes conditional probabilities of the form $\Pr(A\mid B_i)$, while the left-side contains the probability $\Pr(B_i\mid A)$.
+In effect, the theorem takes a conditional probability and can 'reverse' the conditioning.
+
+Bayes' theorem has many uses, as it uses conditional probabilities that are easy to find or estimate to compute a conditional probability that is *not* easy to find or estimate.
+The theorem is the basis of a branch of statistics known as *Bayesian statistics*\index{Bayesian statistics} which involves using pre-existing evidence in drawing conclusions from data.
+
+
+
+
+::: {.example #BreastCancer name="Breast cancer"}
+The success of mammograms for detecting breast cancer has been well documented [@white1993mammography]. 
+Mammograms are generally conducted on women over $40$, though breast cancer rarely occurs in women under $40$ also.\smallskip
+
+We can define two events of interest:
+\begin{align*}
+   C:&\quad \text{The woman has breast cancer; and}\\
+   D:&\quad \text{The mammogram returns a positive test result.}
+\end{align*}
+As with any diagnostic tool, a mammogram is not perfect.
+*Sensitivity*\index{Sensitivity} and *specificity*\index{Specificity} are used to describe the accuracy of a test:
+
+* *Sensitivity* is the probability of a *true* positive test result: the probability of a positive test result for people *with* the disease.
+  This is $\Pr(D \mid C)$.
+* *Specificity* is the probability of a *true* negative test result: the probability of a negative test for people *without* the disease.
+  This is $\Pr(D^c \mid C^c)$.
+
+Clearly, we would like both these probabilities to be a high as possible.
+For mammograms [@houssami2003sydney], the *sensitivity* is estimated as about\ $0.75$ and the *specificity* as about\ $0.90$.
+We can write:
+
+* $\Pr(D \mid C ) = 0.75$ (and so $\Pr(D^c \mid C) = 0.25$);
+* $\Pr(D^c \mid C^c) = 0.90$ (and so $\Pr(D \mid C^c) = 0.10$).
+
+Furthermore, about\ $2$% of women under\ $40$ will get breast cancer [@houssami2003sydney]; that is, $\Pr(C) = 0.02$ (and hence $\Pr(C^c) = 0.98$).\smallskip
+
+For this study, the probabilities $\Pr(D\mid C)$ are easy to find: women who are *known* to have breast cancer have a mammogram, and we record whether the mammogram result is positive or negative.\smallskip
+
+But consider a woman under\ $40$ who gets a mammogram.
+When the results are returned, her interest is whether they have breast cancer, *given* the test results; for example $\Pr(C \mid D)$.
+In other words: if the test returns a positive result, what is the probability that she actually has breast cancer?\smallskip
+
+That is, we would like to take probabilities like $\Pr(D\mid C)$, that can be found easily, and determine $\Pr(C \mid  D)$, which is of interest in practice.
+Using [Bayes' Theorem](#thm:Bayes):
+\begin{align*}
+   \Pr(C \mid D) 
+   &= \frac{\Pr(C) \times \Pr(D \mid  C)}
+            {\Pr(C)\times \Pr(D \mid  C) + \Pr(C^c)\times \Pr(D \mid  C^c) }\\
+   &= \frac{0.02 \times 0.75}
+            {(0.02\times 0.75) + (0.98\times 0.10)}\\
+   &= \frac{0.015}{0.015 + 0.098} =  0.1327.
+\end{align*}
+Consider what this says: Given that a mammogram returns a *positive test* (for a woman under\ $40$), the probability that the woman really has breast cancer is only about\ $6$%...
+This partly explains why mammograms for women under $40$ are not commonplace: most women who return a positive test result actually do not have breast cancer.\smallskip
+
+The reason for this surprising result is explained in Example\ \@ref(exm:BreastCancerTree).
+:::
+
+
+
+:::{.example #BreastCancerTree name="Breast cancer"}
+Consider using a tree diagram to describe the breast cancer information from Example\ \@ref(exm:BreastCancer) (Fig.\ \@ref(fig:BreastTree)).
+By following each 'branch' of the tree, we can compute, for example:
+$$
+   \Pr(C \cap D) = \Pr(C)\times \Pr(D\mid C) = 0.02 \times 0.75 = 0.015;
+$$
+that is, the probability that a woman has a positive test **and** breast cancer is about $0.015$.
+But compare:
+$$
+   \Pr(C^c \cap D) = \Pr(C^c)\times \Pr(D\mid C^c) = 0.98 \times 0.10 = 0.098;
+$$
+that is, the probability that a woman has a positive test **and no** breast cancer (that is, a *false* positive) is about $0.098$.\smallskip
+
+This explains the surprisingly result in Example\ \@ref(exm:BreastCancer): because breast cancer is so uncommon in younger women, the *false* positives ($0.098$) overwhelm the *true* positives ($0.015$).
+
+After a positive mammogram, further tests are conducted to conform a cancer diagnosis. 
+In younger women, almost every positive mammogram returns a negative diagnosis from further tests.
+:::
+
+
+```{r BreastTree, echo=FALSE, fig.align="center", fig.cap="Tree diagram for the breast-cancer example.", out.width='67%'}
+par(mar = c(1, 0.5, 1, 0.5) + 0.1)
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      main = "Tree diagram for the breast cancer example",
+      xlab = "",
+      ylab = "",
+      axes = FALSE)
+#STEP 1
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.75),
+       lwd = 2)
+lines( x = c(0.2, 0.40),
+       y = c(0.5, 0.25),
+       lwd = 2)
+# STEP 2
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.90),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.75, 0.60),
+       lwd = 2)
+
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.40),
+       lwd = 2)
+lines( x = c(0.60, 0.80),
+       y = c(0.25, 0.10),
+       lwd = 2)
+
+# TEXT
+text(x = 0.50,
+     y = 0.75,
+     labels = expression("Cancer,"~italic(C)))
+text(x = 0.50,
+     y = 0.25,
+     labels = expression("No cancer,"~italic(C)^c) )
+
+text(x = 0.90,
+     y = 0.90,
+     labels = expression("+ive test,"~italic(D)) )
+text(x = 0.90,
+     y = 0.60,
+     labels = expression("-ive test,"~italic(D)^c) )
+
+text(x = 0.90,
+     y = 0.40,
+     labels = expression("+ive test,"~italic(D)) )
+text(x = 0.90,
+     y = 0.10,
+     labels = expression("-ive test,"~italic(D)^c) )
+
+# ADD PROBS
+text(x = 0.38,
+     y = 0.63,
+     cex = 0.9,
+     labels = "0.02")
+text(x = 0.38,
+     y = 0.37,
+     cex = 0.9,
+     labels = "0.98")
+
+text(x = 0.65,
+     y = 0.84,
+     cex = 0.9,
+     labels = "0.75")
+text(x = 0.65,
+     y = 0.66,
+     cex = 0.9,
+     labels = "0.25")
+
+text(x = 0.65,
+     y = 0.34,
+     cex = 0.9,
+     labels = "0.10")
+text(x = 0.65,
+     y = 0.16,
+     cex = 0.9,
+     labels = "0.90")
+
+## STEPS
+text(x = 0.50,
+     y = 0.01,
+     label = expression(bold("Step 1"))
+     )
+text(x = 0.90,
+     y = 0.01,
+     label = expression(bold("Step 2"))
+     )
+```
+
+
+
+
+
+
+::: {.example #BreastCancerVenn name="Breast cancer"}
+Consider again the breast cancer data (Example\ \@ref(exm:BreastCancer), where the events $C$ and $D$ were defined [earlier](#exm:BreastCancer)).
+A Venn diagram could be constructed to show the sample space (Fig.\ \@ref(fig:BreastVenn)).
+:::
+
+
+```{r BreastVenn, echo=FALSE, fig.height=6.25, fig.width=7.25, out.width = '90%', fig.align="center", fig.cap="The Venn diagram for the breast cancer example. The rectangle in each panel represents the sample space."}
+par( mfrow = c(2, 2),
+     mar = c(1, 0.1, 2, 0.1))
+
+colourCancer <- rgb(0, 0, 255, 
+                    max = 255,
+                    alpha = 125)
+colourPos  <- rgb(0, 255, 0, 
+                  max = 255, 
+                  alpha = 125)
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(C), " and ", italic(C)^c)),
+      axes = FALSE)
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+text(x = 0.4,
+     y = 0.5,
+     labels = expression(paste(italic(C), ": 0.02")))
+text(x = 0.8,
+     y = 0.5,
+     labels = expression(paste(italic(C)^c, ": 0.98")))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+###############
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(D), " and ", italic(D)^c)) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+
+text(x = 0.6,
+     y = 0.5,
+     labels = expression(paste(italic(D), ": 0.113")))
+text(x = 0.2,
+     y = 0.5,
+     labels = expression(paste( italic(D)^c, ": 0.887")))
+
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+####################
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression(paste("Events ", italic(C), " and ", italic(D))) ,
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+text(x = 0.3,
+     y = 0.5,
+     labels = expression(italic(C)))
+text(x = 0.7,
+     y = 0.5,
+     labels = expression(italic(D)))
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+
+#################
+
+
+
+plot( x = c(0, 1),
+      y = c(0, 1),
+      type = "n",
+      ylab = "",
+      xlab = "",
+      main = expression("The probabilities in each section"),
+      axes = FALSE)
+
+
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 1, 1, 0))
+plotrix::draw.circle(x = 0.4, 
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourCancer)
+plotrix::draw.circle(x = 0.6,
+                     y = 0.5,
+                     radius = 0.2,
+                     col = colourPos)
+text(x = 0.3,
+     y = 0.5,
+     labels = "0.005")
+text(x = 0.7,
+     y = 0.5,
+     labels = "0.098")
+text(x = 0.7,
+     y = 0.85,
+     labels = expression((italic(C) ~ union() ~ italic(D))^c ~ ": 0.882") )
+mtext(text = expression(italic(S)),
+      side = 1,
+      adj = 0.25)
+
+# Intersection
+text(x = 0.5, 
+     y = 0.5, 
+     label = "0.015")
+```
+
+
+
+
+
+
+
+\index{Bayes theorem|)}
+
+
+
+
+## Statistical computing and simulation {#ProbStatisticalComputing}
+
+
+### Why use computing and simulation? {#SimulationWhyUse}
+
+Computing and working with probabilities can be hard!
+In many cases, using a computer, or a computer *simulation*, can be helpful.
+
+
+:::{.definition #Simulation name="Simulation"}
+A *simulation*\index{Simulation} is when a computer is used to imitate a real situation many times, so that probabilities or outcomes can be *estimated*.
+:::
+
+
+Using a computer can be useful for many reasons when working with probabilities and statistics more generally:
+
+1. **Checking answers, intuition and reasoning.**
+   Simulation can be used to check answers and reasoning.
+   Analytic solutions can be verified by comparing to simulation results.
+2. **Demonstration of theory.**
+   Simulation can be used to visually demonstrate theory (e.g., Sect.\ \@ref(SimulationTheoryDemo)).
+   Sometimes the theory can be difficult to understand, and a simulation can bridge the gap between formulas and reality.
+3. **Confirmation and validation of results.**
+   Simulation can confirm (not *prove*) counter-intuitive results (such as the Monty Hall problem (Exercise\ \@ref(exr:SimulationMontyHall)), the birthday paradox (Exercise\ \@ref(exr:BirthdayProblem)), or non-transitive dice (Exercise\ \@ref(exr:NonTransitiveDice)).
+4. **Answering tedious or complex situations.**
+   Simulation can make tedious, difficult or complex computations easier.
+   Simulation gives quick approximations that bypass heavy combinatorial formulas.
+   In some cases, simulation can be used for problems with no closed-form solutions.
+5. **Performing sensitivity analysis.**
+   Simulation allows easy tweaking or changing of parameters to see the impacts on the results.
+
+An example of each is given below.
+The full benefit of simulation may only be apparent once more is learnt about distribution theory as you progress through this book.
+
+Simulation, by definition, imitates a scenario many times.
+Each scenario uses a computer to replicate the scenario, using a random number (e.g., a random die roll; a random hand of cards; etc.).
+In general, more precise estimates are found using a larger number of replications.
+
+How many simulations are necessary for useful precision?
+No single answer exists, but since computers are fast using a large number of replications is not usually a imposition.
+For instance, $5\,000$ simulations is a reasonable number for simple scenarios.
+The impact of the number of simulations is covered in more detail in Chap.\ \@ref(SamplingDistributions).
+
+Computers do not produces truly *random numbers*,\index{Random numbers} but rather *pseudo-random numbers*\index{Pseudo-random numbers} that are generated from a random number seed.
+The same random number seed produces the same sequence of pseudo-random numbers.
+In this book, so that examples are reproducible, we set the *random number seed* when using **R** (using `set.seed()`), so that our examples are reproducible.
+(Nonetheless, we call these 'random numbers' with the understanding that they are really pseudo-random numbers...)
+The **R** function `replicate()` allows an **R** expression to be repeated ('replicated') a given number of times, and often proves useful for creating simulations.
+
+
+### Simulation to check answers, intuition and reasoning {#SimulationChecking}
+
+Consider drawing five cards at random from a fair pack; what is the probability that at least cards\ $3$ are hearts?
+
+This question is not too difficult to answer using the counting methods of Sect.\ \@ref(CombsAndPerms); you should show that the answer is approximately\ $0.0927$.
+However, it can be easy to miscount.
+We could use an **R** simulation to check the answer.
+
+First, set up the simulation:
+
+
+```{r}
+# 'Make' the deck of cards.
+# Note: the denomination is not important, just the suit
+Deck <- c(rep("Hearts", 13),   # 13 cards of each suit
+          rep("Diamonds", 13), 
+          rep("Clubs", 13), 
+          rep("Spades", 13))
+
+set.seed(12043)   # For reproducibility 
+num_Reps <- 5000  # Number of replications to use
+```
+
+
+Then we simulate numerous hands of $5$\ cards using `replicate()`.
+The first input is the number of replications (i.e., `num_Reps`) and the second is the command to be replicated (in this case, taking a `sample()` of `size` five from the `Deck` of cards, with `replace`-ment):
+
+
+```{r}
+# Each replication goes into a column of  Hands
+Hands <- replicate(num_Reps, sample(Deck,   # Sample from the  Deck  of cards
+                                    size = 5,  # A hand of *five* cards 
+                                    replace = FALSE)  ) # Without replacement
+Hands[, 1:4]  # Show the first four columns; each col is a hand of five cards
+```
+
+Then count the number of Hearts in each `Hand` (i.e., in each column):
+
+```{r}
+# For each Hand (i.e., column), count how many  Hearts
+num_Hearts <- colSums(Hands == "Hearts")
+
+# Show the count of Hearts in those first four hands:
+num_Hearts[1 : 4]
+```
+
+
+Then determine how many of these `Hands` have at least three hearts:
+
+
+```{r}
+# Count how many have *at least 3* hearts
+at_Least_3_Hearts <- sum( num_Hearts >= 3 )  
+```
+
+
+Then fin dthe probability, and print the result:
+
+```{r}
+# Compute the *probability* of at least three Hearts
+prob_At_Least_3_Hearts <- at_Least_3_Hearts / num_Reps
+
+# Print the (rounded) results (where  "\n"  means to start a new line)
+cat("The prob. estimate is", 
+    round( mean(prob_At_Least_3_Hearts), 
+           4), "\n") # Round to four decimal places
+```
+
+This is close to what we computed using theory.
+A more precise estimate would be found using a larger number of simulations.
+
+
+### Simulation to demonstrate theory {#SimulationTheoryDemo}
+
+The *Weak Law of Large Numbers*\index{Weak law of large numbers} is an important statistical concept.
+
+
+:::{.definition #WeakLawLargeNumbers name="Weak Law of Large Numbers"}
+The sample proportion of a random outcome converges (in probability) to the true probability as the number of trials increases.\index{Weak law of large numbers}
+:::
+
+
+This can be shown by running a computer simulation, to simulate large numbers of coin tosses.
+First, set up the scenario:
+
+
+```{r}
+set.seed(966141) # For repeatability
+
+# Set the number of replications to use
+Num_Tosses <- 1000
+
+```
+
+Then we use the **R** function `sample()` to take a 'sample' of heads and tails (with replacement!) for each replication:
+
+
+```{r SimTossesA, echo=TRUE, collapse=TRUE}
+Tosses <- sample(x = c("H", "T"),    # Choose "H"  or  "T"
+                 size = Num_Tosses,  # Do this for each replication
+                 replace = TRUE,     # H and T can be reselected 
+                 prob = c(0.5, 0.5)) # Pr(Head) = Pr(Tail) = 0.5
+Tosses[1 : 10]                       # Show the first 10 results
+```
+
+
+Notice that the probability of a Head (and Tail) is set as\ $0.5$ in the simulation, to simulate tossing a coin.
+After each toss, the probability of obtaining a head using all the available information up to that toss was computed:
+
+
+```{r}
+Toss_Number <- 1:Num_Tosses            # Sequence: from 1 to Num_Tosses
+
+# Compute P(Heads) after each toss (cumsum()  is the 'cumulative sum')
+Prop_Heads <- cumsum(Tosses == "H") / Toss_Number
+Prop_Heads[1 : 8]  # Show the first eight results
+```
+
+The results can be plotted (Fig.\ \@ref(fig:SimTosses)):
+
+```{r SimTosses, echo=TRUE, fig.align='center', fig.cap = "A simulation of tossing a fair coin $500$ times. The probability of getting a head is computed from the data after each toss. The grey horizontal line is at\ $0.5$.", fig.width=8, fig.height=3.5, out.width='100%'}
+plot(Prop_Heads,
+     main = "The proportion of heads after a given number of tosses",
+     xlab = "Toss number",          # Label on x-axis
+     ylab = "Proportion of heads",  # Label on y-axis
+     type = "l",       # Show a "l"ine rather than "p"oints
+     lwd = 2,          # Make line of width '2'
+     ylim = c(0, 1),   # y-axis limits
+     las = 1,          # Make axes labels horizontal
+     col = "cyan4")    # Line colour
+abline( h = 0.5,       # Draw horizontal line at y = 0.5
+        col = "grey")  # Make line grey in colour
+```
+
+For one such simulation, these running probabilities are shown in Fig.\ \@ref(fig:SimTosses).
+While the result of any single toss is unpredictable, we see the *Weak Law of Large Numbers* in action: the sample proportion of heads approaches\ $0.5$ as the number of tosses increases.
+
+Using the empirical approach shows why probabilities are between\ $0$ and\ $1$ (inclusive), since the proportions $m/n$ are always between\ $0$ and\ $1$ (inclusive).
+In this case, the sample proportion of heads converges (in probability) to the true probability of a head $p = 0.5$ as the number of trials increases.
+
+
+### Simulation to confirm and validate results {#SimulationConfirmation}
+
+Consider the breast cancer example (Example\ \@ref(exm:BreastCancer)), where we saw that the probability of having breast cancer after a positive test results is quite low.
+This result is surprising, so we could use a computer to confirm that this is correct.
+
+Step\ 1 is to set up the scenario, by setting the random number seed (for reproducibility) and defining some parameters:
+
+```{r}
+population_Size <- 10000
+cancer_Prob <- 0.02
+
+# Test sensitivity and specificity 
+correct_Positive <- 0.75
+correct_Negative <- 0.90
+```
+
+Now we apply a useful 'trick', by first allocating each patient a random number between\ $0$ and\ $1$:
+
+```{r}
+# Allocate a random number between 0 and 1 to each patient
+patient_Probs <- runif( population_Size)
+patient_Probs[1 : 8]
+```
+
+The `runif()` command produces random numbers between\ $0$ and\ $1$ for each person in the population.
+Each time `runif()` is run, different random numbers are allocated to each person in the population.
+
+Now, a number less than\ $0.02$ is equivalent to saying the patient has cancer (the given probability is\ $2$%).
+This is the same as saying about\ $0.02$ of people will have cancer in the population.
+This is like flipping a biased coin for each patient, where the chance of landing on 'cancer' is\ $2$%.
+
+Now we can obtain a list of whether each person has cancer or not.
+Each time `runif()` is run, different people, and a different *number* of people in the population, with cancer can vary:
+
+
+```{r}
+cancer_Result <- patient_Probs < cancer_Prob
+cancer_Result[1 :10]
+```
+
+Then, split the population into those *with* cancer and those *without* cancer:
+
+```{r}
+# Now find those *with* cancer who return a positive result
+with_Cancer <- which( cancer_Result) # Indices of people *with* cancer
+no_Cancer   <- which(!cancer_Result) # Indices of people *without* cancer
+```
+
+The test sensitivity and specificity now can be applied (using the same trick as above):
+
+```{r}
+# Patients WITH cancer: 75% chance the test is positive
+with_Cancer_and_Positive <- runif(length(with_Cancer)) < correct_Positive
+
+# Patients WITHOUT cancer: 10% chance the test is (wrongly) positive
+no_Cancer_and_Positive <- runif(length(no_Cancer)) < (1 - correct_Negative)
+
+# Combine results
+positive_Test <- c(
+  with_Cancer[with_Cancer_and_Positive],
+  no_Cancer[no_Cancer_and_Positive]
+)
+```
+
+Again, each time that `runif()` is run, different people, and a different *number* of people in the population, can return positive test results:
+
+```{r}
+# True positives among those who tested positive
+true_positives  <- sum(cancer_Result[positive_Test])
+
+# Total positives
+total_positives <- length(positive_Test)
+
+# Estimated Prob(cancer | positive test)
+cancer_Given_Pos <- 
+  if (total_positives > 0) {
+    true_positives / total_positives 
+  } else {
+    NA
+  }
+cancer_Given_Pos
+```
+
+Now print some useful information:
+
+```{r}
+cat("Prob (cancer | positive test) :", cancer_Given_Pos, "\n")
+```
+
+The above code has three places where random numbers are used: 
+
+* to randomly allocate people to have cancer or not; 
+* to randomly determine which people *with* cancer return a positive result; and
+* to randomly determine which people *without* cancer return a positive result.
+
+Thus, each time the above code is run will produce different results (unless the random-number seed remains the same).
+
+A *simulation* repeats the above scenario many times, over many replications each with different random numbers used.
+Then, the probability of interest (here, the probability of having cancer, given a positive test result) can be averaged over the many replications.
+To do this (for\ $5\,000$ replications), the above code is repeated and the result of interest is retained from each replication (in `cancer_Given_Pos`):
+
+
+```{r}
+# Set the parameters for the scenario
+num_Reps <- 5000 # The number of replications
+population_Size <- 10000
+cancer_Prob <- 0.02
+
+# Set the test sensitivity and specificity 
+correct_Positive <- 0.75
+correct_Negative <- 0.90
+
+# Create an array to hold the info we need from each replication
+cancer_Given_Pos <- array( dim = num_Reps)
+
+# Now replicate the scenario  num_Reps  times:
+for (i in 1:num_Reps){
+  # Allocate a random number between 0 and 1 to each patient
+  patient_Probs <- runif( population_Size)
+  cancer_Result <- ( patient_Probs < cancer_Prob )
+
+  # Now find those *with* and *without* cancer who return a positive result
+  with_Cancer <- which( cancer_Result) # Indices of people *with* cancer
+  no_Cancer   <- which(!cancer_Result) # Indices of people *without* cancer
+  
+  # Patients WITH cancer: 75% chance the test is positive
+  with_Cancer_and_Positive <- runif(length(with_Cancer)) < correct_Positive
+  
+  # Patients WITHOUT cancer: 10% chance the test is (wrongly) positive
+  no_Cancer_and_Positive <- runif(length(no_Cancer)) < (1 - correct_Negative)
+  
+  # Combine results
+  positive_Test <- c(
+    with_Cancer[with_Cancer_and_Positive],
+    no_Cancer[no_Cancer_and_Positive]
+  )
+  
+  # True positives among those who tested positive
+  true_positives  <- sum(cancer_Result[positive_Test])
+  
+  # Total positives
+  total_positives <- length(positive_Test)
+  
+  # Estimated Prob(cancer | positive test)
+  cancer_Given_Pos[i] <- ifelse( total_positives > 0, 
+                                 true_positives / total_positives, # If  TRUE
+                                 NA)                               # If  FALSE
+}
+
+# Average over the replications
+mean(cancer_Given_Pos)
+```
+
+In Example\ \@ref(exm:BreastCancer), the probability was given as\ $0.1327$, which compares favourably with this answer from simulation (which is an approximation).
+
+
+### Simulation to answers tedious or complex situations {#SimulationComplex}
+
+Suppose\ $10$ people are invited to a party, and sit at a round table; however, two people (say, Anh and Barb) refuse to sit next to each other.
+What is the probability that a random seating arrangement satisfies this constraint?
+
+This is difficult (but not impossible) to compute exactly: the number of circular permutations need to be counted, while excluding adjacent pairs.
+Simulation, however, could be used.
+The strategy is:
+
+* Set up the simulation.
+* Repeat this numerous times:
+  * Create a random permutation of the seating arrangements for\ $10$ people.
+  * Check if Anh and Barb are 'neighbours' for this arrangement.
+* Print the result.
+
+The process is repeated for numerous randomly-generated seating arrangements, and the proportion of acceptable seating arrangements computed.
+
+First, set up the scenario:
+
+```{r}
+set.seed(8723) # Set the random number seed, for reproducibility
+
+num_Reps <- 5000  # Set the number of simulations
+
+# 'Name' the 10 people by using the 'initials' of the ten people
+People <- LETTERS[1:10] # The first 10 capital letters
+People
+```
+
+Then, we create an **R** function to determine if Anh (who is `A`) and Barb (who is `B`) are next to each other:
+
+```{r}
+# The function takes a seating arrangement as input.
+# It checks, for any given seating arrangement, if Anh and Barb are neighbours.
+
+check_If_Neighbours <- function(Arrangement) { 
+  n <- length(Arrangement)  # n  is the length of the arrangement (so, n = 10)
+  
+  # We must allow for circular adjacency: first and last are also neighbours.
+  # So, we add the person in the first position to the end as well:
+  extended_Arrangement <- c(Arrangement, 
+                            Arrangement[1])
+  are_Neighbours <- FALSE 
+  # Assume not neighbours, unless we find them adjacent.
+  # TRUE means they *ARE* neighbours; FALSE means they *ARE NOT* neighbours.
+  
+  # Loop over the  n  people, and check their neighbour to the right.
+  for (i in 1:n) {
+    # Check if Anh and Barb  are neighbours
+    # First: check if A, then B to he right:
+    if (extended_Arrangement[i] == "A" &&  
+        extended_Arrangement[i + 1] == "B") are_Neighbours <- TRUE
+
+    # Then: check if B, then A to he right:
+    if (extended_Arrangement[i] == "B" &&
+        extended_Arrangement[i + 1] == "A") are_Neighbours <- TRUE
+  }
+  # Return the value of are_Neighbours, to state whether the given arrangement
+  # has  A  and  B  as nighbours (TRUE) or not (FALSE):
+  return(are_Neighbours)
+}
+```
+
+To replicate this numerous times, the **R** function `replicate()` is used; it repeatedly evaluates given **R** code a specified number of times.
+In this case:
+
+
+```{r}
+# Run simulation
+# Summing works, because  TRUE  is treated as 1, FALSE  is treated as 0
+seated_Together <- sum( replicate(num_Reps, 
+                                  check_If_Neighbours( sample(People))) )
+# sample(People) makes a random arrangement of the 10 people
+```
+
+
+The command first creates a random arrangement of poeple (i.e., `sample(People)`), and then checks if the given permutation of people has Anh and Barb seated as neighbours (using our function `check_If_Neighbours()`).
+This is replicated `num_Reps` times (using `replicate()`), and adds up (using `sum()`) how many times they are seated together.
+Then, the result can be printed:
+
+```{r}
+# Estimated probability
+prob <- seated_Together / num_Reps
+cat("Prob. of an UNacceptable seating arrangement: approx. ", 
+    round(prob, 4), "\n") # Round to four decimal places
+```
+
+
+
+
+
+### Simulation for sensitivity analysis {#SimulationSensitivityAnalysis}
+
+*Sensitivity analysis*\index{Sensitivity analysis} refers to the process of checking how (and by how much) the results of a problem or model change when the inputs or assumptions are adjusted: how *sensitive* the results are to those inputs.
+
+Suppose a doctor schedules\ $20$ patients per day, but history shows that each patient has a chance of not showing up (a 'no-show').
+For simplicity, assume that each patient has the same 'no-show' probability, and that patients operate independently.
+If more than\ $15$ patients show up on any one day, the clinic runs late.
+What is the probability the clinic runs late?
+(In a later chapter, a theoretical approach will be introduced to answering this type of question; Sect.\ \@ref(BinomialDistribution)).
+
+For this scenario, the probability that each patients is a no-show could be varied (e.g., $10$%; $15$%; $20$%), to see the impact this has on the probability that the clinic runs late.
+
+First, set up the scenario:
+
+
+```{r}
+set.seed(8091) # For reproducibility
+
+num_Reps <- 50000     # Number of replications (i.e., simulated days)
+daily_Patients <- 20  # Number of patients per day
+```
+
+
+Then we create an **R** function to simulate what happens on a day, for any given no-show probability:
+
+
+```{r, class.source="mycode", class.output="myoutput"}
+# Create an R function to simulate what happens on a day
+simulate_Day <- function(no_Show_Prob = 0.15,  # No-show probability
+                         num_Patients = 20,    # Number of patients per day
+                         patient_Limit = 15) { # More than this many: clinic late
+  
+  # Allocate a random number between 0 and 1 to each patient
+  patient_Probs <- runif( num_Patients)
+  
+  # sum()  works, because  TRUE = 1,  and  FALSE = 0
+  number_No_Shows <- sum( patient_Probs < no_Show_Prob )
+
+  running_Late <- ( (num_Patients - number_No_Shows) > patient_Limit) 
+  # TRUE  means clinic will run late.  FALSE  means clinic will NOT run late
+  
+  return(running_Late)
+}
+```
+
+
+Then run the simulation for the various no-show probabilities:
+
+
+```{r}
+# Declare the no-show probabilities to use
+no_Show_Probs <- seq(0.0, 0.15,
+                     by = 0.01)
+
+# Find the mean of the TRUE and FALSE values returned.
+# This works because  R  treats TRUE as 1, FALSE as 0
+prob_Day_Is_Late <- array(dim = length(no_Show_Probs))
+
+for (i in (1:length(no_Show_Probs)) ){ # For each probability:
+  num_Days_Run_Late <- sum(replicate(num_Reps, 
+                                     simulate_Day(no_Show_Probs[i]) ) )
+  prob_Day_Is_Late[i] <- num_Days_Run_Late / num_Reps
+}
+```
+
+
+The results then can be printed (and plotted; see Fig.\ \@ref(fig:probLate)):
+
+```{r plotProbLate, fig.show='hide'}
+round(prob_Day_Is_Late, 4)
+
+plot(prob_Day_Is_Late ~ no_Show_Probs,
+     type = "b",     # Plot "both" lines and points
+     las = 1,        # Make axis labels horizontal
+     lwd = 2,        # Line width of 2
+     col = "cyan4",  # Set colour
+     xlab = "Probability that a patient is a no-show",
+     ylab = "Probability that clinic runs late")
+```
+
+Clearly, the greater the no-show probability, the smaller the chance of running late (as expected).
+
+```{r probLate, fig.align="center", fig.cap = "A simulations that shows the probability that a day at a medical clinic runs late.", out.width = "80%", fig.width = 7, fig.height = 4, echo=FALSE, results='hide'}
+<<plotProbLate>>
+```
+
+We could also change the number of patients scheduled each day to see what the impact is (e.g., $18$ or\
+$22$\ patients).
+
+
+
+
+
+## Exercises {#ProbabilityExercises}
+
+Selected answers appear in Sect.\ \@ref(AnswersChapProbability).
+
+
+:::{.exercise #BasicProbs}
+Suppose $\Pr(A) = 0.53$, $\Pr(B) = 0.24$ and $\Pr(A\cap B) = 0.11$.
+
+1. Display the situation using a Venn diagram, tree diagram and a table.
+   Which is easier in this situation?
+2. Find $\Pr(A\cup B)$.
+3. Find $\Pr(A^c\cap B)$.
+4. Find $\Pr(A^c \cup B^c)$.
+5. Find $\Pr(A \mid B)$.
+6. Are events $A$ and $B$ independent?
+:::
+
+
+:::{.exercise #DrawNumbers}
+Suppose a box contains $100$ tickets numbered from $1$ to $100$ inclusive.
+Four tickets are drawn from the box one at a time (without replacement).
+Find the probability that:
+
+1. all four numbers drawn are *odd*.
+1. exactly two odd numbers are drawn.
+1. *at least* two odd numbers are drawn before drawing the first even number.
+1. the *sum* of the numbers drawn is odd.
+:::
+
+
+
+:::{.exercise #GreenLights}
+A courier company is interested in the length of time a certain set of traffic lights is green. 
+The lights are set so that the time between green lights in any one direction is between $15$ and $150$ seconds. 
+An employee  observes the lights and record the length of time between consecutive green lights.
+
+1. What is the random variable?
+2. What is the sample space?
+3. Can the classical approach to probability be used to determine the probability that the time between green lights is less than $90$ seconds?
+   Why or why not?
+4. Can the relative frequency approach be used to determine the same probability?
+   If so, how? If not, why not?
+:::
+
+
+:::{.exercise #Cricket}
+Suppose a touring cricket squad consist of fifteen players, from which a team of eleven must be chosen for each game. 
+Suppose a squad consists of seven batters, five bowlers, two all-rounders and one wicketkeeper.
+
+1. Find the number of teams possible if the *playing team* consists of five batters, four bowlers, one all-rounder and one wicketkeeper.
+2. After a game, each member of one playing team shakes hands with each member of the opposing playing team, and each member of both playing teams shakes hands with the two umpires.
+   How many handshakes are there in total at the conclusion of a game?
+:::
+
+
+
+
+:::{.exercise #HatData}
+Researchers [@data:Dexter2019:SunProtection] observed the behaviour of pedestrians in Brisbane, Queensland, around midday in summer.
+The researchers found the probability of wearing a hat was $0.025$ for males, and $0.060$ for females.
+Using this information:
+
+1. Construct a tree diagram for the sample space.
+1. Construct a table of the sample space.
+1. Construct the Venn diagram of the sample space.
+:::
+
+
+:::{.exercise #CarPassengers}
+A family with six non-driving children, and two driving parents has an eight-seater vehicle.
+
+1. In how many ways can the family be seated in the car (and legally go driving)?
+1. Suppose one of the children obtains their driving licence.
+   In how many ways can the family be seated in the car (and legally go driving) now?
+1. Two of the children needs car seats, and there are two car seats fixed in the vehicle (i.e., they cannot be moved to different seats).
+   If the two parents are the only drivers, in how many ways can the family be seated in the car (and legally go driving) now?
+:::
+
+
+:::{.exercise #Monopoly}
+A group of four people sit down to play Monopoly.
+The eight tokens are distributed randomly.
+In how many ways can this be done?
+:::
+
+
+:::{.exercise #PassWords}
+A company password policy is that users must select an eight-letter password comprising lower-case letters.
+The company is considering each of the following changes separately:
+
+1. Suppose the policy changes to allow eight-, nine-, or ten-letter passwords of just lower-case letters.
+   How many passwords are possible now?
+1. Suppose the policy changes to allow eight-letter passwords comprising lower-case and upper-case letters letters.
+   How many passwords are possible now?
+1. Suppose the policy changes to allow eight-letter passwords comprising lower-case, upper-case letters letters and the ten digits $0$ to $9$.
+   How many passwords are possible now?
+1. Suppose the policy changes to allow eight-letter passwords comprising lower-case, upper-case letters letters and the ten digits $0$ to $9$, and each password must have one of each category.
+   How many passwords are possible now?
+:::
+
+
+
+
+:::{.exercise #Stirling}
+*Stirling's approximation* is
+$$
+   n!\approx {\sqrt {2\pi n}}\left({\frac {n}{e}}\right)^{n}.
+$$
+
+1. Compare the values of the actual factorials with the Stirling approximation values for $n = 1, \dots, 10$. 
+   (Use technology!)
+1. Plot the *relative error* in Stirling's approximation for $n = 1, \dots, 10$.
+   (Again, use technology!)
+:::
+
+
+
+:::{.exercise #MatchingBrackets}
+Many document processors help users match brackets.
+Bracket matching is an interesting mathematical problem!
+For instance, the string `(())` is syntactically valid, whereas `())(` is not, even though both contain two opening and two closing brackets.
+
+1. List all the ways in which two opening and two closing brackets can be written in a way that is syntactically valid.
+1. How many ways can three opening and three closing brackets be written in a way that is syntactically valid?
+   List these.
+1. In general, the number of ways that $n$ opening and $n$ closing brackets can be written that is syntactically valid is given by the *Catalan numbers* $C_n$, where:
+$$
+   C_{n} 
+   = 
+   {\frac {1}{n + 1}}\binom{2n}{n}.
+$$
+   Show that an equivalent expression for $C_n$ is $\displaystyle C_n = {\frac {(2n)!}{(n + 1)!\,n!}}$.
+1. Show that another equivalent expression for $C_n$ is $\displaystyle \binom{2n}{n} - \binom{2n}{n + 1}$ for $n\geq 0$.
+1. Find the first nine Catalan numbers, starting with $C_0$.
+<!-- Also see: https://brilliant.org/wiki/catalan-numbers/ -->
+:::
+
+
+
+
+
+:::{.exercise #DiceGame}
+In a two-person game, a fair die is thrown in turn by each player. 
+The first player to roll a `r knitr::include_graphics("Dice/die5.png", dpi=2000)` wins.
+
+1. Find the probability that the first player to throw the die wins.
+1. Suppose the player to throw first is selected by the toss of a fair coin.
+   Show that each player has an equal chance of winning.
+:::
+
+
+:::{.exercise #RandomisedResponse}
+To get honest answers to sensitive questions, sometimes the *randomised response technique* is used.
+For example, suppose the aim is to discover the proportion of students who have used illegal drugs in the past twelve months. 
+
+$N$ cards are prepared, where $m$ have the statement 'I *have* used an illegal drug in the past twelve months'.
+The remaining $N - m$ cards have the statement 'I *have not* used an illegal drug in the past twelve months'.
+
+Each student in the sample then selects one card at random from the prepared pile of $N$ cards, and answers 'True' or 'False' when asked the question 'Is the statement on the selected card true or false?' without divulging which statement is on the card. 
+Since the interviewer does not know which card has been presented, the interviewer does not know if the person has used drugs or not from this answer.
+
+Let $T$ be the probability that a student answers 'True', and $p$ be the probability that a student chosen at random has used an illegal drug.
+Assume that each student answers the question on the chosen card truthfully.
+
+1. From an understanding of the problem, show that
+$$
+     T = (1 - p) + \frac{m}{N}(2p - 1).
+$$
+1. Find an expression for $p$ in terms of $T$, $m$ and $N$ by rearranging the previous expression.
+1. Explain what happens for $m = 0$, $m = N$ and $m = N/2$, and why these make sense *in the context of the question*.
+1. Suppose that, in a sample of 400 students, 175 answer 'True'.
+   Estimate $p$ from the expression found above, given that $N = 100$ and $m = 25$.
+:::
+
+
+
+:::{.exercise #MCExam}
+A multiple choice question contains $m$ possible choices. 
+There is a probability of $p$ that a candidate chosen at random will know the correct answer.
+If a candidate does not know the answer, the candidate guesses and is equally likely to select any of the $m$ choices.
+
+For a randomly selected candidate, what is the probability of the question being answered correctly?
+:::
+
+
+::: {.exercise #EPL}
+In the 2019/2020 English Premier League (EPL), at full-time the home team had won $91$ out of $208$ games, the away team won $67$, and $50$ games were drawn.
+(Data from: https://sports-statistics.com/sports-data/soccer-datasets/)
+
+Define $W$ as a win, and $D$ as a draw.
+
+1. Explain the difference between $\Pr(W)$ and $\Pr(W \mid D^c)$.
+2. Compute both probabilities, and comment.
+:::
+
+
+:::{.exercise #TwoPointsInSquare}
+Consider a square of size $1\times 1$ metre.
+A random process consists of selecting two points at random in the square.
+
+1. What is the sample space for the distance between the two points?
+1. Suppose a grid (lines parallel to the sides) is drawn on the square such that grid lines are equally spaced $25$\ cm apart.
+   Two points are chosen again, but must be on the intersection of the grid lines.
+   Write some **R** code to generate the sample space for the distance between the two points.
+:::
+
+
+:::{.exercise #LocalNewsletter}
+Suppose that $30$% of the residents of a certain suburb subscribe to a local newsletter.
+In addition, $8$% of residents belong to a local online group.
+
+1. What percentage of residents *could* belong to both?
+   Give a range of possible values.
+2. Suppose $6$% belong to both.
+   Compute:
+   a. The probability than a random chosen newsletter subscriber is also a member of the online group.
+   b. The probability than a random chosen online member is also a subscriber to the newsletter.
+:::
+
+
+:::{.exercise #SchoolKids}
+
+The data in Table\ \@ref(tab:EdTable) tabulates information about school children in Queensland in 2019 [@mypaper:Dunn:GLM-IEE].
+
+1. What is the probability that a randomly chosen student is a First Nations student?
+1. What is the probability that a randomly chosen student is in a government school?
+1. Is the sex of the student approximately independent of whether the student is a First Nations student, for students in government schools?
+1. Is the sex of the student approximately independent of whether the student is a First Nations student, for students in non-government schools?
+1. Is whether the student is a First Nations student approximately independent of the type of school, for female students?
+1. Is whether the student is a First Nations student approximately independent of the type of school, for male students?
+1. Based on the above, what can you conclude from the data?
+:::
+
+```{r EdTable, echo=FALSE}
+EdTable <- array( NA, dim = c(4, 2) )
+rownames(EdTable) <- c("Females",
+                       "Males",
+                       "Females",
+                       "Males")
+colnames(EdTable) <- c("Number First Nations students",
+                       "Number non-First Nations students")
+
+EdTable[, 1] <- c(2540, 2734, 391, 362)
+EdTable[, 2] <- c(21219, 22574, 9496, 9963)
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(EdTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               format.args = list(big.mark = ","),
+               caption = "The number of First Nations and non-First Nations students in Queensland schools in 2019.") %>%
+     kable_styling(font_size = 10) %>%
+     column_spec(column = 2, width = "30mm") %>%
+     column_spec(column = 3, width = "30mm") %>%
+     pack_rows("Government schools",
+                start_row = 1, 
+                end_row = 2, 
+                bold = FALSE, 
+                italic = TRUE) %>%
+     pack_rows("Non-government schools",
+                start_row = 3, 
+                end_row = 4, 
+                bold = FALSE, 
+                italic = TRUE) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(EdTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               caption = "The number of First Nations and non-First Nations students in various Queensland schools in 2019.") %>%
+     pack_rows("Government schools",
+                start_row = 1, 
+                end_row = 2, 
+                bold = FALSE, 
+                italic = TRUE) %>%
+     pack_rows("Non-government schools",
+                start_row = 3, 
+                end_row = 4, 
+                bold = FALSE, 
+                italic = TRUE) %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+
+:::{.exercise #CardsAces}
+Two cards are randomly drawn (without replacement) from a $52$-card pack.
+
+1. What is the probability the second card is an **Ace**?
+1. What is the probability that the first card is lower in rank (**Ace** low) than the second?
+1. What is the probability that the card ranks are in consecutive order where **Ace** is low *or* high and order is irrelevant (e.g., (Jack, Queen), (Queen, Jack), (Ace, Two) or (kKng, Ace))?
+:::
+
+
+:::{.exercise #Octaves}
+An octave contains $12$ distinct notes: seven white keys and 5 black keys on a piano.
+
+1. How many different eight-note sequences within a single octave can be played using the white keys only?
+1. How many different eight-note sequences within a single octave can be played if the white and black keys alternate (starting with either colour)?
+1. How many different eight-note sequences within a single octave can be played if the white and black keys alternate and no key is played more than once?
+:::
+
+
+
+:::{.exercise #SomeProb}
+Find $\Pr(A\cap B)$ if $\Pr(A) = 0.2$, $\Pr(B) = 0.4$, and $\Pr(A\mid B) + \Pr(B \mid A) = 0.375$.
+:::
+
+
+:::{.exercise #SolvePermk}
+Solve $12\times P^7_k = 7\times P^6_{k + 1}$ using:
+
+1. algebra; and then
+2. using **R** to search over all possible values of $k$.
+:::
+
+
+
+:::{.exercise #SolvePermk2}
+Solve $P^7_{r + 1} = 10 {C^7_r}$ for $r$.
+:::
+
+
+
+:::{.exercise #BirthdayProblem}
+1. Take a guess: how many randomly-selected individuals would you need so that the probability that *at least two* have the same birthday would exceed\ $50$%?
+2. Show that the probability that, for a group of $N$ randomly selected individuals, *at least two* have the same birthday (assuming $365$ days in a year) can be written as
+$$
+  1 - \left(\frac{365}{365}\right) \times \left(\frac{364}{365}\right) \times \left(\frac{363}{365}\right) \times \dots\times \left(\frac{365 - n + 1}{365}\right).
+$$
+3. Graph the relationship for various values of $N$, using the above form to compute the probability.
+4. What assumptions are necessary? 
+   Are these reasonable?
+5. Use computer simulation to confirm these results.
+
+:::
+
+
+:::{.exercise #SixNumbersConsecutive}
+Six numbers are randomly selected *without replacement* from the numbers $1, 2, 3,\dots, 45$.
+Model this process using **R** to estimate the probability that there are *no consecutive numbers* amongst the numbers selected.
+(That is, no sequence like `4, 5` or `33, 34` or `21, 22, 23` appears, once the numbers are sorted smallest to largest.)
+:::
+
+
+:::{.exercise #TwoEventsOverline}
+Suppose the events $A$ and $B$ have probabilities $\Pr(A) = 0.4$ and $\Pr(B) = 0.3$, and $\Pr(A\cup B) = 0.5$.
+Determine $\Pr( A^c \cap B^c)$.
+Are $A$ and $B$ independent events?
+:::
+
+
+:::{.exercise #TwoEventsAbsorption}
+For sets $A$ and $B$, show that:
+
+1. $A\cup (A\cap B) = A$;
+2. $A\cap (A\cup B) = A$.
+
+These are called the *absorption laws*.
+:::
+
+
+:::{.exercise #NewCars}
+A new cars can be purchased with options:
+
+* Seven different paints colours are available;
+* Three different trim levels are available;
+* Cars can be purchased with or without a sunroof.
+
+How many possible combinations are possible?
+:::
+
+
+:::{.exercise #NumberPlates}
+Suppose number plates have three numbers, followed by two letters then another number.
+How many number plates are possible with this scheme?
+:::
+
+
+:::{.exercise #PairsPoker}
+In some forms of poker, five cards are dealt to each player, and certain combinations then beat other combinations.
+
+1. What is the probability that the initial five cards include *exactly* one pair.
+   (This implies *not* getting a three of a kind or four of a kind.)
+   Explain your reasoning.
+2. What is the probability that the initial five cards includes *only* picture cards (Ace, King, Queen, Jack)?
+:::
+
+:::{.exercise}
+Prove that $P^n_n = P^n_{n-1}$.
+:::
+
+:::{.exercise #NoTechP}
+Without using any technology, compute the value of $\displaystyle \frac{C^{25}_8}{C^{25}_6}$.
+:::
+
+
+:::{.exercise #ProbHarder}
+1. If $A_1, A_2, \dots, A_n$ are independent events, prove that
+$$
+   \Pr(A_1 \cup A_2 \cup \dots \cup A_n) = 1 - [1 - \Pr(A_1)][1 - \Pr(A_2)] \dots [1 - \Pr(A_n)].
+$$
+1. Consider two events $A$ and $B$ such that $\Pr(A) = r$ and $\Pr(B) = s$ with $r, s > 0$ and $r + s > 1$.
+   Prove that
+$$
+      \Pr(A \mid B) \ge 1 - \left(\frac{1 - r}{s} \right).
+$$
+:::
+
+
+
+:::{.exercise #AngleInSquare}
+Consider the diagram in Fig.\ \@ref(fig:AngleInSquare).
+The point $P$ is randomly placed within the $1\times 1$ square $ABCD$.
+What is the probability that the angle $APB$ is *greater* than $90^\circ$?
+:::
+
+
+```{r AngleInSquare, echo=FALSE, fig.align="center", fig.cap="Point $P$ is placed randomly in the $1\\times 1$ square $ABCD$.", fig.width = 3, out.width="30%"}
+par(mar = c(0.1, 0.1, 0.1, 0.1) )
+plot( x = c(0, 1),
+      y = c(0, 1),
+      axes = FALSE,
+      asp = 1,
+      xlim = c(-0.1, 1.1),
+      type = "n",
+      xlab = "",
+      ylab = "")
+
+lines( x = c(0, 0, 1, 1, 0),
+       y = c(0, 1, 1, 0, 0),
+       lwd = 2)
+
+innerPoint <- c(0.5, 0.8)
+lines( x = c(0, innerPoint[1], 0),
+       y = c(0, innerPoint[2], 1),
+       lwd = 1)
+
+text(x = c(0, 0, 1, 1),
+     y = c(0, 1, 1, 0),
+     pos = c(2, 2, 4, 4),
+     labels = c(expression(italic(A)), 
+                expression(italic(B)),
+                expression(italic(C)),
+                expression(italic(D))) )
+
+points(x = innerPoint[1],
+       y = innerPoint[2],
+       pch = 19,
+       cex = 0.75)
+text(x = innerPoint[1],
+     y = innerPoint[2],
+     pos = 4,
+     labels = expression(italic(P)))
+```
+
+
+
+
+
+:::{.exercise #SquareInCircle}
+Consider the diagram in Fig.\ \@ref(fig:SquareInCircle).
+What is the probability that a point randomly placed within the circle (with radius $r = 1$) also lands within the square?
+:::
+
+
+```{r SquareInCircle, echo=FALSE, fig.align="center", fig.cap="A random point is placed within the circle with centre\\ $C$ and radius $r = 1$.", fig.width = 3, out.width="30%"}
+par(mar = c(0.1, 0.1, 0.1, 0.1) )
+plot( x = c(-1, 1),
+      y = c(-1, 1),
+      axes = FALSE,
+      asp = 1,
+      xlim = c(-1.1, 1.1),
+      ylim = c(-1.1, 1.1),
+      type = "n",
+      xlab = "",
+      ylab = "")
+
+theta <- seq(0, 2*pi,
+             length = 100)
+radius <- 1
+x <- radius * cos(theta)
+y <- radius * sin(theta)
+
+# Circle
+lines( x = x,
+       y = y,
+       lwd = 2)
+
+# Square
+angles <- c(1, 3, 5, 7) * pi / 4
+polygon( x = cos(angles) * radius,
+         y = sin(angles) * radius,
+         lwd = 2)
+
+# Show arrows
+arrows(x0 = 0,
+       y0 = 0,
+       x1 = cos(angles[1]) * radius,
+       y1 = sin(angles[1]) * radius,
+       angle = 15,
+       length = 0.15)
+
+# Points
+points(x = 0,
+       y = 0,
+       pch = 16)
+text(x = 0,
+     y = 0,
+     label = expression(italic(C)),
+     pos = 1)
+text( x = (radius/2) * cos(pi/4),
+      y = (radius/2) * sin(pi/4),
+      expression(italic(r)==1),
+      pos = 2)
+
+```
+
+
+
+:::{.exercise #Locks}
+A combination lock work by setting (for example) four digits to numbers in a specified order.
+Suggest a more accurate name for a '*combination* lock'.
+:::
+
+
+:::{.exercise #NonTransitiveDice}
+Consider the following dice (called Miwin's dice)\index{Miwin's dice};:
+
+* Die\ A: The six sides are labelled: $\qquad  2 \qquad 2 \qquad 4 \qquad 4 \qquad 9 \qquad 9$. 
+* Die\ B: The six sides are labelled: $\qquad  1 \qquad 1 \qquad 6 \qquad 6 \qquad 8 \qquad 8$.
+* Die\ C: The six sides are labelled: $\qquad  3 \qquad 3 \qquad 5 \qquad 5 \qquad 7 \qquad 7$.
+
+These dice are *non-transitive* that is, in the long run, Die\ A beats Die\ B, Die\ B beats Die\ C... but Die\ C also beats Die\ A.
+
+Use a computer simulation to confirm these results by 'rolling' them many times, and find the probabilities of each die winning against the other two.
+:::
+
+
+:::{.exercise #SimulationSensivityNumber}
+Adjust the **R** code used in Sect.\ \@ref(SimulationSensitivityAnalysis) so examine how the probability of running late changes as the number of booked patients increases from $15$\ up to $25$ people.
+:::
+
+
+:::{.exercise #SimulationMontyHall}
+A game show contestant is told there is a car behind one of three doors, and a goat behind each of the other doors. 
+The contestant is asked to select a door. 
+
+The host of the show (who knows where the car is) now opens one of the doors *not* selected by the contestant, and reveals a goat. 
+The host now gives the contestant the choice of either (a)\ retaining the door chosen first, or (b)\ switching and choosing the other (unopened) door. 
+
+1. Which of the following *do you think* is the contestant's best strategy?
+  1. Always retain the first choice.
+  2. Always change and select the other door.
+  3. Choose either unopened door at random.
+2. Use a computer simulation to estimate the probabilities to determine the best strategy.
+   *Hint:* remember the crucial information: the host of the show knows where the car is, and opens one of the doors *not* selected by the contestant, *and reveals a goat*. 
+:::
+
+

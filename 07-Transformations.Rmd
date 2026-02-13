@@ -1,0 +1,1526 @@
+# Transformations of random variables {#ChapterTransformations}
+
+::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
+On completion of this chapter, you should be able to:
+
+* derive the distribution of a transformed variable, given the distribution of the original variable, using the distribution function method, the change of variable method, and the moment-generating function method as appropriate.
+* find the joint distribution of two transformed variables in a bivariate situation.
+:::
+
+
+
+## Introduction
+
+\index{Transformations of random variables|(}
+In this chapter, we consider the distribution of a random variable $Y = u(X)$, given a random variable\ $X$ with known distribution, and a function $u(\cdot)$.
+Among several available techniques, three are considered:
+
+1. the change of variable method (Sect.\ \@ref(ChangeOfVariable));
+2. the distribution function method for continuous random variable only (Sect.\ \@ref(DistributonFunctionMethod));
+3. the moment-generating function method (Sect.\ \@ref(TransformationMoments)).
+
+An important concept in this context is a *one-to-one transformation*.
+
+
+:::{.definition #OneOneTransformation name="One-to-one transformation"}
+Given random variables\ $X$ and\ $Y$ with range spaces\ $\mathcal{R}_X$ and\ $\mathcal{R}_Y$ respectively, the function\ $u(\cdot)$ is a *one-to-one transformation* (or mapping) if, for each $y\in \mathcal{R}_Y$, there corresponds exactly one $x\in \mathcal{R}_X$.
+:::
+
+
+When $Y = u(X)$ is a one-to-one transformation, the inverse function is uniquely defined; that is, $X$ can be written uniquely in terms of\ $Y$. 
+This is important when considering the distribution of\ $Y$ when the distribution of\ $X$ is known.
+
+
+:::{.example #OneToOneTransformation}
+The transformation $Y = (X - 1)^2$ is not a one-to-one transformation for $\mathcal{R}_X = \mathbb{R}$; that is, if $X$ is defined on $(-\infty, +\infty)$.
+For example, the inverse transformation is $X = 1 \pm \sqrt{Y}$, and two values of\ $X$ exists for any given value of $Y > 0$ (Fig.\ \@ref(fig:TwoTransforms), left panel).
+
+However, if the random variable\ $X$ is only defined for $X > 2$, then the transformation is a one-to-one function  (Fig.\ \@ref(fig:TwoTransforms), right panel).
+:::
+
+
+```{r TwoTransforms, echo=FALSE, fig.align="center", fig.cap="Two transformations: a non-one-to-one transformation (left panel), and a one-to-one transformation (right panel).", fig.height=4, out.width='80%', fig.width=7}
+par(mfrow = c(1, 2))
+
+x <- seq(-2, 4, 
+         length = 500)
+y <- (x - 1)^2
+
+x1 <- seq(2, 3,
+          length = 500)
+y1 <- (x1 - 1)^2
+
+plot( y ~ x,
+      type = "l",
+      las = 1,
+      lwd = 3,
+      col = plotColour1,
+      xlab = expression(italic(X)),
+      ylab = expression(italic(Y)),
+      main = "A transformation that is\nnot one-to-one")
+
+plot( y ~ x,
+      type = "l",
+      las = 1,
+      col = "grey",
+      lwd = 3,
+      lty = 2,
+      xlab = expression(italic(X)),
+      ylab = expression(italic(Y)),
+      main = "A transformation that is\none-to-one")
+lines( y1 ~ x1,
+       col = plotColour1,
+       lwd = 3)
+lines(x = c(min(x1), min(x1)),
+      y = c(0, min(y1)),
+      lty = 3)
+lines(x = c(max(x1), max(x1)),
+      y = c(0, max(y1)),
+      lty = 3)
+```
+
+
+
+
+## The change of variable method {#ChangeOfVariable}
+
+\index{Transformations of random variables!change of variable method|(}
+The method is relatively straightforward for one-to-one transformations (such as $Y = 1 - X$ or $Y = \exp(X)$).
+Considerable care needs to be exercised if the transformation is not one-to-one; examples are given below.
+The discrete and continuous cases are considered separately. 
+
+
+### Discrete random variables {#ChangeOfVarDiscrete}
+
+Let\ $X$ be a discrete random variable with probability function $p_X(x)$, and let\ $\mathcal{R}_X$ denote the set of discrete points for which $p_X(x) > 0$.
+Let $Y = u(X)$ define a *one-to-one transformation* that maps\ $\mathcal{R}_X$ onto\ $\mathcal{R}_Y$, the set of discrete points for which the transformed variable\ $Y$ has a non-zero probability. 
+If we solve $Y = u(X)$ for\ $X$ in terms of $Y$, say $X = w(Y) = u^{-1}(Y)$, then for each $y \in \mathcal{R}_Y$, we have $x = w(y)\in \mathcal{R}_X$.
+
+
+:::{.example #Transform1 name="One-to-one transformation"}
+Suppose
+$$
+   p_X(x) = 
+   \begin{cases}
+      x/15 & \text{for $x = 1, 2, 3, 4, 5$};\\
+      0    & \text{elsewhere}.
+   \end{cases}
+$$
+To find the probability function of\ $Y$ where $Y = 2X + 1$ (i.e., $u(x) = 2x + 1$), first see that $\mathcal{R}_X = \{1, 2, 3, 4, 5\}$.
+Hence $\mathcal{R}_Y = \{3, 5, 7, 9, 11\}$ and the mapping $y = 2x + 1 = u(x)$ is one-to-one. 
+Also, $w(y) = u^{-1}(y) = (y - 1)/2$.
+Hence,
+$$
+   \Pr(Y = y)
+   = \Pr(2X + 1 = y)
+   = \Pr\left(X = \frac{y - 1}{2}\right)
+   = \left(\frac{y - 1}{2}\right) \times\frac{1}{15}
+   = \frac{y - 1}{30}. 
+$$
+So the probability function of\ $Y$ is
+$$
+   \Pr(Y = y)
+   = \begin{cases}
+      (y - 1)/30 & \text{for $y = 3, 5, 7, 9, 11$};\\
+      0          & \text{elsewhere}.
+    \end{cases}
+$$
+(Note: The probabilities in this probability function add to\ $1$.)
+:::
+
+
+The above procedure when $Y = u(X)$ is a one-to-one mapping can be stated generally as
+\begin{align*}
+   \Pr(Y = y) 
+   &= \Pr\big(u(X) = y\big)\\
+   &= \Pr\big(X = u^{-1} (y)\big)\\
+   &= p_X\big(u^{-1}(y)\big), \quad\text{for $y\in \mathcal{R}_Y$}.
+\end{align*}
+
+
+:::{.example #Transform2 name="Transformation (1:1)"}
+Let $X$ have a binomial distribution with probability function
+$$
+   p_X(x) = \begin{cases}
+               \binom{3}{x}0.2^x (0.8)^{3 - x} & \text{for $x = 0, 1, 2, 3$};\\
+               0 & \text{otherwise}.
+            \end{cases}
+$$
+To find the probability function of $Y = X^2$, first note that $Y = X^2$ is *not* a one-to-one transformation in general, but is over the range space of\ $X$ (i.e., for $x = 0, 1, 2, 3$).
+
+The transformation $y = u(x) = x^2$, $\mathcal{R}_X = \{ x \mid x = 0, 1, 2, 3 \}$ maps onto $\mathcal{R}_Y = \{y \mid y = 0, 1, 4, 9\}$.
+The inverse function is $x = w(y) = \sqrt{y}$, and hence the probability function of $Y$ is
+$$
+   p_Y(y) = p_X(\sqrt{y})
+   = \begin{cases}
+               \binom{3}{\sqrt{y}}0.2^{\sqrt{y}} (0.8)^{3 - \sqrt{y}} & \text{for $y = 0, 1, 4, 9$};\\
+               0 & \text{otherwise}.
+     \end{cases}
+$$
+:::
+
+
+When the transformation \ $u(\cdot)$ is *not* 1:1, more care is needed.
+
+
+:::{.example #TransformNot11 name="Transformation not 1:1"}
+Suppose $\Pr(X = x)$ is defined as in Example\ \@ref(exm:Transform1), and define $Y = |X - 3|$.
+Since $\mathcal{R}_Y = \{0, 1, 2\}$ the mapping is *not* one-to-one: the event $Y = 0$ occurs if $X = 3$, the event $Y = 1$ occurs if $X = 2$ or $X = 4$, and the event $Y = 2$ occurs if $X = 1$ or $X = 5$.
+Hence, $\mathcal{R}_Y  \{ 0, 1, 2\}$.
+
+To find the probability distribution of\ $Y$:
+\begin{align*}
+   \Pr(Y = 0) 
+   &= \Pr(X = 3) = 3/15 = \frac{1}{5};\\
+   \Pr(Y = 1) 
+   &= \Pr(X = 2 \text{ or } 4) = \frac{2}{15} + \frac{4}{15} = \frac{2}{5};\\
+   \Pr(Y = 2) 
+   &= \Pr(X = 1 \text{ or } 5) = \frac{1}{15} + \frac{5}{15} = \frac{2}{5}.
+\end{align*}
+The probability function of $Y$ is
+$$
+   p_Y(y) = 
+   \begin{cases}
+       1/5 & \text{for $y = 0$};\\
+       2/5 & \text{for $y = 1$};\\
+       2/5 & \text{for $y = 2$};\\
+       0   & \text{elsewhere}.
+   \end{cases}
+$$
+:::
+
+
+
+### Continuous random variables {#ChangeOfVarContinuous}
+
+:::{.theorem #ChangeOfVarCont name="Change of variable (continuous rv)"}
+If\ $X$ has PDF $f_X(x)$ for $x\in \mathcal{R}_X$ and\ $u(\cdot)$ is a one-to-one function for $x\in \mathcal{R}_X$, then the random variable $Y = u(X)$ has PDF
+$$
+   f_Y(y) = f_X(x) \left|\frac{dx}{dy}\right|
+$$
+where the right-hand side is expressed as a function of\ $y$.
+The term $\left|dx/dy\right|$ is called the *Jacobian of the transformation*.\index{Jacobian of the transformation}
+:::
+
+:::{.proof}
+Let the inverse function be $X = w(Y)$ so that $w(y) = u^{-1}(x)$.
+
+**Case\ 1:** $y = u(x)$ is a strictly *increasing* function (Fig.\ \@ref(fig:Transformation), left panel).
+If $a < y < b$ then $w(a) < x < w(b)$ and  $\Pr(a < Y < b) = \Pr\big(w(a) < X <w(b)\big)$, so
+$$
+   {\int^b_a f_Y(y)\,dy
+   =\int^{w(b)}_{w(a)}f_X(x)\,dx
+   =\int^b_af\big( w(y)\big)\frac{dx}{dy}\,\,dy}.
+$$
+Therefore, $\displaystyle {f_Y(y) = f_X\big( w(y) \big)\frac{dx}{dy}}$, where $w(y) = u^{-1}(x)$.
+
+
+```{r Transformation, echo=FALSE, fig.align="center", fig.cap="A strictly increasing transformation function (left panel) and strictly decreasing function (right panel).", fig.width=9, fig.height=4, out.width='100%'}
+par( mfrow = c(1, 2))
+
+logit <- function(x) { 
+  log(x / (1 - x)) 
+  }
+
+y <- seq(0.01, 1,
+         length = 100)
+x <- logit(y)
+
+y0 <- 0.4
+y1 <- 0.8
+
+x0 <- logit( y0 )
+x1 <- logit( y1 )
+
+plot( x = x,
+      y = y,
+      lwd = 3,
+      col = plotColour1,
+      axes = FALSE,
+      type = "l",
+      main = "Increasing function",
+      xlab = expression(italic(x)),
+      ylab = expression(italic(y)==italic(u)(italic(x))))
+axis(side = 2,
+     las = 1,
+     at = c(y0, y1),
+     labels = c(expression(italic(a)), 
+                expression(italic(b))) ) 
+axis(side = 1,
+     at = c(x0, x1 ),
+     labels = c(expression(italic(w)*paste("(",italic(a),")")),
+                expression(italic(w)*paste("(",italic(b),")")) ) )
+box()
+
+lines( x = c( min(x), x0, x0),
+       y = c(y0, y0, 0),
+       lty = 2)
+lines( x = c( min(x), x1, x1),
+       y = c(y1, y1, 0),
+       lty = 2)
+
+text(x = 3.6,
+     y = 0.85,
+     label = expression(italic(y)==italic(u)(italic(x))))
+
+
+
+logit2 <- function(x) { 
+  -log(x / (1 - x)) 
+  }
+
+y <- seq(0.01, 0.99,
+         length = 100)
+x <- logit2(y)
+
+y0 <- 0.4
+y1 <- 0.8
+
+x0 <- logit2( y0 )
+x1 <- logit2( y1 )
+
+plot( x = x,
+      y = y,
+      lwd = 3,
+      col = plotColour1,
+      axes = FALSE,
+      type = "l",
+      main = "Decreasing function",
+      xlab = expression(italic(x)),
+      ylab = expression(italic(y)==italic(u)(italic(x))))
+axis(side = 2,
+     las = 1,
+     at = c(y0, y1),
+     labels = c(expression(italic(a)), 
+                expression(italic(b))) ) 
+axis(side = 1,
+     at = c(x0, x1),
+     labels = c(expression(italic(w)*paste("(",italic(a),")")),
+                expression(italic(w)*paste("(",italic(b),")")) ) )
+box()
+
+lines( x = c( min(x), x0, x0),
+       y = c(y0, y0, 0),
+       lty = 2)
+lines( x = c( min(x), x1, x1),
+       y = c(y1, y1, 0),
+       lty = 2)
+
+text(x = 2,
+     y = 0.7,
+     label = expression(italic(y)==italic(u)(italic(x))))
+```
+
+
+
+**Case\ 2:** $y = u(x)$ is a strictly *decreasing* function of $x$ (Fig.\ \@ref(fig:Transformation), right panel).
+If $a < y < b$ then $w(b) < x < w(a)$ and $\Pr(a < Y < b) = \Pr\big(w(b) < X < w(a)\big)$, so that
+\begin{align*}
+     \int^b_a f_Y(y)\,dy & = \int^{w(a)}_{w(b)}f_X(x)\,dx\\
+     & = \int^a_bf_X(x)\frac{dx}{dy}\,\,dy\\
+     & = - \int ^b_a f_X(x)\frac{dx}{dy}\,dy.
+\end{align*}
+Therefore $f_Y(y) = -f_X\left( w(y) \right)\displaystyle{\frac{dx}{dy}}$.
+But $dx/dy$ is negative in the case of a decreasing function, so in general
+$$
+   f_Y(y) = f_X(x)\left|\frac{dx}{dy} \right|. 
+$$
+:::
+
+
+:::{.example #Transform3 name="Transformation"}
+Let the PDF of\ $X$ be given by
+$$
+   f_X(x) = 
+   \begin{cases}
+      1 & \text{for $0 < x < 1$};\\
+      0 & \text{elsewhere}.
+   \end{cases}
+$$
+Consider the transformation $Y = u(X) = -2\log X$ (where $\log$ refers to logarithms to base\ $e$, or *natural logarithms*).
+The transformation is one-to-one, and the inverse transformation is
+$$
+   X = \exp( -Y/2) = u^{-1}(Y) = w(Y).
+$$
+The space $\mathcal{R}_X = \{x \mid 0 < x < 1\}$ is mapped to $\mathcal{R}_Y = \{y \mid 0 < y < \infty\}$.
+Then,
+$$
+   w'(y) = \frac{d}{dy} \exp(-y/2) = -\frac{1}{2}\exp(-y/2),
+$$
+and so the *Jacobian* of the transformation $|w'(y)| = \exp(-y/2)/2$.\index{Jacobian of the transformation}
+The PDF of $Y = -2\log X$ is
+\begin{align*}
+   f_Y(y)
+   &= f_X\big(w(y)\big) |w'(y)| \\
+   &= f_X\big(\exp(-y/2)\big) \exp(-y/2)/2 \\
+   &= \frac{1}{2}\exp(-y/2)\quad\text{for $y > 0$}.
+\end{align*}
+That is, $Y$ has an exponential distribution with $\beta = 2$: $Y \sim \text{Exp}(2)$ (Def.\ \@ref(def:ExponentialDistribution)).
+:::
+
+
+:::{.example #TransformSquRt name="Square root transformation"}
+Consider the random variable\ $X$ with PDF $f_X(x) = e^{-x}$ for $x \geq 0$.
+To find the PDF of $Y = \sqrt{X}$, first see that $y = \sqrt{x}$ is a strictly increasing function for $x \geq 0$ (Fig.\ \@ref(fig:SqrtRt)).
+
+The inverse relation is $X = Y^2$, and $dx/dy = |2y| = 2y$ for $x \ge 0$.
+The PDF of\ $Y$ is
+$$
+    f_Y(y)
+    = f_X(x)\left|\frac{dx}{dy}\right|
+    = 2y e^{-y^2}\quad \text{for $y\geq0$}.
+$$
+:::
+
+
+
+
+```{r SqrtRt, echo=FALSE, fig.align="center", fig.cap="The square-root transformation (left panel); the PDF of $X$ (centre panel) and the PDF of $Y$ (right panel).", fig.width=7, fig.height=2.5, out.width='100%'}
+par(mfrow = c(1, 3))
+
+x <- seq(0, 20,
+         length = 100)
+y <- sqrt(x)
+
+plot(x = x,
+     y = y,
+     lwd = 3,
+     col = plotColour1,
+     las = 1,
+     main = expression(paste("The transformation ", italic(y) == sqrt(italic(x)))),
+     xlab = expression(italic(x)),
+     ylab = expression( italic(y) == sqrt(italic(x))),
+     type = "l")
+
+
+
+
+x <- seq(0, 5,
+         length = 500)
+fx <- exp(-x)
+
+plot(fx ~ x,
+     xlab = expression(italic(X)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(X)),
+     type="l",
+     las = 1,
+     lwd = 3,
+     col = plotColour1)
+
+
+
+
+
+
+y <- seq(0, 5,
+         length = 500)
+fy <- 2 * y * exp(-y^2)
+
+plot(fy ~ y,
+     xlab = expression(italic(Y)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(Y)),
+     type="l",
+     las = 1,
+     lwd = 3,
+     col = plotColour1)
+```
+
+
+::: {.example #TransformationTan name="Tan transformation"}
+Let random variable\ $X$ be uniformly distributed on $[-\pi/2, \pi/2]$. 
+Suppose we seek the distribution of $Y = \tan X$ (Fig.\ \@ref(fig:TanXform)).
+
+For the mapping $Y = \tan X$, we see that $\mathcal{R}_Y = \{ y\mid -\infty <y<\infty\}$.
+The mapping is one-to-one, and so $X = \tan^{-1}Y$, and $dx/dy = 1/(1 + y^2)$.
+Hence
+$$
+   f_Y(y)
+   = f_X(x)\left|\frac{dx}{dy}\right|
+   = \frac{1}{\pi(1 + y^2)}.
+$$
+This is the [*Cauchy distribution*](exr:C3Cauchy).
+:::
+<!-- CONNECT TO KICKINGA  FOOTBALL -->
+
+
+```{r TanXform, echo=FALSE, fig.align="center", fig.cap="The tan transformation (left panel); the PDF of $X$ (centre panel) and the PDF of $Y$ (right panel).", fig.width=7, fig.height=2.5, out.width='100%'}
+par(mfrow = c(1, 3))
+
+x <- seq(-pi/2 + 0.1, 
+         pi/2 - 0.1,
+         length = 100)
+y <- tan(x)
+
+plot(x = x,
+     y = y,
+     lwd = 3,
+     col = plotColour1,
+     las = 1,
+     axes = FALSE,
+     main = expression(paste("The transformation ", italic(y) == plain(tan)(italic(x)))),
+     xlab = expression(italic(x)),
+     ylab = expression( italic(y) == plain(tan)(italic(x))),
+     type = "l")
+axis(side = 2,
+     las = 1)
+axis(side = 1,
+     at = c(-pi/2, 0, pi/2),
+     labels = c(expression(-pi/2),
+                "0",
+                expression(pi/2)) )
+abline(h = 0, 
+       lty = 1,
+       col = "grey")
+abline(v = 0, 
+       lty = 1,
+       col = "grey")
+box()
+
+
+
+
+x <- seq(-pi/2, pi/2,
+         length = 500)
+fx <- rep(1/pi, length(x) )
+
+plot(fx ~ x,
+     xlab = expression(italic(X)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(X)),
+     type="l",
+     ylim = c(0, 0.35),
+     xlim = c(-2, 2),
+     las = 1,
+     lwd = 3,
+     col = plotColour1)
+lines( x = c(-pi/2, -pi/2),
+       y = c(0, 1/pi),
+       lty = 3,
+       col = "grey")
+lines( x = c(pi/2, pi/2),
+       y = c(0, 1/pi),
+       lty = 3,
+       col = "grey")
+
+
+#######################
+
+y <- seq(-3, 3,
+         length = 500)
+fy <- 1 / (1 + y^2)
+
+plot(fy ~ y,
+     xlab = expression(italic(Y)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(Y)),
+     type="l",
+     las = 1,
+     lwd = 3,
+     col = plotColour1)
+```
+
+
+A case where the function\ $u(\cdot)$ is *not* a one-to-one transformation is considered using an example, using a modification of Theorem\ \@ref(thm:ChangeOfVarCont).
+
+
+:::{.example #TransformationNon11 name="Transformation (not 1:1)"}
+Given a random variable\ $Z$ which follows a $N(0, 1)$ distribution, suppose we seek the probability distribution of $Y = \frac{1}{2} Z^2$.
+
+The relationship $Y = u(Z) = \frac{1}{2}z^2$ is not strictly increasing or decreasing in $(-\infty, \infty )$ so Theorem\ \@ref(thm:ChangeOfVarCont) cannot be applied directly.
+Instead, subdivide the range of $Z$ and $Y$ so that in each portion the relationship *is* monotonic.
+Then:
+$$
+   f_Z(z) =
+   \frac{1}{\sqrt{2\pi}}\,e^{-\frac{1}{2} z^2}\quad\text{for $-\infty < z < \infty$}.
+$$
+The inverse relation, $Z = u^{-1}(Y)$ is $Z = \pm \sqrt{2Y}$. 
+For a given value of $Y$, two values of $Z$ are possible. 
+However, in the range $-\infty < z < 0$, $Y$ and $Z$ have a monotonic relationship. 
+Similarly, for $0 < z <\infty$, $Y$ and $Z$ have a monotonic relationship. 
+Thus (see Fig.\ \@ref(fig:Non11Xform)),
+$$
+   \Pr(a < Y <b) = \Pr(-\sqrt{2b} < Z < -\sqrt{2a}\,) + \Pr(\sqrt{2a} < Z < \sqrt{2b}\,).
+$$
+The two terms on the right are equal because the distribution of\ $Z$ is symmetrical about\ $z = 0$.
+Thus $\Pr(a < Y < b) = 2\Pr(\sqrt{2a} < Z < \sqrt{2b}\,)$, and
+\begin{align*}
+     f_Y(y)
+     &= 2f_Z(z)\left| \frac{dz}{dy}\right|\\
+     &= 2\frac{1}{\sqrt{2\pi}}e^{-y}\frac{1}{\sqrt{2y}};
+\end{align*}
+that is,
+$$
+   f_Y(y)
+   = e^{-y}y^{-\frac{1}{2}} / \sqrt{\pi}\quad\text{for $0 < y < \infty$}.
+$$
+This PDF is a [gamma distribution](GammaDistribution) with parameters $\alpha = 1/2$ and $\beta = 1$.
+It follows that if $X\sim N(\mu,\sigma^2)$, then the PDF of $Y = \frac{1}{2} (X - \mu )^2 / \sigma^2$ is $\text{Gamma}(\alpha = 1/2,\beta = 1)$ since then $(X - \mu)/\sigma$ is distributed as $N(0, 1)$.
+:::
+
+
+
+```{r Non11Xform, echo=FALSE, fig.align="center", fig.cap="A transformation not 1:1.", fig.height=3.5, fig.width=4.5, out.width='50%'}
+x <- seq(-5, 5,
+         length = 100)
+square <- function(x) { x^2 }
+
+y <- square(x)
+
+x1 <- -4
+x2 <- -2
+x3 <- 2
+x4 <- 4
+
+y1 <- square(x1)
+y2 <- square(x2)
+y3 <- square(x3)
+y4 <- square(x4)
+
+plot(x = x,
+     y = y,
+     lwd = 3,
+     col = plotColour1,
+     las = 1,
+     axes = FALSE,
+     main = "A non-1:1 transformation",
+     xlab = expression(italic(z)),
+     ylab = expression(italic(y) == italic(z)^2),
+     type = "l")
+axis(side = 1,
+     at = c(x1, x2, x3, x4),
+     labels = c( expression(-sqrt(2)),
+                 expression(-sqrt(-2*italic(a))),
+                 expression(sqrt(2*italic(a))),
+                 expression(sqrt(2)) ) )
+axis(side = 2,
+     las = 1,
+     at = c(y1, y2),
+     label = c(expression(italic(b)),
+               expression(italic(a))))
+box()
+
+
+lines( x = c(x1, x1, x4, x4),
+       y = c(0, y1, y4, 0),
+       lty = 2)
+lines( x = c(x2, x2, x3, x3),
+       y = c(0, y2, y3, 0),
+       lty = 2)
+
+abline(h = 0,
+       col = "grey")
+abline(v = 0,
+       col = "grey")
+
+```
+
+
+Note that the probability can only be doubled as in Example\ \@ref(exm:TransformationNon11) if both $Y = u(Z)$ and the PDF of\ $Z$ are symmetrical about the same point.
+\index{Transformations of random variables!change of variable method|)}
+
+
+### Discrete bivariate case???? {#ChangeOfVarDiscreteBivariate}
+
+The bivariate case is similar to the univariate case.
+Consider a joint probability function $p_{X_1, X_2}(x_1, x_2)$ of two discrete random variables\ $X_1$ and\ $X_2$ defined on the two-dimensional set of points\ $R^2_X$ for which $p(x_1, x_2) > 0$.
+There are now two *one-to-one transformations*:
+$$
+   y_1 = u_1( x_1, x_2)\qquad\text{and}\qquad y_2 = u_2( x_1, x_2)
+$$
+that map\ $R^2_X$ onto\ $R^2_Y$ (the two-dimensional set of points for which $p(y_1, y_2) > 0$).
+The two inverse functions are
+$$
+   x_1 = w_1( y_1, y_2)\qquad\text{and}\qquad x_2 = w_2( y_1, y_2).
+$$
+Then the joint probability function of the new (transformed) random variables is
+$$
+   p_{Y_1, Y_2}(y_1, y_2) =
+   \begin{cases}
+      p_{X_1, X_2}\big( w_1(y_1, y_2), w_2(y_1, y_2)\big) & \text{where $(y_1, y_2)\in R^2_Y$};\\
+      0 & \text{elsewhere}.
+   \end{cases}
+$$
+
+
+:::{.example #TransformBivariate name="Transformation (bivariate)"}
+Let the two discrete random variables\ $X_1$ and\ $X_2$ have the joint probability function shown in Table\ \@ref(tab:Bivar4).
+Consider the two one-to-one transformations
+$$
+   Y_1 = X_1 + X_2 \qquad\text{and}\qquad Y_2 = 2 X_1.
+$$
+The joint probability function of\ $Y_1$ and\ $Y_2$ can be found by noting where the $(x_1, x_2)$ pairs are mapped to in the $y_1, y_2$ space:
+
+| $(x_1, x_2)$ | $\mapsto$ | $(y_1,y_2)$
+|:-----------:|:----------:|:----------------:
+| $(-1, 0)$   | $\mapsto$  | $(-1, -2)$ 
+| $(-1, 1)$   | $\mapsto$  | $(0, -2)$
+| $(-1, 2)$   | $\mapsto$  | $(1, -2)$
+| $(1, 0)$    | $\mapsto$  | $(1, 2)$ 
+| $(1, 1)$    | $\mapsto$  | $(2, 2)$ 
+| $(1, 2)$    | $\mapsto$  | $(3, 2)$ 
+
+
+The joint probability function can then be constructed as shown in Table\ \@ref(tab:Bivar5).
+:::
+
+
+
+
+```{r Bivar4, echo=FALSE}
+Bivar4Table <- array( dim = c(2, 4))
+
+Bivar4Table[1, ] <- c("$x_1 = -1$", "$0.3$", "$0.1$", "$0.1$")
+Bivar4Table[2, ] <- c("$x_1 = +1$", "$0.2$", "$0.2$", "$0.1$")
+
+
+Bivar4Table.caption <- "A bivariate probability function"
+if( knitr::is_latex_output() ) {
+  knitr::kable(Bivar4Table,
+               format = "latex",
+               booktabs = TRUE,
+               col.names = c("",
+                             "$x_2 = 0$",
+                             "$x_2 = 1$",
+                             "$x_2 = 2$"),
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = Bivar4Table.caption) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(Bivar4Table,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               col.names = c("",
+                             "$x_2 = 0$",
+                             "$x_2 = 1$",
+                             "$x_2 = 2$"),
+               caption = Bivar4Table.caption) %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+
+
+
+
+```{r Bivar5, echo=FALSE}
+Bivar5Table <- array( dim = c(2, 6))
+
+Bivar5Table[1, ] <- c("$y_2 = -2$", "$0.3$", "$0.1$", "$0.1$", "$0.0$", "$0.0$")
+Bivar5Table[2, ] <- c("$y_2 = +2$", "$0.0$", "$0.0$", "$0.2$", "$0.2$", "$0.1$")
+
+
+Bivar5Table.caption <- "The joint probability function for $Y_1$ and $Y_2$"
+if( knitr::is_latex_output() ) {
+  knitr::kable(Bivar5Table,
+               format = "latex",
+               booktabs = TRUE,
+               col.names = c("",
+                             "$y_1 = -1$",
+                             "$y_2 = 0$",
+                             "$y_3 = 1$",
+                             "$y_4 = 2$",
+                             "$y_5 = 3$"),
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = Bivar5Table.caption) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(Bivar5Table,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               col.names = c("",
+                             "$y_1 = -1$",
+                             "$y_1 = 0$",
+                             "$y_1 = 1$",
+                             "$y_1 = 2$",
+                             "$y_1 = 3$"),
+               caption = Bivar5Table.caption) %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+
+Sometimes, a joint probability function of two random variables is given, but only *one* new random variable is required.
+In this case, a second (dummy) transformation is used, usually a very simple transformation.
+
+
+:::{.example #TransformBivariate2 name="Transformation (bivariate)"}
+Let\ $X_1$ and\ $X_2$ be two independent random variables with the joint probability function
+$$
+   p_{X_1, X_2}(x_1, x_2) =
+         \frac{\mu_1^{x_1} \mu_x^{x_2} \exp( -\mu_1 - \mu_2 )}{x_1!\, x_2!}
+         \quad\text{for $x_1$ and $x_2 = 0, 1, 2, \dots$}
+$$
+This is the joint probability function of two independent Poisson random variables.
+Suppose we wish to find the probability function of $Y_1 = X_1 + X_2$.
+
+Consider the two *one-to-one transformations*, where $Y_2 = X_2$ is just a dummy transformation:
+\begin{align}
+   y_1 &= x_1 + x_2             = u_1(x_1, x_2)\\
+   y_2 &= x_2\phantom{{} + x_2} = u_2(x_1, x_2)
+\end{align}
+which map the points in\ $R^2_X$ onto
+$$
+   R^2_Y = \left\{ (y_1, y_2)\mid y_1 = 0, 1, 2, \dots; y_2 = 0, 1, 2, \dots, y_1\right\}.
+$$
+$Y_2$ is a dummy transform, and so is chosen to be very simple.
+Any second transform could be chosen (as it is not of direct interest), and so choose one that is simple.
+The inverse functions are
+\begin{align*}
+   x_1 &= y_1 - y_2              = w_1(y_1, y_2)\\
+   x_2 &= y_2 \phantom{{} - y_2} = w_2(y_2)
+\end{align*}
+by rearranging the original transformations.
+Then the *joint* probability function of\ $Y_1$ and\ $Y_2$ is
+\begin{align*}
+   p_{Y_1, Y_2}(y_1, y_2)
+   &= p_{X_1, X_2}\big( w_1(y_1, y_2), w_2(y_1, y_2)\big) \\
+   &= \frac{\mu_1^{y_1 - y_2}\mu_2^{y_2} \exp(-\mu_1 - \mu_2)}{(y_1 - y_2)! y_2!}\quad
+   \text{for $(y_1, y_2)\in R^2_Y$}.
+\end{align*}
+Recall that we seek the probability function of just\ $Y_1$, so we need to find the marginal probability function of $p_{Y_1, Y_2}(y_1, y_2)$.
+The marginal probability function of\ $Y_1$ is
+$$
+   p_{Y_1}(y_1) = \sum_{y_2 = 0}^{y_1} p_{Y_1, Y_2}(y_1, y_2)
+   = \sum_{y_2 = 0}^{y_1} \frac{\mu_1^{y_1 - y_2}\mu_2^{y_2} \exp(-\mu_1 - \mu_2)}{(y_1 - y_2)!\, y_2!},
+$$
+which is equivalent to
+$$
+   p_{Y_1}(y_1) =
+   \begin{cases}
+      \displaystyle{\frac{(\mu_1 + \mu_2)^{y_1}\exp\big[-(\mu_1 + \mu_2)\big]}{y_1!}} & \text{for $y_1 = 0, 1, 2, \dots$}\\
+      0 & \text{otherwise}.
+   \end{cases}
+$$
+You should recognise this as the probability function of a Poisson random variable (Def.\ \@ref(def:PoissonDistribution)) with mean $\mu_1 + \mu_2$.
+Thus $Y_1 \sim \text{Pois}(\lambda = \mu_1 + \mu_2)$.
+:::
+
+
+
+## The distribution function method {#DistributonFunctionMethod}
+
+\index{Transformations of random variables!distribution function method|(}
+
+:::{.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+This method only works for continuous random variables.
+:::
+
+The distribution function method involves two steps:
+
+1. Find the *distribution function* of the transformed variable. 
+2. Differentiate this distribution function to find the *probability density function*.
+
+The procedure is best demonstrated using an example.
+
+
+:::{.example #DFMethod name="Distribution function method"}
+Consider the random variable\ $X$ with PDF
+$$
+   f_X(x) = \begin{cases}
+               x/4 & \text{for $1 < x < 3$};\\
+               0 & \text{elsewhere}.
+            \end{cases}
+$$
+To find the PDF of the random variable\ $Y$ where $Y = X^2$, first see that $1 < y < 9$ and the transformation is monotonic over this region.
+The distribution function for\ $Y$ is
+\begin{align*}
+   F_Y(y)
+   &= \Pr(Y\le y) \qquad\text{(by definition)}\\
+   &= \Pr(X^2 \le y) \qquad\text{(since $Y = X^2$)}\\
+   &= \Pr(X\le \sqrt{y}\,).
+\end{align*}
+This last step is not trivial, but is critical. 
+Sometimes, more care is needed (see Example\ \@ref(exm:TransformA)). 
+In this case, there is a one-to-one relationship between\ $X$ and\ $Y$ over the region of which\ $X$ is defined (i.e., has a positive probability); see Fig.\ \@ref(fig:SquaringXform).
+
+Then continue as follows:
+\begin{align*}
+   F_Y(y)
+    =\Pr( X\le \sqrt{y}\,)
+   &= F_X\big(\sqrt{y}\,\big) \qquad\text{(definition of $F_X(x)$)} \\
+   &= \int_1^{\sqrt{y}} (x/4) \,dx
+    = (y - 1)/8
+\end{align*}
+for $1 < y < 9$, and is zero elsewhere. 
+This is the *distribution function* of\ $Y$; to find the PDF:
+$$
+   f_Y(y)
+   = \frac{d}{dy} (y - 1)/8
+   = \begin{cases}
+        1/8 & \text{for $1 < y < 9$};\\
+        0 & \text{elsewhere}.
+     \end{cases}
+$$
+Note the range for which\ $Y$ is defined; since $1 < x < 3$, then $1 < y < 9$.
+:::
+
+
+```{r SquaringXform, echo=FALSE, warning=FALSE, fig.align="center", fig.cap="The transformation $Y = X^2$ when $X$ is defined from $1$ to $3$. The thicker line corresponds to the region where the transformation applies. Note that if $Y < y$, then $2 - \\sqrt{y - 1} < X < 2 + \\sqrt{y - 1}$.", fig.width=8, fig.height=4, out.width='100%'}
+par( mfrow = c(1, 3))
+
+x <- seq(-1, 4,
+         length = 100)
+y <- x^2
+
+plot(x = x,
+     y = y,
+     type = "l",
+     col = plotColour1,
+     lwd = 1,
+     axes = FALSE,
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y) == italic(x)^2),
+     main = "The squaring\ntransformation",
+     las = 1)
+
+Thicker <- ( x >= 1 ) & ( x <= 3 )
+lines(x = x[ Thicker],
+      y = y[Thicker],
+      lwd = 5)
+lines( x = c( min(x), sqrt(3), sqrt(3)),
+       y = c( 3, 3, 0),
+       lty = 2)
+axis(side = 2,
+     at = c(0, 3, 6, 8, 10, 12, 14, 16),
+     las = 1,
+     labels = c(0, "y = 3", 6, 8, 10, 12, 14, 16))
+axis(side = 1,
+     at = c(-1, 0, 1, sqrt(3), 3, 4),
+     labels = c(-1, 0, 1, 
+                expression(italic(x) == sqrt(3) ),
+                3, 4))
+box()
+
+
+
+
+funx <- function(x){
+  y <- array(0, dim = length(x))
+  y <- ifelse( (x > 1) & (x < 3), x/4, 0)
+}
+
+x <- seq(0, 4,
+         length = 500)
+fx <- funx(x)
+
+plot(fx ~ x,
+     xlab = expression(italic(X)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(X)),
+     type="l",
+     las = 1,
+     lwd = 2)
+
+
+
+
+
+funy <- function(y){
+   fy <- ifelse( (y > 1) & (y < 2),
+                 1/(2 * sqrt(y - 1)),
+                 0)  
+}
+
+y <- seq(0, 3,
+         length = 500)
+fy <- funy(y)
+
+plot(fy ~ y,
+     xlab = expression(italic(Y)),
+     ylab = "Prob. fn.",
+     main = expression(PF~"for"~italic(Y)),
+     type="l",
+     las = 1,
+     lwd = 2)
+```
+
+
+
+:::{.example #TransformA name="Transformation"}
+Consider the same random variable\ $X$ as in the previous example, but the transformation $Y = (X - 2)^2 + 1$ (Fig.\ \@ref(fig:SquaringXform2)).
+
+In this case, the transformation is **not** a one-to-one transform.
+Proceed as before to find the distribution function of\ $Y$:
+\begin{align*}
+   F_Y(y)
+   &= \Pr(Y\le y) \qquad\text{(by definition)}\\
+   &= \Pr\big( (X - 2)^2 + 1  \le y\big)
+\end{align*}
+since $Y = (X - 2)^2 + 1$.
+From Fig.\ \@ref(fig:SquaringXform2), whenever $(X - 2)^2 + 1 < y$ for some value\ $y$, then\ $X$ must be in the range $2 - \sqrt{y - 1}$ to $2 + \sqrt{y - 1}$.
+So:
+\begin{align*}
+   F_Y(y)
+   &= \Pr\big( (X - 2)^2 + 1 \le y\big) \\
+   &= \Pr\left( 2 - \sqrt{y - 1} < X < 2 + \sqrt{y - 1} \right)\\
+   &= \int_{2-\sqrt{y - 1}}^{2 + \sqrt{y - 1}} x/4\,dx \\
+   &= \left.\frac{1}{8} x^2\right|_{2 - \sqrt{y - 1}}^{2 + \sqrt{y - 1}} \\
+   &= \frac{1}{8} \left[ \left(2 + \sqrt{y - 1}\right)^2 - \left(2 - \sqrt{y - 1}\right)^2\right] \\
+   &=  \sqrt{y - 1}.
+\end{align*}
+Again, this is the distribution function; so differentiating:
+$$
+   f_Y(y) = \begin{cases}
+               \frac{1}{2\sqrt{y - 1}} & \text{for $1 < y < 2$};\\
+               0 & \text{elsewhere}.
+            \end{cases}
+$$
+:::
+
+
+
+
+
+```{r SquaringXform2, echo=FALSE, fig.align="center", fig.cap="The transformation $Y = (X - 2)^2 + 1$ when $X$ is defined from $1$ to $3$. The thicker line corresponds to the region where the transformation applies. Note that if $Y < y$, then $2 - \\sqrt{y - 1} < X < 2 + \\sqrt{y - 1}$.", fig.width=5, fig.height=4}
+
+x <- seq(0, 4,
+         length = 100)
+xf <- function(x) { (x - 2)^2 + 1}
+
+y <- xf(x)
+
+plot(x = x,
+     y = y,
+     type = "l",
+     lwd = 1,
+     col = plotColour1,
+     ylim = c(0, 2.25),
+     axes = FALSE,
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y)==group("(", italic(x)-2,")")^2+1),
+     main = "Another transformation",
+     las = 1)
+
+x0 <- 1.25
+x1 <- 2.75
+y0 <- xf( x0 )
+y1 <- xf( x1 )
+
+
+Thicker <- ( x >= 1 ) & ( x <= 3 )
+lines(x = x[ Thicker],
+      y = y[Thicker],
+      lwd = 5)
+
+lines( x = c( min(x), x0, x0),
+       y = c(y0, y0, 0),
+       lty = 2)
+lines( x = c( min(x), x1, x1),
+       y = c(y1, y1, 0),
+       lty = 2)
+axis(side = 2,
+     at = c(0, 1, y0, 2),
+     las = 1,
+     labels = c(0, 1, expression(italic(y)), 2))
+axis(side = 1,
+     at = c(x0, 2, x1),
+     labels = c(expression(2-sqrt(italic(y)-1)),
+                2, 
+                expression(2+sqrt(italic(y)-1)) ))
+box()
+```
+
+
+:::{.example #TransformB name="Transformation"}
+Example\ \@ref(exm:TransformationNon11) is repeated here using the distribution function method.
+Given\ $Z$ is distributed $N(0, 1)$ we seek the probability distribution of $Y = \frac{1}{2} Z^2$.
+First,
+$$
+   f_Z(z) 
+   = (2\pi )^{-\frac 12}\,e^{-z^2/2}\quad\text{for $z\in (-\infty ,\,\infty )$}.
+$$
+Let\ $Y$ have PDF $f_Y(y)$ and df $F_Y(y)$. 
+Then
+\begin{align*}
+     F_Y(y) 
+      = \Pr(Y\leq y) 
+     &= \Pr\left(\frac{1}{2}Z^2\leq y\right)\\
+     &= \Pr(Z^2\leq 2y)\\
+     & = \Pr(-\sqrt{2y}\leq Z\leq \sqrt{2y}\,)\\
+     & = F_Z(\sqrt{2y}\,) - F_Z(-\sqrt{2y}\,)
+\end{align*}
+where\ $F_Z$ is the distribution function of\ $Z$.
+Hence
+\begin{align*}
+     f_Y(y) 
+       = F_Y'(y)
+     &= F_Z'(\sqrt{2y}\,)-F_Z'(-\sqrt{2y}\,)\\
+     &= \frac{\sqrt{2}}{2\sqrt{y}}f_Z(\sqrt{2y}\,) - \frac{\sqrt{2}}{-
+2\sqrt{y}}f_Z(-\sqrt{2y}\,)\\[2mm]
+     &= \frac{1}{\sqrt{2y}}[f_Z(\sqrt{2y}\,) + f_Z(-\sqrt{2y}\,)]\\
+     &= \frac{1}{\sqrt{2y}} \left[ \frac{1}{\sqrt{2\pi}}\,e^{-y}+\frac{1}{\sqrt{2\pi}}\,e^{-y}\right]\\
+     &= \frac{e^{-y}y^{-\frac{1}{2}}}{\sqrt{\pi}}
+\end{align*}
+as before.
+:::
+
+Care is needed to ensure the steps are followed logically. 
+Diagrams like Fig.\ \@ref(fig:SquaringXform) and\ \@ref(fig:SquaringXform2) are encouraged. 
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The functions that are produced should be PDFs; check that this is the case.
+:::
+
+
+This method can also be used when there is more than one variable of interest, but we do not cover this.
+\index{Transformations of random variables!distribution function method|(}
+
+
+## The moment-generating function method {#TransformationMoments}
+
+\index{Transformations of random variables!moment-generating function method|(}
+The moment-generating function (MGF) method is useful for finding the distribution of a linear combination of $n$ independent random variables.
+The method essentially involves the computation of the MGF of the transformed variable $Y = u(X_1, X_2, \dots, X_n)$ when the joint distribution of independent $X_1, X_2, \dots, X_n$ is given.\index{Moment-generating function}
+
+The MGF method relies on this observation: since the MGF of a random variable (if it exists) completely specifies the distribution of the random variable, then if two random variables have the same MGF they must have identical distributions.
+Below, the transformation $Y = X_1 + X_2 + \cdots X_n$ is demonstrated, but the same principles can be applied for other linear combinations also.
+
+Consider\ $n$ independent random variables $X_1, X_2, \dots, X_n$ with MGFs $M_{X_1}(t)$, $M_{X_2}(t)$, $\dots$, $M_{X_n}(t)$, and consider the transformation $Y = X_1 + X_2 + \cdots X_n$.
+Since the\ $X_i$ are independent, $f_{X_1,X_2\dots X_n}(x_1, x_2, \dots, x_n) = f_{X_1}(x_1).f_{X_2}(x_2)\dots f_{X_n}(x_n)$.
+So, by definition of the MGF,
+\begin{align*}
+   M_Y(t)
+   &= \operatorname{E}(\exp(tY)) \\
+   &= \operatorname{E}(\exp[t(X_1 + X_2 + \cdots X_n)]) \\
+   &= \int\!\!\!\int\!\!\!\cdots\!\!\!\int \exp[t(x_1 + x_2 + \cdots x_n)] f(x_1, x_2, \dots x_n)\,dx_n\dots dx_2\, dx_1 \\
+   &= \int\!\!\!\int\!\!\!\cdots\!\!\!\int \exp(tx_1) f(x_1) \exp(t{x_2}) f(x_2)\dots \exp(t{x_n})f(x_n) \,dx_n\dots dx_2\, dx_1 \\
+   &= \int \exp(t x_1) f(x_1)\,dx_1 \int \exp(t{x_2}) f(x_2)\,dx_2 \dots \int \exp(t{x_n})f(x_n)\,dx_n \\
+   &= M_{X_1}(t) M_{X_2}(t)\dots M_{X_n}(t) \\
+   &= \prod_{i = 1}^n M_{X_i}(t).
+\end{align*}
+($\prod$ is the symbol for a *product* of terms, in the same way that $\sum$ is the symbol for a *summation* of terms.)
+The above result also holds for discrete variables, where summations replace integrations.
+
+This result follows: if $X_1, X_2, \dots, X_n$ are independent random variables and $Y  =  X_1 + X_2 + \dots + X_n$, then the MGF of\ $Y$ is
+$$
+   M_Y(t)  =  \prod_{i = 1}^n M_{X_i}(t)
+$$
+where $M_{X_i}(t)$ is the MGF of\ $X_i$ at $t$ for $i = 1, 2, \dots, n$.
+
+
+:::{.example #MGFLinearX name="MGF method for transformations"}
+Suppose that $X_i \sim \text{Pois}(\lambda_i)$ for $i  =  1, 2, \dots, n$, and we wish to find the distribution of $Y  =  X_1  +  X_2  + \dots  +  X_n$.
+
+Since\ $X_i$ has a Poisson distribution with parameter $\lambda_i$ for $i, 2, \dots n$, the MGF of\ $X_i$ is
+$$
+   M_{X_i}(t) = \exp[ \lambda_i(e^t - 1)].
+$$
+The MGF of $Y  = X_1 + X_2 + \cdots X_n$ is
+\begin{align*}
+   M_Y(t)
+   &= \prod_{i = 1}^n \exp[ \lambda_i(e^t - 1)] \\
+   &= \exp[ \lambda_1(e^t - 1)] \exp[ \lambda_2(e^t - 1)] \dots \exp[ \lambda_n(e^t - 1)] \\
+   &= \exp\left[ (e^t - 1)\sum_{i = 1}^n \lambda_i\right].
+\end{align*}
+Using $\Lambda = \sum_{i = 1}^n \lambda_i$, the MGF of\ $Y$ is
+$$
+   M_Y(t) = \exp\left[ (e^t - 1)\Lambda \right],
+$$
+which is the MGF of a Poisson distribution with mean $\Lambda = \sum_{i = 1}^n \lambda_i$.
+This means that the sum of\ $n$ independent Poisson distribution is also a Poisson distribution, whose mean is the sum of the individual Poisson means.
+:::
+\index{Transformations of random variables!moment-generating function method|(}
+
+
+
+\index{Transformations of random variables|)}
+
+
+## Exercises
+
+Selected answers appear in Sect.\ \@ref(AnswersChapterTransformations).
+
+
+:::{.exercise #X2}
+Suppose the PDF of\ $X$ is given by
+$$
+   f_X(x) = \begin{cases}
+                x/2 & \text{$0 < x < 2$};\\
+                0 & \text{otherwise}.
+             \end{cases}
+$$
+
+1. Find the PDF of $Y = X^3$ using the change of variable method.
+1. Find the PDF of $Y = X^3$ using the distribution function method. 
+:::
+
+
+:::{.exercise #JointDiscrete}
+The discrete bivariate random vector $(X_1, X_2)$ has the joint probability function
+$$
+   f_{X_1, X_2}(x_1, x_2) = 
+   \begin{cases}
+      (2x_1+ x _2)/6 & \text{for $x_1 = 0, 1$ and $x_2 = 0, 1$};\\
+      0               & \text{elsewhere}.
+   \end{cases}
+$$
+Consider the transformations
+\begin{align*}
+   Y_1 &= X_1 + X_2 \\
+   Y_2 &= \phantom{X_1+{}} X_2
+\end{align*}
+
+1. Determine the joint probability function of $(Y_1, Y_2)$.
+1. Deduce the distribution of\ $Y_1$.
+:::
+
+
+
+:::{.exercise #GammaSum}
+Consider\ $n$ random variables $X_i$ such that $X_i \sim \text{Gam}(\alpha_i, \beta)$.
+Determine the distribution of $Y = \sum_{i = 1}^n X_i$ using MGFs.
+:::
+
+
+:::{.exercise #CauchySquared}
+The random variable\ $X$ has PDF
+$$
+   f_X(x) = \frac{1}{\pi(1 + x^2)}
+$$
+for $-\infty < x < \infty$.
+Find the PDF of\ $Y$ where $Y = X^2$.
+:::
+
+:::{.exercise #ContTransform}
+A random variable\ $X$ has distribution function
+$$
+   F_X(x) = 
+   \begin{cases}
+      0                & \text{for $x \le -0.5$};\\
+      \frac{2x + 1}{2} & \text{for $-0.5 < x < 0.5$};\\
+      1                & \text{for $x \ge 0.5$}.
+   \end{cases}
+$$
+
+1. Find, and plot, the PDF of\ $X$.
+1. Find the distribution function, $F_Y(y)$, of the random variable $Y = 4 - X^2$.
+1. Hence find, and plot, the PDF of $Y$, $f_Y(y)$.
+:::
+
+
+:::{.exercise #Projectile}
+Suppose a projectile is fired at an angle\ $\theta$ from the horizontal with velocity\ $v$. 
+The horizontal distance that the projectile travels\ $D$ is
+$$
+   D = \frac{v^2}{g} \sin 2\theta,
+$$
+where\ $g$ is the acceleration due to gravity ($g\approx 9.8$ m.s^$-2$^).
+
+1. If\ $\theta$ is uniformly distributed over the range $(0, \pi/4)$, find the probability density function of\ $D$.
+1. Sketch the PDF of\ $D$ over a suitable range for $v = 12$ and using $g\approx 9.8$m.s^$-2$^.
+:::
+
+
+:::{.exercise #RandomExp}
+Most computers have facilities to generate continuous uniform (pseudo-)random numbers between zero and one, say\ $X$.
+When needed, exponential random numbers are obtained from\ $X$ using the transformation $Y = -\alpha\ln X$.
+
+1. Show that\ $Y$ has an exponential distribution and determine its parameters.
+1. Deduce the mean and variance of\ $Y$.
+:::
+
+
+:::{.exercise #RandomW}
+Consider a random variable\ $W$ for which $\Pr(W = 2) = 1/6$, $\Pr(W = -2) = 1/3$ and $\Pr(W = 0) = 1/2$.
+
+1. Plot the probability function of\ $W$.
+1. Find the mean and variance of\ $W$.
+1. Determine the distribution of $V = W^2$.
+1. Find the distribution function of\ $W$.
+:::
+
+
+:::{.exercise #NormalMixture}
+In a study to model the load on bridges [@lu2019evaluating], the researchers modelled the Gross Vehicle Weight (GVM, in kilonewtons) weight of smaller trucks\ $S$ using $S\sim N(390, 740$, and the weight of bigger trucks\ $B$ using $L\sim N(865, 142)$.
+The total load distribution\ $L$ was then modelled as $L = 0.24S + 0.76B$, reflecting the expected proportion if smaller and bigger trucks using the bridge.
+
+1. Plot the distribution of\ $L$.
+1. Compute the mean and standard deviation of\ $L$.
+:::
+
+
+:::{.exercise #LogNormal}
+Suppose the random variable\ $X$ has a normal distribution with mean $\mu$ and variance\ $\sigma^2$.
+The random variable $Y = \exp X$ is said to have a *log-normal distribution*.
+
+1. Determine the distribution function of\ $Y$ in terms of the function $\Phi(\cdot)$ (see Def.\ \@ref(def:StdNormalPhiNotation)). 
+1. Differentiate to find the PDF of $Y$.
+1. Plot the log-normal distribution for various parameter values.
+1. Determine $\Pr(Y > 2 | Y < 1)$ when $\mu = 2$ and $\sigma^2 = 2$.
+
+(**Hint**: Use the `dlnorm()` and `plnorm()` functions in **R**, where $\mu = {}$`meanlog` and $\sigma = {}$`sdlog`.)
+:::
+
+
+:::{.exercise #BinomXform}
+If\ $X$ is a random variable with probability function
+$$
+   \Pr(X = x) = \binom{4}{x} (0.2)^x (0.8)^{4 - x} \quad \text{for $x = 0, 1, 2, 3, 4$}, 
+$$
+find the probability function of the random variable defined by $Y = \sqrt{X}$.
+:::
+
+
+:::{.exercise #Xminus3}
+Given the random variable\ $X$ with probability function
+$$
+   \Pr(X = x) = \frac{x^2}{30} \quad \text{for $x = 1, 2, 3, 4$},
+$$
+find the probability function of $Y= (X - 3)^2$.
+:::
+
+
+:::{.exercise #GiveDF2}
+A random variable\ $X$ has distribution function
+$$
+   F_X(x) = 
+   \begin{cases}
+      0 & \text{for $x < -0.5$};\\
+      \frac{2x + 1}{2}, & \text{for $-0.5 < x < 0.5$}; \\
+      1 & \text{for $x > 0.5$}.
+   \end{cases}
+$$
+
+1. Find the distribution function, $F_Y(y)$, of the random variable $Y = 4 - X^2$.
+1. Hence find the PDF of\ $Y$.
+:::
+
+
+:::{.exercise}
+If the random variable\ $X$ has an exponential distributed with mean\ $1$, show that the distribution of $-\log(X)$ has a Gumbel distribution (Eq.\ \@ref(eq:Gumbel))\index{Gumbel distribution} with $\mu = 0$ and $\sigma = 1$.
+:::
+
+
+
+:::{.exercise}
+Let\ $X$ have a gamma distribution with parameters $\alpha > 2$ and $\beta > 0$.
+
+1. Prove that the mean of\ $1/X$ is $\beta/(\alpha - 1)$.
+2. Prove that the variance of $1/X$ is $\beta^2/[(\alpha - 1)^2(\alpha - 2)]$.
+:::
+
+
+
+:::{.exercise #BetaHospital2}
+In a study modelling waiting times at a hospital [@khadem2008evaluating], patients are classified into one of three categories:
+
+* Red: Critically ill or injured patients.
+* Yellow: Moderately ill or
+injured patients.
+* Green: Minimally injured or
+uninjured patients.
+
+For 'Green' patients, the service time\ $S$ was modelled as $S = 4.5 + 11V$, where $V \sim \text{Beta}(0.287, 0.926)$.
+
+1. Produce well-labelled plots of the PDF and df of\ $S$, showing important features. 
+1. What proportion of patients have a service time exceeding\ $15\mins$?
+1. The quickest\ $20$% of patients are serviced within what time?
+:::
+
+
+
+:::{.exercise #ExpHospital2}
+In a study modelling waiting times at a hospital [@khadem2008evaluating], patients are classified into one of three categories:
+
+* Red: Critically ill or injured patients.
+* Yellow: Moderately ill or
+injured patients.
+* Green: Minimally injured or
+uninjured patients.
+
+The time (in minutes) spent in the reception are for 'Yellow' patients, say\ $T$, is modelled as $T = 0.5 + W$, where $W\sim \text{Exp}(16.5)$.
+
+1. Plot the PDF and df of\ $T$.
+1. What proportion of patients wait more than $20\mins$, if they have already been waiting for $10\mins$?
+1. How long to the slowest\ $10$% of patients need to wait?
+:::
+
+
+
+:::{.exercise #Not1to1}
+Suppose the random variable\ $Z$ has the PDF
+$$
+  f_Z(z) = 
+  \begin{cases}
+    \frac{1}{3} & \text{for $-1 < z < 2$};\\
+    0 & \text{elsewhere}.
+  \end{cases}
+$$
+
+1. Find the *probability density function* of\ $Y$, where $Y = Z^2$, using the **distribution function method**.
+1. Confirm that your final PDF of\ $Y$ is a valid PDF.
+1. Produce a well-labelled plot of the PDF of\ $Y$.
+   Ensure all important features and points are clearly labelled.
+:::
+
+
+:::{.exercise #ChiSquaredGamma}
+Show that the chi-squared distribution is a special case of the gamma distribution, with $\alpha = \nu/2$ and $\beta = 2$.
+:::
+
+
+:::{.exercise #TrickyXform1}
+Suppose the random variable\ $X$ is defined as shown in Fig.\ \@ref(fig:TrickyX).
+
+1. Determine the distribution function for\ $X$.
+2. Find the probability density function for the random variable\ $Y$, where $Y = 6 - 2X$.
+3. Confirm that your probability density function for\ $Y$ is a valid pdf.
+4. Plot the probability density function of $Y$.
+:::
+
+```{r TrickyX, echo=FALSE, out.width="90%", fig.width=8, fig.height=4, fig.align="center", fig.cap="The probability density function for the random variable\\ $X$."}
+x <- seq(-0.5, 3.5,
+         by = 0.5)
+fy <- function(x){ ifelse( (x > 0) & (x < 1),
+                           2 * x / 3,
+                           ifelse( (x >= 1) & (x < 3),
+                                   (3 - x)/3,
+                                   0) ) }
+
+plot( fy(x) ~ x,
+      type = "l",
+      lwd = 3,
+      col = plotColour1,
+      las = 1,
+      axes = FALSE,
+      main = expression(The~PDF~"for"~the~rv~italic(X)),
+      xlab = expression(italic(X)),
+      ylab = expression(italic(f)[italic(X)(italic(x))]))
+axis(side = 1)
+axis(side = 2,
+     at = c(0, 1, 2)/3,
+     label = c("0", "1/3", "2/3"),
+     las = 1)
+box()
+abline(v = 1,
+       lwd = 1, 
+       lty = 2,
+       col = "grey")
+```
+
+
+
+
+
+:::{.exercise #TrickyXform2}
+Suppose the random variable\ $X$ is defined as shown in Fig.\ \@ref(fig:TrickyX).
+
+1. Determine the distribution function for\ $X$ (this was done in Exercise\ \@ref(exr:TrickyXform1)).
+2. Find the probability density function for the random variable\ $Z$, where $Z = (X - 2)^2$.
+3. Confirm that your probability density function for\ $Z$ is a valid pdf.
+4. Plot the probability density function of $Z$.
+:::
+
+
+
+
+:::{.exercise #RunnerVelocity}
+The time taken to run a distance $D$ (in metres) by a professional athlete, say\ $T$ (in seconds), varies with the distribution shown in Fig.\ \@ref(fig:RunnerVelocityVoltage) (left panel).
+The average velocity of the runner, say\ $V$, is related to the time by $V = D/T$.
+
+1. Determine the probability density function for the runner's velocity.
+2. Suppose $D = 100$, $\mu = 12$ and $\Delta = 0.25$.
+   Plot the probability density function for\ $V$.
+:::
+
+
+```{r RunnerVelocityVoltage, echo=FALSE, out.width="90%", fig.width=8, fig.height=4, fig.align="center", fig.cap="The probability density function for the random variable\\ $T$, the time for the run."}
+f <- function(t, mu, a){
+  ifelse( ( t >= (mu - a) & (t <= mu)), 
+          (a - mu + t)/(a^2),
+          (a + mu - t)/(a^2))}
+          
+          
+g <- function(v, mu, a, D){
+  ifelse( ( v <= D/(mu - a) & (v >= D/mu)), 
+          (D * (v*a - v*mu + D ) )/(a^2 * v^3 ),
+          (D * (v*a + v*mu - D ) )/(a^2 * v^3 ) ) }
+          
+
+
+###
+par( mfrow = c(1, 2) )
+
+a <- 0.25
+mu <- 12
+D <- 100
+
+t <- seq(mu - a, mu + a,
+         length = 1000)
+plot( f(t, mu = mu, a = a) ~ t,
+      xlab = expression(Time~italic(t)),
+      ylab = "PDF",
+      main = "PDF of running time\n(in seconds)",
+      type = "l",
+      lwd = 3,
+      col = plotColour1,
+      axes = FALSE,
+      las = 1)
+axis(side = 1,
+     at = c(mu - a,
+            mu + a),
+     labels = c(expression(mu - Delta),
+                expression(mu + Delta) ) )
+axis(side = 2,
+     at = c(0, 1/a),
+     label = c("0",
+               expression(1/Delta)),
+     las = 1)
+box()
+
+
+###
+
+mu <- 0
+sigma <- 1
+
+voltage <- seq(mu -3.5 * sigma,
+               mu + 3.5 * sigma,
+               length = 1000)
+
+plot( dnorm(voltage, mean = mu, sd = sigma) ~ voltage,
+      xlab = expression(Voltage~italic(v)),
+      ylab = "PDF",
+      xlim = c(-3.25, 3.25),
+      main = "PDF of instantaneous voltage\n(in volts)",
+      type = "l",
+      lwd = 3,
+      col = plotColour1,
+      las = 1)
+
+box()
+
+```
+
+
+
+:::{.exercise #VoltagePower}
+Suppose the instantaneous voltage\ $V$ (in volts) in a circuit varies over time such that
+$$
+  f_V(v) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{ -\frac{x^2}{2\sigma^2}\right\}.
+$$
+as shown in Fig.\ \@ref(fig:RunnerVelocityVoltage) (right panel).
+(Later, we will identify this as the *normal distribution*.)\index{Normal distribution}
+
+1. Determine the probability density function of the instantaneous *power* in the circuit\ $P$, where $P = V^2/R$ for some circuit resistance\ $R$ (in ohms).
+2. Suppose $\sigma = 1$, and $R = 10$.
+   Plot the probability density function for\ $P$.
+:::
+
