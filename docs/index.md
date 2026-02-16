@@ -151,10 +151,8 @@ https://bookdown.org/pkaldunn/DistTheory
 The [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) licence is applied to this textbook.
 
 
-\BeginKnitrBlock{flushright}
-Peter K. Dunn  
-Sippy Downs, Australia
-\EndKnitrBlock{flushright}
+\BeginKnitrBlock{flushright}<p class="flushright">Peter K. Dunn  
+Sippy Downs, Australia</p>\EndKnitrBlock{flushright}
 
 
 \mainmatter
