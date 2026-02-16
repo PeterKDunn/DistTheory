@@ -3469,7 +3469,7 @@ The strategy is:
   * Check if Anh and Barb are 'neighbours' for this arrangement.
 * Print the result.
 
-The process is repeated for numerous randomly-generated seating arrangements, and the proportion of acceptable seating arrangements computed.
+Then, the process is repeated for numerous randomly-generated seating arrangements, and the proportion of acceptable seating arrangements computed.
 
 First, set up the scenario:
 
@@ -3479,45 +3479,38 @@ set.seed(8723) # Set the random number seed, for reproducibility
 num_Reps <- 5000  # Set the number of simulations
 
 # 'Name' the 10 people by using the 'initials' of the ten people
-People <- LETTERS[1:10] # The first 10 capital letters
+People <- LETTERS[1:10] # The first 10 capital letters: the people
 People
 ```
 
 Then, we create an **R** function to determine if Anh (who is `A`) and Barb (who is `B`) are next to each other:
 
 ```{r}
-# The function takes a seating arrangement as input.
-# It checks, for any given seating arrangement, if Anh and Barb are neighbours.
+# The function takes a seating arrangement as inoutm given as (for example) 
+# "A", "J", "F", "G", "H", "I", "E", "B", "G", "J", "C", "D"
+#
+# It checks, for any given seating arrangement, if "A" and "B" are neighbours.
 
-check_If_Neighbours <- function(Arrangement) { 
-  n <- length(Arrangement)  # n  is the length of the arrangement (so, n = 10)
+check_If_Neighbours <- function(Arrangement) {
+  n <- length(Arrangement)
   
-  # We must allow for circular adjacency: first and last are also neighbours.
-  # So, we add the person in the first position to the end as well:
-  extended_Arrangement <- c(Arrangement, 
-                            Arrangement[1])
-  are_Neighbours <- FALSE 
-  # Assume not neighbours, unless we find them adjacent.
-  # TRUE means they *ARE* neighbours; FALSE means they *ARE NOT* neighbours.
+  # Allow for circular adjacency: append first element at the end
+  extended <- c(Arrangement, Arrangement[1])
   
-  # Loop over the  n  people, and check their neighbour to the right.
-  for (i in 1:n) {
-    # Check if Anh and Barb  are neighbours
-    # First: check if A, then B to he right:
-    if (extended_Arrangement[i] == "A" &&  
-        extended_Arrangement[i + 1] == "B") are_Neighbours <- TRUE
-
-    # Then: check if B, then A to he right:
-    if (extended_Arrangement[i] == "B" &&
-        extended_Arrangement[i + 1] == "A") are_Neighbours <- TRUE
-  }
-  # Return the value of are_Neighbours, to state whether the given arrangement
-  # has  A  and  B  as nighbours (TRUE) or not (FALSE):
+  # Compare each person with the next
+  right <- extended[-1]            # positions 2..(n+1)
+  left  <- extended[-(n + 1)]      # positions 1..n
+  
+  # Check if A next to B, or if B next to A
+  are_Neighbours <- any((left == "A" & right == "B") | 
+                        (left == "B" & right == "A"))
+  
   return(are_Neighbours)
 }
 ```
 
-To replicate this numerous times, the **R** function `replicate()` is used; it repeatedly evaluates given **R** code a specified number of times.
+
+To replicate this numerous times, the **R** function `replicate()` is used; it repeatedly evaluates the given **R** code a specified number of times.
 In this case:
 
 
