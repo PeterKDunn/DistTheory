@@ -395,7 +395,7 @@ text(x = 0.75,
 
 
 :::{.example #CricketBallEvents name="Throwing a cricket ball"}
-Consider throwing a cricket ball, where the distance of the throw (in metres) is of interest (Example\ \@ref(exm:CricketBallDefine)).
+Consider throwing a cricket ball, where the distance of the throw (in metres) is of interest.
 We could define the sample space\ $D$ as $D = \{ d \in \mathbb{R} \mid d \ge 0 \}$.
 More practically, we could write\index{Set-builder notation}
 $$
@@ -687,7 +687,7 @@ Hence $\Pr(\varnothing) = 0$.
 While this result may have seemed obvious, *all* probability formulae can be developed just by assuming the three axioms of probability (and using the definitions).
 
 
-::: {.example #CompRule name="Complementary rule of probability"}
+::: {.example #CompRule2 name="Complementary rule of probability"}
 For any event $A$, the probability of 'not $A$' is
 $$
    \Pr(A^c) = 1 - \Pr(A).
@@ -1531,7 +1531,7 @@ sd_Height <- 6.5
 Divisions2 <- seq(50, 300, 
                  by = 10)
 
-NormalHts <- array( dim = length(Divisions2) - 1 )
+NormalHts <- numeric( length(Divisions2) - 1 )
 for (i in 1:length(NormalHts)){
   NormalHts[i] <- mean( c(Divisions2[i], 
                           Divisions2[i + 1]) )
@@ -2769,8 +2769,6 @@ Bayes' theorem has many uses, as it uses conditional probabilities that are easy
 The theorem is the basis of a branch of statistics known as *Bayesian statistics*\index{Bayesian statistics} which involves using pre-existing evidence in drawing conclusions from data.
 
 
-
-
 ::: {.example #BreastCancer name="Breast cancer"}
 The success of mammograms for detecting breast cancer has been well documented [@white1993mammography]. 
 Mammograms are generally conducted on women over $40$, though breast cancer does rarely occur in women under\ $40$ also.\smallskip
@@ -3115,18 +3113,18 @@ A *simulation*\index{Simulation} is when a computer is used to imitate a real si
 
 Using a computer can be useful for many reasons when working with probabilities and statistics more generally:
 
-1. **Checking answers, intuition and reasoning.**... **Confirmation and validation of results.**
+1. **Checking and validating results, intuition and reasoning**
    Simulation can be used to check answers and reasoning; analytic solutions can be verified by comparing to simulation results.
-   Simulation can confirm (not *prove*) counter-intuitive results (such as the Monty Hall problem (Exercise\ \@ref(exr:SimulationMontyHall)), the birthday paradox (Exercise\ \@ref(exr:BirthdayProblem)), or outcomes using non-transitive dice (Exercise\ \@ref(exr:NonTransitiveDice)).
+   Simulation can confirm (not *prove*) counter-intuitive results (e.g., Sect.\ \@ref(SimulationConfirmation)).
 2. **Demonstration of theory.**
    Simulation can be used to visually demonstrate theory (e.g., Sect.\ \@ref(SimulationTheoryDemo)).
    Sometimes the theory can be difficult to understand, and a simulation can bridge the gap between formulas and reality.
 3. **Answering tedious or complex situations.**
-   Simulation can make tedious, difficult or complex computations easier.
+   Simulation can make tedious, difficult or complex scenarios easier to understand (e.g., Sect.\ \@ref(SimulationComplex)).
    Simulation gives quick approximations that bypass heavy combinatorial formulas.
    In some cases, simulation can be used for problems with no closed-form solutions.
 4. **Performing sensitivity analysis.**
-   Simulation allows easy tweaking or changing of parameters to see the impacts on the results.
+   Simulation allows easy tweaking or changing of parameters to see the impacts on the results (e.g., Sect.\ \@ref(SimulationSensitivityAnalysis)).
 
 An example of each is given below.
 The full benefit of simulation may only be apparent in more complicated problems later in this book, once more is learnt about distribution theory.
@@ -3147,76 +3145,98 @@ In this book, so that examples are reproducible (i.e., you will see the same res
 The **R** function `replicate()` allows an **R** expression to be repeated ('replicated') a given number of times, and often proves useful for creating simulations.
 
 
-### Simulation to check answers, intuition and reasoning {#SimulationChecking}
+### Simulation to confirm and validate results {#SimulationConfirmation}
 
-Consider drawing five cards at random from a fair pack; what is the probability that at least cards\ $3$ are hearts?
+Consider the breast cancer example (Example\ \@ref(exm:BreastCancer)), where the probability of having breast cancer after a positive test results is quite low.
+This result is surprising; computer simulation can be used to confirm that this is correct.
 
-This question is not too difficult to answer using the counting methods of Sect.\ \@ref(CombsAndPerms); you should show that the answer is approximately\ $0.0927$ using these methods.
-However, we could use an **R** simulation to check the answer.
+The easiest way to simulate using the `replicate()` function is to first define an appropriate **R** function to compute the probability that a woman has breast cancer, if the test gives a positive result.
+Hence, first we define a suitable **R** function that works for one replication, then use `replicate()` to repeat this over many replications.
 
-First, set up the simulation:
+The function is defined to take four inputs:
 
+* `population_Size`, which has a default value of `10000`;
+* `cancer_Prob`, which has a default value of `0.02`;
+* `sensitivity`, which has a default value of `0.75`;
+* `specificity`, which has a default value of `0.90`.
 
-```{r}
-# 'Make' the deck of cards.
-# Note: the denomination is not important, just the suit
-Deck <- c(rep("Hearts",   13),   # 13 cards of each suit
-          rep("Diamonds", 13), 
-          rep("Clubs",    13), 
-          rep("Spades",   13))
+The default values can be change be providing a different value to the function; if no value is given, the defaults are used.
+The default values are those used in Example\ \@ref(exm:BreastCancer).
 
-set.seed(12043)   # For reproducibility 
-num_Reps <- 5000  # Number of replications to use
-```
-
-
-Then we simulate numerous hands of $5$\ cards using `replicate()`.
-The first input to `replicate()` is the number of replications (i.e., `num_Reps`) and the second is the command to be replicated (in this case, taking a `sample()` of `size` five from the `Deck` of cards, with `replace`-ment):
+The function below uses a useful 'trick': each patient is allocated a random number between\ $0$ and\ $1$ by using `runif()`.
+People with an allocated random below the value of `cancer_Prob` are deemed to have cancer.
 
 
 ```{r}
-# Each replication goes into a column of  Hands
-Hands <- replicate(num_Reps, sample(Deck,               # Sample from the  Deck  
-                                    size = 5,           # Hand of *five* cards 
-                                    replace = FALSE)  ) # Without replacement
-Hands[, 1:4]  # Show the first four columns; each column is a hand of five cards
+P_cancer <- function(population_Size = 10000,   # Population size
+                     cancer_Prob = 0.02,        # Pr(really has cancer)
+                     sensitivity = 0.75,        # Pr(+ive test | has cancer)
+                     specificity = 0.90) {      # Pr(-ive test | no cancer)
+  
+  # True cancer status: Generate a random number for each person. 
+  # People with a number less than the 'threshold' have cancer.
+  cancer <- runif(population_Size) < cancer_Prob
+     # cancer  is a vector of TRUE and FALSE values.
+     # runif(population_Size) produces that many random numbers between 0 & 1
+  
+  # Test results: Create a logical vector (empty for now)
+  # to fill with TRUE or FALSE as appropriate.
+  test_positive <- logical(population_Size)
+  
+  # Sensitivity: P(test positive | cancer)
+  # * sum(cancer) is the number of people truly with cancer
+  # * runif( sum(cancer) ) produces that many random numbers
+  # * if that random number is less than 'sensitivity': positive test
+  test_positive[cancer] <- runif(sum(cancer)) < sensitivity
+  
+  # False positive rate: 1 - specificity
+  # * sum(!cancer) is the number of people truly without cancer
+  # * runif( sum(!cancer) ) produces that many random numbers
+  # * if that random number is less than '1-specificity': positive test
+  test_positive[!cancer] <- runif(sum(!cancer)) < (1 - specificity)
+  
+  # Compute P(Cancer | Test positive)
+  # Have to be careful: If there are no positive test results,
+  # we will end up dividing by zero...
+  if (sum(test_positive) == 0) return(NA)  # NA: not available
+  
+  mean(cancer[test_positive])
+}
 ```
 
-Then count the number of Hearts in each `Hand` (i.e., in each column):
+We can check if this function works for one replication:
 
 ```{r}
-# For each Hand (i.e., column), count how many  Hearts
-num_Hearts <- colSums(Hands == "Hearts")
-
-# Show the count of Hearts in those first four hands:
-num_Hearts[1 : 4]
+P_cancer()        # This uses all the default values
 ```
 
-
-Then determine how many of these `Hands` have at least three hearts:
+This probability will change each time the function is run, since it uses random numbers.
+Now, we can simulate over many replications:
 
 
 ```{r}
-# Count how many have *at least 3* hearts
-head(num_Hearts >= 3)    # Show the results from the first few simulations
-at_Least_3_Hearts <- sum( num_Hearts >= 3 ) 
+num_Reps <- 5000    # Number of replications
+set.seed(876344)    # For reproducibility
+
+results <- replicate(num_Reps,      # Repeat this many times...
+                     P_cancer())    # ... using this function
+
+mean(results, na.rm = TRUE)     # na.rm = TRUE ignores any NAs
+sd(results, na.rm = TRUE)
 ```
 
+In Example\ \@ref(exm:BreastCancer), the probability was given as\ $0.1327$, which compares favourably with this answer from simulation (which is an approximation).
 
-Then estimate the probability, and print the result:
+The above code has three places where random numbers are used: 
 
-```{r}
-# Compute the *probability* of at least three Hearts
-prob_At_Least_3_Hearts <- at_Least_3_Hearts / num_Reps
+* to randomly allocate people to have cancer or not; 
+* to randomly determine which people *with* cancer return a positive result; and
+* to randomly determine which people *without* cancer return a positive result.
 
-# Print the (rounded) results (where  "\n"  means to start a new line)
-cat("The prob. estimate is", 
-    round( mean(prob_At_Least_3_Hearts), 
-           4), "\n") # Round to four decimal places
-```
+Thus, each time the above code is run will produce different results (unless the random-number seed remains the same).
 
-This is close to what we computed using theory.
-A more precise estimate would be found using a larger number of simulations.
+A *simulation* repeats the above scenario many times, over many replications each with different random numbers used.
+Then, the probability of interest (here, the probability of having cancer, given a positive test result) can be averaged over the many replications.
 
 
 ### Simulation to demonstrate theory {#SimulationTheoryDemo}
@@ -3294,166 +3314,6 @@ Using the empirical approach shows why probabilities are between\ $0$ and\ $1$ (
 In this case, the sample proportion of heads converges (in probability) to the true probability of a head $p = 0.5$ as the number of trials increases.
 
 
-### Simulation to confirm and validate results {#SimulationConfirmation}
-
-Consider the breast cancer example (Example\ \@ref(exm:BreastCancer)), where we saw that the probability of having breast cancer after a positive test results is quite low.
-This result is surprising, so we could use a computer simulation to confirm that this is correct.
-
-Step\ 1 is to set up the scenario, by setting the random number seed (for reproducibility) and defining some parameters:
-
-```{r}
-population_Size <- 10000         # Work with this size 'population'
-cancer_Prob <- 0.02              # Prob. of having breast cancer
-
-# Test sensitivity and specificity 
-correct_Positive <- 0.75         # Sensitivity
-correct_Negative <- 0.90         # Specificity
-```
-
-Now we apply a useful 'trick', by first allocating each patient a random number between\ $0$ and\ $1$:
-
-```{r}
-# Allocate a random number between 0 and 1 to each patient
-# runif() produces uniform random numbers
-patient_Cancer_Probs <- runif( population_Size)   
-head(patient_Cancer_Probs)                       # Show the first few values
-```
-
-The `runif()` command produces random numbers between\ $0$ and\ $1$ for each person in the population.
-Each time `runif()` is run, different random numbers are allocated to each person in the population.
-
-Now, a number less than\ $0.02$ is equivalent to saying the patient has cancer (the given probability is\ $2$%).
-This is the same as saying about\ $0.02$ of people will have cancer in the population.
-This is like flipping a biased coin for each patient, where the chance of landing on 'cancer' is\ $2$%.
-
-Now we can obtain a list of whether each person has cancer or not.
-Each time `runif()` is run, different people, and a different *number* of people in the population, with cancer can vary:
-
-
-```{r}
-cancer_Result <- ( patient_Cancer_Probs < cancer_Prob)
-head(cancer_Result)              # Show the first few values
-```
-
-Then, split the population into those *with* cancer and those *without* cancer:
-
-```{r}
-# Now find those *with* cancer who return a positive result
-with_Cancer <- which( cancer_Result) # Indices of people *with* cancer
-head(with_Cancer)
-
-no_Cancer   <- which(!cancer_Result) # Indices of people *without* cancer
-head(no_Cancer)
-```
-
-The test sensitivity and specificity now can be applied (using the same trick as above):
-
-```{r}
-# Patients WITH cancer: 75% chance the test is positive
-with_Cancer_and_Positive <- runif(length(with_Cancer)) < correct_Positive
-
-# Patients WITHOUT cancer: 10% chance the test is (wrongly) positive
-no_Cancer_and_Positive <- runif(length(no_Cancer)) < (1 - correct_Negative)
-
-# Combine results
-positive_Test <- c(
-  with_Cancer[with_Cancer_and_Positive],
-  no_Cancer[no_Cancer_and_Positive]
-)
-```
-
-Again, each time that `runif()` is run, different people, and a different *number* of people in the population, can return positive test results:
-
-```{r}
-# True positives among those who tested positive
-true_positives  <- sum(cancer_Result[positive_Test])
-
-# Total positives
-total_positives <- length(positive_Test)
-
-# Estimated Prob(cancer | positive test)
-cancer_Given_Pos <- 
-  if (total_positives > 0) { # IF  number of positives is larger than zero...
-    true_positives / total_positives  # ... compute the probability
-  } else {                            # Otherwise...
-    NA                                # ... return NA (not available)
-  }
-cancer_Given_Pos
-```
-
-Now print some useful information (`\n` produces a new line):
-
-```{r}
-cat("Prob (cancer | positive test) :", cancer_Given_Pos, "\n")
-```
-
-The above code has three places where random numbers are used: 
-
-* to randomly allocate people to have cancer or not; 
-* to randomly determine which people *with* cancer return a positive result; and
-* to randomly determine which people *without* cancer return a positive result.
-
-Thus, each time the above code is run will produce different results (unless the random-number seed remains the same).
-
-A *simulation* repeats the above scenario many times, over many replications each with different random numbers used.
-Then, the probability of interest (here, the probability of having cancer, given a positive test result) can be averaged over the many replications.
-To do this (for\ $5\,000$ replications), the above code is repeated and the result of interest is retained from each replication (in `cancer_Given_Pos`):
-
-
-```{r}
-# Set the parameters for the scenario
-num_Reps <- 5000 # The number of replications
-population_Size <- 10000
-cancer_Prob <- 0.02
-
-# Set the test sensitivity and specificity 
-correct_Positive <- 0.75
-correct_Negative <- 0.90
-
-# Create an array to hold the info we need from each replication
-cancer_Given_Pos <- numeric(num_Reps)   # Empty vector of correct size
-
-# Now replicate the scenario  num_Reps  times:
-for (i in 1:num_Reps){
-  # Allocate a random number between 0 and 1 to each patient
-  patient_Probs <- runif( population_Size)
-  cancer_Result <- ( patient_Probs < cancer_Prob )
-
-  # Now find those *with* and *without* cancer who return a positive result
-  with_Cancer <- which( cancer_Result) # Indices of people *with* cancer
-  no_Cancer   <- which(!cancer_Result) # Indices of people *without* cancer
-  
-  # Patients WITH cancer: 75% chance the test is positive
-  with_Cancer_and_Positive <- runif(length(with_Cancer)) < correct_Positive
-  
-  # Patients WITHOUT cancer: 10% chance the test is (wrongly) positive
-  no_Cancer_and_Positive <- runif(length(no_Cancer)) < (1 - correct_Negative)
-  
-  # Combine results
-  positive_Test <- c(
-    with_Cancer[with_Cancer_and_Positive],
-    no_Cancer[no_Cancer_and_Positive]
-  )
-  
-  # True positives among those who tested positive
-  true_positives  <- sum(cancer_Result[positive_Test])
-  
-  # Total positives
-  total_positives <- length(positive_Test)
-  
-  # Estimated Prob(cancer | positive test)
-  cancer_Given_Pos[i] <- ifelse( total_positives > 0, 
-                                 true_positives / total_positives, # If  TRUE
-                                 NA)                               # If  FALSE
-}
-
-# Average over the replications
-mean(cancer_Given_Pos)
-```
-
-In Example\ \@ref(exm:BreastCancer), the probability was given as\ $0.1327$, which compares favourably with this answer from simulation (which is an approximation).
-
-
 ### Simulation to answers tedious or complex situations {#SimulationComplex}
 
 Suppose\ $10$ people are invited to a party, and sit at a round table; however, two people (say, Anh and Barb) refuse to sit next to each other.
@@ -3498,8 +3358,8 @@ check_If_Neighbours <- function(Arrangement) {
   extended <- c(Arrangement, Arrangement[1])
   
   # Compare each person with the next
-  right <- extended[-1]            # positions 2..(n+1)
-  left  <- extended[-(n + 1)]      # positions 1..n
+  right <- extended[-1]            # right: positions 2... (n+1)
+  left  <- extended[-(n + 1)]      # current: positions 1... n
   
   # Check if A next to B, or if B next to A
   are_Neighbours <- any((left == "A" & right == "B") | 
@@ -3542,92 +3402,40 @@ cat("Prob. of an UNacceptable seating arrangement: approx. ",
 
 *Sensitivity analysis*\index{Sensitivity analysis} refers to the process of checking how (and by how much) the results of a problem or model change when the inputs or assumptions are adjusted: how *sensitive* the results are to those inputs.
 
-Suppose a doctor schedules\ $20$ patients per day, but history shows that each patient has a chance of not showing up (a 'no-show').
-For simplicity, assume that each patient has the same 'no-show' probability, and that patients operate independently.
-If more than\ $15$ patients show up on any one day, the clinic runs late.
-What is the probability the clinic runs late?
-(In a later chapter, a theoretical approach will be introduced to answering this type of question; Sect.\ \@ref(BinomialDistribution)).
+Consider again the breast cancer simulation from Sect.\ \@ref(SimulationConfirmation).
+A sensitivity analysis may consider how the final results (i.e., $\Pr(\text{Has cancer} \mid \text{Positive test})$) changes depending on different values of the inputs parameters.
 
-For this scenario, the probability that each patients is a no-show could be varied (e.g., $10$%; $15$%; $20$%), to see the impact this has on the probability that the clinic runs late.
-
-First, set up the scenario:
+For example, what happens if the sensitivity of the test improves, from\ $0.75$ to\ $0.90$?
 
 
 ```{r}
-set.seed(8091) # For reproducibility
+set.seed(8091)      # For reproducibility
+num_Reps <- 5000    # Number of replications
 
-num_Reps <- 50000     # Number of replications (i.e., simulated days)
-daily_Patients <- 20  # Number of patients per day
+results <- replicate(num_Reps,  
+                     P_cancer(sensitivity = 0.90) )
+mean(results, na.rm = TRUE)     # na.rm = TRUE ignores any NAs
+sd(results, na.rm = TRUE)
 ```
 
+While the probability has improved (i.e., got larger), it is still disturbingly low: receiving a positive test results means the probability of having breast cancer is only $0.156$. (so *not* having breast cancer is still far more likely than having breast cancer).
 
-Then we create an **R** function to simulate what happens on a day, for any given no-show probability:
-
-
-```{r, class.source="mycode", class.output="myoutput"}
-# Create an R function to simulate what happens on a day
-simulate_Day <- function(no_Show_Prob = 0.15,  # No-show probability
-                         num_Patients = 20,    # Number of patients per day
-                         patient_Limit = 15) { # More than this many: clinic late
-  
-  # Allocate a random number between 0 and 1 to each patient
-  patient_Probs <- runif( num_Patients)
-  
-  # sum()  works, because  TRUE = 1,  and  FALSE = 0
-  number_No_Shows <- sum( patient_Probs < no_Show_Prob )
-
-  running_Late <- ( (num_Patients - number_No_Shows) > patient_Limit) 
-  # TRUE  means clinic will run late.  FALSE  means clinic will NOT run late
-  
-  return(running_Late)
-}
-```
-
-
-Then run the simulation for the various no-show probabilities:
-
+How would the probability change if the prevalence of breast cancer was higher?
 
 ```{r}
-# Declare the no-show probabilities to use
-no_Show_Probs <- seq(0.0, 0.15,
-                     by = 0.01)
+set.seed(8091)      # For reproducibility
+num_Reps <- 5000    # Number of replications
 
-# Find the mean of the TRUE and FALSE values returned.
-# This works because  R  treats TRUE as 1, FALSE as 0
-prob_Day_Is_Late <- numeric(length(no_Show_Probs))  # Empty vector
+results <- replicate(num_Reps,  
+                     P_cancer(cancer_Prob = 0.3))    # Change the default value
 
-for (i in (1:length(no_Show_Probs)) ){ # For each probability:
-  num_Days_Run_Late <- sum(replicate(num_Reps, 
-                                     simulate_Day(no_Show_Probs[i]) ) )
-  prob_Day_Is_Late[i] <- num_Days_Run_Late / num_Reps
-}
+mean(results, na.rm = TRUE)     # na.rm = TRUE ignores any NAs
+sd(results, na.rm = TRUE)
 ```
 
 
-The results then can be printed (and plotted; see Fig.\ \@ref(fig:probLate)):
-
-```{r plotProbLate, fig.show='hide'}
-round(prob_Day_Is_Late, 4)
-
-plot(prob_Day_Is_Late ~ no_Show_Probs,
-     type = "b",     # Plot "both" lines and points
-     las = 1,        # Make axis labels horizontal
-     lwd = 2,        # Line width of 2
-     col = "cyan4",  # Set colour
-     xlab = "Probability that a patient is a no-show",
-     ylab = "Probability that clinic runs late")
-```
-
-Clearly, the greater the no-show probability, the smaller the chance of running late (as expected).
-
-```{r probLate, fig.align="center", fig.cap = "A simulations that shows the probability that a day at a medical clinic runs late.", out.width = "80%", fig.width = 7, fig.height = 4, echo=FALSE, results='hide'}
-<<plotProbLate>>
-```
-
-We could also change the number of patients scheduled each day to see what the impact is (e.g., $18$ or\
-$22$\ patients).
-
-
+In this scenario, the chance of actually having breast cancer after a positive test is much higher.
+Further sensitivity analysis confirms that the very low prevalence of breast cancer is behind the low value for $\Pr(\text{Has cancer} \mid \text{Positive test})$), as suggested in Example\ \@ref(exm:BreastCancerTree): the number of false positive tests overwhelms the number of true positive tests.
 
 
 
@@ -3649,8 +3457,21 @@ Suppose $\Pr(A) = 0.53$, $\Pr(B) = 0.24$ and $\Pr(A\cap B) = 0.11$.
 :::
 
 
+:::{.exercise #BasicProbs2}
+Suppose $\Pr(A) = 0.22$, $\Pr(B) = 0.48$ and $\Pr(A\cap B) = 0.15$.
+
+1. Display the situation using a Venn diagram, tree diagram and a table.
+   Which is easier in this situation?
+2. Find $\Pr(A\cup B)$.
+3. Find $\Pr(A^c\cap B)$.
+4. Find $\Pr(A^c \cup B^c)$.
+5. Find $\Pr(A \mid B)$.
+6. Are events $A$ and $B$ independent?
+:::
+
+
 :::{.exercise #DrawNumbers}
-Suppose a box contains $100$ tickets numbered from $1$ to $100$ inclusive.
+Suppose a box contains $100$ tickets numbered from\ $1$ to\ $100$ inclusive.
 Four tickets are drawn from the box one at a time (without replacement).
 Find the probability that:
 
@@ -3658,6 +3479,19 @@ Find the probability that:
 1. exactly two odd numbers are drawn.
 1. *at least* two odd numbers are drawn before drawing the first even number.
 1. the *sum* of the numbers drawn is odd.
+:::
+
+
+
+:::{.exercise #DrawNumbers2}
+Suppose a box contains $500$ tickets numbered from\ $1$ to\ $500$ inclusive.
+Six tickets are drawn from the box one at a time (without replacement).
+Find the probability that:
+
+1. all six numbers drawn are *odd*.
+1. exactly two numbers less than\ $100$ are drawn.
+1. *at least* two odd numbers are drawn before drawing the first even number.
+1. all the numbers drawn are less than\ $200$.
 :::
 
 
@@ -3676,6 +3510,18 @@ An employee  observes the lights and record the length of time between consecuti
 :::
 
 
+:::{.exercise #StreetLights}
+Street lights in a town are programmed to turn on when the light dips below a certain intensity threshold, but must be turned on by\ 6pm.
+
+1. What is the random variable?
+2. What is the sample space?
+3. Can the classical approach to probability be used to determine the probability that the street lights are on before 5pm?
+   Why or why not?
+4. Can the relative frequency approach be used to determine the same probability?
+   If so, how? If not, why not?
+:::
+
+
 :::{.exercise #Cricket}
 Suppose a touring cricket squad consist of fifteen players, from which a team of eleven must be chosen for each game. 
 Suppose a squad consists of seven batters, five bowlers, two all-rounders and one wicketkeeper.
@@ -3685,6 +3531,15 @@ Suppose a squad consists of seven batters, five bowlers, two all-rounders and on
    How many handshakes are there in total at the conclusion of a game?
 :::
 
+
+:::{.exercise #Committee}
+A committee comprises\ $12$ people, seven of whom are male and five of whom are female.
+From this committee, four executive positions must be filled: President, Vice-President, Secretary and Treasurer.
+
+1. Find the number of possible executive teams.
+2. If the President must be female, how many executive teams are possible?
+3. If the roles of Vice-President and the Secretary can be held by the same person, how many executive teams are possible?
+:::
 
 
 
@@ -3696,6 +3551,8 @@ Using this information:
 1. Construct a tree diagram for the sample space.
 1. Construct a table of the sample space.
 1. Construct the Venn diagram of the sample space.
+1. Is wearing a hat independent of gender?
+   Explain.
 :::
 
 
@@ -3705,7 +3562,7 @@ A family with six non-driving children, and two driving parents has an eight-sea
 1. In how many ways can the family be seated in the car (and legally go driving)?
 1. Suppose one of the children obtains their driving licence.
    In how many ways can the family be seated in the car (and legally go driving) now?
-1. Two of the children needs car seats, and there are two car seats fixed in the vehicle (i.e., they cannot be moved to different seats).
+1. Two of the children legally need car seats, so two car seats are fixed in the vehicle (i.e., they cannot be moved to different seats) and each chid has their 'own' seat.
    If the two parents are the only drivers, in how many ways can the family be seated in the car (and legally go driving) now?
 :::
 
@@ -3742,15 +3599,15 @@ $$
 
 1. Compare the values of the actual factorials with the Stirling approximation values for $n = 1, \dots, 10$. 
    (Use technology!)
-1. Plot the *relative error* in Stirling's approximation for $n = 1, \dots, 10$.
-   (Again, use technology!)
+1. Plot the *relative error* in Stirling's approximation for $n = 1, \dots, 10$, where
+$$
+  \text{relative error} = \frac{|\text{approximate value} - \text{exact value} |}{|\text{exact value}|}.
+$$
 :::
-
 
 
 :::{.exercise #MatchingBrackets}
 Many document processors help users match brackets.
-Bracket matching is an interesting mathematical problem!
 For instance, the string `(())` is syntactically valid, whereas `())(` is not, even though both contain two opening and two closing brackets.
 
 1. List all the ways in which two opening and two closing brackets can be written in a way that is syntactically valid.
@@ -3764,12 +3621,9 @@ $$
 $$
    Show that an equivalent expression for $C_n$ is $\displaystyle C_n = {\frac {(2n)!}{(n + 1)!\,n!}}$.
 1. Show that another equivalent expression for $C_n$ is $\displaystyle \binom{2n}{n} - \binom{2n}{n + 1}$ for $n\geq 0$.
-1. Find the first nine Catalan numbers, starting with $C_0$.
+1. Find the first nine Catalan numbers, starting with $C_0 = 1$.
 <!-- Also see: https://brilliant.org/wiki/catalan-numbers/ -->
 :::
-
-
-
 
 
 :::{.exercise #DiceGame}
@@ -3777,40 +3631,40 @@ In a two-person game, a fair die is thrown in turn by each player.
 The first player to roll a `r knitr::include_graphics("Dice/die5.png", dpi=2000)` wins.
 
 1. Find the probability that the first player to throw the die wins.
-1. Suppose the player to throw first is selected by the toss of a fair coin.
-   Show that each player has an equal chance of winning.
+1. Suppose the player who throws first is selected by the toss of a fair coin.
+   Show that each player still has an equal chance of winning.
 :::
 
 
 :::{.exercise #RandomisedResponse}
 To get honest answers to sensitive questions, sometimes the *randomised response technique* is used.
-For example, suppose the aim is to discover the proportion of students who have used illegal drugs in the past twelve months. 
+For example, suppose the aim is to discover the proportion of students who have used illegal drugs in the past week. 
 
-$N$ cards are prepared, where $m$ have the statement 'I *have* used an illegal drug in the past twelve months'.
-The remaining $N - m$ cards have the statement 'I *have not* used an illegal drug in the past twelve months'.
+$N$ cards are prepared, where $m$ have the statement 'I *have* used an illegal drug in the past week'.
+The remaining $N - m$ cards have the statement 'I *have not* used an illegal drug in the past week'.
 
-Each student in the sample then selects one card at random from the prepared pile of $N$ cards, and answers 'True' or 'False' when asked the question 'Is the statement on the selected card true or false?' without divulging which statement is on the card. 
+Each student in the sample then selects one card at random from the prepared pile of $N$\ cards, and answers 'True' or 'False' when asked the question 'Is the statement on the selected card true or false?' without divulging which statement is on the card. 
 Since the interviewer does not know which card has been presented, the interviewer does not know if the person has used drugs or not from this answer.
 
-Let $T$ be the probability that a student answers 'True', and $p$ be the probability that a student chosen at random has used an illegal drug.
+Let\ $T$ be the probability that a student answers 'True', and\ $p$ be the probability that a student chosen at random has used an illegal drug.
 Assume that each student answers the question on the chosen card truthfully.
 
 1. From an understanding of the problem, show that
 $$
      T = (1 - p) + \frac{m}{N}(2p - 1).
 $$
-1. Find an expression for $p$ in terms of $T$, $m$ and $N$ by rearranging the previous expression.
+1. Find an expression for\ $p$ in terms of\ $T$, $m$ and\ $N$ by rearranging the previous expression.
 1. Explain what happens for $m = 0$, $m = N$ and $m = N/2$, and why these make sense *in the context of the question*.
 1. Suppose that, in a sample of 400 students, 175 answer 'True'.
-   Estimate $p$ from the expression found above, given that $N = 100$ and $m = 25$.
+   Estimate\ $p$ from the expression found above, given that $N = 100$ and $m = 25$.
 :::
 
 
 
 :::{.exercise #MCExam}
-A multiple choice question contains $m$ possible choices. 
-There is a probability of $p$ that a candidate chosen at random will know the correct answer.
-If a candidate does not know the answer, the candidate guesses and is equally likely to select any of the $m$ choices.
+A multiple choice question contains\ $m$ possible choices. 
+There is a probability of\ $p$ that a candidate chosen at random will know the correct answer.
+If a candidate does *not* know the answer, the candidate guesses and is then equally likely to select any of the\ $m$ choices.
 
 For a randomly selected candidate, what is the probability of the question being answered correctly?
 :::
@@ -3870,8 +3724,8 @@ rownames(EdTable) <- c("Females",
                        "Males",
                        "Females",
                        "Males")
-colnames(EdTable) <- c("Number First Nations students",
-                       "Number non-First Nations students")
+colnames(EdTable) <- c("Number of First Nations students",
+                       "Number of non-First Nations students")
 
 EdTable[, 1] <- c(2540, 2734, 391, 362)
 EdTable[, 2] <- c(21219, 22574, 9496, 9963)
@@ -3929,7 +3783,7 @@ Two cards are randomly drawn (without replacement) from a $52$-card pack.
 
 1. What is the probability the second card is an **Ace**?
 1. What is the probability that the first card is lower in rank (**Ace** low) than the second?
-1. What is the probability that the card ranks are in consecutive order where **Ace** is low *or* high and order is irrelevant (e.g., (Jack, Queen), (Queen, Jack), (Ace, Two) or (kKng, Ace))?
+1. What is the probability that the card ranks are in consecutive order where **Ace** is low *or* high and order is irrelevant (e.g., (Jack, Queen), (Queen, Jack), (Ace, Two) or (King, Ace))?
 :::
 
 
@@ -3942,9 +3796,15 @@ An octave contains $12$ distinct notes: seven white keys and 5 black keys on a p
 :::
 
 
-
 :::{.exercise #SomeProb}
 Find $\Pr(A\cap B)$ if $\Pr(A) = 0.2$, $\Pr(B) = 0.4$, and $\Pr(A\mid B) + \Pr(B \mid A) = 0.375$.
+:::
+
+
+:::{.exercise #TwoEventsOverline}
+Suppose the events $A$ and $B$ have probabilities $\Pr(A) = 0.4$ and $\Pr(B) = 0.3$, and $\Pr(A\cup B) = 0.5$.
+Determine $\Pr( A^c \cap B^c)$.
+Are $A$ and $B$ independent events?
 :::
 
 
@@ -3956,23 +3816,22 @@ Solve $12\times P^7_k = 7\times P^6_{k + 1}$ using:
 :::
 
 
-
 :::{.exercise #SolvePermk2}
 Solve $P^7_{r + 1} = 10 {C^7_r}$ for $r$.
 :::
 
 
-
 :::{.exercise #BirthdayProblem}
-1. Take a guess: how many randomly-selected individuals would you need so that the probability that *at least two* have the same birthday would exceed\ $50$%?
-2. Show that the probability that, for a group of $N$ randomly selected individuals, *at least two* have the same birthday (assuming $365$ days in a year) can be written as
+Take a guess: how many randomly-selected individuals would you need so that the probability that *at least two* have the same birthday would exceed\ $50$%?
+
+1. Show that the probability that, for a group of $N$\ randomly selected individuals, *at least two* have the same birthday (assuming\ $365$ days in a year) can be written as
 $$
   1 - \left(\frac{365}{365}\right) \times \left(\frac{364}{365}\right) \times \left(\frac{363}{365}\right) \times \dots\times \left(\frac{365 - n + 1}{365}\right).
 $$
-3. Graph the relationship for various values of $N$, using the above form to compute the probability.
-4. What assumptions are necessary? 
+2. Graph the relationship for various values of\ $N$, using the above form to compute the probability.
+3. What assumptions are necessary? 
    Are these reasonable?
-5. Use computer simulation to confirm these results.
+4. Use computer simulation to confirm these results.
 
 :::
 
@@ -3981,23 +3840,6 @@ $$
 Six numbers are randomly selected *without replacement* from the numbers $1, 2, 3,\dots, 45$.
 Model this process using **R** to estimate the probability that there are *no consecutive numbers* amongst the numbers selected.
 (That is, no sequence like `4, 5` or `33, 34` or `21, 22, 23` appears, once the numbers are sorted smallest to largest.)
-:::
-
-
-:::{.exercise #TwoEventsOverline}
-Suppose the events $A$ and $B$ have probabilities $\Pr(A) = 0.4$ and $\Pr(B) = 0.3$, and $\Pr(A\cup B) = 0.5$.
-Determine $\Pr( A^c \cap B^c)$.
-Are $A$ and $B$ independent events?
-:::
-
-
-:::{.exercise #TwoEventsAbsorption}
-For sets $A$ and $B$, show that:
-
-1. $A\cup (A\cap B) = A$;
-2. $A\cap (A\cup B) = A$.
-
-These are called the *absorption laws*.
 :::
 
 
@@ -4198,4 +4040,24 @@ The host now gives the contestant the choice of either (a)\ retaining the door c
    *Hint:* remember the crucial information: the host of the show knows where the car is, and opens one of the doors *not* selected by the contestant, *and reveals a goat*. 
 :::
 
+
+:::{.exercise #SimulationRunningLate}
+Suppose a specialist doctors surgery schedules a maximum of\ $20$ patients per day, but history shows that each patient has a chance of not showing up (a 'no-show').
+For simplicity, assume that each patient has the same 'no-show' probability, and that patients operate independently.
+If more than\ $15$ patients show up on any one day, the clinic runs late by the end of the day.
+
+1. What is the probability the clinic runs late?
+   Write an **R** function that allows for a simulation to answer the question.
+2. Perform a sensitivity analysis, where the probability that each patients is a no-show varies (e.g., $10$%; $15$%; $20$%), to see the impact this has on the probability that the clinic runs late.
+3. Perform a sensitivity analysis to see the impact on the probability of running late, if between\ $18$ and\ $25$ patients are booked per day.
+:::
+
+
+:::{.exercise #SimulationCards}
+Consider drawing five cards at random from a fair pack; what is the probability that at least cards\ $3$ are hearts?
+
+This question is not too difficult to answer using the counting methods of Sect.\ \@ref(CombsAndPerms); you should show that the answer is approximately\ $0.0927$ using these methods.
+
+Create an **R** simulation to check the answer.
+:::
 

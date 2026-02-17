@@ -250,12 +250,25 @@ $D_{10} \setminus D_5$ (or $D_{10} \cap D_5^c$).
 
 
 :::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:BasicProbs).**
+TBA
+:::
+
+
+:::{.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:DrawNumbers).**
 
 1. $(50/100)\times (49/99)\times (48/98)\times (47/97) = C^{50}_4 / ^{100}C_4\approx 0.0587$.
 1. $C^{50}_2\times C^{50}_2 / C^{100}_4  = 1225/3201 \approx 0.3826$.
 1. $\Pr(\text{at least 2 odd before 1st even}) = \Pr(\text{odd, odd, even, either}) + \Pr(\text{odd, odd, odd, even)} = (50/100)\times(49/99)\times(50/98) + (50/100)\times (49/99)\times(48/98)\times(50/97) \approx 0.1887$.
 1. $\Pr(\text{sum odd}) = \Pr(\text{exactly 1 odd number drawn, OR exactly 3 odd numbers drawn}) = 1600/3201 \approx 0.49984$.
+:::
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:DrawNumbers2).**
+TBA
 :::
 
 
@@ -270,6 +283,11 @@ lights.
 :::
 
 
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:StreetLights).**
+TBA
+:::
+
 
 :::{.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:Cricket).**
@@ -279,6 +297,10 @@ lights.
 :::
 
 
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:Committee).**
+TBA
+:::
 
 
 :::{.answer data-latex=""}
@@ -925,7 +947,6 @@ cat("Proportion WITHOUT consecutive values",
 :::
 
 
-
 :::{.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:TwoEventsOverline).**
 $\Pr( A^c \cap B^c) = 0.5$ (using, for example, a two-way table).
@@ -934,18 +955,9 @@ $A$ and\ $B$ are not independent.
 
 
 :::{.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:TwoEventsAbsorption).**
-Use two-way table, or Venn diagrams.
-:::
-
-
-
-:::{.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:NewCars).**
 $7\times 3\times 2 = 42$.
 :::
-
-
 
 
 :::{.answer data-latex=""}
@@ -1108,6 +1120,153 @@ for (i in 1:num_Reps) {
 # Results
 c(Win_By_Staying, Win_By_Switching) / num_Reps
 ```
+:::
+
+
+
+:::{answer}
+**Answer to Exercise\ \@ref(exr:SimulationRunningLate).**
+First, set up the scenario:
+
+```{r}
+set.seed(8091) # For reproducibility
+
+num_Reps <- 50000     # Number of replications (i.e., simulated days)
+daily_Patients <- 20  # Number of patients per day
+```
+
+
+Then we create an **R** function to simulate what happens on a day, for any given no-show probability:
+
+
+```{r, class.source="mycode", class.output="myoutput"}
+# Create an R function to simulate what happens on a day
+simulate_Day <- function(no_Show_Prob = 0.15,  # No-show probability
+                         num_Patients = 20,    # Number of patients per day
+                         patient_Limit = 15) { # More than this many: clinic late
+  
+  # Allocate a random number between 0 and 1 to each patient
+  patient_Probs <- runif( num_Patients)
+  
+  # sum()  works, because  TRUE = 1,  and  FALSE = 0
+  number_No_Shows <- sum( patient_Probs < no_Show_Prob )
+
+  running_Late <- ( (num_Patients - number_No_Shows) > patient_Limit) 
+  # TRUE  means clinic will run late.  FALSE  means clinic will NOT run late
+  
+  return(running_Late)
+}
+```
+
+
+Then run the simulation for the various no-show probabilities:
+
+
+```{r}
+# Declare the no-show probabilities to use
+no_Show_Probs <- seq(0.0, 0.15,
+                     by = 0.01)
+
+# Find the mean of the TRUE and FALSE values returned.
+# This works because  R  treats TRUE as 1, FALSE as 0
+prob_Day_Is_Late <- numeric(length(no_Show_Probs))  # Empty vector
+
+for (i in (1:length(no_Show_Probs)) ){ # For each probability:
+  num_Days_Run_Late <- sum(replicate(num_Reps, 
+                                     simulate_Day(no_Show_Probs[i]) ) )
+  prob_Day_Is_Late[i] <- num_Days_Run_Late / num_Reps
+}
+```
+
+
+The results then can be printed (and plotted; see Fig.\ \@ref(fig:probLate)):
+
+```{r plotProbLate, fig.show='hide'}
+round(prob_Day_Is_Late, 4)
+
+plot(prob_Day_Is_Late ~ no_Show_Probs,
+     type = "b",     # Plot "both" lines and points
+     las = 1,        # Make axis labels horizontal
+     lwd = 2,        # Line width of 2
+     col = "cyan4",  # Set colour
+     xlab = "Probability that a patient is a no-show",
+     ylab = "Probability that clinic runs late")
+```
+
+Clearly, the greater the no-show probability, the smaller the chance of running late (as expected).
+
+```{r probLate, fig.align="center", fig.cap = "A simulations that shows the probability that a day at a medical clinic runs late.", out.width = "80%", fig.width = 7, fig.height = 4, echo=FALSE, results='hide'}
+<<plotProbLate>>
+```
+
+We could also change the number of patients scheduled each day to see what the impact is (e.g., $18$ or\
+$25$\ patients).
+:::
+
+
+
+
+
+:::{answer}
+**Answer to Exercise\ \@ref(exr:SimulationCards).**
+
+```{r}
+# 'Make' the deck of cards.
+# Note: the denomination is not important, just the suit
+Deck <- c(rep("Hearts",   13),   # 13 cards of each suit
+          rep("Diamonds", 13), 
+          rep("Clubs",    13), 
+          rep("Spades",   13))
+
+set.seed(12043)   # For reproducibility 
+num_Reps <- 5000  # Number of replications to use
+```
+
+Then we simulate numerous hands of $5$\ cards using `replicate()`.
+
+```{r}
+# Each replication goes into a column of  Hands
+Hands <- replicate(num_Reps, sample(Deck,               # Sample from the  Deck  
+                                    size = 5,           # Hand of *five* cards 
+                                    replace = FALSE)  ) # Without replacement
+Hands[, 1:4]  # Show the first four columns; each column is a hand of five cards
+```
+
+Then count the number of Hearts in each `Hand` (i.e., in each column):
+
+```{r}
+# For each Hand (i.e., column), count how many  Hearts
+num_Hearts <- colSums(Hands == "Hearts")
+
+# Show the count of Hearts in those first four hands:
+num_Hearts[1 : 4]
+```
+
+
+Then determine how many of these `Hands` have at least three hearts:
+
+
+```{r}
+# Count how many have *at least 3* hearts
+head(num_Hearts >= 3)    # Show the results from the first few simulations
+at_Least_3_Hearts <- sum( num_Hearts >= 3 ) 
+```
+
+
+Then estimate the probability, and print the result:
+
+```{r}
+# Compute the *probability* of at least three Hearts
+prob_At_Least_3_Hearts <- at_Least_3_Hearts / num_Reps
+
+# Print the (rounded) results (where  "\n"  means to start a new line)
+cat("The prob. estimate is", 
+    round( mean(prob_At_Least_3_Hearts), 
+           4), "\n") # Round to four decimal places
+```
+
+This is close to what we computed using theory.
+A more precise estimate would be found using a larger number of simulations.
 :::
 
 
@@ -2207,7 +2366,7 @@ $Y = 1$ | $0$     | $1/4$   | $1/4$   |
 
 :::{.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:DiceMinMaxCD).**
-The joint probability function for\ $X$ and\ $Y$ is shown in Table\ \@ref(tab:DiceMinMaxTab).
+The joint probability function for\ $C$ and\ $D$ is shown in Table\ \@ref(tab:DiceMinMaxTab).
 For example:
 
 * A minimum of\ 2 and a maximum of 1 is impossible; this makes no sense (hence probability is zero).
