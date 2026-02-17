@@ -2240,21 +2240,21 @@ In many cases, using a computer, or a computer <em>simulation</em>, can be helpf
 <p>Using a computer can be useful for many reasons when working with probabilities and statistics more generally:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Checking answers, intuition and reasoning.</strong>… <strong>Confirmation and validation of results.</strong>
+<strong>Checking and validating results, intuition and reasoning</strong>
 Simulation can be used to check answers and reasoning; analytic solutions can be verified by comparing to simulation results.
-Simulation can confirm (not <em>prove</em>) counter-intuitive results (such as the Monty Hall problem (Exercise <a href="ChapterProbability.html#exr:SimulationMontyHall">3.38</a>), the birthday paradox (Exercise <a href="ChapterProbability.html#exr:BirthdayProblem">3.23</a>), or outcomes using non-transitive dice (Exercise <a href="ChapterProbability.html#exr:NonTransitiveDice">3.36</a>).</li>
+Simulation can confirm (not <em>prove</em>) counter-intuitive results (e.g., Sect. <a href="ChapterProbability.html#SimulationConfirmation">3.11.2</a>).</li>
 <li>
 <strong>Demonstration of theory.</strong>
 Simulation can be used to visually demonstrate theory (e.g., Sect. <a href="ChapterProbability.html#SimulationTheoryDemo">3.11.3</a>).
 Sometimes the theory can be difficult to understand, and a simulation can bridge the gap between formulas and reality.</li>
 <li>
 <strong>Answering tedious or complex situations.</strong>
-Simulation can make tedious, difficult or complex computations easier.
+Simulation can make tedious, difficult or complex scenarios easier to understand (e.g., Sect. <a href="ChapterProbability.html#SimulationComplex">3.11.4</a>).
 Simulation gives quick approximations that bypass heavy combinatorial formulas.
 In some cases, simulation can be used for problems with no closed-form solutions.</li>
 <li>
 <strong>Performing sensitivity analysis.</strong>
-Simulation allows easy tweaking or changing of parameters to see the impacts on the results.</li>
+Simulation allows easy tweaking or changing of parameters to see the impacts on the results (e.g., Sect. <a href="ChapterProbability.html#SimulationSensitivityAnalysis">3.11.5</a>).</li>
 </ol>
 <p>An example of each is given below.
 The full benefit of simulation may only be apparent in more complicated problems later in this book, once more is learnt about distribution theory.</p>
@@ -2271,64 +2271,91 @@ In this book, so that examples are reproducible (i.e., you will see the same res
 (Nonetheless, we call these ‘random numbers’ with the understanding that they are really pseudo-random numbers…)
 The <strong>R</strong> function <code><a href="https://rdrr.io/r/base/lapply.html">replicate()</a></code> allows an <strong>R</strong> expression to be repeated (‘replicated’) a given number of times, and often proves useful for creating simulations.</p>
 </div>
-<div id="SimulationChecking" class="section level3" number="3.11.2">
+<div id="SimulationConfirmation" class="section level3" number="3.11.2">
 <h3>
-<span class="header-section-number">3.11.2</span> Simulation to check answers, intuition and reasoning<a class="anchor" aria-label="anchor" href="#SimulationChecking"><i class="fas fa-link"></i></a>
+<span class="header-section-number">3.11.2</span> Simulation to confirm and validate results<a class="anchor" aria-label="anchor" href="#SimulationConfirmation"><i class="fas fa-link"></i></a>
 </h3>
-<p>Consider drawing five cards at random from a fair pack; what is the probability that at least cards <span class="math inline">\(3\)</span> are hearts?</p>
-<p>This question is not too difficult to answer using the counting methods of Sect. <a href="ChapterProbability.html#CombsAndPerms">3.6</a>; you should show that the answer is approximately <span class="math inline">\(0.0927\)</span> using these methods.
-However, we could use an <strong>R</strong> simulation to check the answer.</p>
-<p>First, set up the simulation:</p>
+<p>Consider the breast cancer example (Example <a href="ChapterProbability.html#exm:BreastCancer">3.36</a>), where the probability of having breast cancer after a positive test results is quite low.
+This result is surprising; computer simulation can be used to confirm that this is correct.</p>
+<p>The easiest way to simulate using the <code><a href="https://rdrr.io/r/base/lapply.html">replicate()</a></code> function is to first define an appropriate <strong>R</strong> function to compute the probability that a woman has breast cancer, if the test gives a positive result.
+Hence, first we define a suitable <strong>R</strong> function that works for one replication, then use <code><a href="https://rdrr.io/r/base/lapply.html">replicate()</a></code> to repeat this over many replications.</p>
+<p>The function is defined to take four inputs:</p>
+<ul>
+<li>
+<code>population_Size</code>, which has a default value of <code>10000</code>;</li>
+<li>
+<code>cancer_Prob</code>, which has a default value of <code>0.02</code>;</li>
+<li>
+<code>sensitivity</code>, which has a default value of <code>0.75</code>;</li>
+<li>
+<code>specificity</code>, which has a default value of <code>0.90</code>.</li>
+</ul>
+<p>The default values can be change be providing a different value to the function; if no value is given, the defaults are used.
+The default values are those used in Example <a href="ChapterProbability.html#exm:BreastCancer">3.36</a>.</p>
+<p>The function below uses a useful ‘trick’: each patient is allocated a random number between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> by using <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code>.
+People with an allocated random below the value of <code>cancer_Prob</code> are deemed to have cancer.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 'Make' the deck of cards.</span></span>
-<span><span class="co"># Note: the denomination is not important, just the suit</span></span>
-<span><span class="va">Deck</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Hearts"</span>,   <span class="fl">13</span><span class="op">)</span>,   <span class="co"># 13 cards of each suit</span></span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Diamonds"</span>, <span class="fl">13</span><span class="op">)</span>, </span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Clubs"</span>,    <span class="fl">13</span><span class="op">)</span>, </span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Spades"</span>,   <span class="fl">13</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12043</span><span class="op">)</span>   <span class="co"># For reproducibility </span></span>
-<span><span class="va">num_Reps</span> <span class="op">&lt;-</span> <span class="fl">5000</span>  <span class="co"># Number of replications to use</span></span></code></pre></div>
-<p>Then we simulate numerous hands of <span class="math inline">\(5\)</span> cards using <code><a href="https://rdrr.io/r/base/lapply.html">replicate()</a></code>.
-The first input to <code><a href="https://rdrr.io/r/base/lapply.html">replicate()</a></code> is the number of replications (i.e., <code>num_Reps</code>) and the second is the command to be replicated (in this case, taking a <code><a href="https://rdrr.io/r/base/sample.html">sample()</a></code> of <code>size</code> five from the <code>Deck</code> of cards, with <code>replace</code>-ment):</p>
+<code class="sourceCode R"><span><span class="va">P_cancer</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">population_Size</span> <span class="op">=</span> <span class="fl">10000</span>,   <span class="co"># Population size</span></span>
+<span>                     <span class="va">cancer_Prob</span> <span class="op">=</span> <span class="fl">0.02</span>,        <span class="co"># Pr(really has cancer)</span></span>
+<span>                     <span class="va">sensitivity</span> <span class="op">=</span> <span class="fl">0.75</span>,        <span class="co"># Pr(+ive test | has cancer)</span></span>
+<span>                     <span class="va">specificity</span> <span class="op">=</span> <span class="fl">0.90</span><span class="op">)</span> <span class="op">{</span>      <span class="co"># Pr(-ive test | no cancer)</span></span>
+<span>  </span>
+<span>  <span class="co"># True cancer status: Generate a random number for each person. </span></span>
+<span>  <span class="co"># People with a number less than the 'threshold' have cancer.</span></span>
+<span>  <span class="va">cancer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">population_Size</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">cancer_Prob</span></span>
+<span>     <span class="co"># cancer  is a vector of TRUE and FALSE values.</span></span>
+<span>     <span class="co"># runif(population_Size) produces that many random numbers between 0 &amp; 1</span></span>
+<span>  </span>
+<span>  <span class="co"># Test results: Create a logical vector (empty for now)</span></span>
+<span>  <span class="co"># to fill with TRUE or FALSE as appropriate.</span></span>
+<span>  <span class="va">test_positive</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/logical.html">logical</a></span><span class="op">(</span><span class="va">population_Size</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Sensitivity: P(test positive | cancer)</span></span>
+<span>  <span class="co"># * sum(cancer) is the number of people truly with cancer</span></span>
+<span>  <span class="co"># * runif( sum(cancer) ) produces that many random numbers</span></span>
+<span>  <span class="co"># * if that random number is less than 'sensitivity': positive test</span></span>
+<span>  <span class="va">test_positive</span><span class="op">[</span><span class="va">cancer</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">cancer</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">sensitivity</span></span>
+<span>  </span>
+<span>  <span class="co"># False positive rate: 1 - specificity</span></span>
+<span>  <span class="co"># * sum(!cancer) is the number of people truly without cancer</span></span>
+<span>  <span class="co"># * runif( sum(!cancer) ) produces that many random numbers</span></span>
+<span>  <span class="co"># * if that random number is less than '1-specificity': positive test</span></span>
+<span>  <span class="va">test_positive</span><span class="op">[</span><span class="op">!</span><span class="va">cancer</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">!</span><span class="va">cancer</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">specificity</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Compute P(Cancer | Test positive)</span></span>
+<span>  <span class="co"># Have to be careful: If there are no positive test results,</span></span>
+<span>  <span class="co"># we will end up dividing by zero...</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">test_positive</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span>  <span class="co"># NA: not available</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">cancer</span><span class="op">[</span><span class="va">test_positive</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>We can check if this function works for one replication:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Each replication goes into a column of  Hands</span></span>
-<span><span class="va">Hands</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="va">num_Reps</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">Deck</span>,               <span class="co"># Sample from the  Deck  </span></span>
-<span>                                    size <span class="op">=</span> <span class="fl">5</span>,           <span class="co"># Hand of *five* cards </span></span>
-<span>                                    replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>  <span class="op">)</span> <span class="co"># Without replacement</span></span>
-<span><span class="va">Hands</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>  <span class="co"># Show the first four columns; each column is a hand of five cards</span></span>
-<span><span class="co">#&gt;      [,1]       [,2]       [,3]       [,4]    </span></span>
-<span><span class="co">#&gt; [1,] "Clubs"    "Spades"   "Diamonds" "Clubs" </span></span>
-<span><span class="co">#&gt; [2,] "Diamonds" "Spades"   "Hearts"   "Hearts"</span></span>
-<span><span class="co">#&gt; [3,] "Spades"   "Diamonds" "Diamonds" "Spades"</span></span>
-<span><span class="co">#&gt; [4,] "Hearts"   "Diamonds" "Diamonds" "Hearts"</span></span>
-<span><span class="co">#&gt; [5,] "Diamonds" "Diamonds" "Clubs"    "Spades"</span></span></code></pre></div>
-<p>Then count the number of Hearts in each <code>Hand</code> (i.e., in each column):</p>
+<code class="sourceCode R"><span><span class="fu">P_cancer</span><span class="op">(</span><span class="op">)</span>        <span class="co"># This uses all the default values</span></span>
+<span><span class="co">#&gt; [1] 0.126615</span></span></code></pre></div>
+<p>This probability will change each time the function is run, since it uses random numbers.
+Now, we can simulate over many replications:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># For each Hand (i.e., column), count how many  Hearts</span></span>
-<span><span class="va">num_Hearts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span><span class="op">(</span><span class="va">Hands</span> <span class="op">==</span> <span class="st">"Hearts"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">num_Reps</span> <span class="op">&lt;-</span> <span class="fl">5000</span>    <span class="co"># Number of replications</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">876344</span><span class="op">)</span>    <span class="co"># For reproducibility</span></span>
 <span></span>
-<span><span class="co"># Show the count of Hearts in those first four hands:</span></span>
-<span><span class="va">num_Hearts</span><span class="op">[</span><span class="fl">1</span> <span class="op">:</span> <span class="fl">4</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 1 0 1 2</span></span></code></pre></div>
-<p>Then determine how many of these <code>Hands</code> have at least three hearts:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Count how many have *at least 3* hearts</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">num_Hearts</span> <span class="op">&gt;=</span> <span class="fl">3</span><span class="op">)</span>    <span class="co"># Show the results from the first few simulations</span></span>
-<span><span class="co">#&gt; [1] FALSE FALSE FALSE FALSE FALSE FALSE</span></span>
-<span><span class="va">at_Least_3_Hearts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span> <span class="va">num_Hearts</span> <span class="op">&gt;=</span> <span class="fl">3</span> <span class="op">)</span> </span></code></pre></div>
-<p>Then estimate the probability, and print the result:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Compute the *probability* of at least three Hearts</span></span>
-<span><span class="va">prob_At_Least_3_Hearts</span> <span class="op">&lt;-</span> <span class="va">at_Least_3_Hearts</span> <span class="op">/</span> <span class="va">num_Reps</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="va">num_Reps</span>,      <span class="co"># Repeat this many times...</span></span>
+<span>                     <span class="fu">P_cancer</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>    <span class="co"># ... using this function</span></span>
 <span></span>
-<span><span class="co"># Print the (rounded) results (where  "\n"  means to start a new line)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"The prob. estimate is"</span>, </span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">prob_At_Least_3_Hearts</span><span class="op">)</span>, </span>
-<span>           <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span> <span class="co"># Round to four decimal places</span></span>
-<span><span class="co">#&gt; The prob. estimate is 0.0978</span></span></code></pre></div>
-<p>This is close to what we computed using theory.
-A more precise estimate would be found using a larger number of simulations.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">results</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>     <span class="co"># na.rm = TRUE ignores any NAs</span></span>
+<span><span class="co">#&gt; [1] 0.1328612</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">results</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.01004723</span></span></code></pre></div>
+<p>In Example <a href="ChapterProbability.html#exm:BreastCancer">3.36</a>, the probability was given as <span class="math inline">\(0.1327\)</span>, which compares favourably with this answer from simulation (which is an approximation).</p>
+<p>The above code has three places where random numbers are used:</p>
+<ul>
+<li>to randomly allocate people to have cancer or not;</li>
+<li>to randomly determine which people <em>with</em> cancer return a positive result; and</li>
+<li>to randomly determine which people <em>without</em> cancer return a positive result.</li>
+</ul>
+<p>Thus, each time the above code is run will produce different results (unless the random-number seed remains the same).</p>
+<p>A <em>simulation</em> repeats the above scenario many times, over many replications each with different random numbers used.
+Then, the probability of interest (here, the probability of having cancer, given a positive test result) can be averaged over the many replications.</p>
 </div>
 <div id="SimulationTheoryDemo" class="section level3" number="3.11.3">
 <h3>
@@ -2340,13 +2367,13 @@ A more precise estimate would be found using a larger number of simulations.</p>
 </div>
 <p>This can be shown by running a computer simulation, to simulate large numbers of coin tosses.
 First, set up the scenario:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">966141</span><span class="op">)</span> <span class="co"># For repeatability</span></span>
 <span></span>
 <span><span class="co"># Set the number of replications to use</span></span>
 <span><span class="va">Num_Tosses</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></code></pre></div>
 <p>Then we use the <strong>R</strong> function <code><a href="https://rdrr.io/r/base/sample.html">sample()</a></code> to take a ‘sample’ of heads and tails (with replacement!) for each replication:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Tosses</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"H"</span>, <span class="st">"T"</span><span class="op">)</span>,    <span class="co"># Choose either "H"  or  "T"</span></span>
 <span>                 size <span class="op">=</span> <span class="va">Num_Tosses</span>,  <span class="co"># Do this for each replication</span></span>
 <span>                 replace <span class="op">=</span> <span class="cn">TRUE</span>,     <span class="co"># H and T can be reselected </span></span>
@@ -2355,7 +2382,7 @@ First, set up the scenario:</p>
 <span><span class="co">#&gt; [1] "H" "T" "T" "H" "H" "H"</span></span></code></pre></div>
 <p>Notice that the probability of a Head (and Tail) is set as <span class="math inline">\(0.5\)</span> in the simulation, to simulate tossing a coin.
 After each toss, the probability of obtaining a head using all the available information up to that toss was computed:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Toss_Number</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="va">Num_Tosses</span>           <span class="co"># Sequence: from 1 to Num_Tosses</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">Toss_Number</span><span class="op">)</span>                     <span class="co"># Show the first few values </span></span>
 <span><span class="co">#&gt; [1] 1 2 3 4 5 6</span></span>
@@ -2370,7 +2397,7 @@ After each toss, the probability of obtaining a head using all the available inf
 <span><span class="co">#&gt; [1] 1.0000000 0.5000000 0.3333333 0.5000000</span></span>
 <span><span class="co">#&gt; [5] 0.6000000 0.6666667</span></span></code></pre></div>
 <p>The results can be plotted (Fig. <a href="ChapterProbability.html#fig:SimTosses">3.11</a>):</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">Prop_Heads</span>,</span>
 <span>     main <span class="op">=</span> <span class="st">"The proportion of heads after a given number of tosses"</span>, <span class="co"># Main title</span></span>
 <span>     xlab <span class="op">=</span> <span class="st">"Toss number"</span>,                        <span class="co"># Label on x-axis</span></span>
@@ -2395,148 +2422,9 @@ While the result of any single toss is unpredictable, we see the <em>Weak Law of
 <p>Using the empirical approach shows why probabilities are between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> (inclusive), since the proportions <span class="math inline">\(m/n\)</span> are always between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> (inclusive).
 In this case, the sample proportion of heads converges (in probability) to the true probability of a head <span class="math inline">\(p = 0.5\)</span> as the number of trials increases.</p>
 </div>
-<div id="SimulationConfirmation" class="section level3" number="3.11.4">
+<div id="SimulationComplex" class="section level3" number="3.11.4">
 <h3>
-<span class="header-section-number">3.11.4</span> Simulation to confirm and validate results<a class="anchor" aria-label="anchor" href="#SimulationConfirmation"><i class="fas fa-link"></i></a>
-</h3>
-<p>Consider the breast cancer example (Example <a href="ChapterProbability.html#exm:BreastCancer">3.36</a>), where we saw that the probability of having breast cancer after a positive test results is quite low.
-This result is surprising, so we could use a computer simulation to confirm that this is correct.</p>
-<p>Step 1 is to set up the scenario, by setting the random number seed (for reproducibility) and defining some parameters:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">population_Size</span> <span class="op">&lt;-</span> <span class="fl">10000</span>         <span class="co"># Work with this size 'population'</span></span>
-<span><span class="va">cancer_Prob</span> <span class="op">&lt;-</span> <span class="fl">0.02</span>              <span class="co"># Prob. of having breast cancer</span></span>
-<span></span>
-<span><span class="co"># Test sensitivity and specificity </span></span>
-<span><span class="va">correct_Positive</span> <span class="op">&lt;-</span> <span class="fl">0.75</span>         <span class="co"># Sensitivity</span></span>
-<span><span class="va">correct_Negative</span> <span class="op">&lt;-</span> <span class="fl">0.90</span>         <span class="co"># Specificity</span></span></code></pre></div>
-<p>Now we apply a useful ‘trick’, by first allocating each patient a random number between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Allocate a random number between 0 and 1 to each patient</span></span>
-<span><span class="co"># runif() produces uniform random numbers</span></span>
-<span><span class="va">patient_Cancer_Probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span> <span class="va">population_Size</span><span class="op">)</span>   </span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">patient_Cancer_Probs</span><span class="op">)</span>                       <span class="co"># Show the first few values</span></span>
-<span><span class="co">#&gt; [1] 0.8604976 0.8495931 0.8000998 0.6782192</span></span>
-<span><span class="co">#&gt; [5] 0.2884367 0.5052399</span></span></code></pre></div>
-<p>The <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code> command produces random numbers between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> for each person in the population.
-Each time <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code> is run, different random numbers are allocated to each person in the population.</p>
-<p>Now, a number less than <span class="math inline">\(0.02\)</span> is equivalent to saying the patient has cancer (the given probability is <span class="math inline">\(2\)</span>%).
-This is the same as saying about <span class="math inline">\(0.02\)</span> of people will have cancer in the population.
-This is like flipping a biased coin for each patient, where the chance of landing on ‘cancer’ is <span class="math inline">\(2\)</span>%.</p>
-<p>Now we can obtain a list of whether each person has cancer or not.
-Each time <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code> is run, different people, and a different <em>number</em> of people in the population, with cancer can vary:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cancer_Result</span> <span class="op">&lt;-</span> <span class="op">(</span> <span class="va">patient_Cancer_Probs</span> <span class="op">&lt;</span> <span class="va">cancer_Prob</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cancer_Result</span><span class="op">)</span>              <span class="co"># Show the first few values</span></span>
-<span><span class="co">#&gt; [1] FALSE FALSE FALSE FALSE FALSE FALSE</span></span></code></pre></div>
-<p>Then, split the population into those <em>with</em> cancer and those <em>without</em> cancer:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Now find those *with* cancer who return a positive result</span></span>
-<span><span class="va">with_Cancer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span> <span class="va">cancer_Result</span><span class="op">)</span> <span class="co"># Indices of people *with* cancer</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">with_Cancer</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1]  15  21  49 138 219 318</span></span>
-<span></span>
-<span><span class="va">no_Cancer</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="op">!</span><span class="va">cancer_Result</span><span class="op">)</span> <span class="co"># Indices of people *without* cancer</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">no_Cancer</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1 2 3 4 5 6</span></span></code></pre></div>
-<p>The test sensitivity and specificity now can be applied (using the same trick as above):</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Patients WITH cancer: 75% chance the test is positive</span></span>
-<span><span class="va">with_Cancer_and_Positive</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">with_Cancer</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">correct_Positive</span></span>
-<span></span>
-<span><span class="co"># Patients WITHOUT cancer: 10% chance the test is (wrongly) positive</span></span>
-<span><span class="va">no_Cancer_and_Positive</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">no_Cancer</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">correct_Negative</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Combine results</span></span>
-<span><span class="va">positive_Test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
-<span>  <span class="va">with_Cancer</span><span class="op">[</span><span class="va">with_Cancer_and_Positive</span><span class="op">]</span>,</span>
-<span>  <span class="va">no_Cancer</span><span class="op">[</span><span class="va">no_Cancer_and_Positive</span><span class="op">]</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Again, each time that <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code> is run, different people, and a different <em>number</em> of people in the population, can return positive test results:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># True positives among those who tested positive</span></span>
-<span><span class="va">true_positives</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">cancer_Result</span><span class="op">[</span><span class="va">positive_Test</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Total positives</span></span>
-<span><span class="va">total_positives</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">positive_Test</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Estimated Prob(cancer | positive test)</span></span>
-<span><span class="va">cancer_Given_Pos</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">total_positives</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span> <span class="co"># IF  number of positives is larger than zero...</span></span>
-<span>    <span class="va">true_positives</span> <span class="op">/</span> <span class="va">total_positives</span>  <span class="co"># ... compute the probability</span></span>
-<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>                            <span class="co"># Otherwise...</span></span>
-<span>    <span class="cn">NA</span>                                <span class="co"># ... return NA (not available)</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="va">cancer_Given_Pos</span></span>
-<span><span class="co">#&gt; [1] 0.1351119</span></span></code></pre></div>
-<p>Now print some useful information (<code>\n</code> produces a new line):</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Prob (cancer | positive test) :"</span>, <span class="va">cancer_Given_Pos</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Prob (cancer | positive test) : 0.1351119</span></span></code></pre></div>
-<p>The above code has three places where random numbers are used:</p>
-<ul>
-<li>to randomly allocate people to have cancer or not;</li>
-<li>to randomly determine which people <em>with</em> cancer return a positive result; and</li>
-<li>to randomly determine which people <em>without</em> cancer return a positive result.</li>
-</ul>
-<p>Thus, each time the above code is run will produce different results (unless the random-number seed remains the same).</p>
-<p>A <em>simulation</em> repeats the above scenario many times, over many replications each with different random numbers used.
-Then, the probability of interest (here, the probability of having cancer, given a positive test result) can be averaged over the many replications.
-To do this (for <span class="math inline">\(5\,000\)</span> replications), the above code is repeated and the result of interest is retained from each replication (in <code>cancer_Given_Pos</code>):</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Set the parameters for the scenario</span></span>
-<span><span class="va">num_Reps</span> <span class="op">&lt;-</span> <span class="fl">5000</span> <span class="co"># The number of replications</span></span>
-<span><span class="va">population_Size</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
-<span><span class="va">cancer_Prob</span> <span class="op">&lt;-</span> <span class="fl">0.02</span></span>
-<span></span>
-<span><span class="co"># Set the test sensitivity and specificity </span></span>
-<span><span class="va">correct_Positive</span> <span class="op">&lt;-</span> <span class="fl">0.75</span></span>
-<span><span class="va">correct_Negative</span> <span class="op">&lt;-</span> <span class="fl">0.90</span></span>
-<span></span>
-<span><span class="co"># Create an array to hold the info we need from each replication</span></span>
-<span><span class="va">cancer_Given_Pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="va">num_Reps</span><span class="op">)</span>   <span class="co"># Empty vector of correct size</span></span>
-<span></span>
-<span><span class="co"># Now replicate the scenario  num_Reps  times:</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">num_Reps</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="co"># Allocate a random number between 0 and 1 to each patient</span></span>
-<span>  <span class="va">patient_Probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span> <span class="va">population_Size</span><span class="op">)</span></span>
-<span>  <span class="va">cancer_Result</span> <span class="op">&lt;-</span> <span class="op">(</span> <span class="va">patient_Probs</span> <span class="op">&lt;</span> <span class="va">cancer_Prob</span> <span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># Now find those *with* and *without* cancer who return a positive result</span></span>
-<span>  <span class="va">with_Cancer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span> <span class="va">cancer_Result</span><span class="op">)</span> <span class="co"># Indices of people *with* cancer</span></span>
-<span>  <span class="va">no_Cancer</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="op">!</span><span class="va">cancer_Result</span><span class="op">)</span> <span class="co"># Indices of people *without* cancer</span></span>
-<span>  </span>
-<span>  <span class="co"># Patients WITH cancer: 75% chance the test is positive</span></span>
-<span>  <span class="va">with_Cancer_and_Positive</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">with_Cancer</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">correct_Positive</span></span>
-<span>  </span>
-<span>  <span class="co"># Patients WITHOUT cancer: 10% chance the test is (wrongly) positive</span></span>
-<span>  <span class="va">no_Cancer_and_Positive</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">no_Cancer</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">correct_Negative</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="co"># Combine results</span></span>
-<span>  <span class="va">positive_Test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
-<span>    <span class="va">with_Cancer</span><span class="op">[</span><span class="va">with_Cancer_and_Positive</span><span class="op">]</span>,</span>
-<span>    <span class="va">no_Cancer</span><span class="op">[</span><span class="va">no_Cancer_and_Positive</span><span class="op">]</span></span>
-<span>  <span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="co"># True positives among those who tested positive</span></span>
-<span>  <span class="va">true_positives</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">cancer_Result</span><span class="op">[</span><span class="va">positive_Test</span><span class="op">]</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="co"># Total positives</span></span>
-<span>  <span class="va">total_positives</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">positive_Test</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="co"># Estimated Prob(cancer | positive test)</span></span>
-<span>  <span class="va">cancer_Given_Pos</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span> <span class="va">total_positives</span> <span class="op">&gt;</span> <span class="fl">0</span>, </span>
-<span>                                 <span class="va">true_positives</span> <span class="op">/</span> <span class="va">total_positives</span>, <span class="co"># If  TRUE</span></span>
-<span>                                 <span class="cn">NA</span><span class="op">)</span>                               <span class="co"># If  FALSE</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Average over the replications</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">cancer_Given_Pos</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.1328058</span></span></code></pre></div>
-<p>In Example <a href="ChapterProbability.html#exm:BreastCancer">3.36</a>, the probability was given as <span class="math inline">\(0.1327\)</span>, which compares favourably with this answer from simulation (which is an approximation).</p>
-</div>
-<div id="SimulationComplex" class="section level3" number="3.11.5">
-<h3>
-<span class="header-section-number">3.11.5</span> Simulation to answers tedious or complex situations<a class="anchor" aria-label="anchor" href="#SimulationComplex"><i class="fas fa-link"></i></a>
+<span class="header-section-number">3.11.4</span> Simulation to answers tedious or complex situations<a class="anchor" aria-label="anchor" href="#SimulationComplex"><i class="fas fa-link"></i></a>
 </h3>
 <p>Suppose <span class="math inline">\(10\)</span> people are invited to a party, and sit at a round table; however, two people (say, Anh and Barb) refuse to sit next to each other.
 What is the probability that a random seating arrangement satisfies this constraint?</p>
@@ -2555,7 +2443,7 @@ The strategy is:</p>
 </ul>
 <p>Then, the process is repeated for numerous randomly-generated seating arrangements, and the proportion of acceptable seating arrangements computed.</p>
 <p>First, set up the scenario:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">8723</span><span class="op">)</span> <span class="co"># Set the random number seed, for reproducibility</span></span>
 <span></span>
 <span><span class="va">num_Reps</span> <span class="op">&lt;-</span> <span class="fl">5000</span>  <span class="co"># Set the number of simulations</span></span>
@@ -2565,59 +2453,31 @@ The strategy is:</p>
 <span><span class="va">People</span></span>
 <span><span class="co">#&gt;  [1] "A" "B" "C" "D" "E" "F" "G" "H" "I" "J"</span></span></code></pre></div>
 <p>Then, we create an <strong>R</strong> function to determine if Anh (who is <code>A</code>) and Barb (who is <code>B</code>) are next to each other:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The function takes a seating arrangement as inoutm given as (for example) </span></span>
 <span><span class="co"># "A", "J", "F", "G", "H", "I", "E", "B", "G", "J", "C", "D"</span></span>
 <span><span class="co">#</span></span>
 <span><span class="co"># It checks, for any given seating arrangement, if "A" and "B" are neighbours.</span></span>
 <span></span>
-<span><span class="va">check_If_Neighbours</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">Arrangement</span><span class="op">)</span> <span class="op">{</span> </span>
-<span>  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Arrangement</span><span class="op">)</span>  <span class="co"># n  is the length of the arrangement (so, n = 10)</span></span>
-<span>  </span>
-<span>  <span class="co"># We must allow for circular adjacency: first and last are also neighbours.</span></span>
-<span>  <span class="co"># So, we add the person in the first position to the end as well:</span></span>
-<span>  <span class="va">extended_Arrangement</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Arrangement</span>, </span>
-<span>                            <span class="va">Arrangement</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span>  <span class="va">are_Neighbours</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span> </span>
-<span>  <span class="co"># Assume not neighbours, unless we find them adjacent.</span></span>
-<span>  <span class="co"># TRUE means they *ARE* neighbours; FALSE means they *ARE NOT* neighbours.</span></span>
-<span>  </span>
-<span>  <span class="co"># Loop over the  n  people, and check their neighbour to the right.</span></span>
-<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="co"># Check if Anh and Barb  are neighbours</span></span>
-<span>    <span class="co"># First: check if A has B to the right:</span></span>
-<span>    <span class="kw">if</span> <span class="op">(</span><span class="va">extended_Arrangement</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="st">"A"</span> <span class="op">&amp;&amp;</span>  </span>
-<span>        <span class="va">extended_Arrangement</span><span class="op">[</span><span class="va">i</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span> <span class="op">==</span> <span class="st">"B"</span><span class="op">)</span> <span class="va">are_Neighbours</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
-<span></span>
-<span>    <span class="co"># Then: check if B has A to the right:</span></span>
-<span>    <span class="kw">if</span> <span class="op">(</span><span class="va">extended_Arrangement</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="st">"B"</span> <span class="op">&amp;&amp;</span></span>
-<span>        <span class="va">extended_Arrangement</span><span class="op">[</span><span class="va">i</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span> <span class="op">==</span> <span class="st">"A"</span><span class="op">)</span> <span class="va">are_Neighbours</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
-<span>  <span class="op">}</span></span>
-<span>  <span class="co"># Return the value of are_Neighbours, to state whether the given arrangement</span></span>
-<span>  <span class="co"># has  A  and  B  as nighbours (TRUE) or not (FALSE):</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">are_Neighbours</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-<p>VECTORISE:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">check_If_Neighbours</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">Arrangement</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">check_If_Neighbours</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">Arrangement</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Arrangement</span><span class="op">)</span></span>
 <span>  </span>
-<span>  <span class="co"># circular adjacency: append first element at the end</span></span>
+<span>  <span class="co"># Allow for circular adjacency: append first element at the end</span></span>
 <span>  <span class="va">extended</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Arrangement</span>, <span class="va">Arrangement</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="co"># Compare each person with the next</span></span>
-<span>  <span class="va">right</span> <span class="op">&lt;-</span> <span class="va">extended</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>          <span class="co"># positions 2..(n+1)</span></span>
-<span>  <span class="va">left</span>  <span class="op">&lt;-</span> <span class="va">extended</span><span class="op">[</span><span class="op">-</span><span class="op">(</span><span class="va">n</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">]</span>      <span class="co"># positions 1..n</span></span>
+<span>  <span class="va">right</span> <span class="op">&lt;-</span> <span class="va">extended</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>            <span class="co"># right: positions 2... (n+1)</span></span>
+<span>  <span class="va">left</span>  <span class="op">&lt;-</span> <span class="va">extended</span><span class="op">[</span><span class="op">-</span><span class="op">(</span><span class="va">n</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">]</span>      <span class="co"># current: positions 1... n</span></span>
 <span>  </span>
-<span>  <span class="co"># Check if A next to B or B next to A</span></span>
+<span>  <span class="co"># Check if A next to B, or if B next to A</span></span>
 <span>  <span class="va">are_Neighbours</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/any.html">any</a></span><span class="op">(</span><span class="op">(</span><span class="va">left</span> <span class="op">==</span> <span class="st">"A"</span> <span class="op">&amp;</span> <span class="va">right</span> <span class="op">==</span> <span class="st">"B"</span><span class="op">)</span> <span class="op">|</span> </span>
 <span>                        <span class="op">(</span><span class="va">left</span> <span class="op">==</span> <span class="st">"B"</span> <span class="op">&amp;</span> <span class="va">right</span> <span class="op">==</span> <span class="st">"A"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">are_Neighbours</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>To replicate this numerous times, the <strong>R</strong> function <code><a href="https://rdrr.io/r/base/lapply.html">replicate()</a></code> is used; it repeatedly evaluates given <strong>R</strong> code a specified number of times.
+<p>To replicate this numerous times, the <strong>R</strong> function <code><a href="https://rdrr.io/r/base/lapply.html">replicate()</a></code> is used; it repeatedly evaluates the given <strong>R</strong> code a specified number of times.
 In this case:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run simulation</span></span>
 <span><span class="co"># Summing works, because  TRUE  is treated as 1, FALSE  is treated as 0</span></span>
 <span><span class="va">seated_Together</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="va">num_Reps</span>, </span>
@@ -2626,85 +2486,46 @@ In this case:</p>
 <p>The command first creates a random arrangement of poeple (i.e., <code>sample(People)</code>), and then checks if the given permutation of people has Anh and Barb seated as neighbours (using our function <code>check_If_Neighbours()</code>).
 This is replicated <code>num_Reps</code> times (using <code><a href="https://rdrr.io/r/base/lapply.html">replicate()</a></code>), and adds up (using <code><a href="https://rdrr.io/r/base/sum.html">sum()</a></code>) how many times they are seated together.
 Then, the result can be printed:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Estimated probability</span></span>
 <span><span class="va">prob</span> <span class="op">&lt;-</span> <span class="va">seated_Together</span> <span class="op">/</span> <span class="va">num_Reps</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Prob. of an UNacceptable seating arrangement: approx. "</span>, </span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">prob</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span> <span class="co"># Round to four decimal places</span></span>
 <span><span class="co">#&gt; Prob. of an UNacceptable seating arrangement: approx.  0.216</span></span></code></pre></div>
 </div>
-<div id="SimulationSensitivityAnalysis" class="section level3" number="3.11.6">
+<div id="SimulationSensitivityAnalysis" class="section level3" number="3.11.5">
 <h3>
-<span class="header-section-number">3.11.6</span> Simulation for sensitivity analysis<a class="anchor" aria-label="anchor" href="#SimulationSensitivityAnalysis"><i class="fas fa-link"></i></a>
+<span class="header-section-number">3.11.5</span> Simulation for sensitivity analysis<a class="anchor" aria-label="anchor" href="#SimulationSensitivityAnalysis"><i class="fas fa-link"></i></a>
 </h3>
 <p><em>Sensitivity analysis</em> refers to the process of checking how (and by how much) the results of a problem or model change when the inputs or assumptions are adjusted: how <em>sensitive</em> the results are to those inputs.</p>
-<p>Suppose a doctor schedules <span class="math inline">\(20\)</span> patients per day, but history shows that each patient has a chance of not showing up (a ‘no-show’).
-For simplicity, assume that each patient has the same ‘no-show’ probability, and that patients operate independently.
-If more than <span class="math inline">\(15\)</span> patients show up on any one day, the clinic runs late.
-What is the probability the clinic runs late?
-(In a later chapter, a theoretical approach will be introduced to answering this type of question; Sect. <a href="#BinomialDistribution"><strong>??</strong></a>).</p>
-<p>For this scenario, the probability that each patients is a no-show could be varied (e.g., <span class="math inline">\(10\)</span>%; <span class="math inline">\(15\)</span>%; <span class="math inline">\(20\)</span>%), to see the impact this has on the probability that the clinic runs late.</p>
-<p>First, set up the scenario:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">8091</span><span class="op">)</span> <span class="co"># For reproducibility</span></span>
+<p>Consider again the breast cancer simulation from Sect. <a href="ChapterProbability.html#SimulationConfirmation">3.11.2</a>.
+A sensitivity analysis may consider how the final results (i.e., <span class="math inline">\(\Pr(\text{Has cancer} \mid \text{Positive test})\)</span>) changes depending on different values of the inputs parameters.</p>
+<p>For example, what happens if the sensitivity of the test improves, from <span class="math inline">\(0.75\)</span> to <span class="math inline">\(0.90\)</span>?</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">8091</span><span class="op">)</span>      <span class="co"># For reproducibility</span></span>
+<span><span class="va">num_Reps</span> <span class="op">&lt;-</span> <span class="fl">5000</span>    <span class="co"># Number of replications</span></span>
 <span></span>
-<span><span class="va">num_Reps</span> <span class="op">&lt;-</span> <span class="fl">50000</span>     <span class="co"># Number of replications (i.e., simulated days)</span></span>
-<span><span class="va">daily_Patients</span> <span class="op">&lt;-</span> <span class="fl">20</span>  <span class="co"># Number of patients per day</span></span></code></pre></div>
-<p>Then we create an <strong>R</strong> function to simulate what happens on a day, for any given no-show probability:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create an R function to simulate what happens on a day</span></span>
-<span><span class="va">simulate_Day</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">no_Show_Prob</span> <span class="op">=</span> <span class="fl">0.15</span>,  <span class="co"># No-show probability</span></span>
-<span>                         <span class="va">num_Patients</span> <span class="op">=</span> <span class="fl">20</span>,    <span class="co"># Number of patients per day</span></span>
-<span>                         <span class="va">patient_Limit</span> <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op">{</span> <span class="co"># More than this many: clinic late</span></span>
-<span>  </span>
-<span>  <span class="co"># Allocate a random number between 0 and 1 to each patient</span></span>
-<span>  <span class="va">patient_Probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span> <span class="va">num_Patients</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="co"># sum()  works, because  TRUE = 1,  and  FALSE = 0</span></span>
-<span>  <span class="va">number_No_Shows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span> <span class="va">patient_Probs</span> <span class="op">&lt;</span> <span class="va">no_Show_Prob</span> <span class="op">)</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="va">num_Reps</span>,  </span>
+<span>                     <span class="fu">P_cancer</span><span class="op">(</span>sensitivity <span class="op">=</span> <span class="fl">0.90</span><span class="op">)</span> <span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">results</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>     <span class="co"># na.rm = TRUE ignores any NAs</span></span>
+<span><span class="co">#&gt; [1] 0.1551945</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">results</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.01082119</span></span></code></pre></div>
+<p>While the probability has improved (i.e., got larger), it is still disturbingly low: receiving a positive test results means the probability of having breast cancer is only <span class="math inline">\(0.156\)</span>. (so <em>not</em> having breast cancer is still far more likely than having breast cancer).</p>
+<p>How would the probability change if the prevalence of breast cancer was higher?</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">8091</span><span class="op">)</span>      <span class="co"># For reproducibility</span></span>
+<span><span class="va">num_Reps</span> <span class="op">&lt;-</span> <span class="fl">5000</span>    <span class="co"># Number of replications</span></span>
 <span></span>
-<span>  <span class="va">running_Late</span> <span class="op">&lt;-</span> <span class="op">(</span> <span class="op">(</span><span class="va">num_Patients</span> <span class="op">-</span> <span class="va">number_No_Shows</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">patient_Limit</span><span class="op">)</span> </span>
-<span>  <span class="co"># TRUE  means clinic will run late.  FALSE  means clinic will NOT run late</span></span>
-<span>  </span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">running_Late</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-<p>Then run the simulation for the various no-show probabilities:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Declare the no-show probabilities to use</span></span>
-<span><span class="va">no_Show_Probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.0</span>, <span class="fl">0.15</span>,</span>
-<span>                     by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="va">num_Reps</span>,  </span>
+<span>                     <span class="fu">P_cancer</span><span class="op">(</span>cancer_Prob <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span>    <span class="co"># Change the default value</span></span>
 <span></span>
-<span><span class="co"># Find the mean of the TRUE and FALSE values returned.</span></span>
-<span><span class="co"># This works because  R  treats TRUE as 1, FALSE as 0</span></span>
-<span><span class="va">prob_Day_Is_Late</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">no_Show_Probs</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Empty vector</span></span>
-<span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">no_Show_Probs</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span><span class="op">{</span> <span class="co"># For each probability:</span></span>
-<span>  <span class="va">num_Days_Run_Late</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="va">num_Reps</span>, </span>
-<span>                                     <span class="fu">simulate_Day</span><span class="op">(</span><span class="va">no_Show_Probs</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span> <span class="op">)</span> <span class="op">)</span></span>
-<span>  <span class="va">prob_Day_Is_Late</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">num_Days_Run_Late</span> <span class="op">/</span> <span class="va">num_Reps</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-<p>The results then can be printed (and plotted; see Fig. <a href="ChapterProbability.html#fig:probLate">3.12</a>):</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">prob_Day_Is_Late</span>, <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] 1.0000 1.0000 0.9999 0.9998 0.9989 0.9974</span></span>
-<span><span class="co">#&gt;  [7] 0.9945 0.9891 0.9821 0.9706 0.9567 0.9385</span></span>
-<span><span class="co">#&gt; [13] 0.9180 0.8916 0.8595 0.8307</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">prob_Day_Is_Late</span> <span class="op">~</span> <span class="va">no_Show_Probs</span>,</span>
-<span>     type <span class="op">=</span> <span class="st">"b"</span>,     <span class="co"># Plot "both" lines and points</span></span>
-<span>     las <span class="op">=</span> <span class="fl">1</span>,        <span class="co"># Make axis labels horizontal</span></span>
-<span>     lwd <span class="op">=</span> <span class="fl">2</span>,        <span class="co"># Line width of 2</span></span>
-<span>     col <span class="op">=</span> <span class="st">"cyan4"</span>,  <span class="co"># Set colour</span></span>
-<span>     xlab <span class="op">=</span> <span class="st">"Probability that a patient is a no-show"</span>,</span>
-<span>     ylab <span class="op">=</span> <span class="st">"Probability that clinic runs late"</span><span class="op">)</span></span></code></pre></div>
-<p>Clearly, the greater the no-show probability, the smaller the chance of running late (as expected).</p>
-<div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:probLate"></span>
-<img src="03-Probability_files/figure-html/probLate-1.png" alt="A simulations that shows the probability that a day at a medical clinic runs late." width="80%"><p class="caption">
-FIGURE 3.12: A simulations that shows the probability that a day at a medical clinic runs late.
-</p>
-</div>
-<p>We could also change the number of patients scheduled each day to see what the impact is (e.g., <span class="math inline">\(18\)</span> or<br><span class="math inline">\(22\)</span> patients).</p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">results</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>     <span class="co"># na.rm = TRUE ignores any NAs</span></span>
+<span><span class="co">#&gt; [1] 0.7628346</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">results</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.00778957</span></span></code></pre></div>
+<p>In this scenario, the chance of actually having breast cancer after a positive test is much higher.
+Further sensitivity analysis confirms that the very low prevalence of breast cancer is behind the low value for <span class="math inline">\(\Pr(\text{Has cancer} \mid \text{Positive test})\)</span>), as suggested in Example <a href="ChapterProbability.html#exm:BreastCancerTree">3.37</a>: the number of false positive tests overwhelms the number of true positive tests.</p>
 </div>
 </div>
 <div id="ProbabilityExercises" class="section level2" number="3.12">
@@ -3092,24 +2913,24 @@ Prove that
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:AngleInSquare" class="exercise"><strong>Exercise 3.33  </strong></span>Consider the diagram in Fig. <a href="ChapterProbability.html#fig:AngleInSquare">3.13</a>.
+<p><span id="exr:AngleInSquare" class="exercise"><strong>Exercise 3.33  </strong></span>Consider the diagram in Fig. <a href="ChapterProbability.html#fig:AngleInSquare">3.12</a>.
 The point <span class="math inline">\(P\)</span> is randomly placed within the <span class="math inline">\(1\times 1\)</span> square <span class="math inline">\(ABCD\)</span>.
 What is the probability that the angle <span class="math inline">\(APB\)</span> is <em>greater</em> than <span class="math inline">\(90^\circ\)</span>?</p>
 </div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:AngleInSquare"></span>
 <img src="03-Probability_files/figure-html/AngleInSquare-1.png" alt="Point $P$ is placed randomly in the $1\times 1$ square $ABCD$." width="30%"><p class="caption">
-FIGURE 3.13: Point <span class="math inline">\(P\)</span> is placed randomly in the <span class="math inline">\(1\times 1\)</span> square <span class="math inline">\(ABCD\)</span>.
+FIGURE 3.12: Point <span class="math inline">\(P\)</span> is placed randomly in the <span class="math inline">\(1\times 1\)</span> square <span class="math inline">\(ABCD\)</span>.
 </p>
 </div>
 <div class="exercise">
-<p><span id="exr:SquareInCircle" class="exercise"><strong>Exercise 3.34  </strong></span>Consider the diagram in Fig. <a href="ChapterProbability.html#fig:SquareInCircle">3.14</a>.
+<p><span id="exr:SquareInCircle" class="exercise"><strong>Exercise 3.34  </strong></span>Consider the diagram in Fig. <a href="ChapterProbability.html#fig:SquareInCircle">3.13</a>.
 What is the probability that a point randomly placed within the circle (with radius <span class="math inline">\(r = 1\)</span>) also lands within the square?</p>
 </div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:SquareInCircle"></span>
 <img src="03-Probability_files/figure-html/SquareInCircle-1.png" alt="A random point is placed within the circle with centre\ $C$ and radius $r = 1$." width="30%"><p class="caption">
-FIGURE 3.14: A random point is placed within the circle with centre <span class="math inline">\(C\)</span> and radius <span class="math inline">\(r = 1\)</span>.
+FIGURE 3.13: A random point is placed within the circle with centre <span class="math inline">\(C\)</span> and radius <span class="math inline">\(r = 1\)</span>.
 </p>
 </div>
 <div class="exercise">
@@ -3127,7 +2948,7 @@ Suggest a more accurate name for a ‘<em>combination</em> lock’.</p>
 <p>Use a computer simulation to confirm these results by ‘rolling’ them many times, and find the probabilities of each die winning against the other two.</p>
 </div>
 <div class="exercise">
-<p><span id="exr:SimulationSensivityNumber" class="exercise"><strong>Exercise 3.37  </strong></span>Adjust the <strong>R</strong> code used in Sect. <a href="ChapterProbability.html#SimulationSensitivityAnalysis">3.11.6</a> so examine how the probability of running late changes as the number of booked patients increases from <span class="math inline">\(15\)</span> up to <span class="math inline">\(25\)</span> people.</p>
+<p><span id="exr:SimulationSensivityNumber" class="exercise"><strong>Exercise 3.37  </strong></span>Adjust the <strong>R</strong> code used in Sect. <a href="ChapterProbability.html#SimulationSensitivityAnalysis">3.11.5</a> so examine how the probability of running late changes as the number of booked patients increases from <span class="math inline">\(15\)</span> up to <span class="math inline">\(25\)</span> people.</p>
 </div>
 <div class="exercise">
 <p><span id="exr:SimulationMontyHall" class="exercise"><strong>Exercise 3.38  </strong></span>A game show contestant is told there is a car behind one of three doors, and a goat behind each of the other doors.
@@ -3143,6 +2964,135 @@ The host now gives the contestant the choice of either (a) retaining the door c
 <em>Hint:</em> remember the crucial information: the host of the show knows where the car is, and opens one of the doors <em>not</em> selected by the contestant, <em>and reveals a goat</em>.</li>
 </ol>
 </div>
+<div class="exercise">
+<p><span id="exr:SimulationRunningLate" class="exercise"><strong>Exercise 3.39  </strong></span>Suppose a specialist doctors surgery schedules a maximum of <span class="math inline">\(20\)</span> patients per day, but history shows that each patient has a chance of not showing up (a ‘no-show’).
+For simplicity, assume that each patient has the same ‘no-show’ probability, and that patients operate independently.
+If more than <span class="math inline">\(15\)</span> patients show up on any one day, the clinic runs late by the end of the day.</p>
+<ol style="list-style-type: decimal">
+<li>What is the probability the clinic runs late?
+Write an <strong>R</strong> function that allows for a simulation to answer the question.</li>
+<li>Perform a sensitivity analysis, where the probability that each patients is a no-show varies (e.g., <span class="math inline">\(10\)</span>%; <span class="math inline">\(15\)</span>%; <span class="math inline">\(20\)</span>%), to see the impact this has on the probability that the clinic runs late.</li>
+<li>Perform a sensitivity analysis to see the impact on the probability of running late, if between <span class="math inline">\(18\)</span> and <span class="math inline">\(25\)</span> patients are booked per day.</li>
+</ol>
+</div>
+<p>First, set up the scenario:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">8091</span><span class="op">)</span> <span class="co"># For reproducibility</span></span>
+<span></span>
+<span><span class="va">num_Reps</span> <span class="op">&lt;-</span> <span class="fl">50000</span>     <span class="co"># Number of replications (i.e., simulated days)</span></span>
+<span><span class="va">daily_Patients</span> <span class="op">&lt;-</span> <span class="fl">20</span>  <span class="co"># Number of patients per day</span></span></code></pre></div>
+<p>Then we create an <strong>R</strong> function to simulate what happens on a day, for any given no-show probability:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create an R function to simulate what happens on a day</span></span>
+<span><span class="va">simulate_Day</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">no_Show_Prob</span> <span class="op">=</span> <span class="fl">0.15</span>,  <span class="co"># No-show probability</span></span>
+<span>                         <span class="va">num_Patients</span> <span class="op">=</span> <span class="fl">20</span>,    <span class="co"># Number of patients per day</span></span>
+<span>                         <span class="va">patient_Limit</span> <span class="op">=</span> <span class="fl">15</span><span class="op">)</span> <span class="op">{</span> <span class="co"># More than this many: clinic late</span></span>
+<span>  </span>
+<span>  <span class="co"># Allocate a random number between 0 and 1 to each patient</span></span>
+<span>  <span class="va">patient_Probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span> <span class="va">num_Patients</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># sum()  works, because  TRUE = 1,  and  FALSE = 0</span></span>
+<span>  <span class="va">number_No_Shows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span> <span class="va">patient_Probs</span> <span class="op">&lt;</span> <span class="va">no_Show_Prob</span> <span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">running_Late</span> <span class="op">&lt;-</span> <span class="op">(</span> <span class="op">(</span><span class="va">num_Patients</span> <span class="op">-</span> <span class="va">number_No_Shows</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">patient_Limit</span><span class="op">)</span> </span>
+<span>  <span class="co"># TRUE  means clinic will run late.  FALSE  means clinic will NOT run late</span></span>
+<span>  </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">running_Late</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Then run the simulation for the various no-show probabilities:</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Declare the no-show probabilities to use</span></span>
+<span><span class="va">no_Show_Probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.0</span>, <span class="fl">0.15</span>,</span>
+<span>                     by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Find the mean of the TRUE and FALSE values returned.</span></span>
+<span><span class="co"># This works because  R  treats TRUE as 1, FALSE as 0</span></span>
+<span><span class="va">prob_Day_Is_Late</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">no_Show_Probs</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Empty vector</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">no_Show_Probs</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span><span class="op">{</span> <span class="co"># For each probability:</span></span>
+<span>  <span class="va">num_Days_Run_Late</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="va">num_Reps</span>, </span>
+<span>                                     <span class="fu">simulate_Day</span><span class="op">(</span><span class="va">no_Show_Probs</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span> <span class="op">)</span> <span class="op">)</span></span>
+<span>  <span class="va">prob_Day_Is_Late</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">num_Days_Run_Late</span> <span class="op">/</span> <span class="va">num_Reps</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>The results then can be printed (and plotted; see Fig. <a href="ChapterProbability.html#fig:probLate">3.14</a>):</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">prob_Day_Is_Late</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] 1.0000 1.0000 0.9999 0.9998 0.9989 0.9974</span></span>
+<span><span class="co">#&gt;  [7] 0.9945 0.9891 0.9821 0.9706 0.9567 0.9385</span></span>
+<span><span class="co">#&gt; [13] 0.9180 0.8916 0.8595 0.8307</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">prob_Day_Is_Late</span> <span class="op">~</span> <span class="va">no_Show_Probs</span>,</span>
+<span>     type <span class="op">=</span> <span class="st">"b"</span>,     <span class="co"># Plot "both" lines and points</span></span>
+<span>     las <span class="op">=</span> <span class="fl">1</span>,        <span class="co"># Make axis labels horizontal</span></span>
+<span>     lwd <span class="op">=</span> <span class="fl">2</span>,        <span class="co"># Line width of 2</span></span>
+<span>     col <span class="op">=</span> <span class="st">"cyan4"</span>,  <span class="co"># Set colour</span></span>
+<span>     xlab <span class="op">=</span> <span class="st">"Probability that a patient is a no-show"</span>,</span>
+<span>     ylab <span class="op">=</span> <span class="st">"Probability that clinic runs late"</span><span class="op">)</span></span></code></pre></div>
+<p>Clearly, the greater the no-show probability, the smaller the chance of running late (as expected).</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:probLate"></span>
+<img src="03-Probability_files/figure-html/probLate-1.png" alt="A simulations that shows the probability that a day at a medical clinic runs late." width="80%"><p class="caption">
+FIGURE 3.14: A simulations that shows the probability that a day at a medical clinic runs late.
+</p>
+</div>
+<p>We could also change the number of patients scheduled each day to see what the impact is (e.g., <span class="math inline">\(18\)</span> or<br><span class="math inline">\(22\)</span> patients).</p>
+<hr>
+<div class="exercise">
+<p><span id="exr:SimulationCards" class="exercise"><strong>Exercise 3.40  </strong></span>Consider drawing five cards at random from a fair pack; what is the probability that at least cards <span class="math inline">\(3\)</span> are hearts?</p>
+<p>This question is not too difficult to answer using the counting methods of Sect. <a href="ChapterProbability.html#CombsAndPerms">3.6</a>; you should show that the answer is approximately <span class="math inline">\(0.0927\)</span> using these methods.</p>
+<p>Create an <strong>R</strong> simulation to check the answer.</p>
+</div>
+<p>First, set up the simulation:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 'Make' the deck of cards.</span></span>
+<span><span class="co"># Note: the denomination is not important, just the suit</span></span>
+<span><span class="va">Deck</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Hearts"</span>,   <span class="fl">13</span><span class="op">)</span>,   <span class="co"># 13 cards of each suit</span></span>
+<span>          <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Diamonds"</span>, <span class="fl">13</span><span class="op">)</span>, </span>
+<span>          <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Clubs"</span>,    <span class="fl">13</span><span class="op">)</span>, </span>
+<span>          <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Spades"</span>,   <span class="fl">13</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12043</span><span class="op">)</span>   <span class="co"># For reproducibility </span></span>
+<span><span class="va">num_Reps</span> <span class="op">&lt;-</span> <span class="fl">5000</span>  <span class="co"># Number of replications to use</span></span></code></pre></div>
+<p>Then we simulate numerous hands of <span class="math inline">\(5\)</span> cards using <code><a href="https://rdrr.io/r/base/lapply.html">replicate()</a></code>.
+The first input to <code><a href="https://rdrr.io/r/base/lapply.html">replicate()</a></code> is the number of replications (i.e., <code>num_Reps</code>) and the second is the command to be replicated (in this case, taking a <code><a href="https://rdrr.io/r/base/sample.html">sample()</a></code> of <code>size</code> five from the <code>Deck</code> of cards, with <code>replace</code>-ment):</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Each replication goes into a column of  Hands</span></span>
+<span><span class="va">Hands</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="va">num_Reps</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">Deck</span>,               <span class="co"># Sample from the  Deck  </span></span>
+<span>                                    size <span class="op">=</span> <span class="fl">5</span>,           <span class="co"># Hand of *five* cards </span></span>
+<span>                                    replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>  <span class="op">)</span> <span class="co"># Without replacement</span></span>
+<span><span class="va">Hands</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>  <span class="co"># Show the first four columns; each column is a hand of five cards</span></span>
+<span><span class="co">#&gt;      [,1]       [,2]       [,3]       [,4]    </span></span>
+<span><span class="co">#&gt; [1,] "Clubs"    "Spades"   "Diamonds" "Clubs" </span></span>
+<span><span class="co">#&gt; [2,] "Diamonds" "Spades"   "Hearts"   "Hearts"</span></span>
+<span><span class="co">#&gt; [3,] "Spades"   "Diamonds" "Diamonds" "Spades"</span></span>
+<span><span class="co">#&gt; [4,] "Hearts"   "Diamonds" "Diamonds" "Hearts"</span></span>
+<span><span class="co">#&gt; [5,] "Diamonds" "Diamonds" "Clubs"    "Spades"</span></span></code></pre></div>
+<p>Then count the number of Hearts in each <code>Hand</code> (i.e., in each column):</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># For each Hand (i.e., column), count how many  Hearts</span></span>
+<span><span class="va">num_Hearts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span><span class="op">(</span><span class="va">Hands</span> <span class="op">==</span> <span class="st">"Hearts"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Show the count of Hearts in those first four hands:</span></span>
+<span><span class="va">num_Hearts</span><span class="op">[</span><span class="fl">1</span> <span class="op">:</span> <span class="fl">4</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 1 0 1 2</span></span></code></pre></div>
+<p>Then determine how many of these <code>Hands</code> have at least three hearts:</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Count how many have *at least 3* hearts</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">num_Hearts</span> <span class="op">&gt;=</span> <span class="fl">3</span><span class="op">)</span>    <span class="co"># Show the results from the first few simulations</span></span>
+<span><span class="co">#&gt; [1] FALSE FALSE FALSE FALSE FALSE FALSE</span></span>
+<span><span class="va">at_Least_3_Hearts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span> <span class="va">num_Hearts</span> <span class="op">&gt;=</span> <span class="fl">3</span> <span class="op">)</span> </span></code></pre></div>
+<p>Then estimate the probability, and print the result:</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Compute the *probability* of at least three Hearts</span></span>
+<span><span class="va">prob_At_Least_3_Hearts</span> <span class="op">&lt;-</span> <span class="va">at_Least_3_Hearts</span> <span class="op">/</span> <span class="va">num_Reps</span></span>
+<span></span>
+<span><span class="co"># Print the (rounded) results (where  "\n"  means to start a new line)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"The prob. estimate is"</span>, </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">prob_At_Least_3_Hearts</span><span class="op">)</span>, </span>
+<span>           <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span> <span class="co"># Round to four decimal places</span></span>
+<span><span class="co">#&gt; The prob. estimate is 0.0978</span></span></code></pre></div>
+<p>This is close to what we computed using theory.
+A more precise estimate would be found using a larger number of simulations.</p>
 
 </div>
 </div>
@@ -3214,11 +3164,10 @@ The host now gives the contestant the choice of either (a) retaining the door c
 <li>
 <a class="nav-link" href="#ProbStatisticalComputing"><span class="header-section-number">3.11</span> Statistical computing and simulation</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#SimulationWhyUse"><span class="header-section-number">3.11.1</span> Why use computing and simulation?</a></li>
-<li><a class="nav-link" href="#SimulationChecking"><span class="header-section-number">3.11.2</span> Simulation to check answers, intuition and reasoning</a></li>
+<li><a class="nav-link" href="#SimulationConfirmation"><span class="header-section-number">3.11.2</span> Simulation to confirm and validate results</a></li>
 <li><a class="nav-link" href="#SimulationTheoryDemo"><span class="header-section-number">3.11.3</span> Simulation to demonstrate theory</a></li>
-<li><a class="nav-link" href="#SimulationConfirmation"><span class="header-section-number">3.11.4</span> Simulation to confirm and validate results</a></li>
-<li><a class="nav-link" href="#SimulationComplex"><span class="header-section-number">3.11.5</span> Simulation to answers tedious or complex situations</a></li>
-<li><a class="nav-link" href="#SimulationSensitivityAnalysis"><span class="header-section-number">3.11.6</span> Simulation for sensitivity analysis</a></li>
+<li><a class="nav-link" href="#SimulationComplex"><span class="header-section-number">3.11.4</span> Simulation to answers tedious or complex situations</a></li>
+<li><a class="nav-link" href="#SimulationSensitivityAnalysis"><span class="header-section-number">3.11.5</span> Simulation for sensitivity analysis</a></li>
 </ul>
 </li>
 <li><a class="nav-link" href="#ProbabilityExercises"><span class="header-section-number">3.12</span> Exercises</a></li>
@@ -3239,7 +3188,7 @@ The host now gives the contestant the choice of either (a) retaining the door c
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn. It was last built on Last updated: 2026-02-16.</p>
+    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn. It was last built on Last updated: 2026-02-17.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
