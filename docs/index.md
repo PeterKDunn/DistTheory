@@ -1,7 +1,7 @@
 --- 
 title: "The Theory of Statistical Distributions"
 author: "Peter K. Dunn"
-date: "Last updated: 2026-02-17"
+date: "Last updated: 2026-02-18"
 knit: "bookdown::render_book"
 documentclass: krantz
 classoption: krantz2
@@ -151,10 +151,8 @@ https://bookdown.org/pkaldunn/DistTheory
 The [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) licence is applied to this textbook.
 
 
-\BeginKnitrBlock{flushright}
-Peter K. Dunn  
-Sippy Downs, Australia
-\EndKnitrBlock{flushright}
+\BeginKnitrBlock{flushright}<p class="flushright">Peter K. Dunn  
+Sippy Downs, Australia</p>\EndKnitrBlock{flushright}
 
 
 \mainmatter
