@@ -1734,104 +1734,134 @@ truehist(rSpecified,
 ```
 
 
-## Statistical computing {#RVsStatisticalComputing}
+## Statistical computing with probability functions
 
-Many statistical distributions are generated from existing distributions, and many of these relationships are explored later.
-These relationships can also be shown using computer simulation.
+### Discrete random variables
 
-As an example, the chi-squared distribution\index{Chi-squared distribution} is related to the normal distribution,\index{Normal distribution} and is discussed later (Sect.\ \@ref(ChiSquareDistribution)).
-If a random variable\ $Z$ has a standard normal distribution $Z\sim N(0, 1)$, then\ $Z^2$ has a chi-squared distribution (with one *degree of freedom*).
-This can be shown using simulation (Fig.\ \@ref(fig:SimChiSq1Fig)).
+In Example\ \@ref(exm:DistributionFnReverseDiscrete}, the random variable\ $X$ was stated to have the PMF
+$$
+   f_X(x) = 
+   \begin{cases}
+      0.1   & \text{for $x = 10$}\\
+      0.3   & \text{for $x = 11$}\\
+      0.5   & \text{for $x = 15$}\\
+      0.1   & \text{for $x = 17$}\\
+      0     & \text{elsewhere}\\
+   \end{cases}.
+$$
+In **R**:
 
+```{r}
+x <- c( 10,  11,  15,  17)
+p <- c(0.1, 0.3, 0.5, 0.1) 
+```
+Then the probability mass function is
 
-```{r SimChiSq1, fig.show='hide'}
-### A standard normal variate: 1000 random values 
-Z <- rnorm(n = 1000,
-           mean = 0, 
-           sd = 1)
+```{r}
+data.frame(x, p)
+```
 
-### Set up for two plots, side-by-side
-par(mfrow = c(1, 2) )
+This is a valid PMF, as the probabilities sum to one:
 
-### Plot two histograms: Z and Z^2
-###  truehist  is part of the MASS package,which must be loaded first, using: 
-###  library(MASS)
-truehist(Z,
-         las = 1,
-         xlab = expression(italic(Z) ),
-         ylab = "Density")
-truehist(Z^2,
-         las = 1,
-         xlab = expression(sum(italic(Z^2)) ),
-         ylab = "Density")
+```{r}
+sum(p)
+```
 
-### Now plot the theoretical chi-squared distribution (with one df)
-# Use these values of X:
-x_Plot <- seq(0, 10,
-              length = 100)
-# Add lines to the histogram of chi-square random values
-lines( dchisq(x_Plot, df = 1) ~ x_Plot,
-       type = "l",
-       lwd = 3)
-# dchisq()  is the density function for a chi-squared distribution
+The DF can be found using the function `cumsum()`, th **cum**ulative **sum**ation:
+
+```{r}
+F <- cumsum(p)
+data.frame(x, F)
 ```
 
 
-```{r SimChiSq1Fig, fig.cap="Left: histogram of $1000$ simulated normal variates. Right: histogram of the squared normal variates. The solid lines on the right panel is the theoretical distribution of a chi-squared distribution with $1$\\ degree of freedom.",  out.width="100%", fig.align='centre', echo=FALSE, fig.width=10}
-<<SimChiSq1>>
+Consider the DF for a discrete random variable\ $X$:
+$$
+   F_X(x) = 
+   \begin{cases}
+      0     & \text{for $x < 10$;}\\
+      0.1   & \text{for $10 \le x < 11$;}\\
+      0.4   & \text{for $11 \le x < 15$;}\\
+      0.9   & \text{for $15 \le x < 17$;}\\
+      1     & \text{for $x \ge 17$.}
+   \end{cases}
+$$
+To find the PDF, use Eq.\ \@ref(eq:DFtoPDFdiscrete):
+
+
+
+### Continuous random variables
+
+In Example\ \@ref(exm:ProbabilityDensityFunction), the continuous random variable\ $W$ was given with the PDF
+$$
+   f_W(w) = 
+   \begin{cases}
+      2w & \text{for $0 < w < 1$};\\
+      0  & \text{elsewhere}.
+   \end{cases}
+$$
+The PDF can be expressed in **R** as a function.
+Many\ **R** functions assume the random variable is denoted by\ $x$, so the PDF is defined as:
+
+
+```{r}
+fX <- function(x) {2 * x }
 ```
 
+The PDF can be plotted using:
 
-Furthermore, the sum of\ $k$ independent standard normal distributions is a chi-squared distribution with $k$\ degrees of freedom (Fig.\ \@ref(fig:SimChiSq5Fig)):
-
-
-```{r SimChiSq5, fig.show='hide'}
-set.seed(7701)
-
-### Standard normal variate: in 100 rows of 5 columns each 
-Z <- matrix( data = rnorm(n = 5000,
-                          mean = 0, 
-                          sd = 1),
-             nrow = 1000,
-             ncol = 5)
-
-### Add the squared values, across rows (so each value is the
-### sum of *five* standard normal variates)
-Z_SumsSq <- rowSums(Z^2)
-
-### Set up for two plots, side-by-side
-par(mfrow = c(1, 2) )
-
-### Plot two histograms: Z and Z^2
-###  truehist  is part of the MASS package,which must be loaded first, using: 
-###  library(MASS)
-truehist(Z,
-         las = 1,
-         xlab = expression(italic(Z)),
-         ylab = "Density")
-truehist(Z_SumsSq,
-         las = 1,
-         ylim = c(0, 0.16),
-         xlab = expression(sum(italic(Z^2))~over~five~values ),
-         ylab = "Density")
-
-### Now plot the theoretical chi-squared distribution (with *five* df)
-# Use these values of X:
-x_Plot <- seq(0, 20,
-              length = 100)
-lines( dchisq(x_Plot, df = 5) ~ x_Plot,
-       type = "l",
-       lwd = 3)
+```{r}
+curve(fX, 0, 1)
 ```
 
+As required, the total area under teh curve is\ $1$:
 
-
-```{r SimChiSq5Fig, fig.cap="Left: histogram of $5000$ simulated normal variates. Right: histogram of the sum of five squared normal variates. The solid lines on the right panel is the theoretical distribution of a chi-squared distribution with $5$\\ degrees of freedom.",  out.width="100%", fig.align='centre', echo=FALSE, fig.width=10}
-<<SimChiSq5>>
+```{r}
+integrate(fX, 0, 1)
 ```
 
+Probabilities can be found similarly; for example, to find $\Pr(0.2 < X < 0.6)$:
+
+```{r}
+integrate(fX, 0.2, 0.6)
+```
+
+The CDF IS TRICKIER:
+```{r}
+
+FX <- function(x) {integrate(fX, 0, x)}
+```
+
+Then,
+
+```{r}
+FX(0.6)$value - FX(0.2)$value
+```
+
+Same as above.
 
 
+QUANTILE:
+
+
+
+RANDOM:
+
+
+
+
+
+
+The probability $\Pr(0 < W < 0.5)$ can be computed in two ways.
+One is to use calculus:
+$$
+   \Pr(0 < W < 0.5) = w^2\Big|_0^{0.5} = 0.25.
+$$
+Alternately, the probability can be computed *geometrically* from the graph of the PDF (Fig.\ \@ref(fig:ContinuousPDF)).
+
+
+
+### MIXED???
 
 ## Exercises {#RVExercises}
 

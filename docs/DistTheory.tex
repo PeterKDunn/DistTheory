@@ -869,7 +869,7 @@
 \index{Conditional probability|see{Probability, conditional}}
 \index{Reduced sample space|see{Sample space, reduced}}
 
-\index{Range|see{Range}}
+\index{Range space|see{Range}}
 \index{Value set|see{Range}}
 \index{Range|seealso{Domain}}
 \index{Domain|seealso{Range}}
@@ -946,7 +946,7 @@ This book is an introduction to the theory of statistical probability and distri
 \section*{Statistical software}\label{statistical-software}
 
 
-This book can be read without relying on any specific statistical software, though sometimes \textbf{R} code (\citeproc{ref-R-base}{R Core Team 2025}) is included to demonstrate ideas, and to discuss simulation.
+This book can be read without relying on any specific statistical software, though sometimes \textbf{R} code (\citeproc{ref-R-base}{R Core Team 2024}) is included to demonstrate ideas, and to discuss simulation.
 
 \section*{Callouts used on this book}\label{callouts-used-on-this-book}
 
@@ -994,7 +994,7 @@ Although not essential, an email to the author (explaining how the textbook is b
 \section*{How this book was made}\label{how-this-book-was-made}
 
 
-This book was made using \textbf{R} (\citeproc{ref-R-base}{R Core Team 2025}), and the \textbf{bookdown} package (\citeproc{ref-R-bookdown}{Y. Xie 2025a}), which is based on \href{https://en.wikipedia.org/wiki/Markdown}{Markdown} syntax, using \textbf{knitr} (\citeproc{ref-R-knitr}{Y. Xie 2025b}).
+This book was made using \textbf{R} (\citeproc{ref-R-base}{R Core Team 2024}), and the \textbf{bookdown} package (\citeproc{ref-R-bookdown}{Y. Xie 2025a}), which is based on \href{https://en.wikipedia.org/wiki/Markdown}{Markdown} syntax, using \textbf{knitr} (\citeproc{ref-R-knitr}{Y. Xie 2025b}).
 
 \section*{Learning Outcomes}\label{learning-outcomes}
 
@@ -4376,7 +4376,7 @@ We can check if this function works for one replication:
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{P\_cancer}\NormalTok{()        }\CommentTok{\# This uses all the default values}
-\CommentTok{\#\textgreater{} [1] 0.1447254}
+\CommentTok{\#\textgreater{} [1] 0.1366516}
 \end{Highlighting}
 \end{Shaded}
 
@@ -5584,7 +5584,7 @@ This definition assigns a real number to each outcome in the sample space:
 
 For example, the elements of~\(S\) assigned to \(Y = 4\) are
 \[
-   (1, 3), (2, 2)\enskip\text{and}\enskip (3, 1).
+   (1, 3), (2, 2)\quad\text{and}\quad (3, 1).
 \]
 Notice that many elements of the sample space can be assigned to the same value of the random variable (which is typical for random variables).
 
@@ -6105,8 +6105,8 @@ Some random variables are not entirely continuous nor entirely discrete, but hav
 These random variables are called \emph{mixed random variables}.
 
 \begin{example}[Mixed random variable]
-\protect\hypertarget{exm:MixedRandomVariable}{}\label{exm:MixedRandomVariable}In a factory producing diodes, a proportion of the diodes~\(p\) fail immediately.
-The distribution of the lifetime (in hundreds of days), say~\(Y\), of the diodes is given by a discrete component at \(y = 0\) for which \(\Pr(Y = 0) = p\), and a continuous part for \(y > 0\) described by
+\protect\hypertarget{exm:MixedRandomVariable}{}\label{exm:MixedRandomVariable}In a factory producing diodes, a proportion~\(p\) of the diodes fail immediately.
+The distribution of the lifetime (in hundreds of days), say~\(Y\), of the diodes is given by a discrete component at \(y = 0\) for which \(\Pr(Y = 0) = p\), and a continuous part for \(y > 0\) with density
 \[
    f_Y(y) = (1 - p) \exp(-y) \quad \text{if $y > 0$.}
 \]
@@ -6117,7 +6117,7 @@ Here, \(f_Y(y)\) is not itself a PDF over~\(\mathbb{R}\), as it doesn't integrat
 as required.
 
 Consider a diode for which \(p = 0.4\).
-The probability distribution is displayed in Fig.~\ref{fig:Diode} where a solid dot is included to show the discrete part.
+The distribution is displayed in Fig.~\ref{fig:Diode} where a solid dot is included to show the discrete mass at \(Y = 0\).
 Representing the probability distribution in this mixed case is difficult, because of the need to combine a probability distribution and a PDF.
 These difficulties are overcome by using the distribution function (Sect.~\ref{DistributionFunction}).
 \end{example}
@@ -6598,99 +6598,174 @@ The histogram (Fig.~\ref{fig:rRandomSpecified}) does indeed have a similar shape
 \caption{Left: a density function. Right: a histogram of random numbers from the distribution.}\label{fig:rRandomSpecified}
 \end{figure}
 
-\section{Statistical computing}\label{RVsStatisticalComputing}
+\section{Statistical computing with probability functions}\label{statistical-computing-with-probability-functions}
 
-Many statistical distributions are generated from existing distributions, and many of these relationships are explored later.
-These relationships can also be shown using computer simulation.
+\subsection{Discrete random variables}\label{discrete-random-variables}
 
-As an example, the chi-squared distribution\index{Chi-squared distribution} is related to the normal distribution,\index{Normal distribution} and is discussed later (Sect.~\ref{ChiSquareDistribution}).
-If a random variable~\(Z\) has a standard normal distribution \(Z\sim N(0, 1)\), then~\(Z^2\) has a chi-squared distribution (with one \emph{degree of freedom}).
-This can be shown using simulation (Fig.~\ref{fig:SimChiSq1Fig}).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\DocumentationTok{\#\#\# A standard normal variate: 1000 random values }
-\NormalTok{Z }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\AttributeTok{n =} \DecValTok{1000}\NormalTok{,}
-           \AttributeTok{mean =} \DecValTok{0}\NormalTok{, }
-           \AttributeTok{sd =} \DecValTok{1}\NormalTok{)}
-
-\DocumentationTok{\#\#\# Set up for two plots, side{-}by{-}side}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{) )}
-
-\DocumentationTok{\#\#\# Plot two histograms: Z and Z\^{}2}
-\DocumentationTok{\#\#\#  truehist  is part of the MASS package,which must be loaded first, using: }
-\DocumentationTok{\#\#\#  library(MASS)}
-\FunctionTok{truehist}\NormalTok{(Z,}
-         \AttributeTok{las =} \DecValTok{1}\NormalTok{,}
-         \AttributeTok{xlab =} \FunctionTok{expression}\NormalTok{(}\FunctionTok{italic}\NormalTok{(Z) ),}
-         \AttributeTok{ylab =} \StringTok{"Density"}\NormalTok{)}
-\FunctionTok{truehist}\NormalTok{(Z}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{,}
-         \AttributeTok{las =} \DecValTok{1}\NormalTok{,}
-         \AttributeTok{xlab =} \FunctionTok{expression}\NormalTok{(}\FunctionTok{sum}\NormalTok{(}\FunctionTok{italic}\NormalTok{(Z}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)) ),}
-         \AttributeTok{ylab =} \StringTok{"Density"}\NormalTok{)}
-
-\DocumentationTok{\#\#\# Now plot the theoretical chi{-}squared distribution (with one df)}
-\CommentTok{\# Use these values of X:}
-\NormalTok{x\_Plot }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{,}
-              \AttributeTok{length =} \DecValTok{100}\NormalTok{)}
-\CommentTok{\# Add lines to the histogram of chi{-}square random values}
-\FunctionTok{lines}\NormalTok{( }\FunctionTok{dchisq}\NormalTok{(x\_Plot, }\AttributeTok{df =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x\_Plot,}
-       \AttributeTok{type =} \StringTok{"l"}\NormalTok{,}
-       \AttributeTok{lwd =} \DecValTok{3}\NormalTok{)}
-\CommentTok{\# dchisq()  is the density function for a chi{-}squared distribution}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}
-\includegraphics[width=1\linewidth]{04-RandomVariables_files/figure-latex/SimChiSq1Fig-1} \caption{Left: histogram of $1000$ simulated normal variates. Right: histogram of the squared normal variates. The solid lines on the right panel is the theoretical distribution of a chi-squared distribution with $1$\ degree of freedom.}\label{fig:SimChiSq1Fig}
-\end{figure}
-
-Furthermore, the sum of~\(k\) independent standard normal distributions is a chi-squared distribution with \(k\)~degrees of freedom (Fig.~\ref{fig:SimChiSq5Fig}):
+In Example~@ref(exm:DistributionFnReverseDiscrete\}, the random variable~\(X\) was stated to have the PMF
+\[
+   f_X(x) = 
+   \begin{cases}
+      0.1   & \text{for $x = 10$}\\
+      0.3   & \text{for $x = 11$}\\
+      0.5   & \text{for $x = 15$}\\
+      0.1   & \text{for $x = 17$}\\
+      0     & \text{elsewhere}\\
+   \end{cases}.
+\]
+In \textbf{R}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{set.seed}\NormalTok{(}\DecValTok{7701}\NormalTok{)}
-
-\DocumentationTok{\#\#\# Standard normal variate: in 100 rows of 5 columns each }
-\NormalTok{Z }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{( }\AttributeTok{data =} \FunctionTok{rnorm}\NormalTok{(}\AttributeTok{n =} \DecValTok{5000}\NormalTok{,}
-                          \AttributeTok{mean =} \DecValTok{0}\NormalTok{, }
-                          \AttributeTok{sd =} \DecValTok{1}\NormalTok{),}
-             \AttributeTok{nrow =} \DecValTok{1000}\NormalTok{,}
-             \AttributeTok{ncol =} \DecValTok{5}\NormalTok{)}
-
-\DocumentationTok{\#\#\# Add the squared values, across rows (so each value is the}
-\DocumentationTok{\#\#\# sum of *five* standard normal variates)}
-\NormalTok{Z\_SumsSq }\OtherTok{\textless{}{-}} \FunctionTok{rowSums}\NormalTok{(Z}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
-
-\DocumentationTok{\#\#\# Set up for two plots, side{-}by{-}side}
-\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{) )}
-
-\DocumentationTok{\#\#\# Plot two histograms: Z and Z\^{}2}
-\DocumentationTok{\#\#\#  truehist  is part of the MASS package,which must be loaded first, using: }
-\DocumentationTok{\#\#\#  library(MASS)}
-\FunctionTok{truehist}\NormalTok{(Z,}
-         \AttributeTok{las =} \DecValTok{1}\NormalTok{,}
-         \AttributeTok{xlab =} \FunctionTok{expression}\NormalTok{(}\FunctionTok{italic}\NormalTok{(Z)),}
-         \AttributeTok{ylab =} \StringTok{"Density"}\NormalTok{)}
-\FunctionTok{truehist}\NormalTok{(Z\_SumsSq,}
-         \AttributeTok{las =} \DecValTok{1}\NormalTok{,}
-         \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.16}\NormalTok{),}
-         \AttributeTok{xlab =} \FunctionTok{expression}\NormalTok{(}\FunctionTok{sum}\NormalTok{(}\FunctionTok{italic}\NormalTok{(Z}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}\SpecialCharTok{\textasciitilde{}}\NormalTok{over}\SpecialCharTok{\textasciitilde{}}\NormalTok{five}\SpecialCharTok{\textasciitilde{}}\NormalTok{values ),}
-         \AttributeTok{ylab =} \StringTok{"Density"}\NormalTok{)}
-
-\DocumentationTok{\#\#\# Now plot the theoretical chi{-}squared distribution (with *five* df)}
-\CommentTok{\# Use these values of X:}
-\NormalTok{x\_Plot }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{20}\NormalTok{,}
-              \AttributeTok{length =} \DecValTok{100}\NormalTok{)}
-\FunctionTok{lines}\NormalTok{( }\FunctionTok{dchisq}\NormalTok{(x\_Plot, }\AttributeTok{df =} \DecValTok{5}\NormalTok{) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x\_Plot,}
-       \AttributeTok{type =} \StringTok{"l"}\NormalTok{,}
-       \AttributeTok{lwd =} \DecValTok{3}\NormalTok{)}
+\NormalTok{x }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{( }\DecValTok{10}\NormalTok{,  }\DecValTok{11}\NormalTok{,  }\DecValTok{15}\NormalTok{,  }\DecValTok{17}\NormalTok{)}
+\NormalTok{p }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.1}\NormalTok{, }\FloatTok{0.3}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.1}\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 
-\begin{figure}
-\includegraphics[width=1\linewidth]{04-RandomVariables_files/figure-latex/SimChiSq5Fig-1} \caption{Left: histogram of $5000$ simulated normal variates. Right: histogram of the sum of five squared normal variates. The solid lines on the right panel is the theoretical distribution of a chi-squared distribution with $5$\ degrees of freedom.}\label{fig:SimChiSq5Fig}
-\end{figure}
+Then the probability mass function is
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data.frame}\NormalTok{(x, p)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r|r}
+\hline
+x & p\\
+\hline
+10 & 0.1\\
+\hline
+11 & 0.3\\
+\hline
+15 & 0.5\\
+\hline
+17 & 0.1\\
+\hline
+\end{tabular}
+
+This is a valid PMF, as the probabilities sum to one:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{sum}\NormalTok{(p)}
+\CommentTok{\#\textgreater{} [1] 1}
+\end{Highlighting}
+\end{Shaded}
+
+The DF can be found using the function \texttt{cumsum()}, th \textbf{cum}ulative \textbf{sum}ation:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{F }\OtherTok{\textless{}{-}} \FunctionTok{cumsum}\NormalTok{(p)}
+\FunctionTok{data.frame}\NormalTok{(x, F)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r|r}
+\hline
+x & F\\
+\hline
+10 & 0.1\\
+\hline
+11 & 0.4\\
+\hline
+15 & 0.9\\
+\hline
+17 & 1.0\\
+\hline
+\end{tabular}
+
+Consider the DF for a discrete random variable~\(X\):
+\[
+   F_X(x) = 
+   \begin{cases}
+      0     & \text{for $x < 10$;}\\
+      0.1   & \text{for $10 \le x < 11$;}\\
+      0.4   & \text{for $11 \le x < 15$;}\\
+      0.9   & \text{for $15 \le x < 17$;}\\
+      1     & \text{for $x \ge 17$.}
+   \end{cases}
+\]
+To find the PDF, use Eq.~\eqref{eq:DFtoPDFdiscrete}:
+
+\subsection{Continuous random variables}\label{continuous-random-variables}
+
+In Example~\ref{exm:ProbabilityDensityFunction}, the continuous random variable~\(W\) was given with the PDF
+\[
+   f_W(w) = 
+   \begin{cases}
+      2w & \text{for $0 < w < 1$};\\
+      0  & \text{elsewhere}.
+   \end{cases}
+\]
+The PDF can be expressed in \textbf{R} as a function.
+Many~\textbf{R} functions assume the random variable is denoted by~\(x\), so the PDF is defined as:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fX }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}\DecValTok{2} \SpecialCharTok{*}\NormalTok{ x \}}
+\end{Highlighting}
+\end{Shaded}
+
+The PDF can be plotted using:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{curve}\NormalTok{(fX, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{04-RandomVariables_files/figure-latex/unnamed-chunk-10-1.pdf}}
+
+As required, the total area under teh curve is~\(1\):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{integrate}\NormalTok{(fX, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\CommentTok{\#\textgreater{} 1 with absolute error \textless{} 1.1e{-}14}
+\end{Highlighting}
+\end{Shaded}
+
+Probabilities can be found similarly; for example, to find \(\Pr(0.2 < X < 0.6)\):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{integrate}\NormalTok{(fX, }\FloatTok{0.2}\NormalTok{, }\FloatTok{0.6}\NormalTok{)}
+\CommentTok{\#\textgreater{} 0.32 with absolute error \textless{} 3.6e{-}15}
+\end{Highlighting}
+\end{Shaded}
+
+The CDF IS TRICKIER:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\NormalTok{FX }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}\FunctionTok{integrate}\NormalTok{(fX, }\DecValTok{0}\NormalTok{, x)\}}
+\end{Highlighting}
+\end{Shaded}
+
+Then,
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{FX}\NormalTok{(}\FloatTok{0.6}\NormalTok{)}\SpecialCharTok{$}\NormalTok{value }\SpecialCharTok{{-}} \FunctionTok{FX}\NormalTok{(}\FloatTok{0.2}\NormalTok{)}\SpecialCharTok{$}\NormalTok{value}
+\CommentTok{\#\textgreater{} [1] 0.32}
+\end{Highlighting}
+\end{Shaded}
+
+Same as above.
+
+QUANTILE:
+
+RANDOM:
+
+The probability \(\Pr(0 < W < 0.5)\) can be computed in two ways.
+One is to use calculus:
+\[
+   \Pr(0 < W < 0.5) = w^2\Big|_0^{0.5} = 0.25.
+\]
+Alternately, the probability can be computed \emph{geometrically} from the graph of the PDF (Fig.~\ref{fig:ContinuousPDF}).
 
 \section{Exercises}\label{RVExercises}
 
@@ -17896,7 +17971,7 @@ So the hurdle model is:
 
 \begin{figure}
 \centering
-\pandocbounded{\includegraphics[keepaspectratio]{10-MixedDistributions_files/figure-latex/unnamed-chunk-4-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio,alt={\label{fig:unnamed-chunk-4}HURDLE MODEL}]{10-MixedDistributions_files/figure-latex/unnamed-chunk-4-1.pdf}}
 \caption{\label{fig:unnamed-chunk-4}HURDLE MODEL}
 \end{figure}
 
@@ -21452,9 +21527,9 @@ These results can be confirmed using a quick computer simulation:
 \NormalTok{  x\_Max[i] }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(x) }
 \NormalTok{\}}
 \FunctionTok{cat}\NormalTok{(}\StringTok{"Mean of the maximum value"}\NormalTok{, }\FunctionTok{mean}\NormalTok{(x\_Max), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
-\CommentTok{\#\textgreater{} Mean of the maximum value 0.9082816}
+\CommentTok{\#\textgreater{} Mean of the maximum value 0.9096051}
 \FunctionTok{cat}\NormalTok{(}\StringTok{"Variance of the maximum value"}\NormalTok{, }\FunctionTok{var}\NormalTok{(x\_Max), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
-\CommentTok{\#\textgreater{} Variance of the maximum value 0.006817536}
+\CommentTok{\#\textgreater{} Variance of the maximum value 0.006633913}
 \end{Highlighting}
 \end{Shaded}
 
@@ -21560,7 +21635,7 @@ This can be confirmed using a small simulation:
 
 \FunctionTok{cat}\NormalTok{(}\StringTok{"Proportion of smallest values less than 0.2: "}\NormalTok{, }
     \FunctionTok{round}\NormalTok{(}\FunctionTok{sum}\NormalTok{(x\_Min) }\SpecialCharTok{/}\NormalTok{ num\_Sims, }\DecValTok{3}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
-\CommentTok{\#\textgreater{} Proportion of smallest values less than 0.2:  0.908}
+\CommentTok{\#\textgreater{} Proportion of smallest values less than 0.2:  0.91}
 \end{Highlighting}
 \end{Shaded}
 
@@ -29748,7 +29823,7 @@ Thus, \(\operatorname{E}[N] = \infty\).
 
 \begin{footnotesize}
 
-\phantomsection\label{refs}
+\protect\phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
 \bibitem[\citeproctext]{ref-abramowitz1964handbook}
 Abramowitz, Milton, and Irene A. Stegun. 1964. \emph{Handbook of Mathematical Functions}. Vol. 55. Dover New York.
@@ -29907,7 +29982,7 @@ Paul, Sudhir R. 2005. {``Testing Goodness of Fit of the Geometric Distribution: 
 Pfizer Australia. 2008. \emph{Girls 2--18 Years}.
 
 \bibitem[\citeproctext]{ref-R-base}
-R Core Team. 2025. \emph{R: A Language and Environment for Statistical Computing}. Vienna, Austria: R Foundation for Statistical Computing. \url{https://www.R-project.org/}.
+R Core Team. 2024. \emph{R: A Language and Environment for Statistical Computing}. Vienna, Austria: R Foundation for Statistical Computing. \url{https://www.R-project.org/}.
 
 \bibitem[\citeproctext]{ref-raschke2011empirical}
 Raschke, Mathias. 2011. {``Empirical Behaviour of Tests for the Beta Distribution and Their Application in Environmental Research.''} \emph{Stochastic Environmental Research and Risk Assessment} 25 (1): 79--89.
