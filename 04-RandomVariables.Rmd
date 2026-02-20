@@ -1217,6 +1217,145 @@ which is usually written as $f_X(x) = 2(1 - x)$ for $0 < x < 1$, and\ $0$ elsewh
 :::
 
 
+## Survival functions {#SurvivalFunction}
+
+In many applications (particularly in medical research, engineering, and insurance) we are more interested in the probability that a subject 'survives' beyond a certain time than the probability that an event has already occurred.
+The survival function, denoted $S_X(x)$, is defined as the probability that the random variable\ $X$ exceeds a value $x$:
+\begin{equation}
+  S_X(x) = P(X > x)
+  (\#eq:SurvivalFunction)
+\end{equation}
+Since $F_X(x) = P(X \le x)$, the survival function is simply the complement of the distribution function:
+$$
+  S_X(x) = 1 - F_X(x)
+$$
+
+Key Properties
+
+* Direction: While $F_X(x)$ is non-decreasing (moving from\ $0$ to\ $1$), $S_X(x)$ is non-increasing. 
+  It starts at $S_X(-\infty) = 1$ and falls toward $S_X(\infty) = 0$.
+* Interpretation: 
+  In reliability engineering, $S_X(x)$ is often called the Reliability Function, $R(x)$, representing the probability that a component is still functioning at time $x$.
+  
+Discrete vs. Continuous: 
+
+* For continuous variables, $P(X > x) = P(X \ge x)$, so the boundary point doesn't change the value.
+* For discrete variables, $S_X(x)$ is the probability of the event occurring at any step strictly greater than $x$.
+
+
+:::{.example #SurvivalVsDistributionCont name="Survival function"}
+Suppose the time $X$ (in years) until a specific LED bulb fails follows an exponential distribution with a mean of $2$\ years ($\lambda = 0.5$)
+The distribution function is
+$$
+  F_X(x) = 1 - e^{-0.5x}
+$$
+The survival function is
+$$
+  S_X(x) = 1 - (1 - e^{-0.5x}) = e^{-0.5x}
+$$
+At $x = 0$, the bulb has just started. 
+$F_X(0) = 0$ (probability of failing instantly is zero) and $S_X(0) = 1$ ($100$% chance it has survived to the start).
+As $x \to \infty$, $F_X(x)$ approaches\ $1$, while $S_X(x)$ approaches\ $0$. 
+Eventually, every bulb 'dies'.
+The point where $F_X(x) = S_X(x) = 0.5$ is the median of the distribution.
+:::
+
+
+```{r SurvivalVsDistributionContPlot, echo=FALSE, fig.cap="Relationship between Distribution and Survival Functions", out.width="90%", fig.width=8, fig.height=5}
+# Define the rate parameter (lambda)
+lambda <- 0.5
+x <- seq(0, 10, 
+         length = 500)
+
+# Calculate CDF (F) and Survival (S)
+F_x <- pexp(x, 
+            rate = lambda)
+S_x <- 1 - F_x
+
+# Plotting
+plot(x = x, 
+     y = F_x, 
+     type = "l", 
+     lwd = 3, 
+     col = "steelblue",
+     xlab = "Time (Years)", 
+     ylab = "Probability",
+     main = "CDF vs. Survival Function", 
+     las = 1)
+
+lines(x = x, 
+      y= S_x, 
+      lwd = 3, 
+      col = "firebrick")
+
+# Add a legend
+legend("right", 
+       legend = c("Distribution Fn F(x)", 
+                  "Survival Fn S(x)"),
+       col = c("steelblue", "firebrick"), 
+       lwd = 3, 
+       bty = "n")
+
+# Highlight a specific point: Median (where F(x) = S(x) = 0.5)
+median_val <- qexp(0.5, 
+                   rate = lambda)
+abline(h = 0.5, 
+       lty = 2, 
+       col = "gray")
+points(x = median_val, 
+       y = 0.5, 
+       pch = 19)
+text(x = median_val, 
+     y = 0.55, 
+     labels = paste("Median =", round(median_val, 2)), 
+     pos = 4)
+```
+
+
+
+:::{.example #SurvivalVsDistributionDiscrete name="Survivor function"}
+Suppose you roll a fair six-sided die.
+Let $X$ be the number of rolls until the first '6'. 
+This follows a Geometric distribution where the probability of success is $1/6$.
+The survival function $S_X(x)$ tells us the probability that it takes more than $x$ rolls to see a '6'.
+
+In the discrete case, the definition of the survival function requires precision regarding the boundaries
+
+Distribution Function: $F_X(x) = P(X \le x)$. 
+It includes the probability of $X$ being exactly $x$.
+
+Survival Function: $S_X(x) = P(X > x)$. 
+It excludes the probability of $X$ being exactly $x$.
+
+Note: Because $S_X(x)$ excludes the point $x$, if you are at a "jump" point (like $x=1$ roll), the survival probability $S_X(1)$ is the probability that it takes 2 or more rolls.
+:::
+
+
+```{r SurvivalVsDistributionDiscretePlot, echo=FALSE, fig.cap="Relationship between Distribution and Survival Functions", out.width="90%", fig.width=8, fig.height=5}
+p <- 1/6
+x <- 1:25
+
+F_x <- pgeom(x - 1, prob = p)   # P(X <= x) for Geometric
+S_x <- 1 - pgeom(x - 1, prob = p)  # P(X > x)
+
+plot(x, F_x, type = "s", lwd = 3, col = "steelblue",
+     xlab = "Number of Rolls", ylab = "Probability",
+     main = "CDF vs. Survival Function (Geometric)", las = 1,
+     ylim = c(0, 1))
+lines(x, S_x, type = "s", lwd = 3, col = "firebrick")
+legend("right", legend = c("Distribution Fn F(x)", "Survival Fn S(x)"),
+       col = c("steelblue", "firebrick"), lwd = 3, bty = "n")
+abline(h = 0.5, lty = 2, col = "gray")
+```
+
+
+
+
+
+
+
+
+
 ## Quantile functions {#QuantileFunction}
 
 For a random variable\ $X$, the distribution function $F_X(x)$ computes the probability that $X < x$ for some given value of\ $x$.
@@ -1644,10 +1783,10 @@ Qarray[3, ] <- c("$\\inf\\{ x\\mid 1 - \\exp(-2x)\ = 1\\} = \\infty$",
                  "$\\inf\\{x \\mid F_X(x) = 1\\} = 17$")
 Qarray[4, ] <- c("$Q(p)\\to \\infty$",
                  "$Q(p) = 17$ for all $p > 0.9$")
-Qarray[5, ] <- c("Smooth curve never that",
+Qarray[5, ] <- c("Smooth curve that",
                  "A series of steps that ")
 Qarray[6, ] <- c("never quite reaches\\ $1$",
-                 "ends ate a top landing")
+                 "ends at a top landing")
 
 if( knitr::is_latex_output() ) {
   knitr::kable(Qarray,
@@ -1676,8 +1815,90 @@ if( knitr::is_latex_output() ) {
 
 
 
-### MIXED EXAMPLE
+A mixed random variable has a distribution function $F_X(x)$ that contains both continuous slopes and discrete 'jumps'. 
+The quantile function $Q_X(p)$ still follows the definition in Eq.\ \@ref(eq:QuantileFunction).
 
+
+::: {.example #QuantileFnMixed name="Quantile function: mixed rv"}
+Consider a random variable\ $X$ that represents a censored waiting time.
+There is a\ $50$% chance the event happens instantly (so that $x = 0$), and a $50$% chance it follows an exponential distribution. 
+The distribution function (Fig.\ \@ref(fig:XMixedPlots), left panel)) is:
+$$
+  F_X(x) = 
+  \begin{cases} 
+    0                                   & \text{for $x < 0$} \\
+    0.5 + 0.5\left(1 - \exp(-x)\right)  & \text{for $x \ge 0$}. 
+\end{cases}
+$$
+At $x = 0$, the DF jumps from $F_X(x) = 0$ to $F_X(x) = 0.5$.
+
+To find the quantile function, we look for the smallest value of\ $x$ such that $F_X(x) \ge p$:
+
+* For $0 < p \le 0.5$:
+  The smallest\ $x$ that satisfies $F_X(x) \ge p$ is exactly $x = 0$, because $F_X(0) = 0.5$, which is $\ge p$ for all these values.
+* For $0.5 < p < 1$:
+  Solving $0.5 + 0.5\left(1 - \exp(-x)\right) = p$ gives $x = -\log\left(2(1 - p)\right)$.
+
+The resulting quantile function (Fig.\ \@ref(XMixedPlots), right panel) is:
+$$
+  Q_X(p) = 
+  \begin{cases} 
+    0                           & \text{for $0 < p \le 0.5$} \\
+    -\log\left(2(1 -p)\right)   & \text{for $0.5 < p < 1$}. 
+\end{cases}
+$$
+:::
+
+
+```{r XMixedPlots, echo=FALSE, fig.align="center", fig.cap = "The distribution function (left) and quantile function (right) for the random variable $X$.", out.width="80%", fig.width=7}
+par( mfrow = c(1, 2))
+
+x_Cont <- seq(0.0001, 5,
+              length = 200)
+p_Cont <- seq(0.5, 1, 
+              length = 200)
+
+Fx <- 0.5 + 0.5 * (1 - exp(-x_Cont) )
+Qx <- -log( 2*(1 - p_Cont) ) 
+  
+plot( x = x_Cont,
+      y = Fx,
+      las = 1,
+      lwd = 2,
+      type = "l",
+      ylim = c(0, 1),
+      xlim = c(-0.5, 5),
+      xlab = expression(italic(x)),
+      ylab = "Distribution fn",
+      main = expression(Distribution~fn~"for"~italic(X)))
+points(x = 0,
+       y = 0.5,
+       pch = 19)
+points(x = 0,
+       y = 0,
+       pch = 1)
+lines( x = c(-1, 0),
+       y = c(0, 0),
+       lwd = 2)
+
+plot( x = p_Cont,
+      y = Qx,
+      xlim = c(0, 1),
+      ylim = c(0, 6),
+      las = 1,
+      lwd = 2,
+      type ="l",
+      xlab = expression(italic(p)),
+      ylab = "Quantile fn",
+      main = expression(Quantile~fn~"for"~italic(X)))
+lines( x = c(0, 0.5),
+       y = c(0, 0),
+       lwd = 2)
+points(x = 0.5,
+       y = 0,
+       pch = 19)
+
+```
 
 
 ## Generating random numbers {#RandomNumbers}
@@ -1884,10 +2105,6 @@ FX(0.6) - FX(0.2)
 
 
 
-### MIXED???
-
-
-
 ## Exercises {#RVExercises}
 
 Selected answers appear in Sect.\ \@ref(AnswersChapRandomVariables).
@@ -1934,6 +2151,7 @@ $$
 1. Find and plot the distribution function for\ $X$.
 1. Compute $\Pr(X > 13)$.
 1. Compute $\Pr(X \le 10 \mid  X\le 15)$.
+1. Find and plot the quantile function.
 :::
 
 
@@ -1950,8 +2168,9 @@ $$
 1. Show that $p_X(x)$ is a valid probability distribution.
 1. Plot the probability function of\ $X$.
 1. Find and plot the distribution function for\ $X$.
-1. Compute $\Pr(X > 13)$.
-1. Compute $\Pr(X \le 10 \mid  X\le 15)$.
+1. Compute $\Pr(X < 4)$.
+1. Compute $\Pr(X \le 2 \mid  X\le 5)$.
+1. Find and plot the quantile function.
 :::
 
 
@@ -1968,6 +2187,8 @@ $$
 1. Plot the probability function of\ $Z$.
 1. Find and plot the distribution function of\ $Z$.
 1. Find $\Pr(Z < 0)$.
+1. Find and plot the quantile function.
+1. Determine $Q_Z(0.25)$.
 :::
 
 
@@ -1984,6 +2205,8 @@ $$
 1. Plot the probability function of\ $X$.
 1. Find and plot the distribution function of\ $X$.
 1. Find $\Pr(X < 1)$.
+1. Find and plot the quantile function.
+1. Determine $Q_X(0.5)$.
 :::
 
 
@@ -2171,16 +2394,16 @@ abline(h = a,
        lty = 2,
        col = "grey")
 
-arrows( x0 = -0.5,
-       y0 = 0.5,
+arrows( x0 = 0,
+       y0 = 0,
        x1 = r * cos(3 * pi / 4),
        y1 = r * sin(3 * pi / 4),
        angle = 15,
        length = 0.15)
-text( x = -0.5,
-      y = 0.5,
+text( x = -0.45,
+      y = 0.25,
       pos = 1,
-      labels = "Quarter\ncircle",
+      labels = expression(Radius~italic(a)),
       cex = 0.9)
 box()
 
@@ -2226,15 +2449,15 @@ A study of the service life of concrete in various conditions [@liu2012stochasti
 $$
    f(x; a, b, c) = 
    \begin{cases}
-      \displaystyle \frac{2(x - a)}{(b - a)(c - a)} & \text{for $a\le x\le c$};\\[6pt]
-      \displaystyle \frac{2(b - x)}{(b - a)(b - c)} & \text{for $c\le x\le b$};\\[3pt]
+      \displaystyle \frac{2(x - a)}{(b - a)(c - a)} & \text{for $a\le x\le c$}\\[6pt]
+      \displaystyle \frac{2(b - x)}{(b - a)(b - c)} & \text{for $c\le x\le b$},\\[3pt]
       0 & \text{otherwise},
    \end{cases}
 $$
 where\ $c$ is the mode, and\ $a$ and\ $b$ are the lower and upper limits. 
 
 1. Show that the distribution is a valid PDF.
-   (This may be easier geometrically than using integration.)
+   (This is easier geometrically than using integration.)
 1. Previous studies, cited in the article, suggest the values $a = 0.6$ and $c = 5$, and that the distribution is symmetric.
    Write down the PDF for this case.
 1. Determine the DF using the values above.
@@ -2246,13 +2469,7 @@ where\ $c$ is the mode, and\ $a$ and\ $b$ are the lower and upper limits.
 
 
 :::{.exercise #TriangularHospital}
-In a study modelling waiting times at a hospital [@khadem2008evaluating], patients are classified into one of three categories:
-
-* Red: Critically ill or injured patients.
-* Yellow: Moderately ill or
-injured patients.
-* Green: Minimally injured or
-uninjured patients.
+In a study modelling waiting times at a hospital [@khadem2008evaluating], patients are classified into one of three categories: Red (critically ill or injured patients), Yellow (moderately ill or injured patients), or Green (injured or uninjured patients).
 
 For 'Yellow' patients, the service time of doctors are modelled using a triangular distribution, with a minimum at $3.5\mins$, a maximum at $30.5\mins$ and a mode at $5\mins$.
 
@@ -2358,6 +2575,15 @@ Five people, including you and a friend, line up at random.
 The random variable\ $X$ denotes the number of people between yourself and your friend. 
 Determine the probability function of\ $X$.
 :::
+
+
+
+:::{.exercise #Cards4}
+Suppose a dealer deals four cards from a standard $52$-card pack.
+Define\ $Y$ as the number of suits in the four cards.
+Deduce the distribution of\ $Y$.
+:::
+
 
 
 
@@ -2475,13 +2701,6 @@ $$
 
 
 
-:::{.exercise #Cards4}
-Suppose a dealer deals four cards from a standard $52$-card pack.
-Define\ $Y$ as the number of suits in the four cards.
-Deduce the distribution of\ $Y$.
-:::
-
-
 :::{.exercise #Mixed}
 Consider the random variable\ $T$ with the probability function
 $$
@@ -2508,18 +2727,6 @@ Consider rolling a fair, six-sided die.
 :::
 
 
-:::{.exercise #SimTdist}
-Consider a random variable\ $Z$ with a standard normal distribution $N(0, 1)$, and a random variable\ $V$ with a chi-squared distribution on\ $v$ degrees of freedom.
-
-Simulate the distribution of
-$$
-  T = \frac{Z}{\sqrt{V/\nu}},
-$$
-then show this is a $t$-distribution with\ $\nu$ degrees of freedom.
-*Hint*: use the **R** functions for the $t$-distribution (e.g., `dt()`) and the chi-squared distribution (e.g, `dchisq()`). 
-:::
-
-
 :::{.exercise #SimTriangular}
 Consider two random variables\ $X$ and\ $Y$ that have *uniform distributions*,\index{Uniform distribution} with probability density functions
 \begin{align*}
@@ -2533,18 +2740,6 @@ Consider two random variables\ $X$ and\ $Y$ that have *uniform distributions*,\i
 $$
   f_Y(y) = \frac{1}{2}\quad\text{for $-1 < y < 1$}.
 $$
-:::
-
-
-:::{.exercise #SimTdist2}
-Consider a random variable\ $Z$ with a standard normal distribution $N(0, 1)$, and a random variable\ $V_\nu$ with a chi-squared distribution on\ $\nu$ degrees of freedom.
-
-Simulate the distribution of
-$$
-  T = \frac{Z}{\sqrt{V_9/9}},
-$$
-then show this is a $t$-distribution with\ $\nu = 9$ degrees of freedom.
-*Hint*: use the **R** functions for the $t$-distribution (e.g., `dt()`) and the chi-squared distribution (e.g, `dchisq()`). 
 :::
 
 
@@ -2580,4 +2775,6 @@ Look at the PDF $f_X(x) = 2x$ for $0 < x < 1$.
    Is there more 'area' (probability) on the left side or the right side of the midpoint $x = 0.5$?
 3. Use your `uniroot()` function or the mathematical inverse $Q(p) = \sqrt{p}$ to find the exact value.
 :::
+
+
 
