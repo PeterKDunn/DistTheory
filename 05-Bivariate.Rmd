@@ -35,10 +35,10 @@ This chapter mainly discusses the two-variable (bivariate) case.
 
 ## Bivariate random variables and their distributions {#BivariateRVs}
 
-The *joint probability function* simultaneously describes how two random variables vary and interact (??).
+The *joint probability function* simultaneously describes how two random variables vary and interact.
 The set of all possible pairs of outcomes, the *joint range* (or *support*) of $(X, Y)$, denoted $\mathcal{R}_{X,Y}$, is a subset of the Euclidean plane $\mathbb{R}^2$.
 Each outcome $(X(s), Y(s))$ is represented as a point $(x, y)$ in this plane. 
-As with univariate distributions, we must distinguish between discrete and continuous random vectors to determine how probabilities are assigned to these points.
+As with univariate distributions, discrete and continuous random vectors must be distinguished to determine how probabilities are assigned to these points.
 
 
 :::{.definition #RandomVector name="Random vector"}
@@ -65,56 +65,60 @@ We defer this case until Sect.\ \@ref(MixedJointPF).
 
 :::{.definition #BivariatePMF name="Discrete bivariate probability mass function"}
 Let $(X, Y)$ be a $2$-dimensional random variable.
-The joint probability mass function (or joint PMF), denoted $p_{X, Y}(x, y)$, assigns a probability to each pair of outcomes $(x_i, y_j)$ such that $p_{X, Y}(x_i, y_j) = \Pr(X = x_i, Y = y_j)$.
+The *joint probability mass function* (or joint PMF), denoted $p_{X, Y}(x, y)$, assigns a probability to each pair of outcomes $(x_i, y_j)$ such that $p_{X, Y}(x_i, y_j) = \Pr(X = x_i, Y = y_j)$.
 This function must satisfy:
 \begin{align}
-  p_{X, Y}(x, y) &\geq 0 \quad \text{for all } (x, y) \in \mathcal{R}{X,Y} \\
-  \sum{j} \sum_{i} p_{X, Y}(x_i, y_j) &= 1
+  p_{X, Y}(x, y) &\geq 0 \quad \text{for all } (x, y) \in \mathcal{R}_{X,Y} \\
+  \sum_{(x, y)\in \mathcal{R}_{X\times Y}} p_{X, Y}(x_i, y_j) &= 1
   (\#eq:BivariateProbFunctionDiscrete)
 \end{align}
 The collection of all triples $\{(x_i, y_j, p_{X,Y}(x_i, y_j))\}$ for all $i, j$ constitutes the *joint probability distribution* of $(X, Y)$.
 :::
 
 
-When both $X$ and $Y$ are continuous, we describe their behavior using a joint probability density function (joint PDF). 
+When both $X$ and $Y$ are continuous, we describe their behaviour using a joint probability density function (joint PDF). 
 Instead of a 2D "staircase," the distribution looks like a smooth surface over the $xy$-plane.
 
 
 :::{.definition #BivariatePDF name="Continuous bivariate probability density function"}
-Joint PDFA function $f_{X,Y}(x, y)$ is a joint PDF if it satisfies:
+The *joint probability density function* (joint PDF) function of the pair if continuous random variables\ $X$ and\ $Y$ is a function $f_{X,Y}(x, y)$ such that:
 
-* Non-negativity: $f_{X,Y}(x, y) \ge 0$ for all $(x, y) \in \mathbb{R}^2$.
-* Total Volume: The total volume under the surface must be 1:
+* $f_{X,Y}(x, y) \ge 0$ for all $(x, y) \in \mathbb{R}^2$, and 
+* The total volume under the surface is\ $1$:
 $$
   \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} f_{X,Y}(x, y) \, dx \, dy = 1.
 $$
-To find the probability that $(X, Y)$ falls within a specific region $A$ in the plane, we calculate the volume above that region:
+The probability that $(X, Y)$ falls within a specific region $A$ in the plane is the volume above that region:
 $$
-  P((X, Y) \in A) = \iint_A f_{X,Y}(x, y) \, dx \, dy.
+  \Pr((X, Y) \in A) = \iint_A f_{X,Y}(x, y) \, dx \, dy.
 $$
 :::
 
-A *mixed joint distribution* occurs when one variable (say $X$) is discrete and the other ($Y$) is continuous.
-For example, imagine\ $X$ is a "Treatment Indicator" (0 for Control, 1 for Medication) and $Y$ is "Recovery Time.
-Then, $X$ has a probability mass function (PMF) and\ $Y$ has a probability density function (PDF) that might look different depending on whether $X = 0$ or $X = 1$.
 
-In this case, the relationship is described using a set of conditional density functions. 
-We don't have a single joint PDF $f(x,y)$ because $X$ cannot be integrated. 
-Instead, we satisfy the "sum to 1" rule using a hybrid approach:
+A *mixed joint distribution* occurs when one variable (say $X$) is discrete and the other ($Y$) is continuous.
+For example, imagine\ $X$ is a *treatment indicator* ($0$\ for Control; $1$\ for Medication) and\ $Y$ is the recovery time.
+Then, $X$ has a probability mass function (PMF) and\ $Y$ has a probability density function (PDF) that may be different depending on whether $X = 0$ or $X = 1$.
+
+In this case, the relationship is described using a set of conditional density functions rather than a single joint PDF $f(x,y)$, because $X$ cannot be integrated. 
+Instead, the total probability is still\ $1$ by using a hybrid approach:
 $$
   \sum_{x \in \mathcal{R}_X} \int_{-\infty}^{\infty} f_{Y|X}(y|x) P(X=x) \, dy = 1.
 $$
 
 :::{.example name="Insurance claims"}
-Suppose\ $X$ indicates if a person has a car accident ($X=1$ with prob $p$; $X=0$ with prob $1-p$). 
-If $X=1$, the claim amount $Y$ follows an exponential distribution.
-The "joint" behavior is described by:
+Suppose\ $X$ indicates if a person has a car accident ($X = 1$ with probability\ $p$; $X = 0$ with probability $1 - p$). 
+If $X = 1$, the claim amount\ $Y$ follows a continuous distribution
+$$
+  f_{Y}(y) = \exp(-y)\quad\text{for $y > 0$}.
+$$
+The joint behaviour is described by:
 
-* $P(X=0, Y=0) = 1-p$ (A discrete point mass at the origin)
-* $f_{X,Y}(1, y) = p \cdot \lambda e^{-\lambda y}$ for $y > 0$ (A continuous "slice" along the line $x=1$)
+* $\Pr(X = 0, Y = 0) = 1 - p$ (a discrete point mass at $X = 0$); and
+* $f_{X, Y}(1, y) = p \cdot  \exp(-y)$ for $y > 0$ (a continuous "slice" along the line $x = 1$)
 :::
 
-```{r echo=FALSE}
+
+```{r echo=FALSE, fig.align="center", out.width="100%", fig.width=9, fig.height=3.75, fig.cap="The joint PMF (left), a joint PDF (center), and a mixed joint distribution (right)."}
 # Set up a 1x3 layout
 par(mfrow = c(1, 3),
     mar = c(4, 4, 3, 1))
@@ -131,9 +135,9 @@ plot(expand.grid(x_disc, y_disc),
      pch = 19, 
      cex = 2, 
      col = "steelblue",
-     xlab = "X", 
-     ylab = "Y", 
-     main = "Discrete Joint PMF",
+     xlab = expression(italic(X)),
+     ylab = expression(italic(Y)),
+     main = "Discrete joint PMF",
      xlim = c(0, 7), 
      ylim = c(0, 7), 
      las = 1)
@@ -153,10 +157,12 @@ z_cont <- outer(x_cont,
 image(x_cont, 
       y_cont, 
       z_cont, 
-      col = hcl.colors(12, "YlGnBu", rev = TRUE),
-      xlab = "X",
-      ylab = "Y",
-      main = "Continuous Joint PDF", 
+      col = hcl.colors(12, 
+                       "YlGnBu", 
+                       rev = TRUE),
+      xlab = expression(italic(X)),
+      ylab = expression(italic(Y)),
+      main = "Continuous joint PDF", 
       las = 1)
 contour(x_cont, 
         y_cont, 
@@ -177,10 +183,10 @@ dens1 <- dnorm(y_seq,
 plot(x = y_seq, 
      y = dens0, 
      type = "n", 
-     ylim = c(0, 0.3),
-     xlab = "Y (Continuous)", 
+     ylim = c(0, 0.25),
+     xlab = expression(italic(Y)~"(continuous)"), 
      ylab = "Density", 
-     main = "Mixed (X=Discrete)", 
+     main = expression(Mixed~"("*italic(X)~"discrete)"), 
      las = 1)
 
 # X = 0 slice
@@ -190,7 +196,7 @@ polygon(x = y_seq,
         border = "steelblue")
 text(x = 0, 
      y = 0.22, 
-     "X = 0", 
+     expression(italic(X)==0),
      font = 2)
 
 # X = 1 slice
@@ -200,42 +206,80 @@ polygon(y_seq,
         border = "firebrick")
 text(x = 3, 
      y = 0.15, 
-     "X = 1", 
+     expression(italic(X)==1),
      font = 2)
 ```
 
 
-:::{.example #BVDiscrete2 name="Bivariate discrete"}
-Consider the following discrete distribution where probabilities $\Pr(X = x, Y = y)$ are shown as a graph
+:::{.example #BVDiscrete2A name="Bivariate discrete"}
+Suppose the joint probability mass function for $(X, Y)$ is defined as
+$$
+  p_{X, Y}(x, y) = \frac{6(x + 1)}{47(y + 1)}\quad\text{for $(x, y) \in\mathbb{Z}$, $0 \le |x + y| \le 2$.}
+$$
+The joint PMF can also be described using a table (Table\ \@ref(tab:Bivar1A)) or a graph 
 `r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:Bivar1graphlatex))'
+   '(Fig.\\ \\@ref(fig:Bivar1graphlatex)).'
 } else {
-   '(Fig.\\ \\@ref(fig:Bivar1graph))'
+   '(Fig.\\ \\@ref(fig:Bivar1graph)).'
 }`
-and a table (Table\ \@ref(tab:Bivar1)).
-
-To find $\Pr(X + Y = 2)$:
-\begin{align*}
-   \Pr(X + Y = 2)
-   &=\Pr\big(\{X = 2, Y = 0\} \text{ or } 
-             \{X = 1, Y = 1\} \text{ or } 
-             \{X = 0, Y = 2\}\big)\\
-   &= \Pr(X = 2, Y = 0) \, + 
-      \, \Pr(X = 1, Y = 1) \, + 
-      \, \Pr(X = 0, Y = 2)\\
-   &= \frac{9}{42} \ + \ \frac{12}{42} \ + \ \frac{12}{42} 
-   = \frac{33}{42}.
-\end{align*}
+Then, for example,
+$$
+  \Pr( \{X = 1, Y = 0, 1\} ) = \frac{12}{47} + \frac{6}{47} = \frac{18}{47}.
+$$
 :::
+
+```{r Bivar1A, echo=FALSE}
+Bivar1Table <- array( dim = c(3, 3))
+
+Bivar1Table[1, ] <- c("$6/47$", 
+                      "$12/47$",
+                      "$18/47$")
+Bivar1Table[2, ] <- c("$3/47$",
+                      "$6/47$",
+                      "$0$")
+Bivar1Table[3, ] <- c("$2/47$",
+                      "$0$",
+                      "$0$")
+
+rownames(Bivar1Table) <- c( "$Y = 0$",
+                            "$Y = 1$",
+                            "$Y = 2$")
+colnames(Bivar1Table) <- c( "$X = 0$",
+                            "$X = 1$",
+                            "$X = 2$")
+
+
+Bivar1Table.caption <- "A bivariate discrete probability function."
+if( knitr::is_latex_output() ) {
+  knitr::kable(Bivar1Table,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = Bivar1Table.caption) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(Bivar1Table,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = Bivar1Table.caption) %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
 
 
 ```{r echo=FALSE}
-
-# Add a new column with color
 PMF1 <- data.frame(
   x = c(0, 0, 0, 1, 1, 1, 2, 2, 2),
   y = c(0, 1, 2, 0, 1, 2, 0, 1, 2),
-  f = c(1, 4, 4, 6, 12, 0, 9, 0, 0) / 42
+  f = c(6, 3, 2, 12, 6, 0, 18, 0, 0) / 47
 )
 ```
 
@@ -279,7 +323,7 @@ if (knitr::is_html_output()) {
 
 
 
-```{r Bivar1graphlatex, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="A bivariate discrete probability function.", fig.align="center", out.width='50%',fig.width=15}
+```{r Bivar1graphlatex, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="A bivariate discrete probability function.", fig.align="center", out.width='70%',fig.width=6}
 
 # Plot
 if (knitr::is_latex_output()) {
@@ -320,53 +364,6 @@ if (knitr::is_latex_output()) {
 ```
 
 
-```{r Bivar1, echo=FALSE}
-Bivar1Table <- array( dim = c(3, 3))
-
-Bivar1Table[1, ] <- c("$1/42$", 
-                      "$4/42$",
-                      "$12/42$")
-Bivar1Table[2, ] <- c("$4/42$",
-                      "$12/42$",
-                      "$0$")
-Bivar1Table[3, ] <- c("$9/42$",
-                      "$0$",
-                      "$0$")
-
-rownames(Bivar1Table) <- c( "$y = 0$",
-                            "$y = 1$",
-                            "$y = 2$")
-colnames(Bivar1Table) <- c( "$x = 0$",
-                            "$x = 1$",
-                            "$x = 2$")
-
-
-Bivar1Table.caption <- "A bivariate discrete probability function"
-if( knitr::is_latex_output() ) {
-  knitr::kable(Bivar1Table,
-               format = "latex",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,                
-               escape = FALSE,
-               caption = Bivar1Table.caption) %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) 
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(Bivar1Table,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,                
-               caption = Bivar1Table.caption) %>%
-    row_spec(0, bold = TRUE) 
-}
-```
-
-
-
 :::{.example #BVContinuousUnif name="Bivariate uniform distribution"}
 Consider the following continuous bivariate distribution with joint PDF
 $$
@@ -386,7 +383,7 @@ Hence the probability is\ $1/4$.
 :::
 
 
-```{r, BVCont3, echo=FALSE, fig.align='center', fig.width=7, fig.height=4.5, out.width='60%',fig.cap="The bivariate continuous uniform distribution."}
+```{r, BVCont3, echo=FALSE, fig.align='center', fig.width=6, fig.height=5, out.width='70%',fig.cap="The bivariate continuous uniform distribution."}
 
 M <- plot3D::mesh( x = seq(-0.25, 1.25,
                            by = 0.05),
@@ -440,7 +437,7 @@ Since the toss of the coin and the roll of the die are independent, the probabil
 \end{align*}
 and so on. 
 The complete joint probability function can be displayed in a graph (often tricky), a function, or a table (Table\ \@ref(tab:JointPF)). 
-Here, the joint pf could be given as the function
+Here, the joint probability function could be given as the function
 $$
    p_{X, Y}(x, y) =
       \begin{cases}
@@ -462,8 +459,8 @@ JointPF[4, ] <- c("Total", "$1/6$", "$1/6$", "$1/6$", "$1/6$", "$1/6$", "$1/6$",
 
 
 JointPF.caption <- ifelse(knitr::is_latex_output(),
-                          "The joint pf for Example \\ref{exm:BVDiscrete3}",
-                          "The joint pf for Example \\@ref(exm:BVDiscrete3)")
+                          "The joint PF for Example \\ref{exm:BVDiscrete3}",
+                          "The joint PF for Example \\@ref(exm:BVDiscrete3)")
 
 if( knitr::is_latex_output() ) {
   knitr::kable(JointPF,
@@ -1066,7 +1063,7 @@ fy <- function(y){
 
 plot(fy(y) ~ y,
      type = "l",
-     xlab = expression(italic(y)),
+     xlab = expression(italic(Ys)),
      ylab = "Density",
      las = 1,
      lwd = 2,
@@ -1086,7 +1083,7 @@ fyx <- function(y, x){
 
 plot(fyx(y, x = 0.1) ~ y,
      type = "l",
-     xlab = expression(italic(y)),
+     xlab = expression(italic(Y)),
      ylab = "Density",
      las = 1,
      lwd = 2,
@@ -1098,7 +1095,7 @@ grid(nx = NULL)
 # Conditional f(x | y = 1)
 plot(fyx(y, x = 0.9) ~ y,
      type = "l",
-     xlab = expression(italic(y)),
+     xlab = expression(italic(Y)),
      ylab = "Density",
      las = 1,
      lwd = 2,
