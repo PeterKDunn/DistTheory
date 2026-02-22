@@ -15,8 +15,9 @@ Upon completion of this chapter, you should be able to:
 
 ## Expected values {#ExpectedValue}
 
+\index{Expected value|(}
 Because random variables are *random*, knowing the outcome on any one realisation of the random process is not possible.
-Instead, we can talk about what we might *expect* to happen, or what might happen *on average*.
+Instead, we can talk about what might be *expected* to happen, or what might happen *on average*.
 
 This is the idea of *mathematical expectation*. 
 In more usual terms, the mathematical expression of the probability distribution of a random variable is the *mean* of the random variable.
@@ -36,16 +37,24 @@ $$
 For a *continuous* random variable\ $X$ with PDF $f_X(x)$, the expected value is
 $$
    \operatorname{E}[X] = 
-        \int_{-\infty}^\infty x\, f_X(x).
+        \int_{-\infty}^\infty x\, f_X(x)\, dx.
 $$
-:::
 
-For a *mixed* random variable\ $X$, the expected value is a combination of the two above results, for the discrete and continuous components of\ $\mathcal{R}_X$; that is,
+For a *mixed* random variable\ $X$, the expected value is
 $$
    \operatorname{E}[X] = 
-     \sum_{x_i} x_i \, p_X(x_i) + \int_{-\infty}^\infty x \, f_X(x) \, dx,
+     \sum_{x_i\in D} x_i \, p_X(X = x_i) + \int_S x \, f_X(x) \, dx,
 $$
-where $p_X(x)$ is the probability mass function over discrete points\ $x_i\in \mathcal{R}_X$, and $f_X(x)$ is the probability density function (PDF) over the continuous regions of $x\in \mathcal{R}_X$ with PDF $f_X(x)$.
+where\ $D$ is the set of discrete mass points (with probability mass function $p_X(x)$) and\ $S$ is the set of continuous intervals (with probability density function $f_X(x)$).
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+$\operatorname{E}[X]$ is well-defined only if $\operatorname{E}[\,|X|\,] < \infty$. 
+If $\int |x|f(x)\,dx = \infty$, the expectation does not exist (see Example\ \@ref(exm:MGFDoesNotExist)).
+:::
+
+
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -163,6 +172,7 @@ $$
 However, $\displaystyle\lim_{z\to\infty}\, -\log z \to \infty$.
 The expected value of $\operatorname{E}[Z]$ is undefined.
 :::
+\index{Expected value|)}
 
 
 <!-- SHOW CODE AND PLOT -->
@@ -173,25 +183,26 @@ The expected value of $\operatorname{E}[Z]$ is undefined.
 
 ## Expectation of a function of a random variable {#ExpectationFunction}
 
-\index{Expected value|(}
-While the mean can be expressed in terms of mathematical expectation, mathematical expectation is a more general concept.
-
-Let\ $X$ be a discrete random variable with a probability function $p_X(x)$, or a continuous random variable with PDF $f_X(x)$.
-Also assume $g(X)$ is a real-valued function of\ $X$.
-We can then define the expected value of $g(X)$.
+\index{Expected value!of a function of a rv|(}
+The concept of mathematical expectation applies more widely than just to a random variable\ $X$, using the following theorem.
 
 
-:::{.definition #ExpectationFunction name="Expectation for function of a random variable"}
+
+:::{.theorem #ExpectationFunction name="Expectation for a function of a random variable"}
 The *expected value* of some function $g(\cdot)$ of a random variable\ $X$ is written $\operatorname{E}[ g(X)]$.
 
-For a *discrete* random variable\ $X$ wth PMF $p_X(x)$, the expected value of $g(X)$ is
+For a *discrete* random variable\ $X$ with probability mass function $p_X(x)$, the expected value of $g(X)$ is
 $$
    \operatorname{E}\big[g(X)\big)] = \sum_{x\in \mathcal{R}_X} g(x)\, p_X(x).
 $$
-For a *continuous* random variable\ $X$ wth PDF $f_X(x)$, the expected value of $g(X)$ is
+For a *continuous* random variable\ $X$ with probability density function $f_X(x)$, the expected value of $g(X)$ is
 $$
    \operatorname{E}\big[g(X)\big] = \int_{-\infty}^\infty g(x)\, f_X(x)\,dx.
 $$
+
+::::{.proof}
+This Theorem must be proven later; see Example\ \@ref(exm:LOTUSProof).
+::::
 :::
 
 
@@ -236,7 +247,7 @@ The expected value of $Y = \sqrt{X}$ is $\operatorname{E}[Y] = (9\sqrt{3} - 1)/1
 :::
 
 
-Importantly, the expectation operator is a *linear operator*, as stated below.
+Importantly, the expectation operator is a *linear operator*.
 
 
 :::{.theorem #ExpectationLinear name="Expectation properties"}
@@ -244,9 +255,8 @@ For any random variable\ $X$ and constants\ $a$ and\ $b$,
 $$
    \operatorname{E}[aX + b] = a\operatorname{E}[X] + b.
 $$
-:::
 
-:::{.proof}
+::::{.proof}
 Assume\ $X$ is a discrete random variable with probability function $p_X(x)$.
 By Def.\ \@ref(def:ExpectationFunction) with $g(X) = aX + b$,
 $$
@@ -254,6 +264,7 @@ $$
 $$
 using that $\sum_x p_X(x) = 1$.
 (The proof in the continuous case is similar, but the probability function is a PDF and integrals replace summations.)
+::::
 :::
 
 
@@ -264,7 +275,7 @@ $$
       \operatorname{E}[Z] = \operatorname{E}[2X] = 2\operatorname{E}[X] = 2 \times 13/6 = 13/3.
 $$
 :::
-\index{Expected value|)}
+\index{Expected value!of a function of a rv|)}
 
 
 
@@ -333,20 +344,20 @@ For any random variable\ $X$,\index{Variance!computational formula}
 $$
    \operatorname{var}[X] = \operatorname{E}[X^2] - \operatorname{E}[X]^2.
 $$
-:::
 
-:::{.proof}
+::::{.proof}
 Let $\operatorname{E}[X] = \mu$, then (using the properties of expectation in Theorem\ \@ref(thm:ExpectationLinear)):
 \begin{align*}
 \operatorname{var}[X]
    = \operatorname{E}\left[(X - \mu)^2\right]
-   &= \operatorname{E}[X^2 - 2X\mu + \mu^2] \\
-   &= \operatorname{E}[X^2] - \operatorname{E}[2X\mu] + \operatorname{E}[\mu^2]\quad\text{(since $\operatorname{E}[\cdot]$ is a linear operator)}\\
+   &= \operatorname{E}\left[X^2 - 2X\mu + \mu^2\right] \\
+   &= \operatorname{E}[X^2] - \operatorname{E}[2X\mu] + \operatorname{E}\left[\mu^2\right]\quad\text{(since $\operatorname{E}[\cdot]$ is a linear operator)}\\
    &= \operatorname{E}[X^2] - 2\mu\operatorname{E}[X] + \mu^2\\
    &= \operatorname{E}[X^2] - 2\mu^2 + \mu^2 \\
    &= \operatorname{E}[X^2] - \mu^2 \\
    &= \operatorname{E}[X^2] - \operatorname{E}[X]^2.
 \end{align*}
+::::
 :::
 
 
@@ -414,9 +425,8 @@ For any random variable\ $X$ and constants\ $a$ and\ $b$,
 $$
    \operatorname{var}[aX + b] = a^2\operatorname{var}[X].
 $$
-:::
 
-:::{.proof}
+::::{.proof}
 Using the computational formula for the variance:
 \begin{align*}
    \operatorname{var}[aX + b] 
@@ -425,6 +435,7 @@ Using the computational formula for the variance:
    &= a^2 \operatorname{E}[X^2] - a^2\mu^2\\
    &= a^2 \operatorname{var}[X].
 \end{align*}
+::::
 :::
 
 
@@ -1294,10 +1305,10 @@ If $X_1$, $X_2$, $\dots$, $X_n$ are $n$ independent random variables, where\ $X_
 $$
    M_Y(t) = \prod_{i = 1}^n M_{X_i}(t).
 $$
-:::
 
-:::{.proof}
+::::{.proof}
 The proofs are left as an exercise.
+::::
 :::
 
 
@@ -1487,9 +1498,8 @@ or, equivalently
 \begin{equation}
    \Pr\big(|X - \mu| < k\sigma \big)\geq 1 - \frac{1}{k^2}.
 \end{equation}
-:::
 
-:::{.proof}
+::::{.proof}
 The proof for the continuous case only is given.
 Let\ $X$ be continuous with PDF\ $f(x)$.
 For some $c > 0$, then
@@ -1512,6 +1522,7 @@ So in both the remaining integrals above, replace $(x - \mu )^2$ by $c$ without 
   &=  c\,\Pr(|X - \mu| \geq \sqrt{c}\,).
 \end{align*}
 Putting $\sqrt{c} = k\sigma$, Eq.\ \@ref(eq:Tchebysheff) is obtained.
+::::
 :::
 
 
@@ -1582,13 +1593,9 @@ If\ $X$ and\ $Y$ are any random variables, and\ $a$ and\ $b$ are any constants, 
 $$
    \operatorname{E}[aX + bY] = a\operatorname{E}[X] + b\operatorname{E}[Y].
 $$
-:::
-
-
-This theorem is no surprise after seeing Theorem\ \@ref(thm:ExpectationLinear), but is powerful and useful. 
+::::{.proof}
 The proof given here is for the discrete case; the continuous case is analogous.
 
-:::{.proof}
 \begin{align*}
   \operatorname{E}[aX + bY]
   &= \mathop{\sum\sum}_{(x, y) \in R}(ax + by) \, p_{X, Y}(x, y), \text{ by definition}\\
@@ -1597,8 +1604,11 @@ The proof given here is for the discrete case; the continuous case is analogous.
   &= a\sum_x x \Pr(X = x) + b\sum_y y \Pr(Y = y)\\
   &= a\operatorname{E}[X] + b\operatorname{E}[Y].
 \end{align*}
+::::
 :::
 
+
+This theorem is no surprise after seeing Theorem\ \@ref(thm:ExpectationLinear), but is powerful and useful. 
 
 This result is true whether or not\ $X$ and\ $Y$ are independent.
 Theorem\ \@ref(thm:ExpTwoRV) naturally generalises to the expected value of a *linear combination of random variables* (see Theorem\ \@ref(thm:ExpLinear)).
@@ -1642,9 +1652,8 @@ $$
    =
    \operatorname{E}[XY] - \operatorname{E}[X]\operatorname{E}[Y].
 $$
-:::
 
-:::{.proof}
+::::{.proof}
 The proof uses Theorems\ \@ref(thm:ExpectationLinear) and\ \@ref(thm:ExpTwoRV).
 \begin{align*}
    \operatorname{Cov}(X, Y)
@@ -1654,6 +1663,7 @@ The proof uses Theorems\ \@ref(thm:ExpectationLinear) and\ \@ref(thm:ExpTwoRV).
    &= \operatorname{E}[ XY ] - \mu_X\mu_Y - \mu_Y\mu_X +  \mu_X \mu_Y \\
    &= \operatorname{E}[ XY ] - \mu_X \mu_Y.
 \end{align*}
+::::
 :::
 
 
