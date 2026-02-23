@@ -11,6 +11,12 @@ Upon completion of this chapter, you should be able to:
 :::
 
 
+```{r, echo=FALSE}
+# Load fn to plot discrete DF and SF
+source("R/plotDiscreteCDF.R")
+```
+
+
 ## Random variables {#RandomVariables}
 
 Chapter\ \@ref(ChapterProbability)\index{Random variables|(} introduced the language and tools of probability to describe uncertainty.
@@ -1303,8 +1309,8 @@ lines(x = x,
 
 # Add a legend
 legend("right", 
-       legend = c(expression(Distribution~fn~italic(F)*"("*italic(x)*")*"), 
-                  expression(Survival~fn~italic(S)*"("*italic(x)*")*") ),
+       legend = c(expression(Distribution~fn~italic(F)*"("*italic(x)*")"), 
+                  expression(Survival~fn~italic(S)*"("*italic(x)*")") ),
        lwd = 2,
        lty = c(1, 2),
        bty = "n")
@@ -1341,45 +1347,54 @@ The survival function $S_X(x)$ gives the probability that it takes more than\ $x
 The DF is defined such that $F_X(x) = \Pr(X \le x)$, and so includes the probability that\ $X$ is exactly\ $x$.
 However, the survival function, defined as $S_X(x) = \Pr(X > x)$, *excludes* the probability that\ $X$ is exactly the value\ $x$.
 Since $S_X(x)$ excludes the point\ $x$, at the 'jump' points (like $x = 1$ rolls), the survival probability $S_X(1)$ is the probability that $2$\ *or more* rolls are needed.
+The distribution and survival functions are compared in Fig.\ \@ref(fig:SurvivalVsDistributionDiscretePlot).
 :::
 \index{Survival functions|)}
 
 
-```{r SurvivalVsDistributionDiscretePlot, echo=FALSE, fig.cap="Relationship between distribution and survival functions", out.width="90%", fig.width=8, fig.height=5}
+```{r SurvivalVsDistributionDiscretePlot, echo=FALSE, fig.align="center", fig.cap="Relationship between distribution and survival functions", out.width="80%", fig.width=7, fig.height=8}
+par(mfrow = c(2, 1),
+    mar = c(0, 4, 2, 1),   # bottom, left, top, right - no bottom margin for top plot
+    oma = c(4, 0, 0, 0))   # outer bottom margin for shared axis label
+
 p <- 1/6
-x <- 0:20
+x <- 0:12
+px <- dgeom(x - 1,
+            prob = p)
 
-Fx <- pgeom(x - 1, 
-            prob = p)   # P(X <= x) for Geometric
-Sx <- 1 - pgeom(x - 1, 
-                prob = p)  # P(X > x)
 
-plot(x = x, 
-     y = Fx,
-     type = "s", 
-     lwd = 3, 
-     xlab = "Number of Rolls", 
-     ylab = "Probability",
-     main = "CDF and survival function", 
-     las = 1,
-     xlim = c(0, max(x)),
-     ylim = c(0, 1))
-lines(x = x, 
-      y = Sx, 
-      type = "s", 
-      lwd = 1, 
-      col = "darkgrey")
-legend("right", 
-       legend = c("Distribution fn", 
-                  "Survival fn"),
-       col = c("black",
-               "darkgrey"),
-       lwd = 2, 
-       bty = "n")
-abline(h = 0.5, 
-       lty = 3,
-       lwd = 1,
-       col = "darkgray")
+# DF
+plotDiscreteCDF(x, px, 
+                type = "DF",
+                main = "",
+                xaxt = "n")
+grid(ny = NA) # Grid lines to align at x-values
+text(x = mean(x),
+     y = 0.95,
+     cex = 1.2,
+     font = 2, # Bold
+     "Distribution function",) # 'Main" title
+
+
+
+# Survival
+par(mar = c(0, 4, 0, 1))  # no top margin for bottom plot
+plotDiscreteCDF(x, px, 
+                type = "SF",
+                main = "",
+                xaxt = "n")
+axis(side = 1)  # draw x-axis manually at bottom
+mtext("Number of Rolls",
+      side = 1, 
+      outer = TRUE, 
+      line = 2.5)  # shared x-lab
+text(x = mean(x),
+     y = 0.95,
+     cex = 1.2,
+     font = 2, # Bold
+     "Survival function",) # 'Main" title
+grid(ny = NA) # Grid lines to align at x-values
+
 ```
 
 
