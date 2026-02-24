@@ -286,7 +286,8 @@ PMF1 <- data.frame(
 )
 ```
 
-```{r Bivar1graph, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="A bivariate discrete probability function.", fig.align="center", out.width='80%',fig.width=6}
+
+```{r Bivar1graph, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="A bivariate discrete probability function.", fig.align="center", out.width='80%',fig.width=8}
 
 # Plot
 if (knitr::is_html_output()) {
@@ -326,24 +327,27 @@ if (knitr::is_html_output()) {
 
 
 
-```{r Bivar1graphlatex, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="A bivariate discrete probability function.", fig.align="center", out.width='60%',fig.width=5}
+```{r Bivar1graphlatex, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="A bivariate discrete probability function.", fig.align="center", out.width='50%',fig.width=7}
 
 # Plot
 if (knitr::is_latex_output()) {
+
   plot3D::scatter3D(x = PMF1$x,
                     y = PMF1$y,  
                     z = PMF1$f,
-                    cex.lab = 0.75,
+                    cex.lab = 0.6,
+                    cex.axis = 0.5,
                     xlim = c(-0.5, 2.5),
                     ylim = c(-0.5, 2.5),
                     zlim = c(0, 0.4),
                     col = plotColour,
                     type = "h", # Plot the points and sticks
                     #radius = 0.05,
-                    d = 10, # Reduce perspective effect
+                    d = 8, # Reduce perspective effect
                     pch = 19,
-                    phi = 20,
-                    theta = 20,
+                    cex = 1.2, 
+                    phi = 25,
+                    theta = 30,
                     ticktype = "detailed",
                     xlab = "X", 
                     ylab = "Y", 
@@ -356,13 +360,13 @@ if (knitr::is_latex_output()) {
                     lwd.grid = 1,
                     lty = 2
   ) 
-  rgl::plot3d( # Plots the sticks from z = 0 to the points
-    add = TRUE,
-    x = PMF1$x,
-    y = PMF1$y, 
-    z = PMF1$f, 
-    col = plotColour, 
-    type = "h") # Plot the line segments from z = 0 
+#  rgl::plot3d( # Plots the sticks from z = 0 to the points
+#    add = TRUE,
+#    x = PMF1$x,
+#    y = PMF1$y, 
+#    z = PMF1$f, 
+#    col = plotColour, 
+#    type = "h") # Plot the line segments from z = 0 
 }
 ```
 
@@ -374,9 +378,9 @@ $$
 $$
 This is sometimes called the *bivariate continuous uniform distribution*\index{Bivariate continuous uniform distribution}
 `r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:BVCont3)).'
+   '(Fig.\\ \\@ref(fig:BVCont3-latex)).'
 } else {
-   '(see below).'
+   '(Fig.\\ \\@ref(fig:BVCont3-html)).'
 }`
 The *volume* under the surface is one.
 
@@ -386,45 +390,164 @@ Hence the probability is\ $1/4$.
 :::
 
 
-```{r, BVCont3, echo=FALSE, fig.align='center', fig.width=5, fig.height=5, out.width='60%',fig.cap="The bivariate continuous uniform distribution."}
+```{r BVCont3-html, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="The bivariate continuous uniform distribution.", fig.align="center", fig.width=7, out.width="60%", eval=knitr::is_html_output()}
+### HTML VERSION
 
-M <- plot3D::mesh( x = seq(-0.25, 1.25,
-                           by = 0.05),
-                   y = seq(-0.25, 1.25, 
-                           by = 0.05) )
-zeroPDF <- M$x < 0 | M$x > 1 | M$y < 0 | M$y > 1
+x_vals <- seq(0, 1, by = 0.05)
+y_vals <- seq(0, 1, by = 0.05)
+M      <- plot3D::mesh(x_vals, y_vals)
+z      <- array(1, 
+                dim = dim(M$x))
 
-z <-  array( 1,
-dim = dim(M$x) )
-z[zeroPDF] <- 0
+  par(mar = c(0, 0, 0, 0)) 
+library(plotly)
 
+x_vals <- seq(0, 1, by = 0.05)
+y_vals <- seq(0, 1, by = 0.05)
 
-if (knitr::is_html_output()) {
-  rgl::persp3d( x = seq(-0.25, 1.25,
-                           by = 0.05),
-                y = seq(-0.25, 1.25, 
-                           by = 0.05),
-                z = z,
-                col = "grey",
-xlab = expression(italic(x)),
-ylab = expression(italic(y)),
-zlab = expression(italic(f)) )
+# Surface
+z_mat <- matrix(1, nrow = length(x_vals), ncol = length(y_vals))
 
+# Build corner drop lines and top edge lines as a single trace
+# NA separates segments in plotly
+corners <- list(
+  list(x=c(0,0,NA), 
+       y=c(0,0,NA), 
+       z=c(0,1,NA)),  # corner drops
+  list(x=c(1,1,NA), 
+       y=c(0,0,NA), 
+       z=c(0,1,NA)),
+  list(x=c(0,0,NA), 
+       y=c(1,1,NA), 
+       z=c(0,1,NA)),
+  list(x=c(1,1,NA), 
+       y=c(1,1,NA), 
+       z=c(0,1,NA)),
+  list(x=c(0,1,NA), 
+       y=c(0,0,NA), 
+       z=c(1,1,NA)),  # top edges
+  list(x=c(0,1,NA), 
+       y=c(1,1,NA), 
+       z=c(1,1,NA)),
+  list(x=c(0,0,NA), 
+       y=c(0,1,NA), 
+       z=c(1,1,NA)),
+  list(x=c(1,1,NA), 
+       y=c(0,1,NA), 
+       z=c(1,1,NA))
+)
 
-} else {
-  plot3D::surf3D(x = M$x, 
-  y = M$y,
-  z = z,
-  d = 2, 
-  facets = FALSE,
-  col = NULL,
-  colkey = FALSE, 
-  phi = 40, 
-  theta = 30, 
-  main = "Bivariate continuous uniform")
-}
+lx <- unlist(lapply(corners, `[[`, "x"))
+ly <- unlist(lapply(corners, `[[`, "y"))
+lz <- unlist(lapply(corners, `[[`, "z"))
+
+plot_ly() |>
+  # Surface
+  add_surface(
+    x         = x_vals,
+    y         = y_vals,
+    z         = z_mat,
+    colorscale = list(c(0,1), c("grey80","grey80")),
+    showscale  = FALSE,
+    opacity    = 0.85
+  ) |>
+  # Corner drops + top edges
+  add_trace(
+    x    = lx, y = ly, z = lz,
+    type = "scatter3d",
+    mode = "lines",
+    line = list(color = "grey40", width = 3),
+    showlegend = FALSE
+  ) |>
+  layout(
+    scene = list(
+      xaxis = list(title = "x", range = c(-0.1, 1.1)),
+      yaxis = list(title = "y", range = c(-0.1, 1.1)),
+      zaxis = list(title = "f(x,y)", range = c(0, 1.3)),
+      camera = list(eye = list(x = 1.5, y = -1.5, z = 0.8))
+    )
+  )
 
 ```
+```{r BVCont3-latex, fig.align="center", fig.cap="The bivariate continuous uniform distribution.", echo=FALSE, fig.width=7, out.width="60%",  eval=knitr::is_latex_output()}
+### LATEX VERSION
+
+x_vals <- seq(0, 1, by = 0.05)
+y_vals <- seq(0, 1, by = 0.05)
+M      <- plot3D::mesh(x_vals, y_vals)
+z      <- array(1, 
+                dim = dim(M$x))
+
+  par(mar = c(1, 0, 0, 0)) 
+  plot3D::surf3D( 
+          x       = M$x,
+          y       = M$y,
+          z       = z,
+          xlim    = c(-0.2, 1.2),
+          ylim    = c(-0.2, 1.2),
+          zlim    = c(0, 1.2),
+          col     = "grey80",
+          border  = "grey40",    # grid lines on the surface
+          facets  = TRUE,
+          colkey  = FALSE,
+          shade   = 0.3,
+          phi     = 30,
+          theta   = 45,
+          d       = 6,
+          cex.lab = 0.8,
+          cex.axis = 0.65,
+          xlab    = "X",
+          ylab    = "Y",
+          zlab    = "PDF",
+          ticktype = "detailed",
+          bty     = "u",
+          col.panel = "white",
+          col.grid  = grey(0.9) )
+  
+  # Corner coordinates
+  corners <- data.frame(
+    x = c(0, 1, 0, 1),
+    y = c(0, 0, 1, 1)
+  )
+  
+  # Drop a vertical line from z=1 to z=0 at each corner to highlight the plane better
+  plot3D::segments3D(
+    x0  = corners$x, 
+    y0  = corners$y, 
+    z0  = rep(1, 4),  # top
+    x1  = corners$x, 
+    y1  = corners$y, 
+    z1  = rep(0, 4),  # bottom
+    add = TRUE,
+    col = "grey40",
+    lwd = 2
+  )
+  
+  # Top edges of the box to highlight the place
+  plot3D::segments3D(
+    x0 = c(0, 1, 0, 0),  
+    y0 = c(0, 0, 0, 1),  
+    z0 = rep(1, 4),
+    x1 = c(1, 1, 0, 1),  
+    y1 = c(0, 1, 1, 1),  
+    z1 = rep(1, 4),
+    add = TRUE,
+    col = "grey40",
+    lwd = 2
+  )
+
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 :::{.example #BVDiscrete3 name="Bivariate discrete"}
@@ -1110,158 +1233,147 @@ grid(nx = NULL)
 ```
 
 
-To interpret the conditional distribution, for example $f_{X \mid Y = y}(x \mid y)$, consider slicing through the surface $f_{X, Y}(x, y)$ with the plane $y = c$ say, for\ $c$ a constant 
+To interpret the conditional distribution, for example $f_{X \mid Y = y}(x \mid y)$, consider slicing through the surface $f_{X, Y}(x, y)$
+with the plane $y = 0.5$ say 
+(as shown in
 `r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:BivarConditionala)).'
+   'Fig.\\ \\@ref(fig:joint-pdf-latex)).'
 } else {
-   '(see below).'
+   'Fig.\\ \\@ref(fig:joint-pdf-html)).'
 }`
-The intersection of the plane with the surface, will be proportional to a $1$-dimensional PDF. 
+The intersection of the plane with the surface is proportional to a $1$-dimensional PDF. 
 This is $f_{X, Y}(x, c)$, which will not, in general, be a density function since the area under this curve will be $f_Y(c)$. 
 Dividing by the constant $f_Y(c)$ ensures the area under $\displaystyle\frac{f_{X,Y}(x,c)}{f_Y(c)}$ is one. 
 This is a one-dimensional PDF, of\ $X$ given $Y = c$; that is $f_{X \mid Y = c}(x\mid c)$.
 
 
+```{r joint-pdf-latex, echo=FALSE, eval=knitr::is_latex_output(), fig.align='center', fig.width=4, out.width='45%', fig.cap="The joint PDF."}
+f <- function(x, y) (3*x^2 + x*y) / 3
 
-```{r BivarJointa, echo=FALSE, fig.cap="A bivariate distribution.", fig.align="center", out.width='55%', fig.width = 7}
+x_vals <- seq(0, 1, length = 50)
+y_vals <- seq(0, 2, length = 50)
+M      <- plot3D::mesh(x_vals, y_vals)
+z_mat  <- f(M$x, M$y)
 
-f <- function(x, y){
-  (3 *x + y)/(2 * (3*x + 1) )
-}
+# Red cut line at x = 0.5
+y_cut <- seq(0, 2, length = 100)
+z_cut <- f(0.5, y_cut)
 
-if ( knitr::is_latex_output() ) {
-  
-  x <- seq(0, 1, 
-           length = 30)
-  y <- seq(0, 2, 
-           length = 30)
-  
-  z <- zc <- outer(x, y, f)
-  
-  
-  Cut <- which( x < 0.5 )
-  zc[, Cut] <- 0
-  
-  persp(x, y, z, 
-        theta = -60, 
-        phi = 25, 
-        shade = 0.75, 
-        col = plotColour1, 
-        expand = 0.5, 
-        r = 2, 
-        ltheta = 25, 
-        xlab = "X",
-        ylab = "Y",
-        zlab = "f(x, y)",
-        main = "Joint distribution",
-        ticktype = "simple")
-  
-  
-}
-if( knitr::is_html_output() ) {
-  x <- seq(0, 1, 
-           length = 50)
-  y <- seq(0, 2, 
-           length = 50)
-  
-  z <- outer(x, y, f)
-  
-  
-  Cut <- which( x < 0.5 )
-  z[, Cut] <- 0
-  
-  
-  M <- plot3D::mesh(x = x,
-                    y = y)
-  
-  z <- zc <- outer(x, y, f)
-  Cut <- which( M$y < -1 )  
-  zc[Cut] <- 0
-  
-  
-  rgl::persp3d(x = M$x, 
-               y = M$y, 
-               z = z,
-               col = "grey",
-               colkey = FALSE,
-               phi = 40,
-               xlab = "X",
-               ylab = "Y",
-               zlab = "f(x, y)",
-               theta = 30,
-               main = "Joint distribution")
-}
+# Cutting plane at x = 0.5
+z_lo  <- 0
+z_hi  <- max(z_mat)
+y_plane <- c(0,    2,    2,    0,    0)
+z_plane <- c(z_lo, z_lo, z_hi, z_hi, z_lo)
+
+par(mar = c(0, 0, 0, 0))
+plot3D::surf3D(
+  x        = M$x,
+  y        = M$y,
+  z        = z_mat,
+  col      = "grey80",
+  border   = "grey40",
+  facets   = TRUE,
+  shade    = 0.3,
+  colkey   = FALSE,
+  phi      = 25,
+  theta    = 225,
+  d        = 6,
+  cex.axis = 0.75,
+  xlab     = "x",
+  ylab     = "y",
+  zlab     = "f(x,y)",
+  ticktype = "detailed",
+  bty      = "u",
+  col.panel = "white",
+  col.grid  = grey(0.9)
+)
+
+# Cutting plane outline
+plot3D::lines3D(
+  x   = rep(0.5, length(y_plane)),
+  y   = y_plane,
+  z   = z_plane,
+  col = "steelblue",
+  lwd = 2,
+  add = TRUE
+)
+
+# Red intersection curve
+plot3D::lines3D(
+  x   = rep(0.5, length(y_cut)),
+  y   = y_cut,
+  z   = z_cut,
+  col = "firebrick",
+  lwd = 4,
+  add = TRUE
+)
+
+plot3D::text3D(
+  x      = 0,
+  y      = 0,
+  z      = max(z_mat) * 0.5,
+  labels = "f(x,y)",
+  add    = TRUE,
+  cex    = 0.7,
+  adj    = 1.5        # push it left away from the axis
+)
+```
+```{r joint-pdf-html, echo=FALSE, eval=knitr::is_html_output(), fig.align='center', fig.cap="Joint PDF."}
+f <- function(x, y) (3*x^2 + x*y) / 3
+
+x_vals <- seq(0, 1, length = 50)
+y_vals <- seq(0, 2, length = 50)
+z_mat  <- outer(y_vals, x_vals, function(y, x) f(x, y))
+
+# Red curve: f(0.5, y) for y in [0,2]
+y_cut <- seq(0, 2, length = 100)
+z_cut <- f(0.5, y_cut)
+
+# Grey plane at x=0.5: corners at z=0 and z=max(z_cut)
+z_lo <- 0
+z_hi <- max(z_mat)
+# Two triangles forming a rectangle: go round the 4 corners
+y_plane <- c(0,   2,   2,   0,   0)
+z_plane <- c(z_lo, z_lo, z_hi, z_hi, z_lo)
+
+plot_ly() |>
+  add_surface(
+    x = x_vals, y = y_vals, z = z_mat,
+    colorscale = list(c(0,1), c("grey70","grey90")),
+    showscale = FALSE, opacity = 0.9
+  ) |>
+  # Filled plane
+  add_trace(
+    x    = rep(0.5, length(y_plane)),
+    y    = y_plane,
+    z    = z_plane,
+    type = "scatter3d", mode = "lines",
+    line = list(color = "steelblue", width = 2),
+    showlegend = FALSE
+  ) |>
+  # Red curve where plane meets surface
+  add_trace(
+    x    = rep(0.5, length(y_cut)),
+    y    = y_cut,
+    z    = z_cut,
+    type = "scatter3d", mode = "lines",
+    line = list(color = "firebrick", width = 4),
+    showlegend = FALSE
+  ) |>
+  layout(scene = list(
+    xaxis  = list(title = "x", range = c(-0.1, 1.1)),
+    yaxis  = list(title = "y", range = c(-0.1, 2.1)),
+    zaxis  = list(title = "f(x,y)"),
+    camera = list(eye = list(x = 1.8, y = -1.8, z = 0.8))
+  ))
 ```
 
 
 
 
-```{r BivarConditionala, echo=FALSE, fig.cap="A bivariate distribution, sliced at $Y =  1$, showing the conditional distribution of $X$ when $Y = 0.5$.", fig.align="center", out.width='55%', fig.width = 11}
 
-f <- function(x, y){
-  (3 *x + y)/(2 * (3*x + 1) )
-}
 
-par( mfrow = c(1,2 ))
 
-if ( knitr::is_latex_output() ) {
-  
-  x <- seq(0, 1, 
-           length = 30)
-  y <- seq(0, 2, 
-           length = 30)
-  
-  z <- zc <- outer(x, y, f)
-  
-  
-  Cut <- which( x < 0.5 )
-  zc[, Cut] <- 0
-  
-  persp(x, y, zc, 
-        theta = -60, 
-        phi = 25, 
-        shade = 0.75, 
-        col = plotColour1, 
-        expand = 0.5, 
-        r = 2, 
-        ltheta = 25, 
-        xlab = "X",
-        ylab = "Y",
-        zlab = "f(x, y)",
-        main = "Conditional distribution\n(Cut at x = 0.5)",
-        ticktype = "simple")
-}
-if( knitr::is_html_output() ) {
-  x <- seq(0, 1, 
-           length = 50)
-  y <- seq(0, 2, 
-           length = 50)
-  
-  z <- outer(x, y, f)
-  
-  
-  
-  M <- plot3D::mesh(x = x,
-                    y = y)
-  
-  z <- zc <- outer(x, y, f)
-  Cut <- which( x < 0.5 )
-  zc[, Cut] <- 0
-  
-  
-  rgl::persp3d(x = M$x, 
-               y = M$y, 
-               z = zc,
-               col = "grey",
-               colkey = FALSE,
-               phi = 40,
-               xlab = "X",
-               ylab = "Y",
-               zlab = "f(x, y)",
-               theta = 30,
-               main = "Conditional distribution")
-}
-```
 
 
 :::{.example #BVDiscreteConditional name="Bivariate discrete conditional distributions"}
