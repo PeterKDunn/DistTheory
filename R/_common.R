@@ -14,6 +14,8 @@ library("tweedie")
 library("downlit")
 library("bookdown")
 library("mnormt")
+library("sf")
+
 
 # example R options set globally
 options(width = 50)
