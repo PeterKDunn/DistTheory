@@ -8,51 +8,6 @@ On completion of this chapter, you should be able to:
 :::
 
 
-PLACE:
-
-:::{.example #LOTUSProof name="Proof of Theorem\ \@ref{thm:ExpectationFunction}"}
-ADD PROOF OF Theorem\ \@ref{thm:ExpectationFunction}:
-Theorem\ \@ref(thm:ExpectationFunction) gave an important theorem involving the expectation of function of a random variable.
-Here, we prove this theorem on teh discrete and (partially for???) continuous cases.
-
-For the discrete case , we need to show that $\sum_y y \Pr(g(X) = y) = \sum_x g(x) \Pr(X = x)$.
-
-Let $Y = g(X)$. 
-By definition, $\operatorname{E}[Y] = \sum_y y \Pr(Y = y)$.
-Note that the event $\{Y = y\}$ is actually the set of all $x$ such that $g(x) = y$.
-Substitute: $\Pr(Y = y) = \sum_{x: g(x) = y} \Pr(X = x)$.
-Plug this back into the expectation:
-$$
-  \operatorname{E}[g(X)] = \sum_y y \left( \sum_{x: g(x) = y} \Pr(X = x) \right).
-$$
-Since $y = g(x)$ for all $x$ in that inner sum, we can move it inside:
-$$
-  \operatorname{E}[g(X)] = \sum_y \sum_{x: g(x) = y} g(x) \Pr(X = x).
-$$
-Summing over all $y$, and then all $x$ that map to those $y$, is just the same as summing over all possible $x$.
-Result: 
-$\operatorname{E}[g(X)] = \sum_x g(x) \Pr(X = x)$. $\square$
-
-
-For the continuous case, we need to show that  $\int y f(g(X)=y) = \int_x g(x) f(x)$.
-
-Assume $g(x)$ is a strictly increasing, differentiable function (this makes the proof simpler). 
-Let $Y = g(X)$.
-Find the PDF of $Y$ using the transformation method:
-$$
-  f_Y(y) = f_X(x) \left| \frac{dx}{dy} \right| \quad \text{where } x = g^{-1}(y).
-$$
-Use the definition of $\operatorname{E}[Y]$:
-$$
-  \operatorname{E}[Y] = \int_{-\infty}^{\infty} y f_Y(y) \, dy.
-$$
-Substitute $y = g(x)$ and $f_Y(y) dy = f_X(x) dx$:
-$$
-  \operatorname{E}[g(X)] = \int_{-\infty}^{\infty} g(x) f_X(x) \, dx.
-$$
-:::
-
-
 ## Introduction
 
 \index{Transformations of random variables|(}
@@ -665,7 +620,7 @@ Note that the probability can only be doubled as in Example\ \@ref(exm:Transform
 \index{Transformations of random variables!change of variable method|)}
 
 
-### Discrete bivariate case???? {#ChangeOfVarDiscreteBivariate}
+### Bivariate dscrete case {#ChangeOfVarDiscreteBivariate}
 
 The bivariate case is similar to the univariate case.
 Consider a joint probability function $p_{X_1, X_2}(x_1, x_2)$ of two discrete random variables\ $X_1$ and\ $X_2$ defined on the two-dimensional set of points\ $R^2_X$ for which $p(x_1, x_2) > 0$.
@@ -688,7 +643,7 @@ $$
 $$
 
 
-:::{.example #TransformBivariate name="Transformation (bivariate)"}
+:::{.example #TransformBivariate name="Transformation discrete (bivariate)"}
 Let the two discrete random variables\ $X_1$ and\ $X_2$ have the joint probability function shown in Table\ \@ref(tab:Bivar4).
 Consider the two one-to-one transformations
 $$
@@ -855,6 +810,74 @@ You should recognise this as the probability function of a Poisson random variab
 Thus $Y_1 \sim \text{Pois}(\lambda = \mu_1 + \mu_2)$.
 :::
 
+
+### Bivariate continuous case {#ChangeOfVarContinuousBivariate}
+
+With two continuous random variables $(X_1, X_2)$ with a joint PDF $f_{X_1, X_2}(x_1, x_2)$, two transformations are needed to transform them into two new random variables $(Y_1, Y_2)$:
+$$
+  Y_1 = u_1(X_1, X_2) \quad \text{and} \quad Y_2 = u_2(X_1, X_2).
+$$
+The joint PDF of the new variables is
+$$
+  f_{Y_1, Y_2}(y_1, y_2) = f_{X_1, X_2}(x_1, x_2) \cdot |J|
+$$
+where $|J|$ is the *absolute value* of the *Jacobian*\index{Jacobian} determinant:
+$$
+  J = \det 
+        \begin{bmatrix} 
+          \displaystyle \frac{\partial x_1}{\partial y_1} & \displaystyle \frac{\partial x_1}{\partial y_2} \\ 
+          \displaystyle \frac{\partial x_2}{\partial y_1} & \displaystyle \frac{\partial x_2}{\partial y_2} 
+        \end{bmatrix}.
+$$
+
+:::{.example #BivarContExample name="Transformation continuous (bivariate)"}
+Let\ $X_1$ and\ $X_2$ be indepdent random variables with PDF
+$$
+  f_x(X) = ]exp(-x)\quad\text{for $x > 0$}.
+$$
+Consider the two transformations $Y_1 = X_1 + X_2$ (the sum) and $Y_2 = X_1 / X_2$ (the ratio).
+Then, $y_1 > 0$ and $y_2 > 0$.
+
+Since the random variable\ $X_1$ and\ $X_2$ are independent, the joint PDF of is
+$$
+  f_{X_1, X_2}(x_1, x_2) = \exp(-x_1) \cdot \exp(-x_2) = \exp\left(-(x_1 + x_2)\right) \quad \text{for $x_1, x_2 > 0$}.
+$$
+Inverting the transformations, we find 
+\begin{align*}
+  y_1 &= x_1 + x_2\quad\text{and}\\
+  y_2 &= x_1 / x_2\text{ so that } x_1 = y_2 x_2.
+\end{align*}
+Substituting these into the joint PDF for $(X_1, X_2)$ gives 
+$$
+  y_1 = y_2 x_2 + x_2 = x_2(1 + y_2).
+$$
+Substitute back to find\ $x_1$:
+$$
+  x_1 = \frac{y_1 y_2}{1 + y_2}.
+$$
+The Jacobian requires the four partial derivatives:
+$$
+\begin{array}{ll}
+  \displaystyle \frac{\partial x_1}{\partial y_1} = \frac{y_2}{1+y_2};\quad & \quad\displaystyle \frac{\partial x_1}{\partial y_2} = \frac{y_1(1+y_2) - y_1 y_2}{(1+y_2)^2} = \frac{y_1}{(1+y_2)^2};\\
+  \displaystyle \frac{\partial x_2}{\partial y_1} = \frac{1}{1+y_2};quad & \quad\displaystyle \frac{\partial x_2}{\partial y_2} = \frac{-y_1}{(1+y_2)^2}.
+\end{array}
+$$
+So the Jacobian is 
+\begin{align*}
+  J 
+  &= \left( \frac{y_2}{1+y_2} \cdot \frac{-y_1}{(1+y_2)^2} \right) - \left( \frac{1}{1+y_2} \cdot \frac{y_1}{(1+y_2)^2} \right)\\
+  &= \frac{-y_1 y_2 - y_1}{(1+y_2)^3}\\
+  &= \frac{-y_1(y_2 + 1)}{(1+y_2)^3}.
+\end{align*}
+Finally, substitute\ $x_1$ and\ $x_2$ and\ $|J|$ into the formula:
+$$
+  f_{Y_1, Y_2}(y_1, y_2) = \exp(-(x_1 + x_2)) \cdot \left| \frac{-y_1}{(1 + y_2)^2} \right|.
+$$
+Since $x_1 + x_2 = y_1$, write
+$$
+  f_{Y_1, Y_2}(y_1, y_2) = \frac{y_1 \exp(-y_1)}{(1+y_2)^2}\quad\text{for $y_1 > 0$ and $y_2 > 0$}.
+$$
+:::
 
 
 ## The distribution function method {#DistributonFunctionMethod}
@@ -1123,6 +1146,48 @@ The functions that are produced should be PDFs; check that this is the case.
 :::
 
 
+:::{.example #LOTUSProof name="Proof of Theorem\ \@ref(thm:ExpectationFunction)"}
+Theorem\ \@ref(thm:ExpectationFunction) gave an important theorem involving the expectation of function of a random variable.
+Here, we prove this theorem on the discrete and continuous cases.
+
+For the *discrete* case , we need to show that $\sum_y y \Pr(g(X) = y) = \sum_x g(x) \Pr(X = x)$.
+
+Let $Y = g(X)$. 
+By definition, $\operatorname{E}[Y] = \sum_y y \Pr(Y = y)$.
+Recall that the event $\{Y = y\}$ is actually the set of all\ $x$ such that $g(x) = y$, so substituting gives $\Pr(Y = y) = \sum_{x: g(x) = y} \Pr(X = x)$.
+Substituting this into the expectation:
+$$
+  \operatorname{E}[g(X)] = \sum_y y \left( \sum_{x: g(x) = y} \Pr(X = x) \right).
+$$
+Since $y = g(x)$ for all\ $x$ in that inner sum, it can be moved inside the inner summation:
+\begin{align*}
+  \operatorname{E}[g(X)] 
+  &= \sum_y \sum_{x: g(x) = y} y \Pr(X = x)\\
+  &= \sum_y \sum_{x: g(x) = y} g(x) \Pr(X = x).
+\end{align*}
+Summing over all $y$, and then all $x$ that map to those $y$, is just the same as summing over all possible $x$.
+In other word, $\operatorname{E}[g(X)] = \sum_x g(x) \Pr(X = x)$.
+
+For the *continuous* case, we need to show that  $\int y f(g(X)=y) = \int_x g(x) f(x)$.
+
+Assume $g(x)$ is a strictly increasing, differentiable function (this makes the proof simpler, but the result applies more generally). 
+Let $Y = g(X)$.
+Find the PDF of $Y$ using the transformation method:
+$$
+  f_Y(y) = f_X(x) \left| \frac{dx}{dy} \right| \quad \text{where } x = g^{-1}(y).
+$$
+Then, using the definition of $\operatorname{E}[Y]$:
+$$
+  \operatorname{E}[Y] = \int_{-\infty}^{\infty} y f_Y(y) \, dy.
+$$
+Substitute $y = g(x)$ and $f_Y(y) dy = f_X(x) dx$:
+$$
+  \operatorname{E}[g(X)] = \int_{-\infty}^{\infty} g(x) f_X(x) \, dx.
+$$
+:::
+
+
+
 This method can also be used when there is more than one variable of interest, but we do not cover this.
 \index{Transformations of random variables!distribution function method|(}
 
@@ -1363,17 +1428,11 @@ Let\ $X$ have a gamma distribution with parameters $\alpha > 2$ and $\beta > 0$.
 
 
 :::{.exercise #BetaHospital2}
-In a study modelling waiting times at a hospital [@khadem2008evaluating], patients are classified into one of three categories:
-
-* Red: Critically ill or injured patients.
-* Yellow: Moderately ill or
-injured patients.
-* Green: Minimally injured or
-uninjured patients.
+In a study modelling waiting times at a hospital [@khadem2008evaluating], patients are classified into one of three categories: Red (critically ill or injured patients), Yellow (moderately ill or injured patients), or Green (injured or uninjured patients).
 
 For 'Green' patients, the service time\ $S$ was modelled as $S = 4.5 + 11V$, where $V \sim \text{Beta}(0.287, 0.926)$.
 
-1. Produce well-labelled plots of the PDF and df of\ $S$, showing important features. 
+1. Produce well-labelled plots of the PDF and DF of\ $S$, showing important features. 
 1. What proportion of patients have a service time exceeding\ $15\mins$?
 1. The quickest\ $20$% of patients are serviced within what time?
 :::
@@ -1567,4 +1626,11 @@ as shown in Fig.\ \@ref(fig:RunnerVelocityVoltage) (right panel).
 2. Suppose $\sigma = 1$, and $R = 10$.
    Plot the probability density function for\ $P$.
 :::
+
+
+
+:::
+:::
+
+
 
