@@ -882,6 +882,8 @@ $$
 
 ## The distribution function method {#DistributonFunctionMethod}
 
+### Continuous random variables
+
 \index{Transformations of random variables!distribution function method|(}
 
 The distribution function method involves two steps:
@@ -1188,6 +1190,255 @@ This method can also be used when there is more than one variable of interest, b
 \index{Transformations of random variables!distribution function method|(}
 
 
+
+
+### Discrete Univariate Case
+
+Let\ $X$ be a discrete random variable with probability mass function (pmf) $p_X(x)$ defined on support $\mathcal{X}$. 
+Let $Y = g(X)$ for some function $g$. 
+The pmf of $Y$ is obtained by summing the probability mass over all values of $X$ that map to $y$:
+$$
+  p_Y(y) = P(Y = y) = \sum_{\{x \in \mathcal{X}:\, g(x) = y\}} p_X(x).
+$$
+
+**Key points:**
+
+- No Jacobian is needed; probability mass is simply redistributed.
+- When $g$ is one-to-one on $\mathcal{X}$, the sum collapses to a single term and the
+  new pmf is found by substituting the inverse $g^{-1}(y)$.
+- When $g$ is many-to-one, multiple terms contribute and must be summed.
+- Always verify that the new pmf sums to 1 over the transformed support $\mathcal{Y} = g(\mathcal{X})$.
+
+
+:::{.example}
+Let $X \sim \text{Binomial}(n, p)$, so
+
+$$p_X(x) = \binom{n}{x} p^x (1-p)^{n-x}, \quad x = 0, 1, \ldots, n.$$
+
+Define $Y = n - X$, the number of **failures** in $n$ trials. The transformation
+$g(x) = n - x$ is one-to-one with inverse $x = n - y$, and the support maps to
+$\mathcal{Y} = \{0, 1, \ldots, n\}$. Substituting:
+
+$$p_Y(y) = p_X(n - y) = \binom{n}{n-y} p^{n-y}(1-p)^y = \binom{n}{y}(1-p)^y p^{n-y}$$
+
+for $y = 0, 1, \ldots, n$. This is the $\text{Binomial}(n, 1-p)$ pmf, the number of
+failures has the same family as the number of successes, with $p$ and $1-p$ exchanged.
+This symmetry argument generalises: when $g$ is one-to-one, the shape of the distribution
+is preserved and only the parameterisation changes.
+:::
+
+
+```{r discrete-univariate, fig.width=8, fig.height=4, echo=FALSE}
+library(ggplot2)
+library(dplyr)
+
+n <- 20; p <- 0.3
+x_vals <- 0:n
+y_vals <- n - x_vals
+
+df <- data.frame(
+  value = c(x_vals, y_vals),
+  prob  = c(dbinom(x_vals, n, p), dbinom(y_vals, n, 1 - p)),
+  var   = rep(c("X ~ Bin(20, 0.3)\n(successes)", "Y = 20 - X ~ Bin(20, 0.7)\n(failures)"),
+              each = n + 1)
+)
+
+ggplot(df, aes(x = value, y = prob, fill = var)) +
+  geom_col(position = "identity", alpha = 0.7, width = 0.6) +
+  facet_wrap(~var) +
+  labs(title = "Discrete CoV: X ~ Bin(20, 0.3) and Y = 20 - X ~ Bin(20, 0.7)",
+       x = "Value", y = "Probability") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "none")
+```
+
+
+
+### Bivariate Continuous Case
+
+Let $(X_1, X_2)$ have joint pdf $f_{\mathbf{X}}(x_1, x_2)$ on support $\mathcal{X}$.
+Define the transformation
+$$
+  Y_1 = g_1(X_1, X_2), \qquad Y_2 = g_2(X_1, X_2).
+$$
+
+Suppose the transformation is **one-to-one** on $\mathcal{X}$ with differentiable inverse $x_i = h_i(y_1, y_2)$. Then the joint pdf of $(Y_1, Y_2)$ is
+$$
+  f_{\mathbf{Y}}(y_1, y_2) = f_{\mathbf{X}}\!\bigl(h_1(y_1,y_2),\, h_2(y_1,y_2)\bigr)\,|J|,
+$$
+where the **Jacobian** is the absolute value of the determinant of the matrix of partial
+derivatives of the inverse transformation:
+$$
+  J = \det \begin{pmatrix} \partial h_1/\partial y_1 & \partial h_1/\partial y_2 \\[4pt]
+\partial h_2/\partial y_1 & \partial h_2/\partial y_2 \end{pmatrix}.
+$$
+
+**Practical notes:**
+
+- If only the marginal distribution of $Y_1$ is needed, introduce an **auxiliary variable**
+  $Y_2$ (often $Y_2 = X_2$ or another convenient choice), derive the joint pdf of
+  $(Y_1, Y_2)$, then integrate out $Y_2$.
+- For non-one-to-one transformations, partition the support into regions where the
+  transformation is one-to-one and sum the contributions.
+
+
+:::{.example}
+Let $X_1 \sim \text{Gamma}(\alpha_1, 1)$ and $X_2 \sim \text{Gamma}(\alpha_2, 1)$
+independently, so
+$$
+  f_{\mathbf{X}}(x_1, x_2) = \frac{x_1^{\alpha_1-1}e^{-x_1}}{\Gamma(\alpha_1)} \cdot \frac{x_2^{\alpha_2-1}e^{-x_2}}{\Gamma(\alpha_2)}, \quad x_1, x_2 > 0.
+$$
+
+Define
+$$
+  Y_1 = X_1 + X_2 \quad \text{(sum)}, \qquad Y_2 = \frac{X_1}{X_1 + X_2} \quad \text{(ratio)}.
+$$
+
+**Inverse transformation:** $x_1 = y_1 y_2$, $x_2 = y_1(1 - y_2)$,
+with support $y_1 > 0$, $0 < y_2 < 1$.
+
+**Jacobian:**
+$$
+  J = \det\begin{pmatrix} y_2 & y_1 \\ 1-y_2 & -y_1 \end{pmatrix} = -y_1 y_2 - y_1(1-y_2) = -y_1 \implies |J| = y_1.
+$$
+
+**Joint pdf:**
+
+$$
+  f_{\mathbf{Y}}(y_1, y_2) \propto y_1^{\alpha_1+\alpha_2-1}e^{-y_1} \cdot y_2^{\alpha_1-1}(1-y_2)^{\alpha_2-1},
+$$
+which **factors** into a Gamma$(\alpha_1+\alpha_2, 1)$ kernel in $y_1$ and a Beta$(\alpha_1, \alpha_2)$ kernel in $y_2$. 
+Therefore:
+
+- $Y_1 \sim \text{Gamma}(\alpha_1 + \alpha_2, 1)$
+- $Y_2 \sim \text{Beta}(\alpha_1, \alpha_2)$
+- $Y_1 \perp Y_2$ (independence follows from the factorisation of the joint pdf)
+:::
+
+```{r bivariate-continuous, fig.width=9, fig.height=4, echo=FALSE}
+set.seed(42)
+alpha1 <- 3; alpha2 <- 5
+N <- 50000
+X1 <- rgamma(N, alpha1, 1)
+X2 <- rgamma(N, alpha2, 1)
+Y1 <- X1 + X2
+Y2 <- X1 / (X1 + X2)
+
+p1 <- ggplot(data.frame(Y1), aes(x = Y1)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 60,
+                 fill = "#d7191c", alpha = 0.6, colour = "white") +
+  stat_function(fun = dgamma, args = list(shape = alpha1 + alpha2, rate = 1),
+                linewidth = 1.2, colour = "#d7191c") +
+  labs(title = expression("Y"[1]*" = X"[1]*"+X"[2]*" ~ Gamma(8,1)"),
+       x = expression(y[1]), y = "Density") +
+  theme_minimal(base_size = 12)
+
+p2 <- ggplot(data.frame(Y2), aes(x = Y2)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 60,
+                 fill = "#1a9641", alpha = 0.6, colour = "white") +
+  stat_function(fun = dbeta, args = list(shape1 = alpha1, shape2 = alpha2),
+                linewidth = 1.2, colour = "#1a9641") +
+  labs(title = expression("Y"[2]*" = X"[1]*"/(X"[1]*"+X"[2]*") ~ Beta(3,5)"),
+       x = expression(y[2]), y = "Density") +
+  theme_minimal(base_size = 12)
+
+gridExtra::grid.arrange(p1, p2, ncol = 2)
+```
+
+
+### Bivariate Discrete Case
+
+Let $(X_1, X_2)$ have joint pmf $p_{\mathbf{X}}(x_1, x_2)$ on support $\mathcal{X}$.
+For the transformation $(Y_1, Y_2) = g(X_1, X_2)$, the joint pmf of $(Y_1, Y_2)$ is
+$$
+  p_{\mathbf{Y}}(y_1, y_2) = \sum_{\{(x_1,x_2) \in \mathcal{X}:\, g(x_1,x_2) = (y_1,y_2)\}} p_{\mathbf{X}}(x_1, x_2).
+$$
+
+Marginal pmfs are then recovered by summing the joint:
+$$
+  p_{Y_1}(y_1) = \sum_{y_2} p_{\mathbf{Y}}(y_1, y_2).
+$$
+
+**Important:** Independence of $X_1$ and $X_2$ does **not** generally imply independence of $Y_1$ and $Y_2$.
+Always check whether the joint factors into the product of the marginals.
+
+:::{.example name="Sum of Independent Poissons and a Conditional Result"}
+Let $X_1 \sim \text{Poisson}(\lambda_1)$ and $X_2 \sim \text{Poisson}(\lambda_2)$ independently. 
+Define
+$$ 
+  Y_1 = X_1 + X_2, \qquad Y_2 = X_1.
+$$
+The inverse is $x_1 = y_2$, $x_2 = y_1 - y_2$, which is one-to-one. 
+The support is $y_1 \in \{0,1,2,\ldots\}$, $y_2 \in \{0, 1, \ldots, y_1\}$.
+
+**Joint pmf:**
+
+$$
+  p_{\mathbf{Y}}(y_1, y_2) = \frac{e^{-\lambda_1}\lambda_1^{y_2}}{y_2!}
+\cdot \frac{e^{-\lambda_2}\lambda_2^{y_1 - y_2}}{(y_1-y_2)!}
+$$
+
+**Marginal of $Y_1$:** Sum over $y_2 = 0, \ldots, y_1$ (binomial theorem):
+$$
+  p_{Y_1}(y_1) = \frac{e^{-(\lambda_1+\lambda_2)}(\lambda_1+\lambda_2)^{y_1}}{y_1!}
+$$
+so $Y_1 \sim \text{Poisson}(\lambda_1 + \lambda_2)$.
+
+**Conditional distribution of $Y_2 \mid Y_1 = y_1$:**
+
+$$
+  p_{Y_2 \mid Y_1}(y_2 \mid y_1) = \frac{p_{\mathbf{Y}}(y_1,y_2)}{p_{Y_1}(y_1)}
+= \binom{y_1}{y_2}\left(\frac{\lambda_1}{\lambda_1+\lambda_2}\right)^{y_2}
+\left(\frac{\lambda_2}{\lambda_1+\lambda_2}\right)^{y_1-y_2}.
+$$
+
+This is $\text{Binomial}\!\left(y_1,\, \dfrac{\lambda_1}{\lambda_1+\lambda_2}\right)$, a striking result connecting the Poisson and Binomial families.
+:::
+
+```{r bivariate-discrete, fig.width=9, fig.height=4, echo=FALSE}
+lam1 <- 3; lam2 <- 5
+y1_max <- 25
+
+# Joint pmf grid
+grid <- expand.grid(y1 = 0:y1_max, y2 = 0:y1_max) |>
+  filter(y2 <= y1) |>
+  mutate(
+    joint = dpois(y2, lam1) * dpois(y1 - y2, lam2)
+  )
+
+# Marginal of Y1
+marg_y1 <- grid |> group_by(y1) |> summarise(prob = sum(joint))
+
+p3 <- ggplot(marg_y1, aes(x = y1, y = prob)) +
+  geom_col(fill = "#7b2d8b", alpha = 0.75, width = 0.6) +
+  stat_function(fun = dpois, args = list(lambda = lam1 + lam2),
+                geom = "point", colour = "orange", size = 2,
+                n = y1_max + 1, xlim = c(0, y1_max)) +
+  labs(title = expression("Y"[1]*" = X"[1]*"+X"[2]*" ~ Poisson(8)"),
+       subtitle = "Bars: derived marginal  |  Points: Poisson(8) pmf",
+       x = expression(y[1]), y = "Probability") +
+  theme_minimal(base_size = 12)
+
+# Conditional Y2 | Y1 = 10
+y1_fixed <- 10
+cond_df <- data.frame(y2 = 0:y1_fixed) |>
+  mutate(
+    prob_derived = dpois(y2, lam1) * dpois(y1_fixed - y2, lam2) / dpois(y1_fixed, lam1 + lam2),
+    prob_binom   = dbinom(y2, y1_fixed, lam1 / (lam1 + lam2))
+  )
+
+p4 <- ggplot(cond_df, aes(x = y2)) +
+  geom_col(aes(y = prob_derived), fill = "#2c7bb6", alpha = 0.7, width = 0.5) +
+  geom_point(aes(y = prob_binom), colour = "orange", size = 3) +
+  labs(title = expression("Y"[2]*" | Y"[1]*" = 10 ~ Binomial(10, 3/8)"),
+       subtitle = "Bars: conditional pmf  |  Points: Binomial(10, 3/8) pmf",
+       x = expression(y[2]), y = "Probability") +
+  theme_minimal(base_size = 12)
+
+gridExtra::grid.arrange(p3, p4, ncol = 2)
+```
+
+
 ## The moment-generating function method {#TransformationMoments}
 
 \index{Transformations of random variables!moment-generating function method|(}
@@ -1246,6 +1497,38 @@ This means that the sum of\ $n$ independent Poisson distribution is also a Poiss
 
 
 \index{Transformations of random variables|)}
+
+
+## Choosing a method
+
+| | **Discrete** | **Continuous** |
+|---|---|---|
+| **Univariate** | Sum $p_X$ over pre-images of $y$ | Substitute inverse; multiply by $\|J\|$ |
+| **Bivariate** | Sum $p_{\mathbf{X}}$ over pre-images of $(y_1, y_2)$ | Substitute inverses; multiply by $\|J\|$ (det of matrix) |
+
+In every case: find the pre-image, then account for how the transformation redistributes probability, through counting in the discrete case, and through the Jacobian in the continuous case.
+
+
+Good question for students to have a clear mental map on. Here's how to think about it:
+
+Distribution Function (CDF) Method
+This is your default fallback; it always works in principle. 
+You write $F_Y(y) = P(g(X)\le y)F_Y(y) = P(g(X) \leq y) = F_Y(y) = P(g(X)\le y)$, manipulate the inequality, and differentiate. 
+Reach for it when the transformation is awkward or non-monotone in a way that makes the CoV Jacobian approach messy, when you only need the marginal distribution of one variable out of a multivariate setup, or when the support of the transformed variable has tricky boundaries that depend on yy
+y. 
+The downside is that differentiation can get ugly and it gives you less structural insight than the other methods.
+
+
+Change of Variables Method
+Use this when the transformation is smooth and invertible (or invertible on partitioned pieces) and you want the full joint distribution of a transformed vector. 
+It shines in the bivariate and multivariate continuous case: the Gamma/Beta example is a canonical illustration, because you get the joint pdf directly, which lets you immediately read off independence from factorisation. 
+In the discrete case it's really just careful pre-image bookkeeping rather than a distinct technique. 
+Avoid it when the Jacobian computation is intractable, or when you don't actually need the full pdf and only care about moments.
+
+MGF Method
+This is the slickest tool when it applies, but it has a narrow domain of applicability. The key use case is proving that a sum (or linear combination) of independent random variables follows a particular named distribution: you multiply the MGFs and pattern-match. It's the natural method for showing that sums of independent Normals are Normal, independent Poissons sum to Poisson, independent Gammas with the same rate sum to a Gamma, and so on. The limitations are real though: the MGF may not exist (heavy-tailed distributions like the Cauchy), it tells you nothing about the joint distribution of a transformed vector, and it's useless when the transformation isn't a sum or linear combination.
+
+
 
 
 ## Exercises
