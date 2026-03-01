@@ -13,7 +13,6 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
     main_title <- ifelse(is.null(main), 
                          "Distribution function", 
                          main)
-    ylab_text  <- expression(F(x))
   } 
   if (type == "SF") {
     y          <- Sx
@@ -21,7 +20,6 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
     main_title <- ifelse(is.null(main), 
                          "Distribution function", 
                          main)
-    ylab_text  <- expression(S(x))
   }
   if (type == "MF") {
     y          <- px
@@ -29,7 +27,6 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
     main_title <- ifelse(is.null(main), 
                          "Prob. mass function", 
                          main)
-    ylab_text  <- expression(p(x))
   }
   
   if ( (type == "DF" ) | ( type == "SF") ) {
@@ -37,8 +34,6 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
     plot(x    = x,
          y    = y,
          type = "n",
-         xlab = "x",
-         ylab = ylab_text,
          main = main_title,
          las  = 1,
          xlim = c(min(x) - 1, 
@@ -116,8 +111,6 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
     plot(x    = x,
          y    = y,
          type = "n",
-         xlab = "x",
-         ylab = ylab_text,
          main = main_title,
          las  = 1,
          xlim = c(min(x) - 1, 
