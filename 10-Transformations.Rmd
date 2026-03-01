@@ -38,14 +38,14 @@ However, if the random variable\ $X$ is only defined for $X > 2$, then the trans
 :::
 
 
-```{r TwoTransforms, echo=FALSE, fig.align="center", fig.cap="Two transformations: a non-one-to-one transformation (left panel), and a one-to-one transformation (right panel).", fig.height=4, out.width='80%', fig.width=7}
+```{r TwoTransforms, echo=FALSE, fig.align="center", fig.cap="Two transformations: a non-one-to-one transformation (left panel), and a one-to-one transformation (right panel) where the random variable is defined only on $X > 2$.", fig.height=4, out.width='80%', fig.width=7}
 par(mfrow = c(1, 2))
 
 x <- seq(-2, 4, 
          length = 500)
 y <- (x - 1)^2
 
-x1 <- seq(2, 3,
+x1 <- seq(2, max(x) + 1,
           length = 500)
 y1 <- (x1 - 1)^2
 
@@ -145,7 +145,7 @@ $$
                0 & \text{otherwise}.
             \end{cases}
 $$
-To find the probability function of $Y = X^2$, first note that $Y = X^2$ is *not* a one-to-one transformation in general, but is over the range of\ $X$ (i.e., for $x = 0, 1, 2, 3$).
+To find the probability function of $Y = X^2$, first note that $Y = X^2$ is *not* a one-to-one transformation in general, but is one-to-one over the range of\ $X$ (i.e., for $x = 0, 1, 2, 3$).
 
 The transformation $y = u(x) = x^2$, $\mathcal{R}_X = \{ x \mid x = 0, 1, 2, 3 \}$ maps onto $\mathcal{R}_Y = \{y \mid y = 0, 1, 4, 9\}$.
 The inverse function is $x = w(y) = \sqrt{y}$, and hence the probability function of $Y$ is
@@ -189,8 +189,39 @@ $$
 :::
 
 
+```{r CoVnotOneToOne, echo=FALSE, fig.align="center", fig.cap="The PMF for $X$ and for the transformed variable $Y$.", fig.width=8, out.width="70%", fig.height=4}
+x <- 1:5
+px <- x/15
+
+y <- 0:2
+py <- c(1, 2, 2)/5
+
+par(mfrow = c(1, 2))
+
+plotDiscrete(x, px,
+             type = "MF",
+             main = expression(bold(The~PMF~"for"~italic(X))),
+             xlab = expression(italic(X)),
+             ylab = "PMF")
+
+
+plotDiscrete(y, py,
+             type = "MF",
+             main = expression(bold(The~PMF~"for"~italic(Y))),
+             xlab = expression(italic(Y)),
+             ylab = "PMF")
+
+par(mfrow = c(1,1))
+```
+
 
 ### Continuous random variables {#ChangeOfVarContinuous}
+
+The change of variable method is similar for continuous random variables, but requires the use of a *Jacobian*.\index{Jacobian}
+For a discrete random variable, probability exists at distinct values of the random variable, but probability only exists over *intervals* for continuous random variables.
+Suppose the original variable\ $X$ has a given probability defined over (say) $0 < X < 1$; the equivalent probability in the transformed variable\ $Y$ may be defined over (say) $-4 < Y  < 4$.
+The Jacobian is needed to ensure the height of the corresponding density function accommodates this *local* change in the length of the interval (which may not be linear) over which the equivalent probability is defined.
+
 
 :::{.theorem #ChangeOfVarCont name="Change of variable (continuous rv)"}
 If\ $X$ has PDF $f_X(x)$ for $x\in \mathcal{R}_X$ and\ $u(\cdot)$ is a one-to-one function for $x\in \mathcal{R}_X$, then the random variable $Y = u(X)$ has PDF
@@ -199,9 +230,8 @@ $$
 $$
 where the right-hand side is expressed as a function of\ $y$.
 The term $\left|dx/dy\right|$ is called the *Jacobian of the transformation*.\index{Jacobian}
-:::
 
-:::{.proof}
+::::{.proof}
 Let the inverse function be $X = w(Y)$ so that $w(y) = u^{-1}(x)$.
 
 **Case\ 1:** $y = u(x)$ is a strictly *increasing* function (Fig.\ \@ref(fig:Transformation), left panel).
@@ -212,6 +242,23 @@ $$
    =\int^b_af\big( w(y)\big)\frac{dx}{dy}\,\,dy}.
 $$
 Therefore, $\displaystyle {f_Y(y) = f_X\big( w(y) \big)\frac{dx}{dy}}$, where $w(y) = u^{-1}(x)$.
+
+
+**Case\ 2:** $y = u(x)$ is a strictly *decreasing* function of $x$ (Fig.\ \@ref(fig:Transformation), right panel).
+If $a < y < b$ then $w(b) < x < w(a)$ and $\Pr(a < Y < b) = \Pr\big(w(b) < X < w(a)\big)$, so that
+\begin{align*}
+     \int^b_a f_Y(y)\,dy & = \int^{w(a)}_{w(b)}f_X(x)\,dx\\
+     & = \int^a_bf_X(x)\frac{dx}{dy}\,\,dy\\
+     & = - \int ^b_a f_X(x)\frac{dx}{dy}\,dy.
+\end{align*}
+Therefore $f_Y(y) = -f_X\left( w(y) \right)\displaystyle{\frac{dx}{dy}}$.
+But $dx/dy$ is negative in the case of a decreasing function, so in general
+$$
+   f_Y(y) = f_X(x)\left|\frac{dx}{dy} \right|. 
+$$
+::::
+:::
+
 
 
 ```{r Transformation, echo=FALSE, fig.align="center", fig.cap="A strictly increasing transformation function (left panel) and strictly decreasing function (right panel).", fig.width=9, fig.height=4, out.width='100%'}
@@ -311,22 +358,6 @@ text(x = 2,
 ```
 
 
-
-**Case\ 2:** $y = u(x)$ is a strictly *decreasing* function of $x$ (Fig.\ \@ref(fig:Transformation), right panel).
-If $a < y < b$ then $w(b) < x < w(a)$ and $\Pr(a < Y < b) = \Pr\big(w(b) < X < w(a)\big)$, so that
-\begin{align*}
-     \int^b_a f_Y(y)\,dy & = \int^{w(a)}_{w(b)}f_X(x)\,dx\\
-     & = \int^a_bf_X(x)\frac{dx}{dy}\,\,dy\\
-     & = - \int ^b_a f_X(x)\frac{dx}{dy}\,dy.
-\end{align*}
-Therefore $f_Y(y) = -f_X\left( w(y) \right)\displaystyle{\frac{dx}{dy}}$.
-But $dx/dy$ is negative in the case of a decreasing function, so in general
-$$
-   f_Y(y) = f_X(x)\left|\frac{dx}{dy} \right|. 
-$$
-:::
-
-
 :::{.example #Transform3 name="Transformation"}
 Let the PDF of\ $X$ be given by
 $$
@@ -359,7 +390,7 @@ That is, $Y$ has an exponential distribution with $\beta = 2$:\index{Beta distri
 
 
 :::{.example #TransformSquRt name="Square root transformation"}
-Consider the random variable\ $X$ with PDF $f_X(x) = e^{-x}$ for $x \geq 0$.
+Consider the random variable\ $X$ with PDF $f_X(x) = \exp(-x)$ for $x \geq 0$.
 To find the PDF of $Y = \sqrt{X}$, first see that $y = \sqrt{x}$ is a strictly increasing function for $x \geq 0$ (Fig.\ \@ref(fig:SqrtRt)).
 
 The inverse relation is $X = Y^2$, and $dx/dy = |2y| = 2y$ for $x \ge 0$.
@@ -367,7 +398,7 @@ The PDF of\ $Y$ is
 $$
     f_Y(y)
     = f_X(x)\left|\frac{dx}{dy}\right|
-    = 2y e^{-y^2}\quad \text{for $y\geq0$}.
+    = 2y \exp(-y^2)\quad \text{for $y\geq0$}.
 $$
 :::
 
@@ -532,7 +563,7 @@ Instead, subdivide the range of $Z$ and $Y$ so that in each portion the relation
 Then:
 $$
    f_Z(z) =
-   \frac{1}{\sqrt{2\pi}}\,e^{-\frac{1}{2} z^2}\quad\text{for $-\infty < z < \infty$}.
+   \frac{1}{\sqrt{2\pi}}\,\exp\left( -\frac{1}{2} z^2\right)\quad\text{for $-\infty < z < \infty$}.
 $$
 The inverse relation, $Z = u^{-1}(Y)$ is $Z = \pm \sqrt{2Y}$. 
 For a given value of $Y$, two values of $Z$ are possible. 
@@ -547,7 +578,7 @@ Thus $\Pr(a < Y < b) = 2\Pr(\sqrt{2a} < Z < \sqrt{2b}\,)$, and
 \begin{align*}
      f_Y(y)
      &= 2f_Z(z)\left| \frac{dz}{dy}\right|\\
-     &= 2\frac{1}{\sqrt{2\pi}}e^{-y}\frac{1}{\sqrt{2y}};
+     &= 2\frac{1}{\sqrt{2\pi}}\exp(-y)\frac{1}{\sqrt{2y}};
 \end{align*}
 that is,
 $$
@@ -1200,14 +1231,14 @@ $$
 
 ### Discrete univariate case
 
-Let\ $X$ be a discrete random variable with PMF $p_X(x)$ and CDF $F_X(x) = P(X \leq x)$.
+Let\ $X$ be a discrete random variable with PMF $p_X(x)$ and CDF $F_X(x) = \Pr(X \leq x)$.
 For $Y = g(X)$, the CDF of $Y$ is
 $$
-  F_Y(y) = P(Y \leq y) = P(g(X) \leq y) = \sum_{\{x:\, g(x) \leq y\}} p_X(x).
+  F_Y(y) = \Pr(Y \leq y) = \Pr(g(X) \leq y) = \sum_{\{x:\, g(x) \leq y\}} p_X(x).
 $$
 The PMF of\ $Y$ is then recovered as
 $$
-  p_Y(y) = F_Y(y) - F_Y(y^-) = P(Y \leq y) - P(Y \leq y - 1)
+  p_Y(y) = F_Y(y) - F_Y(y^-) = \Pr(Y \leq y) - \Pr(Y \leq y - 1)
 $$
 where\ $y^-$ denotes the largest value in the support of\ $Y$ strictly less than\ $y$.
 
@@ -1218,11 +1249,11 @@ The CDF framing is especially natural when\ $g()$ is monotone non-decreasing, si
 :::{.example name="Shifting the geometric distribution"}
 Let $X \sim \text{Geometric}(p)$ (number of trials until first success, support $\{1, 2, 3, \ldots\}$), so
 $$
-  P(X \leq x) = 1 - (1-p)^x, \quad x = 1, 2, 3, \ldots
+  \Pr(X \leq x) = 1 - (1-p)^x, \quad x = 1, 2, 3, \ldots
 $$
 Define $Y = X - 1$ (number of **failures** before the first success, support $\{0, 1, 2, \ldots\}$). For $y \in \{0, 1, 2, \ldots\}$:
 $$
-  F_Y(y) = P(Y \leq y) = P(X - 1 \leq y) = P(X \leq y + 1) = 1 - (1 - p)^{y + 1}.
+  F_Y(y) = \Pr(Y \leq y) = \Pr(X - 1 \leq y) = \Pr(X \leq y + 1) = 1 - (1 - p)^{y + 1}.
 $$
 The PMF is
 $$
@@ -1268,7 +1299,7 @@ par(mfrow = c(1, 1))
 Let\ $X$ be a continuous random variable with PDF\ $f_X$ and CDF $F_X$. 
 Then, for $Y = g(X)$
 $$
-  F_Y(y) = P(g(X) \leq y).
+  F_Y(y) = \Pr(g(X) \leq y).
 $$
 Re-express $\{g(X) \leq y\}$ as an event in\ $X$, evaluate using $F_X$, then differentiate:
 $$
@@ -1284,7 +1315,7 @@ Since $g(x) = x^2$ is not monotone on $\mathbb{R}$, the change of variable metho
 
 For $y > 0$:
 $$
-  F_Y(y) = P(X^2 \leq y) = P(-\sqrt{y} \leq X \leq \sqrt{y})
+  F_Y(y) = \Pr(X^2 \leq y) = \Pr(-\sqrt{y} \leq X \leq \sqrt{y})
   = 
   F_X(\sqrt{y}) - F_X(-\sqrt{y}) = 2F_X(\sqrt{y}) - 1.
 $$
@@ -1345,7 +1376,7 @@ par(mfrow = c(1, 1))
 Let $(X_1, X_2)$ have joint PDF $f_{\mathbf{X}}(x_1, x_2)$. 
 To find the distribution of $Y = g(X_1, X_2)$ (a scalar function of\ $X_1$ and\ $X_2$), compute
 $$
-  F_Y(y) = P(g(X_1, X_2) \leq y) 
+  F_Y(y) = \Pr(g(X_1, X_2) \leq y) 
   = 
   \iint_{\{(x_1,x_2):\, g(x_1,x_2) \leq y\}} f_{X_1, X_2}(x_1, x_2)\, dx_1\, dx_2,
 $$
@@ -1363,7 +1394,7 @@ Define $M = \max(X_1, X_2)$.
 The event $\{M \leq m\}$ is equivalent to $\{X_1 \leq m \text{ and } X_2 \leq m\}$,
 so for $m \in [0,1]$:
 $$
-  F_M(m) = P(X_1 \leq m,\, X_2 \leq m) = m \cdot m = m^2.
+  F_M(m) = \Pr(X_1 \leq m,\, X_2 \leq m) = m \cdot m = m^2.
 $$
 Differentiating,
 $$
@@ -1423,7 +1454,7 @@ par(mfrow = c(1, 1))
 Let $(X_1, X_2)$ have joint PMF $p_{\mathbf{X}}(x_1, x_2)$. 
 For $Y = g(X_1, X_2)$, the CDF of\ $Y$ is
 $$
-  F_Y(y) = P(Y \leq y) = \sum_{\{(x_1,x_2):\, g(x_1,x_2) \leq y\}} p_{\mathbf{X}}(x_1, x_2),
+  F_Y(y) = \Pr(Y \leq y) = \sum_{\{(x_1,x_2):\, g(x_1,x_2) \leq y\}} p_{\mathbf{X}}(x_1, x_2),
 $$
 and the PMF is recovered as $p_Y(y) = F_Y(y) - F_Y(y^-)$ where $y^-$ denotes the largest value in the support of\ $Y$ strictly less than\ $y$.
 
@@ -1436,7 +1467,7 @@ Define $M = \max(X_1, X_2)$.
 
 Using the same device as in the continuous case, for $m \in \{0, 1, \ldots, \max(n_1, n_2)\}$:
 $$
-  F_M(m) = P(X_1 \leq m,\, X_2 \leq m) = F_{X_1}(m) \cdot F_{X_2}(m)
+  F_M(m) = \Pr(X_1 \leq m,\, X_2 \leq m) = F_{X_1}(m) \cdot F_{X_2}(m)
 $$
 by independence. 
 The pmf is then
@@ -1515,7 +1546,7 @@ The distribution function method is preferred over the change of variables metho
 | Setting | Strategy | PDF recovery |
 |---------|----------|--------------|
 | **Discrete univariate** | $F_Y(y) = \sum_{\{x:\,g(x)\leq y\}} p_X(x)$; pmf = $\Delta F_Y$ | Difference the CDF |
-| **Continuous univariate** | $F_Y(y) = P(g(X)\leq y)$; invert inequality; use $F_X$ | Differentiate the CDF|
+| **Continuous univariate** | $F_Y(y) = \Pr(g(X)\leq y)$; invert inequality; use $F_X$ | Differentiate the CDF|
 | **Bivariate continuous** | $F_Y(y) = \iint_{\{g\leq y\}} f_\mathbf{X}$; characterise region | Differentiate the CDF |
 | **Bivariate discrete** | $F_Y(y) = \sum\sum_{\{g\leq y\}} p_\mathbf{X}$; pmf = $\Delta F_Y$ | Difference the CDF |
 
