@@ -1,4 +1,4 @@
-plotDiscreteCDF <- function(x, px, type = "DF", main = NULL,...) {
+plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
   # Compute CDF and Survival:
   # "DF": distribution fn
   # "SF": survival function
