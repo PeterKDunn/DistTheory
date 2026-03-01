@@ -66,3 +66,6 @@ source("R/kurtosis.R")
 
 source("R/myDeparse.R")
 source("R/showHTMLCode.R")
+
+source("R/plotDiscrete.R") # Load fn to plot discrete DF and SF
+
