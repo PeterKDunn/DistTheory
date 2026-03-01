@@ -1,20 +1,21 @@
 # Load libraries
 library("plot3D")
+library("plotly")
+library("plotrix") # draw.circle()
+library("diagram")
 library("rgl")
 library("kableExtra")
-library("plotrix")
 library("mnormt") # Multivariate normal
 library("mnorm")  # Multivariate normal
 library("countries") # Sets of countries
 library("shape")
-library("diagram")
-library("plotrix") # draw.circle()
 library("fitdistrplus")
 library("tweedie")
 library("downlit")
 library("bookdown")
 library("mnormt")
 library("sf")
+library("MASS")
 
 
 # example R options set globally
