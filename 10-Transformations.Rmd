@@ -200,6 +200,7 @@ par(mfrow = c(1, 2))
 
 plotDiscrete(x, px,
              type = "MF",
+             ylim = c(0, 0.40),
              main = expression(bold(The~PMF~"for"~italic(X))),
              xlab = expression(italic(X)),
              ylab = "PMF")
@@ -207,6 +208,7 @@ plotDiscrete(x, px,
 
 plotDiscrete(y, py,
              type = "MF",
+             ylim = c(0, 0.45),
              main = expression(bold(The~PMF~"for"~italic(Y))),
              xlab = expression(italic(Y)),
              ylab = "PMF")
@@ -865,7 +867,7 @@ The Jacobian plays an equivalent role as $\left|dx/dy\right|$ in the univariate 
 :::{.example #BivarContExample name="Transformation continuous (bivariate)"}
 Let\ $X_1$ and\ $X_2$ be independent exponential random variables with $\lambda = 1$, such that both PDFs are
 $$
-  f_x(X) = \exp(-x)\quad\text{for $x > 0$}.
+  f_X(x) = \exp(-x)\quad\text{for $x > 0$}.
 $$
 Consider the two transformations $Y_1 = X_1 + X_2$ (the sum) and $Y_2 = X_1 / X_2$ (the ratio).
 Then, $y_1 > 0$ and $y_2 > 0$.
@@ -888,9 +890,9 @@ $$
   \displaystyle \frac{\partial x_2}{\partial y_1} = \frac{1}{1+y_2};\quad & \quad\displaystyle \frac{\partial x_2}{\partial y_2} = \frac{-y_1}{(1+y_2)^2}.
 \end{array}
 $$
-So the Jacobian is 
+So the determinant of the Jacobian is 
 \begin{align*}
-  J 
+  \det J 
   &= \left( \frac{y_2}{1+y_2} \cdot \frac{-y_1}{(1+y_2)^2} \right) - \left( \frac{1}{1+y_2} \cdot \frac{y_1}{(1+y_2)^2} \right)\\
   &= \frac{-y_1 y_2 - y_1}{(1+y_2)^3}\\
   &= \frac{-y_1(y_2 + 1)}{(1+y_2)^3}.
@@ -908,13 +910,54 @@ $$
 
 ### Summary
 
-The change of variable method requires find the pre-image, then accounting for the how transformation redistributes probability (through counting in the discrete case; through the Jacobian in the continuous case).
+The change of variable method requires find the pre-image, then accounting for the how transformation redistributes probability (through counting in the discrete case; through the Jacobian in the continuous case); see Table\ \@ref(tab:CoVSummary).
 
 
-|                | **Discrete** | **Continuous** |
-|----------------|--------------|----------------|
-| **Univariate** | Sum $p_X$ over pre-images of $y$ | Substitute inverse; multiply by $\|J\|$ |
-| **Bivariate**  | Sum $p_{\mathbf{X}}$ over pre-images of $(y_1, y_2)$ | Substitute inverses; multiply by $\|J\|$ (det of matrix) |
+```{r CoVSummary, echo=FALSE}
+CoVsummary <- array( dim = c(2, 3))
+
+CoVsummary[1, ] <- c("Univariate",
+                     "Sum $p_X$ over every $x$ that transforms into $y$",
+                     "Substitute inverse; multiply by $\\|J\\|$")
+CoVsummary[2, ] <- c("Bivariate",
+                     "Sum $p_{(X_1, X_2)}$ over every $(x_1, x_2)$ that transforms into $(y_1, y_2)$",
+                     "Substitute inverses; multiply by $\\|J\\|$ (det of matrix)" )
+
+colnames(CoVsummary) <- c("Setting",
+                          "Discrete",
+                          "Continuous")
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(CoVsummary,
+               format = "latex",
+               booktabs = TRUE,
+               align = c("r", "c", "c"),
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "Summarising the change of variable method.") %>%
+    kable_styling(font_size = 10) %>%
+    column_spec(2, width = "5cm") %>%
+    column_spec(3, width = "5cm") %>%
+    row_spec(0, bold = TRUE) %>% 
+    column_spec(1, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(SimpleTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "Summarising the change of variable method.") %>%
+    column_spec(2, width = "20%") %>%
+    column_spec(2, width = "40%") %>%
+    column_spec(3, width = "40%") %>%
+    row_spec(0, bold = TRUE) %>% 
+    column_spec(1, bold = TRUE)
+}
+
+```
+
 
 
 
@@ -1513,7 +1556,7 @@ This does not simplify to a standard named distribution in general, illustrating
 :::
 
 
-```{r bivariate-discrete, echo=FALSE, fig.width = 9, fig.height = 5}
+```{r bivariate-discrete, echo=FALSE, fig.width = 9, fig.height = 5, out.width="100%"}
 n1 <- 10; n2 <- 8; p <- 0.4
 m_vals <- 0:max(n1, n2)
 
@@ -1574,6 +1617,65 @@ The distribution function method is preferred over the change of variables metho
 1. the transformation is many-to-one (e.g.\ maximum, minimum, absolute value); 
 2. the result is not a standard named distribution; or 
 3.  only a marginal distribution is needed from a multivariate problem.
+
+The approach is summarised in Table\ \@ref(tab:DFSummary).
+
+
+
+```{r DFSummary, echo=FALSE}
+DFsummary <- array( dim = c(4, 3))
+
+DFsummary[1, ] <- c("Discrete univariate",
+                     "$F_Y(y) = \\sum_{\\{x:\\,g(x)\\leq y\\}} p_X(x)$; pmf = $\\Delta F_Y$ ",
+                     "Difference the CDF")
+DFsummary[2, ] <- c("Continuous univariate",
+                     "$F_Y(y) = \\Pr(g(X)\\leq y)$; invert inequality; use $F_X$",
+                     "Differentiate the CDF")
+DFsummary[3, ] <- c("Discrete bivariate",
+                     "$F_Y(y) = \\iint_{\\{g\\leq y\\}} f_{X_1, X_2}$; characterise region",
+                     "Differentiate the CDF")
+DFsummary[4, ] <- c("Continuous bivariate",
+                     "$F_Y(y) = \\sum\\sum_{\\{g\\leq y\\}} p_{X_1, X_2}$; pmf = $\\Delta F_Y$",
+                     "Difference the CDF" )
+
+
+colnames(DFsummary) <- c("Setting",
+                         "Strategy",
+                         "PDF recovery")
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(DFsummary,
+               format = "latex",
+               booktabs = TRUE,
+               align = c("r", "c", "c"),
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "Summarising the distribution function method.") %>%
+    kable_styling(font_size = 10) %>%
+    column_spec(2, width = "60mm") %>%
+    column_spec(3, width = "45mm") %>%
+    row_spec(0, bold = TRUE) %>% 
+    column_spec(1, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(DFsummary,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "Summarising the distribution function method.") %>%
+    column_spec(2, width = "20%") %>%
+    column_spec(2, width = "50%") %>%
+    column_spec(3, width = "40%") %>%
+    row_spec(0, bold = TRUE) %>% 
+    column_spec(1, bold = TRUE)
+}
+
+```
+
+
+
 
 
 | Setting | Strategy | PDF recovery |
