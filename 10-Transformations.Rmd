@@ -1079,8 +1079,6 @@ So:
    &= \Pr\big( (X - 2)^2 + 1 \le y\big) \\
    &= \Pr\left( 2 - \sqrt{y - 1} < X < 2 + \sqrt{y - 1} \right)\\
    &= \int_{2-\sqrt{y - 1}}^{2 + \sqrt{y - 1}} x/4\,dx \\
-   &= \left.\frac{1}{8} x^2\right|_{2 - \sqrt{y - 1}}^{2 + \sqrt{y - 1}} \\
-   &= \frac{1}{8} \left[ \left(2 + \sqrt{y - 1}\right)^2 - \left(2 - \sqrt{y - 1}\right)^2\right] \\
    &=  \sqrt{y - 1}.
 \end{align*}
 Again, this is the distribution function; so differentiating:
@@ -1173,8 +1171,8 @@ Hence
      &= \frac{\sqrt{2}}{2\sqrt{y}}f_Z(\sqrt{2y}\,) - \frac{\sqrt{2}}{-
 2\sqrt{y}}f_Z(-\sqrt{2y}\,)\\[2mm]
      &= \frac{1}{\sqrt{2y}}[f_Z(\sqrt{2y}\,) + f_Z(-\sqrt{2y}\,)]\\
-     &= \frac{1}{\sqrt{2y}} \left[ \frac{1}{\sqrt{2\pi}}\,e^{-y}+\frac{1}{\sqrt{2\pi}}\,e^{-y}\right]\\
-     &= \frac{e^{-y}y^{-\frac{1}{2}}}{\sqrt{\pi}}
+     &= \frac{1}{\sqrt{2y}} \left[ \frac{1}{\sqrt{2\pi}}\,\exp(-y) + \frac{1}{\sqrt{2\pi}}\,\exp(-y)\right]\\
+     &= \frac{\exp(-y)y^{-\frac{1}{2}}}{\sqrt{\pi}}
 \end{align*}
 as before.
 :::
@@ -1247,51 +1245,63 @@ The CDF framing is especially natural when\ $g()$ is monotone non-decreasing, si
 
 
 :::{.example name="Shifting the geometric distribution"}
-Let $X \sim \text{Geometric}(p)$ (number of trials until first success, support $\{1, 2, 3, \ldots\}$), so
+Let $X \sim \text{Geometric}(p)$, so that\ $X$ represents the number of *failures* until the first success, with support $\{0, 1, 2, \ldots\}$ (as in Sect.\ \@ref(GeometricDistribution)).
+Then,
 $$
-  \Pr(X \leq x) = 1 - (1-p)^x, \quad x = 1, 2, 3, \ldots
+  \Pr(X \leq x) = 1 - (1-p)^{\lfloor x\rfloor + 1}, \quad x = 0, 1, 2, \ldots
 $$
-Define $Y = X - 1$ (number of **failures** before the first success, support $\{0, 1, 2, \ldots\}$). For $y \in \{0, 1, 2, \ldots\}$:
+Define $Y = X + 1$, so that\ $Y$ is the number of *trials* before the first success, with support $\{1, 2, 3, \ldots\}$. 
+For $y \in \{1, 2, 3, \ldots\}$:
 $$
-  F_Y(y) = \Pr(Y \leq y) = \Pr(X - 1 \leq y) = \Pr(X \leq y + 1) = 1 - (1 - p)^{y + 1}.
+  F_Y(y) = \Pr(Y \leq y) = \Pr(X + 1 \leq y) = \Pr(X \leq y - 1) = 1 - (1 - p)^{(y - 1) + 1} = 1 - (1 - p)^{y},
 $$
-The PMF is
+using the DF for\ $X$ above.
+The PMF is the difference between the DF at the values of\ $Y$ with positive probabilities (see Sect.\ \@ref(PFfromDF)):
 $$
-  p_Y(y) = F_Y(y) - F_Y(y-1) = (1-p)^y p, \quad y = 0, 1, 2, \ldots
+  p_Y(y) = F_Y(y) - F_Y(y - 1) = (1 - p)^{y - 1} p, \quad y = 1, 2, 3, \ldots
 $$
-This is the $\text{Geometric}_0(p)$ parameterisation (failures before first success), confirming that a simple shift of support corresponds to a reparameterisation within the same family.
+This is the $\text{Geometric}(p)$ distribution with a different parameterisation.
+A simple shift of support corresponds to a reparameterisation within the Geometric family of distributions.
 :::
 
 
-```{r discrete-univariate, fig.width = 9, fig.height = 4.5, echo=FALSE}
-p_geom <- 0.3
-x_vals <- 1:20
-y_vals <- 0:19
+```{r echo=FALSE, fig.align="center", fig.cap="The PMF and DF of $X$ following a geometric distribution (left panels), and the PMF and DF of the transformation $Y = X + 1$.", fig.width=7, fig.height=7, out.width="80%"}
+prob <- 0.3
+x <- 0 : 12
+px <- dgeom(x, 
+            prob = prob)
 
-# CDFs
-F_X <- pgeom(x_vals - 1, prob = p_geom)   # P(X <= x), X is trials-until-success
-F_Y <- pgeom(y_vals,     prob = p_geom)   # P(Y <= y), Y = X - 1
+y <- 0:12
+py <- dgeom( (x - 1),
+            prob = prob) 
 
-par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+par( mfrow = c(2, 2))
+plotDiscrete(x, px, 
+             type = "MF",
+             ylab = "PMF",
+             xlab = expression(italic(X)),
+             main = expression(bold(Prob.~mass~"function"~of~italic(X))))
+plotDiscrete(y, py, 
+             type = "MF",
+             ylab = "PMF",
+             xlab = expression(italic(Y)),
+             main = expression(bold(Prob.~mass~"function"~of~italic(Y))))
 
-# CDF of X
-plot(x_vals, F_X, type = "s", col = "#2c7bb6", lwd = 2,
-     xlab = "x", ylab = "F(x)",
-     main = expression("CDF of X ~ Geometric"[1]*"(0.3)"),
-     ylim = c(0, 1), las = 1)
-points(x_vals, F_X, pch = 16, col = "#2c7bb6", cex = 0.9)
-grid(col = "grey85", lty = 1)
+plotDiscrete(x, px, 
+             type = "DF",
+             ylab = "DF",
+             xlab = expression(italic(X)),
+             main = expression(bold(Distribution~"function"~of~italic(X))))
+plotDiscrete(y, py, 
+             type = "DF",
+             ylab = "DF",
+             xlab = expression(italic(Y)),
+             main = expression(bold(Distribution~"function"~of~italic(Y))))
 
-# CDF of Y = X - 1
-plot(y_vals, F_Y, type = "s", col = "#d7191c", lwd = 2,
-     xlab = "y", ylab = "F(y)",
-     main = expression("CDF of Y = X - 1 ~ Geometric"[0]*"(0.3)"),
-     ylim = c(0, 1), las = 1)
-points(y_vals, F_Y, pch = 16, col = "#d7191c", cex = 0.9)
-grid(col = "grey85", lty = 1)
-
-par(mfrow = c(1, 1))
+par( mfrow = c(1, 1))
 ```
+
+
 
 
 ### Continuous univariate case
@@ -1313,7 +1323,10 @@ The CDF method is more flexible because it handles non-monotone transformations 
 Let $X \sim N(0, 1)$ and $Y = X^2$. 
 Since $g(x) = x^2$ is not monotone on $\mathbb{R}$, the change of variable method requires partitioning; the distribution function method is simpler.
 
-For $y > 0$:
+First, see that the support for $X$ is over\ $\mathbb{R}$, but the support for $Y = X^2$ must be over the non-negative reals.
+Furthermore, since individual points have zero probability for continuous random variables, $X = 0$ is not technically possible, so the support is best given as $(0, \infty)$ or $[0, \infty)$ (see Fig.\ \@ref(fig:DFcontinuousUnivariate)).
+
+So, for $y > 0$:
 $$
   F_Y(y) = \Pr(X^2 \leq y) = \Pr(-\sqrt{y} \leq X \leq \sqrt{y})
   = 
@@ -1323,52 +1336,72 @@ $$
 Differentiating:
 $$
   f_Y(y) = 2 f_X(\sqrt{y}) \cdot \frac{1}{2\sqrt{y}}
-  = \frac{1}{\sqrt{y}} \cdot \frac{1}{\sqrt{2\pi}} e^{-y/2}
-  = \frac{y^{1/2 - 1} e^{-y/2}}{2^{1/2}\,\Gamma(1/2)}, \quad y > 0.
+  = \frac{1}{\sqrt{y}} \cdot \frac{1}{\sqrt{2\pi}} \exp(-y/2)
+  = \frac{y^{1/2 - 1} \exp(-y/2)}{2^{1/2}\,\Gamma(1/2)}, \quad y > 0.
 $$
-This is the $\chi^2(1)$ distribution\index{Chi-squared distribution} (i.e.\ $\text{Gamma}(1/2,\, 1/2)$).
+Notice that $Y > 0$; if $Y = 0$ the PMF is undefined.
+The final expressions identifies this as the $\chi^2(1)$ distribution\index{Chi-squared distribution} (i.e., $\text{Gamma}(1/2,\, 1/2)$).
 :::
 
 
-```{r continuous-univariate, echo=FALSE, fig.width = 9, fig.height = 4.5}
-y_seq <- seq(0.001, 8, length.out = 500)
+```{r DFcontinuousUnivariate, echo=FALSE, fig.align="center", out.width="100%", fig.width=8.25, fig.height=3.5, fig.cap="A normal distribution (left panel), the transformation (centre panel), and the resulting chi-squared distribution (right panel)."}
+x <- seq(-4, 4,
+         length = 100)
+fX <- dnorm(x)
 
-# Derived pdf via CDF differentiation
-# f_Y(y) = phi(sqrt(y)) / sqrt(y)  where phi is standard normal pdf
-f_derived <- dnorm(sqrt(y_seq)) / sqrt(y_seq)
-f_chi2    <- dchisq(y_seq, df = 1)
+y <- seq(0, 16,
+         length = 100)
+fY <- dchisq(y, 
+            df = 1)
 
-# Simulate to verify
-set.seed(123)
-X_sim <- rnorm(100000)
-Y_sim <- X_sim^2
+par( mfrow = c(1, 3))
 
-par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+plot( fX ~ x,
+      type = "l",
+      las = 1,
+      lwd = 3,
+      main = expression(bold(PDF~of~italic(X))),
+      xlab = expression(italic(X)),
+      ylab = "PDF")
 
-# Show transformation
-x_seq <- seq(-4, 4, length.out = 400)
-plot(x_seq, x_seq^2, type = "l", col = "#7b2d8b", lwd = 2,
-     xlab = "x", ylab = "y = x^2",
-     main = expression("Transformation Y = X"^2),
-     las = 1)
-abline(h = 2, lty = 2, col = "grey50")
-segments(c(-sqrt(2), sqrt(2)), c(0, 0), c(-sqrt(2), sqrt(2)), c(2, 2),
-         lty = 2, col = "#d7191c")
-text(0, 2.3, expression(sqrt(y)), cex = 0.85, col = "#d7191c")
-grid(col = "grey85", lty = 1)
+X2 <- x ^2
+plot(X2 ~ x, 
+     type = "l", 
+     lwd = 3,
+     las = 1,
+     xlab = expression(italic(X)),
+     ylab = expression(italic(Y)==italic(X)^2),
+     main = "The transformation")
+abline(h = 4,
+       lwd = 2, 
+       lty = 3)
+text(x = 0,
+     y = 4,
+     pos = 3,
+     label = expression(sqrt(italic(Y))))
+segments(x0 = 2,
+         x1 = 2,
+         y0 = 0,
+         y1 = 4,
+         lty = 3,
+         lwd = 2)
+segments(x0 = -2,
+         x1 = -2,
+         y0 = 0,
+         y1 = 4,
+         lty = 3,
+         lwd = 2)
 
-# Derived pdf vs chi-squared(1)
-hist(Y_sim, breaks = 150, freq = FALSE, xlim = c(0, 8),
-     col = "grey85", border = "white",
-     main = expression("pdf of Y = X"^2 * " ~ " * chi^2 * "(1)"),
-     xlab = "y", las = 1)
-lines(y_seq, f_chi2, col = "#d7191c", lwd = 2.5)
-legend("topright", legend = expression(chi^2 * "(1) pdf"),
-       col = "#d7191c", lwd = 2, bty = "n")
-grid(col = "grey85", lty = 1)
 
-par(mfrow = c(1, 1))
+plot( fY ~ y,
+      type = "l",
+      lwd = 3,
+      las = 1,
+      main = expression(bold(PDF~of~italic(Y)==italic(X)^2)),
+      xlab = expression(italic(Y)),
+      ylab = "PDF")
 ```
+
 
 
 ### Bivariate continuous case
