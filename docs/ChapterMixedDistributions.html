@@ -771,7 +771,7 @@ Thus, the monthly rainfall can be simulated:</p>
 <span><span class="va">num_Sims</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
 <span></span>
 <span><span class="va">mean_R</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span><span class="va">sd_R</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="va">mean_R</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span><span class="va">p0</span><span class="op">)</span> </span>
+<span><span class="va">sd_R</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="va">mean_R</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span><span class="va">p_Zero_Rainfall</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="va">Y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">num_Sims</span>,</span>
 <span>           mean <span class="op">=</span> <span class="va">mean_R</span>,</span>
@@ -779,39 +779,45 @@ Thus, the monthly rainfall can be simulated:</p>
 <span><span class="va">p0</span> <span class="op">&lt;-</span> <span class="fl">0.30</span></span>
 <span></span>
 <span><span class="co"># To get sd_R, note: z = (0 - mu)/sigma = \Phi(p0) =&gt; -mu/sigma = qnorm(p0)</span></span>
-<span><span class="va">threshold_R</span> <span class="op">&lt;-</span> <span class="va">mean_R</span>  <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span><span class="va">p0</span><span class="op">)</span> <span class="op">*</span> <span class="va">sd_R</span> <span class="co"># SHOULD BE AT ZERO</span></span>
+<span><span class="va">threshold_R</span> <span class="op">&lt;-</span> <span class="va">mean_R</span>  <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span><span class="va">p_Zero_Rainfall</span><span class="op">)</span> <span class="op">*</span> <span class="va">sd_R</span> <span class="co"># SHOULD BE AT ZERO</span></span>
 <span></span>
 <span><span class="co">###</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">latent_Breaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">250</span>, <span class="fl">450</span>,</span>
 <span>                     by <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="co">###  truehist  is part of the MASS package,which must be loaded first, using: </span></span>
-<span><span class="co">###  library(MASS)</span></span>
-<span><span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/truehist.html">truehist</a></span><span class="op">(</span><span class="va">Y</span>,</span>
-<span>         las <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>         breaks <span class="op">=</span> <span class="va">latent_Breaks</span>,</span>
-<span>         col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span> <span class="st">"grey"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">latent_Breaks</span><span class="op">[</span><span class="va">latent_Breaks</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                  <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">plotColour1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">latent_Breaks</span><span class="op">[</span><span class="va">latent_Breaks</span> <span class="op">&gt;=</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span>,  </span>
-<span>         main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Latent</span><span class="op">~</span><span class="va">variable</span><span class="op">)</span>,</span>
-<span>         ylab <span class="op">=</span> <span class="st">"Probabiity fn"</span>,</span>
-<span>         xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Observed</span><span class="op">~</span><span class="va">variable</span><span class="op">~</span><span class="fu">italic</span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">Y</span>,</span>
+<span>     freq <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>     las <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>     breaks <span class="op">=</span> <span class="va">latent_Breaks</span>,</span>
+<span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span> <span class="st">"grey"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">latent_Breaks</span><span class="op">[</span><span class="va">latent_Breaks</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>              <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">plotColour1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">latent_Breaks</span><span class="op">[</span><span class="va">latent_Breaks</span> <span class="op">&gt;=</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span>,  </span>
+<span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Latent</span><span class="op">~</span><span class="va">variable</span><span class="op">)</span>,</span>
+<span>     ylab <span class="op">=</span> <span class="st">"Probabiity fn"</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Latent</span><span class="op">~</span><span class="va">variable</span><span class="op">~</span><span class="fu">italic</span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>       lwd <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>       col <span class="op">=</span> <span class="st">"grey"</span>,</span>
 <span>       lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">truehist</span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Y</span><span class="op">&gt;</span><span class="fl">0</span><span class="op">]</span>,</span>
-<span>         las <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>         breaks <span class="op">=</span> <span class="va">latent_Breaks</span><span class="op">[</span><span class="va">latent_Breaks</span><span class="op">&gt;=</span><span class="fl">0</span><span class="op">]</span>,</span>
-<span>         main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Observed</span><span class="op">~</span><span class="va">variable</span><span class="op">)</span>,</span>
-<span>         ylab <span class="op">=</span> <span class="st">"Probabiity fn"</span>,</span>
-<span>         xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Observed</span><span class="op">~</span><span class="va">variable</span><span class="op">~</span><span class="fu">italic</span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Y</span><span class="op">&gt;</span><span class="fl">0</span><span class="op">]</span>,</span>
+<span>     freq <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>     las <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>     breaks <span class="op">=</span> <span class="va">latent_Breaks</span><span class="op">[</span><span class="va">latent_Breaks</span><span class="op">&gt;=</span><span class="fl">0</span><span class="op">]</span>,</span>
+<span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Observed</span><span class="op">~</span><span class="va">variable</span><span class="op">)</span>,</span>
+<span>     ylab <span class="op">=</span> <span class="st">"Probabiity fn"</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Observed</span><span class="op">~</span><span class="va">variable</span><span class="op">~</span><span class="fu">italic</span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>       y <span class="op">=</span> <span class="va">p0</span>,</span>
 <span>       pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span></code></pre></div>
-<div class="inline-figure"><img src="09-MixedDistributions_files/figure-html/unnamed-chunk-2-1.png" alt="" width="672"></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-2"></span>
+<img src="09-MixedDistributions_files/figure-html/unnamed-chunk-2-1.png" alt="The latent variable left panel), and the observed rainfall (right panel)." width="80%"><p class="caption">
+FIGURE 9.9: The latent variable left panel), and the observed rainfall (right panel).
+</p>
+</div>
 <div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">num_Sims</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
 <span></span>
@@ -867,14 +873,12 @@ So the hurdle model is:
 <span></span>
 <span></span>
 <span></span>
-<span><span class="co">###</span></span>
-<span><span class="co">###  truehist  is part of the MASS package,which must be loaded first, using: </span></span>
-<span><span class="co">###  library(MASS)</span></span>
-<span><span class="fu">truehist</span><span class="op">(</span><span class="va">R</span>,</span>
-<span>         las <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>         main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Hurdle</span><span class="op">~</span><span class="va">model</span><span class="op">)</span>,</span>
-<span>         ylab <span class="op">=</span> <span class="st">"Probabiity fn"</span>,</span>
-<span>         xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Observed</span><span class="op">~</span><span class="va">rainfall</span><span class="op">~</span><span class="fu">italic</span><span class="op">(</span><span class="va">R</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">R</span>,</span>
+<span>     freq <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>     las <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Hurdle</span><span class="op">~</span><span class="va">model</span><span class="op">)</span>,</span>
+<span>     ylab <span class="op">=</span> <span class="st">"Probabiity fn"</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Observed</span><span class="op">~</span><span class="va">rainfall</span><span class="op">~</span><span class="fu">italic</span><span class="op">(</span><span class="va">R</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>       y <span class="op">=</span> <span class="va">p0</span>,</span>
@@ -882,7 +886,7 @@ So the hurdle model is:
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-4"></span>
 <img src="09-MixedDistributions_files/figure-html/unnamed-chunk-4-1.png" alt="HURDLE MODEL" width="672"><p class="caption">
-FIGURE 9.9: HURDLE MODEL
+FIGURE 9.10: HURDLE MODEL
 </p>
 </div>
 <p><strong>GAMMA SEEMS TO FAIL WITH THESE PARAMETERS ANYWAY: but check</strong></p>
@@ -921,28 +925,30 @@ MAXIMUM RAINFALL, with CI-like interval? Again… could do with distribution</p>
 <span class="header-section-number">9.6</span> Exercises<a class="anchor" aria-label="anchor" href="#MixedDistributionsExercises"><i class="fas fa-link"></i></a>
 </h2>
 <p>Selected answers appear in Sect. <a href="selected-short-solutions.html#AnswersChapMixedDistributions">E.8</a>.</p>
+<!-- 
+:::{.exercise #LatentVar}
+Observed variable: Annual medical expenses.
+
+Latent variable ($z$): Underlying health need or risk.
+
+Censoring: Many people incur $0$ expenses in a given year, despite possibly having latent health risks or needs.
+
+Interpretation: People with latent need below some threshold never seek care (e.g. due to costs, access, or asymptomatic cases), leading to observed $0$.
+:::
+
+:::{.exercise #LatentVar2}
+5. Credit Card Balances
+Observed variable: Balance at end of month.
+
+Latent variable ($z$): Willingness or propensity to use credit.
+
+Censoring: Some users consistently pay in full and carry no balance.
+
+Interpretation: Some people have low latent demand for borrowing; observed balance is zero if the latent borrowing desire is below threshold.
+:::
+-->
 <div class="exercise">
-<p><span id="exr:LatentVar" class="exercise"><strong>Exercise 9.1  </strong></span></p>
-<ol start="4" style="list-style-type: decimal">
-<li>Medical Costs
-Observed variable: Annual medical expenses.</li>
-</ol>
-<p>Latent variable (<span class="math inline">\(z\)</span>): Underlying health need or risk.</p>
-<p>Censoring: Many people incur <span class="math inline">\(0\)</span> expenses in a given year, despite possibly having latent health risks or needs.</p>
-<p>Interpretation: People with latent need below some threshold never seek care (e.g. due to costs, access, or asymptomatic cases), leading to observed <span class="math inline">\(0\)</span>.</p>
-</div>
-<div class="exercise">
-<p><span id="exr:LatentVar2" class="exercise"><strong>Exercise 9.2  </strong></span></p>
-<ol start="5" style="list-style-type: decimal">
-<li>Credit Card Balances
-Observed variable: Balance at end of month.</li>
-</ol>
-<p>Latent variable (<span class="math inline">\(z\)</span>): Willingness or propensity to use credit.</p>
-<p>Censoring: Some users consistently pay in full and carry no balance.</p>
-<p>Interpretation: Some people have low latent demand for borrowing; observed balance is zero if the latent borrowing desire is below threshold.</p>
-</div>
-<div class="exercise">
-<p><span id="exr:TobitHarder" class="exercise"><strong>Exercise 9.3  </strong></span>Consider a latent variable <span class="math inline">\(Y\)</span>, and an observed variable <span class="math inline">\(X = \text{max}(0, Y)\)</span>.
+<p><span id="exr:TobitHarder" class="exercise"><strong>Exercise 9.1  </strong></span>Consider a latent variable <span class="math inline">\(Y\)</span>, and an observed variable <span class="math inline">\(X = \text{max}(0, Y)\)</span>.
 Suppose that <span class="math inline">\(Y\)</span> has the normal distribution
 <span class="math display">\[
   Y \sim N(\mu = 1.5, \sigma^2 = 1),
@@ -954,59 +960,54 @@ so that <span class="math inline">\(\operatorname{E}[Y] = 1.5\)</span> and <span
 <li>Plot this probability function.</li>
 </ol>
 </div>
-<hr>
-<p>Section 2: Hurdle Models (The Zero-Mass)</p>
-<p>Exercise 2.1: Hospital Stays</p>
-<p>In a “Hurdle” model, we partition the space into <span class="math inline">\(\{0\}\)</span> and <span class="math inline">\(\{x : x &gt; 0\}\)</span>.
+<div class="exercise">
+<p><span id="exr:MixedHospitalStays" class="exercise"><strong>Exercise 9.2  </strong></span>In a “Hurdle” model, we partition the space into <span class="math inline">\(\{0\}\)</span> and <span class="math inline">\(\{x : x &gt; 0\}\)</span>.
 Let <span class="math inline">\(Y\)</span> be hospital stay duration.
-<span class="math inline">\(\Pr(Y = 0) = 0.4\)</span> and for <span class="math inline">\(y &gt; 0\)</span>, <span class="math inline">\(f(y) = 0.6 e^{-y}\)</span>.</p>
+<span class="math inline">\(\Pr(Y = 0) = 0.4\)</span> and for <span class="math inline">\(y &gt; 0\)</span>, <span class="math inline">\(f_Y(y) = 0.6 e^{-y}\)</span>.</p>
 <ol style="list-style-type: decimal">
-<li>Verify the total probability equals 1.</li>
-<li>In R, given <code>stays &lt;- c(0, 0, 5, 0, 2, 10, 0)</code>, find the indices of the “Continuous” set.
-Answer: 1. <span class="math inline">\(0.4 + \int_{0}^{\infty} 0.6e^{-y} dy = 0.4 + 0.6 = 1\)</span>.2. which(stays &gt; 0).</li>
+<li>Verify the total probability equals <span class="math inline">\(1\)</span>.</li>
+<li>In <strong>R</strong>, given <code>stays &lt;- c(0, 0, 5, 0, 2, 10, 0)</code>, find the indices of the “Continuous” set.</li>
 </ol>
-<p>Exercise 2.2: Ecology Surveys (Parallel)
-An ecologist counts a rare orchid in plots.
-In many plots, the orchid is absent (<span class="math inline">\(X=0\)</span>).
-If present, the density is modeled by a shifted Gamma.
-Let <span class="math inline">\(\Pr(X = 0) = 0.75\)</span> and the remaining <span class="math inline">\(0.25\)</span> be distributed as <span class="math inline">\(X \sim \text{Gamma}(shape = 2, rate = 1)\)</span>.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:MixedOrchids" class="exercise"><strong>Exercise 9.3  </strong></span>An ecologist counts a rare orchid in quadrats.
+In many quadrats, the orchid is absent (<span class="math inline">\(X = 0\)</span>).
+If the orchid is present, the density is modelled by a Gamma distribution.</p>
+<p>Let <span class="math inline">\(\Pr(X = 0) = 0.75\)</span> and the remaining <span class="math inline">\(0.25\)</span> be distributed as <span class="math inline">\(X \sim \text{Gamma}(shape = 2, rate = 1)\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>What is the probability that <span class="math inline">\(X &gt; 0\)</span>?</li>
-<li>rite an R code snippet to simulate 100 plots using this hurdle logic.</li>
+<li>Write an R code snippet to simulate 100 plots using this hurdle logic.</li>
 </ol>
-<p>Answer: 1. <span class="math inline">\(\Pr(X &gt; 0) = 0.25\)</span>.2. ifelse(runif(100) &lt; 0.75, 0, rgamma(100, 2, 1)).Section 3: Censored Models (The Boundary Mass)</p>
-<p>Exercise 3.1: Lightbulb Lifetimes</p>
-<p>Let <span class="math inline">\(X \sim \text{Exp}(\lambda)\)</span> be the lifetime of a bulb.
-If it lasts <span class="math inline">\(&gt; 1000\)</span> hours, we record <span class="math inline">\(Y = 1000\)</span>.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:MixedLightbulbLifetimes" class="exercise"><strong>Exercise 9.4  </strong></span>Let <span class="math inline">\(X \sim \text{Exp}(\lambda)\)</span> be the lifetime of a bulb.
+If a bulb lasts <span class="math inline">\(&gt; 1000\)</span> hours, the lifetimes is recorded as <span class="math inline">\(Y = 1000\)</span>.</p>
 <ol style="list-style-type: decimal">
-<li>What is the probability mass at the point <span class="math inline">\(Y=1000\)</span>?
-Answer: <span class="math inline">\(P(Y = 1000) = \Pr(X \geq 1000) = e^{-1000\lambda}\)</span>.</li>
+<li>What is the probability mass at the point <span class="math inline">\(Y = 1000\)</span>?</li>
 </ol>
-<p>Exercise 3.2: Rainfall Gauges (Parallel)</p>
-<p>A rainfall gauge has a physical capacity of 50mm.
-Any rain <span class="math inline">\(X &gt; 50\)</span> is recorded as <span class="math inline">\(Y = 50\)</span>.
-Assume <span class="math inline">\(X \sim \text{Rayleigh}(\sigma = 20)\)</span>.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:MixedRainGauges" class="exercise"><strong>Exercise 9.5  </strong></span>A rainfall gauge has a physical capacity of <span class="math inline">\(50\,\text{mm}\)</span>.
+Any rain <span class="math inline">\(X &gt; 50\)</span> overfills the gauge, and is recorded as <span class="math inline">\(Y = 50\)</span>.
+Assume <span class="math inline">\(X \sim \text{Exponential}(\lambda = 1/20)\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>Define the event <span class="math inline">\(Y = 50\)</span> as a set.</li>
-<li>If <span class="math inline">\(\Pr(X &gt; 50) = 0.043\)</span>, what is the height of the “jump” in the CDF at <span class="math inline">\(y=50\)</span>?</li>
+<li>If <span class="math inline">\(\Pr(X &gt; 50) = 0.043\)</span>, what is the height of the “jump” in the CDF at <span class="math inline">\(y = 50\)</span>?</li>
 </ol>
-<p>Answer: 1. <span class="math inline">\(\{x \in \mathbb{R} : x \geq 50\}\)</span>.2. The jump size is <span class="math inline">\(0.043\)</span>.Section 4: Compound Processes</p>
-<p>Exercise 4.1: Insurance Claims in R</p>
-<p>Assume number of claims <span class="math inline">\(N \sim \text{Poisson}(0.5)\)</span>.
-Individual claim sizes are <span class="math inline">\(X_i \sim \text{Gamma}(2, 1)\)</span>.</p>
-<p>Simulate 1,000 realizations of the total claim amount <span class="math inline">\(S = \sum_{i=1}^N X_i\)</span>.</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html">rgamma</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="co"># Empirical zero mass</span></span>
-<span><span class="co">#&gt; [1] 0.611</span></span></code></pre></div>
-<p>Exercise 4.2: Fire Damage (Parallel)</p>
-<p>The number of fires in a county per month is <span class="math inline">\(N \sim \text{Poisson}(2)\)</span>.
-The damage (in millions) per fire is <span class="math inline">\(X \sim \text{LogNormal}(0, 1)\)</span>.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:MixedInsuranceClaims" class="exercise"><strong>Exercise 9.6  </strong></span>Assume number of car insurance claims <span class="math inline">\(N \sim \text{Poisson}(0.5)\)</span>.
+The individual claim sizes (in dollars) are <span class="math inline">\(X_i \sim \text{Gamma}(2, 1)\)</span>.</p>
+<p>Simulate <span class="math inline">\(1\,000\)</span> realizations of the total claim amount <span class="math inline">\(S = \sum_{i=1}^N X_i\)</span>.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:MixedFireDamage" class="exercise"><strong>Exercise 9.7  </strong></span>The number of fires in a small city per month is <span class="math inline">\(N \sim \text{Poisson}(2)\)</span>.
+The damage (in millions of dollars) per fire is <span class="math inline">\(X \sim \text{Gamma}(1, 2)\)</span>.</p>
 <ol style="list-style-type: decimal">
-<li>What is the theoretical probability that a month has zero fire damage?</li>
-<li>Write R code to find the mean damage for months where damage was greater than zero.</li>
+<li>Using this model, what is the probability that a month has zero fire damage?</li>
+<li>Write <strong>R</strong> code to find the mean damage for months where damage was greater than zero.</li>
 </ol>
-<p>Answer: 1. <span class="math inline">\(\Pr(N = 0) = e^{-2} \approx 0.135\)</span>.2. mean(S[S &gt; 0]) (using the simulation approach).</p>
+</div>
 
 </div>
 </div>
