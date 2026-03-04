@@ -5,42 +5,132 @@ On completion of this chapter, you should be able to:
 
 * recognise mixed random variables.
 * recognise censored models, hurdle models and compound Poisson--gamma models for modelling mixed random variables.
-* know the basic properties of the above mixed distributions.
-* apply these distributions as appropriate to problem solving.
+* know the basic properties of the above approaches.
+* apply these approaches as appropriate to problem solving.
 :::
 
 
 ## Introduction
 
-Mixed random variables commonly occur, but are not often studied.
-Mixed random variables appear in diverse applications such as insurance, agriculture, climatology, fishing, etc.
+Mixed random variables commonly occur in practice, in diverse applications such as insurance, agriculture, climatology, fishing, etc.
+In most practical cases, a mixed random variable\ $Y$ has a discrete probability mass at $Y = 0$, and is also continuous for $Y > 0$.
+Example include:
 
-In most practical cases, a mixed random variable\ $X$ has a discrete probability mass at $X = 0$, and then are continuous for $X > 0$; this is the only type of mixed random variable we consider (though extensions to discrete masses occurring for other values of the random variable are often (but not always) similar).
-For example:
+* Modelling insurance: some portfolios will have zero claims; however, when claims are made, the total claim amount has a positive continuous distribution.
+* Modelling rainfall: some months may receive exactly zero rainfall; otherwise, the monthly rainfall has a continuous distribution.
+* Modelling fish catch: some trawls will catch zero fish; other trawls, however, will catch a positive continuous mass of fish.
 
-* When modelling insurance, the zero probability corresponds to portfolios with zero claims; however, when claims are made, the total claim amount has a continuous distribution.
-* When modelling rainfall, the zero probability corresponds to receiving zero rainfall; however, when rain does fall, the total rainfall recorded has a continuous distribution.
-* When modelling fish catch, the zero probability corresponds to catching zero fish; however, when fish are caught, the mass of fish catch has a continuous distribution.
-
-Continuous data with a discrete probability at zero can be modelled in various ways, depending on how the discrete probability at $X = 0$ is incorporated.
+Continuous data with a discrete probability at zero can be modelled in various ways, depending on how the discrete probability at $X = 0$ is modelled
 Three approaches are considered in this chapter.
 
-*Censored models*\index{Censored models} (Sect.\ \@ref(CensoredModels)) assume the existence of an underlying *latent variable*, defined for all real values.\index{Latent variable}
-However, values of the latent variable below zero cannot be observed (called *censoring*\index{Censoring}).
-All the probabilities corresponding to values of the latent variable below zero are accumulated, and assigned to the probability of observing a value of zero.
-The value of $X = 0$ represents *censored observations* of the latent variable.
+*Censored models*\index{Censored models} (Sect.\ \@ref(CensoredModels)) assumes a single latent\index{Latent variable} (underlying), continuous variable, that is only measurable when it exceeds a threshold.
 
 *Hurdle models*\index{Hurdle models} (Sect.\ \@ref(HurdleModels)) treat the zeros as emerging from a two-step process.
 Step one is a binary process, that models whether the event of interest (i.e., an insurance claim is made; rainfall is recorded; fish are caught) occurs.
 Step two is a model for the continuous data of interest, conditional on the event of interest occurring.
 
-Compound *Poisson-gamma models*\index{Compound Poisson-gamma models} (Sect.\ \@ref(TweedieModels)) combine the discrete and continuous components in a single probability model.
-Unlike the hurdle model, the discrete and continuous parts are not modelled separately; the entire distribution is modelled using a single probability model specific for modeling mixed random variables.
+Compound *Poisson-gamma models*\index{Compound Poisson-gamma models} (Sect.\ \@ref(TweedieModels)) generates zeros naturally when a Poisson count of underlying events equals zero.
+
+
+```{r}
+MixedTable <- array( dim=c() )
+
+colnames(MixedTable) <- c("Censored",
+                          "Hurdle",
+                          "Poisson-Gamma")
+
+rownames(MixedTable) <- c("Zeros",
+                          "Parameters",
+                          "Interpretation",
+                          "Flexibuiity",
+                          "Uses")
+MixedTable[1, ] <- c("True value unobservable",
+                     "Different process",
+                     "No events occurred")
+MixedTable[2, ] <- c("One model",
+                     "Two separate models",
+                     "One unified model")
+MixedTable[3, ] <- c("Mechanistic",
+                     "Very natural",
+                     "Requires physical story")
+MixedTable[4, ] <- c("Less",
+                     "High",
+                     "Moderate")
+MixedTable[5, ] <- c("Detection limits", 
+                     "Healthcare spend",
+                     "Insurance, rainfall")
+
+kable(MixedTable)
+
+```
+
+
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+In hurdle models, zeros come only from the binary component of the part model.
+Zero-inflated distributions mixes a point mass at zero with a distribution that also has support at zero.
+This implies two different types of zero (structural vs. sampling). 
+:::
 
 
 ## Censored model {#CensoredModels}
 
 ### Definitions {#CensoredModelsDefinitions}
+
+Censored model assume a distribution for\ $Y$, such as a normal (or other continuous) distribution, over its full range, but the value cannot always be observed exactly.
+Commonly, the value of the random variable is only observed when it exceeds some threshold (typically zero). 
+Below that threshold, the observed value is recorded as zero.
+The zero is recorded because the underlying process did not generate a value large enough to be observed. 
+For example, any rainfall less than (say) 0.01cm cannot be recorded accurately, anf is recorded as zero.
+
+Censoring can occur at the lower end of the scale (left censoring, where values below a threshold are unobserved) or the upper end (right censoring, where values above a threshold are unobserved). Right censoring is common in survival analysis; left censoring arises naturally when instruments cannot record below a detection limit.
+
+
+:::{.definition #Censoring name="Censoring"}
+Here's a formal definition that covers both:
+
+A random variable\ $Y$ is censored if its exact value is only observed when it falls within some interval $[L, U]$; otherwise, only the bound that was exceeded is recorded. 
+
+*Left censoring* occurs when there is a finite lower threshold\ $L$ and no upper censoring: values below\ $L$ are unobserved and recorded as\ $L$.
+For left censoring at\ $L$:
+$$
+  Y^\text{obs} 
+  = 
+  \begin{cases}
+    L & \text{if $Y \le L$};\\
+    Y & \text{if $L > Y$}.
+  \end{cases}
+$$
+
+
+*Right censoring* occurs when there is a finite upper threshold\ $U$ and no lower censoring: values above\ $U$ are unobserved and recorded as\ $U$.
+For right censoring at\ $L$:
+$$
+  Y^\text{obs} 
+  = 
+  \begin{cases}
+    Y & \text{if $Y < U$};\\
+    U & \text{if $U \ge Y$}.
+  \end{cases}
+$$
+:::
+
+
+One specific censored model is a *Tobit model*\index{Tobit model}.
+A Tobit model assumes normal distribution, censored at zero.
+
+The Tobit model is a natural single-process model: zeros are not generated using a separate process, but are simply the left-censored tail of the underlying distribution. 
+
+
+---
+The hurdle model, sometimes called a two-part model, treats zeros and positive values as arising from two entirely separate processes. The first part is a binary model — typically logistic regression — that determines whether an observation clears the "hurdle" into positive territory at all. The second part is a truncated continuous model, such as a log-normal or gamma regression, that describes the distribution of values conditional on being positive. The two parts are estimated independently, which is both a practical convenience and a conceptual feature: different predictors, or the same predictors with different coefficients, can govern the probability of a non-zero outcome and the magnitude of that outcome given it is non-zero. This makes the hurdle model particularly attractive when you have substantive reasons to believe the zero-generating process is distinct from the process driving variation among positive values — for example, whether a household buys alcohol at all versus how much they spend if they do.
+---
+
+The Tweedie / Compound Poisson-Gamma Model
+The Tweedie model generates the point mass at zero through a physically motivated compound process. Imagine that events arrive according to a Poisson process, and each event contributes an independent gamma-distributed amount to the total. The observed Y is the sum of all contributions. When the Poisson count is zero — no events occur — the total is exactly zero, naturally producing the point mass without any separate modelling of zeros. When at least one event occurs, the sum of gamma random variables gives a continuous positive value. The resulting marginal distribution belongs to the Tweedie family, with a variance-mean relationship of the form Var(Y) = φμ^p for power parameter p ∈ (1, 2). This is a unified single-distribution model, making it elegant and computationally convenient — it fits within the framework of generalised linear models — but it requires the compound Poisson-gamma story to be a plausible description of the data-generating process. Insurance claim totals and rainfall accumulation are natural fits; for data where that physical story does not apply, the model may be harder to justify interpretively.
+
+---
 
 \index{Censored models|(}
 Censored models assume the existence of an unobserved *latent variable*,\index{Latent variable} say\ $Y$, such that $Y\in\mathbb{R}$ with probability function $f_Y(y)$.
