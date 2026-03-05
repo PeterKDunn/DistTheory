@@ -16,6 +16,7 @@ library("bookdown")
 library("mnormt")
 library("sf")
 library("MASS")
+library("tweedie")
 
 
 # example R options set globally
