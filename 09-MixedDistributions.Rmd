@@ -32,41 +32,6 @@ Step two is a model for the continuous data of interest, conditional on the even
 Compound *Poisson-gamma models*\index{Compound Poisson-gamma models} (Sect.\ \@ref(TweedieModels)) generates zeros naturally when a Poisson count of underlying events equals zero.
 
 
-```{r}
-MixedTable <- array( dim=c() )
-
-colnames(MixedTable) <- c("Censored",
-                          "Hurdle",
-                          "Poisson-Gamma")
-
-rownames(MixedTable) <- c("Zeros",
-                          "Parameters",
-                          "Interpretation",
-                          "Flexibuiity",
-                          "Uses")
-MixedTable[1, ] <- c("True value unobservable",
-                     "Different process",
-                     "No events occurred")
-MixedTable[2, ] <- c("One model",
-                     "Two separate models",
-                     "One unified model")
-MixedTable[3, ] <- c("Mechanistic",
-                     "Very natural",
-                     "Requires physical story")
-MixedTable[4, ] <- c("Less",
-                     "High",
-                     "Moderate")
-MixedTable[5, ] <- c("Detection limits", 
-                     "Healthcare spend",
-                     "Insurance, rainfall")
-
-kable(MixedTable)
-
-```
-
-
-
-
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 In hurdle models, zeros come only from the binary component of the part model.
 Zero-inflated distributions mixes a point mass at zero with a distribution that also has support at zero.
@@ -75,24 +40,23 @@ This implies two different types of zero (structural vs. sampling).
 
 
 ## Censored model {#CensoredModels}
+\index{Censored models|(}
 
 ### Definitions {#CensoredModelsDefinitions}
 
-Censored model assume a distribution for\ $Y$, such as a normal (or other continuous) distribution, over its full range, but the value cannot always be observed exactly.
+Censored model assume a distribution for\ $Y$, such as a normal (or other continuous) distribution, but the value cannot always be observed exactly.
 Commonly, the value of the random variable is only observed when it exceeds some threshold (typically zero). 
-Below that threshold, the observed value is recorded as zero.
-The zero is recorded because the underlying process did not generate a value large enough to be observed. 
-For example, any rainfall less than (say) 0.01cm cannot be recorded accurately, anf is recorded as zero.
+Below that threshold, the threshold vaklue is recorded.
+For example, daily rainfall in Australia less than $0.2\mms$ is recorded as zero rainfall; rainfall amount less than this cannot be measured.
 
-Censoring can occur at the lower end of the scale (left censoring, where values below a threshold are unobserved) or the upper end (right censoring, where values above a threshold are unobserved). Right censoring is common in survival analysis; left censoring arises naturally when instruments cannot record below a detection limit.
+Censoring\index{Censoring} can occur at the lower end of the scale (left censoring, where values below a threshold are unobserved) or the upper end (right censoring, where values above a threshold are unobserved). 
+Right censoring\index{Censoring!right} is common in survival analysis, when individuals live beyond the end if the study; left censoring\index{Censoring!left} arises naturally when instruments cannot record below a detection limit.
 
 
 :::{.definition #Censoring name="Censoring"}
-Here's a formal definition that covers both:
+A random variable\ $Y$ is censored if its exact value is only observed when it falls within some interval $[L, U]$; otherwise, only the bound that was exceeded is recorded.\index{Censoring}
 
-A random variable\ $Y$ is censored if its exact value is only observed when it falls within some interval $[L, U]$; otherwise, only the bound that was exceeded is recorded. 
-
-*Left censoring* occurs when there is a finite lower threshold\ $L$ and no upper censoring: values below\ $L$ are unobserved and recorded as\ $L$.
+*Left censoring*\index{Censoring!left} occurs when there is a finite lower threshold\ $L$ and no upper censoring: values below\ $L$ are unobserved and recorded as\ $L$.
 For left censoring at\ $L$:
 $$
   Y^\text{obs} 
@@ -104,7 +68,7 @@ $$
 $$
 
 
-*Right censoring* occurs when there is a finite upper threshold\ $U$ and no lower censoring: values above\ $U$ are unobserved and recorded as\ $U$.
+*Right censoring*\index{Censoring!right} occurs when there is a finite upper threshold\ $U$ and no lower censoring: values above\ $U$ are unobserved and recorded as\ $U$.
 For right censoring at\ $L$:
 $$
   Y^\text{obs} 
@@ -118,35 +82,12 @@ $$
 
 
 One specific censored model is a *Tobit model*\index{Tobit model}.
-A Tobit model assumes normal distribution, censored at zero.
-
-The Tobit model is a natural single-process model: zeros are not generated using a separate process, but are simply the left-censored tail of the underlying distribution. 
-
-
----
-The hurdle model, sometimes called a two-part model, treats zeros and positive values as arising from two entirely separate processes. The first part is a binary model — typically logistic regression — that determines whether an observation clears the "hurdle" into positive territory at all. The second part is a truncated continuous model, such as a log-normal or gamma regression, that describes the distribution of values conditional on being positive. The two parts are estimated independently, which is both a practical convenience and a conceptual feature: different predictors, or the same predictors with different coefficients, can govern the probability of a non-zero outcome and the magnitude of that outcome given it is non-zero. This makes the hurdle model particularly attractive when you have substantive reasons to believe the zero-generating process is distinct from the process driving variation among positive values — for example, whether a household buys alcohol at all versus how much they spend if they do.
----
-
-The Tweedie / Compound Poisson-Gamma Model
-The Tweedie model generates the point mass at zero through a physically motivated compound process. Imagine that events arrive according to a Poisson process, and each event contributes an independent gamma-distributed amount to the total. The observed Y is the sum of all contributions. When the Poisson count is zero — no events occur — the total is exactly zero, naturally producing the point mass without any separate modelling of zeros. When at least one event occurs, the sum of gamma random variables gives a continuous positive value. The resulting marginal distribution belongs to the Tweedie family, with a variance-mean relationship of the form Var(Y) = φμ^p for power parameter p ∈ (1, 2). This is a unified single-distribution model, making it elegant and computationally convenient — it fits within the framework of generalised linear models — but it requires the compound Poisson-gamma story to be a plausible description of the data-generating process. Insurance claim totals and rainfall accumulation are natural fits; for data where that physical story does not apply, the model may be harder to justify interpretively.
-
----
-
-\index{Censored models|(}
-Censored models assume the existence of an unobserved *latent variable*,\index{Latent variable} say\ $Y$, such that $Y\in\mathbb{R}$ with probability function $f_Y(y)$.
-Values of\ $Y$ below some threshold, say $y^*$ (commonly, $y^* = 0$), are not directly observed.
-Instead, $X = \max(Y^*, Y)$ is observed; that is, values of\ $Y$ less than\ $y^*$ are recorded as\ $y^*$.
-We will focus on the case where $y^* = 0$.
+A Tobit model assumes normal distribution,\index{Nornal distribution} left-censored\index{Censoring!left} at zero (i.e., $L = 0$).
+We will focus on the left-censored case where $L = 0$, but the underlying distribution is not necessarily a normal distribution (CHECK!).
 
 
 :::{.example #TobitAlcoholSpend name="Latent variables and censoring"}
-Consider a latent variable defined as the 'desire to purchase alcohol'\ $Y$, where the value $Y = 0$ represents indifference to purchasing alcohol.
-Some people may have a *very* strong aversion to purchasing alcohol, so that the value of\ $Y$ is large and negative.
-Some people may have a *mild* aversion to purchasing alcohol, so that the value of\ $Y$ is small but still negative.
-In both cases, however, an aversion to purchasing alcohol is present, and no alcohol is purchased.
-
-The observed variable of interest could be\ $X$, the average weekly spend on buying alcohol in dollars.
-When $Y \le 0$, we observe $X = 0$; however, when $Y > 0$, a continuous amount is spent on purchasing alcohol (Fig.\ \@ref(fig:AlcoholSpend)).
+FIX and change (Fig.\ \@ref(fig:AlcoholSpend)).
 :::
 
 ```{r AlcoholSpend, echo=FALSE, fig.align="center", fig.cap="Left: the latent variable\\ $Y$, the desire to buy alcohol. Right: the observed variable\\ $X$, the average weekly spend on alcohol. The solid dot is the sum of all probabilities for which $Z \\le 0$.", fig.width=8, fig.height=4, out.width="100%"}
@@ -612,6 +553,12 @@ abline(v = 0,
 ### Definitions {#HurdleModelsDefinitions}
 
 \index{Hurdle models|(}
+A hurdle model treats zeros and positive values as arising from two separate processes. 
+The first process is a binary model that determines whether an event occurs or not. 
+The second process that describes the distribution of values, conditional on the values being positive. 
+The hurdle model is useful when the zero-generating process is believed to be distinct from the process driving variation among positive values; for example, whether a household buys alcohol at all is a different process tha how much a household spends if they do buy alcohol.
+
+
 A *hurdle model*\index{Hurdle models} treats the zero values of the random variable\ $X$ as emerging from a two-step process.
 The first step uses a Bernoulli distribution (Sect.\ \@ref(BernoulliDistribution))\index{Bernoulli distribution} to model a random variable\ $Y$ that defines whether an event of interest occurs:
 $$
@@ -920,9 +867,20 @@ points(x = 0, # Included
 
 ## Compound Poisson-gamma distributions {#TweedieModels}
 
+
 \index{Compound Poisson-gamma distributions|(}
-Compound Poisson--gamma distribution take a different approach to modelling mixed random variables: Compound Poisson--gamma distributions model mixed random variables as a Poisson sum of independent gamma distributions.
-Suppose the number of events observed (which is discrete) is\ $N$, such that
+### Definition
+
+A compound Poisson--gamma model generates the point mass at zero through a physically-motivated compound process. 
+The model assumes that events arrive according to a Poisson process, and each event contributes an independent gamma-distributed amount to the total.
+The observed variable\ $Y$ is the sum of all the independent contributions. 
+A compound Poisson--gamma distributions, therefore, is a Poisson sum of independent gamma distributions.
+
+When the Poisson count is zero (i.e., when no events occur), the total is exactly zero, naturally producing the point mass without any separate modelling of zeros. 
+When at least one event occurs, the sum of gamma random variables gives a continuous positive value. 
+The compound Poisson-gamma distribution is a unified single-distribution model, and requires the compound Poisson-gamma story to be a plausible description of the data-generating process. 
+
+More specifically, suppose the number of events observed (a discrete random variable) is\ $N$, such that
 \begin{equation}
   N \sim \text{Pois}(\lambda).
    (\#eq:PGp0)
@@ -953,8 +911,19 @@ $$
 By this definition $X$ has a *compound Poisson-gamma distribution*.
 The distribution of\ $X$ has a probability mass at $X = 0$ where $\Pr(Y = 0) = \Pr(N = 0) = \exp(-\lambda)$.
 
+
+Insurance claim totals and rainfall accumulation are natural fits; for data where that physical story does not apply, the model may be harder to justify interpretively.
+
+:::{.example}
+EXAMPLE WHERE THE NARRATIVE FITS
+:::
+
+
+
+### Properties
+
 *The probability functions for the compound Poisson-gamma distribution cannot be written in closed form.*
-However, the probability function can be expressed as an infinite sum [@dunn2005series] or by inverting the MGF [@mypapers:Dunn:fourier] as discussed in Sect.\ \@ref(DistributionFromMGF).
+However, the probability function can be expressed as an infinite sum [@dunn2005series] or by inverting the MGF [@mypapers:Dunn:fourier], following the ideas in Sect.\ \@ref(DistributionFromMGF).
 
 The probability function as an infinite series can be determined from the development of the compound Poisson-gamma distribution above.
 If $N = 1$ with $\Pr(N = 1)$ (from the Poisson distribution), then, $X = Y$ has the $\text{Gam}(\alpha, \beta)$ distribution.
@@ -1212,6 +1181,45 @@ box()
 Modelling rainfall. 
 Using hurdle from Stern and Coe, Chandler and Wheater? Tobit thing from IWSM, and Poisson--gamma, 
 :::
+
+
+
+## Sumamry of models
+
+
+
+```{r echo=FALSE}
+MixedTable <- array( dim=c(5, 3) )
+
+colnames(MixedTable) <- c("Censored",
+                          "Hurdle",
+                          "Poisson-Gamma")
+
+rownames(MixedTable) <- c("Zeros",
+                          "Parameters",
+                          "Interpretation",
+                          "Flexibility",
+                          "Uses")
+MixedTable[1, ] <- c("True value unobservable",
+                     "Different process",
+                     "No events occurred")
+MixedTable[2, ] <- c("One model",
+                     "Two separate models",
+                     "One unified model")
+MixedTable[3, ] <- c("Mechanistic",
+                     "Very natural",
+                     "Requires physical story")
+MixedTable[4, ] <- c("Less",
+                     "High",
+                     "Moderate")
+MixedTable[5, ] <- c("Detection limits", 
+                     "Healthcare spend",
+                     "Insurance, rainfall")
+
+kable(MixedTable)
+
+```
+
 
 
 
