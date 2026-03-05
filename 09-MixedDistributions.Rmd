@@ -4,7 +4,7 @@
 On completion of this chapter, you should be able to:
 
 * recognise mixed random variables.
-* recognise censored models, hurdle models and compound Poisson--gamma models for modelling mixed random variables.
+* recognise hurdle models and compound Poisson--gamma models for modelling mixed random variables.
 * know the basic properties of the above approaches.
 * apply these approaches as appropriate to problem solving.
 :::
@@ -21,531 +21,13 @@ Example include:
 * Modelling fish catch: some trawls will catch zero fish; other trawls, however, will catch a positive continuous mass of fish.
 
 Continuous data with a discrete probability at zero can be modelled in various ways, depending on how the discrete probability at $X = 0$ is modelled
-Three approaches are considered in this chapter.
+Two approaches are considered in this chapter.
 
-*Censored models*\index{Censored models} (Sect.\ \@ref(CensoredModels)) assumes a single latent\index{Latent variable} (underlying), continuous variable, that is only measurable when it exceeds a threshold.
-
-*Hurdle models*\index{Hurdle models} (Sect.\ \@ref(HurdleModels)) treat the zeros as emerging from a two-step process.
+*Hurdle models*\index{Hurdle models} (Sect.\ \@ref(HurdleModels)) treat the zeros as emerging from a *two-step process*.
 Step one is a binary process, that models whether the event of interest (i.e., an insurance claim is made; rainfall is recorded; fish are caught) occurs.
 Step two is a model for the continuous data of interest, conditional on the event of interest occurring.
 
-Compound *Poisson-gamma models*\index{Compound Poisson-gamma models} (Sect.\ \@ref(TweedieModels)) generates zeros naturally when a Poisson count of underlying events equals zero.
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-In hurdle models, zeros come only from the binary component of the part model.
-Zero-inflated distributions mixes a point mass at zero with a distribution that also has support at zero.
-This implies two different types of zero (structural vs. sampling). 
-:::
-
-
-## Censored model {#CensoredModels}
-\index{Censored models|(}
-
-### Definitions {#CensoredModelsDefinitions}
-
-Censored model assume a distribution for\ $Y$, such as a normal (or other continuous) distribution, but the value cannot always be observed exactly.
-Commonly, the value of the random variable is only observed when it exceeds some threshold (typically zero). 
-Below that threshold, the threshold vaklue is recorded.
-For example, daily rainfall in Australia less than $0.2\mms$ is recorded as zero rainfall; rainfall amount less than this cannot be measured.
-
-Censoring\index{Censoring} can occur at the lower end of the scale (left censoring, where values below a threshold are unobserved) or the upper end (right censoring, where values above a threshold are unobserved). 
-Right censoring\index{Censoring!right} is common in survival analysis, when individuals live beyond the end if the study; left censoring\index{Censoring!left} arises naturally when instruments cannot record below a detection limit.
-
-
-:::{.definition #Censoring name="Censoring"}
-A random variable\ $Y$ is censored if its exact value is only observed when it falls within some interval $[L, U]$; otherwise, only the bound that was exceeded is recorded.\index{Censoring}
-
-*Left censoring*\index{Censoring!left} occurs when there is a finite lower threshold\ $L$ and no upper censoring: values below\ $L$ are unobserved and recorded as\ $L$.
-For left censoring at\ $L$:
-$$
-  Y^\text{obs} 
-  = 
-  \begin{cases}
-    L & \text{if $Y \le L$};\\
-    Y & \text{if $L > Y$}.
-  \end{cases}
-$$
-
-
-*Right censoring*\index{Censoring!right} occurs when there is a finite upper threshold\ $U$ and no lower censoring: values above\ $U$ are unobserved and recorded as\ $U$.
-For right censoring at\ $L$:
-$$
-  Y^\text{obs} 
-  = 
-  \begin{cases}
-    Y & \text{if $Y < U$};\\
-    U & \text{if $U \ge Y$}.
-  \end{cases}
-$$
-:::
-
-
-One specific censored model is a *Tobit model*\index{Tobit model}.
-A Tobit model assumes normal distribution,\index{Nornal distribution} left-censored\index{Censoring!left} at zero (i.e., $L = 0$).
-We will focus on the left-censored case where $L = 0$, but the underlying distribution is not necessarily a normal distribution (CHECK!).
-
-
-:::{.example #TobitAlcoholSpend name="Latent variables and censoring"}
-FIX and change (Fig.\ \@ref(fig:AlcoholSpend)).
-:::
-
-```{r AlcoholSpend, echo=FALSE, fig.align="center", fig.cap="Left: the latent variable\\ $Y$, the desire to buy alcohol. Right: the observed variable\\ $X$, the average weekly spend on alcohol. The solid dot is the sum of all probabilities for which $Z \\le 0$.", fig.width=8, fig.height=4, out.width="100%"}
-par(mfrow = c(1, 2))
-
-############### Latent
-zz <- seq(-3, 3.5, 
-          length = 1000) + 1 # 1 is the ncp
-z <- zz * 15
-
-fz <- dt(zz, 
-         df = 4, 
-         ncp = 1)
-
-plot(fz ~ z,
-     type = "l",
-     xlim = range(z),
-     ylim = c(0, max(fz)),
-     lwd = 3,
-     col = plotColour1,
-     axes = FALSE,
-     main = expression(atop(Latent~variable~italic(Y)*":",
-                            Desire~to~buy~alcohol)),
-     xlab = expression(Latent~variable~italic(Y)),
-     ylab = expression(Probability~fn.)
-)
-lines(fz[z<0] ~ z[z<0],
-      lwd = 3,
-      col = "grey")
-axis(side = 1)
-box()
-abline(h = 0,
-       col = "grey")
-abline(v = 0,
-       lty = 2,
-       col = "grey",
-       lwd = 2)
-
-text(x = -18,
-     y = max(fz) * 0.75, 
-     label = "Aversion\nto buying\nalcohol",
-     cex = 0.9)
-text(x = 45,
-     y = max(fz) * 0.75, 
-     label = "Propensity\nto buying\nalcohol",
-     cex = 0.9)
-
-
-############### Observed
-y0 <- pt( 0, 
-          df = 4,
-          ncp = 1)
-
-plot(fz[z >= 0] ~ z[z >= 0],
-     xlim = range(z),
-     ylim = c(0, max(fz)),
-     type = "l",
-     lwd = 3,
-     col = plotColour1,
-     axes = FALSE,
-     main = expression(atop(Observed~variable~italic(X)*":",
-                            Average~weekly~spend~on~alcohol)),
-     xlab = expression(Observed~variable~italic(X)),
-     ylab = expression(Probability~fn.)
-)
-abline(h = 0,
-       col = "grey")
-axis(side = 1)
-axis(side = 2,
-     at = round(y0, 2),
-     las = 2)
-box()
-
-# Grey where latent variable is less than zero
-lines(x = z[z < 0],
-      y = fz[z < 0],
-      col = "grey",
-      lwd = 2,
-      lty = 3)
-
-abline(v = 0,
-       lty = 2,
-       col = "grey",
-       lwd = 2)
-
-# Points for Y = 0
-points(x = 0,
-       y = y0,
-       pch = 19)
-
-#points(x = Z_to_Y(0),
-#       y = dt(0, 
-#              df = 4,
-#              ncp = 1),
-#       pch = 1)
-text(x = 28,
-     y = max(fz)/5,
-     label = "Prob. that no\nalcohol purchased",
-     pos = 1,
-     cex = 0.9)
-arrows(x0 = 28,
-       y0 = max(fz)/5,
-       x1 = 0,
-       y1 = pt(0, 
-              df = 4,
-              ncp = 1),
-       angle = 15,
-       length = 0.15)
-
-```
-
-
-In this context, the value of the observed variable\ $X$ is said to be *censored*.
-
-
-:::{.definition #Censoring name="Censoring"}
-A variable is called *censored*\index{Censoring} if its value is only observed when its above or below a certain threshold.
-
-*Left censoring*\index{Censoring!left} occurs when the true (latent) value is less than or equal to a known threshold, but the exact value is unknown.
-We only know that the true (latent) value is *below* a certain threshold.
-
-*Right censoring*\index{Censoring!right} occurs when the true (latent) value is greater than or equal to a known threshold, but the exact value is unknown.
-We only know that the true (latent) value is *above* a certain threshold.
-:::
-
-
-:::{.example #AlcoholLeftCensoring name="Left censoring"}
-The latent variable 'desire to purchase alcohol' used in Example\ \@ref(exm:TobitAlcoholSpend) is *left censored*.\index{Censoring!left}
-:::
-
-
-:::{.example #insectLeftCensoring ame="Right censoring"}
-In survival analysis,\index{Survival analysis} the time it takes insects to die (say\ $X$) may be studied.
-If the study ends at time\ $t^*$, the time of death for any insects still alive is some value larger than $t^*$; that is, $X\ge t^*$ but the exact time of death remains unknown.
-The time to death is *right censored*.\index{Censoring!right}
-:::
-
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-*Censoring*\index{Censoring} is not the same as *truncation*.\index{Truncation}
-
-*Censoring* retains observations, but the exact value remains unknown.
-*Truncation* removes observations whose value falls above or below a threshold.
-:::
-
-
-
-Usually $y^* = 0$ (as in Example\ \@ref(exm:TobitAlcoholSpend)), so that any value of\ $Y \le 0$ is recorded as\ $y = 0$.
-That is, we observe the random variable\ $X$ such that
-$$
-  X = \max(Y, 0).
-$$
-This means the probability function of\ $X$ is
-$$
-  f_X(x) = 
-  \begin{cases}
-    0       & \text{if $X < 0$}\\
-    F_Y(0)  & \text{if $X = 0$}\\
-    f_Y(y)  & \text{if $X > 0$}
-  \end{cases}
-$$
-where $F_Y(y)$ is the distribution function of\ $Y$.
-The probability function for $X\mid X > 0$, the continuous part of the distribution only, is
-\begin{equation}
-  f_{X\mid X > 0}(x) 
-  = \frac{f_X(x)}{\Pr(X > 0)} 
-  = \frac{f_Y(y)}{1 - F_Y(0)}
-  (\#eq:PDFpositiveConditional)
-\end{equation}
-where again $F_Y(y)$ is the distribution function of\ $Y$.
-The distribution function of\ $X$ is
-$$
-  F_{X\mid X>0}(x) =
-  \begin{cases}
-    0             & \text{for $x < 0$}\\
-    F_Y(0)        & \text{for $x = 0$}\\ 
-    F_Y(x)        & \text{for $x > 0$}
-  \end{cases}
-$$
-
-
-If the latent distribution is a normal distribution,\index{Normal distribution} Equation\ \@ref(eq:PDFpositiveConditional) can be written in terms of the standard normal density function $\phi(\cdot)$ and the standard normal distribution function $\Phi(\cdot)$ (see Sect.\ \@ref(StandardNormal)).
-In this case only, notice that 
-\begin{align*}
-   \Pr(X > 0) 
-   &= \Pr(Z > (0 - \mu)/\sigma)\quad\text{(where $Z$ is a standard normal variate)} \\ 
-   &= \Pr(Z > -\mu/\sigma) \\
-   &= 1 - \Phi( -\mu/\sigma) \\
-   &= \Phi(\mu/\sigma) \quad\text{(using the symmetry of the normal distribution)},
-\end{align*}
-and hence Equation\ \@ref(eq:PDFpositiveConditional) can be written as
-\begin{equation}
-  f_{X\mid X>0}(x) 
-  = \frac{\phi\big((x-\mu)/\sigma\big)}{\Phi(\mu/\sigma)}.
-  (\#eq:PDFpositiveConditional2)
-\end{equation}
-If we write $t = \mu/\sigma$ and define $\lambda(t) = \phi(t)/\Phi(t)$, this expression becomes
-$$
-  f_{X\mid X>0}(x) = ?????????????
-$$
-LOST:
-$$
-  f_{X\mid X>0}(x) 
-  = \frac{f_Z(x)}{\Pr(Z > 0)} 
-  = \frac{f_Z(x)}{1 - F_Z(0)}
-$$
-
-
-
-
-:::{.example #TobitExamplesLatent2 name="Latent variables and censoring"}
-Consider the number of hours worked (which can be observed), which must take a non-negative value.
-We could assume an underlying, unobserved latent variable such as 'willingness to work'.
-Negative values for 'willingness to work', no matter how small or how large, all result in zero observed hours of work.
-:::
-
-
-### Properties {#CensoredModelsProperties}
-
-The expected value of the censored random variable\ $X$ can be found first separating the discrete and continuous parts of the distribution:
-\begin{align*}
-  \operatorname{E}[X] 
-  &= \operatorname{E}[X\mid X = 0] + \operatorname{E}[X\mid X > 0]\\
-  &= \Pr(X = 0)\times 0 + \operatorname{E}[X\mid X > 0]\\
-  &= \operatorname{E}[X\mid X > 0]\\
-  &= \int_0^\infty x\cdot f_{X\mid X > 0}(x)\,dx,\\
-  &= \frac{1}{\Phi()} \int_0^\infty x\cdot f_{X}(x)\,dx,
-\end{align*}
-where $f_{X\mid X > 0}(x)$ is given in Equation\ \@ref(eq:PDFpositiveConditional2)).
-
-When the censoring happens at $x^* = 0$, the standardised score is $(x^* - \mu)/\sigma = -t$, where defining $t = \mu/\sigma$ proves useful.
-Then $1 - \Phi()$
-Thus,
-\begin{align*}
-  \operatorname{E}[X] 
-  &= \int_0^\infty x\cdot f_{X\mid X > 0}(x)\,dx,
-  &= \int_0^\infty x\cdot f_{X\mid X > 0}(x)\,dx,
-\end{align*}
-
-Similarly,
-$$
-  \operatorname{E}[X^2] 
-  = \operatorname{E}[X^2 \mid X > 0]
-  = \int_0^\infty x^2 \cdot f_{X\mid X>0}(x)\, dx,
-$$
-from which the variance can be obtained.
-The same approach also gives the MGF as
-$$
-  M_X(t) = M_{X\mid X > 0}(t).
-$$
-Clearly, further progress with these expressions requires knowing the distribution of\ $X$ and hence the distribution of the latent variable\ $Z$.
-It is common, but by no means universal, for the latent variable to be described by a normal distribution (when the models are also called *Tobit models*).\index{Tobit models}
-
-
-:::{.example #TobitExample0 name="Censored model"}
-Consider a latent variable\ $Y$, and an observed variable\ $X = \text{max}(0, Z)$.
-Suppose that\ $Z$ has the normal distribution\index{Normal distribution} (Fig.\ \@ref(fig:TobitPic), left panel))
-$$
-  Z \sim N(\mu = 0, \sigma^2 = 1),
-$$
-so that $\operatorname{E}[Z] = 0$ and $\operatorname{var}[Z] = 1$.
-That is, $Z$ has a standard normal distribution (Sect\ \@ref(StandardNormal)), and so
-$$
-  \Pr(Z < 0) = \Phi(0) = 0.5.
-$$
-Recall the notation: $\Phi(\cdot)$ is the distribution function for a standard normal variate, and $\phi(\cdot)$ is the density function for a standard normal variate.
-
-Then, define the random variable\ $X$ as
-$$
-  f_X(x) = 
-  \begin{cases}
-    0          & \text{if $Z < 0$};\\
-    \Phi(0)    & \text{if $Z = 0$};\\
-    \phi(x)    & \text{if $Z > 0$},
-  \end{cases}
-$$
-as shown in Fig.\ \@ref(fig:TobitPic) (right panel).
-
-From Equation\ \@ref(eq:PDFpositiveConditional),
-$$
-  f_{X\mid X > 0}(x) 
-  = \frac{\phi(x)}{1 - \Phi(0)}
-  = 2 \phi(x)
-$$
-for $X > 0$.
-From this expression, 
-$$
-  \operatorname{E}[X] 
-   = \operatorname{E}[X \mid X > 0] 
-  = 2 \int_0^\infty x\cdot \phi(x)\, dx 
-  = \frac{2}{\sqrt{2\pi}} 
-  \approx 0.7979,
-$$
-integrating the expression for $\phi(x)$ (Equation\ \@ref(eq:StandardNormalPMF)).
-Similarly, using integration by parts,
-$$
-  \operatorname{E}[X^2] 
-   = \operatorname{E}[X^2 \mid X > 0] 
-  = 2 \int_0^\infty x^2\cdot \phi(x)\, dx 
-  = 1/2.
-$$
-Combining, this means that 
-$$
-  \operatorname{var}[X] 
-  = \frac{1}{2} - \left(\frac{2}{\sqrt{2\pi}}\right)^2 
-  = \frac{1}{2} - \frac{1}{\pi} 
-  \approx 0.182.
-$$
-:::
-
-
-
-```{r TobitPic, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $Z = 0$.", fig.width=8, fig.height=4, out.width="90%"}
-par( mfrow = c(1, 2))
-
-x.mean <- 0
-x.sd <- 1
-p <- pnorm(0,
-            mean = x.mean,
-            sd = x.sd)
-
-x <- seq(from = x.mean - (3.5 * x.sd),
-         to =   x.mean + (3.5 * x.sd),
-         length = 1000)
-
-y <-  dnorm(x,
-            mean = x.mean,
-            sd = x.sd)
-
-plot(y ~ x,
-     xlim = range(x),
-     ylim = c(0, 0.5),
-     type = "n",
-     axes = FALSE,
-     xlab = expression(Latent~variable~italic(Z)),
-     ylab = expression(Prob.~"function"),
-     main = expression( atop(A~censored~model*":",
-                             the~latent~variable~italic(Z))),
-     lwd = 3)
-axis(side = 1)
-abline(h = 0,
-       col = "grey")
-
-# Shade for X < 0
-xNeg <- x[ x <= 0]
-yNeg <- y[ x <= 0]
-
-polygon( x = c(xNeg, rev(xNeg)),
-         y = c(yNeg, rep(0, length(yNeg))),
-         col = "lightgrey",
-         border = NA) # Omit border
-
-# Different colours for x >= 0 and x < 0
-lines( y[x > 0] ~ x[x > 0],
-       lwd = 2,
-       col = "black")
-lines( y[x <= 0] ~ x[x <= 0],
-       lwd = 3,
-       col = "darkgrey")
-
-# x = 0
-abline(v = 0,
-       col = "grey",
-       lty = 2)
-
-box()
-
-
-# Explanatory labels
-arrows(x0 = -2,
-       x1 = -1,
-       y0 = 0.2,
-       y1 = 0.08,
-       length = 0.15,
-       angle = 15)
-text(x = -2,
-     y = 0.2,
-     pos = 3,
-     cex = 0.9,
-     label = expression(atop(Where,
-                             italic(Z)<0) ) )
-
-################################################################################
-
-plot(y[x > 0] ~ x[x > 0],
-     xlim = range(x),
-     ylim = c(0, 0.5),
-     type = "l",
-     axes = FALSE,
-     xlab = expression(Observed~variable~italic(X)),
-     ylab = expression(Prob.~"function"),
-     main = expression( atop(A~censored~model*":",
-                             the~censored~variable~italic(X))),
-
-     lwd = 3)
-abline(h = 0,
-       col = "grey")
-axis(side = 1)
-axis(side = 2,
-     las = 1,
-     at = p)
-box()
-
-
-points(x = 0,
-       y = p,
-       pch = 19)
-
-
-# Explanatory labels
-arrows(x0 = 2.25,
-       x1 = 0,
-       y0 = 0.4,
-       y1 = p,
-       length = 0.15,
-       angle = 15)
-text(x = 2.25,
-     y = 0.4,
-     pos = 1,
-     cex = 0.9,
-     label = expression( atop(Discrete~prob.,
-                              at~italic(X)==0) ) )
-
-
-# arrows(x0 = 4,
-#        x1 = 3,
-#        y0 = 0.3,
-#        y1 = dnorm(3, mean = x.mean, sd = x.sd),
-#        length = 0.15,
-#        angle = 15)
-# text(x = 4,
-#      y = 0.3,
-#      pos = 3,
-#      cex = 0.9,
-#      label = expression( atop(Normal~distribution)) ) 
-
-# X < 0 part
-lines( y[x <= 0] ~ x[x <= 0],
-       lwd = 1,
-       lty = 3,
-       col = "darkgrey")
-
-# x = 0
-abline(v = 0,
-       col = "grey",
-       lty = 2)
-
-
-```
-
-
-
-
-
-\index{Censored models|)}
-
-
+Compound *Poisson-gamma models*\index{Compound Poisson-gamma models} (Sect.\ \@ref(TweedieModels)) generates zeros from a *single process*, when a Poisson count of underlying events equals zero.
 
 
 ## Hurdle models {#HurdleModels}
@@ -556,7 +38,7 @@ abline(v = 0,
 A hurdle model treats zeros and positive values as arising from two separate processes. 
 The first process is a binary model that determines whether an event occurs or not. 
 The second process that describes the distribution of values, conditional on the values being positive. 
-The hurdle model is useful when the zero-generating process is believed to be distinct from the process driving variation among positive values; for example, whether a household buys alcohol at all is a different process tha how much a household spends if they do buy alcohol.
+The hurdle model is useful when the zero-generating process is believed to be distinct from the process driving variation among positive values; for example, whether a household buys alcohol is a different process than how much a household spends on alcohol if they do buy alcohol.
 
 
 A *hurdle model*\index{Hurdle models} treats the zero values of the random variable\ $X$ as emerging from a two-step process.
@@ -601,12 +83,22 @@ Then, using $p = 0.7$ and $\lambda = 1/2$, the probability function of\ $X$ is
 $$
   f_X(x)
   =
-    \begin{cases}
-       0.3                   & \text{if $x = 0$}\\
-       0.35\cdot \exp(-x/2)  & \text{if $x > 0$;}
-    \end{cases}
+  \begin{cases}
+    0.3                   & \text{if $x = 0$}\\
+    0.35\cdot \exp(-x/2)  & \text{if $x > 0$;}
+  \end{cases}
 $$
-see Fig.\ \@ref(fig:HurdlePic).
+Similarly, the distribution function of\ $X$ is
+$$
+  F_X(x)
+  =
+  \begin{cases}
+    0                                     & \text{if $ x < 0$}\\ 
+    0.3                                   & \text{if $x = 0$}\\
+    0.7\cdot \left(1 - \exp(-x/2)\right)  & \text{if $x > 0$;}
+  \end{cases}
+$$
+The probability function and distribution function are shown in Fig.\ \@ref(fig:HurdlePic).
 :::
 
 
@@ -628,8 +120,8 @@ plot(y ~ x,
               max( c(y, 1 - p) ) ),
      xlab = expression(italic(X)),
      ylab = expression(Prob.~"function"),
-     main = expression(atop(Mixed~distribution,
-                            hurdle~ model)),
+     main = expression(bold(atop(Mixed~distribution,
+                                 hurdle~ model))),
      lwd = 3)
 abline(h = 0,
        col = "grey")
@@ -684,8 +176,8 @@ plot(Fy ~ x,
      xlim = c(-1, max(x)),
      xlab = expression(italic(X)),
      ylab = expression(Distribution.~"function"),
-     main = expression(atop(Mixed~distribution,
-                            hurdle~ model)),
+     main = expression(nold(atop(Mixed~distribution,
+                                 hurdle~ model))),
      lwd = 3)
 abline(h = 0,
        col = "grey")
@@ -779,6 +271,7 @@ Then
    = 0.75\times 2 + 0.75\times 0.25\times 1.5^2
    \approx 1.921.
 \end{align*}
+The probability function and distribution function are shown in Fig.\ \@ref(fig:HurdleGamma).
 :::
 
 
@@ -866,13 +359,12 @@ points(x = 0, # Included
 
 
 ## Compound Poisson-gamma distributions {#TweedieModels}
-
-
 \index{Compound Poisson-gamma distributions|(}
+
 ### Definition
 
 A compound Poisson--gamma model generates the point mass at zero through a physically-motivated compound process. 
-The model assumes that events arrive according to a Poisson process, and each event contributes an independent gamma-distributed amount to the total.
+The model assumes that events occur according to a Poisson process, and each event contributes an independent gamma-distributed amount to the total.
 The observed variable\ $Y$ is the sum of all the independent contributions. 
 A compound Poisson--gamma distributions, therefore, is a Poisson sum of independent gamma distributions.
 
@@ -885,13 +377,13 @@ More specifically, suppose the number of events observed (a discrete random vari
   N \sim \text{Pois}(\lambda).
    (\#eq:PGp0)
 \end{equation}
-That is, an event occurs\ $N$ times, but occurs at random following a Poisson distribution.
+That is, an event occurs\ $N$ times, where\ $N$ follows a Poisson distribution.
 Given that\ $N$ has a Poisson distribution, it follows (from Sect.\ \@ref(PoissonDistribution)) that
 $$
   \Pr(N = 0) = \exp(-\lambda)
 $$
 is the probability that zero events are observed (i.e., $N = 0$).
-If, however, $N > 0$, then for $i = 1, 2, \dots, N$, a continuous random variable\ $Y_i$ is observed, such that
+If, however, $N > 0$, then for each $i = 1, 2, \dots, N$, a continuous random variable\ $Y_i$ is observed, such that
 $$
    Y_i \sim \text{Gam}(\alpha_i, \beta).
 $$
@@ -908,22 +400,127 @@ $$
     \sum_{i = 1}^N Y_i  & \text{if $N > 0$}.
   \end{cases}
 $$
-By this definition $X$ has a *compound Poisson-gamma distribution*.
+By this definition $X$ has a *compound Poisson-gamma distribution* (which are special cases of Tweedie distributions\index{Tweedie distributions}).
 The distribution of\ $X$ has a probability mass at $X = 0$ where $\Pr(Y = 0) = \Pr(N = 0) = \exp(-\lambda)$.
 
 
-Insurance claim totals and rainfall accumulation are natural fits; for data where that physical story does not apply, the model may be harder to justify interpretively.
+:::{.example #CPGRain name="Rainfall modelling"}
+Consider monthly rainfall\ $X$ at a given location.
+In any given month, $N$ rainfall events may occur (and for some months, $N$ may be zero) such that
+$$
+  N \sim \text{Poisson}(\lambda = 2.3).
+$$
+So, for example, that probability that a given month has no rainfall is
+$$
+  \Pr(N = 0) = \exp(-2.3) = 0.10,
+$$
+or about $10$%.
 
-:::{.example}
-EXAMPLE WHERE THE NARRATIVE FITS
+When a rainfall event does occur, the amount of rainfall is described by a gamma distribution
+$$
+  Y_i \sim \text{Gam}(\alpha_i, 2),
+$$
+where $\alpha_i$ may be different for each month~$i$.
+
+Suppose $\alpha_1 = 1.75$ in January and $\alpha_6 = 0.3$ in June.
+The Poisson distribution remains the same for both months (Fig.\ \@ref(fig:CPGrain), left panel), meaning that the distribution of the *number* of rainfall events is the same in January and in June.
+However, since the value of $\alpha$ is different for each month, the distributions of the amount of rainfall in each rainfall event changes (Fig.\ \@ref(fig:CPGrain), center panel).
+The distribution of *total* rainfall for the January and June rainfall using this model are shown in Fig.\ \@ref(fig:CPGrain) (right panel).
 :::
 
 
 
+```{r CPGrain, echo=FALSE, fig.align="center", fig.cap="A compound Poisson-gamma model for rainfall. Left: the distribution of the number of rainfall events per month. Center: the distribution of rainfall per event for each month. Right: the distribution of the total rainfall for each month.", fig.width=7, fig.height=3.25, out.width="100%"}
+# Underlying parameters
+lambda <- 2.3
+alpha_January <- 1.75
+alpha_June <- 0.9
+beta <- 2
+
+
+
+par(mfrow = c(1, 3))
+
+x <- 0:10
+dRainfallEvents <- dpois(x, 
+                         lambda = lambda)
+
+# Poisson: number of events
+plotDiscrete(x, 
+             dRainfallEvents,
+             type = "MF",
+             main = "The number of rainfall\nevents per month",
+             xlab = expression(italic(N)),
+             ylab = "PMF")
+
+# Two gammas: amount per event
+curve( dgamma(x, shape = alpha_January, scale = beta),
+       from = 0, to = 14,
+       las = 1,
+       ylim = c(0, 0.25),
+       main = "Rainfall amount\nper rainfall event",
+       ylab = "PDF",
+       xlab = expression(Rainfall~per~event~italic(Y)),
+       lwd = 2)
+curve( dgamma(x, shape = alpha_June, scale = beta),
+       from = 0, to = 14,
+       lwd = 2,
+       add = TRUE,
+       lty = 3)
+legend("topright",
+       lty = c(1, 3),
+       lwd = 2,
+       bty = "n",
+       legend=c("January",
+                "June") )
+
+
+# Tweedie: Total rain
+xi_January  <- (alpha_January + 2) / (alpha_January + 1)
+xi_June     <- (alpha_June    + 2) / (alpha_June    + 1)
+
+phi_January <- lambda^(1 - xi_January) * (alpha_January * beta)^(2 - xi_January)
+phi_June    <- lambda^(1 - xi_June)    * (alpha_June    * beta)^(2 - xi_June)
+
+mu_January <- lambda * alpha_January * beta
+mu_June    <- lambda * alpha_June * beta
+
+x <- seq(0, 30, 
+         length = 100)
+tweedie::tweedie_plot(x,
+                      xi = xi_January,
+                      mu = mu_January,
+                      phi = phi_January,
+                      las = 1,
+                      pch = 1,
+                      ylim = c(0, 0.16),
+                      xlab = expression(Total~rain~italic(X)),
+                      ylab = "Prob. function",
+                      main = "Total monthly rainfall",
+                      lwd = 2)
+tweedie::tweedie_plot(x,
+                      xi = xi_June,
+                      mu = mu_June,
+                      phi = phi_June,
+                      add = TRUE,
+                      pch = 19,
+                      lwd = 2,
+                      lty = 3)
+legend("topright",
+       lty = c(1, 3),
+       pch = c(1, 19),
+       lwd = 1,
+       bty = "n",
+       legend=c("January",
+                "June") )
+```
+
+
 ### Properties
 
-*The probability functions for the compound Poisson-gamma distribution cannot be written in closed form.*
+The probability functions for the compound Poisson-gamma distribution *cannot be written in closed form*.
 However, the probability function can be expressed as an infinite sum [@dunn2005series] or by inverting the MGF [@mypapers:Dunn:fourier], following the ideas in Sect.\ \@ref(DistributionFromMGF).
+Likewise, the distribution function has no closed form and must be evaluated using numerical methods [@mypapers:Dunn:DF].
 
 The probability function as an infinite series can be determined from the development of the compound Poisson-gamma distribution above.
 If $N = 1$ with $\Pr(N = 1)$ (from the Poisson distribution), then, $X = Y$ has the $\text{Gam}(\alpha, \beta)$ distribution.
@@ -934,7 +531,7 @@ $$
 $$
 
 If $N = 2$ with $\Pr(N = 2)$ (from the Poisson distribution), then, $X = Y_1 + Y_2$, where $Y_i \sim\text{Gam}(\alpha, \beta)$ for $i = 1, 2$.
-This means that $X \sim \text{Gam}(2\alpha, \beta)$, which is easily shown using MGFS. (WHY; CROSS REF).
+This means that $X \sim \text{Gam}(2\alpha, \beta)$ (Exercise\ \@ref(exr:GammaSum); Sect.\ \@ref(GammaProperties)).
 That is, 
 $$
   f_{X\mid N = 2} (x) 
@@ -960,7 +557,6 @@ $$
   \Pr(X = 0) = \exp(-\lambda).
 $$
   
----
 
 Even though the probability function has no closed form, the MGF is reasonably simple.
 To find the MGF, first consider the value of\ $N$ as fixed; then, $X = Y_1 + Y_2 + \cdots + Y_N$ the MGF of\ $X$ is 
@@ -970,66 +566,29 @@ $$
 Since the MGF of a sum of independent random variables is the product of their MGFs (Theorem\ \@ref(thm:MGFIndependent)), we can assume that $N$ takes some specific value\ $n$ and write
 \begin{align*}
   M_{X\mid N}(t) 
-  &= \operatorname{E}\left[ \exp\big(t(Y_2 + Y_2 + \cdots + Y_n)\big)\right] \\
+  &= \operatorname{E}\left[ \exp\big(t(Y_1 + Y_2 + \cdots + Y_n)\big)\right] \\
   &= \prod_{i = 1}^n \operatorname{E}[\exp(t Y_i)] \\
   &= \left( M_Y(t)\right)^n
 \end{align*}
 So the MGF of $X$ (rather than $X\mid N$ as above) is
 \begin{align*}
   M_X(t) 
-  &= \operatorname{E}\left[ \operatorname{E}[ \exp(tX\mid N)]\right] \\
-  &= \operatorname{E}\left[ M_{X\mid N}(t))\right] \\
-  &= \operatorname{E}\left[ M_Y(t))^N\right] \\
+  &= \operatorname{E}\left[ \operatorname{E}[ \exp(tX) \mid N]\right] \\
+  &= \operatorname{E}\left[ M_{X\mid N}(t)\right] \\
+  &= \operatorname{E}\left[ M_Y(t)^N\right].
 \end{align*}
-and so
+Substituting the MGF of a $\text{Gamma}(\alpha, \beta)$ random variable, $M_Y(t) = \left(\frac{\beta}{\beta - t}\right)^{\!\alpha}$, and then applying the MGF of a $\text{Poisson}(\lambda)$ random variable, $M_N(s) = \exp\{\lambda(s - 1)\}$ with $s = M_Y(t)$, gives
 $$
-  M_X(t)=\exp\!\left\{\lambda\left[\Big(\frac{\beta}{\beta-t}\Big)^{\!\alpha}-1\right]\right\},\qquad t<\beta
+  M_X(t)=\exp\!\left\{\lambda\left[\Big(\frac{\beta}{\beta-t}\Big)^{\!\alpha}-1\right]\right\},\qquad t<\beta.
 $$
-
----
-
-We have
-$$
-M_X(t) = \mathbb{E}[e^{tX}] 
-        = \mathbb{E}\!\left[ \big(M_Y(t)\big)^{N} \right].
-$$
-Writing the expectation as a sum over the possible values of\ $N$,
-$$
-  M_X(t) 
-  = \sum_{n=0}^\infty \big(M_Y(t)\big)^{n} \, \Pr(N = n).
-$$
-Since $N \sim \mathrm{Pois}(\lambda)$,
-$$
-  \Pr(N = n) = \frac{\exp(-\lambda) \lambda^n}{n!}.
-$$
-Substituting this expression into XREF
-\begin{align*}
-  M_X(t) 
-  &= \sum_{n = 0}^\infty 
-  \big(M_Y(t)\big)^{n} \cdot \frac{\exp(-\lambda) \lambda^n}{n!}\\
-  &= \exp(-\lambda) \sum_{n = 0}^\infty \frac{\left[\lambda \, M_Y(t)\right]^n}{n!}.
-\end{align*}
-Using the series expansion $\sum_{n = 0}^\infty z^n/n! = \exp(z)$ (from Equation\ \@ref(eq:Exponential)) with $z = \lambda M_Y(t)$, this gives
-\begin{align*}
-  M_X(t) 
-  &= \exp(-\lambda) \cdot \exp\big(\lambda M_Y(t)\big)\\
-  &= \exp\{\lambda(M_Y(t) - 1) \\
-  &= \exp\!\left\{\lambda\left[\Big(\frac{\beta}{\beta-t}\Big)^{\!\alpha}-1\right]\right\},
-\end{align*}
-provided $t < \beta$.
-
----
-
-
 
 From the MGF we can deduce
 \begin{align*}
   \operatorname{E}[X] 
   &= \lambda\alpha/\beta\\
   \operatorname{var}[X]
-  &= \lambda\alpha(\alpha + 1)\beta^2.
+  &= \lambda\alpha(\alpha + 1)/\beta^2.
 \end{align*}
-
 
 
 :::{.example #PoissonGammaExample name="Poisson--gamma distribution"}
@@ -1061,12 +620,9 @@ This Poisson-gamma distribution is shown in Fig.\ \@ref(fig:PoissonGammaExamples
 \alpha = (2 - \xi)/(\xi - 1) [Not a function of (phi, mu)]
 \beta = \phi(\xi - 1) / \mu^{\xi - 1}
 \lambda = \mu^(2-\xi) / ( \phi (2-\xi))
-
-
 So for instance:
 alpha = 12 => xi = 5/3
 alpha = 20 => xi = 22/21
-
 -->
 
 
@@ -1086,10 +642,10 @@ lambda <- mu^(2 - xi) / ( phi * (2 - xi))
 beta <- phi * (xi - 1) / mu^(xi - 1)
 p0 <- exp(-lambda)
 
-cat("alpha, beta, lambda, p0\n")
-cat(alpha, beta, lambda, p0, "\n")
+# cat("alpha, beta, lambda, p0\n")
+# cat(alpha, beta, lambda, p0, "\n")
 
-y <-  dtweedie(y = x,
+y <-  tweedie::dtweedie(y = x,
                xi = xi,
                mu = mu,
                phi = phi)
@@ -1134,7 +690,7 @@ lambda <- mu^(2 - xi) / ( phi * (2 - xi))
 beta <- phi * (xi - 1) / mu^(xi - 1)
 p0 <- exp(-lambda)
 
-cat(alpha, beta, lambda, p0, "\n")
+# cat(alpha, beta, lambda, p0, "\n")
 
 
 y <- dtweedie(y = x,
@@ -1176,23 +732,17 @@ box()
 \index{Compound Poisson-gamma distributions|)}
 
 
+## Summary of models
 
-:::{.example #RainfallModelling name="Modelling monthly rainfall"}
-Modelling rainfall. 
-Using hurdle from Stern and Coe, Chandler and Wheater? Tobit thing from IWSM, and Poisson--gamma, 
-:::
-
-
-
-## Sumamry of models
-
+The zeros in a compound Poisson--gamma distributions are a natural outcome of the same process used to generate the non-zero values; a zero occurs when the Poisson count of contributions is zero.
+If a physical argument can be provided that the observed value is the sum of a random number of independent gamma-distributed contributions, a compound Poisson--gamma distribution may be an appropriate model. 
+In contrast, a hurdle model treats zeros and positive values as structurally distinct, potentially generated by different processes: a separate model governs whether an observation is zero, and another governs an observation's magnitude given it is positive.
 
 
 ```{r echo=FALSE}
-MixedTable <- array( dim=c(5, 3) )
+MixedTable <- array( dim=c(5, 2) )
 
-colnames(MixedTable) <- c("Censored",
-                          "Hurdle",
+colnames(MixedTable) <- c("Hurdle",
                           "Poisson-Gamma")
 
 rownames(MixedTable) <- c("Zeros",
@@ -1200,26 +750,56 @@ rownames(MixedTable) <- c("Zeros",
                           "Interpretation",
                           "Flexibility",
                           "Uses")
-MixedTable[1, ] <- c("True value unobservable",
-                     "Different process",
+MixedTable[1, ] <- c("Different process",
                      "No events occurred")
-MixedTable[2, ] <- c("One model",
-                     "Two separate models",
+MixedTable[2, ] <- c("Two separate models",
                      "One unified model")
-MixedTable[3, ] <- c("Mechanistic",
-                     "Very natural",
+MixedTable[3, ] <- c("Very natural",
                      "Requires physical story")
-MixedTable[4, ] <- c("Less",
-                     "High",
+MixedTable[4, ] <- c("High",
                      "Moderate")
-MixedTable[5, ] <- c("Detection limits", 
-                     "Healthcare spend",
+MixedTable[5, ] <- c("Healthcare spend",
                      "Insurance, rainfall")
 
-kable(MixedTable)
+if( knitr::is_latex_output() ) {
+  knitr::kable(MixedTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = "c",
+               escape = FALSE,
+               longtable = FALSE,
+               caption = "Comparing the hurdle and compound Poisson--gamma models.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(MixedTable,
+               format = "html",
+               booktabs = TRUE,
+               align = "c",
+               longtable = FALSE,
+               caption = "Comparing the hurdle and compound Poisson--gamma models.") %>%
+    row_spec(0, bold = TRUE) 
+}
 
 ```
 
+
+
+
+:::{.example #InsuranceModelling name="Insurance modelling"}
+Insurance companies have some days when zero claims are lodged, but most days record numerous claims, each of which are for positive, right-skewed amounts.
+
+A compound Poisson--gamma model could be considered. 
+The daily claim total is the aggregate of a random number of individual claim events (accidents or incidents), each generating a gamma-distributed payout amount.
+A zero-claim amount occurs when no claim events arrive. 
+The same process (i.e., policy-holders having incidents) generates both zeros and positive values.
+
+A hurdle model could also be considered. 
+First, a binary process determines whether any claim is filed (perhaps driven by seasonal risk, policy-holder behaviour, or reporting thresholds).
+Conditional on a claim occurring, the total payout follows a gamma distribution. 
+The zero (no-claim day) and positive values are structurally different; a no-claim day is not just 'zero incidents happened', but may reflect under-reporting, policy excesses, or deliberate non-filing.
+:::
 
 
 
@@ -1227,70 +807,16 @@ kable(MixedTable)
 
 ### General
 
-
-```{r CensoredSim, echo=FALSE, fig.align="center", fig.cap="FIX!!!!! The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4, out.width="90%"}
-set.seed(76103) # For reproducibility
-num_Sims <- 1000
-
-Y <- rnorm(num_Sims,
-           mean = 1,
-           sd = 1.5)
-Yneg <- Y < 0  ### OR LESS THAN OR EQUAL TO????????????????????????????/
-X <- Y
-X[Yneg] <- 0
-p0 <- sum(Yneg)/num_Sims
-
-par(mfrow = c(1, 2))
-latent_Breaks <- seq(-5, 8,
-                     by = 1)
-hist(Y,
-     freq = FALSE,
-     las = 1,
-     breaks = latent_Breaks,
-     col = c( rep( "grey", length(latent_Breaks[latent_Breaks<0])),
-              rep(plotColour1, length(latent_Breaks[latent_Breaks>=0])) ),  
-     main = expression(Latent~variable),
-     ylab = "Probabiity fn",
-     xlab = expression(Observed~variable~italic(X)) )
-
-abline(v = 0,
-       lwd = 2,
-       col = "grey",
-       lty = 2)
-
-hist(X[Y > 0],
-     freq = FALSE,
-     las = 1,
-     breaks = latent_Breaks[latent_Breaks>=0],
-     main = expression(Observed~variable),
-     ylab = "Probabiity fn",
-     xlab = expression(Observed~variable~italic(X)) )
-points(x = 0,
-       y = p0,
-       pch = 19)
-```
-
-...
-
-
 A *hurdle* model could be used to model daily rainfall (e.g., @stern1984model), using a Bernoulli distribution to distinguish wet and dry days, and then a gamma distribution to model rainfall amounts on wet days.
 
-
+ Fig.\ \@ref(fig:HurdleSim)
 ...
 
 
 A compound Poisson--gamma model could also be used to model daily rainfall (e.g., @yunus2017modelling).
 
 
-:::{.example #SimulationCensored name="Simulations for censored models"}
-Censored:
-:::
 
-
-
-:::{.example #SimulationHurdle name="Simulations for hurdle models"}
-Hurdle model; see Fig.\ \@ref(fig:HurdleSim)
-:::
 
 ```{r HurdleSim, echo=FALSE, fig.align="center", fig.cap="A simulation of the hurdle model. FIX!!!!! The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4, out.width="90%"}
 num_Sims <- 1000
@@ -1401,211 +927,99 @@ points(x = 0,
 
 ### Rainfall
 
+Simulation for the hurdle and compound Poisson--gamma models can be achieved by directly modelling the process by which the zeros are incorporated. 
+To demonstrate, consider modelling monthly rainfall at a certain location for one specific month each year. 
+Monthly rainfall is a mixed random variable: some months record exactly zero rainfall, while months in which rain falls have a continuous positive amount recorded.
 
-Simulation for the censored, hurdle and compound Poisson-gamma models can all be achieved by directly modelling the process by which the zeros are incorporated.
-To demonstrate, consider modelling monthly rainfall at a certain location for one specific month each year.
-Monthly rainfall is a mixed random variable; some months will record exactly zero rainfall, while months in which rain falls will have a continuous rainfall amount recorded.
+Suppose the monthly rainfall (in mm)\ $R$ is modelled at a given location for a certain month, where about $30$% of months record zero rainfall; then. $0\Pr(R = 0) = 0.30$, and the mean monthly rainfall when rain is recorded is $\mu^+ = 50\,mms$.
 
-Simulating monthly rainfall has uses in agriculture, hydrology, forestry and elsewhere (often as an input to other models).
-The distribution of monthly rainfall obviously varies depending on location and the month selected for modelling; however, monthly rainfall at many locations typically contain some months (historically) that record zero rainfall (see, for example, @hasan2010simple).
-
-Suppose we seek to model the monthly rainfall (im mm)\ $R$ at given location for a certain month, where about\ $30$% of months record zero rainfall (i.e., $\Pr(X = 0) = 0.30$), and the mean monthly rainfall (when rain is recorded) is about $\mu_R = 50$.
-
-We could model the monthly rainfall using a censored model (e.g., @sanso2000nonstationary), a hurdle model (e.g, @kenabatho2012stochastic) or a Poisson-gamma distribution (e.g., @hasan2010simple).
-
-First consider a censored model.
-The latent variable could represent how favourable the conditions are for rainfall' say $Y\sim N(\mu_R = 50, \sigma_R^2)$, with $\Phi(0) = \Pr(Y < 0) = 0.30$, for some variance $\sigma_R^2$.
-First, we can find the value of the standard normal variate\ $Z$ such that $\Phi(z) = 0.30 = \Pr(Y < 0)$:
-
-
-```{r}
-p_Zero_Rainfall <- 0.30
-qnorm(p_Zero_Rainfall) # This find z such that Phi(z) = 0.30
-```
-
-This value of\ $z$ is the value such that
+For the *hurdle model*, set $p 0.30$ for the probability of no rainfall; then, the probability that rain is recorded is $1 - p = 0.70$. 
+For the positive component, suppose first that rainfall amounts follow an exponential distribution with rate $\lambda$.
+Since $\operatorname{E}[R \mid R > 0] = 1/\lambda = 50$, we have $\lambda = 0.02$. 
+The hurdle model is then
 $$
-  z = -0.5244 = \frac{x^* - \mu_R}{\sigma^2_R} = \frac{0 - 50}{\sigma_R^2},
-$$
-from which we find $\sigma_R = 95.35$.
-Thus, the monthly rainfall can be simulated:
-
-
-
-
-```{r, fig.align="center", fig.width=7, fig.height=4,out.width="80%", fig.cap="The latent variable left panel), and the observed rainfall (right panel)."}
-set.seed(76103) # For reproducibility
-num_Sims <- 1000
-
-mean_R <- 50
-sd_R <- -mean_R / qnorm(p_Zero_Rainfall) 
-
-Y <- rnorm(num_Sims,
-           mean = mean_R,
-           sd = sd_R)
-p0 <- 0.30
-
-# To get sd_R, note: z = (0 - mu)/sigma = \Phi(p0) => -mu/sigma = qnorm(p0)
-threshold_R <- mean_R  - qnorm(p_Zero_Rainfall) * sd_R # SHOULD BE AT ZERO
-
-###
-
-par(mfrow = c(1, 2))
-latent_Breaks <- seq(-250, 450,
-                     by = 50)
-
-hist(Y,
-     freq = FALSE,
-     las = 1,
-     breaks = latent_Breaks,
-     col = c( rep( "grey", length(latent_Breaks[latent_Breaks < 0])),
-              rep(plotColour1, length(latent_Breaks[latent_Breaks >= 0])) ),  
-     main = expression(Latent~variable),
-     ylab = "Probabiity fn",
-     xlab = expression(Latent~variable~italic(X)) )
-
-abline(v = 0,
-       lwd = 2,
-       col = "grey",
-       lty = 2)
-
-hist(Y[Y>0],
-     freq = FALSE, 
-     las = 1,
-     breaks = latent_Breaks[latent_Breaks>=0],
-     main = expression(Observed~variable),
-     ylab = "Probabiity fn",
-     xlab = expression(Observed~variable~italic(X)) )
-points(x = 0,
-       y = p0,
-       pch = 19)
-```
-
-
-```{r}
-num_Sims <- 1000
-
-#Simulate
-
-# Compute max monthly rainfall
-
-```
-
-
----
-
-
-HURDLE:
-
-To model the rainfall using a hurdle model, we use $1 - p = 0.3$ for the probability that no monthly rainfall is recorded; that is, $p = 0.7$.
-The information also gives $\mu = \operatorname{E} = 50$; from Sect.\ \@ref(HurdleModelsProperties)
-$$
-  \mu = p \mu^+,
-$$
-and so $\mu^+ = \mu/p = 50/0.7 approx 71.43$ is the mean rainfall, conditional on rain being recorded. 
-We could suppose an exponential distribution (with rate parameter\ $\lambda$) for the rainfall amounts when rain is recorded; thus $\operatorname{E}[X] = 1\lambda = 71.43$ and so $\lambda = 0.01399972$.
-So the hurdle model is:
-\begin{align*}
   f_R(r)
-  &= 
+  =
   \begin{cases}
-    0.3 & \\
-    0.3\lambda \exp(-r/\lambda)
-  \end{cases}\\
-  &= 
-  \begin{cases}
-    0.3 & \\
-    0.004199916 \exp(-r/0.01399972).
+    0.30                              & \text{for $r = 0$} \\
+    0.70 \times 0.02\, \exp(-0.02r)   & \text{for $r > 0$}.
   \end{cases}
-\end{align*}
+$$
+The exponential distribution is a convenient starting point but imposes a monotonically decreasing density on the positive part, which may be unrealistic; observed rainfall amounts often show a mode above zero. 
+A gamma distribution for the positive part is more flexible, allowing a range of shapes, and is generally preferred in practice.
 
+```{r}
+set.seed(76103)
+num_sims <- 1000
 
+pi0    <- 0.30          # P(R = 0)
+p      <- 1 - pi0       # P(R > 0)
+lambda <- 1 / 50        # exponential rate: E[R | R > 0] = 50
 
+R <- numeric(num_sims)
+is_wet <- rbinom(num_sims, size = 1, prob = p)
 
-```{r fig.cap="HURDLE MODEL"}
-set.seed(76103) # For reproducibility
-num_Sims <- 1000
-
-p0 <- 0.30
-p <- 1 - p0
-
-mean_R <- 50
-mean_Rpositive <- mean_R/p
-lambda_Exp <- 1 / mean_Rpositive
-  
-R <- matrix( NA, ncol = 1, nrow = num_Sims)
-p_Each_Month <- rbinom(num_Sims,
-                       size = 1,
-                       prob = p)
-
-for (i in 1:num_Sims){
-  if ((p_Each_Month[i]) == 0){
-    R[i] <- 0 # No rainfall recorded
-  }  else {
-    R[i] <- rexp(1, rate = lambda_Exp)    
-  }
+for (i in 1:num_sims) {
+  R[i] <- if (is_wet[i] == 0) 0 else rexp(1, rate = lambda)
 }
 
-
-
 hist(R,
-     freq = FALSE,
-     las = 1,
-     main = expression(Hurdle~model),
-     ylab = "Probabiity fn",
-     xlab = expression(Observed~rainfall~italic(R)) )
-
-points(x = 0,
-       y = p0,
-       pch = 19)
+     freq  = FALSE,
+     las   = 1,
+     breaks = 30,
+     main  = "Hurdle model: monthly rainfall",
+     xlab  = expression(Rainfall ~ italic(R) ~ (mm)),
+     ylab  = "Density")
+points(x = 0, y = pi0, pch = 19)
 ```
 
 
-**GAMMA SEEMS TO FAIL WITH THESE PARAMETERS ANYWAY: but check**
-
-
-If we use the variance from the censored model (i.e., $\sigma^2 = 95.35$), we can find the variance of the gamma distribution:
-\begin{align*}
-  \operatorname{var}[X] 
-  &= p(\sigma^2)^+ + p(1 - p)(\mu^+)^2\\
-  95.35
-  &= 0.7(\sigma^2)^+ + 0.7\times 0.3(71.43)^2;
-\end{align*}
-solving shows that we should use $(\sigma^2)^ = ??$ for the variance of the gamma distribution (when $X > 0$).
-
-
-
-We could suppose a gamma distribution for the rainfall amounts when rain is recorded; thus $\alpha\beta = 71.43$. 
-If we use the variance from the censored model (i.e., $\sigma^2 = 95.35$), we can find the variance of the gamma distribution:
-\begin{align*}
-  \operatorname{var}[X] 
-  &= p(\sigma^2)^+ + p(1 - p)(\mu^+)^2\\
-  95.35
-  &= 0.7(\sigma^2)^+ + 0.7\times 0.3(71.43)^2;
-\end{align*}
-solving shows that we should use $(\sigma^2)^ = ??$ for the variance of the gamma distribution (when $X > 0$).
+For the *compound Poisson--gamma model*, monthly rainfall is the aggregate of a random number $N \sim \text{Poisson}(\lambda)$ of independent rainfall events, each contributing a gamma-distributed amount. 
+The zero probability is $\Pr(R = 0) = \exp(-\lambda)$, so matching $\Pr(R = 0) = 0.30$ gives
+$$
+  \lambda = -\log(0.30) \approx 1.204.
+$$
+This leaves two free parameters: $\alpha$ and\ $\beta$ of the gamma distribution, and only one remaining condition: $\operatorname{E}[R] = \lambda\alpha/\beta$.
+We therefore fix $\alpha = 2$, which gives a unimodal gamma density for individual rainfall events (a reasonable physical assumption) and solve for\ $\beta$:
+$$
+   \beta 
+   = \frac{\lambda\alpha}{\operatorname{E}[R]} 
+   = \frac{1.204 \times 2}{50 \times 0.70} 
+   \approx 0.0687
+$$
+where $\operatorname{E}[R] = p \times \mu^+ = 0.70 \times 50 = 35\mms$ is the unconditional mean.
 
 ```{r}
-( 95.35 - 0.7*0.3*(71.43)^2 )/0.7
+set.seed(84201)
+num_sims <- 1000
+
+lambda <- -log(0.30)        # matches P(R = 0) = 0.30
+alpha  <- 2                 # fixed: unimodal gamma for individual events
+mu_R   <- 0.70 * 50         # unconditional mean = 35mm
+beta   <- lambda * alpha / mu_R
+
+N <- rpois(num_sims, lambda = lambda)
+R <- numeric(num_sims)
+
+for (i in 1:num_sims) {
+  R[i] <- if (N[i] == 0) 0 else sum(rgamma(N[i], shape = alpha, rate = beta))
+}
+
+hist(R[R > 0],
+     freq   = FALSE,
+     las    = 1,
+     breaks = 30,
+     main   = "Compound Poisson--gamma: monthly rainfall",
+     xlab   = expression(Rainfall ~ italic(R) ~ (mm)),
+     ylab   = "Density")
+points(x = 0, y = mean(R == 0), pch = 19)
 ```
 
-OOPS!!
-
----
-
-P--G DSTN:
-
-Need to convert $p_0$, $\mu$ and $\sigma^2$ into $\lambda, \alpha, \beta$. How (easily)?
-
----
-
-
-BUT WHY? JUST USE THEORETICAL DISTN! Well, we wan rainfall values to use upstream in a simulation for (eg) cropping.
-MAXIMUM RAINFALL, with CI-like interval? Again... could do with distribution
-
-PERHAPS CONNECT TO SOI
-
-
+Simulated rainfall sequences of this kind are rarely an end in themselves. 
+In agriculture, simulated monthly rainfall feeds into crop yield models, where the distribution of yields (and particularly the probability of drought) is of direct interest. 
+In hydrology, simulated rainfall drives runoff and reservoir models. 
+In forestry, rainfall simulations inform fire risk assessments. 
+In each case the goal is to propagate uncertainty in rainfall through to uncertainty in a downstream quantity, which is difficult or impossible to do analytically but straightforward via simulation once a model for\ $R$ has been specified and fitted.
 
 
 
@@ -1615,46 +1029,35 @@ PERHAPS CONNECT TO SOI
 
 Selected answers appear in Sect.\ \@ref(AnswersChapMixedDistributions).
 
-<!-- 
-:::{.exercise #LatentVar}
-Observed variable: Annual medical expenses.
 
-Latent variable ($z$): Underlying health need or risk.
+:::{.exercise #MixedIdentifiability}
+Consider a hurdle model with $\Pr(X = 0) = p$ and $X \mid (X > 0) \sim \text{Gamma}(\alpha, \beta)$, and a compound Poisson-gamma model with a Poisson parameters $\lambda$ and gamma parameters $(\alpha, \beta)$.
 
-Censoring: Many people incur $0$ expenses in a given year, despite possibly having latent health risks or needs.
-
-Interpretation: People with latent need below some threshold never seek care (e.g. due to costs, access, or asymptomatic cases), leading to observed $0$.
+1. How many free parameters does each model have?
+2. Can the two models produce identical distributions? 
+   If so, under what conditions?
+*Solution:*
 :::
 
-:::{.exercise #LatentVar2}
-5. Credit Card Balances
-Observed variable: Balance at end of month.
 
-Latent variable ($z$): Willingness or propensity to use credit.
-
-Censoring: Some users consistently pay in full and carry no balance.
-
-Interpretation: Some people have low latent demand for borrowing; observed balance is zero if the latent borrowing desire is below threshold.
+:::{.exercise #MixedOverdispersion}
+Show that both the hurdle (with exponential positive part) and compound Poisson-gamma models are *overdispersed* relative to a Poisson distribution, in the sense that $\operatorname{var}[X] > \operatorname{E}[X]$ whenever $\operatorname{E}[X] > 0$.
 :::
--->
 
 
-:::{.exercise #TobitHarder}
-Consider a latent variable\ $Y$, and an observed variable\ $X = \text{max}(0, Y)$.
-Suppose that\ $Y$ has the normal distribution\index{Normal distribution}
-$$
-  Y \sim N(\mu = 1.5, \sigma^2 = 1),
-$$
-so that $\operatorname{E}[Y] = 1.5$ and $\operatorname{var}[Y] = 1$.
 
-1. Determine $\Pr(Y < 0)$, where $Z$ is a standard normal variate (Sect.\ \@ref(StandardNormal)).
-2. Using the functions $\Phi(\cdot)$ and $\phi(\cdot)$, determine the probability function for\ $X$.
-3. Plot this probability function.
+
+:::{.exercise #MixedLimiting}
+?????????
+For the compound Poisson-gamma, fix the value of $\operatorname{E}[X] = \mu$, and let $\lambda \to \infty$ with $\alpha/\beta = \mu/\lambda$ held constant. 
+What does the distribution of\ $X$ converge to, and why?
 :::
+
+
 
 
 :::{.exercise #MixedHospitalStays}
-In a "Hurdle" model, we partition the space into $\{0\}$ and $\{x : x > 0\}$. 
+In a hurdle model, the sample space is partitioned into $\{0\}$ and $\{x : x > 0\}$. 
 Let $Y$ be hospital stay duration. 
 $\Pr(Y = 0) = 0.4$ and for $y > 0$, $f_Y(y) = 0.6 e^{-y}$.
 
@@ -1673,6 +1076,11 @@ Let $\Pr(X = 0) = 0.75$ and the remaining $0.25$ be distributed as $X \sim \text
 1. What is the probability that $X > 0$?
 2. Write an R code snippet to simulate 100 plots using this hurdle logic.
 :::
+
+
+
+
+
 
 
 :::{.exercise #MixedLightbulbLifetimes}
@@ -1704,11 +1112,24 @@ Simulate $1\,000$ realizations of the total claim amount $S = \sum_{i=1}^N X_i$.
 
 
 
+
+
+
 :::{.exercise #MixedFireDamage}
 The number of fires in a small city per month is $N \sim \text{Poisson}(2)$. 
 The damage (in millions of dollars) per fire is $X \sim \text{Gamma}(1, 2)$.
 
 1. Using this model, what is the probability that a month has zero fire damage?
 2. Write\ **R** code to find the mean damage for months where damage was greater than zero.
+:::
+
+
+:::{.exercise #MixedSimCompare}
+Consider a hurdle model and a compound Poisson--gamma model.
+
+1. Show that it is possible to find parameters for both models, so that both have the same mean and the same proportion of zeros.
+1. For the two comparable model just found, how to the variances compare?
+1. Simulate $2000$\ observations from each model, using parameters chosen so that both have the same mean and the same proportion of zeros.
+   Simulate both and verify your conclusion about the variances.
 :::
 
