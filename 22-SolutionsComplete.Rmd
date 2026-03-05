@@ -5409,190 +5409,43 @@ Gamma: $\operatorname{var}(X) = \phi \mu^2$, so $\phi = ???$ and $p = 2$.
 ## Answers for Chap.\ \@ref(ChapterMixedDistributions) {#AnswersChapMixedDistributions}
 
 
-
 :::{.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:LatentVar).**
+**Answer to Exercise\ \@ref(exr:MixedIdentifiability).**
+1. *Hurdle model*: three free parameters $(p, \alpha, \beta)$.
+   *Compound Poisson-gamma*: three $(\lambda, \alpha, \beta)$.
+2. They can match if $p = \exp^(-\lambda)$.
+   That is, the hurdle zero probability equals the Poisson zero probability. 
+   However, the compound Poisson-gamma links $\lambda$ to both the zero probability and the mean of\ $X$, while the hurdle model treats these independently. 
+   So they are identical in distribution only under this constraint, but the hurdle model is strictly more flexible.
 :::
 
-
 :::{.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:LatentVar2).**
-:::
+**Answer to Exercise\ \@ref(exr:MixedOverdispersion).**
+For the compound Poisson-gamma, $\operatorname{E}[X] = \lambda\alpha/\beta$ and $2\operatorname{var}[X] = \lambda\alpha(\alpha+1)/\beta^2$. 
+The ratio is
+$$
+  \frac{\operatorname{var}[X]}{\operatorname{E}[X]} = \frac{\alpha + 1}{\beta}
+$$
+which equals $\operatorname{E}[Y] + 1/\beta > 1$ for any $\alpha, \beta > 0$, confirming overdispersion. 
 
-
-:::{.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:TobitHarder).**
-1. We have 
+For the hurdle with $X|X>0 \sim \text{Exp}(\beta)$, we see that 
 $$
-  \Pr(Y < 0) = \Pr\big(Z < (0 - 1.5)/1\big) = \Phi(-1.5) \approx 0.0668,
+  \operatorname{var}[X] - \operatorname{E}[X] 
+  = (1 - p)\frac{\alpha)\alpha + 1)}{\beta^2} - 
+    \left( \frac{(1 - p)\alpha}{\beta}\right)^2 -
+    \frac{(1 - p)\alpha}{\beta}.
 $$
-using $Z$ as a standard normal variate (Sect.\ \@ref(StandardNormal)).
-2. To use the functions $\Phi(\cdot)$ and $\phi(\cdot)$, the standardised version of\ $Y$ must be used; that is, $Z = (Y - 1.5)/1 = (Y - 1.5)$ in these functions.
-   Then,
-$$
-  f_X(x) = 
-  \begin{cases}
-    0                & \text{if $X < 0$};\\
-    \Phi(-1.5)       & \text{if $X = 0$};\\
-    \phi(x - 1.5)    & \text{if $X > 0$},
-  \end{cases}
-$$
-   From Equation\ \@ref(eq:PDFpositiveConditional),
-$$
-  f_{X\mid X > 0}(x) 
-  = \frac{\phi(x- 1.5)}{1 - \Phi(-1.5)}
-  \approx 1.148\dots \times \phi(x)
-$$
-   for $X > 0$.
-   From this expression, 
-\begin{align*}
-  \operatorname{E}[X] 
-   = \operatorname{E}[X \mid X>0] 
-  &= \int_0^\infty ???\,dx \\
-  & \text{FIX!}
-\end{align*}
-   Similarly, 
-$$
-  \operatorname{var}[X] 
-  = \operatorname{var}[X \mid X>0]
-  = ???
-$$
-3. See Fig.\ \@ref(fig:TobitPicEx).
-
-
+This simplifies to show overdispersion when $p > 0$.
 :::
 
 
 
-```{r TobitPicEx, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $X = 0$.", fig.width=8, fig.height=4, out.width="90%"}
-par( mfrow = c(1, 2))
-
-x.mean <- 1.5
-x.sd <- 1
-p <- pnorm(0,
-            mean = x.mean,
-            sd = x.sd)
-
-x <- seq(from = x.mean - (3.5 * x.sd),
-         to =   x.mean + (3.5 * x.sd),
-         length = 1000)
-
-y <-  dnorm(x,
-            mean = x.mean,
-            sd = x.sd)
-
-plot(y ~ x,
-     xlim = c(-2, 5),
-     type = "n",
-     axes = FALSE,
-     xlab = expression(Latent~variable~italic(Z)),
-     ylab = expression(Prob.~"function"),
-     main = expression( atop(A~mixed~distribution*":",
-                             the~latent~model~italic(Z))),
-     lwd = 3)
-axis(side = 1)
-
-# Shade for X < 0
-xNeg <- x[ x <= 0]
-yNeg <- y[ x <= 0]
-
-polygon( x = c(xNeg, rev(xNeg)),
-         y = c(yNeg, rep(0, length(yNeg))),
-         col = "lightgrey",
-         border = NA) # Omit border
-
-# Different colours for x >= 0 and x < 0
-lines( y[x > 0] ~ x[x > 0],
-       lwd = 2,
-       col = "black")
-lines( y[x <= 0] ~ x[x <= 0],
-       lwd = 2,
-       col = "darkgrey")
-
-# x = 0
-abline(v = 0,
-       col = "grey",
-       lty = 2)
-
-box()
-
-
-# Explanatory labels
-arrows(x0 = -1,
-       x1 = -0.5,
-       y0 = 0.2,
-       y1 = 0.08,
-       length = 0.15,
-       angle = 15)
-text(x = -1,
-     y = 0.2,
-     pos = 3,
-     cex = 0.9,
-     label = expression(atop(Where,
-                             italic(Z)<0) ) )
-
-################################################################################
-
-plot(y[x > 0] ~ x[x > 0],
-     xlim = c(-2, 5),
-     type = "l",
-     axes = FALSE,
-     xlab = expression(italic(X)),
-     ylab = expression(Prob.~"function"),
-     main = expression( atop(A~mixed~distribution*":",
-                             the~censored~model~italic(X))),
-
-     lwd = 3)
-axis(side = 1)
-box()
-
-
-points(x = 0,
-       y = p,
-       pch = 19)
-
-
-# Explanatory labels
-arrows(x0 = 1.5,
-       x1 = 0,
-       y0 = p,
-       y1 = p,
-       length = 0.15,
-       angle = 15)
-text(x = 1.6,
-     y = p,
-     pos = 1,
-     cex = 0.9,
-     label = expression( atop(Discrete~part,
-                              at~italic(X)==0) ) )
-
-
-# arrows(x0 = 4,
-#        x1 = 3,
-#        y0 = 0.3,
-#        y1 = dnorm(3, mean = x.mean, sd = x.sd),
-#        length = 0.15,
-#        angle = 15)
-# text(x = 4,
-#      y = 0.3,
-#      pos = 3,
-#      cex = 0.9,
-#      label = expression( atop(Normal~distribution)) ) 
-
-# X < 0 part
-lines( y[x <= 0] ~ x[x <= 0],
-       lwd = 1,
-       lty = 3,
-       col = "darkgrey")
-
-# x = 0
-abline(v = 0,
-       col = "grey",
-       lty = 2)
-
-
-```
-
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedLimiting).**
+As $\lambda \to \infty$, we see that $\Pr(X = 0) = e^{-\lambda} \to 0$, so the point mass at zero vanishes. 
+By the law of large numbers applied to the compound sum, $X/\lambda \to \operatorname{E}[Y]$ in probability, and by the CLT the distribution of\ $X$ converges to a normal distribution. 
+That is, the compound Poisson-gamma behaves like a continuous positive distribution when the expected number of events is large, and the mixed character is most pronounced when\ $\lambda$ is small.
+:::
 
 
 :::{.answer data-latex=""}
@@ -5607,6 +5460,9 @@ abline(v = 0,
 1. $\Pr(X > 0) = 0.25$.
 2. `r ifelse(runif(100) < 0.75, 0, rgamma(100, 2, 1))`.
 :::
+
+
+
 
 
 :::{.answer data-latex=""}
@@ -5637,6 +5493,38 @@ mean(S == 0) # Empirical zero mass
 2. ???
 :::
 
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedSimCompare).**
+We need $\exp(-\lambda) = p$ and $(1 - p)\alpha_H/\beta_H = \lambda\alpha_C/\beta_C$.
+The first equation links\ $\lambda$ and\ $p$; the second can always be satisfied by choosing $\alpha_H/\beta_H$ appropriately. 
+So it is possible to match both the mean and proportion of zeros. 
+However the variance will generally differ, since the compound Poisson-gamma variance depends on $\lambda$ and $\alpha, \beta$ jointly while the hurdle variance has an extra degree of freedom. 
+
+Simulation below
+:::
+
+```{r}
+set.seed(42)
+lambda <- 1.5
+p <- exp(-lambda)
+alpha_C <- 2
+beta_C <- 1   # CPG mean = lambda*alpha_C/beta_C = 3
+
+alpha_H <- 3 / (1 - p) * 0.5   # chosen to match mean
+beta_H <- 0.5
+
+cpg <- replicate(2000, {
+  N <- rpois(1, lambda)
+  if (N == 0) 0 else sum(rgamma(N, shape = alpha_C, rate = beta_C))
+})
+
+hurdle <- ifelse(runif(2000) < p, 0,
+                 rgamma(2000, shape = alpha_H, rate = beta_H))
+
+c(mean(cpg), mean(hurdle))      # should be similar
+c(var(cpg), var(hurdle))        # will generally differ
+```
 
 
 
