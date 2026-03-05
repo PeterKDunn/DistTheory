@@ -150,55 +150,78 @@
 <ul>
 <li>recognise mixed random variables.</li>
 <li>recognise censored models, hurdle models and compound Poisson–gamma models for modelling mixed random variables.</li>
-<li>know the basic properties of the above mixed distributions.</li>
-<li>apply these distributions as appropriate to problem solving.</li>
+<li>know the basic properties of the above approaches.</li>
+<li>apply these approaches as appropriate to problem solving.</li>
 </ul>
 </div>
 <div id="introduction-2" class="section level2" number="9.1">
 <h2>
 <span class="header-section-number">9.1</span> Introduction<a class="anchor" aria-label="anchor" href="#introduction-2"><i class="fas fa-link"></i></a>
 </h2>
-<p>Mixed random variables commonly occur, but are not often studied.
-Mixed random variables appear in diverse applications such as insurance, agriculture, climatology, fishing, etc.</p>
-<p>In most practical cases, a mixed random variable <span class="math inline">\(X\)</span> has a discrete probability mass at <span class="math inline">\(X = 0\)</span>, and then are continuous for <span class="math inline">\(X &gt; 0\)</span>; this is the only type of mixed random variable we consider (though extensions to discrete masses occurring for other values of the random variable are often (but not always) similar).
-For example:</p>
+<p>Mixed random variables commonly occur in practice, in diverse applications such as insurance, agriculture, climatology, fishing, etc.
+In most practical cases, a mixed random variable <span class="math inline">\(Y\)</span> has a discrete probability mass at <span class="math inline">\(Y = 0\)</span>, and is also continuous for <span class="math inline">\(Y &gt; 0\)</span>.
+Example include:</p>
 <ul>
-<li>When modelling insurance, the zero probability corresponds to portfolios with zero claims; however, when claims are made, the total claim amount has a continuous distribution.</li>
-<li>When modelling rainfall, the zero probability corresponds to receiving zero rainfall; however, when rain does fall, the total rainfall recorded has a continuous distribution.</li>
-<li>When modelling fish catch, the zero probability corresponds to catching zero fish; however, when fish are caught, the mass of fish catch has a continuous distribution.</li>
+<li>Modelling insurance: some portfolios will have zero claims; however, when claims are made, the total claim amount has a positive continuous distribution.</li>
+<li>Modelling rainfall: some months may receive exactly zero rainfall; otherwise, the monthly rainfall has a continuous distribution.</li>
+<li>Modelling fish catch: some trawls will catch zero fish; other trawls, however, will catch a positive continuous mass of fish.</li>
 </ul>
-<p>Continuous data with a discrete probability at zero can be modelled in various ways, depending on how the discrete probability at <span class="math inline">\(X = 0\)</span> is incorporated.
+<p>Continuous data with a discrete probability at zero can be modelled in various ways, depending on how the discrete probability at <span class="math inline">\(X = 0\)</span> is modelled
 Three approaches are considered in this chapter.</p>
-<p><em>Censored models</em> (Sect. <a href="ChapterMixedDistributions.html#CensoredModels">9.2</a>) assume the existence of an underlying <em>latent variable</em>, defined for all real values.
-However, values of the latent variable below zero cannot be observed (called <em>censoring</em>).
-All the probabilities corresponding to values of the latent variable below zero are accumulated, and assigned to the probability of observing a value of zero.
-The value of <span class="math inline">\(X = 0\)</span> represents <em>censored observations</em> of the latent variable.</p>
+<p><em>Censored models</em> (Sect. <a href="ChapterMixedDistributions.html#CensoredModels">9.2</a>) assumes a single latent (underlying), continuous variable, that is only measurable when it exceeds a threshold.</p>
 <p><em>Hurdle models</em> (Sect. <a href="ChapterMixedDistributions.html#HurdleModels">9.3</a>) treat the zeros as emerging from a two-step process.
 Step one is a binary process, that models whether the event of interest (i.e., an insurance claim is made; rainfall is recorded; fish are caught) occurs.
 Step two is a model for the continuous data of interest, conditional on the event of interest occurring.</p>
-<p>Compound <em>Poisson-gamma models</em> (Sect. <a href="ChapterMixedDistributions.html#TweedieModels">9.4</a>) combine the discrete and continuous components in a single probability model.
-Unlike the hurdle model, the discrete and continuous parts are not modelled separately; the entire distribution is modelled using a single probability model specific for modeling mixed random variables.</p>
+<p>Compound <em>Poisson-gamma models</em> (Sect. <a href="ChapterMixedDistributions.html#TweedieModels">9.4</a>) generates zeros naturally when a Poisson count of underlying events equals zero.</p>
+<div class="importantBox important">
+<p>In hurdle models, zeros come only from the binary component of the part model.
+Zero-inflated distributions mixes a point mass at zero with a distribution that also has support at zero.
+This implies two different types of zero (structural vs. sampling).</p>
+</div>
 </div>
 <div id="CensoredModels" class="section level2" number="9.2">
 <h2>
 <span class="header-section-number">9.2</span> Censored model<a class="anchor" aria-label="anchor" href="#CensoredModels"><i class="fas fa-link"></i></a>
 </h2>
+<p></p>
 <div id="CensoredModelsDefinitions" class="section level3" number="9.2.1">
 <h3>
 <span class="header-section-number">9.2.1</span> Definitions<a class="anchor" aria-label="anchor" href="#CensoredModelsDefinitions"><i class="fas fa-link"></i></a>
 </h3>
-<p>
-Censored models assume the existence of an unobserved <em>latent variable</em>, say <span class="math inline">\(Y\)</span>, such that <span class="math inline">\(Y\in\mathbb{R}\)</span> with probability function <span class="math inline">\(f_Y(y)\)</span>.
-Values of <span class="math inline">\(Y\)</span> below some threshold, say <span class="math inline">\(y^*\)</span> (commonly, <span class="math inline">\(y^* = 0\)</span>), are not directly observed.
-Instead, <span class="math inline">\(X = \max(Y^*, Y)\)</span> is observed; that is, values of <span class="math inline">\(Y\)</span> less than <span class="math inline">\(y^*\)</span> are recorded as <span class="math inline">\(y^*\)</span>.
-We will focus on the case where <span class="math inline">\(y^* = 0\)</span>.</p>
+<p>Censored model assume a distribution for <span class="math inline">\(Y\)</span>, such as a normal (or other continuous) distribution, but the value cannot always be observed exactly.
+Commonly, the value of the random variable is only observed when it exceeds some threshold (typically zero).
+Below that threshold, the threshold vaklue is recorded.
+For example, daily rainfall in Australia less than <span class="math inline">\(0.2\,\text{mm}\)</span> is recorded as zero rainfall; rainfall amount less than this cannot be measured.</p>
+<p>Censoring can occur at the lower end of the scale (left censoring, where values below a threshold are unobserved) or the upper end (right censoring, where values above a threshold are unobserved).
+Right censoring is common in survival analysis, when individuals live beyond the end if the study; left censoring arises naturally when instruments cannot record below a detection limit.</p>
+<div class="definition">
+<p><span id="def:Censoring" class="definition"><strong>Definition 9.1  (Censoring) </strong></span>A random variable <span class="math inline">\(Y\)</span> is censored if its exact value is only observed when it falls within some interval <span class="math inline">\([L, U]\)</span>; otherwise, only the bound that was exceeded is recorded.</p>
+<p><em>Left censoring</em> occurs when there is a finite lower threshold <span class="math inline">\(L\)</span> and no upper censoring: values below <span class="math inline">\(L\)</span> are unobserved and recorded as <span class="math inline">\(L\)</span>.
+For left censoring at <span class="math inline">\(L\)</span>:
+<span class="math display">\[
+  Y^\text{obs}
+  =
+  \begin{cases}
+    L &amp; \text{if $Y \le L$};\\
+    Y &amp; \text{if $L &gt; Y$}.
+  \end{cases}
+\]</span></p>
+<p><em>Right censoring</em> occurs when there is a finite upper threshold <span class="math inline">\(U\)</span> and no lower censoring: values above <span class="math inline">\(U\)</span> are unobserved and recorded as <span class="math inline">\(U\)</span>.
+For right censoring at <span class="math inline">\(L\)</span>:
+<span class="math display">\[
+  Y^\text{obs}
+  =
+  \begin{cases}
+    Y &amp; \text{if $Y &lt; U$};\\
+    U &amp; \text{if $U \ge Y$}.
+  \end{cases}
+\]</span></p>
+</div>
+<p>One specific censored model is a <em>Tobit model</em>.
+A Tobit model assumes normal distribution, left-censored at zero (i.e., <span class="math inline">\(L = 0\)</span>).
+We will focus on the left-censored case where <span class="math inline">\(L = 0\)</span>, but the underlying distribution is not necessarily a normal distribution (CHECK!).</p>
 <div class="example">
-<p><span id="exm:TobitAlcoholSpend" class="example"><strong>Example 9.1  (Latent variables and censoring) </strong></span>Consider a latent variable defined as the ‘desire to purchase alcohol’ <span class="math inline">\(Y\)</span>, where the value <span class="math inline">\(Y = 0\)</span> represents indifference to purchasing alcohol.
-Some people may have a <em>very</em> strong aversion to purchasing alcohol, so that the value of <span class="math inline">\(Y\)</span> is large and negative.
-Some people may have a <em>mild</em> aversion to purchasing alcohol, so that the value of <span class="math inline">\(Y\)</span> is small but still negative.
-In both cases, however, an aversion to purchasing alcohol is present, and no alcohol is purchased.</p>
-<p>The observed variable of interest could be <span class="math inline">\(X\)</span>, the average weekly spend on buying alcohol in dollars.
-When <span class="math inline">\(Y \le 0\)</span>, we observe <span class="math inline">\(X = 0\)</span>; however, when <span class="math inline">\(Y &gt; 0\)</span>, a continuous amount is spent on purchasing alcohol (Fig. <a href="ChapterMixedDistributions.html#fig:AlcoholSpend">9.1</a>).</p>
+<p><span id="exm:TobitAlcoholSpend" class="example"><strong>Example 9.1  (Latent variables and censoring) </strong></span>FIX and change (Fig. <a href="ChapterMixedDistributions.html#fig:AlcoholSpend">9.1</a>).</p>
 </div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:AlcoholSpend"></span>
@@ -396,7 +419,11 @@ FIGURE 9.2: A censored model, using a normal distribution for the continuous com
 <span class="header-section-number">9.3.1</span> Definitions<a class="anchor" aria-label="anchor" href="#HurdleModelsDefinitions"><i class="fas fa-link"></i></a>
 </h3>
 <p>
-A <em>hurdle model</em> treats the zero values of the random variable <span class="math inline">\(X\)</span> as emerging from a two-step process.
+A hurdle model treats zeros and positive values as arising from two separate processes.
+The first process is a binary model that determines whether an event occurs or not.
+The second process that describes the distribution of values, conditional on the values being positive.
+The hurdle model is useful when the zero-generating process is believed to be distinct from the process driving variation among positive values; for example, whether a household buys alcohol at all is a different process tha how much a household spends if they do buy alcohol.</p>
+<p>A <em>hurdle model</em> treats the zero values of the random variable <span class="math inline">\(X\)</span> as emerging from a two-step process.
 The first step uses a Bernoulli distribution (Sect. <a href="DiscreteDistributions.html#BernoulliDistribution">7.3</a>) to model a random variable <span class="math inline">\(Y\)</span> that defines whether an event of interest occurs:
 <span class="math display">\[
   \Pr(Y) =
@@ -527,8 +554,15 @@ FIGURE 9.4: A hurdle model, using a gamma distribution for the continuous compon
 <span class="header-section-number">9.4</span> Compound Poisson-gamma distributions<a class="anchor" aria-label="anchor" href="#TweedieModels"><i class="fas fa-link"></i></a>
 </h2>
 <p>
-Compound Poisson–gamma distribution take a different approach to modelling mixed random variables: Compound Poisson–gamma distributions model mixed random variables as a Poisson sum of independent gamma distributions.
-Suppose the number of events observed (which is discrete) is <span class="math inline">\(N\)</span>, such that
+### Definition</p>
+<p>A compound Poisson–gamma model generates the point mass at zero through a physically-motivated compound process.
+The model assumes that events arrive according to a Poisson process, and each event contributes an independent gamma-distributed amount to the total.
+The observed variable <span class="math inline">\(Y\)</span> is the sum of all the independent contributions.
+A compound Poisson–gamma distributions, therefore, is a Poisson sum of independent gamma distributions.</p>
+<p>When the Poisson count is zero (i.e., when no events occur), the total is exactly zero, naturally producing the point mass without any separate modelling of zeros.
+When at least one event occurs, the sum of gamma random variables gives a continuous positive value.
+The compound Poisson-gamma distribution is a unified single-distribution model, and requires the compound Poisson-gamma story to be a plausible description of the data-generating process.</p>
+<p>More specifically, suppose the number of events observed (a discrete random variable) is <span class="math inline">\(N\)</span>, such that
 <span class="math display" id="eq:PGp0">\[\begin{equation}
   N \sim \text{Pois}(\lambda).
    \tag{9.3}
@@ -558,8 +592,16 @@ Then,
 \]</span>
 By this definition <span class="math inline">\(X\)</span> has a <em>compound Poisson-gamma distribution</em>.
 The distribution of <span class="math inline">\(X\)</span> has a probability mass at <span class="math inline">\(X = 0\)</span> where <span class="math inline">\(\Pr(Y = 0) = \Pr(N = 0) = \exp(-\lambda)\)</span>.</p>
+<p>Insurance claim totals and rainfall accumulation are natural fits; for data where that physical story does not apply, the model may be harder to justify interpretively.</p>
+<div class="example">
+<p><span id="exm:unlabeled-div-55" class="example"><strong>Example 9.8  </strong></span>EXAMPLE WHERE THE NARRATIVE FITS</p>
+</div>
+<div id="properties" class="section level3" number="9.4.1">
+<h3>
+<span class="header-section-number">9.4.1</span> Properties<a class="anchor" aria-label="anchor" href="#properties"><i class="fas fa-link"></i></a>
+</h3>
 <p><em>The probability functions for the compound Poisson-gamma distribution cannot be written in closed form.</em>
-However, the probability function can be expressed as an infinite sum <span class="citation">(<a href="references.html#ref-dunn2005series">Dunn and Smyth 2005</a>)</span> or by inverting the MGF <span class="citation">(<a href="references.html#ref-mypapers:Dunn:fourier">Dunn and Smyth 2008</a>)</span> as discussed in Sect. <a href="ChapExpectation.html#DistributionFromMGF">6.5.5</a>.</p>
+However, the probability function can be expressed as an infinite sum <span class="citation">(<a href="references.html#ref-dunn2005series">Dunn and Smyth 2005</a>)</span> or by inverting the MGF <span class="citation">(<a href="references.html#ref-mypapers:Dunn:fourier">Dunn and Smyth 2008</a>)</span>, following the ideas in Sect. <a href="ChapExpectation.html#DistributionFromMGF">6.5.5</a>.</p>
 <p>The probability function as an infinite series can be determined from the development of the compound Poisson-gamma distribution above.
 If <span class="math inline">\(N = 1\)</span> with <span class="math inline">\(\Pr(N = 1)\)</span> (from the Poisson distribution), then, <span class="math inline">\(X = Y\)</span> has the <span class="math inline">\(\text{Gam}(\alpha, \beta)\)</span> distribution.
 That is,
@@ -654,7 +696,7 @@ provided <span class="math inline">\(t &lt; \beta\)</span>.</p>
   &amp;= \lambda\alpha(\alpha + 1)\beta^2.
 \end{align*}\]</span></p>
 <div class="example">
-<p><span id="exm:PoissonGammaExample" class="example"><strong>Example 9.8  (Poisson--gamma distribution) </strong></span>Suppose
+<p><span id="exm:PoissonGammaExample" class="example"><strong>Example 9.9  (Poisson--gamma distribution) </strong></span>Suppose
 <span class="math display">\[
   N\sim\text{Pois}(\lambda = 3)
   \quad\text{and}\quad
@@ -698,17 +740,69 @@ FIGURE 9.5: Two compound Poisson–gamma models, both with mean and varaince set
 </div>
 <p></p>
 <div class="example">
-<p><span id="exm:RainfallModelling" class="example"><strong>Example 9.9  (Modelling monthly rainfall) </strong></span>Modelling rainfall.
+<p><span id="exm:RainfallModelling" class="example"><strong>Example 9.10  (Modelling monthly rainfall) </strong></span>Modelling rainfall.
 Using hurdle from Stern and Coe, Chandler and Wheater? Tobit thing from IWSM, and Poisson–gamma,</p>
 </div>
 </div>
-<div id="MixedVariablesSimulation" class="section level2" number="9.5">
+</div>
+<div id="sumamry-of-models" class="section level2" number="9.5">
 <h2>
-<span class="header-section-number">9.5</span> Simulation<a class="anchor" aria-label="anchor" href="#MixedVariablesSimulation"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.5</span> Sumamry of models<a class="anchor" aria-label="anchor" href="#sumamry-of-models"><i class="fas fa-link"></i></a>
 </h2>
-<div id="general" class="section level3" number="9.5.1">
+<div class="inline-table"><table class="table table-sm">
+<colgroup>
+<col width="18%">
+<col width="28%">
+<col width="24%">
+<col width="28%">
+</colgroup>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="left">Censored</th>
+<th align="left">Hurdle</th>
+<th align="left">Poisson-Gamma</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Zeros</td>
+<td align="left">True value unobservable</td>
+<td align="left">Different process</td>
+<td align="left">No events occurred</td>
+</tr>
+<tr class="even">
+<td align="left">Parameters</td>
+<td align="left">One model</td>
+<td align="left">Two separate models</td>
+<td align="left">One unified model</td>
+</tr>
+<tr class="odd">
+<td align="left">Interpretation</td>
+<td align="left">Mechanistic</td>
+<td align="left">Very natural</td>
+<td align="left">Requires physical story</td>
+</tr>
+<tr class="even">
+<td align="left">Flexibility</td>
+<td align="left">Less</td>
+<td align="left">High</td>
+<td align="left">Moderate</td>
+</tr>
+<tr class="odd">
+<td align="left">Uses</td>
+<td align="left">Detection limits</td>
+<td align="left">Healthcare spend</td>
+<td align="left">Insurance, rainfall</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div id="MixedVariablesSimulation" class="section level2" number="9.6">
+<h2>
+<span class="header-section-number">9.6</span> Simulation<a class="anchor" aria-label="anchor" href="#MixedVariablesSimulation"><i class="fas fa-link"></i></a>
+</h2>
+<div id="general" class="section level3" number="9.6.1">
 <h3>
-<span class="header-section-number">9.5.1</span> General<a class="anchor" aria-label="anchor" href="#general"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.6.1</span> General<a class="anchor" aria-label="anchor" href="#general"><i class="fas fa-link"></i></a>
 </h3>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:CensoredSim"></span>
@@ -721,10 +815,10 @@ FIGURE 9.6: FIX!!!!! The solid dot at <span class="math inline">\(X = 0\)</span>
 <p>…</p>
 <p>A compound Poisson–gamma model could also be used to model daily rainfall (e.g., <span class="citation">Yunus et al. (<a href="references.html#ref-yunus2017modelling">2017</a>)</span>).</p>
 <div class="example">
-<p><span id="exm:SimulationCensored" class="example"><strong>Example 9.10  (Simulations for censored models) </strong></span>Censored:</p>
+<p><span id="exm:SimulationCensored" class="example"><strong>Example 9.11  (Simulations for censored models) </strong></span>Censored:</p>
 </div>
 <div class="example">
-<p><span id="exm:SimulationHurdle" class="example"><strong>Example 9.11  (Simulations for hurdle models) </strong></span>Hurdle model; see Fig. <a href="ChapterMixedDistributions.html#fig:HurdleSim">9.7</a></p>
+<p><span id="exm:SimulationHurdle" class="example"><strong>Example 9.12  (Simulations for hurdle models) </strong></span>Hurdle model; see Fig. <a href="ChapterMixedDistributions.html#fig:HurdleSim">9.7</a></p>
 </div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:HurdleSim"></span>
@@ -733,7 +827,7 @@ FIGURE 9.7: A simulation of the hurdle model. FIX!!!!! The solid dot at <span cl
 </p>
 </div>
 <div class="example">
-<p><span id="exm:SimulationPGmodels" class="example"><strong>Example 9.12  (Simulations for compound Poisson--gamma models) </strong></span>Compound P–G; see Fig. <a href="ChapterMixedDistributions.html#fig:PoissonGammaSim">9.8</a></p>
+<p><span id="exm:SimulationPGmodels" class="example"><strong>Example 9.13  (Simulations for compound Poisson--gamma models) </strong></span>Compound P–G; see Fig. <a href="ChapterMixedDistributions.html#fig:PoissonGammaSim">9.8</a></p>
 </div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:PoissonGammaSim"></span>
@@ -742,9 +836,9 @@ FIGURE 9.8: A simulation of the compound Poisson–gamma models, both with mean 
 </p>
 </div>
 </div>
-<div id="rainfall" class="section level3" number="9.5.2">
+<div id="rainfall" class="section level3" number="9.6.2">
 <h3>
-<span class="header-section-number">9.5.2</span> Rainfall<a class="anchor" aria-label="anchor" href="#rainfall"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.6.2</span> Rainfall<a class="anchor" aria-label="anchor" href="#rainfall"><i class="fas fa-link"></i></a>
 </h3>
 <p>Simulation for the censored, hurdle and compound Poisson-gamma models can all be achieved by directly modelling the process by which the zeros are incorporated.
 To demonstrate, consider modelling monthly rainfall at a certain location for one specific month each year.
@@ -813,8 +907,8 @@ Thus, the monthly rainfall can be simulated:</p>
 <span>       y <span class="op">=</span> <span class="va">p0</span>,</span>
 <span>       pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-2"></span>
-<img src="09-MixedDistributions_files/figure-html/unnamed-chunk-2-1.png" alt="The latent variable left panel), and the observed rainfall (right panel)." width="80%"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-3"></span>
+<img src="09-MixedDistributions_files/figure-html/unnamed-chunk-3-1.png" alt="The latent variable left panel), and the observed rainfall (right panel)." width="80%"><p class="caption">
 FIGURE 9.9: The latent variable left panel), and the observed rainfall (right panel).
 </p>
 </div>
@@ -884,8 +978,8 @@ So the hurdle model is:
 <span>       y <span class="op">=</span> <span class="va">p0</span>,</span>
 <span>       pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<span style="display:block;" id="fig:unnamed-chunk-4"></span>
-<img src="09-MixedDistributions_files/figure-html/unnamed-chunk-4-1.png" alt="HURDLE MODEL" width="672"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-5"></span>
+<img src="09-MixedDistributions_files/figure-html/unnamed-chunk-5-1.png" alt="HURDLE MODEL" width="672"><p class="caption">
 FIGURE 9.10: HURDLE MODEL
 </p>
 </div>
@@ -920,9 +1014,9 @@ MAXIMUM RAINFALL, with CI-like interval? Again… could do with distribution</p>
 <p>PERHAPS CONNECT TO SOI</p>
 </div>
 </div>
-<div id="MixedDistributionsExercises" class="section level2" number="9.6">
+<div id="MixedDistributionsExercises" class="section level2" number="9.7">
 <h2>
-<span class="header-section-number">9.6</span> Exercises<a class="anchor" aria-label="anchor" href="#MixedDistributionsExercises"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.7</span> Exercises<a class="anchor" aria-label="anchor" href="#MixedDistributionsExercises"><i class="fas fa-link"></i></a>
 </h2>
 <p>Selected answers appear in Sect. <a href="selected-short-solutions.html#AnswersChapMixedDistributions">E.8</a>.</p>
 <!-- 
@@ -1033,14 +1127,17 @@ The damage (in millions of dollars) per fire is <span class="math inline">\(X \s
 <li><a class="nav-link" href="#HurdleModelsProperties"><span class="header-section-number">9.3.2</span> Properties</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#TweedieModels"><span class="header-section-number">9.4</span> Compound Poisson-gamma distributions</a></li>
 <li>
-<a class="nav-link" href="#MixedVariablesSimulation"><span class="header-section-number">9.5</span> Simulation</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#general"><span class="header-section-number">9.5.1</span> General</a></li>
-<li><a class="nav-link" href="#rainfall"><span class="header-section-number">9.5.2</span> Rainfall</a></li>
+<a class="nav-link" href="#TweedieModels"><span class="header-section-number">9.4</span> Compound Poisson-gamma distributions</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#properties"><span class="header-section-number">9.4.1</span> Properties</a></li></ul>
+</li>
+<li><a class="nav-link" href="#sumamry-of-models"><span class="header-section-number">9.5</span> Sumamry of models</a></li>
+<li>
+<a class="nav-link" href="#MixedVariablesSimulation"><span class="header-section-number">9.6</span> Simulation</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#general"><span class="header-section-number">9.6.1</span> General</a></li>
+<li><a class="nav-link" href="#rainfall"><span class="header-section-number">9.6.2</span> Rainfall</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#MixedDistributionsExercises"><span class="header-section-number">9.6</span> Exercises</a></li>
+<li><a class="nav-link" href="#MixedDistributionsExercises"><span class="header-section-number">9.7</span> Exercises</a></li>
 </ul>
 
       <div class="book-extra">
@@ -1058,7 +1155,7 @@ The damage (in millions of dollars) per fire is <span class="math inline">\(X \s
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn and Taryn Axelsen. It was last built on Last updated: 2026-03-03.</p>
+    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn and Taryn Axelsen. It was last built on Last updated: 2026-03-05.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
