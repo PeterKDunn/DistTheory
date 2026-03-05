@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>9 Mixed distributions | The Theory of Statistical Distributions</title>
 <meta name="author" content="Peter K. Dunn and Taryn Axelsen">
-<meta name="description" content="On completion of this chapter, you should be able to: recognise mixed random variables. recognise censored models, hurdle models and compound Poisson–gamma models for modelling mixed random...">
+<meta name="description" content="On completion of this chapter, you should be able to: recognise mixed random variables. recognise hurdle models and compound Poisson–gamma models for modelling mixed random variables. know the...">
 <meta name="generator" content="bookdown 0.45 with bs4_book()">
 <meta property="og:title" content="9 Mixed distributions | The Theory of Statistical Distributions">
 <meta property="og:type" content="book">
-<meta property="og:description" content="On completion of this chapter, you should be able to: recognise mixed random variables. recognise censored models, hurdle models and compound Poisson–gamma models for modelling mixed random...">
+<meta property="og:description" content="On completion of this chapter, you should be able to: recognise mixed random variables. recognise hurdle models and compound Poisson–gamma models for modelling mixed random variables. know the...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="9 Mixed distributions | The Theory of Statistical Distributions">
-<meta name="twitter:description" content="On completion of this chapter, you should be able to: recognise mixed random variables. recognise censored models, hurdle models and compound Poisson–gamma models for modelling mixed random...">
+<meta name="twitter:description" content="On completion of this chapter, you should be able to: recognise mixed random variables. recognise hurdle models and compound Poisson–gamma models for modelling mixed random variables. know the...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.10.0/transition.js"></script><script src="libs/bs3compat-0.10.0/tabs.js"></script><script src="libs/bs3compat-0.10.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -149,7 +149,7 @@
 <p>On completion of this chapter, you should be able to:</p>
 <ul>
 <li>recognise mixed random variables.</li>
-<li>recognise censored models, hurdle models and compound Poisson–gamma models for modelling mixed random variables.</li>
+<li>recognise hurdle models and compound Poisson–gamma models for modelling mixed random variables.</li>
 <li>know the basic properties of the above approaches.</li>
 <li>apply these approaches as appropriate to problem solving.</li>
 </ul>
@@ -167,262 +167,25 @@ Example include:</p>
 <li>Modelling fish catch: some trawls will catch zero fish; other trawls, however, will catch a positive continuous mass of fish.</li>
 </ul>
 <p>Continuous data with a discrete probability at zero can be modelled in various ways, depending on how the discrete probability at <span class="math inline">\(X = 0\)</span> is modelled
-Three approaches are considered in this chapter.</p>
-<p><em>Censored models</em> (Sect. <a href="ChapterMixedDistributions.html#CensoredModels">9.2</a>) assumes a single latent (underlying), continuous variable, that is only measurable when it exceeds a threshold.</p>
-<p><em>Hurdle models</em> (Sect. <a href="ChapterMixedDistributions.html#HurdleModels">9.3</a>) treat the zeros as emerging from a two-step process.
+Two approaches are considered in this chapter.</p>
+<p><em>Hurdle models</em> (Sect. <a href="ChapterMixedDistributions.html#HurdleModels">9.2</a>) treat the zeros as emerging from a <em>two-step process</em>.
 Step one is a binary process, that models whether the event of interest (i.e., an insurance claim is made; rainfall is recorded; fish are caught) occurs.
 Step two is a model for the continuous data of interest, conditional on the event of interest occurring.</p>
-<p>Compound <em>Poisson-gamma models</em> (Sect. <a href="ChapterMixedDistributions.html#TweedieModels">9.4</a>) generates zeros naturally when a Poisson count of underlying events equals zero.</p>
-<div class="importantBox important">
-<p>In hurdle models, zeros come only from the binary component of the part model.
-Zero-inflated distributions mixes a point mass at zero with a distribution that also has support at zero.
-This implies two different types of zero (structural vs. sampling).</p>
+<p>Compound <em>Poisson-gamma models</em> (Sect. <a href="ChapterMixedDistributions.html#TweedieModels">9.3</a>) generates zeros from a <em>single process</em>, when a Poisson count of underlying events equals zero.</p>
 </div>
-</div>
-<div id="CensoredModels" class="section level2" number="9.2">
+<div id="HurdleModels" class="section level2" number="9.2">
 <h2>
-<span class="header-section-number">9.2</span> Censored model<a class="anchor" aria-label="anchor" href="#CensoredModels"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.2</span> Hurdle models<a class="anchor" aria-label="anchor" href="#HurdleModels"><i class="fas fa-link"></i></a>
 </h2>
-<p></p>
-<div id="CensoredModelsDefinitions" class="section level3" number="9.2.1">
+<div id="HurdleModelsDefinitions" class="section level3" number="9.2.1">
 <h3>
-<span class="header-section-number">9.2.1</span> Definitions<a class="anchor" aria-label="anchor" href="#CensoredModelsDefinitions"><i class="fas fa-link"></i></a>
-</h3>
-<p>Censored model assume a distribution for <span class="math inline">\(Y\)</span>, such as a normal (or other continuous) distribution, but the value cannot always be observed exactly.
-Commonly, the value of the random variable is only observed when it exceeds some threshold (typically zero).
-Below that threshold, the threshold vaklue is recorded.
-For example, daily rainfall in Australia less than <span class="math inline">\(0.2\,\text{mm}\)</span> is recorded as zero rainfall; rainfall amount less than this cannot be measured.</p>
-<p>Censoring can occur at the lower end of the scale (left censoring, where values below a threshold are unobserved) or the upper end (right censoring, where values above a threshold are unobserved).
-Right censoring is common in survival analysis, when individuals live beyond the end if the study; left censoring arises naturally when instruments cannot record below a detection limit.</p>
-<div class="definition">
-<p><span id="def:Censoring" class="definition"><strong>Definition 9.1  (Censoring) </strong></span>A random variable <span class="math inline">\(Y\)</span> is censored if its exact value is only observed when it falls within some interval <span class="math inline">\([L, U]\)</span>; otherwise, only the bound that was exceeded is recorded.</p>
-<p><em>Left censoring</em> occurs when there is a finite lower threshold <span class="math inline">\(L\)</span> and no upper censoring: values below <span class="math inline">\(L\)</span> are unobserved and recorded as <span class="math inline">\(L\)</span>.
-For left censoring at <span class="math inline">\(L\)</span>:
-<span class="math display">\[
-  Y^\text{obs}
-  =
-  \begin{cases}
-    L &amp; \text{if $Y \le L$};\\
-    Y &amp; \text{if $L &gt; Y$}.
-  \end{cases}
-\]</span></p>
-<p><em>Right censoring</em> occurs when there is a finite upper threshold <span class="math inline">\(U\)</span> and no lower censoring: values above <span class="math inline">\(U\)</span> are unobserved and recorded as <span class="math inline">\(U\)</span>.
-For right censoring at <span class="math inline">\(L\)</span>:
-<span class="math display">\[
-  Y^\text{obs}
-  =
-  \begin{cases}
-    Y &amp; \text{if $Y &lt; U$};\\
-    U &amp; \text{if $U \ge Y$}.
-  \end{cases}
-\]</span></p>
-</div>
-<p>One specific censored model is a <em>Tobit model</em>.
-A Tobit model assumes normal distribution, left-censored at zero (i.e., <span class="math inline">\(L = 0\)</span>).
-We will focus on the left-censored case where <span class="math inline">\(L = 0\)</span>, but the underlying distribution is not necessarily a normal distribution (CHECK!).</p>
-<div class="example">
-<p><span id="exm:TobitAlcoholSpend" class="example"><strong>Example 9.1  (Latent variables and censoring) </strong></span>FIX and change (Fig. <a href="ChapterMixedDistributions.html#fig:AlcoholSpend">9.1</a>).</p>
-</div>
-<div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:AlcoholSpend"></span>
-<img src="09-MixedDistributions_files/figure-html/AlcoholSpend-1.png" alt="Left: the latent variable\ $Y$, the desire to buy alcohol. Right: the observed variable\ $X$, the average weekly spend on alcohol. The solid dot is the sum of all probabilities for which $Z \le 0$." width="100%"><p class="caption">
-FIGURE 9.1: Left: the latent variable <span class="math inline">\(Y\)</span>, the desire to buy alcohol. Right: the observed variable <span class="math inline">\(X\)</span>, the average weekly spend on alcohol. The solid dot is the sum of all probabilities for which <span class="math inline">\(Z \le 0\)</span>.
-</p>
-</div>
-<p>In this context, the value of the observed variable <span class="math inline">\(X\)</span> is said to be <em>censored</em>.</p>
-<div class="definition">
-<p><span id="def:Censoring" class="definition"><strong>Definition 9.1  (Censoring) </strong></span>A variable is called <em>censored</em> if its value is only observed when its above or below a certain threshold.</p>
-<p><em>Left censoring</em> occurs when the true (latent) value is less than or equal to a known threshold, but the exact value is unknown.
-We only know that the true (latent) value is <em>below</em> a certain threshold.</p>
-<p><em>Right censoring</em> occurs when the true (latent) value is greater than or equal to a known threshold, but the exact value is unknown.
-We only know that the true (latent) value is <em>above</em> a certain threshold.</p>
-</div>
-<div class="example">
-<p><span id="exm:AlcoholLeftCensoring" class="example"><strong>Example 9.2  (Left censoring) </strong></span>The latent variable ‘desire to purchase alcohol’ used in Example <a href="ChapterMixedDistributions.html#exm:TobitAlcoholSpend">9.1</a> is <em>left censored</em>.</p>
-</div>
-<div class="example" ame="Right censoring">
-<p><span id="exm:insectLeftCensoring" class="example"><strong>Example 9.3  </strong></span>In survival analysis, the time it takes insects to die (say <span class="math inline">\(X\)</span>) may be studied.
-If the study ends at time <span class="math inline">\(t^*\)</span>, the time of death for any insects still alive is some value larger than <span class="math inline">\(t^*\)</span>; that is, <span class="math inline">\(X\ge t^*\)</span> but the exact time of death remains unknown.
-The time to death is <em>right censored</em>.</p>
-</div>
-<div class="importantBox important">
-<p><em>Censoring</em> is not the same as <em>truncation</em>.</p>
-<p><em>Censoring</em> retains observations, but the exact value remains unknown.
-<em>Truncation</em> removes observations whose value falls above or below a threshold.</p>
-</div>
-<p>Usually <span class="math inline">\(y^* = 0\)</span> (as in Example <a href="ChapterMixedDistributions.html#exm:TobitAlcoholSpend">9.1</a>), so that any value of <span class="math inline">\(Y \le 0\)</span> is recorded as <span class="math inline">\(y = 0\)</span>.
-That is, we observe the random variable <span class="math inline">\(X\)</span> such that
-<span class="math display">\[
-  X = \max(Y, 0).
-\]</span>
-This means the probability function of <span class="math inline">\(X\)</span> is
-<span class="math display">\[
-  f_X(x) =
-  \begin{cases}
-    0       &amp; \text{if $X &lt; 0$}\\
-    F_Y(0)  &amp; \text{if $X = 0$}\\
-    f_Y(y)  &amp; \text{if $X &gt; 0$}
-  \end{cases}
-\]</span>
-where <span class="math inline">\(F_Y(y)\)</span> is the distribution function of <span class="math inline">\(Y\)</span>.
-The probability function for <span class="math inline">\(X\mid X &gt; 0\)</span>, the continuous part of the distribution only, is
-<span class="math display" id="eq:PDFpositiveConditional">\[\begin{equation}
-  f_{X\mid X &gt; 0}(x)
-  = \frac{f_X(x)}{\Pr(X &gt; 0)}
-  = \frac{f_Y(y)}{1 - F_Y(0)}
-  \tag{9.1}
-\end{equation}\]</span>
-where again <span class="math inline">\(F_Y(y)\)</span> is the distribution function of <span class="math inline">\(Y\)</span>.
-The distribution function of <span class="math inline">\(X\)</span> is
-<span class="math display">\[
-  F_{X\mid X&gt;0}(x) =
-  \begin{cases}
-    0             &amp; \text{for $x &lt; 0$}\\
-    F_Y(0)        &amp; \text{for $x = 0$}\\
-    F_Y(x)        &amp; \text{for $x &gt; 0$}
-  \end{cases}
-\]</span></p>
-<p>If the latent distribution is a normal distribution, Equation <a href="ChapterMixedDistributions.html#eq:PDFpositiveConditional">(9.1)</a> can be written in terms of the standard normal density function <span class="math inline">\(\phi(\cdot)\)</span> and the standard normal distribution function <span class="math inline">\(\Phi(\cdot)\)</span> (see Sect. <a href="ContinuousDistributions.html#StandardNormal">8.3.2</a>).
-In this case only, notice that
-<span class="math display">\[\begin{align*}
-   \Pr(X &gt; 0)
-   &amp;= \Pr(Z &gt; (0 - \mu)/\sigma)\quad\text{(where $Z$ is a standard normal variate)} \\
-   &amp;= \Pr(Z &gt; -\mu/\sigma) \\
-   &amp;= 1 - \Phi( -\mu/\sigma) \\
-   &amp;= \Phi(\mu/\sigma) \quad\text{(using the symmetry of the normal distribution)},
-\end{align*}\]</span>
-and hence Equation <a href="ChapterMixedDistributions.html#eq:PDFpositiveConditional">(9.1)</a> can be written as
-<span class="math display" id="eq:PDFpositiveConditional2">\[\begin{equation}
-  f_{X\mid X&gt;0}(x)
-  = \frac{\phi\big((x-\mu)/\sigma\big)}{\Phi(\mu/\sigma)}.
-  \tag{9.2}
-\end{equation}\]</span>
-If we write <span class="math inline">\(t = \mu/\sigma\)</span> and define <span class="math inline">\(\lambda(t) = \phi(t)/\Phi(t)\)</span>, this expression becomes
-<span class="math display">\[
-  f_{X\mid X&gt;0}(x) = ?????????????
-\]</span>
-LOST:
-<span class="math display">\[
-  f_{X\mid X&gt;0}(x)
-  = \frac{f_Z(x)}{\Pr(Z &gt; 0)}
-  = \frac{f_Z(x)}{1 - F_Z(0)}
-\]</span></p>
-<div class="example">
-<p><span id="exm:TobitExamplesLatent2" class="example"><strong>Example 9.4  (Latent variables and censoring) </strong></span>Consider the number of hours worked (which can be observed), which must take a non-negative value.
-We could assume an underlying, unobserved latent variable such as ‘willingness to work’.
-Negative values for ‘willingness to work’, no matter how small or how large, all result in zero observed hours of work.</p>
-</div>
-</div>
-<div id="CensoredModelsProperties" class="section level3" number="9.2.2">
-<h3>
-<span class="header-section-number">9.2.2</span> Properties<a class="anchor" aria-label="anchor" href="#CensoredModelsProperties"><i class="fas fa-link"></i></a>
-</h3>
-<p>The expected value of the censored random variable <span class="math inline">\(X\)</span> can be found first separating the discrete and continuous parts of the distribution:
-<span class="math display">\[\begin{align*}
-  \operatorname{E}[X]
-  &amp;= \operatorname{E}[X\mid X = 0] + \operatorname{E}[X\mid X &gt; 0]\\
-  &amp;= \Pr(X = 0)\times 0 + \operatorname{E}[X\mid X &gt; 0]\\
-  &amp;= \operatorname{E}[X\mid X &gt; 0]\\
-  &amp;= \int_0^\infty x\cdot f_{X\mid X &gt; 0}(x)\,dx,\\
-  &amp;= \frac{1}{\Phi()} \int_0^\infty x\cdot f_{X}(x)\,dx,
-\end{align*}\]</span>
-where <span class="math inline">\(f_{X\mid X &gt; 0}(x)\)</span> is given in Equation <a href="ChapterMixedDistributions.html#eq:PDFpositiveConditional2">(9.2)</a>).</p>
-<p>When the censoring happens at <span class="math inline">\(x^* = 0\)</span>, the standardised score is <span class="math inline">\((x^* - \mu)/\sigma = -t\)</span>, where defining <span class="math inline">\(t = \mu/\sigma\)</span> proves useful.
-Then <span class="math inline">\(1 - \Phi()\)</span>
-Thus,
-<span class="math display">\[\begin{align*}
-  \operatorname{E}[X]
-  &amp;= \int_0^\infty x\cdot f_{X\mid X &gt; 0}(x)\,dx,
-  &amp;= \int_0^\infty x\cdot f_{X\mid X &gt; 0}(x)\,dx,
-\end{align*}\]</span></p>
-<p>Similarly,
-<span class="math display">\[
-  \operatorname{E}[X^2]
-  = \operatorname{E}[X^2 \mid X &gt; 0]
-  = \int_0^\infty x^2 \cdot f_{X\mid X&gt;0}(x)\, dx,
-\]</span>
-from which the variance can be obtained.
-The same approach also gives the MGF as
-<span class="math display">\[
-  M_X(t) = M_{X\mid X &gt; 0}(t).
-\]</span>
-Clearly, further progress with these expressions requires knowing the distribution of <span class="math inline">\(X\)</span> and hence the distribution of the latent variable <span class="math inline">\(Z\)</span>.
-It is common, but by no means universal, for the latent variable to be described by a normal distribution (when the models are also called <em>Tobit models</em>).</p>
-<div class="example">
-<p><span id="exm:TobitExample0" class="example"><strong>Example 9.5  (Censored model) </strong></span>Consider a latent variable <span class="math inline">\(Y\)</span>, and an observed variable <span class="math inline">\(X = \text{max}(0, Z)\)</span>.
-Suppose that <span class="math inline">\(Z\)</span> has the normal distribution (Fig. <a href="ChapterMixedDistributions.html#fig:TobitPic">9.2</a>, left panel))
-<span class="math display">\[
-  Z \sim N(\mu = 0, \sigma^2 = 1),
-\]</span>
-so that <span class="math inline">\(\operatorname{E}[Z] = 0\)</span> and <span class="math inline">\(\operatorname{var}[Z] = 1\)</span>.
-That is, <span class="math inline">\(Z\)</span> has a standard normal distribution (Sect <a href="ContinuousDistributions.html#StandardNormal">8.3.2</a>), and so
-<span class="math display">\[
-  \Pr(Z &lt; 0) = \Phi(0) = 0.5.
-\]</span>
-Recall the notation: <span class="math inline">\(\Phi(\cdot)\)</span> is the distribution function for a standard normal variate, and <span class="math inline">\(\phi(\cdot)\)</span> is the density function for a standard normal variate.</p>
-<p>Then, define the random variable <span class="math inline">\(X\)</span> as
-<span class="math display">\[
-  f_X(x) =
-  \begin{cases}
-    0          &amp; \text{if $Z &lt; 0$};\\
-    \Phi(0)    &amp; \text{if $Z = 0$};\\
-    \phi(x)    &amp; \text{if $Z &gt; 0$},
-  \end{cases}
-\]</span>
-as shown in Fig. <a href="ChapterMixedDistributions.html#fig:TobitPic">9.2</a> (right panel).</p>
-<p>From Equation <a href="ChapterMixedDistributions.html#eq:PDFpositiveConditional">(9.1)</a>,
-<span class="math display">\[
-  f_{X\mid X &gt; 0}(x)
-  = \frac{\phi(x)}{1 - \Phi(0)}
-  = 2 \phi(x)
-\]</span>
-for <span class="math inline">\(X &gt; 0\)</span>.
-From this expression,
-<span class="math display">\[
-  \operatorname{E}[X]
-   = \operatorname{E}[X \mid X &gt; 0]
-  = 2 \int_0^\infty x\cdot \phi(x)\, dx
-  = \frac{2}{\sqrt{2\pi}}
-  \approx 0.7979,
-\]</span>
-integrating the expression for <span class="math inline">\(\phi(x)\)</span> (Equation <a href="ContinuousDistributions.html#eq:StandardNormalPMF">(8.4)</a>).
-Similarly, using integration by parts,
-<span class="math display">\[
-  \operatorname{E}[X^2]
-   = \operatorname{E}[X^2 \mid X &gt; 0]
-  = 2 \int_0^\infty x^2\cdot \phi(x)\, dx
-  = 1/2.
-\]</span>
-Combining, this means that
-<span class="math display">\[
-  \operatorname{var}[X]
-  = \frac{1}{2} - \left(\frac{2}{\sqrt{2\pi}}\right)^2
-  = \frac{1}{2} - \frac{1}{\pi}
-  \approx 0.182.
-\]</span></p>
-</div>
-<div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:TobitPic"></span>
-<img src="09-MixedDistributions_files/figure-html/TobitPic-1.png" alt="A censored model, using a normal distribution for the continuous component, with the threshold value at $Z = 0$." width="90%"><p class="caption">
-FIGURE 9.2: A censored model, using a normal distribution for the continuous component, with the threshold value at <span class="math inline">\(Z = 0\)</span>.
-</p>
-</div>
-<p></p>
-</div>
-</div>
-<div id="HurdleModels" class="section level2" number="9.3">
-<h2>
-<span class="header-section-number">9.3</span> Hurdle models<a class="anchor" aria-label="anchor" href="#HurdleModels"><i class="fas fa-link"></i></a>
-</h2>
-<div id="HurdleModelsDefinitions" class="section level3" number="9.3.1">
-<h3>
-<span class="header-section-number">9.3.1</span> Definitions<a class="anchor" aria-label="anchor" href="#HurdleModelsDefinitions"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.2.1</span> Definitions<a class="anchor" aria-label="anchor" href="#HurdleModelsDefinitions"><i class="fas fa-link"></i></a>
 </h3>
 <p>
 A hurdle model treats zeros and positive values as arising from two separate processes.
 The first process is a binary model that determines whether an event occurs or not.
 The second process that describes the distribution of values, conditional on the values being positive.
-The hurdle model is useful when the zero-generating process is believed to be distinct from the process driving variation among positive values; for example, whether a household buys alcohol at all is a different process tha how much a household spends if they do buy alcohol.</p>
+The hurdle model is useful when the zero-generating process is believed to be distinct from the process driving variation among positive values; for example, whether a household buys alcohol is a different process than how much a household spends on alcohol if they do buy alcohol.</p>
 <p>A <em>hurdle model</em> treats the zero values of the random variable <span class="math inline">\(X\)</span> as emerging from a two-step process.
 The first step uses a Bernoulli distribution (Sect. <a href="DiscreteDistributions.html#BernoulliDistribution">7.3</a>) to model a random variable <span class="math inline">\(Y\)</span> that defines whether an event of interest occurs:
 <span class="math display">\[
@@ -453,7 +216,7 @@ The distribution function is
 \]</span>
 where <span class="math inline">\(F^+_X(x) = F_{X\mid X &gt; 0}(x)\)</span> is the distribution function for the continuous distribution defined for <span class="math inline">\(x\in\mathbb{R}_{+}\)</span>.</p>
 <div class="example">
-<p><span id="exm:HurdleExample" class="example"><strong>Example 9.6  (Hurdle model) </strong></span>Consider the mixed random variable <span class="math inline">\(X\)</span>, with probability function <span class="math inline">\(f_X(x)\)</span>.
+<p><span id="exm:HurdleExample" class="example"><strong>Example 9.1  (Hurdle model) </strong></span>Consider the mixed random variable <span class="math inline">\(X\)</span>, with probability function <span class="math inline">\(f_X(x)\)</span>.
 Suppose that, when <span class="math inline">\(X &gt; 0\)</span>, an exponential distribution is used to describe the distribution; that is
 <span class="math display">\[
   f^+_X(x) = \frac{1}{\lambda}\exp(-x/\lambda)\quad\text{for $x &gt; 0$}.
@@ -462,23 +225,33 @@ Then, using <span class="math inline">\(p = 0.7\)</span> and <span class="math i
 <span class="math display">\[
   f_X(x)
   =
-    \begin{cases}
-       0.3                   &amp; \text{if $x = 0$}\\
-       0.35\cdot \exp(-x/2)  &amp; \text{if $x &gt; 0$;}
-    \end{cases}
+  \begin{cases}
+    0.3                   &amp; \text{if $x = 0$}\\
+    0.35\cdot \exp(-x/2)  &amp; \text{if $x &gt; 0$;}
+  \end{cases}
 \]</span>
-see Fig. <a href="ChapterMixedDistributions.html#fig:HurdlePic">9.3</a>.</p>
+Similarly, the distribution function of <span class="math inline">\(X\)</span> is
+<span class="math display">\[
+  F_X(x)
+  =
+  \begin{cases}
+    0                                     &amp; \text{if $ x &lt; 0$}\\
+    0.3                                   &amp; \text{if $x = 0$}\\
+    0.7\cdot \left(1 - \exp(-x/2)\right)  &amp; \text{if $x &gt; 0$;}
+  \end{cases}
+\]</span>
+The probability function and distribution function are shown in Fig. <a href="ChapterMixedDistributions.html#fig:HurdlePic">9.1</a>.</p>
 </div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:HurdlePic"></span>
 <img src="09-MixedDistributions_files/figure-html/HurdlePic-1.png" alt="A hurdle model, showing an exponential distribution for the continuous component." width="90%"><p class="caption">
-FIGURE 9.3: A hurdle model, showing an exponential distribution for the continuous component.
+FIGURE 9.1: A hurdle model, showing an exponential distribution for the continuous component.
 </p>
 </div>
 </div>
-<div id="HurdleModelsProperties" class="section level3" number="9.3.2">
+<div id="HurdleModelsProperties" class="section level3" number="9.2.2">
 <h3>
-<span class="header-section-number">9.3.2</span> Properties<a class="anchor" aria-label="anchor" href="#HurdleModelsProperties"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.2.2</span> Properties<a class="anchor" aria-label="anchor" href="#HurdleModelsProperties"><i class="fas fa-link"></i></a>
 </h3>
 <p>The expected value of the random variable <span class="math inline">\(X\)</span> can be found first separating the discrete and continuous parts of the distribution:
 <span class="math display">\[\begin{align*}
@@ -511,7 +284,7 @@ The same approach also gives the MGF as
 where <span class="math inline">\(M_{X^+}(t)\)</span> is the MGF of the distribution defined for <span class="math inline">\(X &gt; 0\)</span>.</p>
 <p>Clearly, further progress with these expressions requires knowing the distribution of <span class="math inline">\(X | X &gt; 0\)</span></p>
 <div class="example">
-<p><span id="exm:HurdleGamma" class="example"><strong>Example 9.7  (Hurdle model, using gamma distribution) </strong></span>Consider a random variable <span class="math inline">\(X\)</span> such that <span class="math inline">\(p = 0.75\)</span> (and hence <span class="math inline">\(\Pr(X = 0) = 1 - p = 0.25\)</span>), and where the distribution when <span class="math inline">\(X &gt; 0\)</span> follows a gamma distribution (Sect. <a href="ContinuousDistributions.html#GammaDistribution">8.5</a>) having <span class="math inline">\(\alpha = 2\)</span> and <span class="math inline">\(\beta = 1\)</span>, with the density function
+<p><span id="exm:HurdleGamma" class="example"><strong>Example 9.2  (Hurdle model, using gamma distribution) </strong></span>Consider a random variable <span class="math inline">\(X\)</span> such that <span class="math inline">\(p = 0.75\)</span> (and hence <span class="math inline">\(\Pr(X = 0) = 1 - p = 0.25\)</span>), and where the distribution when <span class="math inline">\(X &gt; 0\)</span> follows a gamma distribution (Sect. <a href="ContinuousDistributions.html#GammaDistribution">8.5</a>) having <span class="math inline">\(\alpha = 2\)</span> and <span class="math inline">\(\beta = 1\)</span>, with the density function
 <span class="math display">\[
   f_X^{+}(x; \alpha, \beta)
   = f_{X\mid X &gt; 0}(x; \alpha, \beta)
@@ -538,25 +311,29 @@ Then
    &amp;= p(\sigma^2)^+ + p(1 - p)(\mu^+)^2
    = 0.75\times 2 + 0.75\times 0.25\times 1.5^2
    \approx 1.921.
-\end{align*}\]</span></p>
+\end{align*}\]</span>
+The probability function and distribution function are shown in Fig. <a href="ChapterMixedDistributions.html#fig:HurdleGamma">9.2</a>.</p>
 </div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:HurdleGamma"></span>
 <img src="09-MixedDistributions_files/figure-html/HurdleGamma-1.png" alt="A hurdle model, using a gamma distribution for the continuous component." width="90%"><p class="caption">
-FIGURE 9.4: A hurdle model, using a gamma distribution for the continuous component.
+FIGURE 9.2: A hurdle model, using a gamma distribution for the continuous component.
 </p>
 </div>
 <p></p>
 </div>
 </div>
-<div id="TweedieModels" class="section level2" number="9.4">
+<div id="TweedieModels" class="section level2" number="9.3">
 <h2>
-<span class="header-section-number">9.4</span> Compound Poisson-gamma distributions<a class="anchor" aria-label="anchor" href="#TweedieModels"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.3</span> Compound Poisson-gamma distributions<a class="anchor" aria-label="anchor" href="#TweedieModels"><i class="fas fa-link"></i></a>
 </h2>
-<p>
-### Definition</p>
+<p></p>
+<div id="definition" class="section level3" number="9.3.1">
+<h3>
+<span class="header-section-number">9.3.1</span> Definition<a class="anchor" aria-label="anchor" href="#definition"><i class="fas fa-link"></i></a>
+</h3>
 <p>A compound Poisson–gamma model generates the point mass at zero through a physically-motivated compound process.
-The model assumes that events arrive according to a Poisson process, and each event contributes an independent gamma-distributed amount to the total.
+The model assumes that events occur according to a Poisson process, and each event contributes an independent gamma-distributed amount to the total.
 The observed variable <span class="math inline">\(Y\)</span> is the sum of all the independent contributions.
 A compound Poisson–gamma distributions, therefore, is a Poisson sum of independent gamma distributions.</p>
 <p>When the Poisson count is zero (i.e., when no events occur), the total is exactly zero, naturally producing the point mass without any separate modelling of zeros.
@@ -565,15 +342,15 @@ The compound Poisson-gamma distribution is a unified single-distribution model, 
 <p>More specifically, suppose the number of events observed (a discrete random variable) is <span class="math inline">\(N\)</span>, such that
 <span class="math display" id="eq:PGp0">\[\begin{equation}
   N \sim \text{Pois}(\lambda).
-   \tag{9.3}
+   \tag{9.1}
 \end{equation}\]</span>
-That is, an event occurs <span class="math inline">\(N\)</span> times, but occurs at random following a Poisson distribution.
+That is, an event occurs <span class="math inline">\(N\)</span> times, where <span class="math inline">\(N\)</span> follows a Poisson distribution.
 Given that <span class="math inline">\(N\)</span> has a Poisson distribution, it follows (from Sect. <a href="DiscreteDistributions.html#PoissonDistribution">7.7</a>) that
 <span class="math display">\[
   \Pr(N = 0) = \exp(-\lambda)
 \]</span>
 is the probability that zero events are observed (i.e., <span class="math inline">\(N = 0\)</span>).
-If, however, <span class="math inline">\(N &gt; 0\)</span>, then for <span class="math inline">\(i = 1, 2, \dots, N\)</span>, a continuous random variable <span class="math inline">\(Y_i\)</span> is observed, such that
+If, however, <span class="math inline">\(N &gt; 0\)</span>, then for each <span class="math inline">\(i = 1, 2, \dots, N\)</span>, a continuous random variable <span class="math inline">\(Y_i\)</span> is observed, such that
 <span class="math display">\[
    Y_i \sim \text{Gam}(\alpha_i, \beta).
 \]</span>
@@ -590,18 +367,43 @@ Then,
     \sum_{i = 1}^N Y_i  &amp; \text{if $N &gt; 0$}.
   \end{cases}
 \]</span>
-By this definition <span class="math inline">\(X\)</span> has a <em>compound Poisson-gamma distribution</em>.
+By this definition <span class="math inline">\(X\)</span> has a <em>compound Poisson-gamma distribution</em> (which are special cases of Tweedie distributions).
 The distribution of <span class="math inline">\(X\)</span> has a probability mass at <span class="math inline">\(X = 0\)</span> where <span class="math inline">\(\Pr(Y = 0) = \Pr(N = 0) = \exp(-\lambda)\)</span>.</p>
-<p>Insurance claim totals and rainfall accumulation are natural fits; for data where that physical story does not apply, the model may be harder to justify interpretively.</p>
 <div class="example">
-<p><span id="exm:unlabeled-div-55" class="example"><strong>Example 9.8  </strong></span>EXAMPLE WHERE THE NARRATIVE FITS</p>
+<p><span id="exm:CPGRain" class="example"><strong>Example 9.3  (Rainfall modelling) </strong></span>Consider monthly rainfall <span class="math inline">\(X\)</span> at a given location.
+In any given month, <span class="math inline">\(N\)</span> rainfall events may occur (and for some months, <span class="math inline">\(N\)</span> may be zero) such that
+<span class="math display">\[
+  N \sim \text{Poisson}(\lambda = 2.3).
+\]</span>
+So, for example, that probability that a given month has no rainfall is
+<span class="math display">\[
+  \Pr(N = 0) = \exp(-2.3) = 0.10,
+\]</span>
+or about <span class="math inline">\(10\)</span>%.</p>
+<p>When a rainfall event does occur, the amount of rainfall is described by a gamma distribution
+<span class="math display">\[
+  Y_i \sim \text{Gam}(\alpha_i, 2),
+\]</span>
+where <span class="math inline">\(\alpha_i\)</span> may be different for each month~<span class="math inline">\(i\)</span>.</p>
+<p>Suppose <span class="math inline">\(\alpha_1 = 1.75\)</span> in January and <span class="math inline">\(\alpha_6 = 0.3\)</span> in June.
+The Poisson distribution remains the same for both months (Fig. <a href="ChapterMixedDistributions.html#fig:CPGrain">9.3</a>, left panel), meaning that the distribution of the <em>number</em> of rainfall events is the same in January and in June.
+However, since the value of <span class="math inline">\(\alpha\)</span> is different for each month, the distributions of the amount of rainfall in each rainfall event changes (Fig. <a href="ChapterMixedDistributions.html#fig:CPGrain">9.3</a>, center panel).
+The distribution of <em>total</em> rainfall for the January and June rainfall using this model are shown in Fig. <a href="ChapterMixedDistributions.html#fig:CPGrain">9.3</a> (right panel).</p>
 </div>
-<div id="properties" class="section level3" number="9.4.1">
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:CPGrain"></span>
+<img src="09-MixedDistributions_files/figure-html/CPGrain-1.png" alt="A compound Poisson-gamma model for rainfall. Left: the distribution of the number of rainfall events per month. Center: the distribution of rainfall per event for each month. Right: the distribution of the total rainfall for each month." width="100%"><p class="caption">
+FIGURE 9.3: A compound Poisson-gamma model for rainfall. Left: the distribution of the number of rainfall events per month. Center: the distribution of rainfall per event for each month. Right: the distribution of the total rainfall for each month.
+</p>
+</div>
+</div>
+<div id="properties" class="section level3" number="9.3.2">
 <h3>
-<span class="header-section-number">9.4.1</span> Properties<a class="anchor" aria-label="anchor" href="#properties"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.3.2</span> Properties<a class="anchor" aria-label="anchor" href="#properties"><i class="fas fa-link"></i></a>
 </h3>
-<p><em>The probability functions for the compound Poisson-gamma distribution cannot be written in closed form.</em>
-However, the probability function can be expressed as an infinite sum <span class="citation">(<a href="references.html#ref-dunn2005series">Dunn and Smyth 2005</a>)</span> or by inverting the MGF <span class="citation">(<a href="references.html#ref-mypapers:Dunn:fourier">Dunn and Smyth 2008</a>)</span>, following the ideas in Sect. <a href="ChapExpectation.html#DistributionFromMGF">6.5.5</a>.</p>
+<p>The probability functions for the compound Poisson-gamma distribution <em>cannot be written in closed form</em>.
+However, the probability function can be expressed as an infinite sum <span class="citation">(<a href="references.html#ref-dunn2005series">Dunn and Smyth 2005</a>)</span> or by inverting the MGF <span class="citation">(<a href="references.html#ref-mypapers:Dunn:fourier">Dunn and Smyth 2008</a>)</span>, following the ideas in Sect. <a href="ChapExpectation.html#DistributionFromMGF">6.5.5</a>.
+Likewise, the distribution function has no closed form and must be evaluated using numerical methods <span class="citation">(<a href="references.html#ref-mypapers:Dunn:DF">Dunn and Smyth To appear</a>)</span>.</p>
 <p>The probability function as an infinite series can be determined from the development of the compound Poisson-gamma distribution above.
 If <span class="math inline">\(N = 1\)</span> with <span class="math inline">\(\Pr(N = 1)\)</span> (from the Poisson distribution), then, <span class="math inline">\(X = Y\)</span> has the <span class="math inline">\(\text{Gam}(\alpha, \beta)\)</span> distribution.
 That is,
@@ -610,7 +412,7 @@ That is,
   = \frac{\beta^{\alpha}}{\Gamma(\alpha)} x^{\alpha -1}\exp(-\beta x) \quad \text{for $x &gt; 0$}.
 \]</span></p>
 <p>If <span class="math inline">\(N = 2\)</span> with <span class="math inline">\(\Pr(N = 2)\)</span> (from the Poisson distribution), then, <span class="math inline">\(X = Y_1 + Y_2\)</span>, where <span class="math inline">\(Y_i \sim\text{Gam}(\alpha, \beta)\)</span> for <span class="math inline">\(i = 1, 2\)</span>.
-This means that <span class="math inline">\(X \sim \text{Gam}(2\alpha, \beta)\)</span>, which is easily shown using MGFS. (WHY; CROSS REF).
+This means that <span class="math inline">\(X \sim \text{Gam}(2\alpha, \beta)\)</span> (Exercise <a href="ChapterTransformations.html#exr:GammaSum">10.3</a>; Sect. <a href="ContinuousDistributions.html#GammaProperties">8.5.2</a>).
 That is,
 <span class="math display">\[
   f_{X\mid N = 2} (x)
@@ -633,7 +435,6 @@ In addition, of course, we have that
 <span class="math display">\[
   \Pr(X = 0) = \exp(-\lambda).
 \]</span></p>
-<hr>
 <p>Even though the probability function has no closed form, the MGF is reasonably simple.
 To find the MGF, first consider the value of <span class="math inline">\(N\)</span> as fixed; then, <span class="math inline">\(X = Y_1 + Y_2 + \cdots + Y_N\)</span> the MGF of <span class="math inline">\(X\)</span> is
 <span class="math display">\[
@@ -642,61 +443,30 @@ To find the MGF, first consider the value of <span class="math inline">\(N\)</s
 Since the MGF of a sum of independent random variables is the product of their MGFs (Theorem <a href="ChapExpectation.html#thm:MGFIndependent">6.7</a>), we can assume that <span class="math inline">\(N\)</span> takes some specific value <span class="math inline">\(n\)</span> and write
 <span class="math display">\[\begin{align*}
   M_{X\mid N}(t)
-  &amp;= \operatorname{E}\left[ \exp\big(t(Y_2 + Y_2 + \cdots + Y_n)\big)\right] \\
+  &amp;= \operatorname{E}\left[ \exp\big(t(Y_1 + Y_2 + \cdots + Y_n)\big)\right] \\
   &amp;= \prod_{i = 1}^n \operatorname{E}[\exp(t Y_i)] \\
   &amp;= \left( M_Y(t)\right)^n
 \end{align*}\]</span>
 So the MGF of <span class="math inline">\(X\)</span> (rather than <span class="math inline">\(X\mid N\)</span> as above) is
 <span class="math display">\[\begin{align*}
   M_X(t)
-  &amp;= \operatorname{E}\left[ \operatorname{E}[ \exp(tX\mid N)]\right] \\
-  &amp;= \operatorname{E}\left[ M_{X\mid N}(t))\right] \\
-  &amp;= \operatorname{E}\left[ M_Y(t))^N\right] \\
+  &amp;= \operatorname{E}\left[ \operatorname{E}[ \exp(tX) \mid N]\right] \\
+  &amp;= \operatorname{E}\left[ M_{X\mid N}(t)\right] \\
+  &amp;= \operatorname{E}\left[ M_Y(t)^N\right].
 \end{align*}\]</span>
-and so
+Substituting the MGF of a <span class="math inline">\(\text{Gamma}(\alpha, \beta)\)</span> random variable, <span class="math inline">\(M_Y(t) = \left(\frac{\beta}{\beta - t}\right)^{\!\alpha}\)</span>, and then applying the MGF of a <span class="math inline">\(\text{Poisson}(\lambda)\)</span> random variable, <span class="math inline">\(M_N(s) = \exp\{\lambda(s - 1)\}\)</span> with <span class="math inline">\(s = M_Y(t)\)</span>, gives
 <span class="math display">\[
-  M_X(t)=\exp\!\left\{\lambda\left[\Big(\frac{\beta}{\beta-t}\Big)^{\!\alpha}-1\right]\right\},\qquad t&lt;\beta
+  M_X(t)=\exp\!\left\{\lambda\left[\Big(\frac{\beta}{\beta-t}\Big)^{\!\alpha}-1\right]\right\},\qquad t&lt;\beta.
 \]</span></p>
-<hr>
-<p>We have
-<span class="math display">\[
-M_X(t) = \mathbb{E}[e^{tX}]
-        = \mathbb{E}\!\left[ \big(M_Y(t)\big)^{N} \right].
-\]</span>
-Writing the expectation as a sum over the possible values of <span class="math inline">\(N\)</span>,
-<span class="math display">\[
-  M_X(t)
-  = \sum_{n=0}^\infty \big(M_Y(t)\big)^{n} \, \Pr(N = n).
-\]</span>
-Since <span class="math inline">\(N \sim \mathrm{Pois}(\lambda)\)</span>,
-<span class="math display">\[
-  \Pr(N = n) = \frac{\exp(-\lambda) \lambda^n}{n!}.
-\]</span>
-Substituting this expression into XREF
-<span class="math display">\[\begin{align*}
-  M_X(t)
-  &amp;= \sum_{n = 0}^\infty
-  \big(M_Y(t)\big)^{n} \cdot \frac{\exp(-\lambda) \lambda^n}{n!}\\
-  &amp;= \exp(-\lambda) \sum_{n = 0}^\infty \frac{\left[\lambda \, M_Y(t)\right]^n}{n!}.
-\end{align*}\]</span>
-Using the series expansion <span class="math inline">\(\sum_{n = 0}^\infty z^n/n! = \exp(z)\)</span> (from Equation <a href="UsefulSeries.html#eq:Exponential">(B.8)</a>) with <span class="math inline">\(z = \lambda M_Y(t)\)</span>, this gives
-<span class="math display">\[\begin{align*}
-  M_X(t)
-  &amp;= \exp(-\lambda) \cdot \exp\big(\lambda M_Y(t)\big)\\
-  &amp;= \exp\{\lambda(M_Y(t) - 1) \\
-  &amp;= \exp\!\left\{\lambda\left[\Big(\frac{\beta}{\beta-t}\Big)^{\!\alpha}-1\right]\right\},
-\end{align*}\]</span>
-provided <span class="math inline">\(t &lt; \beta\)</span>.</p>
-<hr>
 <p>From the MGF we can deduce
 <span class="math display">\[\begin{align*}
   \operatorname{E}[X]
   &amp;= \lambda\alpha/\beta\\
   \operatorname{var}[X]
-  &amp;= \lambda\alpha(\alpha + 1)\beta^2.
+  &amp;= \lambda\alpha(\alpha + 1)/\beta^2.
 \end{align*}\]</span></p>
 <div class="example">
-<p><span id="exm:PoissonGammaExample" class="example"><strong>Example 9.9  (Poisson--gamma distribution) </strong></span>Suppose
+<p><span id="exm:PoissonGammaExample" class="example"><strong>Example 9.4  (Poisson--gamma distribution) </strong></span>Suppose
 <span class="math display">\[
   N\sim\text{Pois}(\lambda = 3)
   \quad\text{and}\quad
@@ -712,350 +482,265 @@ The mean and variance of <span class="math inline">\(X\)</span> is
   &amp;= \lambda\alpha(\alpha + 1)\beta^2
    = 3\times \left(\frac{1}{2}\times \frac{3}{2}\right)\left(\frac{5}{3}\right)^2 = 1.
 \end{align*}\]</span>
-Furthermore, from Equation <a href="ChapterMixedDistributions.html#eq:PGp0">(9.3)</a>,
+Furthermore, from Equation <a href="ChapterMixedDistributions.html#eq:PGp0">(9.1)</a>,
 <span class="math display">\[
   \Pr(X = 0) = \exp(-\lambda) = 0.0498.
 \]</span>
-This Poisson-gamma distribution is shown in Fig. <a href="ChapterMixedDistributions.html#fig:PoissonGammaExamples">9.5</a> (right panel).</p>
+This Poisson-gamma distribution is shown in Fig. <a href="ChapterMixedDistributions.html#fig:PoissonGammaExamples">9.4</a> (right panel).</p>
 </div>
 <!-- The parameters in the (alpha, beta, lambda) space:
 \alpha = (2 - \xi)/(\xi - 1) [Not a function of (phi, mu)]
 \beta = \phi(\xi - 1) / \mu^{\xi - 1}
 \lambda = \mu^(2-\xi) / ( \phi (2-\xi))
-
-
 So for instance:
 alpha = 12 => xi = 5/3
 alpha = 20 => xi = 22/21
-
 -->
-<pre><code>#&gt; alpha, beta, lambda, p0
-#&gt; 20 0.04761905 1.05 0.3499377
-#&gt; 0.5 0.6666667 3 0.04978707</code></pre>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:PoissonGammaExamples"></span>
 <img src="09-MixedDistributions_files/figure-html/PoissonGammaExamples-1.png" alt="Two compound Poisson--gamma models, both with mean and varaince set to $1$. The solid dot at $X = 0$ represents the discrete probability." width="90%"><p class="caption">
-FIGURE 9.5: Two compound Poisson–gamma models, both with mean and varaince set to <span class="math inline">\(1\)</span>. The solid dot at <span class="math inline">\(X = 0\)</span> represents the discrete probability.
+FIGURE 9.4: Two compound Poisson–gamma models, both with mean and varaince set to <span class="math inline">\(1\)</span>. The solid dot at <span class="math inline">\(X = 0\)</span> represents the discrete probability.
 </p>
 </div>
 <p></p>
-<div class="example">
-<p><span id="exm:RainfallModelling" class="example"><strong>Example 9.10  (Modelling monthly rainfall) </strong></span>Modelling rainfall.
-Using hurdle from Stern and Coe, Chandler and Wheater? Tobit thing from IWSM, and Poisson–gamma,</p>
 </div>
 </div>
-</div>
-<div id="sumamry-of-models" class="section level2" number="9.5">
+<div id="summary-of-models" class="section level2" number="9.4">
 <h2>
-<span class="header-section-number">9.5</span> Sumamry of models<a class="anchor" aria-label="anchor" href="#sumamry-of-models"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.4</span> Summary of models<a class="anchor" aria-label="anchor" href="#summary-of-models"><i class="fas fa-link"></i></a>
 </h2>
+<p>The zeros in a compound Poisson–gamma distributions are a natural outcome of the same process used to generate the non-zero values; a zero occurs when the Poisson count of contributions is zero.
+If a physical argument can be provided that the observed value is the sum of a random number of independent gamma-distributed contributions, a compound Poisson–gamma distribution may be an appropriate model.
+In contrast, a hurdle model treats zeros and positive values as structurally distinct, potentially generated by different processes: a separate model governs whether an observation is zero, and another governs an observation’s magnitude given it is positive.</p>
 <div class="inline-table"><table class="table table-sm">
-<colgroup>
-<col width="18%">
-<col width="28%">
-<col width="24%">
-<col width="28%">
-</colgroup>
-<thead><tr class="header">
-<th align="left"></th>
-<th align="left">Censored</th>
-<th align="left">Hurdle</th>
-<th align="left">Poisson-Gamma</th>
+<caption>
+<span id="tab:unnamed-chunk-1">TABLE 9.1: </span>Comparing the hurdle and compound Poisson–gamma models.
+</caption>
+<thead><tr>
+<th style="text-align:left;font-weight: bold;">
+</th>
+<th style="text-align:center;font-weight: bold;">
+Hurdle
+</th>
+<th style="text-align:center;font-weight: bold;">
+Poisson-Gamma
+</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td align="left">Zeros</td>
-<td align="left">True value unobservable</td>
-<td align="left">Different process</td>
-<td align="left">No events occurred</td>
+<tr>
+<td style="text-align:left;">
+Zeros
+</td>
+<td style="text-align:center;">
+Different process
+</td>
+<td style="text-align:center;">
+No events occurred
+</td>
 </tr>
-<tr class="even">
-<td align="left">Parameters</td>
-<td align="left">One model</td>
-<td align="left">Two separate models</td>
-<td align="left">One unified model</td>
+<tr>
+<td style="text-align:left;">
+Parameters
+</td>
+<td style="text-align:center;">
+Two separate models
+</td>
+<td style="text-align:center;">
+One unified model
+</td>
 </tr>
-<tr class="odd">
-<td align="left">Interpretation</td>
-<td align="left">Mechanistic</td>
-<td align="left">Very natural</td>
-<td align="left">Requires physical story</td>
+<tr>
+<td style="text-align:left;">
+Interpretation
+</td>
+<td style="text-align:center;">
+Very natural
+</td>
+<td style="text-align:center;">
+Requires physical story
+</td>
 </tr>
-<tr class="even">
-<td align="left">Flexibility</td>
-<td align="left">Less</td>
-<td align="left">High</td>
-<td align="left">Moderate</td>
+<tr>
+<td style="text-align:left;">
+Flexibility
+</td>
+<td style="text-align:center;">
+High
+</td>
+<td style="text-align:center;">
+Moderate
+</td>
 </tr>
-<tr class="odd">
-<td align="left">Uses</td>
-<td align="left">Detection limits</td>
-<td align="left">Healthcare spend</td>
-<td align="left">Insurance, rainfall</td>
+<tr>
+<td style="text-align:left;">
+Uses
+</td>
+<td style="text-align:center;">
+Healthcare spend
+</td>
+<td style="text-align:center;">
+Insurance, rainfall
+</td>
 </tr>
 </tbody>
 </table></div>
+<div class="example">
+<p><span id="exm:InsuranceModelling" class="example"><strong>Example 9.5  (Insurance modelling) </strong></span>Insurance companies have some days when zero claims are lodged, but most days record numerous claims, each of which are for positive, right-skewed amounts.</p>
+<p>A compound Poisson–gamma model could be considered.
+The daily claim total is the aggregate of a random number of individual claim events (accidents or incidents), each generating a gamma-distributed payout amount.
+A zero-claim amount occurs when no claim events arrive.
+The same process (i.e., policy-holders having incidents) generates both zeros and positive values.</p>
+<p>A hurdle model could also be considered.
+First, a binary process determines whether any claim is filed (perhaps driven by seasonal risk, policy-holder behaviour, or reporting thresholds).
+Conditional on a claim occurring, the total payout follows a gamma distribution.
+The zero (no-claim day) and positive values are structurally different; a no-claim day is not just ‘zero incidents happened’, but may reflect under-reporting, policy excesses, or deliberate non-filing.</p>
 </div>
-<div id="MixedVariablesSimulation" class="section level2" number="9.6">
+</div>
+<div id="MixedVariablesSimulation" class="section level2" number="9.5">
 <h2>
-<span class="header-section-number">9.6</span> Simulation<a class="anchor" aria-label="anchor" href="#MixedVariablesSimulation"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.5</span> Simulation<a class="anchor" aria-label="anchor" href="#MixedVariablesSimulation"><i class="fas fa-link"></i></a>
 </h2>
-<div id="general" class="section level3" number="9.6.1">
+<div id="general" class="section level3" number="9.5.1">
 <h3>
-<span class="header-section-number">9.6.1</span> General<a class="anchor" aria-label="anchor" href="#general"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.5.1</span> General<a class="anchor" aria-label="anchor" href="#general"><i class="fas fa-link"></i></a>
 </h3>
-<div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:CensoredSim"></span>
-<img src="09-MixedDistributions_files/figure-html/CensoredSim-1.png" alt="FIX!!!!! The solid dot at $X = 0$ represents the discrete probability." width="90%"><p class="caption">
-FIGURE 9.6: FIX!!!!! The solid dot at <span class="math inline">\(X = 0\)</span> represents the discrete probability.
-</p>
-</div>
-<p>…</p>
 <p>A <em>hurdle</em> model could be used to model daily rainfall (e.g., <span class="citation">Stern and Coe (<a href="references.html#ref-stern1984model">1984</a>)</span>), using a Bernoulli distribution to distinguish wet and dry days, and then a gamma distribution to model rainfall amounts on wet days.</p>
-<p>…</p>
+<p>Fig. <a href="ChapterMixedDistributions.html#fig:HurdleSim">9.5</a>
+…</p>
 <p>A compound Poisson–gamma model could also be used to model daily rainfall (e.g., <span class="citation">Yunus et al. (<a href="references.html#ref-yunus2017modelling">2017</a>)</span>).</p>
-<div class="example">
-<p><span id="exm:SimulationCensored" class="example"><strong>Example 9.11  (Simulations for censored models) </strong></span>Censored:</p>
-</div>
-<div class="example">
-<p><span id="exm:SimulationHurdle" class="example"><strong>Example 9.12  (Simulations for hurdle models) </strong></span>Hurdle model; see Fig. <a href="ChapterMixedDistributions.html#fig:HurdleSim">9.7</a></p>
-</div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:HurdleSim"></span>
 <img src="09-MixedDistributions_files/figure-html/HurdleSim-1.png" alt="A simulation of the hurdle model. FIX!!!!! The solid dot at $X = 0$ represents the discrete probability." width="90%"><p class="caption">
-FIGURE 9.7: A simulation of the hurdle model. FIX!!!!! The solid dot at <span class="math inline">\(X = 0\)</span> represents the discrete probability.
+FIGURE 9.5: A simulation of the hurdle model. FIX!!!!! The solid dot at <span class="math inline">\(X = 0\)</span> represents the discrete probability.
 </p>
 </div>
 <div class="example">
-<p><span id="exm:SimulationPGmodels" class="example"><strong>Example 9.13  (Simulations for compound Poisson--gamma models) </strong></span>Compound P–G; see Fig. <a href="ChapterMixedDistributions.html#fig:PoissonGammaSim">9.8</a></p>
+<p><span id="exm:SimulationPGmodels" class="example"><strong>Example 9.6  (Simulations for compound Poisson--gamma models) </strong></span>Compound P–G; see Fig. <a href="ChapterMixedDistributions.html#fig:PoissonGammaSim">9.6</a></p>
 </div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:PoissonGammaSim"></span>
 <img src="09-MixedDistributions_files/figure-html/PoissonGammaSim-1.png" alt="A simulation of the compound Poisson--gamma models, both with mean and variance set to $1$. The solid dot at $X = 0$ represents the discrete probability." width="90%"><p class="caption">
-FIGURE 9.8: A simulation of the compound Poisson–gamma models, both with mean and variance set to <span class="math inline">\(1\)</span>. The solid dot at <span class="math inline">\(X = 0\)</span> represents the discrete probability.
+FIGURE 9.6: A simulation of the compound Poisson–gamma models, both with mean and variance set to <span class="math inline">\(1\)</span>. The solid dot at <span class="math inline">\(X = 0\)</span> represents the discrete probability.
 </p>
 </div>
 </div>
-<div id="rainfall" class="section level3" number="9.6.2">
+<div id="rainfall" class="section level3" number="9.5.2">
 <h3>
-<span class="header-section-number">9.6.2</span> Rainfall<a class="anchor" aria-label="anchor" href="#rainfall"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.5.2</span> Rainfall<a class="anchor" aria-label="anchor" href="#rainfall"><i class="fas fa-link"></i></a>
 </h3>
-<p>Simulation for the censored, hurdle and compound Poisson-gamma models can all be achieved by directly modelling the process by which the zeros are incorporated.
+<p>Simulation for the hurdle and compound Poisson–gamma models can be achieved by directly modelling the process by which the zeros are incorporated.
 To demonstrate, consider modelling monthly rainfall at a certain location for one specific month each year.
-Monthly rainfall is a mixed random variable; some months will record exactly zero rainfall, while months in which rain falls will have a continuous rainfall amount recorded.</p>
-<p>Simulating monthly rainfall has uses in agriculture, hydrology, forestry and elsewhere (often as an input to other models).
-The distribution of monthly rainfall obviously varies depending on location and the month selected for modelling; however, monthly rainfall at many locations typically contain some months (historically) that record zero rainfall (see, for example, <span class="citation">Hasan and Dunn (<a href="references.html#ref-hasan2010simple">2010a</a>)</span>).</p>
-<p>Suppose we seek to model the monthly rainfall (im mm) <span class="math inline">\(R\)</span> at given location for a certain month, where about <span class="math inline">\(30\)</span>% of months record zero rainfall (i.e., <span class="math inline">\(\Pr(X = 0) = 0.30\)</span>), and the mean monthly rainfall (when rain is recorded) is about <span class="math inline">\(\mu_R = 50\)</span>.</p>
-<p>We could model the monthly rainfall using a censored model (e.g., <span class="citation">Sansó and Guenni (<a href="references.html#ref-sanso2000nonstationary">2000</a>)</span>), a hurdle model (e.g, <span class="citation">Kenabatho et al. (<a href="references.html#ref-kenabatho2012stochastic">2012</a>)</span>) or a Poisson-gamma distribution (e.g., <span class="citation">Hasan and Dunn (<a href="references.html#ref-hasan2010simple">2010a</a>)</span>).</p>
-<p>First consider a censored model.
-The latent variable could represent how favourable the conditions are for rainfall’ say <span class="math inline">\(Y\sim N(\mu_R = 50, \sigma_R^2)\)</span>, with <span class="math inline">\(\Phi(0) = \Pr(Y &lt; 0) = 0.30\)</span>, for some variance <span class="math inline">\(\sigma_R^2\)</span>.
-First, we can find the value of the standard normal variate <span class="math inline">\(Z\)</span> such that <span class="math inline">\(\Phi(z) = 0.30 = \Pr(Y &lt; 0)\)</span>:</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p_Zero_Rainfall</span> <span class="op">&lt;-</span> <span class="fl">0.30</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span><span class="va">p_Zero_Rainfall</span><span class="op">)</span> <span class="co"># This find z such that Phi(z) = 0.30</span></span>
-<span><span class="co">#&gt; [1] -0.5244005</span></span></code></pre></div>
-<p>This value of <span class="math inline">\(z\)</span> is the value such that
+Monthly rainfall is a mixed random variable: some months record exactly zero rainfall, while months in which rain falls have a continuous positive amount recorded.</p>
+<p>Suppose the monthly rainfall (in mm) <span class="math inline">\(R\)</span> is modelled at a given location for a certain month, where about <span class="math inline">\(30\)</span>% of months record zero rainfall; then. <span class="math inline">\(0\Pr(R = 0) = 0.30\)</span>, and the mean monthly rainfall when rain is recorded is <span class="math inline">\(\mu^+ = 50\,mms\)</span>.</p>
+<p>For the <em>hurdle model</em>, set <span class="math inline">\(p 0.30\)</span> for the probability of no rainfall; then, the probability that rain is recorded is <span class="math inline">\(1 - p = 0.70\)</span>.
+For the positive component, suppose first that rainfall amounts follow an exponential distribution with rate <span class="math inline">\(\lambda\)</span>.
+Since <span class="math inline">\(\operatorname{E}[R \mid R &gt; 0] = 1/\lambda = 50\)</span>, we have <span class="math inline">\(\lambda = 0.02\)</span>.
+The hurdle model is then
 <span class="math display">\[
-  z = -0.5244 = \frac{x^* - \mu_R}{\sigma^2_R} = \frac{0 - 50}{\sigma_R^2},
-\]</span>
-from which we find <span class="math inline">\(\sigma_R = 95.35\)</span>.
-Thus, the monthly rainfall can be simulated:</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">76103</span><span class="op">)</span> <span class="co"># For reproducibility</span></span>
-<span><span class="va">num_Sims</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
-<span></span>
-<span><span class="va">mean_R</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span><span class="va">sd_R</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="va">mean_R</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span><span class="va">p_Zero_Rainfall</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="va">Y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">num_Sims</span>,</span>
-<span>           mean <span class="op">=</span> <span class="va">mean_R</span>,</span>
-<span>           sd <span class="op">=</span> <span class="va">sd_R</span><span class="op">)</span></span>
-<span><span class="va">p0</span> <span class="op">&lt;-</span> <span class="fl">0.30</span></span>
-<span></span>
-<span><span class="co"># To get sd_R, note: z = (0 - mu)/sigma = \Phi(p0) =&gt; -mu/sigma = qnorm(p0)</span></span>
-<span><span class="va">threshold_R</span> <span class="op">&lt;-</span> <span class="va">mean_R</span>  <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span><span class="va">p_Zero_Rainfall</span><span class="op">)</span> <span class="op">*</span> <span class="va">sd_R</span> <span class="co"># SHOULD BE AT ZERO</span></span>
-<span></span>
-<span><span class="co">###</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">latent_Breaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">250</span>, <span class="fl">450</span>,</span>
-<span>                     by <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">Y</span>,</span>
-<span>     freq <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>     las <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>     breaks <span class="op">=</span> <span class="va">latent_Breaks</span>,</span>
-<span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span> <span class="st">"grey"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">latent_Breaks</span><span class="op">[</span><span class="va">latent_Breaks</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>              <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">plotColour1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">latent_Breaks</span><span class="op">[</span><span class="va">latent_Breaks</span> <span class="op">&gt;=</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span>,  </span>
-<span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Latent</span><span class="op">~</span><span class="va">variable</span><span class="op">)</span>,</span>
-<span>     ylab <span class="op">=</span> <span class="st">"Probabiity fn"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Latent</span><span class="op">~</span><span class="va">variable</span><span class="op">~</span><span class="fu">italic</span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>       lwd <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>       col <span class="op">=</span> <span class="st">"grey"</span>,</span>
-<span>       lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Y</span><span class="op">&gt;</span><span class="fl">0</span><span class="op">]</span>,</span>
-<span>     freq <span class="op">=</span> <span class="cn">FALSE</span>, </span>
-<span>     las <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>     breaks <span class="op">=</span> <span class="va">latent_Breaks</span><span class="op">[</span><span class="va">latent_Breaks</span><span class="op">&gt;=</span><span class="fl">0</span><span class="op">]</span>,</span>
-<span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Observed</span><span class="op">~</span><span class="va">variable</span><span class="op">)</span>,</span>
-<span>     ylab <span class="op">=</span> <span class="st">"Probabiity fn"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Observed</span><span class="op">~</span><span class="va">variable</span><span class="op">~</span><span class="fu">italic</span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>       y <span class="op">=</span> <span class="va">p0</span>,</span>
-<span>       pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-3"></span>
-<img src="09-MixedDistributions_files/figure-html/unnamed-chunk-3-1.png" alt="The latent variable left panel), and the observed rainfall (right panel)." width="80%"><p class="caption">
-FIGURE 9.9: The latent variable left panel), and the observed rainfall (right panel).
-</p>
-</div>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">num_Sims</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
-<span></span>
-<span><span class="co">#Simulate</span></span>
-<span></span>
-<span><span class="co"># Compute max monthly rainfall</span></span></code></pre></div>
-<hr>
-<p>HURDLE:</p>
-<p>To model the rainfall using a hurdle model, we use <span class="math inline">\(1 - p = 0.3\)</span> for the probability that no monthly rainfall is recorded; that is, <span class="math inline">\(p = 0.7\)</span>.
-The information also gives <span class="math inline">\(\mu = \operatorname{E} = 50\)</span>; from Sect. <a href="ChapterMixedDistributions.html#HurdleModelsProperties">9.3.2</a>
-<span class="math display">\[
-  \mu = p \mu^+,
-\]</span>
-and so <span class="math inline">\(\mu^+ = \mu/p = 50/0.7 approx 71.43\)</span> is the mean rainfall, conditional on rain being recorded.
-We could suppose an exponential distribution (with rate parameter <span class="math inline">\(\lambda\)</span>) for the rainfall amounts when rain is recorded; thus <span class="math inline">\(\operatorname{E}[X] = 1\lambda = 71.43\)</span> and so <span class="math inline">\(\lambda = 0.01399972\)</span>.
-So the hurdle model is:
-<span class="math display">\[\begin{align*}
   f_R(r)
-  &amp;=
+  =
   \begin{cases}
-    0.3 &amp; \\
-    0.3\lambda \exp(-r/\lambda)
-  \end{cases}\\
-  &amp;=
-  \begin{cases}
-    0.3 &amp; \\
-    0.004199916 \exp(-r/0.01399972).
+    0.30                              &amp; \text{for $r = 0$} \\
+    0.70 \times 0.02\, \exp(-0.02r)   &amp; \text{for $r &gt; 0$}.
   \end{cases}
-\end{align*}\]</span></p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">76103</span><span class="op">)</span> <span class="co"># For reproducibility</span></span>
-<span><span class="va">num_Sims</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
+\]</span>
+The exponential distribution is a convenient starting point but imposes a monotonically decreasing density on the positive part, which may be unrealistic; observed rainfall amounts often show a mode above zero.
+A gamma distribution for the positive part is more flexible, allowing a range of shapes, and is generally preferred in practice.</p>
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">76103</span><span class="op">)</span></span>
+<span><span class="va">num_sims</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
 <span></span>
-<span><span class="va">p0</span> <span class="op">&lt;-</span> <span class="fl">0.30</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">p0</span></span>
+<span><span class="va">pi0</span>    <span class="op">&lt;-</span> <span class="fl">0.30</span>          <span class="co"># P(R = 0)</span></span>
+<span><span class="va">p</span>      <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">pi0</span>       <span class="co"># P(R &gt; 0)</span></span>
+<span><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">50</span>        <span class="co"># exponential rate: E[R | R &gt; 0] = 50</span></span>
 <span></span>
-<span><span class="va">mean_R</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span><span class="va">mean_Rpositive</span> <span class="op">&lt;-</span> <span class="va">mean_R</span><span class="op">/</span><span class="va">p</span></span>
-<span><span class="va">lambda_Exp</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">mean_Rpositive</span></span>
-<span>  </span>
-<span><span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span> <span class="cn">NA</span>, ncol <span class="op">=</span> <span class="fl">1</span>, nrow <span class="op">=</span> <span class="va">num_Sims</span><span class="op">)</span></span>
-<span><span class="va">p_Each_Month</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">num_Sims</span>,</span>
-<span>                       size <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                       prob <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span>
+<span><span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="va">num_sims</span><span class="op">)</span></span>
+<span><span class="va">is_wet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">num_sims</span>, size <span class="op">=</span> <span class="fl">1</span>, prob <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span>
 <span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">num_Sims</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">(</span><span class="va">p_Each_Month</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="va">R</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span> <span class="co"># No rainfall recorded</span></span>
-<span>  <span class="op">}</span>  <span class="kw">else</span> <span class="op">{</span></span>
-<span>    <span class="va">R</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html">rexp</a></span><span class="op">(</span><span class="fl">1</span>, rate <span class="op">=</span> <span class="va">lambda_Exp</span><span class="op">)</span>    </span>
-<span>  <span class="op">}</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">num_sims</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">R</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="va">is_wet</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="fl">0</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html">rexp</a></span><span class="op">(</span><span class="fl">1</span>, rate <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span></span>
-<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">R</span>,</span>
-<span>     freq <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>     las <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Hurdle</span><span class="op">~</span><span class="va">model</span><span class="op">)</span>,</span>
-<span>     ylab <span class="op">=</span> <span class="st">"Probabiity fn"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Observed</span><span class="op">~</span><span class="va">rainfall</span><span class="op">~</span><span class="fu">italic</span><span class="op">(</span><span class="va">R</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
+<span>     freq  <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>     las   <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>     breaks <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>     main  <span class="op">=</span> <span class="st">"Hurdle model: monthly rainfall"</span>,</span>
+<span>     xlab  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Rainfall</span> <span class="op">~</span> <span class="fu">italic</span><span class="op">(</span><span class="va">R</span><span class="op">)</span> <span class="op">~</span> <span class="op">(</span><span class="va">mm</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>     ylab  <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="va">pi0</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="09-MixedDistributions_files/figure-html/unnamed-chunk-2-1.png" alt="" width="672"></div>
+<p>For the <em>compound Poisson–gamma model</em>, monthly rainfall is the aggregate of a random number <span class="math inline">\(N \sim \text{Poisson}(\lambda)\)</span> of independent rainfall events, each contributing a gamma-distributed amount.
+The zero probability is <span class="math inline">\(\Pr(R = 0) = \exp(-\lambda)\)</span>, so matching <span class="math inline">\(\Pr(R = 0) = 0.30\)</span> gives
+<span class="math display">\[
+  \lambda = -\log(0.30) \approx 1.204.
+\]</span>
+This leaves two free parameters: <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> of the gamma distribution, and only one remaining condition: <span class="math inline">\(\operatorname{E}[R] = \lambda\alpha/\beta\)</span>.
+We therefore fix <span class="math inline">\(\alpha = 2\)</span>, which gives a unimodal gamma density for individual rainfall events (a reasonable physical assumption) and solve for <span class="math inline">\(\beta\)</span>:
+<span class="math display">\[
+   \beta
+   = \frac{\lambda\alpha}{\operatorname{E}[R]}
+   = \frac{1.204 \times 2}{50 \times 0.70}
+   \approx 0.0687
+\]</span>
+where <span class="math inline">\(\operatorname{E}[R] = p \times \mu^+ = 0.70 \times 50 = 35\,\text{mm}\)</span> is the unconditional mean.</p>
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">84201</span><span class="op">)</span></span>
+<span><span class="va">num_sims</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>       y <span class="op">=</span> <span class="va">p0</span>,</span>
-<span>       pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<span style="display:block;" id="fig:unnamed-chunk-5"></span>
-<img src="09-MixedDistributions_files/figure-html/unnamed-chunk-5-1.png" alt="HURDLE MODEL" width="672"><p class="caption">
-FIGURE 9.10: HURDLE MODEL
-</p>
-</div>
-<p><strong>GAMMA SEEMS TO FAIL WITH THESE PARAMETERS ANYWAY: but check</strong></p>
-<p>If we use the variance from the censored model (i.e., <span class="math inline">\(\sigma^2 = 95.35\)</span>), we can find the variance of the gamma distribution:
-<span class="math display">\[\begin{align*}
-  \operatorname{var}[X]
-  &amp;= p(\sigma^2)^+ + p(1 - p)(\mu^+)^2\\
-  95.35
-  &amp;= 0.7(\sigma^2)^+ + 0.7\times 0.3(71.43)^2;
-\end{align*}\]</span>
-solving shows that we should use <span class="math inline">\((\sigma^2)^ = ??\)</span> for the variance of the gamma distribution (when <span class="math inline">\(X &gt; 0\)</span>).</p>
-<p>We could suppose a gamma distribution for the rainfall amounts when rain is recorded; thus <span class="math inline">\(\alpha\beta = 71.43\)</span>.
-If we use the variance from the censored model (i.e., <span class="math inline">\(\sigma^2 = 95.35\)</span>), we can find the variance of the gamma distribution:
-<span class="math display">\[\begin{align*}
-  \operatorname{var}[X]
-  &amp;= p(\sigma^2)^+ + p(1 - p)(\mu^+)^2\\
-  95.35
-  &amp;= 0.7(\sigma^2)^+ + 0.7\times 0.3(71.43)^2;
-\end{align*}\]</span>
-solving shows that we should use <span class="math inline">\((\sigma^2)^ = ??\)</span> for the variance of the gamma distribution (when <span class="math inline">\(X &gt; 0\)</span>).</p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="op">(</span> <span class="fl">95.35</span> <span class="op">-</span> <span class="fl">0.7</span><span class="op">*</span><span class="fl">0.3</span><span class="op">*</span><span class="op">(</span><span class="fl">71.43</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">)</span><span class="op">/</span><span class="fl">0.7</span></span>
-<span><span class="co">#&gt; [1] -1394.459</span></span></code></pre></div>
-<p>OOPS!!</p>
-<hr>
-<p>P–G DSTN:</p>
-<p>Need to convert <span class="math inline">\(p_0\)</span>, <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span> into <span class="math inline">\(\lambda, \alpha, \beta\)</span>. How (easily)?</p>
-<hr>
-<p>BUT WHY? JUST USE THEORETICAL DISTN! Well, we wan rainfall values to use upstream in a simulation for (eg) cropping.
-MAXIMUM RAINFALL, with CI-like interval? Again… could do with distribution</p>
-<p>PERHAPS CONNECT TO SOI</p>
+<span><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">0.30</span><span class="op">)</span>        <span class="co"># matches P(R = 0) = 0.30</span></span>
+<span><span class="va">alpha</span>  <span class="op">&lt;-</span> <span class="fl">2</span>                 <span class="co"># fixed: unimodal gamma for individual events</span></span>
+<span><span class="va">mu_R</span>   <span class="op">&lt;-</span> <span class="fl">0.70</span> <span class="op">*</span> <span class="fl">50</span>         <span class="co"># unconditional mean = 35mm</span></span>
+<span><span class="va">beta</span>   <span class="op">&lt;-</span> <span class="va">lambda</span> <span class="op">*</span> <span class="va">alpha</span> <span class="op">/</span> <span class="va">mu_R</span></span>
+<span></span>
+<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span><span class="op">(</span><span class="va">num_sims</span>, lambda <span class="op">=</span> <span class="va">lambda</span><span class="op">)</span></span>
+<span><span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="va">num_sims</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">num_sims</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">R</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="va">N</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="fl">0</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html">rgamma</a></span><span class="op">(</span><span class="va">N</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, shape <span class="op">=</span> <span class="va">alpha</span>, rate <span class="op">=</span> <span class="va">beta</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">R</span><span class="op">[</span><span class="va">R</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span>,</span>
+<span>     freq   <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>     las    <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>     breaks <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>     main   <span class="op">=</span> <span class="st">"Compound Poisson--gamma: monthly rainfall"</span>,</span>
+<span>     xlab   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">Rainfall</span> <span class="op">~</span> <span class="fu">italic</span><span class="op">(</span><span class="va">R</span><span class="op">)</span> <span class="op">~</span> <span class="op">(</span><span class="va">mm</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>     ylab   <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">R</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="09-MixedDistributions_files/figure-html/unnamed-chunk-3-1.png" alt="" width="672"></div>
+<p>Simulated rainfall sequences of this kind are rarely an end in themselves.
+In agriculture, simulated monthly rainfall feeds into crop yield models, where the distribution of yields (and particularly the probability of drought) is of direct interest.
+In hydrology, simulated rainfall drives runoff and reservoir models.
+In forestry, rainfall simulations inform fire risk assessments.
+In each case the goal is to propagate uncertainty in rainfall through to uncertainty in a downstream quantity, which is difficult or impossible to do analytically but straightforward via simulation once a model for <span class="math inline">\(R\)</span> has been specified and fitted.</p>
 </div>
 </div>
-<div id="MixedDistributionsExercises" class="section level2" number="9.7">
+<div id="MixedDistributionsExercises" class="section level2" number="9.6">
 <h2>
-<span class="header-section-number">9.7</span> Exercises<a class="anchor" aria-label="anchor" href="#MixedDistributionsExercises"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.6</span> Exercises<a class="anchor" aria-label="anchor" href="#MixedDistributionsExercises"><i class="fas fa-link"></i></a>
 </h2>
 <p>Selected answers appear in Sect. <a href="selected-short-solutions.html#AnswersChapMixedDistributions">E.8</a>.</p>
-<!-- 
-:::{.exercise #LatentVar}
-Observed variable: Annual medical expenses.
-
-Latent variable ($z$): Underlying health need or risk.
-
-Censoring: Many people incur $0$ expenses in a given year, despite possibly having latent health risks or needs.
-
-Interpretation: People with latent need below some threshold never seek care (e.g. due to costs, access, or asymptomatic cases), leading to observed $0$.
-:::
-
-:::{.exercise #LatentVar2}
-5. Credit Card Balances
-Observed variable: Balance at end of month.
-
-Latent variable ($z$): Willingness or propensity to use credit.
-
-Censoring: Some users consistently pay in full and carry no balance.
-
-Interpretation: Some people have low latent demand for borrowing; observed balance is zero if the latent borrowing desire is below threshold.
-:::
--->
 <div class="exercise">
-<p><span id="exr:TobitHarder" class="exercise"><strong>Exercise 9.1  </strong></span>Consider a latent variable <span class="math inline">\(Y\)</span>, and an observed variable <span class="math inline">\(X = \text{max}(0, Y)\)</span>.
-Suppose that <span class="math inline">\(Y\)</span> has the normal distribution
-<span class="math display">\[
-  Y \sim N(\mu = 1.5, \sigma^2 = 1),
-\]</span>
-so that <span class="math inline">\(\operatorname{E}[Y] = 1.5\)</span> and <span class="math inline">\(\operatorname{var}[Y] = 1\)</span>.</p>
+<p><span id="exr:MixedIdentifiability" class="exercise"><strong>Exercise 9.1  </strong></span>Consider a hurdle model with <span class="math inline">\(\Pr(X = 0) = p\)</span> and <span class="math inline">\(X \mid (X &gt; 0) \sim \text{Gamma}(\alpha, \beta)\)</span>, and a compound Poisson-gamma model with a Poisson parameters <span class="math inline">\(\lambda\)</span> and gamma parameters <span class="math inline">\((\alpha, \beta)\)</span>.</p>
 <ol style="list-style-type: decimal">
-<li>Determine <span class="math inline">\(\Pr(Y &lt; 0)\)</span>, where <span class="math inline">\(Z\)</span> is a standard normal variate (Sect. <a href="ContinuousDistributions.html#StandardNormal">8.3.2</a>).</li>
-<li>Using the functions <span class="math inline">\(\Phi(\cdot)\)</span> and <span class="math inline">\(\phi(\cdot)\)</span>, determine the probability function for <span class="math inline">\(X\)</span>.</li>
-<li>Plot this probability function.</li>
+<li>How many free parameters does each model have?</li>
+<li>Can the two models produce identical distributions?
+If so, under what conditions?
+<em>Solution:</em>
+</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:MixedHospitalStays" class="exercise"><strong>Exercise 9.2  </strong></span>In a “Hurdle” model, we partition the space into <span class="math inline">\(\{0\}\)</span> and <span class="math inline">\(\{x : x &gt; 0\}\)</span>.
+<p><span id="exr:MixedOverdispersion" class="exercise"><strong>Exercise 9.2  </strong></span>Show that both the hurdle (with exponential positive part) and compound Poisson-gamma models are <em>overdispersed</em> relative to a Poisson distribution, in the sense that <span class="math inline">\(\operatorname{var}[X] &gt; \operatorname{E}[X]\)</span> whenever <span class="math inline">\(\operatorname{E}[X] &gt; 0\)</span>.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:MixedLimiting" class="exercise"><strong>Exercise 9.3  </strong></span>?????????
+For the compound Poisson-gamma, fix the value of <span class="math inline">\(\operatorname{E}[X] = \mu\)</span>, and let <span class="math inline">\(\lambda \to \infty\)</span> with <span class="math inline">\(\alpha/\beta = \mu/\lambda\)</span> held constant.
+What does the distribution of <span class="math inline">\(X\)</span> converge to, and why?</p>
+</div>
+<div class="exercise">
+<p><span id="exr:MixedHospitalStays" class="exercise"><strong>Exercise 9.4  </strong></span>In a hurdle model, the sample space is partitioned into <span class="math inline">\(\{0\}\)</span> and <span class="math inline">\(\{x : x &gt; 0\}\)</span>.
 Let <span class="math inline">\(Y\)</span> be hospital stay duration.
 <span class="math inline">\(\Pr(Y = 0) = 0.4\)</span> and for <span class="math inline">\(y &gt; 0\)</span>, <span class="math inline">\(f_Y(y) = 0.6 e^{-y}\)</span>.</p>
 <ol style="list-style-type: decimal">
@@ -1064,7 +749,7 @@ Let <span class="math inline">\(Y\)</span> be hospital stay duration.
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:MixedOrchids" class="exercise"><strong>Exercise 9.3  </strong></span>An ecologist counts a rare orchid in quadrats.
+<p><span id="exr:MixedOrchids" class="exercise"><strong>Exercise 9.5  </strong></span>An ecologist counts a rare orchid in quadrats.
 In many quadrats, the orchid is absent (<span class="math inline">\(X = 0\)</span>).
 If the orchid is present, the density is modelled by a Gamma distribution.</p>
 <p>Let <span class="math inline">\(\Pr(X = 0) = 0.75\)</span> and the remaining <span class="math inline">\(0.25\)</span> be distributed as <span class="math inline">\(X \sim \text{Gamma}(\text{shape} = 2, \text{rate} = 1)\)</span>.</p>
@@ -1074,14 +759,14 @@ If the orchid is present, the density is modelled by a Gamma distribution.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:MixedLightbulbLifetimes" class="exercise"><strong>Exercise 9.4  </strong></span>Let <span class="math inline">\(X \sim \text{Exp}(\lambda)\)</span> be the lifetime of a bulb.
+<p><span id="exr:MixedLightbulbLifetimes" class="exercise"><strong>Exercise 9.6  </strong></span>Let <span class="math inline">\(X \sim \text{Exp}(\lambda)\)</span> be the lifetime of a bulb.
 If a bulb lasts <span class="math inline">\(&gt; 1000\)</span> hours, the lifetimes is recorded as <span class="math inline">\(Y = 1000\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>What is the probability mass at the point <span class="math inline">\(Y = 1000\)</span>?</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:MixedRainGauges" class="exercise"><strong>Exercise 9.5  </strong></span>A rainfall gauge has a physical capacity of <span class="math inline">\(50\,\text{mm}\)</span>.
+<p><span id="exr:MixedRainGauges" class="exercise"><strong>Exercise 9.7  </strong></span>A rainfall gauge has a physical capacity of <span class="math inline">\(50\,\text{mm}\)</span>.
 Any rain <span class="math inline">\(X &gt; 50\)</span> overfills the gauge, and is recorded as <span class="math inline">\(Y = 50\)</span>.
 Assume <span class="math inline">\(X \sim \text{Exponential}(\lambda = 1/20)\)</span>.</p>
 <ol style="list-style-type: decimal">
@@ -1090,23 +775,32 @@ Assume <span class="math inline">\(X \sim \text{Exponential}(\lambda = 1/20)\)</
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:MixedInsuranceClaims" class="exercise"><strong>Exercise 9.6  </strong></span>Assume number of car insurance claims <span class="math inline">\(N \sim \text{Poisson}(0.5)\)</span>.
+<p><span id="exr:MixedInsuranceClaims" class="exercise"><strong>Exercise 9.8  </strong></span>Assume number of car insurance claims <span class="math inline">\(N \sim \text{Poisson}(0.5)\)</span>.
 The individual claim sizes (in dollars) are <span class="math inline">\(X_i \sim \text{Gamma}(2, 1)\)</span>.</p>
 <p>Simulate <span class="math inline">\(1\,000\)</span> realizations of the total claim amount <span class="math inline">\(S = \sum_{i=1}^N X_i\)</span>.</p>
 </div>
 <div class="exercise">
-<p><span id="exr:MixedFireDamage" class="exercise"><strong>Exercise 9.7  </strong></span>The number of fires in a small city per month is <span class="math inline">\(N \sim \text{Poisson}(2)\)</span>.
+<p><span id="exr:MixedFireDamage" class="exercise"><strong>Exercise 9.9  </strong></span>The number of fires in a small city per month is <span class="math inline">\(N \sim \text{Poisson}(2)\)</span>.
 The damage (in millions of dollars) per fire is <span class="math inline">\(X \sim \text{Gamma}(1, 2)\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>Using this model, what is the probability that a month has zero fire damage?</li>
 <li>Write <strong>R</strong> code to find the mean damage for months where damage was greater than zero.</li>
 </ol>
 </div>
+<div class="exercise">
+<p><span id="exr:MixedSimCompare" class="exercise"><strong>Exercise 9.10  </strong></span>Consider a hurdle model and a compound Poisson–gamma model.</p>
+<ol style="list-style-type: decimal">
+<li>Show that it is possible to find parameters for both models, so that both have the same mean and the same proportion of zeros.</li>
+<li>For the two comparable model just found, how to the variances compare?</li>
+<li>Simulate <span class="math inline">\(2000\)</span> observations from each model, using parameters chosen so that both have the same mean and the same proportion of zeros.
+Simulate both and verify your conclusion about the variances.</li>
+</ol>
+</div>
 
 </div>
 </div>
 <hr>
-<div class="footer"><span style="color: gray; font-size:0.7em">Peter K. Dunn, 2024: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span></div>
+<div class="footer"><span style="color: gray; font-size:0.7em">Peter K. Dunn, Taryn Axelsen 2026: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span></div>
   <div class="chapter-nav">
 <div class="prev"><a href="ContinuousDistributions.html"><span class="header-section-number">8</span> Standard continuous distributions</a></div>
 <div class="next"><a href="ChapterTransformations.html"><span class="header-section-number">10</span> Transformations of random variables</a></div>
@@ -1116,28 +810,25 @@ The damage (in millions of dollars) per fire is <span class="math inline">\(X \s
 <li><a class="nav-link" href="#ChapterMixedDistributions"><span class="header-section-number">9</span> Mixed distributions</a></li>
 <li><a class="nav-link" href="#introduction-2"><span class="header-section-number">9.1</span> Introduction</a></li>
 <li>
-<a class="nav-link" href="#CensoredModels"><span class="header-section-number">9.2</span> Censored model</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#CensoredModelsDefinitions"><span class="header-section-number">9.2.1</span> Definitions</a></li>
-<li><a class="nav-link" href="#CensoredModelsProperties"><span class="header-section-number">9.2.2</span> Properties</a></li>
+<a class="nav-link" href="#HurdleModels"><span class="header-section-number">9.2</span> Hurdle models</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#HurdleModelsDefinitions"><span class="header-section-number">9.2.1</span> Definitions</a></li>
+<li><a class="nav-link" href="#HurdleModelsProperties"><span class="header-section-number">9.2.2</span> Properties</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#HurdleModels"><span class="header-section-number">9.3</span> Hurdle models</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#HurdleModelsDefinitions"><span class="header-section-number">9.3.1</span> Definitions</a></li>
-<li><a class="nav-link" href="#HurdleModelsProperties"><span class="header-section-number">9.3.2</span> Properties</a></li>
+<a class="nav-link" href="#TweedieModels"><span class="header-section-number">9.3</span> Compound Poisson-gamma distributions</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#definition"><span class="header-section-number">9.3.1</span> Definition</a></li>
+<li><a class="nav-link" href="#properties"><span class="header-section-number">9.3.2</span> Properties</a></li>
 </ul>
 </li>
+<li><a class="nav-link" href="#summary-of-models"><span class="header-section-number">9.4</span> Summary of models</a></li>
 <li>
-<a class="nav-link" href="#TweedieModels"><span class="header-section-number">9.4</span> Compound Poisson-gamma distributions</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#properties"><span class="header-section-number">9.4.1</span> Properties</a></li></ul>
-</li>
-<li><a class="nav-link" href="#sumamry-of-models"><span class="header-section-number">9.5</span> Sumamry of models</a></li>
-<li>
-<a class="nav-link" href="#MixedVariablesSimulation"><span class="header-section-number">9.6</span> Simulation</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#general"><span class="header-section-number">9.6.1</span> General</a></li>
-<li><a class="nav-link" href="#rainfall"><span class="header-section-number">9.6.2</span> Rainfall</a></li>
+<a class="nav-link" href="#MixedVariablesSimulation"><span class="header-section-number">9.5</span> Simulation</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#general"><span class="header-section-number">9.5.1</span> General</a></li>
+<li><a class="nav-link" href="#rainfall"><span class="header-section-number">9.5.2</span> Rainfall</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#MixedDistributionsExercises"><span class="header-section-number">9.7</span> Exercises</a></li>
+<li><a class="nav-link" href="#MixedDistributionsExercises"><span class="header-section-number">9.6</span> Exercises</a></li>
 </ul>
 
       <div class="book-extra">
