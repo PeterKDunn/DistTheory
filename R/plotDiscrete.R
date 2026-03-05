@@ -4,6 +4,10 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
   # "SF": survival function
   # "MF": PMF
   
+  if ( !(type %in% c("DF", "MF", "SF") ) ) {
+    stop('type  must be one of "DF", "SF", "MF"')
+  }
+  
   Fx <- cumsum(px)
   Sx <- 1 - Fx
   
