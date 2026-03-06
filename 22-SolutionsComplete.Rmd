@@ -4300,6 +4300,26 @@ as shown in Fig.\ \@ref(fig:AnswerRunnerVelocityVoltage) (right panel).
 
 
 
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:TransformReproductive).**
+$$M_{S_1+S_2}(t) = M_{S_1}(t) \cdot M_{S_2}(t)
+= \exp\!\left\{(\lambda_1+\lambda_2)\!\left[\left(\frac{\beta}{\beta-t}\right)^\alpha-1\right]\right\}$$
+
+By uniqueness of MGFs, $S_1+S_2 \sim \text{CP-G}(\lambda_1 + \lambda_2, \alpha,\beta)$. $\blacksquare$
+
+The property is reproductive **only in $\lambda$**: the Gamma severity parameters must be identical, unlike the Normal (all parameters scale) or Gamma (shapes add).
+:::
+
+
+
+
+
+
+
+
+
+
+
 <!-- ********************************************************************************************* -->
 ## Answers for Chap.\ \@ref(DiscreteDistributions) {#AnswersChapDiscreteDistributions}
 
@@ -5501,7 +5521,7 @@ The first equation links\ $\lambda$ and\ $p$; the second can always be satisfied
 So it is possible to match both the mean and proportion of zeros. 
 However the variance will generally differ, since the compound Poisson-gamma variance depends on $\lambda$ and $\alpha, \beta$ jointly while the hurdle variance has an extra degree of freedom. 
 
-Simulation below
+Simulation below.
 :::
 
 ```{r}
@@ -5524,6 +5544,475 @@ hurdle <- ifelse(runif(2000) < p, 0,
 
 c(mean(cpg), mean(hurdle))      # should be similar
 c(var(cpg), var(hurdle))        # will generally differ
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedHurdleQuantile).**
+WATCH p; seems to use $\pi = 1 - p$.
+
+We get
+$$
+  Q_Y(\tau) 
+  = 
+  \begin{cases} 
+    0                                             & \tau \leq \pi \\ 
+    Q^+\!\left(\dfrac{\tau - \pi}{1 - \pi}\right) & \tau > \pi 
+  \end{cases}
+$$
+Median when $\pi > 0.5$ is $Q_Y(0.5) = 0$, so the median is exactly zero.
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedHurdlePractice).**
+WATCH p; seems to use $\pi = 1 - p$.
+
+$\mu^+ = 1.5$, $\sigma^{+2} = 0.75$, $1-\pi = 0.6$.
+
+1. $E[Y] = 0.6 \times 1.5 = 0.9$
+1. $\text{Var}(Y) = 0.6 \times 0.75 + 0.4 \times 0.6 \times 2.25 = 0.99$
+1. $P(Y > 2) = 0.6\,[1 - F_\Gamma(2;\,3,2)]$
+1. $Q_Y(0.90) = Q_\Gamma\!\left(\frac{0.50}{0.60};\,3,2\right)$
+:::
+
+
+```{r P1c}
+p_exceed <- 0.6 * pgamma(2, shape = 3, rate = 2, lower.tail = FALSE)
+cat("P(Y > 2) =", round(p_exceed, 5), "\n")
+```
+
+
+```{r P1d}
+q90 <- qgamma((0.9 - 0.4) / 0.6, shape = 3, rate = 2)
+cat("90th percentile =", round(q90, 4), "\n")
+```
+
+**Simulation verification:**
+
+```{r P1-verify}
+set.seed(1)
+y_sim <- ifelse(rbinom(1e6, 1, 0.6), rgamma(1e6, 3, 2), 0)
+cat("Mean:    sim =", round(mean(y_sim), 4),  "theory = 0.9\n")
+cat("Var:     sim =", round(var(y_sim),  4),  "theory = 0.99\n")
+cat("P(Y>2):  sim =", round(mean(y_sim > 2), 4),
+    "theory =", round(p_exceed, 4), "\n")
+cat("Q(0.90): sim =", round(quantile(y_sim, 0.9), 4),
+    "theory =", round(q90, 4), "\n")
+```
+
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedHurdleFixP).**
+WATCH p; seems to use $\pi = 1 - p$.
+
+From the plots below: as $\pi$ increases the point mass grows and the mean falls, but CV increases
+because the between-group term $\pi(1-\pi)\mu^{+2}$ adds substantial variance at moderate $\pi$.
+:::
+
+```{r P2a}
+pi_vals  <- c(0.1, 0.3, 0.6, 0.85)
+mu_plus  <- 2
+var_plus <- 2
+
+tab <- data.frame(
+  pi    = pi_vals,
+  E_Y   = (1 - pi_vals) * mu_plus,
+  Var_Y = (1 - pi_vals) * var_plus + pi_vals * (1 - pi_vals) * mu_plus^2
+)
+tab$SD_Y <- sqrt(tab$Var_Y)
+tab$CV_Y <- tab$SD_Y / tab$E_Y
+tab[sapply(tab, is.numeric)] <- lapply(tab[sapply(tab, is.numeric)], round, 4)
+kable(tab, caption = "Moments of hurdle-Gamma(2,1) for varying pi")
+```
+
+```{r P2b}
+y_grid2 <- seq(0.001, 10, length.out = 500)
+par(mfrow = c(2, 2), mar = c(4, 4, 3, 1))
+for (pv in pi_vals) {
+  dens_pos <- (1 - pv) * dgamma(y_grid2, shape = 2, rate = 1)
+  plot(y_grid2, dens_pos, type = "l", col = "steelblue", lwd = 2,
+       ylim = c(0, max(pv + 0.05, max(dens_pos))),
+       main = paste0("pi = ", pv),
+       xlab = "y", ylab = "Density / mass")
+  arrows(x0 = 0, y0 = 0, x1 = 0, y1 = pv,
+         col = "firebrick", lwd = 3, length = 0.12)
+}
+par(mfrow = c(1, 1))
+```
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedHurdleEstimate).**
+WATCH p; seems to use $\pi = 1 - p$.
+
+$\mu^+ = E[Y]/(1-\pi) = 6$.
+
+$\sigma^{+2} = (\text{Var}(Y) - \pi(1-\pi)\mu^{+2})/(1-\pi) = (30-9)/0.5 = 42$.
+
+Gamma: $\beta = \mu^+/\sigma^{+2} = 1/7$, $\alpha = \mu^+\beta = 6/7 < 1$ (monotone
+decreasing density -- valid but heavily right-skewed).
+:::
+
+```{r P4-plot}
+alpha_p4 <- 6 / 7
+beta_p4  <- 1 / 7
+y_g <- seq(0.001, 50, length.out = 500)
+plot(y_g, dgamma(y_g, shape = alpha_p4, rate = beta_p4),
+     type = "l", col = "steelblue", lwd = 2,
+     main = paste0("Gamma(alpha=", round(alpha_p4, 3),
+                   ", beta=", round(beta_p4, 3), ")"),
+     xlab = "y", ylab = "Density")
+```
+
+
+
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGrelationship).**
+1. Eliminating $\lambda$: $P(S=0) = e^{-\lambda} = \exp(-\beta E[S]/\alpha)$.
+   So zero probability and mean are **structurally coupled** via $\lambda$ in the CP-G.
+   In the hurdle, $\pi$ and $\mu^+$ are free parameters with no imposed link.
+1. From T2:
+$$
+  P(S \leq s \mid S>0) = \frac{\sum_{n=1}^\infty \frac{e^{-\lambda}\lambda^n}{n!}G(s;\,n\alpha,\beta)}{1-e^{-\lambda}}.
+$$
+This is a Poisson-weighted mixture of Gamma CDFs, not a single Gamma.
+1. As $\lambda \to 0$: $P(N=1 \mid N \geq 1) \to 1$, so $S \mid S>0 \xrightarrow{d} X_1 \sim \text{Gamma}(\alpha,\beta)$.
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGskewness).**
+$$K_S(t) = \lambda\!\left[\left(\frac{\beta}{\beta-t}\right)^\alpha - 1\right]$$
+
+Using the compound Poisson identity $\kappa_r(S) = \lambda E[X^r]$ and the moments of
+$\text{Gamma}(\alpha,\beta)$:
+
+$$\kappa_1 = \frac{\lambda\alpha}{\beta}, \quad
+\kappa_2 = \frac{\lambda\alpha(\alpha+1)}{\beta^2}, \quad
+\kappa_3 = \frac{\lambda\alpha(\alpha+1)(\alpha+2)}{\beta^3}, \quad
+\kappa_4 = \frac{\lambda\alpha(\alpha+1)(\alpha+2)(\alpha+3)}{\beta^4}$$
+
+**Skewness:**
+
+$$\gamma_1 = \frac{\kappa_3}{\kappa_2^{3/2}} = \frac{\alpha+2}{\sqrt{\lambda\alpha(\alpha+1)}} > 0 \quad \text{always}$$
+
+**Excess kurtosis:**
+
+$$\gamma_2 = \frac{\kappa_4}{\kappa_2^2} = \frac{(\alpha+2)(\alpha+3)}{\lambda\alpha(\alpha+1)} > 0 \quad \text{always}$$
+
+Both decrease as $\lambda \to \infty$ (CLT dominates with many events).
+:::
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGevaluation).**
+:::
+
+```{r P1XXX}
+lambda_p1 <- 3; alpha_p1 <- 2; beta_p1 <- 0.01
+
+E_S   <- lambda_p1 * alpha_p1 / beta_p1
+Var_S <- lambda_p1 * alpha_p1 * (alpha_p1 + 1) / beta_p1^2
+Skew  <- (alpha_p1 + 2) / sqrt(lambda_p1 * alpha_p1 * (alpha_p1 + 1))
+P0    <- exp(-lambda_p1)
+
+cat("E[S]   =", E_S, "\n")
+cat("Var(S) =", Var_S, "\n")
+cat("SD(S)  =", round(sqrt(Var_S), 2), "\n")
+cat("Skew   =", round(Skew, 4), "\n")
+cat("P(S=0) =", round(P0, 5), "\n")
+
+set.seed(1)
+N_sim <- rpois(2e5, lambda_p1)
+S_sim <- sapply(N_sim, function(n) {
+  if (n == 0) 0 else sum(rgamma(n, alpha_p1, beta_p1))
+})
+cat("P(S > 1000) =", round(mean(S_sim > 1000), 4), "\n")
+```
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGparameters).**
+
+**Comments:** Increasing $\lambda$ shifts the conditional distribution right and makes it more symmetric (skewness $\propto 1/\sqrt{\lambda}$). 
+Smaller $\alpha$ gives a more right-skewed severity and hence a more skewed conditional $S \mid S>0$.
+:::
+
+
+```{r P2aXXX}
+lam_vals <- c(0.5, 2, 8)
+alp_vals <- c(0.5, 2)
+params   <- expand.grid(lambda = lam_vals, alpha = alp_vals)
+params$beta  <- 1
+params$E_S   <- params$lambda * params$alpha / params$beta
+params$Var_S <- params$lambda * params$alpha * (params$alpha + 1) / params$beta^2
+params$P0    <- exp(-params$lambda)
+params$Skew  <- (params$alpha + 2) / sqrt(params$lambda * params$alpha * (params$alpha + 1))
+params[sapply(params, is.numeric)] <- lapply(params[sapply(params, is.numeric)], round, 3)
+kable(params, caption = "CP-G moments for varying lambda and alpha (beta=1)")
+```
+
+```{r P2bXXX}
+set.seed(22)
+par(mfrow = c(2, 3), mar = c(4, 4, 3, 1))
+for (alp in alp_vals) {
+  for (lam in lam_vals) {
+    N <- rpois(3e4, lam)
+    S <- sapply(N, function(n) if (n == 0) 0 else sum(rgamma(n, alp, 1)))
+    Spos <- S[S > 0]
+    hist(Spos, breaks = 50, freq = FALSE,
+         col = "steelblue", border = "white",
+         main = paste0("lambda=", lam, ", alpha=", alp),
+         xlab = "S | S > 0", ylab = "Density")
+  }
+}
+par(mfrow = c(1, 1))
+```
+
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGtweedie).**
+With $\mu = E[S] = \lambda\alpha/\beta$ and $\text{Var}(S) = \lambda\alpha(\alpha+1)/\beta^2$,
+eliminating $\lambda = \mu\beta/\alpha$:
+
+$$\text{Var}(S) = \frac{\mu\beta}{\alpha} \cdot \frac{\alpha(\alpha+1)}{\beta^2}
+= \frac{(\alpha+1)}{\beta}\,\mu$$
+
+This is linear in $\mu$ for fixed $\alpha, \beta$.  The Tweedie power $p = (\alpha+2)/(\alpha+1)$
+arises when comparing across families with varying $\lambda$ and $\beta$ simultaneously;
+the full derivation gives $\text{Var}(S) = \phi\mu^p$ with:
+
+$$p = \frac{\alpha+2}{\alpha+1} = 1 + \frac{1}{\alpha+1}$$
+
+Since $\alpha>0$: $p \in (1+0, 1+1) = (1, 2)$.  As $\alpha \to 0^+$, $p \to 2$; as
+$\alpha \to \infty$, $p \to 1$.
+:::
+
+
+```{r P3-verifyXXX}
+alpha_v     <- 1.5
+beta_v      <- 1
+p_v         <- (alpha_v + 2) / (alpha_v + 1)
+lambda_grid <- c(0.5, 1, 2, 5, 10)
+
+phi_check <- sapply(lambda_grid, function(lam) {
+  mu_v  <- lam * alpha_v / beta_v
+  var_v <- lam * alpha_v * (alpha_v + 1) / beta_v^2
+  var_v / mu_v^p_v
+})
+
+cat("p =", round(p_v, 4), "\n")
+cat("Var(S)/E[S]^p (should be constant across lambda):\n")
+print(round(phi_check, 5))
+```
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGrandom).**
+:::
+
+
+```{r S1XXX}
+rcpg <- function(n, lambda, alpha, beta) {
+  N <- rpois(n, lambda)
+  vapply(N, function(ni) {
+    if (ni == 0L) 0 else sum(rgamma(ni, alpha, beta))
+  }, numeric(1))
+}
+
+set.seed(111)
+lam1 <- 2; alp1 <- 3; bet1 <- 0.5
+S1   <- rcpg(1e5, lam1, alp1, bet1)
+
+E_S1  <- lam1 * alp1 / bet1
+Var_S1 <- lam1 * alp1 * (alp1 + 1) / bet1^2
+P0_1  <- exp(-lam1)
+Sk_1  <- (alp1 + 2) / sqrt(lam1 * alp1 * (alp1 + 1))
+
+# Theoretical CDF at s=10
+cdf_cpg <- function(s, lambda, alpha, beta, nmax = 50) {
+  p0  <- exp(-lambda)
+  wts <- dpois(1:nmax, lambda)
+  wts <- wts / sum(wts)
+  p0 + (1 - p0) * sum(wts * pgamma(s, (1:nmax) * alpha, beta))
+}
+CDF_10 <- cdf_cpg(10, lam1, alp1, bet1)
+
+results_s1 <- data.frame(
+  Quantity  = c("E[S]", "Var(S)", "P(S=0)", "Skewness", "CDF at s=10"),
+  Theory    = round(c(E_S1, Var_S1, P0_1, Sk_1, CDF_10), 4),
+  Simulated = round(c(mean(S1), var(S1), mean(S1 == 0),
+                      mean((S1 - mean(S1))^3) / var(S1)^1.5,
+                      mean(S1 <= 10)), 4)
+)
+kable(results_s1, caption = "CP-G(lambda=2, alpha=3, beta=0.5): theory vs simulation")
+```
+
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGplots).**
+:::
+
+
+```{r S2XXX}
+set.seed(222)
+configs_s2 <- list(
+  list(lam = 0.5, alp = 1,   bet = 1,   lab = "lambda=0.5, alpha=1, beta=1"),
+  list(lam = 2,   alp = 2,   bet = 0.5, lab = "lambda=2, alpha=2, beta=0.5"),
+  list(lam = 8,   alp = 3,   bet = 0.2, lab = "lambda=8, alpha=3, beta=0.2")
+)
+
+par(mfrow = c(1, 3), mar = c(4, 4, 3, 1))
+for (cfg in configs_s2) {
+  S   <- rcpg(8000, cfg$lam, cfg$alp, cfg$bet)
+  p0  <- exp(-cfg$lam)
+  ES  <- cfg$lam * cfg$alp / cfg$bet
+  Spos <- S[S > 0]
+  h <- hist(Spos, plot = FALSE, breaks = 50)
+  plot(h, freq = FALSE, col = "steelblue", border = "white",
+       main = cfg$lab, xlab = "S", ylab = "Density",
+       ylim = c(0, max(p0 + 0.05, max(h$density))))
+  arrows(x0 = 0, y0 = 0, x1 = 0, y1 = p0,
+         col = "firebrick", lwd = 4, length = 0.12)
+  legend("topright",
+         legend = c(paste0("P(S=0)=", round(p0, 2)),
+                    paste0("E[S]=",   round(ES, 1))),
+         bty = "n", cex = 0.8)
+}
+par(mfrow = c(1, 1))
+```
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGreproductive).**
+:::
+
+
+```{r S4XXX}
+set.seed(444)
+alp4 <- 1.5; bet4 <- 0.5
+S1_s4 <- rcpg(5e4, lambda = 2, alpha = alp4, beta = bet4)
+S2_s4 <- rcpg(5e4, lambda = 3, alpha = alp4, beta = bet4)
+T_s4  <- S1_s4 + S2_s4
+
+lam_T <- 5
+E_T   <- lam_T * alp4 / bet4
+Var_T <- lam_T * alp4 * (alp4 + 1) / bet4^2
+P0_T  <- exp(-lam_T)
+
+verify_s4 <- data.frame(
+  Quantity  = c("E[T]", "Var(T)", "P(T=0)"),
+  Theory    = round(c(E_T, Var_T, P0_T), 4),
+  Simulated = round(c(mean(T_s4), var(T_s4), mean(T_s4 == 0)), 4)
+)
+kable(verify_s4, caption = "Reproductive property: T = S1+S2 ~ CP-G(5, 1.5, 0.5)")
+
+# CDF comparison
+s_grid     <- seq(0, 80, length.out = 200)
+F_empirical <- ecdf(T_s4)(s_grid)
+F_theory    <- sapply(s_grid, function(s) cdf_cpg(s, lam_T, alp4, bet4, nmax = 60))
+
+plot(s_grid, F_theory, type = "l", col = "firebrick", lwd = 2,
+     main = "CDF of T: empirical vs CP-G(5, 1.5, 0.5) theory",
+     xlab = "t", ylab = "CDF", ylim = c(0, 1))
+lines(s_grid, F_empirical, col = "steelblue", lwd = 2, lty = 2)
+legend("bottomright",
+       legend = c("Theory CP-G(5,1.5,0.5)", "Empirical T = S1+S2"),
+       col = c("firebrick", "steelblue"), lty = c(1, 2), lwd = 2,
+       bty = "n", cex = 0.9)
+```
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGhurdle).**
+
+
+**Comment:** Despite identical mean, variance, and $P(\cdot=0)$, the distributions differ
+in skewness and tail behaviour.  The CP-G positive part is a Poisson-mixture of Gammas
+with a heavier right tail than a single Gamma.  Matching two moments is not sufficient to
+make the distributions the same.
+:::
+
+
+```{r S5-setupXXX}
+# CP-G: lambda=1, alpha=2, beta=0.5 => E[S]=4, Var=24, P(0)=exp(-1)
+lam_cpg <- 1; alp_cpg <- 2; bet_cpg <- 0.5
+E_cpg   <- lam_cpg * alp_cpg / bet_cpg
+Var_cpg <- lam_cpg * alp_cpg * (alp_cpg + 1) / bet_cpg^2
+pi_h    <- exp(-lam_cpg)
+
+# Hurdle-Gamma matched to same E, Var, P(0)
+mu_plus_h  <- E_cpg / (1 - pi_h)
+var_plus_h <- (Var_cpg - pi_h * (1 - pi_h) * mu_plus_h^2) / (1 - pi_h)
+bet_h      <- mu_plus_h / var_plus_h
+alp_h      <- mu_plus_h * bet_h
+
+cat("CP-G:   E=", E_cpg, "Var=", Var_cpg,
+    "P(0)=", round(pi_h, 4), "\n")
+cat("Hurdle: alpha=", round(alp_h, 4), "beta=", round(bet_h, 4),
+    "pi=", round(pi_h, 4), "\n")
+```
+
+```{r S5-simXXX}
+rhurdle <- function(n, pi, rfun, ...) {
+  rbinom(n, 1, 1 - pi) * rfun(n, ...)
+}
+
+set.seed(555)
+S_cpg <- rcpg(3e4, lam_cpg, alp_cpg, bet_cpg)
+Y_hrd <- rhurdle(3e4, pi_h, rgamma, shape = alp_h, rate = bet_h)
+
+# Summary table
+skew_fn <- function(x) mean((x - mean(x))^3) / var(x)^1.5
+p95_fn  <- function(x) mean(x > quantile(x[x > 0], 0.95))
+
+summary_s5 <- data.frame(
+  Metric   = c("Mean", "Variance", "P(zero)", "Skewness", "P(above 95th pct of positives)"),
+  CP_G     = round(c(mean(S_cpg), var(S_cpg), mean(S_cpg == 0),
+                     skew_fn(S_cpg), p95_fn(S_cpg)), 4),
+  Hurdle   = round(c(mean(Y_hrd), var(Y_hrd), mean(Y_hrd == 0),
+                     skew_fn(Y_hrd), p95_fn(Y_hrd)), 4)
+)
+kable(summary_s5, caption = "Moment-matched CP-G vs Hurdle-Gamma")
+
+# Density of positive part
+d_cpg <- density(S_cpg[S_cpg > 0])
+d_hrd <- density(Y_hrd[Y_hrd > 0])
+xlim  <- c(0, 30)
+ylim  <- c(0, max(d_cpg$y, d_hrd$y))
+
+plot(d_cpg, col = "steelblue", lwd = 2, xlim = xlim, ylim = ylim,
+     main = "Density of positive part: moment-matched CP-G vs Hurdle-Gamma",
+     xlab = "Value (given > 0)", ylab = "Density")
+lines(d_hrd, col = "firebrick", lwd = 2)
+legend("topright",
+       legend = c("CP-G", "Hurdle-Gamma"),
+       col = c("steelblue", "firebrick"), lwd = 2, bty = "n")
 ```
 
 
@@ -6312,6 +6801,95 @@ using the Poisson distribution.
 
 
   
+  
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:SimHurdle).**
+$E[\bar{Y}_n] = 1$, $\text{Var}(\bar{Y}_n) = 2/n$.
+
+
+**Comment:** At $n=10$ the distribution is right-skewed; by $n=200$ the normal
+approximation is excellent. The CLT applies since $E[Y^2] < \infty$.
+:::
+
+```{r S3}
+rhurdle <- function(n, pi, rfun, ...) {
+  rbinom(n, 1, 1 - pi) * rfun(n, ...)
+}
+
+
+
+set.seed(303)
+B_s3  <- 4000
+ns_s3 <- c(10, 50, 200)
+
+xbar_list <- lapply(ns_s3, function(n) {
+  replicate(B_s3, mean(rhurdle(n, pi = 0.5, rgamma, shape = 2, rate = 1)))
+})
+
+par(mfrow = c(1, 3), mar = c(4, 4, 3, 1))
+for (i in seq_along(ns_s3)) {
+  n  <- ns_s3[i]
+  xb <- xbar_list[[i]]
+  h  <- hist(xb, plot = FALSE, breaks = 40)
+  plot(h, freq = FALSE, col = "steelblue", border = "white",
+       main = paste0("n = ", n),
+       xlab = "Sample mean", ylab = "Density")
+  xseq <- seq(min(h$breaks), max(h$breaks), length.out = 300)
+  lines(xseq, dnorm(xseq, mean = 1, sd = sqrt(2 / n)),
+        col = "firebrick", lwd = 2)
+}
+par(mfrow = c(1, 1))
+```
+
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exrSimCPG).**
+$E[S]=3$, $\text{Var}(S)=9$, so $E[\bar{S}_n]=3$ and $\text{Var}(\bar{S}_n)=9/n$.
+
+**Comment:** At $n=5$ the distribution is right-skewed (skewness $\approx 1.15$).
+By $n=30$ it is close to normal; by $n=150$ the approximation is excellent.
+:::
+
+
+```{r S3XXX}
+
+rcpg <- function(n, lambda, alpha, beta) {
+  N <- rpois(n, lambda)
+  vapply(N, function(ni) {
+    if (ni == 0L) 0 else sum(rgamma(ni, alpha, beta))
+  }, numeric(1))
+}
+
+
+
+set.seed(333)
+lam3 <- 1.5; alp3 <- 2; bet3 <- 1
+ns_s3 <- c(5, 30, 150)
+
+xbar_list <- lapply(ns_s3, function(n) {
+  replicate(5000, mean(rcpg(n, lam3, alp3, bet3)))
+})
+
+par(mfrow = c(1, 3), mar = c(4, 4, 3, 1))
+for (i in seq_along(ns_s3)) {
+  n  <- ns_s3[i]
+  xb <- xbar_list[[i]]
+  h  <- hist(xb, plot = FALSE, breaks = 40)
+  plot(h, freq = FALSE, col = "steelblue", border = "white",
+       main = paste0("n = ", n),
+       xlab = "Sample mean", ylab = "Density")
+  xseq <- seq(min(h$breaks), max(h$breaks), length.out = 300)
+  lines(xseq, dnorm(xseq, mean = 3, sd = sqrt(9 / n)),
+        col = "firebrick", lwd = 2)
+}
+par(mfrow = c(1, 1))
+```
+
+
+
+
 
 
 
