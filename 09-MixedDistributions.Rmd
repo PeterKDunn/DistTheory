@@ -4,7 +4,7 @@
 On completion of this chapter, you should be able to:
 
 * recognise mixed random variables.
-* recognise hurdle models and compound Poisson--gamma models for modelling mixed random variables.
+* recognise zero-modified distributions models and compound Poisson--gamma models for modelling mixed random variables.
 * know the basic properties of the above approaches.
 * apply these approaches as appropriate to problem solving.
 :::
@@ -13,7 +13,7 @@ On completion of this chapter, you should be able to:
 ## Introduction
 
 Mixed random variables commonly occur in practice, in diverse applications such as insurance, agriculture, climatology, fisheries, etc.
-In most practical cases, a mixed random variable\ $Y$ has a discrete probability mass at $Y = 0$, and is also continuous for $Y > 0$.
+In most practical cases, a mixed random variable\ $Y$ has a discrete probability mass at $X = 0$, and is also continuous for $X > 0$.
 Example include:
 
 * Modelling insurance: some portfolios will have zero claims; however, when claims are made, the total claim amount has a positive continuous distribution.
@@ -23,25 +23,29 @@ Example include:
 Continuous data with a discrete probability at zero can be modelled in various ways, depending on how the discrete probability at $X = 0$ is modelled
 Two approaches are considered in this chapter.
 
-*Hurdle models*\index{Hurdle models} (Sect.\ \@ref(HurdleModels)) treat the zeros as emerging from a *two-step process*.
+*Zero-modified distributions*\index{Zero-modified distribution} (Sect.\ \@ref(ZeroModifiedModels)) treat the zeros as emerging from a *two-step process*.
 Step one is a binary process, that models whether the event of interest (i.e., an insurance claim is made; rainfall is recorded; fish are caught) occurs.
 Step two is a model for the continuous data of interest, conditional on the event of interest occurring.
 
 Compound *Poisson-gamma models*\index{Compound Poisson-gamma models} (Sect.\ \@ref(TweedieModels)) generates zeros from a *single process*, when a Poisson count of underlying events equals zero.
 
 
-## Hurdle models {#HurdleModels}
+## Zero-modified distributions {#ZeroModified}
 
-### Definitions {#HurdleModelsDefinitions}
+Zero-modified distributions assume a continuous distribution for positive continuous data, modified to have a discrete probability for $X = 0$.
+The continuous distribution is sometimes an exponential distribution (Sect.\ \@refExponentialDistribution), or more commonly a gamma distribution (Sect.\ \@ref(GammaDistribution)), though other distributions can also be used.
+Zero-modified distributions are also called Zero-altered distributions or hurdle models.
 
-\index{Hurdle models|(}
-A hurdle model treats zeros and positive values as arising from two separate processes. 
+### Definitions {#ZeroModifiedModelsDefinitions}
+
+\index{Zero-modified distributions|(}
+A Zero-modified distributions treats zeros and positive values as arising from two separate processes. 
 The first process is a binary model that determines whether an event occurs or not. 
 The second process that describes the distribution of values, conditional on the values being positive. 
-The hurdle model is useful when the zero-generating process is believed to be distinct from the process driving variation among positive values; for example, whether a household buys alcohol is a different process than how much a household spends on alcohol if they do buy alcohol.
+A zero-modified distribution is useful when the zero-generating process is believed to be distinct from the process driving variation among positive values; for example, whether a household buys alcohol is a different process than how much a household spends on alcohol if they do buy alcohol.
 
 
-A *hurdle model*\index{Hurdle models} treats the zero values of the random variable\ $X$ as emerging from a two-step process.
+A *zero-modified distributions*\index{Zero-modified distribution} treats the zero values of the random variable\ $X$ as emerging from a two-step process.
 The first step uses a Bernoulli distribution (Sect.\ \@ref(BernoulliDistribution))\index{Bernoulli distribution} to model a random variable\ $Y$ that defines whether an event of interest occurs:
 $$
   \Pr(Y) = 
@@ -73,7 +77,7 @@ $$
 where $F^+_X(x) = F_{X\mid X > 0}(x)$ is the distribution function for the continuous distribution defined for $x\in\mathbb{R}_{+}$.
 
 
-:::{.example #HurdleExample name="Hurdle model"}
+:::{.example #ZeroModifiedExample name="Hurdle model"}
 Consider the mixed random variable\ $X$, with probability function $f_X(x)$.
 Suppose that, when $X > 0$, an exponential distribution\index{Exponential distribution} is used to describe the distribution; that is
 $$
@@ -98,11 +102,11 @@ $$
     0.7\cdot \left(1 - \exp(-x/2)\right)  & \text{if $x > 0$;}
   \end{cases}
 $$
-The probability function and distribution function are shown in Fig.\ \@ref(fig:HurdlePic).
+The probability function and distribution function are shown in Fig.\ \@ref(fig:ZeroModifiedPic).
 :::
 
 
-```{r HurdlePic, echo=FALSE, fig.align="center", fig.cap="A hurdle model, showing an exponential distribution for the continuous component.", fig.width=8, fig.height=4, out.width="90%"}
+```{r ZeroModifiedPic, echo=FALSE, fig.align="center", fig.cap="A zero-modified distributions model, showing an exponential distribution for the continuous component.", fig.width=8, fig.height=4, out.width="90%"}
 p <- 0.7
 x.rate = 2
 
@@ -121,7 +125,7 @@ plot(y ~ x,
      xlab = expression(italic(X)),
      ylab = expression(Prob.~"function"),
      main = expression(bold(atop(Mixed~distribution,
-                                 hurdle~ model))),
+                                 zero-modified~model))),
      lwd = 3)
 abline(h = 0,
        col = "grey")
@@ -177,7 +181,7 @@ plot(Fy ~ x,
      xlab = expression(italic(X)),
      ylab = expression(Distribution.~"function"),
      main = expression(bold(atop(Mixed~distribution,
-                                 hurdle~ model))),
+                                 zero-modified~model))),
      lwd = 3)
 abline(h = 0,
        col = "grey")
@@ -206,7 +210,7 @@ points(x = 0, # Included
 
 
 
-### Properties {#HurdleModelsProperties}
+### Properties {#ZeroModifiedProperties}
 
 The expected value of the random variable\ $X$ can be found first separating the discrete and continuous parts of the distribution:
 \begin{align*}
@@ -229,7 +233,8 @@ Then, the variance of\ $X$ is
   &=  p[(\mu^2)^+ - p(\mu^+)^2]\\
   &=  p(\sigma^2)^+ + p(1 - p)(\mu^+)^2.
 \end{align*}
-where $\sigma^2 = \operatorname{var}[X \mid X > 0]$
+where $\sigma^2 = \operatorname{var}[X \mid X > 0]$.
+
 The same approach also gives the MGF as
 \begin{align*}
   M_X(t) 
@@ -242,7 +247,7 @@ Clearly, further progress with these expressions requires knowing the distributi
 
 
 
-:::{.example #HurdleGamma name="Hurdle model, using gamma distribution"}
+:::{.example #ZeroModifiedGamma name="Zero-modified model, using gamma distribution"}
 Consider a random variable\ $X$ such that $p = 0.75$ (and hence $\Pr(X = 0) = 1 - p = 0.25$), and where the distribution when $X > 0$ follows a gamma distribution (Sect.\ \@ref(GammaDistribution)) having $\alpha = 2$ and $\beta = 1$, with the density function
 $$
   f_X^{+}(x; \alpha, \beta) 
@@ -271,12 +276,12 @@ Then
    = 0.75\times 2 + 0.75\times 0.25\times 1.5^2
    \approx 1.921.
 \end{align*}
-The probability function and distribution function are shown in Fig.\ \@ref(fig:HurdleGamma).
+The probability function and distribution function are shown in Fig.\ \@ref(fig:ZeroModifiedGamma).
 :::
 
 
 
-```{r HurdleGamma, echo=FALSE, fig.align="center", fig.cap="A hurdle model, using a gamma distribution for the continuous component.", fig.width=8, fig.height=4, out.width="90%"}
+```{r ZeroModifiedGamma, echo=FALSE, fig.align="center", fig.cap="A zero-modified model, using a gamma distribution for the continuous component.", fig.width=8, fig.height=4, out.width="90%"}
 p <- 0.75
 x.shape <- 2 # shape = alpha
 x.scale <- 1 # scale = beta
@@ -296,7 +301,7 @@ plot(y ~ x,
               max( c(y, 1 - p) ) ),
      xlab = expression(italic(X)),
      ylab = expression(Prob.~"function"),
-     main = expression(atop(Hurdle~model,
+     main = expression(atop(Zero-modified~distribution,
                             probability~"function")),
      lwd = 2)
 abline(h = 0,
@@ -329,7 +334,7 @@ plot(Fy ~ x,
      xlim = c(-1, max(x)),
      xlab = expression(italic(X)),
      ylab = expression(Distribution.~"function"),
-     main = expression(atop(Hurdle~model,
+     main = expression(atop(Zero-modified~distribution,
                             distribution~"function")),
      lwd = 2)
 abline(h = 0,
@@ -355,7 +360,7 @@ points(x = 0, # Included
        pch = 19)
 ```
 
-\index{Hurdle models|)}
+\index{Zero-modified distributions|)}
 
 
 ## Compound Poisson-gamma distributions {#TweedieModels}
@@ -736,13 +741,13 @@ box()
 
 The zeros in a compound Poisson--gamma distributions are a natural outcome of the same process used to generate the non-zero values; a zero occurs when the Poisson count of contributions is zero.
 If a physical argument can be provided that the observed value is the sum of a random number of independent gamma-distributed contributions, a compound Poisson--gamma distribution may be an appropriate model. 
-In contrast, a hurdle model treats zeros and positive values as structurally distinct, potentially generated by different processes: a separate model governs whether an observation is zero, and another governs an observation's magnitude given it is positive.
+In contrast, a zero-modified distribution model treats zeros and positive values as structurally distinct, potentially generated by different processes: a separate model governs whether an observation is zero, and another governs an observation's magnitude given it is positive.
 
 
 ```{r echo=FALSE}
 MixedTable <- array( dim=c(5, 2) )
 
-colnames(MixedTable) <- c("Hurdle",
+colnames(MixedTable) <- c("Zero-modified",
                           "Poisson-Gamma")
 
 rownames(MixedTable) <- c("Zeros",
@@ -768,7 +773,7 @@ if( knitr::is_latex_output() ) {
                align = "c",
                escape = FALSE,
                longtable = FALSE,
-               caption = "Comparing the hurdle and compound Poisson--gamma models.") %>%
+               caption = "Comparing the zero-modified and compound Poisson--gamma models.") %>%
     kable_styling(font_size = 10) %>%
     row_spec(0, bold = TRUE) 
 }
@@ -778,7 +783,7 @@ if( knitr::is_html_output() ) {
                booktabs = TRUE,
                align = "c",
                longtable = FALSE,
-               caption = "Comparing the hurdle and compound Poisson--gamma models.") %>%
+               caption = "Comparing the zero-modified and compound Poisson--gamma models.") %>%
     row_spec(0, bold = TRUE) 
 }
 
@@ -795,7 +800,7 @@ The daily claim total is the aggregate of a random number of individual claim ev
 A zero-claim amount occurs when no claim events arrive. 
 The same process (i.e., policy-holders having incidents) generates both zeros and positive values.
 
-A hurdle model could also be considered. 
+A zero-modified distribution could also be considered. 
 First, a binary process determines whether any claim is filed (perhaps driven by seasonal risk, policy-holder behaviour, or reporting thresholds).
 Conditional on a claim occurring, the total payout follows a gamma distribution. 
 The zero (no-claim day) and positive values are structurally different; a no-claim day is not just 'zero incidents happened', but may reflect under-reporting, policy excesses, or deliberate non-filing.
@@ -807,9 +812,9 @@ The zero (no-claim day) and positive values are structurally different; a no-cla
 
 ### General
 
-A *hurdle* model could be used to model daily rainfall (e.g., @stern1984model), using a Bernoulli distribution to distinguish wet and dry days, and then a gamma distribution to model rainfall amounts on wet days.
+A *zero-modified distribution* could be used to model daily rainfall (e.g., @stern1984model), using a Bernoulli distribution to distinguish wet and dry days, and then a gamma distribution to model rainfall amounts on wet days.
 
- Fig.\ \@ref(fig:HurdleSim)
+ Fig.\ \@ref(fig:ZeroModifiedSim)
 ...
 
 
@@ -818,7 +823,7 @@ A compound Poisson--gamma model could also be used to model daily rainfall (e.g.
 
 
 
-```{r HurdleSim, echo=FALSE, fig.align="center", fig.cap="A simulation of the hurdle model. FIX!!!!! The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4, out.width="90%"}
+```{r ZeroModifiedSim, echo=FALSE, fig.align="center", fig.cap="A simulation of the zero-modified model. FIX!!!!! The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4, out.width="90%"}
 num_Sims <- 1000
 set.seed(109001) # For reproducibility
 
@@ -927,16 +932,16 @@ points(x = 0,
 
 ### Rainfall
 
-Simulation for the hurdle and compound Poisson--gamma models can be achieved by directly modelling the process by which the zeros are incorporated. 
+Simulation for the zero-modified and compound Poisson--gamma distributions can be achieved by directly modelling the process by which the zeros are incorporated. 
 To demonstrate, consider modelling monthly rainfall at a certain location for one specific month each year. 
 Monthly rainfall is a mixed random variable: some months record exactly zero rainfall, while months in which rain falls have a continuous positive amount recorded.
 
 Suppose the monthly rainfall (in mm)\ $R$ is modelled at a given location for a certain month, where about $30$% of months record zero rainfall; then. $0\Pr(R = 0) = 0.30$, and the mean monthly rainfall when rain is recorded is $\mu^+ = 50\,mms$.
 
-For the *hurdle model*, set $p 0.30$ for the probability of no rainfall; then, the probability that rain is recorded is $1 - p = 0.70$. 
+For the *zero-modified distribution*, set $p 0.30$ for the probability of no rainfall; then, the probability that rain is recorded is $1 - p = 0.70$. 
 For the positive component, suppose first that rainfall amounts follow an exponential distribution with rate $\lambda$.
 Since $\operatorname{E}[R \mid R > 0] = 1/\lambda = 50$, we have $\lambda = 0.02$. 
-The hurdle model is then
+The zero-modified model is then
 $$
   f_R(r)
   =
@@ -967,7 +972,7 @@ hist(R,
      freq  = FALSE,
      las   = 1,
      breaks = 30,
-     main  = "Hurdle model: monthly rainfall",
+     main  = "Zero-modified distribution: monthly rainfall",
      xlab  = expression(Rainfall ~ italic(R) ~ (mm)),
      ylab  = "Density")
 points(x = 0, y = pi0, pch = 19)
@@ -1031,7 +1036,7 @@ Selected answers appear in Sect.\ \@ref(AnswersChapMixedDistributions).
 
 
 :::{.exercise #MixedIdentifiability}
-Consider a hurdle model with $\Pr(X = 0) = p$ and $X \mid (X > 0) \sim \text{Gamma}(\alpha, \beta)$, and a compound Poisson-gamma model with a Poisson parameters $\lambda$ and gamma parameters $(\alpha, \beta)$.
+Consider a zero-modified distribution with $\Pr(X = 0) = p$ and $X \mid (X > 0) \sim \text{Gamma}(\alpha, \beta)$, and a compound Poisson-gamma model with a Poisson parameters $\lambda$ and gamma parameters $(\alpha, \beta)$.
 
 1. How many free parameters does each model have?
 2. Can the two models produce identical distributions? 
@@ -1041,7 +1046,7 @@ Consider a hurdle model with $\Pr(X = 0) = p$ and $X \mid (X > 0) \sim \text{Gam
 
 
 :::{.exercise #MixedOverdispersion}
-Show that both the hurdle (with exponential positive part) and compound Poisson-gamma models are *overdispersed* relative to a Poisson distribution, in the sense that $\operatorname{var}[X] > \operatorname{E}[X]$ whenever $\operatorname{E}[X] > 0$.
+Show that both the zero-modified (with exponential positive part) and compound Poisson-gamma distributions are *overdispersed* relative to a Poisson distribution, in the sense that $\operatorname{var}[X] > \operatorname{E}[X]$ whenever $\operatorname{E}[X] > 0$.
 :::
 
 
@@ -1057,7 +1062,7 @@ What does the distribution of\ $X$ converge to, and why?
 
 
 :::{.exercise #MixedHospitalStays}
-In a hurdle model, the sample space is partitioned into $\{0\}$ and $\{x : x > 0\}$. 
+In a zero-modified distribution, the sample space is partitioned into $\{0\}$ and $\{x : x > 0\}$. 
 Let $Y$ be hospital stay duration. 
 $\Pr(Y = 0) = 0.4$ and for $y > 0$, $f_Y(y) = 0.6 e^{-y}$.
 
@@ -1074,7 +1079,7 @@ If the orchid is present, the density is modelled by a Gamma distribution.
 Let $\Pr(X = 0) = 0.75$ and the remaining $0.25$ be distributed as $X \sim \text{Gamma}(\text{shape} = 2, \text{rate} = 1)$.
 
 1. What is the probability that $X > 0$?
-2. Write an R code snippet to simulate 100 plots using this hurdle logic.
+2. Write an R code snippet to simulate 100 plots using this logic.
 :::
 
 
@@ -1125,7 +1130,7 @@ The damage (in millions of dollars) per fire is $X \sim \text{Gamma}(1, 2)$.
 
 
 :::{.exercise #MixedSimCompare}
-Consider a hurdle model and a compound Poisson--gamma model.
+Consider a zero-modified distribution and a compound Poisson--gamma distribution.
 
 1. Show that it is possible to find parameters for both models, so that both have the same mean and the same proportion of zeros.
 1. For the two comparable model just found, how to the variances compare?
@@ -1133,1111 +1138,107 @@ Consider a hurdle model and a compound Poisson--gamma model.
    Simulate both and verify your conclusion about the variances.
 :::
 
----
 
 
+:::{.exercise #MixedZeroModifiedQuantile}
+For the zero-modified distribution in Sect.\ \@ref(def:ZeroModifiedModelsDefinitions), derive the quantile function $Q_Y(\tau) = F_Y^{-1}(\tau)$.
+Using the quantile function, what is the median when $p > 0.5$?
+:::
 
 
+:::{.exercise #MixedZeroModifiedPractice}
+Let $p = 0.4$ and $Y \mid Y > 0 \sim \text{Gamma}(3, 2)$.
 
+1. Compute $\operatorname{E}[Y]$.
+1. Compute $\operatorname{Var}(Y)$.
+1. Compute $\Pr(Y > 2)$.
+1. Compute the $90$th percentile.
+:::
 
 
-## HM Part 1: Theory Exercises
+:::{.exercise #MixedZeroModifiedFixP}
+In a zero-modified distribution, fix the positive component as $\text{Gamma}(2, 1)$ and let $p \in \{0.1, 0.3, 0.6, 0.85\}$.
 
-## Exercise T1 -- CDF of the Hurdle Distribution
+For each value of\ $p$, use **R** to compute $\operatorname{E}[Y]$ and $\operatorname{Var}(Y)$.
+Plot the density/mass for each $p$.
 
-**Question:**
-Derive the CDF $F_Y(y)$ of the hurdle model defined above.  Sketch its shape and explain
-why it is neither purely discrete nor purely continuous.
+How does the value of\ $p$ change the shape of the distribution?
+:::
 
----
 
-### Answer T1
+:::{.exercise #MixedZeroModifiedEstimate}
+Suppose you observe $\Pr(Y = 0) = 0.5$, $\operatorname{E}[Y] = 3$ and $\operatorname{Var}(Y) = 30$.  
+Find $\mu^+$ and $\sigma^{+2}$.  
 
-For $y < 0$: $F_Y(y) = 0$.
+Is a Gamma distribution consistent with this information?
+Plot the resulting distribution.
+:::
 
-For $y = 0$: $F_Y(0) = P(Y \leq 0) = P(Y = 0) = \pi$.
 
-For $y > 0$:
-$$F_Y(y) = P(Y = 0) + P(0 < Y \leq y) = \pi + (1-\pi)\,F^+(y)$$
 
-since $P(0 < Y \leq y) = (1-\pi)\int_0^y f^+(t)\,dt = (1-\pi)F^+(y)$.
+:::{.exercise #MixedCPGrelationship}
+1. How is $\Pr(S = 0)$ linked to $\operatorname{E}[S]$ in the CP-G?  
+   Is there such a link in the zero-modified distribution?
+1. Show $S \mid (S > 0)$ is not a simple Gamma distribution.
+1. When does $S \mid (S > 0)$ have an approximate Gamma distribution?
+:::
 
-**Character of $F_Y$:**
 
-- There is a **jump of size $\pi$** at $y = 0$ -- the hallmark of a discrete atom.
-- For $y > 0$, $F_Y$ increases continuously (since $F^+$ is continuous), so $Y$ has no
-  other atoms.
-- The distribution is therefore **mixed**: neither purely discrete nor purely continuous.
+:::{.exercise #MixedCPGskewness}
+1. Find the cumulant generating function $K_S(t) = \log M_S(t)$ for the compound Poisson--gamma distribution.
+1. Find the first four cumulants.
+1. Find the skewness and excess kurtosis.  
+1. Show that\ $S$ is *always* positively skewed.
+:::
 
-```{r T1-plot}
-pi_val <- 0.4
-y_grid <- seq(-0.5, 6, length.out = 500)
-F_plus <- pgamma(pmax(y_grid, 0), shape = 2, rate = 1)
-F_Y    <- ifelse(y_grid < 0, 0,
-           ifelse(y_grid == 0, pi_val,
-                  pi_val + (1 - pi_val) * F_plus))
 
-plot(y_grid, F_Y, type = "l", col = "steelblue", lwd = 2,
-     main = "CDF of hurdle model (pi=0.4, Gamma(2,1) positive part)",
-     xlab = "y", ylab = "F_Y(y)")
-points(0, pi_val, pch = 19, col = "firebrick", cex = 1.8)  # closed: jump arrives
-points(0, 0,      pch =  1, col = "firebrick", cex = 1.8)  # open:   jump departs
-abline(v = 0, lty = 3, col = "grey60")
-```
-
----
-
-## Exercise T2 -- Mean and Variance
-
-**Question:**
-Let $\mu^+ = E[Y \mid Y > 0]$ and $\sigma^{+2} = \text{Var}(Y \mid Y > 0)$.  Derive
-$E[Y]$ and $\text{Var}(Y)$ in terms of $\pi$, $\mu^+$, and $\sigma^{+2}$.
-
----
-
-### Answer T2
-
-**Mean** (law of total expectation):
-
-$$E[Y] = P(Y=0)\cdot 0 + P(Y>0)\cdot E[Y\mid Y>0] = (1-\pi)\,\mu^+$$
-
-**Second moment:**
-
-$$E[Y^2] = (1-\pi)\bigl(\sigma^{+2} + \mu^{+2}\bigr)$$
-
-**Variance:**
-
-$$\boxed{\text{Var}(Y) = (1-\pi)\,\sigma^{+2} + \pi(1-\pi)\,\mu^{+2}}$$
-
-- $(1-\pi)\,\sigma^{+2}$: within-positive-part variance.
-- $\pi(1-\pi)\,\mu^{+2}$: between-group variance from switching between zero and positive.
-
----
-
-## Exercise T3 -- Moment Generating Function
-
-**Question:**
-Derive the MGF $M_Y(t) = E[e^{tY}]$ of the hurdle model.  Under what condition does it
-exist, and what is the radius of convergence?
-
----
-
-### Answer T3
-
-$$M_Y(t) = \pi + (1-\pi)\,M^+(t)$$
-
-where $M^+(t) = E[e^{tY}\mid Y>0]$ is the MGF of the positive component.
-
-**Existence:** $M_Y(t)$ exists if and only if $M^+(t)$ exists, since the $\pi$ term is
-always finite.
-
-**Example -- Gamma positive part:** If $Y\mid Y>0 \sim \text{Gamma}(\alpha,\beta)$:
-
-$$M_Y(t) = \pi + (1-\pi)\left(\frac{\beta}{\beta-t}\right)^\alpha, \quad t < \beta$$
-
-Differentiating: $M_Y'(0) = (1-\pi)\alpha/\beta = E[Y]$, consistent with T2.
-
----
-
-## Exercise T4 -- The Hurdle as a Mixture Distribution
-
-**Question:**
-Show formally that the hurdle distribution can be written as a scale mixture, and derive
-the distribution of $Y$ when $Y \mid (Y>0)$ is Exponential($\beta$).  Find the marginal
-density of $Y$ for $y > 0$ and verify it integrates to $1-\pi$.
-
----
-
-### Answer T4
-
-Write $Y = B \cdot Z$ where $B \sim \text{Bernoulli}(1-\pi)$ independent of
-$Z \sim f^+$.
-
-**Exponential positive part:** $f^+(y) = \beta e^{-\beta y}$, $y>0$.
-
-$$f_Y(y) = (1-\pi)\cdot\beta e^{-\beta y}, \quad y > 0$$
-
-$$\int_0^\infty f_Y(y)\,dy = (1-\pi)\cdot 1 = 1-\pi \checkmark$$
-
----
-
-## Exercise T5 -- Quantile Function
-
-**Question:**
-Derive the quantile function $Q_Y(\tau) = F_Y^{-1}(\tau)$.  What is the median when
-$\pi > 0.5$?
-
----
-
-### Answer T5
-
-$$Q_Y(\tau) = \begin{cases} 0 & \tau \leq \pi \\ Q^+\!\left(\dfrac{\tau - \pi}{1 - \pi}\right) & \tau > \pi \end{cases}$$
-
-**Median when $\pi > 0.5$:** $Q_Y(0.5) = 0$, so the median is exactly zero.
-
----
-
-## Exercise T6 -- Stochastic Representation and Convolution
-
-**Question:**
-Suppose $Y_1$ and $Y_2$ are independent hurdle variables with the same positive component
-$f^+$ but zero probabilities $\pi_1$ and $\pi_2$.  Derive the distribution of
-$S = Y_1 + Y_2$ by conditioning on $(B_1, B_2)$.
-
----
-
-### Answer T6
-
-| $(B_1, B_2)$ | Probability | $S$ |
-|:---:|:---:|:---|
-| $(0,0)$ | $\pi_1\pi_2$ | $0$ |
-| $(1,0)$ | $(1-\pi_1)\pi_2$ | $Z_1 \sim f^+$ |
-| $(0,1)$ | $\pi_1(1-\pi_2)$ | $Z_2 \sim f^+$ |
-| $(1,1)$ | $(1-\pi_1)(1-\pi_2)$ | $Z_1+Z_2 \sim f^+*f^+$ |
-
-$$P(S=0) = \pi_1\pi_2$$
-
-For $s > 0$:
-$$f_S(s) = \bigl[(1-\pi_1)\pi_2 + \pi_1(1-\pi_2)\bigr]f^+(s)
-          + (1-\pi_1)(1-\pi_2)\,(f^+*f^+)(s)$$
-
-The sum is generally **not** a hurdle variable -- it is a more complex mixture.
-
----
-
-## Part 2: Practical/Analytical Exercises
-
-## Exercise P1 -- Hurdle-Gamma: Full Distributional Derivation
-
-**Question:**
-Let $\pi = 0.4$ and $Y \mid Y > 0 \sim \text{Gamma}(3, 2)$.
-Compute: (a) $E[Y]$; (b) $\text{Var}(Y)$; (c) $P(Y > 2)$; (d) the 90th percentile.
-
----
-
-### Answer P1
-
-$\mu^+ = 1.5$, $\sigma^{+2} = 0.75$, $1-\pi = 0.6$.
-
-**(a)** $E[Y] = 0.6 \times 1.5 = 0.9$
-
-**(b)** $\text{Var}(Y) = 0.6 \times 0.75 + 0.4 \times 0.6 \times 2.25 = 0.99$
-
-**(c)** $P(Y > 2) = 0.6\,[1 - F_\Gamma(2;\,3,2)]$
-
-```{r P1c}
-p_exceed <- 0.6 * pgamma(2, shape = 3, rate = 2, lower.tail = FALSE)
-cat("P(Y > 2) =", round(p_exceed, 5), "\n")
-```
-
-**(d)** $Q_Y(0.90) = Q_\Gamma\!\left(\frac{0.50}{0.60};\,3,2\right)$
-
-```{r P1d}
-q90 <- qgamma((0.9 - 0.4) / 0.6, shape = 3, rate = 2)
-cat("90th percentile =", round(q90, 4), "\n")
-```
-
-**Simulation verification:**
-
-```{r P1-verify}
-set.seed(1)
-y_sim <- ifelse(rbinom(1e6, 1, 0.6), rgamma(1e6, 3, 2), 0)
-cat("Mean:    sim =", round(mean(y_sim), 4),  "theory = 0.9\n")
-cat("Var:     sim =", round(var(y_sim),  4),  "theory = 0.99\n")
-cat("P(Y>2):  sim =", round(mean(y_sim > 2), 4),
-    "theory =", round(p_exceed, 4), "\n")
-cat("Q(0.90): sim =", round(quantile(y_sim, 0.9), 4),
-    "theory =", round(q90, 4), "\n")
-```
-
----
-
-## Exercise P2 -- Effect of $\pi$ on the Shape of the Distribution
-
-**Question:**
-Fix the positive component as $\text{Gamma}(2, 1)$ and let $\pi \in \{0.1, 0.3, 0.6, 0.85\}$.
-Compute $E[Y]$, $\text{Var}(Y)$, CV; plot the density/mass for each $\pi$.
-
----
-
-### Answer P2
-
-```{r P2a}
-pi_vals  <- c(0.1, 0.3, 0.6, 0.85)
-mu_plus  <- 2
-var_plus <- 2
-
-tab <- data.frame(
-  pi    = pi_vals,
-  E_Y   = (1 - pi_vals) * mu_plus,
-  Var_Y = (1 - pi_vals) * var_plus + pi_vals * (1 - pi_vals) * mu_plus^2
-)
-tab$SD_Y <- sqrt(tab$Var_Y)
-tab$CV_Y <- tab$SD_Y / tab$E_Y
-tab[sapply(tab, is.numeric)] <- lapply(tab[sapply(tab, is.numeric)], round, 4)
-kable(tab, caption = "Moments of hurdle-Gamma(2,1) for varying pi")
-```
-
-```{r P2b}
-y_grid2 <- seq(0.001, 10, length.out = 500)
-par(mfrow = c(2, 2), mar = c(4, 4, 3, 1))
-for (pv in pi_vals) {
-  dens_pos <- (1 - pv) * dgamma(y_grid2, shape = 2, rate = 1)
-  plot(y_grid2, dens_pos, type = "l", col = "steelblue", lwd = 2,
-       ylim = c(0, max(pv + 0.05, max(dens_pos))),
-       main = paste0("pi = ", pv),
-       xlab = "y", ylab = "Density / mass")
-  arrows(x0 = 0, y0 = 0, x1 = 0, y1 = pv,
-         col = "firebrick", lwd = 3, length = 0.12)
-}
-par(mfrow = c(1, 1))
-```
-
-**Comment:** As $\pi$ increases the point mass grows and the mean falls, but CV increases
-because the between-group term $\pi(1-\pi)\mu^{+2}$ adds substantial variance at moderate $\pi$.
-
----
-
-## Exercise P3 -- Hurdle-Log-Normal: Moments and Tail Probabilities
-
-**Question:**
-Let $Y \mid Y > 0 \sim \text{LogNormal}(\mu_\ell, \sigma_\ell^2)$.  Derive $E[Y]$,
-$\text{Var}(Y)$, and $P(Y > c)$.  Compute for $\pi=0.35$, $\mu_\ell=1$,
-$\sigma_\ell^2=0.5$, $c=5$.
-
----
-
-### Answer P3
-
-$$E[Y] = (1-\pi)\,e^{\mu_\ell + \sigma_\ell^2/2}$$
-
-$$\text{Var}(Y) = (1-\pi)\,e^{2\mu_\ell+\sigma_\ell^2}\left[(e^{\sigma_\ell^2}-1) + \pi\right]$$
-
-$$P(Y > c) = (1-\pi)\,\Phi\!\left(-\frac{\ln c - \mu_\ell}{\sigma_\ell}\right)$$
-
-```{r P3-numerical}
-pi_p3  <- 0.35; mu_l <- 1; sig2_l <- 0.5; c_p3 <- 5
-
-E_Y_p3   <- (1 - pi_p3) * exp(mu_l + sig2_l / 2)
-Var_Y_p3 <- (1 - pi_p3) * exp(2 * mu_l + sig2_l) *
-             ((exp(sig2_l) - 1) + pi_p3)
-P_tail   <- (1 - pi_p3) * pnorm(-(log(c_p3) - mu_l) / sqrt(sig2_l))
-
-cat("E[Y]   =", round(E_Y_p3,   4), "\n")
-cat("Var(Y) =", round(Var_Y_p3, 4), "\n")
-cat("P(Y>5) =", round(P_tail,   5), "\n")
-
-set.seed(7)
-y_ln <- ifelse(rbinom(1e6, 1, 1 - pi_p3), rlnorm(1e6, mu_l, sqrt(sig2_l)), 0)
-cat("\nSimulated E[Y]   =", round(mean(y_ln), 4),
-    "\nSimulated Var(Y) =", round(var(y_ln),  4),
-    "\nSimulated P(Y>5) =", round(mean(y_ln > 5), 5), "\n")
-```
-
----
-
-## Exercise P4 -- Identifying the Positive Component from Moments
-
-**Question:**
-You observe $P(Y=0) = 0.5$, $E[Y] = 3$, $\text{Var}(Y) = 30$.  Find $\mu^+$ and
-$\sigma^{+2}$.  Is a Gamma distribution consistent?
-
----
-
-### Answer P4
-
-$\mu^+ = E[Y]/(1-\pi) = 6$.
-
-$\sigma^{+2} = (\text{Var}(Y) - \pi(1-\pi)\mu^{+2})/(1-\pi) = (30-9)/0.5 = 42$.
-
-Gamma: $\beta = \mu^+/\sigma^{+2} = 1/7$, $\alpha = \mu^+\beta = 6/7 < 1$ (monotone
-decreasing density -- valid but heavily right-skewed).
-
-```{r P4-plot}
-alpha_p4 <- 6 / 7
-beta_p4  <- 1 / 7
-y_g <- seq(0.001, 50, length.out = 500)
-plot(y_g, dgamma(y_g, shape = alpha_p4, rate = beta_p4),
-     type = "l", col = "steelblue", lwd = 2,
-     main = paste0("Gamma(alpha=", round(alpha_p4, 3),
-                   ", beta=", round(beta_p4, 3), ")"),
-     xlab = "y", ylab = "Density")
-```
-
----
-
-## Part 3: Simulation Exercises
-
-## Exercise S1 -- Simulating the Hurdle Distribution and Verifying Moments
-
-**Question:**
-Write `rhurdle(n, pi, rfun, ...)`.  Simulate $10^5$ draws from Hurdle-Gamma(3,1) with
-$\pi=0.45$ and verify $E[Y]$, $\text{Var}(Y)$, $F_Y(2)$, and the 75th percentile.
-
----
-
-### Answer S1
-
-```{r S1}
-rhurdle <- function(n, pi, rfun, ...) {
-  rbinom(n, 1, 1 - pi) * rfun(n, ...)
-}
-
-set.seed(101)
-pi_s1    <- 0.45
-alpha_s1 <- 3
-rate_s1  <- 1
-y_s1     <- rhurdle(1e5, pi_s1, rgamma, shape = alpha_s1, rate = rate_s1)
-
-mu_plus_s1  <- alpha_s1 / rate_s1
-var_plus_s1 <- alpha_s1 / rate_s1^2
-E_Y_s1      <- (1 - pi_s1) * mu_plus_s1
-Var_Y_s1    <- (1 - pi_s1) * var_plus_s1 + pi_s1 * (1 - pi_s1) * mu_plus_s1^2
-CDF_at2     <- pi_s1 + (1 - pi_s1) * pgamma(2, alpha_s1, rate_s1)
-Q75         <- qgamma((0.75 - pi_s1) / (1 - pi_s1), alpha_s1, rate_s1)
-
-results <- data.frame(
-  Quantity  = c("E[Y]", "Var(Y)", "P(Y<=2)", "75th pct"),
-  Theory    = round(c(E_Y_s1, Var_Y_s1, CDF_at2, Q75), 4),
-  Simulated = round(c(mean(y_s1), var(y_s1),
-                      mean(y_s1 <= 2), quantile(y_s1, 0.75)), 4)
-)
-kable(results, caption = "Hurdle-Gamma(3,1), pi=0.45: theory vs simulation")
-```
-
----
-
-## Exercise S2 -- Visualising the Mixed Distribution
-
-**Question:**
-Simulate $n=5{,}000$ draws from four distributions: Hurdle-Gamma(2,0.5) and
-Hurdle-Weibull(1.5,3), each with $\pi \in \{0.2, 0.6\}$.  Plot spike-and-density charts.
-
----
-
-### Answer S2
-
-```{r S2}
-set.seed(202)
-configs <- list(
-  list(label = "Gamma(2,0.5), pi=0.2",   pi = 0.2,
-       rfun = rgamma,   args = list(shape = 2, rate = 0.5)),
-  list(label = "Gamma(2,0.5), pi=0.6",   pi = 0.6,
-       rfun = rgamma,   args = list(shape = 2, rate = 0.5)),
-  list(label = "Weibull(1.5,3), pi=0.2", pi = 0.2,
-       rfun = rweibull, args = list(shape = 1.5, scale = 3)),
-  list(label = "Weibull(1.5,3), pi=0.6", pi = 0.6,
-       rfun = rweibull, args = list(shape = 1.5, scale = 3))
-)
-
-par(mfrow = c(2, 2), mar = c(4, 4, 3, 1))
-for (cfg in configs) {
-  n_sim    <- 5000
-  pos_vals <- do.call(cfg$rfun, c(list(n_sim), cfg$args))
-  y        <- rbinom(n_sim, 1, 1 - cfg$pi) * pos_vals
-  p0       <- mean(y == 0)
-  h        <- hist(y[y > 0], plot = FALSE, breaks = 40)
-  plot(h, freq = FALSE, col = "steelblue", border = "white",
-       main = cfg$label, xlab = "y", ylab = "Density",
-       ylim = c(0, max(p0 + 0.05, max(h$density))))
-  arrows(x0 = 0, y0 = 0, x1 = 0, y1 = p0,
-         col = "firebrick", lwd = 4, length = 0.12)
-  legend("topright", legend = paste0("P(Y=0)=", round(p0, 2)),
-         bty = "n", cex = 0.85)
-}
-par(mfrow = c(1, 1))
-```
-
----
-
-## Exercise S3 -- Sampling Distribution of the Sample Mean
-
-**Question:**
-For Hurdle-Gamma(2,1), $\pi=0.5$: derive $E[\bar{Y}_n]$ and $\text{Var}(\bar{Y}_n)$;
-simulate for $n \in \{10, 50, 200\}$; overlay normal approximation.
-
----
-
-### Answer S3
-
-$E[\bar{Y}_n] = 1$, $\text{Var}(\bar{Y}_n) = 2/n$.
-
-```{r S3}
-set.seed(303)
-B_s3  <- 4000
-ns_s3 <- c(10, 50, 200)
-
-xbar_list <- lapply(ns_s3, function(n) {
-  replicate(B_s3, mean(rhurdle(n, pi = 0.5, rgamma, shape = 2, rate = 1)))
-})
-
-par(mfrow = c(1, 3), mar = c(4, 4, 3, 1))
-for (i in seq_along(ns_s3)) {
-  n  <- ns_s3[i]
-  xb <- xbar_list[[i]]
-  h  <- hist(xb, plot = FALSE, breaks = 40)
-  plot(h, freq = FALSE, col = "steelblue", border = "white",
-       main = paste0("n = ", n),
-       xlab = "Sample mean", ylab = "Density")
-  xseq <- seq(min(h$breaks), max(h$breaks), length.out = 300)
-  lines(xseq, dnorm(xseq, mean = 1, sd = sqrt(2 / n)),
-        col = "firebrick", lwd = 2)
-}
-par(mfrow = c(1, 1))
-```
-
-**Comment:** At $n=10$ the distribution is right-skewed; by $n=200$ the normal
-approximation is excellent. The CLT applies since $E[Y^2] < \infty$.
-
----
-
-## Exercise S4 -- Comparing Hurdle Distributions via Stochastic Dominance
-
-**Question:**
-Show $Y_1 \sim \text{Hurdle}(\pi_1, \text{Gamma}(2,1))$ first-order stochastically
-dominates $Y_2 \sim \text{Hurdle}(\pi_2, \text{Gamma}(2,1))$ when $\pi_1 < \pi_2$.
-Verify with $\pi_1=0.2$, $\pi_2=0.7$.
-
----
-
-### Answer S4
-
-For $y > 0$:
-$$F_{Y_1}(y) - F_{Y_2}(y) = (\pi_1 - \pi_2)[1 - F^+(y)] \leq 0 \quad \blacksquare$$
-
-```{r S4}
-set.seed(404)
-y1 <- rhurdle(5e4, pi = 0.2, rgamma, shape = 2, rate = 1)
-y2 <- rhurdle(5e4, pi = 0.7, rgamma, shape = 2, rate = 1)
-
-y_th  <- seq(0, 8, length.out = 500)
-F1_th <- 0.2 + 0.8 * pgamma(y_th, shape = 2, rate = 1)
-F2_th <- 0.7 + 0.3 * pgamma(y_th, shape = 2, rate = 1)
-
-plot(y_th, F1_th, type = "l", col = "steelblue", lwd = 2,
-     main = "Stochastic dominance: pi=0.2 vs pi=0.7",
-     xlab = "y", ylab = "CDF", ylim = c(0, 1))
-lines(y_th, F2_th, col = "firebrick", lwd = 2)
-lines(sort(y1[y1 <= 8]),
-      seq_along(y1[y1 <= 8]) / length(y1),
-      col = "steelblue", lty = 2)
-lines(sort(y2[y2 <= 8]),
-      seq_along(y2[y2 <= 8]) / length(y2),
-      col = "firebrick", lty = 2)
-legend("bottomright",
-       legend = c("pi=0.2 (theory)", "pi=0.7 (theory)",
-                  "pi=0.2 (empirical)", "pi=0.7 (empirical)"),
-       col = c("steelblue", "firebrick", "steelblue", "firebrick"),
-       lty = c(1, 1, 2, 2), lwd = 2, cex = 0.85, bty = "n")
-```
-
----
-
-## Summary Table
-
-| Exercise | Type | Topic |
-|---|---|---|
-| T1 | Theory | Deriving the CDF; mixed distribution character |
-| T2 | Theory | Mean and variance via total expectation/variance |
-| T3 | Theory | Moment generating function |
-| T4 | Theory | Mixture/scale-mixture representation |
-| T5 | Theory | Quantile function; median when pi > 0.5 |
-| T6 | Theory | Sum of two hurdle variables; convolution |
-| P1 | Practical | Hurdle-Gamma: moments, tail prob, quantile |
-| P2 | Practical | Effect of pi on shape, moments, and CV |
-| P3 | Practical | Hurdle-LogNormal: moments and tail probabilities |
-| P4 | Practical | Back-solving for positive component from moments |
-| S1 | Simulation | Simulating hurdle; verifying moments and quantiles |
-| S2 | Simulation | Spike-and-density visualisation |
-| S3 | Simulation | Sampling distribution of the mean; CLT |
-| S4 | Simulation | First-order stochastic dominance |
-
-
-
-
-
-## PG: Part 1: Theory Exercises
-
-
-## Exercise T1 -- Mean and Variance via Wald's Identities
-
-**Question:**
-Using the law of total expectation and law of total variance (Wald's identities), derive
-$E[S]$ and $\text{Var}(S)$.
-
----
-
-### Answer T1
-
-**Mean:**
-
-$$E[S] = E[E[S \mid N]] = E\!\left[N \cdot \frac{\alpha}{\beta}\right]
-       = \frac{\alpha\lambda}{\beta}$$
-
-**Variance:**
-
-$$\text{Var}(S) = E[\text{Var}(S\mid N)] + \text{Var}(E[S\mid N])
-= \frac{\lambda\alpha}{\beta^2} + \frac{\alpha^2\lambda}{\beta^2}
-= \frac{\lambda\alpha(\alpha+1)}{\beta^2}$$
-
-The two terms represent severity variance (given count) and count variance respectively.
-
----
-
-## Exercise T2 -- Probability of Zero and the CDF
-
-**Question:**
-(a) Show $P(S=0) = e^{-\lambda}$.
-(b) Derive $F_S(s)$ for $s \geq 0$.
-(c) Show $F_S$ has a jump of $e^{-\lambda}$ at zero then is continuous.
-
----
-
-### Answer T2
-
-**(a)** $P(S=0) = P(N=0) = e^{-\lambda}$, since $S=0$ iff $N=0$ (each $X_k > 0$ a.s.).
-
-**(b)** Conditioning on $N$, with $S_n \sim \text{Gamma}(n\alpha,\beta)$:
-
-$$F_S(s) = e^{-\lambda} + \sum_{n=1}^\infty \frac{e^{-\lambda}\lambda^n}{n!}\,G(s;\,n\alpha,\beta)$$
-
-where $G(s;\,n\alpha,\beta)$ is the Gamma$(n\alpha,\beta)$ CDF.
-
-**(c)** There is a jump of $e^{-\lambda}$ at $s=0$ (the $n=0$ term).  For $s>0$ every
-$G(s;\,n\alpha,\beta)$ is continuously differentiable, so $F_S$ is continuous on $(0,\infty)$.
-
----
-
-## Exercise T3 -- Moment Generating Function and Characteristic Function
-
-**Question:**
-Derive $M_S(t)$ by conditioning on $N$.  Find the Gamma-severity MGF and its radius of
-convergence.  Write down the characteristic function.
-
----
-
-### Answer T3
-
-Conditioning on $N$ and using $E[e^{tS}\mid N=n] = [M_X(t)]^n$:
-
-$$M_S(t) = E[(M_X(t))^N] = \exp\{\lambda[M_X(t) - 1]\}$$
-
-For $X \sim \text{Gamma}(\alpha,\beta)$, $M_X(t) = (\beta/(\beta-t))^\alpha$, $t < \beta$:
-
-$$\boxed{M_S(t) = \exp\!\left\{\lambda\!\left[\left(\frac{\beta}{\beta-t}\right)^\alpha - 1\right]\right\}, \quad t < \beta}$$
-
-**Characteristic function** (replace $t$ with $it$, valid for all $t \in \mathbb{R}$):
-
-$$\varphi_S(t) = \exp\!\left\{\lambda\!\left[\left(\frac{\beta}{\beta-it}\right)^\alpha - 1\right]\right\}$$
-
-Verification: $M_S'(0) = \lambda\alpha/\beta = E[S]$. $\checkmark$
-
----
-
-## Exercise T4 -- Reproductive Property
-
-**Question:**
-Let $S_1 \sim \text{CP-G}(\lambda_1,\alpha,\beta)$ and $S_2 \sim \text{CP-G}(\lambda_2,\alpha,\beta)$
-be independent with the same Gamma parameters.  Show $S_1+S_2 \sim \text{CP-G}(\lambda_1+\lambda_2,\alpha,\beta)$.
-
----
-
-### Answer T4
-
-$$M_{S_1+S_2}(t) = M_{S_1}(t) \cdot M_{S_2}(t)
-= \exp\!\left\{(\lambda_1+\lambda_2)\!\left[\left(\frac{\beta}{\beta-t}\right)^\alpha-1\right]\right\}$$
-
-By uniqueness of MGFs, $S_1+S_2 \sim \text{CP-G}(\lambda_1+\lambda_2,\alpha,\beta)$. $\blacksquare$
-
-The property is reproductive **only in $\lambda$**: the Gamma severity parameters must be
-identical, unlike the Normal (all parameters scale) or Gamma (shapes add).
-
----
-
-## Exercise T5 -- Relationship to the Hurdle Model
-
-**Question:**
-(a) How is $P(S=0)$ linked to $E[S]$ in the CP-G?  Is there such a link in the hurdle model?
-(b) Show $S \mid S>0$ is not a simple Gamma.
-(c) When does $S \mid S>0$ become approximately Gamma?
-
----
-
-### Answer T5
-
-**(a)** Eliminating $\lambda$: $P(S=0) = e^{-\lambda} = \exp(-\beta E[S]/\alpha)$.
-So zero probability and mean are **structurally coupled** via $\lambda$ in the CP-G.
-In the hurdle, $\pi$ and $\mu^+$ are free parameters with no imposed link.
-
-**(b)** From T2:
-
-$$P(S \leq s \mid S>0) = \frac{\sum_{n=1}^\infty \frac{e^{-\lambda}\lambda^n}{n!}G(s;\,n\alpha,\beta)}{1-e^{-\lambda}}$$
-
-This is a Poisson-weighted mixture of Gamma CDFs, not a single Gamma.
-
-**(c)** As $\lambda \to 0$: $P(N=1 \mid N \geq 1) \to 1$, so $S \mid S>0 \xrightarrow{d} X_1 \sim \text{Gamma}(\alpha,\beta)$.
-
----
-
-## Exercise T6 -- Cumulants, Skewness, and Excess Kurtosis
-
-**Question:**
-Using the cumulant generating function $K_S(t) = \log M_S(t)$, find the first four
-cumulants and hence the skewness and excess kurtosis.  Show $S$ is always positively skewed.
-
----
-
-### Answer T6
-
-$$K_S(t) = \lambda\!\left[\left(\frac{\beta}{\beta-t}\right)^\alpha - 1\right]$$
-
-Using the compound Poisson identity $\kappa_r(S) = \lambda E[X^r]$ and the moments of
-$\text{Gamma}(\alpha,\beta)$:
-
-$$\kappa_1 = \frac{\lambda\alpha}{\beta}, \quad
-\kappa_2 = \frac{\lambda\alpha(\alpha+1)}{\beta^2}, \quad
-\kappa_3 = \frac{\lambda\alpha(\alpha+1)(\alpha+2)}{\beta^3}, \quad
-\kappa_4 = \frac{\lambda\alpha(\alpha+1)(\alpha+2)(\alpha+3)}{\beta^4}$$
-
-**Skewness:**
-
-$$\gamma_1 = \frac{\kappa_3}{\kappa_2^{3/2}} = \frac{\alpha+2}{\sqrt{\lambda\alpha(\alpha+1)}} > 0 \quad \text{always}$$
-
-**Excess kurtosis:**
-
-$$\gamma_2 = \frac{\kappa_4}{\kappa_2^2} = \frac{(\alpha+2)(\alpha+3)}{\lambda\alpha(\alpha+1)} > 0 \quad \text{always}$$
-
-Both decrease as $\lambda \to \infty$ (CLT dominates with many events).
-
----
-
-## Part 2: Practical/Analytical Exercises
-
-## Exercise P1 -- Computing Moments, P(S=0), and Tail Probabilities
-
-**Question:**
+:::{.exercise #MixedCPGevaluation}
 Let $N \sim \text{Poisson}(3)$ and $X_k \sim \text{Gamma}(2, 0.01)$ (mean severity 200).
-Compute: (a) $E[S]$, $\text{Var}(S)$, $\text{SD}(S)$, $\gamma_1$; (b) $P(S=0)$;
-(c) $P(S > 1000)$ by simulation.
 
----
+1. Compute $\operatorname{E}[S]$.
+1. Compute $\operatorname{Var}(S)$.
+1. Compute $\gamma_1$.
+1. Compute $\Pr(S = 0)$.
+1. Compute $\Pr(S > 1000)$ by simulation.
+:::
 
-### Answer P1
 
-```{r P1XXX}
-lambda_p1 <- 3; alpha_p1 <- 2; beta_p1 <- 0.01
+:::{.exercise #MixedCPGparameters}
+For a compound Poisson-gamma distribution, fix $\beta = 1$.
+For $\lambda \in \{0.5,2,8\}$ and $\alpha \in \{0.5,2\}$, compute the moment table and plot the density of $S \mid S>0$.
+:::
 
-E_S   <- lambda_p1 * alpha_p1 / beta_p1
-Var_S <- lambda_p1 * alpha_p1 * (alpha_p1 + 1) / beta_p1^2
-Skew  <- (alpha_p1 + 2) / sqrt(lambda_p1 * alpha_p1 * (alpha_p1 + 1))
-P0    <- exp(-lambda_p1)
 
-cat("E[S]   =", E_S, "\n")
-cat("Var(S) =", Var_S, "\n")
-cat("SD(S)  =", round(sqrt(Var_S), 2), "\n")
-cat("Skew   =", round(Skew, 4), "\n")
-cat("P(S=0) =", round(P0, 5), "\n")
+:::{.exercise #MixedCPGtweedie}
+Show $\operatorname{Var}(S) = \phi (\operatorname{E}[S])^p$ where $p = (\alpha + 2)/(\alpha + 1)$.  
+Show $p \in (1,2)$ for all $\alpha > 0$, then verify numerically.\index{Tweedie distribution}
+:::
 
-set.seed(1)
-N_sim <- rpois(2e5, lambda_p1)
-S_sim <- sapply(N_sim, function(n) {
-  if (n == 0) 0 else sum(rgamma(n, alpha_p1, beta_p1))
-})
-cat("P(S > 1000) =", round(mean(S_sim > 1000), 4), "\n")
-```
 
----
 
-## Exercise P2 -- Effect of $\lambda$ and $\alpha$ on Distribution Shape
+:::{.exercise #MixedCPGrandom}
+Write `rcpg(n, lambda, alpha, beta)`.
+Simulate $10^5$ draws with $\lambda=2$, $\alpha=3$, $\beta=0.5$ and verify $E[S]$, $\text{Var}(S)$, $P(S=0)$, skewness, and $F_S(10)$.
+:::
 
-**Question:**
-Fix $\beta=1$.  For $\lambda \in \{0.5,2,8\}$ and $\alpha \in \{0.5,2\}$, compute the
-moment table and plot the density of $S \mid S>0$.
 
----
-
-### Answer P2
-
-```{r P2aXXX}
-lam_vals <- c(0.5, 2, 8)
-alp_vals <- c(0.5, 2)
-params   <- expand.grid(lambda = lam_vals, alpha = alp_vals)
-params$beta  <- 1
-params$E_S   <- params$lambda * params$alpha / params$beta
-params$Var_S <- params$lambda * params$alpha * (params$alpha + 1) / params$beta^2
-params$P0    <- exp(-params$lambda)
-params$Skew  <- (params$alpha + 2) / sqrt(params$lambda * params$alpha * (params$alpha + 1))
-params[sapply(params, is.numeric)] <- lapply(params[sapply(params, is.numeric)], round, 3)
-kable(params, caption = "CP-G moments for varying lambda and alpha (beta=1)")
-```
-
-```{r P2bXXX}
-set.seed(22)
-par(mfrow = c(2, 3), mar = c(4, 4, 3, 1))
-for (alp in alp_vals) {
-  for (lam in lam_vals) {
-    N <- rpois(3e4, lam)
-    S <- sapply(N, function(n) if (n == 0) 0 else sum(rgamma(n, alp, 1)))
-    Spos <- S[S > 0]
-    hist(Spos, breaks = 50, freq = FALSE,
-         col = "steelblue", border = "white",
-         main = paste0("lambda=", lam, ", alpha=", alp),
-         xlab = "S | S > 0", ylab = "Density")
-  }
-}
-par(mfrow = c(1, 1))
-```
-
-**Comments:** Increasing $\lambda$ shifts the conditional distribution right and makes it
-more symmetric (skewness $\propto 1/\sqrt{\lambda}$). Smaller $\alpha$ gives a more
-right-skewed severity and hence a more skewed conditional $S \mid S>0$.
-
----
-
-## Exercise P3 -- The Tweedie Variance-Mean Power Relationship
-
-**Question:**
-Show $\text{Var}(S) = \phi [E[S]]^p$ where $p = (\alpha+2)/(\alpha+1)$.  Show $p \in (1,2)$
-for all $\alpha>0$ and verify numerically.
-
----
-
-### Answer P3
-
-With $\mu = E[S] = \lambda\alpha/\beta$ and $\text{Var}(S) = \lambda\alpha(\alpha+1)/\beta^2$,
-eliminating $\lambda = \mu\beta/\alpha$:
-
-$$\text{Var}(S) = \frac{\mu\beta}{\alpha} \cdot \frac{\alpha(\alpha+1)}{\beta^2}
-= \frac{(\alpha+1)}{\beta}\,\mu$$
-
-This is linear in $\mu$ for fixed $\alpha, \beta$.  The Tweedie power $p = (\alpha+2)/(\alpha+1)$
-arises when comparing across families with varying $\lambda$ and $\beta$ simultaneously;
-the full derivation gives $\text{Var}(S) = \phi\mu^p$ with:
-
-$$p = \frac{\alpha+2}{\alpha+1} = 1 + \frac{1}{\alpha+1}$$
-
-Since $\alpha>0$: $p \in (1+0, 1+1) = (1, 2)$.  As $\alpha \to 0^+$, $p \to 2$; as
-$\alpha \to \infty$, $p \to 1$.
-
-```{r P3-verifyXXX}
-alpha_v     <- 1.5
-beta_v      <- 1
-p_v         <- (alpha_v + 2) / (alpha_v + 1)
-lambda_grid <- c(0.5, 1, 2, 5, 10)
-
-phi_check <- sapply(lambda_grid, function(lam) {
-  mu_v  <- lam * alpha_v / beta_v
-  var_v <- lam * alpha_v * (alpha_v + 1) / beta_v^2
-  var_v / mu_v^p_v
-})
-
-cat("p =", round(p_v, 4), "\n")
-cat("Var(S)/E[S]^p (should be constant across lambda):\n")
-print(round(phi_check, 5))
-```
-
----
-
-## Exercise P4 -- Conditional Distribution of $N$ given $S=s$
-
-**Question:**
-Derive $P(N=n \mid S=s)$ for $s>0$.  Show $N \mid S=s$ follows a weighted distribution
-on $\{1,2,\ldots\}$.  What happens as $s \to \infty$?
-
----
-
-### Answer P4
-
-By Bayes' theorem, for $n \geq 1$ and $s > 0$:
-
-$$P(N=n \mid S=s) \propto P(N=n) \cdot f_{S\mid N}(s \mid n)
-= \frac{e^{-\lambda}\lambda^n}{n!} \cdot \frac{\beta^{n\alpha}}{\Gamma(n\alpha)} s^{n\alpha-1} e^{-\beta s}$$
-
-Dropping terms constant in $n$:
-
-$$P(N=n \mid S=s) \propto \frac{\lambda^n \, s^{n\alpha-1}}{n! \, \Gamma(n\alpha)}, \quad n = 1, 2, \ldots$$
-
-This is a proper discrete distribution on $\{1,2,\ldots\}$ (weighted, truncated Poisson).
-
-**As $s \to \infty$:** The $s^{n\alpha-1}$ factor grows fastest for large $n$, so the
-posterior mass shifts toward larger counts -- a very large aggregate is most consistent
-with having had many events.  The posterior mean of $N \mid S=s$ grows approximately as
-$s\beta/\alpha$.
-
----
-
-## Part 3: Simulation Exercises
-
-## Exercise S1 -- Simulating the CP-G and Verifying Moments
-
-**Question:**
-Write `rcpg(n, lambda, alpha, beta)`.  Simulate $10^5$ draws with $\lambda=2$, $\alpha=3$,
-$\beta=0.5$ and verify $E[S]$, $\text{Var}(S)$, $P(S=0)$, skewness, and $F_S(10)$.
-
----
-
-### Answer S1
-
-```{r S1XXX}
-rcpg <- function(n, lambda, alpha, beta) {
-  N <- rpois(n, lambda)
-  vapply(N, function(ni) {
-    if (ni == 0L) 0 else sum(rgamma(ni, alpha, beta))
-  }, numeric(1))
-}
-
-set.seed(111)
-lam1 <- 2; alp1 <- 3; bet1 <- 0.5
-S1   <- rcpg(1e5, lam1, alp1, bet1)
-
-E_S1  <- lam1 * alp1 / bet1
-Var_S1 <- lam1 * alp1 * (alp1 + 1) / bet1^2
-P0_1  <- exp(-lam1)
-Sk_1  <- (alp1 + 2) / sqrt(lam1 * alp1 * (alp1 + 1))
-
-# Theoretical CDF at s=10
-cdf_cpg <- function(s, lambda, alpha, beta, nmax = 50) {
-  p0  <- exp(-lambda)
-  wts <- dpois(1:nmax, lambda)
-  wts <- wts / sum(wts)
-  p0 + (1 - p0) * sum(wts * pgamma(s, (1:nmax) * alpha, beta))
-}
-CDF_10 <- cdf_cpg(10, lam1, alp1, bet1)
-
-results_s1 <- data.frame(
-  Quantity  = c("E[S]", "Var(S)", "P(S=0)", "Skewness", "CDF at s=10"),
-  Theory    = round(c(E_S1, Var_S1, P0_1, Sk_1, CDF_10), 4),
-  Simulated = round(c(mean(S1), var(S1), mean(S1 == 0),
-                      mean((S1 - mean(S1))^3) / var(S1)^1.5,
-                      mean(S1 <= 10)), 4)
-)
-kable(results_s1, caption = "CP-G(lambda=2, alpha=3, beta=0.5): theory vs simulation")
-```
-
----
-
-## Exercise S2 -- Visualising the Distribution
-
-**Question:**
+:::{.exercise #MixedCPGplots}
 Simulate $n=8{,}000$ from three CP-G distributions.  Produce spike-and-density plots and
 report $P(S=0)$ and $E[S]$.
+:::
 
----
 
-### Answer S2
+:::{.exercise #MixedCPGreproductive}
+Simulate $S_1 \sim \text{CP-G}(2,1.5,0.5)$ and $S_2 \sim \text{CP-G}(3,1.5,0.5)$ independently ($n=50{,}000$).
+Form $T = S_1 + S_2$.
+Compare moments and CDF against CP-G$(5,1.5,0.5)$ theory.
+:::
 
-```{r S2XXX}
-set.seed(222)
-configs_s2 <- list(
-  list(lam = 0.5, alp = 1,   bet = 1,   lab = "lambda=0.5, alpha=1, beta=1"),
-  list(lam = 2,   alp = 2,   bet = 0.5, lab = "lambda=2, alpha=2, beta=0.5"),
-  list(lam = 8,   alp = 3,   bet = 0.2, lab = "lambda=8, alpha=3, beta=0.2")
-)
 
-par(mfrow = c(1, 3), mar = c(4, 4, 3, 1))
-for (cfg in configs_s2) {
-  S   <- rcpg(8000, cfg$lam, cfg$alp, cfg$bet)
-  p0  <- exp(-cfg$lam)
-  ES  <- cfg$lam * cfg$alp / cfg$bet
-  Spos <- S[S > 0]
-  h <- hist(Spos, plot = FALSE, breaks = 50)
-  plot(h, freq = FALSE, col = "steelblue", border = "white",
-       main = cfg$lab, xlab = "S", ylab = "Density",
-       ylim = c(0, max(p0 + 0.05, max(h$density))))
-  arrows(x0 = 0, y0 = 0, x1 = 0, y1 = p0,
-         col = "firebrick", lwd = 4, length = 0.12)
-  legend("topright",
-         legend = c(paste0("P(S=0)=", round(p0, 2)),
-                    paste0("E[S]=",   round(ES, 1))),
-         bty = "n", cex = 0.8)
-}
-par(mfrow = c(1, 1))
-```
-
----
-
-## Exercise S3 -- Sampling Distribution of $\bar{S}_n$ and the CLT
-
-**Question:**
-For CP-G($\lambda=1.5$, $\alpha=2$, $\beta=1$): state $E[\bar{S}_n]$ and
-$\text{Var}(\bar{S}_n)$; simulate for $n \in \{5,30,150\}$; overlay normal approximation.
-
----
-
-### Answer S3
-
-$E[S]=3$, $\text{Var}(S)=9$, so $E[\bar{S}_n]=3$ and $\text{Var}(\bar{S}_n)=9/n$.
-
-```{r S3XXX}
-set.seed(333)
-lam3 <- 1.5; alp3 <- 2; bet3 <- 1
-ns_s3 <- c(5, 30, 150)
-
-xbar_list <- lapply(ns_s3, function(n) {
-  replicate(5000, mean(rcpg(n, lam3, alp3, bet3)))
-})
-
-par(mfrow = c(1, 3), mar = c(4, 4, 3, 1))
-for (i in seq_along(ns_s3)) {
-  n  <- ns_s3[i]
-  xb <- xbar_list[[i]]
-  h  <- hist(xb, plot = FALSE, breaks = 40)
-  plot(h, freq = FALSE, col = "steelblue", border = "white",
-       main = paste0("n = ", n),
-       xlab = "Sample mean", ylab = "Density")
-  xseq <- seq(min(h$breaks), max(h$breaks), length.out = 300)
-  lines(xseq, dnorm(xseq, mean = 3, sd = sqrt(9 / n)),
-        col = "firebrick", lwd = 2)
-}
-par(mfrow = c(1, 1))
-```
-
-**Comment:** At $n=5$ the distribution is right-skewed (skewness $\approx 1.15$).
-By $n=30$ it is close to normal; by $n=150$ the approximation is excellent.
-
----
-
-## Exercise S4 -- Verifying the Reproductive Property
-
-**Question:**
-Simulate $S_1 \sim \text{CP-G}(2,1.5,0.5)$ and $S_2 \sim \text{CP-G}(3,1.5,0.5)$
-independently ($n=50{,}000$).  Form $T=S_1+S_2$.  Compare moments and CDF against
-CP-G$(5,1.5,0.5)$ theory.
-
----
-
-### Answer S4
-
-```{r S4XXX}
-set.seed(444)
-alp4 <- 1.5; bet4 <- 0.5
-S1_s4 <- rcpg(5e4, lambda = 2, alpha = alp4, beta = bet4)
-S2_s4 <- rcpg(5e4, lambda = 3, alpha = alp4, beta = bet4)
-T_s4  <- S1_s4 + S2_s4
-
-lam_T <- 5
-E_T   <- lam_T * alp4 / bet4
-Var_T <- lam_T * alp4 * (alp4 + 1) / bet4^2
-P0_T  <- exp(-lam_T)
-
-verify_s4 <- data.frame(
-  Quantity  = c("E[T]", "Var(T)", "P(T=0)"),
-  Theory    = round(c(E_T, Var_T, P0_T), 4),
-  Simulated = round(c(mean(T_s4), var(T_s4), mean(T_s4 == 0)), 4)
-)
-kable(verify_s4, caption = "Reproductive property: T = S1+S2 ~ CP-G(5, 1.5, 0.5)")
-
-# CDF comparison
-s_grid     <- seq(0, 80, length.out = 200)
-F_empirical <- ecdf(T_s4)(s_grid)
-F_theory    <- sapply(s_grid, function(s) cdf_cpg(s, lam_T, alp4, bet4, nmax = 60))
-
-plot(s_grid, F_theory, type = "l", col = "firebrick", lwd = 2,
-     main = "CDF of T: empirical vs CP-G(5, 1.5, 0.5) theory",
-     xlab = "t", ylab = "CDF", ylim = c(0, 1))
-lines(s_grid, F_empirical, col = "steelblue", lwd = 2, lty = 2)
-legend("bottomright",
-       legend = c("Theory CP-G(5,1.5,0.5)", "Empirical T = S1+S2"),
-       col = c("firebrick", "steelblue"), lty = c(1, 2), lwd = 2,
-       bty = "n", cex = 0.9)
-```
-
----
-
-## Exercise S5 -- Moment-Matched CP-G vs Hurdle: Are They the Same?
-
-**Question:**
-Match a CP-G and a hurdle-Gamma to have the same mean, variance, and $P(\cdot=0)$.
-Simulate $n=30{,}000$ from each.  Compare skewness, the upper 5% tail, and the density
-of the positive part.
-
----
-
-### Answer S5
-
-```{r S5-setupXXX}
-# CP-G: lambda=1, alpha=2, beta=0.5 => E[S]=4, Var=24, P(0)=exp(-1)
-lam_cpg <- 1; alp_cpg <- 2; bet_cpg <- 0.5
-E_cpg   <- lam_cpg * alp_cpg / bet_cpg
-Var_cpg <- lam_cpg * alp_cpg * (alp_cpg + 1) / bet_cpg^2
-pi_h    <- exp(-lam_cpg)
-
-# Hurdle-Gamma matched to same E, Var, P(0)
-mu_plus_h  <- E_cpg / (1 - pi_h)
-var_plus_h <- (Var_cpg - pi_h * (1 - pi_h) * mu_plus_h^2) / (1 - pi_h)
-bet_h      <- mu_plus_h / var_plus_h
-alp_h      <- mu_plus_h * bet_h
-
-cat("CP-G:   E=", E_cpg, "Var=", Var_cpg,
-    "P(0)=", round(pi_h, 4), "\n")
-cat("Hurdle: alpha=", round(alp_h, 4), "beta=", round(bet_h, 4),
-    "pi=", round(pi_h, 4), "\n")
-```
-
-```{r S5-simXXX}
-rhurdle <- function(n, pi, rfun, ...) {
-  rbinom(n, 1, 1 - pi) * rfun(n, ...)
-}
-
-set.seed(555)
-S_cpg <- rcpg(3e4, lam_cpg, alp_cpg, bet_cpg)
-Y_hrd <- rhurdle(3e4, pi_h, rgamma, shape = alp_h, rate = bet_h)
-
-# Summary table
-skew_fn <- function(x) mean((x - mean(x))^3) / var(x)^1.5
-p95_fn  <- function(x) mean(x > quantile(x[x > 0], 0.95))
-
-summary_s5 <- data.frame(
-  Metric   = c("Mean", "Variance", "P(zero)", "Skewness", "P(above 95th pct of positives)"),
-  CP_G     = round(c(mean(S_cpg), var(S_cpg), mean(S_cpg == 0),
-                     skew_fn(S_cpg), p95_fn(S_cpg)), 4),
-  Hurdle   = round(c(mean(Y_hrd), var(Y_hrd), mean(Y_hrd == 0),
-                     skew_fn(Y_hrd), p95_fn(Y_hrd)), 4)
-)
-kable(summary_s5, caption = "Moment-matched CP-G vs Hurdle-Gamma")
-
-# Density of positive part
-d_cpg <- density(S_cpg[S_cpg > 0])
-d_hrd <- density(Y_hrd[Y_hrd > 0])
-xlim  <- c(0, 30)
-ylim  <- c(0, max(d_cpg$y, d_hrd$y))
-
-plot(d_cpg, col = "steelblue", lwd = 2, xlim = xlim, ylim = ylim,
-     main = "Density of positive part: moment-matched CP-G vs Hurdle-Gamma",
-     xlab = "Value (given > 0)", ylab = "Density")
-lines(d_hrd, col = "firebrick", lwd = 2)
-legend("topright",
-       legend = c("CP-G", "Hurdle-Gamma"),
-       col = c("steelblue", "firebrick"), lwd = 2, bty = "n")
-```
-
-**Comment:** Despite identical mean, variance, and $P(\cdot=0)$, the distributions differ
-in skewness and tail behaviour.  The CP-G positive part is a Poisson-mixture of Gammas
-with a heavier right tail than a single Gamma.  Matching two moments is not sufficient to
-make the distributions the same.
-
----
-
-## Summary Table
-
-| Exercise | Type | Topic |
-|---|---|---|
-| T1 | Theory | Mean and variance via Wald's identities |
-| T2 | Theory | P(S=0) and the CDF |
-| T3 | Theory | MGF and characteristic function |
-| T4 | Theory | Reproductive property |
-| T5 | Theory | Structural comparison with hurdle model |
-| T6 | Theory | Cumulants, skewness, excess kurtosis |
-| P1 | Practical | Moments, P(S=0), tail probability |
-| P2 | Practical | Effect of lambda and alpha on shape |
-| P3 | Practical | Tweedie variance-mean power relationship |
-| P4 | Practical | Conditional distribution of N given S=s |
-| S1 | Simulation | Simulating CP-G; verifying moments and CDF |
-| S2 | Simulation | Spike-and-density plots |
-| S3 | Simulation | Sampling distribution of the mean; CLT |
-| S4 | Simulation | Verifying the reproductive property |
-| S5 | Simulation | Moment-matched CP-G vs hurdle |
-
----
+:::{.exercise #MixedCPGZeroModified}
+Match a CP-G and a zero-modified-Gamma to have the same mean, variance, and $P(\cdot=0)$.
+Simulate $n=30{,}000$ from each.  
+Compare skewness, the upper 5% tail, and the density of the positive part.
+:::
 
 
