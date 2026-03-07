@@ -884,14 +884,14 @@ The excess kurtosis is
 $$
    \gamma_2 = \frac{\mu_4}{\mu_2^2} -3 = \frac{4/5}{(4/5)^2} -3 = -7/4, 
 $$
-so the distribution is platykurtic.
+so the distribution is platykurtic.\index{Platykurtic}
 :::
 \index{Kurtosis|)}
 
 
 ## Moment generating functions {#MGF}
 
-\index{Moment generating functions|(}
+\index{Moment generating function|(}
 
 ### Introduction {#MGFIntroduction}
 
@@ -1094,7 +1094,7 @@ Other uses of the moment generating function are seen later (see Sect.\ \@ref(Tr
 
 
 :::{.definition #MGF name="Moment generating function (MGF)"}
-The *moment generating function* (or MGF)\index{Moment generating functions!definition}
+The *moment generating function* (or MGF)\index{Moment generating function!definition}
  $M_X(t)$ of the random variable\ $X$ defined over a range\ $\mathcal{R}_X$ is denoted $M_X(t)$, and defined as 
 $$
    \operatorname{E}\big[\exp(tX)\big], 
@@ -1479,55 +1479,52 @@ which will later be identified as a [normal distribution](#StandardNormal)\index
 In practice, using Eq.\ \@ref(eq:MGFtoPDFcontinuous) can become tedious or intractable for producing a closed form expression for the PDF.
 However, Eq.\ \@ref(eq:MGFtoPDFcontinuous) has been used to compute numerical values of the probability density function.
 For example, @mypapers:Dunn:fourier used Eq.\ \@ref(eq:MGFtoPDFcontinuous) to evaluate the *Tweedie distributions*\index{Tweedie distribution} [@mypapers:DunnSmyth:IWSM:2001], for which (in general) the PDF has no closed form, but does have a simple MGF.
-\index{Moment generating functions|)}
+\index{Moment generating function|)}
 
 
 
-### Cumulants and the cumulant function {#CumulantFunctions}
+## Cumulant generating function and characteristic functions* {#CumulantFunctions}
 
 The moment generating function is one member of a family of transformation that encode information about a distribution.
 Two closely related transforms are the *cumulant generating function*\index{Cumulant generating function} and the *characteristic function*.\index{Characteristic function}
 Each has properties that make it preferable to the MGF in certain situations.
 
-The *cumulant generating function* (CGF)\index{Cumulant generating function} of a random variable\ $X$ is defined as the natural logarithm of the MGF, wherever the MGF exists:
+
+:::{.definition #CumulantGenFunction name="Cumulant generating function"}
+The *cumulant generating function* (CGF)\index{Cumulant generating function} of a random variable\ $X$ is the natural logarithm of the MGF, wherever the MGF exists:
 $$
   K_X(t) = \log M_X(t).
 $$
 Since $M_X(0) = 1$, then $K_X(0) = 0$.
+:::
 
-The CGF can be used to generate the *cumulants*\index{Cumulants} of a distributions.
-
-The coefficients in the Maclaurin expansion of $K_X(t)$ are called **cumulants**:
-
+The CGF can be used to generate the *cumulants*\index{Cumulants} of a distributions, which are the coefficients in the Maclaurin series for $K_X(t)$:
 $$
-  K_X(t) = \sum_{r=1}^{\infty} \kappa_r \frac{t^r}{r!}
+  K_X(t) = \sum_{r=1}^{\infty} \kappa_r \frac{t^r}{r!}.
 $$
-so that the $r$-th cumulant is
+The $r$-th cumulant is
 $$
   \kappa_r = K_X^{(r)}(0) = \left.\frac{d^r}{dt^r} K_X(t)\right|_{t=0}
 $$
-The first four cumulants have direct interpretations:
+The first four cumulants\index{Cumulants} have direct interpretations (where $\mu_r = E[(X - \mu)^r]$ denotes the $r$-th central moment):\index{Central moments}
 
-| Cumulant | Expression in terms of moments | Interpretation |
-|----------|-------------------------------|----------------|
-| $\kappa_1$ | $\mu_1' = E(X)$ | Mean |
-| $\kappa_2$ | $\mu_2' - (\mu_1')^2 = \text{Var}(X)$ | Variance |
-| $\kappa_3$ | $\mu_3$ (third central moment) | Related to skewness |
-| $\kappa_4$ | $\mu_4 - 3\mu_2^2$ (fourth central moment minus $3\sigma^4$) | Related to excess kurtosis |
+* The first cumulant $\kappa_1$, is $\mu_1' = \operatorname{E}(X)$ (the mean).
+* The second cumulant, $\kappa_2$, is $\mu_2' - (\mu_1')^2 = \operatorname{Var}(X)$ (the variance).
+* The third cumulant, $\kappa_3$, is $\mu_3$ (the third central moment) (related to skewness).\index{Skewness}
+* The fourth cumulant, $\kappa_4$, is $\mu_4 - 3\mu_2^2$ (the fourth central moment minus $3\sigma^4$), related to excess kurtosis.\index{Kurtosis}
 
-where $\mu_r = E[(X - \mu)^r]$ denotes the $r$-th central moment.
 
 The standardised skewness and excess kurtosis can be written neatly in terms of cumulants:
 $$
   \gamma_1 = \frac{\kappa_3}{\kappa_2^{3/2}}, \qquad \gamma_2 = \frac{\kappa_4}{\kappa_2^2}
 $$
 
-The most important property of cumulants is their **additivity under convolution**.
+The most important property of cumulants is their *additivity under convolution*.
 If\ $X$ and\ $Y$ are independent, then for all\ $r$:
 $$
   \kappa_r(X + Y) = \kappa_r(X) + \kappa_r(Y)
 $$
-This follows immediately from $K_{X+Y}(t) = K_X(t) + K_Y(t)$ (which itself follows from $M_{X+Y}(t) = M_X(t)M_Y(t)$ for independent $X, Y$).
+This follows immediately from $K_{X+Y}(t) = K_X(t) + K_Y(t)$ (which itself follows from $M_{X+Y}(t) = M_X(t)M_Y(t)$ for independent random variables\ $X$ and\ $Y$).
 
 This additivity is the reason cumulants are often more convenient than moments when working with sums of independent random variables; adding moments requires the binomial theorem and rapidly becomes algebraically messy, while adding cumulants is trivial.
 
@@ -1535,183 +1532,82 @@ This additivity is the reason cumulants are often more convenient than moments w
 :::{.example name="Normal distribution cumulants"}
 If $X \sim N(\mu, \sigma^2)$ then $M_X(t) = \exp(\mu t + \tfrac{1}{2}\sigma^2 t^2)$, so
 $$
-  K_X(t) = \mu t + \tfrac{1}{2}\sigma^2 t^2
+  K_X(t) = \mu t + \tfrac{1}{2}\sigma^2 t^2.
 $$
-This is a *polynomial* of degree 2 in\ $t$.  
-Reading off the coefficients: $\kappa_1 = \mu$, $\kappa_2 = \sigma^2$, and $\kappa_r = 0$ for all $r \geq 3$.
+This is a second-degree *polynomial* in\ $t$.
+Reading the coefficients: $\kappa_1 = \mu$, and $\kappa_2 = \sigma^2$.
+Importantly, $\kappa_r = 0$ for all $r \geq 3$.
 
-This is in fact a characterisation: **a distribution is normal if and only if all cumulants of order 3 and above are zero**.  Departures of higher cumulants from zero measure non-normality in a precise sense.
+This is a characterisation of the normal distribution: *a distribution is normal if and only if all cumulants of order\ $3$ and above are zero*.
+The degree of departures of higher cumulants from zero is a way to measure non-normality of a distribution.
 :::
 
 :::{.example name="Poisson distribution cumulants"}
 If $X \sim \text{Poisson}(\lambda)$ then $M_X(t) = \exp[\lambda(e^t - 1)]$, so
 $$
-  K_X(t) = \lambda(e^t - 1)
+  K_X(t) = \lambda(e^t - 1).
 $$
-Differentiating $r$ times and evaluating at $t = 0$ gives $\kappa_r = \lambda$ for all $r \geq 1$.  
+Differentiating $r$ times and evaluating at $t = 0$ gives $\kappa_r = \lambda$ for all $r \geq 1$.
 All cumulants of the Poisson distribution are equal to $\lambda$.
-In particular, $\kappa_1 = \kappa_2 = \lambda$, which corresponds to the familiar mean-equals-variance property.
+In particular, $\kappa_1 = \kappa_2 = \lambda$: the mean and the variance are equal for a Poisson distribution.
 :::
 
 
-```{r cgf-illustration, message=FALSE, warning=FALSE}
-library(tidyverse)
-theme_set(theme_bw(base_size = 13))
-
-# Illustrate CGF vs MGF for N(0,1)
-t_vals <- seq(-2, 2, length.out = 300)
-
-cgf_df <- tibble(
-  t   = t_vals,
-  MGF = exp(0.5 * t_vals^2),           # N(0,1): M(t) = exp(t^2/2)
-  CGF = 0.5 * t_vals^2                  # K(t) = t^2/2
-) |>
-  pivot_longer(-t, names_to = "Function", values_to = "value")
-
-ggplot(cgf_df, aes(x = t, y = value, colour = Function)) +
-  geom_line(linewidth = 1.1) +
-  coord_cartesian(ylim = c(0, 8)) +
-  labs(title = "MGF and CGF for N(0, 1)",
-       x = "t", y = "Value",
-       caption = "Note: CGF = log(MGF) is simply t²/2 for the standard normal") +
-  theme(legend.position = "top")
-```
-
-The CGF inherits the main limitation of the MGF: it need not exist for all distributions.
+The CGF inherits the main limitation of the MGF: it may not exist.
 For heavy-tailed distributions such as the Cauchy or Pareto, the MGF does not exist in any neighbourhood of zero, and hence neither does the CGF.
-For such distributions the **characteristic function** is required.
+For such distributions the *characteristic function* is required.
 
 
-### Characteristic function {#CharacteristicFunctions}
+:::{.definition #CharacteristicFn name="Characteristic function"}
+The *characteristic function* replaces\ $t$ in the MGF with\ $it$ (where $i = \sqrt{-1}$\,), giving
+$$
+  \varphi_X(t) 
+  = \operatorname{E}(\exp(itX)) 
+  = \operatorname{E}(\cos tX) + i\, \operatorname{E}(\sin tX) \quad\text{for $t \in \mathbb{R}$}.
+$$
+Because $|\exp(itX)| = 1$ for all real\ $t$ and\ $X$, the expectation always exists; no moment conditions are required.
+:::
 
-The MGF $M_X(t) = E(e^{tX})$ uses a real-valued argument $t$.
-The *characteristic function* replaces $t$ with $it$ where $i = \sqrt{-1}$, giving
-$$
-  \varphi_X(t) = E(e^{itX}) = E(\cos tX) + i\, E(\sin tX), \quad t \in \mathbb{R}
-$$
-Because $|e^{itX}| = 1$ for all real $t$ and $X$, the expectation always exists; no moment conditions are required.
 
-The characteristic function of a random variable $X$ is
+For a continuous random variable\ $X$ with density $f_X(x)$:
 $$
-  \boxed{\varphi_X(t) = E\!\left(e^{itX}\right), \quad t \in \mathbb{R}}
+  \varphi_X(t) = \int_{-\infty}^{\infty} \exp(itx) f_X(x)\, dx,
 $$
-For a continuous random variable with density $f$:
+which is the *Fourier transform*\index{Fourier transform} of the density.
+For a discrete random variable\ $X$:
 $$
-  \varphi_X(t) = \int_{-\infty}^{\infty} e^{itx} f(x)\, dx
+  \varphi_X(t) = \sum_x \exp(itx) \Pr(X = x).
 $$
-which is the **Fourier transform** of the density.  
-For a discrete random variable:
-$$
-  \varphi_X(t) = \sum_x e^{itx} P(X = x)
-$$
-The characteristic function is sometimes preferred over the MGF and CGF.
+The characteristic function is sometimes preferred over the MGF and CGF because it *always exists*, (i.e., $\varphi_X(t)$ is well-defined and bounded for every distribution), and it is *unique* for every distribution (i.e., if $\varphi_X(t) = \varphi_Y(t)$ for all $t \in \mathbb{R}$, then
+$X$ and $Y$ have the same distribution).  
+The uniqueness property is the analogue of the uniqueness theorem for MGFs, but holds without any moment restrictions.
 
-**Always exists.** $|\varphi_X(t)| \leq E|e^{itX}| = 1$ for all $t$, so
-$\varphi_X(t)$ is well-defined and bounded for every distribution.
-
-**Uniqueness.** The characteristic function uniquely determines the
-distribution: if $\varphi_X(t) = \varphi_Y(t)$ for all $t \in \mathbb{R}$, then
-$X$ and $Y$ have the same distribution.  This is the analogue of the uniqueness
-theorem for MGFs, but holds without any moment restrictions.
-
-**Inversion.** The density (if it exists) can be recovered from the
-characteristic function by the **inversion formula**:
-$$
-  f(x) = \frac{1}{2\pi} \int_{-\infty}^{\infty} e^{-itx} \varphi_X(t)\, dt
-$$
-
-**Independence and convolution.** If $X \perp Y$ then
-$$
-  \varphi_{X+Y}(t) = \varphi_X(t)\cdot \varphi_Y(t)
-$$
-exactly as for MGFs.
-
-**Moments.** If $E|X|^r < \infty$ then $\varphi_X$ is $r$ times differentiable and
-$$
-  E(X^r) = \frac{1}{i^r} \varphi_X^{(r)}(0)
-$$
-
-**Symmetry.** $X$ is symmetric about zero (i.e. $X \overset{d}{=} -X$) if and only if $\varphi_X(t)$ is real-valued for all $t$.
 
 When the MGF exists in a neighbourhood of zero, the characteristic function is obtained by formally substituting $t \to -it$:
 $$
-  \varphi_X(t) = M_X(it)
+  \varphi_X(t) = M_X(it).
 $$
 That is, the characteristic function is the MGF evaluated on the imaginary axis.
 When the MGF does not exist (heavy-tailed distributions), the characteristic function still exists and carries all distributional information.
 
 
 :::{.example name="Normal distribution characteristic function"}
-If $X \sim N(\mu, \sigma^2)$:
+If $X \sim N(\mu, \sigma^2)$, then teh characteristic function is
 $$
-  \varphi_X(t) = \exp\!\left(i\mu t - \tfrac{1}{2}\sigma^2 t^2\right)
+  \varphi_X(t) = \exp\!\left(i\mu t - \tfrac{1}{2}\sigma^2 t^2\right).
 $$
-This can be verified by completing the square in the exponent of the Fourier
-integral, or by substituting $t \to it$ into the MGF.
+This can be verified by substituting $t \to it$ into the MGF.
 :::
-
-
-:::{.example name="Cauchy distribution characteristic function"}
-The Cauchy distribution has density $f(x) = \{\pi(1 + x^2)\}^{-1}$ and has **no finite moments**; specifically, $\operatorname{E}|X|$ does not exist, so the MGF is nowhere finite.  
-Nevertheless, the characteristic function is well-defined:
-$$
-  \varphi_X(t) = e^{-|t|}
-$$
-This is a clean, closed-form expression that carries full distributional
-information despite the non-existence of moments.
-:::
-
 
 
 :::{.example name="Poisson distribution characteristic function"}
-If $X \sim \text{Poisson}(\lambda)$:
+If $X \sim \text{Poisson}(\lambda)$, then the characteristic function is
 $$
-  \varphi_X(t) = \exp\!\left[\lambda(e^{it} - 1)\right]
+  \varphi_X(t) = \exp\!\left[\lambda(e^{it} - 1)\right].
 $$
 Compare with the MGF $M_X(t) = \exp[\lambda(e^t - 1)]$: the substitution $t \to it$ is all that is needed.
 :::
 
-
-```{r cf-illustration}
-# Visualise the real part of the characteristic function for several distributions
-t_seq <- seq(-4, 4, length.out = 500)
-
-cf_mat <- data.frame(
-  t      = t_seq,
-  N01    = exp(-0.5 * t_seq^2),
-  N04    = exp(-2   * t_seq^2),
-  Cauchy = exp(-abs(t_seq)),
-  Laplace = 1 / (1 + t_seq^2)
-)
-
-# Convert to long form manually
-cf_long <- reshape(cf_mat,
-                   varying   = c("N01", "N04", "Cauchy", "Laplace"),
-                   v.names   = "Re_cf",
-                   timevar   = "Distribution",
-                   times     = c("N(0,1)", "N(0,4)", "Cauchy", "Laplace"),
-                   direction = "long")
-
-# Plot
-dists   <- c("N(0,1)", "N(0,4)", "Cauchy", "Laplace")
-colours <- c("steelblue", "firebrick", "forestgreen", "darkorchid")
-
-plot(NA, xlim = c(-4, 4), ylim = c(-0.1, 1.05),
-     xlab = "t",
-     ylab = expression(Re(varphi(t))),
-     main = "Real part of characteristic function")
-mtext("All distributions shown are symmetric, so the CF is real-valued",
-      side = 3, line = 0.3, cex = 0.85)
-abline(h = 0, lty = 2, col = "grey50")
-
-for (i in seq_along(dists)) {
-  sub <- cf_long[cf_long$Distribution == dists[i], ]
-  lines(sub$t, sub$Re_cf, col = colours[i], lwd = 2)
-}
-
-legend("topright", legend = dists,
-       col = colours, lwd = 2, bty = "n")
-```
 
 ```{r comparison-table, echo=FALSE}
 comparison_df <- data.frame(
@@ -3223,3 +3119,42 @@ and is zero elsewhere.
 4. Compute the skewness, and explain what this value means.
 5. Compute the kurtosis, and explain what this value means.
 :::
+
+
+:::{.exercise #CauchyCharacteristic}
+The Cauchy distribution has the density function
+$$
+  f_X(x) = \{\pi(1 + x^2)\}^{-1}\quad\text{for $x\in\mathbb{R}$.s}
+$$
+
+1. Show that the Cauchy distribution has *no finite moments*; specifically, $\operatorname{E}|X|$ does not exist, so the MGF is nowhere finite.  
+1. Show that the Cauchy distribution does not have a cumulant generating function.  
+1. Show that the Cauchy distribution has a well-defined  characteristic function.
+:::
+
+
+:::{.exercise #InvertCharacteristicFn]
+A probability density function can be determined from its MGF as shown in Eq.\ \@ref(eq:MGFtoPDFcontinuous).
+Show that the PDF can also be determined using the characteristic function, using
+$$
+  f(x) = \frac{1}{2\pi} \int_{-\infty}^{\infty} e^{-itx} \varphi_X(t)\, dt.
+$$
+:::
+
+
+:::{.exercise #InvertIndependetCharacteristic]
+If the random variables\ $X$ and\ $Y$ are independent with characteristic functions $\varphi_X(t)$ and $\varphi_Y(t)$ respectively, show that
+$$
+  \varphi_{X+Y}(t) = \varphi_X(t)\cdot \varphi_Y(t)
+$$
+:::
+
+
+:::{.exercise #InvertIndependetCharacteristic]
+The random variable\ $X$ has the characteristic functions $\varphi_X(t)$.
+If $E|X|^r < \infty$, show that $\varphi_X$ is $r$ times differentiable and
+$$
+  \operatorname{E}(X^r) = \frac{1}{i^r} \varphi_X^{(r)}(0)
+$$
+:::
+
