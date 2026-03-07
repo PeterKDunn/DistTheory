@@ -1355,7 +1355,7 @@ In practice, rather than identify\ $a$ and\ $b$ and remember Theorem\ \@ref(thm:
 :::
 
 
-### Determining the distribution from the MGF {#DistributionFromMGF}
+### Determining the distribution from the MGF* {#DistributionFromMGF}
 
 The MGF (if it exists) completely determines the distribution of a random variable hence, given a MGF, deducing the probability function should be possible.\index{Moment generating function!inverting}
 For some distributions, the PDF cannot be written in closed form (so the PDF can *only* be evaluated numerically; for example, see Sect.\ \@ref(TweedieModels)), but the MGF is relatively simple to write down.
@@ -1616,46 +1616,9 @@ Compare with the MGF $M_X(t) = \exp[\lambda(e^t - 1)]$: the substitution $t \to 
 :::
 
 
-```{r comparison-table, echo=FALSE}
-comparison_df <- data.frame(
-  Property = c("Definition", "Always exists?",
-               "Uniquely determines distribution?",
-               "Recovers moments by differentiation?",
-               "Additive for independent sums?",
-               "Useful for proving CLT?",
-               "Values"),
-  MGF = c("$E(e^{tX})$, $t \\in \\mathbb{R}$",
-          "No — fails for heavy-tailed distributions",
-          "Yes, when it exists",
-          "Yes: $E(X^r) = M^{(r)}(0)$",
-          "Yes: $M_{X+Y} = M_X M_Y$",
-          "Indirectly",
-          "Real-valued"),
-  CGF = c("$\\log M_X(t)$",
-          "No — same as MGF",
-          "Yes, when it exists",
-          "Yes: $\\kappa_r = K^{(r)}(0)$",
-          "Yes: $K_{X+Y} = K_X + K_Y$",
-          "Rarely used",
-          "Real-valued"),
-  CF  = c("$E(e^{itX})$, $t \\in \\mathbb{R}$",
-          "Yes — always",
-          "Yes — always",
-          "Yes, when moments exist",
-          "Yes: $\\varphi_{X+Y} = \\varphi_X \\varphi_Y$",
-          "Yes — standard proof",
-          "Complex-valued"),
-  stringsAsFactors = FALSE
-)
-
-kable(comparison_df,
-      escape = FALSE,
-      col.names = c("Property", "MGF $M_X(t)$", "CGF $K_X(t)$", "CF $\\varphi_X(t)$"),
-      caption   = "Comparison of moment generating, cumulant generating, and characteristic functions")
-```
-
-
-The practical message is straightforward: use the **MGF** when it exists and moments are the primary interest; use the **CGF** when working with cumulants or sums of independent variables; use the **characteristic function** when dealing with heavy-tailed distributions or when a general proof (such as the CLT) is required.
+The MGF, when it exists, is most useful when and moments are the main interest.
+The CGF is most useful when working with cumulants, or sums of independent random variables.
+The characteristic function is useful when dealing with heavy-tailed distributions (as it always exist).
 
 
 ## Tchebysheff's inequality {#Tchebysheff}
@@ -1780,15 +1743,16 @@ The proof given here is for the discrete case; the continuous case is analogous.
   &= a\sum_x x \Pr(X = x) + b\sum_y y \Pr(Y = y)\\
   &= a\operatorname{E}[X] + b\operatorname{E}[Y].
 \end{align*}
+
 ::::
+
 :::
 
 
 This theorem is no surprise after seeing Theorem\ \@ref(thm:ExpectationLinear), but is powerful and useful. 
 
 This result is true whether or not\ $X$ and\ $Y$ are independent.
-Theorem\ \@ref(thm:ExpTwoRV) naturally generalises to the expected value of a *linear combination of random variables* (see Theorem\ \@ref(thm:ExpLinear)).
-
+Theorem\ \@ref(thm:ExpTwoRV) naturally generalises to the expected value of a *linear combination of random variables* (Theorem\ \@ref(thm:ExpLinear)).
 
 
 ### Moments of a bivariate distribution: covariance
@@ -3140,28 +3104,31 @@ $$
 :::
 
 
-:::{.exercise #InvertCharacteristicFn]
+:::{.exercise #InvertCharacteristicFn}
 A probability density function can be determined from its MGF as shown in Eq.\ \@ref(eq:MGFtoPDFcontinuous).
 Show that the PDF can also be determined using the characteristic function, using
 $$
   f(x) = \frac{1}{2\pi} \int_{-\infty}^{\infty} e^{-itx} \varphi_X(t)\, dt.
 $$
+
 :::
 
 
-:::{.exercise #InvertIndependetCharacteristic]
+:::{.exercise #InvertIndependentCharacteristic}
 If the random variables\ $X$ and\ $Y$ are independent with characteristic functions $\varphi_X(t)$ and $\varphi_Y(t)$ respectively, show that
 $$
-  \varphi_{X+Y}(t) = \varphi_X(t)\cdot \varphi_Y(t)
+  \varphi_{X+Y}(t) = \varphi_X(t)\cdot \varphi_Y(t).
 $$
+
 :::
 
 
-:::{.exercise #InvertIndependetCharacteristic]
+:::{.exercise #CharacteristicMoments}
 The random variable\ $X$ has the characteristic functions $\varphi_X(t)$.
-If $E|X|^r < \infty$, show that $\varphi_X$ is $r$ times differentiable and
+If $E|X|^r < \infty$, show that $\varphi_X$ is $r$ times differentiable and that
 $$
-  \operatorname{E}(X^r) = \frac{1}{i^r} \varphi_X^{(r)}(0)
+  \operatorname{E}(X^r) = \frac{1}{i^r} \varphi_X^{(r)}(0).
 $$
+
 :::
 
