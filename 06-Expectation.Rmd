@@ -1355,7 +1355,7 @@ In practice, rather than identify\ $a$ and\ $b$ and remember Theorem\ \@ref(thm:
 :::
 
 
-### Determining the distribution from the MGF* {#DistributionFromMGF}
+### Recovering the distribution from the MGF {#DistributionFromMGF}
 
 The MGF (if it exists) completely determines the distribution of a random variable hence, given a MGF, deducing the probability function should be possible.\index{Moment generating function!inverting}
 For some distributions, the PDF cannot be written in closed form (so the PDF can *only* be evaluated numerically; for example, see Sect.\ \@ref(TweedieModels)), but the MGF is relatively simple to write down.
@@ -1444,41 +1444,7 @@ $$
 :::
 
 
-For a *continuous* random variable\ $X$, the approach is more involved.
-Suppose the continuous random variable\ $X$ has the MGF $M_X(t)$.
-Then the probability density function is (see @abramowitz1964handbook, \S26.1.10)
-\begin{equation}
-   f_X(x) = 
-   \frac{1}{2\pi} \int_{-\infty}^{\infty} M_X(it) \exp(-itx)\, dt,
-   (\#eq:MGFtoPDFcontinuous)
-\end{equation}
-where $i = \sqrt{-1}$.
-
-
-:::{.example #DistFromMGFContinuous name="Distribution from the MGF"}
-Consider the MGF for a continuous random variable\ $X$ such that $M_X(t) = \exp(t^2/2)$, for $y\in\mathbb{R}$ and $t\in\mathbb{R}$.
-Then, $M_X(it) = \exp\left( (it)^2/2 \right) = \exp(-t^2/2)$. 
-Using Eq.\ \@ref(eq:MGFtoPDFcontinuous), the PDF is:
-\begin{align*}
- f_X(x) 
- &= \frac{1}{2\pi} \int_{-\infty}^{\infty} \exp(-t^2/2) \exp(-itx)\, dt,\\
- &= \frac{1}{2\pi} \int_{-\infty}^{\infty} \exp(-t^2/2)\left[ \cos(-tx) + i\sin(-itx)\right]\, dt,
-\end{align*}
-since $x\in\mathbb{R}$ and $t\in\mathbb{R}$.
-Extracting just the real components:
-\begin{align*}
- f_X(x) 
- &= \frac{1}{2\pi} \int_{-\infty}^{\infty} \exp(-t^2/2) \cos(-tx) \, dt\\
- &= \frac{1}{2\pi} \left( \sqrt{2\pi} \exp( -x^2/2 ) \right)
-  = \frac{1}{ \sqrt{2\pi} } \exp( -x^2/2 ),
-\end{align*}
-which will later be identified as a [normal distribution](#StandardNormal)\index{Normal distribution} with a mean of zero, and standard deviation of one.
-:::
-
-
-In practice, using Eq.\ \@ref(eq:MGFtoPDFcontinuous) can become tedious or intractable for producing a closed form expression for the PDF.
-However, Eq.\ \@ref(eq:MGFtoPDFcontinuous) has been used to compute numerical values of the probability density function.
-For example, @mypapers:Dunn:fourier used Eq.\ \@ref(eq:MGFtoPDFcontinuous) to evaluate the *Tweedie distributions*\index{Tweedie distribution} [@mypapers:DunnSmyth:IWSM:2001], for which (in general) the PDF has no closed form, but does have a simple MGF.
+For a *continuous* random variable\ $X$, the approach is more involved, and so is deayed until Sect.\ \@ref(CharacteristicFunction).
 \index{Moment generating function|)}
 
 
@@ -1492,6 +1458,7 @@ Each has properties that make it preferable to the MGF in certain situations.
 
 ### Cumulant generating function* {#CumulantGeneratingFunction}
 
+\index{Cumulant generating function|(}
 The *cumulant generating function*\index{Cumulant generating function} is closely related to the MGF.
 
 
@@ -1556,10 +1523,12 @@ Differentiating $r$ times and evaluating at $t = 0$ gives $\kappa_r = \lambda$ f
 All cumulants of the Poisson distribution are equal to $\lambda$.
 In particular, $\kappa_1 = \kappa_2 = \lambda$: the mean and the variance are equal for a Poisson distribution.
 :::
+\index{Cumulant generating function|)}
 
 
 ### Characteristic function* {#CharacteristicFunction}
 
+\index{Characteristic function|(}
 The CGF inherits the main limitation of the MGF: it may not exist.
 For heavy-tailed distributions such as the Cauchy or Pareto, the MGF does not exist in any neighbourhood of zero, and hence neither does the CGF.
 For such distributions the *characteristic function* is required.
@@ -1598,8 +1567,8 @@ That is, the characteristic function is the MGF evaluated on the imaginary axis.
 When the MGF does not exist (heavy-tailed distributions), the characteristic function still exists and carries all distributional information.
 
 
-:::{.example name="Normal distribution characteristic function"}
-If $X \sim N(\mu, \sigma^2)$, then teh characteristic function is
+:::{.example #NormalCharFn name="Normal distribution characteristic function"}
+If $X \sim N(\mu, \sigma^2)$, then the characteristic function is
 $$
   \varphi_X(t) = \exp\!\left(i\mu t - \tfrac{1}{2}\sigma^2 t^2\right).
 $$
@@ -1616,9 +1585,47 @@ Compare with the MGF $M_X(t) = \exp[\lambda(e^t - 1)]$: the substitution $t \to 
 :::
 
 
+The characteristic function always exists and is unique for every distribution.
+As a result, the characteristic function can be used to recover the PDF for a continuous random variable (also see Sect.\ \@ref(DistributionFromMGF) for recovering the PMF for a discrete random variable).  
+
+Suppose the continuous random variable\ $X$ has the characteristic function $\varphi_X(t)$.
+Then the probability density function is (see @abramowitz1964handbook, \S26.1.10)
+\begin{equation}
+   f_X(x) = 
+   \frac{1}{2\pi} \int_{-\infty}^{\infty} \varphi_X(t) \exp(-itx)\, dt,
+   (\#eq:MGFtoPDFcontinuous)
+\end{equation}
+where $i = \sqrt{-1}$.
+
+
+:::{.example #DistFromMGFContinuous name="Distribution from the MGF"}
+Consider the characteristic function
+$$
+  \varphi_X(t) = \frac{\lambda}{\lambda - it},
+$$
+Using Eq.\ \@ref(eq:MGFtoPDFcontinuous), the PDF is:
+\begin{align*}
+  f_X(x) 
+  &= \frac{1}{2\pi} \int_{-\infty}^{\infty} \exp(-itx) \frac{\lambda}{\lambda - it}  \, dt\\
+  &= \lambda \exp( -\lambda x)
+\end{align*}
+provided $x < 0$, after some mathematical manipulation.
+Later, this will be identified as an [exponential distribution](#ExponentialDistribution)\index{Exponential distribution}.
+:::
+
+
+In practice, using Eq.\ \@ref(eq:MGFtoPDFcontinuous) can become tedious or intractable for producing a closed form expression for the PDF.
+However, Eq.\ \@ref(eq:MGFtoPDFcontinuous) has been used to compute numerical values of the probability density function.
+For example, @mypapers:Dunn:fourier used Eq.\ \@ref(eq:MGFtoPDFcontinuous) to evaluate the *Tweedie distributions*\index{Tweedie distribution} [@mypapers:DunnSmyth:IWSM:2001], for which (in general) the PDF has no closed form, but does have a simple MGF.
+\index{Characteristic function|)}
+
+
+
+
 The MGF, when it exists, is most useful when and moments are the main interest.
 The CGF is most useful when working with cumulants, or sums of independent random variables.
 The characteristic function is useful when dealing with heavy-tailed distributions (as it always exist).
+
 
 
 ## Tchebysheff's inequality {#Tchebysheff}
