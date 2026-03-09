@@ -1,0 +1,96 @@
+To see the CLT in practice, adjust the sample size in the activity below.
+The sampling distribution of the sample mean appears approximately normal as the sample size gets larger.
+
+
+
+```{r, CLTDemo, echo=FALSE, fig.align="center", fig.cap="Exact sampling distribution of the mean (blue) overlaid with the CLT normal approximation (red dashed). The samples are drawn from a Gamma$(2, 1)$ distribution."}
+library(plotly)
+
+# Gamma(alpha=2, rate=1): Xbar ~ Gamma(n*alpha, rate=n)
+# mu = 2, sigma = sqrt(2)
+alpha <- 2
+beta  <- 1
+mu    <- alpha / beta
+sg    <- sqrt(alpha) / beta
+
+ns <- c(1, 2, 5, 10, 30, 50, 100)
+
+# Build x grid and densities for each n
+traces <- lapply(ns, function(n) {
+  se   <- sg / sqrt(n)
+  x    <- seq(max(mu - 5*se, 1e-4), 
+              mu + 5*se, 
+              length.out = 600)
+  yex  <- dgamma(x, 
+                 shape = n * alpha, 
+                 rate = n * beta)
+  yclt <- dnorm(x,  
+                mean  = mu,
+                sd   = se)
+  list(x = x, 
+       yex = yex, 
+       yclt = yclt, 
+       n = n)
+})
+
+# Build figure
+fig <- plot_ly(width = 600, 
+               height = 400)
+
+for (i in seq_along(ns)) {
+  vis <- (i == 3)   # default: n = 5
+  fig <- fig %>%
+    add_lines(x = traces[[i]]$x, y = traces[[i]]$yex,
+              visible    = vis,
+              name       = "Exact",
+              showlegend = (i == 1),
+              line       = list(color = "steelblue", width = 2.5)) %>%
+    add_lines(x = traces[[i]]$x, y = traces[[i]]$yclt,
+              visible    = vis,
+              name       = "CLT normal",
+              showlegend = (i == 1),
+              line       = list(color = "firebrick", width = 2, dash = "dash"))
+}
+
+# One button per n — each shows exactly 2 traces, hides all others
+n_buttons <- lapply(seq_along(ns), function(i) {
+  vis <- rep(FALSE, length(ns) * 2)
+  vis[c(2*i - 1, 2*i)] <- TRUE
+  list(
+    method = "update",
+    args   = list(
+      list(visible = as.list(vis)),
+      list(title  = paste0("Gamma(2, 1): sampling distribution of X\u0305,  n = ", ns[i]))
+    ),
+    label  = paste0("n = ", ns[i])
+  )
+})
+
+fig <- fig %>% layout(
+  title  = list(
+    text = "Gamma(2, 1): sampling distribution of X\u0305,  n = 5",
+    x = 0.5,
+    xanchor = "center"),
+  xaxis  = list(title = "x\u0305"),
+  yaxis  = list(title = "Density"),
+   margin = list(t = 60, 
+                 b = 110),
+  legend = list(orientation = "h", 
+                x = 0.65, 
+                y = 1.0),
+  updatemenus = list(
+    list(
+      type      = "buttons",
+      direction = "right",
+      x         = 0.0,
+      y         = -0.28,
+      xanchor   = "left",
+      buttons   = n_buttons
+    )
+  )
+) %>%
+  config(displayModeBar = FALSE)
+
+fig
+```
+

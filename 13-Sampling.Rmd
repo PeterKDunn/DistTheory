@@ -1293,14 +1293,8 @@ qf(0.99,
 Sampling distributions for various statistics of interest are well-developed when sampling is from a *normal* distribution (Sect.\ \@ref(SamplingDistributionsRelatedToNormal)).
 Although these results are important, what if we do not know the distribution of the population from which the random sample is drawn (as is usually the case)?
 
-In Sect.\ \@ref(SamplingDistributionMean) general results are given describing the *mean* and *variance* of the sample mean which hold for any population distribution, but do not say anything about the distribution.
-
-The main result for this section is the following theorem, called *The Central Limit Theorem* (or *CLT*).
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The *Central Limit Theorem* is one of the most important theorems in statistics.
-:::
+In Sect.\ \@ref(SamplingDistributionMean) general results are given describing the *mean* and *variance* of the sample mean which hold for any population distribution, but do not say anything about the *distribution* of the sample means.
+The *Central Limit Theorem* (or *CLT*) describes the distribution of the sample means.
 
 
 :::{.theorem #CLT name="Central Limit Theorem (CLT)"}
@@ -1313,81 +1307,89 @@ $$
 converges in distribution to a standard normal variable as $n\to\infty$.
 
 ::::{.proof}
-Let the random variable $X_i$ $(i = 1, \dots, n)$ have MGF $M_{X_i}(t)$. 
-Then
+Without loss of generality, centre the $X_i$ by letting $Y_i = (X_i - \mu)/\sigma$,
+so that $\operatorname{E}[Y_i] = 0$, $\operatorname{var}[Y_i] = 1$, and
 $$
-   M_{X_i}(t) 
-   = 1 + \mu'_1t + \mu'_2\frac{t^2}{2!} + \dots . 
+  Z_n = \frac{1}{\sqrt{n}} \sum_{i=1}^n Y_i.
 $$
-But $\bar{X} = X_1/n + \dots + X_n/n$, so
-$$ 
-   M_{\bar{X}}(t)
-   = \prod^n_{i = 1} M_{X_i/n}(t)
-   = \left[ M_{X_i} (t/n)\right]^n.
+Let $\varphi(t) = \operatorname{E}[\exp(itY)]$ denote the common characteristic function (CF) of the\ $Y_i$.
+Since the\ $Y_i$ are independent, the CF of\ $Z_n$ is
 $$
-Now $\displaystyle{Z_n = \frac{\sqrt{n}}{\sigma}\bar{X} - \frac{\sqrt{n}\mu}{\sigma}}$, which is of the form $Y = aX + b$ so
-\begin{align*}
-  M_{Z_n}(t)
-    &= e^{-\sqrt{n}\mu  t/\sigma}M_{\bar{X}} (\sqrt{n}t/\sigma )\\
-    &= e^{-\sqrt{n}\mu t / \sigma} \left[ M_{X_i}\left(\frac{\sqrt{n}t}{\sigma n} \right)\right]^n\\
-    &  = e^{-\sqrt{n}\mu t /\sigma}\left[ M_{X_i}(t / \sigma \sqrt{n})\right]^n
-\end{align*}
-Then
-\begin{align*}
-     \log M_{Z_n}(t)
-     &= \frac{-\sqrt{n}\mu t}{\sigma} + 
-        n\log \left[ 1 + \frac{\mu'_1 t}{\sigma\sqrt{n}} + \frac{\mu'_2 t^2}{2! \, n\sigma^2}
-        + \frac{\mu'_3 t^3}{3! \, n\sqrt{n}\sigma^3}  + \dots \right] \\
-     &= \frac{-\sqrt{n}\mu t}{\sigma} + n\left[ \mu'_1 \frac{t}{\sigma
-\sqrt{n}} + \frac{\mu'_2 t^2}{2n\sigma^2} + \frac{\mu'_3t^3}{6n\sqrt{n}\sigma^3} + \dots
-\right]\\
-       & \quad \text{} - \frac{n}{2} \left[ \frac{\mu'_1t}{\sigma\sqrt{n}} + 
-         \dots \right]^2 + \frac{n}{3} \left[\phantom{\frac{n}{3}}\dots\phantom{\frac{n}{3}}\right]^3 - \dots \\
-     &=  \frac{\mu'_2 t^2}{2\sigma^2} - \frac{(\mu'_1)^2 t^2}{2\sigma^2} +
-\text{ terms in $1 / \sqrt{n}$, etc}.
-\end{align*}
-Now,
+  \varphi_{Z_n}(t)
+  = \operatorname{E}\left[e^{itZ_n}\right]
+  = \operatorname{E}\left[\exp\!\left\{\frac{it}{\sqrt{n}}\sum_{i=1}^n Y_i\right\}\right]
+  = \prod_{i=1}^n \operatorname{E}\left[\exp(it Y_i/\sqrt{n})\right]
+  = \left[\varphi\!\left(\frac{t}{\sqrt{n}}\right)\right]^n
 $$
-   \lim_{n\to \infty} \log M_{Z_n}(t)
-   = 
-   \frac{(\mu'_2- (\mu'_1)^2)}{\sigma^2}\frac{t^2}{2} = \frac{t^2}{2}
+
+Since $\operatorname{E}[Y^2] = 1 < \infty$, the CF $\varphi(t)$ is twice differentiable at $t = 0$, with
 $$
-because the terms in $(1/\sqrt{n}\,)$, etc. tend to zero as $n\to\infty$, and $\mu'_2 - (\mu'_1)^2 = \sigma^2$.
-Thus $\displaystyle{ \lim_{n\to\infty} M_{Z_n}(t) = e^{\frac{1}{2} t^2}}$, which is the MGF of a $N(0, 1)$ random variable.
-So\ $Z_n$ converges in distribution to a standard normal.
+  \varphi'(t)\big|_{t=0} = i\operatorname{E}[Y] = 0
+  \qquad\text{and}\qquad
+  \varphi''(t)\big|_{t=0} = i^2 \operatorname{E}[Y^2] = -1.
+$$
+The Taylor expansion of $\varphi$ about $t = 0$ is therefore
+$$
+  \varphi(t)
+  = 1 + \varphi'(0)\,t + \frac{1}{2}\varphi''(0)\,t^2 + o(t^2)
+  = 1 - \frac{1}{2}t^2 + o(t^2)
+  \quad \text{as $t \to 0$},
+$$
+where $o(t^2)$ means $o(t^2)/t^2 \to 0$ as $t\to 0$.
+
+Substituting $t/\sqrt{n}$ gives
+$$
+  \varphi\!\left(\frac{t}{\sqrt{n}}\right) 
+  = 1 - \frac{t^2}{2n} + o\!\left(\frac{t^2}{n}\right).
+$$
+
+Taking logs (which is valid for large enough\ $n$ since $\varphi(t/\sqrt{n}) \to 1$) and using
+$\log(1 + u) = u + o(u)$ as $u \to 0$:
+$$
+  \log \varphi\!\left(\frac{t}{\sqrt{n}}\right) 
+  = -\frac{t^2}{2n} + o\!\left(\frac{t^2}{n}\right).
+$$
+Therefore
+$$
+  \log \varphi_{Z_n}(t)
+  = n \log \varphi\!\left(\frac{t}{\sqrt{n}}\right)
+  = n\left[-\frac{t^2}{2n} + o\!\left(\frac{t^2}{n}\right)\right]
+  = -\frac{t^2}{2} + n\cdot o\left(\frac{t^2}{n}\right)
+  \to\, -\frac{t^2}{2}
+$$
+as $n \to \infty$, for each fixed $t \in \mathbb{R}$. 
+Taking exponents,
+$$
+  \varphi_{Z_n}(t) \to \exp(-t^2/2) \quad \text{for all $t \in \mathbb{R}$}.
+$$
+
+The function $\exp(-t^2/2)$ is the CF of the $N(0, 1)$ distribution.
+By *Lévy's continuity theorem*, if $\varphi_{Z_n}(t) \to \varphi(t)$ pointwise for all\ $t$, and the limit $\varphi(t)$ is continuous at $t = 0$, then $Z_n \overset{d}{\to} Z$, where\ $Z$ has characteristic function $\varphi(t)$.
+Since $\exp(-t^2/2)$ is continuous everywhere and is the CF of $N(0, 1)$, conclude that
+$$
+  Z_n \overset{d}{\to} N(0, 1).
+$$
+
 ::::
 :::
 
 
----
-
-The characteristic function provides the most elegant proof of the Central Limit Theorem.  
-The key steps are:
-
-1. Take the log of $\varphi_{\bar X_n}(t)$ (the CF of the standardised sample mean).
-2. Expand $\log \varphi_X(t/\sqrt{n})$ in a Taylor series.
-3. Show that as $n \to \infty$ the result converges to $-t^2/2$.
-4. Conclude $\bar X_n \overset{d}{\to} N(0,1)$ by the continuity theorem for CFs.
-
-This approach works even for distributions with no MGF, which is why it is the
-standard proof in mathematical statistics courses.
-
----
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The *Central Limit Theorem* is one of the most important theorems in statistics.
+:::
 
 
-This is a partial proof since the concept of convergence in distribution has not been defined, and MGF of\ $X_i$ is assumed to exists, which does not need to be the case.
-However, the arguments used in the proof are powerful and worth understanding.
+This is a partial proof since the concept of convergence in distribution has not been defined. However, the arguments used in the proof are powerful and worth understanding.
 
-'Convergence in distribution' means that\ $Z_n$ approaches normality as $n\to \infty$. 
-So when\ $n$ is 'large', $Z_n$ is expected to approximate a standard normal distribution. 
-Transforming\ $Z_n$ back to the sample mean, $\bar{X}$ can be expected to approximate a $N(\mu, \sigma^2/n)$ distribution.
+'Convergence in distribution' means that the distribution of $Z_n$ converges to a standard normal as $n\to \infty$. 
+So when\ $n$ is 'large', $Z_n$ is expected to approximate a standard normal distribution. Transforming $Z_n$ back to the sample mean, $\bar{X}$ can be expected to approximate a $N(\mu, \sigma^2/n)$ distribution.
 
 In practice, the distribution of\ $\bar{X}$ is sufficiently close to that of a normal distribution when\ $n$ is larger than about\ $25$ in most situations.
 However, if the population distribution is severely skewed, larger samples sizes may be necessary for the approximate to be adequate in practice.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The *Central Limit Theorem* states that, for *any* random variable $X$, the distribution of the *sample means* will have an:\index{Central Limit Theorem}
+The *Central Limit Theorem* states that, for *any* random variable\ $X$, the distribution of the *sample means* will have an:\index{Central Limit Theorem}
 
 * approximate normal distribution,
 * with mean\ $\mu$ (the mean of\ $X$), and
@@ -1401,7 +1403,16 @@ If the data comes from a normal distribution, the distribution of the sample mea
 :::
 
 
-:::{.example}
+
+```{r, child = if (knitr::is_html_output())  './children/CLT/CLT_html.Rmd' }
+```
+
+```{r, child = if (knitr::is_latex_output()) './children/CLT/CLT_latex.Rmd'}
+```
+
+
+
+:::{.example #CLTUniform name="CLT and a uniform distribution"}
 In the **R** code below, data come from a uniform distribution (Fig.\ \@ref(fig:UniformCLT), left panel).
 However, the mean of samples of size $n = 10$ (centre panel) and $n = 20$ (right panel) are approximately distributed as a normal distribution.
 The variance of the sample means for the larger sample size is smaller than that for $n = 10$, and the distribution looks more like a normal distribution for the larger sample size.

@@ -1,0 +1,152 @@
+As an example of the CLT in practice, see Fig.\ \@ref(fig:CLTDemoLatex), where samples of various sizes are taken from $\text{Gamma}(2, 1)$ distributions.
+The sampling distribution of the sample mean appears more like an approximate normal as the sample size gets larger, and the approximation is reasoably good even for $n = 10$.
+
+
+
+```{r, CLTDemoLatex, fig.align="center", echo=FALSE, fig.cap="Exact sampling distribution of the mean (solid lines) overlaid with the CLT normal approximation (dashed lines). The samples are drawn from a Gamma$(2, 1)$ distribution.", out.width='100%', fig.width=8}
+library(plotly)
+
+# Gamma(alpha=2, rate=1): Xbar ~ Gamma(n*alpha, rate=n)
+# mu = 2, sigma = sqrt(2)
+alpha <- 2
+beta  <- 1
+mu    <- alpha / beta
+sg    <- sqrt(alpha) / beta
+
+ns <- c(1, 2, 5, 25, 50, 100)
+
+# Build x grid and densities for each n
+traces <- lapply(ns, function(n) {
+  se   <- sg / sqrt(n)
+  x    <- seq(max(mu - 5*se, 1e-4), 
+              mu + 5*se, 
+              length.out = 600)
+  yex  <- dgamma(x, 
+                 shape = n * alpha, 
+                 rate = n * beta)
+  yclt <- dnorm(x,  
+                mean  = mu,        
+                sd   = se)
+  list(x = x, 
+       yex = yex, 
+       yclt = yclt, 
+       n = n)
+})
+
+# Build figure
+par(mfrow = c(2, 3))
+
+plot(x = traces[[1]]$x, 
+     y = traces[[1]]$yex,
+     type = "l",
+     xlab = expression(bar(italic(X))),
+     ylab = "",
+     axes = FALSE,
+     main = expression("Gamma(2,1);"~sample~size~1),
+     lwd = 2)
+axis(side = 1)
+lines(x = traces[[1]]$x, 
+      y = traces[[1]]$yclt,
+      lty = 2,
+      lwd = 2)
+
+
+
+
+
+plot(x = traces[[2]]$x, 
+     y = traces[[2]]$yex,
+     type = "l",
+     xlab = expression(bar(italic(X))),
+     ylab = "",
+     axes = FALSE,
+     main = expression("Gamma(2,1);"~sample~size~2),
+     lwd = 2)
+axis(side = 1)
+lines(x = traces[[2]]$x, 
+      y = traces[[2]]$yclt,
+      lty = 2,
+      lwd = 2)
+
+
+
+
+
+
+
+plot(x = traces[[3]]$x, 
+     y = traces[[3]]$yex,
+     type = "l",
+     xlab = expression(bar(italic(X))),
+     ylab = "",
+     axes = FALSE,
+     main = expression("Gamma(2,1);"~sample~size~5),
+     lwd = 2)
+axis(side = 1)
+lines(x = traces[[3]]$x, 
+      y = traces[[3]]$yclt,
+      lty = 2,
+      lwd = 2)
+
+
+
+
+
+
+
+plot(x = traces[[4]]$x, 
+     y = traces[[4]]$yex,
+     type = "l",
+     xlab = expression(bar(italic(X))),
+     ylab = "",
+     axes = FALSE,
+     main = expression("Gamma(2,1);"~sample~size~25),
+     lwd = 2)
+axis(side = 1)
+lines(x = traces[[4]]$x, 
+      y = traces[[4]]$yclt,
+      lty = 2,
+      lwd = 2)
+
+
+
+
+
+
+
+plot(x = traces[[5]]$x, 
+     y = traces[[5]]$yex,
+     type = "l",
+     xlab = expression(bar(italic(X))),
+     ylab = "",
+     axes = FALSE,
+     main = expression("Gamma(2,1);"~sample~size~50),
+     lwd = 2)
+axis(side = 1)
+lines(x = traces[[5]]$x, 
+      y = traces[[5]]$yclt,
+      lty = 2,
+      lwd = 2)
+
+
+
+
+
+
+
+plot(x = traces[[6]]$x, 
+     y = traces[[6]]$yex,
+     type = "l",
+     xlab = expression(bar(italic(X))),
+     ylab = "",
+     axes = FALSE,
+     main = expression("Gamma(2,1);"~sample~size~100),
+     lwd = 2)
+axis(side = 1)
+lines(x = traces[[6]]$x, 
+      y = traces[[6]]$yclt,
+      lty = 2,
+      lwd = 2)
+```
+
+
