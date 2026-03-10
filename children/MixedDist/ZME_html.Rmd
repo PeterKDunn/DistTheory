@@ -1,0 +1,111 @@
+
+Various zero-modified exponential distributions are shown in the visualisation below, for different values of\ $\lambda$ and\ $p.
+
+
+
+```{r, ZMEDemo, echo=FALSE, fig.align="center", fig.cap="Zero-modified exponential distributions."}
+library(plotly)
+
+ps      <- c(0.3, 0.6, 0.9)
+lambdas <- c(0.5, 2)
+x_vals  <- seq(0, 10, length.out = 500)
+
+fig <- plot_ly(width = 650, height = 450)
+
+counter <- 1
+for (LAMBDA in lambdas) {
+  for (P in ps) {
+    p0   <- 1 - P
+    dens <- P * dexp(x_vals, rate = LAMBDA)
+
+    fig <- fig %>% add_trace(
+      x = 0, y = p0,
+      type = "scatter", mode = "markers",
+      marker = list(size = 12, color = "steelblue"),
+      visible = (counter == 1),
+      name = paste0("P(X=0) = ", round(p0, 2))
+    )
+    fig <- fig %>% add_trace(
+      x = x_vals, y = dens,
+      type = "scatter", mode = "lines",
+      line = list(width = 2, color = "steelblue"),
+      visible = (counter == 1),
+      showlegend = FALSE
+    )
+    counter <- counter + 2
+  }
+}
+
+total_traces <- counter - 1
+
+# Build flat button list in loop order (lambda outer, p inner)
+buttons <- list()
+btn_idx <- 1
+for (li in seq_along(lambdas)) {
+  for (pi in seq_along(ps)) {
+    LAMBDA <- lambdas[li]
+    P      <- ps[pi]
+    tidx   <- (li - 1) * length(ps) * 2 + (pi - 1) * 2 + 1
+    vis    <- rep(FALSE, total_traces)
+    vis[c(tidx, tidx + 1)] <- TRUE
+
+    buttons[[btn_idx]] <- list(
+      method = "update",
+      args   = list(
+        list(visible = as.list(vis)),
+        list(
+          title = paste0("Zero-Modified Exponential:  p = ", P, ", \u03bb = ", LAMBDA),
+          annotations = list(
+            list(
+              x = 0.95, y = 0.95,
+              xref = "paper", yref = "paper",
+              text = paste0("P(X=0) = ", round(1 - P, 2),
+                            "<br>P(X>0) = ", P),
+              showarrow = FALSE,
+              xanchor = "right", yanchor = "top",
+              font = list(size = 12, color = "black")
+            )
+          )
+        )
+      ),
+      label = paste0("p=", P, ", \u03bb=", LAMBDA)
+    )
+    btn_idx <- btn_idx + 1
+  }
+}
+
+# top row = lambda=0.5 (buttons 1,2,3), bottom row = lambda=2 (buttons 4,5,6)
+top_row_buttons    <- buttons[1:3]
+bottom_row_buttons <- buttons[4:6]
+
+fig <- fig %>%
+  layout(
+    title = list(text = "Zero-Modified Exponential Distribution", x = 0.5),
+    xaxis = list(title = "x", range = c(-0.2, 10)),
+    yaxis = list(title = "Density / P(X = 0)", range = c(0, 1.05)),
+    margin = list(t = 50, b = 120),
+    updatemenus = list(
+      list(
+        type      = "buttons",
+        direction = "right",
+        x         = 0,
+        y         = -0.18,
+        xanchor   = "left",
+        yanchor   = "top",
+        buttons   = top_row_buttons
+      ),
+      list(
+        type      = "buttons",
+        direction = "right",
+        x         = 0,
+        y         = -0.30,
+        xanchor   = "left",
+        yanchor   = "top",
+        buttons   = bottom_row_buttons
+      )
+    )
+  ) %>%
+  config(displayModeBar = FALSE)
+
+fig
+```
