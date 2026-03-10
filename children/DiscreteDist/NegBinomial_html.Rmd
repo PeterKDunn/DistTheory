@@ -5,7 +5,7 @@ Various negative binomial distributions are shown in the visualisation below, fo
 ```{r, NegBinomialDemo, echo=FALSE, fig.align="center", fig.cap="Negative binomial distributions."}
 library(plotly)
 
-# --- Parameters ---
+###  Parameters  ###
 rs <- c(5, 10)       # Number of successes
 ps <- c(0.2, 0.5)    # Success probabilities
 x_max <- 50           # Maximum number of failures to display
@@ -16,14 +16,17 @@ x <- 0:x_max
 max_y <- max(sapply(rs, function(r) sapply(ps, function(p) dnbinom(x, size = r, prob = p))))
 yrange <- c(0, max_y * 1.05)  # small padding
 
-# --- Create figure ---
-fig <- plot_ly(width = 700, height = 450)
+###  Create figure  ###
+fig <- plot_ly(width = 700, 
+               height = 450)
 
 # Add all traces, first trace visible
 trace_index <- 1
 for(r in rs){
   for(p in ps){
-    y <- dnbinom(x, size = r, prob = p)  # PMF
+    y <- dnbinom(x, 
+                 size = r, 
+                 prob = p)  # PMF
     
     fig <- fig %>% add_trace(
       x = x,
@@ -32,7 +35,9 @@ for(r in rs){
       mode = "lines+markers",
       line = list(color = "steelblue", width = 2, dash = "dash"),
       marker = list(size = 8),
-      visible = ifelse(trace_index == 1, TRUE, FALSE),  # FIRST trace visible
+      visible = ifelse(trace_index == 1, 
+                       TRUE, 
+                       FALSE),  # FIRST trace visible
       name = paste0("r=", r, ", p=", p),
       showlegend = FALSE
     )
@@ -41,7 +46,7 @@ for(r in rs){
   }
 }
 
-# --- Build buttons ---
+###  Build buttons  ###
 buttons <- list()
 trace_index <- 1
 for(r in rs){
@@ -62,12 +67,15 @@ for(r in rs){
           annotations = list(
             list(
               x = 0.95, y = 0.95,
-              xref = "paper", yref = "paper",
-              text = paste0("mean=", round(mean_val,2),
-                            "<br>var=", round(var_val,2)),
+              xref = "paper", 
+              yref = "paper",
+              text = paste0("mean=", round(mean_val, 2),
+                            "<br>var=", round(var_val, 2)),
               showarrow = FALSE,
-              xanchor = "right", yanchor = "top",
-              font = list(size = 12, color = "black")
+              xanchor = "right", 
+              yanchor = "top",
+              font = list(size = 12, 
+                          color = "black")
             )
           )
         )
@@ -79,7 +87,7 @@ for(r in rs){
   }
 }
 
-# --- Arrange buttons in 2x2 grid ---
+###  Arrange buttons in 2x2 grid  ###
 top_row_buttons <- buttons[sapply(buttons, function(b) grepl("r=5", b$label))]
 bottom_row_buttons <- buttons[sapply(buttons, function(b) grepl("r=10", b$label))]
 

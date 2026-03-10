@@ -6,34 +6,41 @@ Various binomial distributions are shown in the visualisation below, for differe
 ```{r, BinomialDemo, echo=FALSE, fig.align="center", fig.cap="Poisson distributions."}
 library(plotly)
 
-# --- Parameters ---
+###  Parameters  ###
 ns <- c(10, 20)      # Number of trials
 ps <- c(0.2, 0.5)    # Success probabilities
 x_max <- max(ns)     # Maximum x (number of successes) to display
 
 x <- 0:x_max
 
-# Compute y-axis range for all combinations (to keep axis consistent)
+### Compute y-axis range for all combinations (to keep axis consistent)
 max_y <- max(sapply(ns, function(n) sapply(ps, function(p) dbinom(x, size = n, prob = p))))
 yrange <- c(0, max_y * 1.05)  # small padding
 
-# --- Create figure ---
-fig <- plot_ly(width = 700, height = 450)
+###  Create figure  ###
+fig <- plot_ly(width = 700, 
+               height = 450)
 
 # Add all traces, first trace visible
 trace_index <- 1
 for(n in ns){
   for(p in ps){
-    y <- dbinom(x, size = n, prob = p)  # PMF
+    y <- dbinom(x, 
+                size = n, 
+                prob = p)  # PMF
     
     fig <- fig %>% add_trace(
       x = x,
       y = y,
       type = "scatter",
       mode = "lines+markers",
-      line = list(color = "darkgreen", width = 2, dash = "dash"),
+      line = list(color = "darkgreen", 
+                  width = 2, 
+                  dash = "dash"),
       marker = list(size = 8),
-      visible = ifelse(trace_index == 1, TRUE, FALSE),  # first trace visible
+      visible = ifelse(trace_index == 1, 
+                       TRUE, 
+                       FALSE),  # first trace visible
       name = paste0("n=", n, ", p=", p),
       showlegend = FALSE
     )
@@ -42,12 +49,14 @@ for(n in ns){
   }
 }
 
-# --- Build buttons ---
+###  Build buttons  ###
 buttons <- list()
 trace_index <- 1
+
 for(n in ns){
   for(p in ps){
-    vis <- rep(FALSE, length(ns) * length(ps))
+    vis <- rep(FALSE, 
+               length(ns) * length(ps))
     vis[trace_index] <- TRUE
     
     mean_val <- n * p
@@ -62,13 +71,17 @@ for(n in ns){
           yaxis = list(range = yrange),
           annotations = list(
             list(
-              x = 0.95, y = 0.95,
-              xref = "paper", yref = "paper",
+              x = 0.95, 
+              y = 0.95,
+              xref = "paper", 
+              yref = "paper",
               text = paste0("mean=", round(mean_val,2),
                             "<br>var=", round(var_val,2)),
               showarrow = FALSE,
-              xanchor = "right", yanchor = "top",
-              font = list(size = 12, color = "black")
+              xanchor = "right", 
+              yanchor = "top",
+              font = list(size = 12, 
+                          color = "black")
             )
           )
         )
@@ -80,7 +93,7 @@ for(n in ns){
   }
 }
 
-# --- Arrange buttons in 2x2 grid ---
+###  Arrange buttons in 2x2 grid  ###
 top_row_buttons <- buttons[sapply(buttons, function(b) grepl("n=10", b$label))]
 bottom_row_buttons <- buttons[sapply(buttons, function(b) grepl("n=20", b$label))]
 

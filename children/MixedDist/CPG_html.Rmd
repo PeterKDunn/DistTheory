@@ -4,7 +4,7 @@ Various compound Poisson-gamma distributions are shown in the visualisation belo
 
 
 ```{r, CPGDemo, echo=FALSE, fig.align="center", fig.cap="Compound Poisson-gamma distributions."}
-
+###  Parameters  ###
 lambdas <- c(0.5, 2)
 alphas  <- c(1, 2)
 betas   <- c(1, 2)
@@ -15,27 +15,37 @@ x_vals  <- c(0, seq(0.01, 15,
 fig <- plot_ly(width = 700, 
                height = 480)
 trace_idx <- 1
-trace_map <- list(lambda0 = numeric(0), lambda2 = numeric(0))
+trace_map <- list(lambda0 = numeric(0), 
+                  lambda2 = numeric(0))
 
+###  Traces  ###
 for (LAMBDA in lambdas) {
   for (ALPHA in alphas) {
     for (BETA in betas) {
       mu        <- LAMBDA * ALPHA * BETA
       phi       <- BETA
       p         <- 1.5
-      dens_vals <- dtweedie(x_vals, mu = mu, phi = phi, power = p)
+      dens_vals <- dtweedie(x_vals, 
+                            mu = mu, 
+                            phi = phi, 
+                            power = p)
       p0        <- exp(-LAMBDA)
 
       fig <- fig %>% add_trace(
-        x = 0, y = p0,
-        type = "scatter", mode = "markers",
-        marker = list(size = 10, color = "red"),
+        x = 0, 
+        y = p0,
+        type = "scatter", 
+        mode = "markers",
+        marker = list(size = 10, 
+                      color = "red"),
         visible = (trace_idx == 1),
         name = paste0("\u03bb=", LAMBDA, ", \u03b1=", ALPHA, ", \u03b2=", BETA)
       )
       fig <- fig %>% add_trace(
-        x = x_vals, y = dens_vals,
-        type = "scatter", mode = "lines",
+        x = x_vals, 
+        y = dens_vals,
+        type = "scatter", 
+        mode = "lines",
         line = list(width = 2),
         visible = (trace_idx == 1),
         showlegend = FALSE
@@ -48,6 +58,8 @@ for (LAMBDA in lambdas) {
   }
 }
 
+
+###  Buttons  ###
 build_buttons <- function(trace_indices, LAMBDA) {
   buttons <- list()
   idx <- 1
@@ -70,41 +82,67 @@ build_buttons <- function(trace_indices, LAMBDA) {
   return(buttons)
 }
 
+
+###  DISPLAY  ###
 buttons_lambda0 <- build_buttons(trace_map$lambda0, LAMBDA = 0.5)
 buttons_lambda2 <- build_buttons(trace_map$lambda2, LAMBDA = 2)
 
 fig <- fig %>%
   layout(
     title  = "Compound Poisson-Gamma Distribution (Tweedie Approx.)",
-    xaxis  = list(title = "x", range = c(0, 15)),
+    xaxis  = list(title = "x", 
+                  range = c(0, 15)),
     yaxis  = list(title = "Density / P(X=0)"),
-    margin = list(t = 60, b = 200),
+    margin = list(t = 60, 
+                  b = 200),
     annotations = list(
       list(text = "\u03bb = 0.5",
-           x = 0.18, y = -0.25,
-           xref = "paper", yref = "paper",
+           x = 0.18, 
+           y = -0.25,
+           xref = "paper", 
+           yref = "paper",
            showarrow = FALSE,
-           font = list(size = 13, color = "#2c3e50"),
+           font = list(size = 13, 
+                       color = "#2c3e50"),
            xanchor = "center"),
       list(text = "\u03bb = 2",
-           x = 0.68, y = -0.25,
-           xref = "paper", yref = "paper",
+           x = 0.68, 
+           y = -0.25,
+           xref = "paper", 
+           yref = "paper",
            showarrow = FALSE,
-           font = list(size = 13, color = "#2c3e50"),
+           font = list(size = 13, 
+                       color = "#2c3e50"),
            xanchor = "center")
     ),
     updatemenus = list(
-      list(type = "buttons", direction = "right",
-           x = 0.18, y = -0.32, xanchor = "center", yanchor = "top",
+      list(type = "buttons", 
+           direction = "right",
+           x = 0.18, 
+           y = -0.32, 
+           xanchor = "center", 
+           yanchor = "top",
            buttons = buttons_lambda0[1:2]),
-      list(type = "buttons", direction = "right",
-           x = 0.18, y = -0.44, xanchor = "center", yanchor = "top",
+      list(type = "buttons", 
+           direction = "right",
+           x = 0.18, 
+           y = -0.44, 
+           xanchor = "center", 
+           yanchor = "top",
            buttons = buttons_lambda0[3:4]),
-      list(type = "buttons", direction = "right",
-           x = 0.68, y = -0.32, xanchor = "center", yanchor = "top",
+      list(type = "buttons", 
+           direction = "right",
+           x = 0.68, 
+           y = -0.32, 
+           xanchor = "center", 
+           yanchor = "top",
            buttons = buttons_lambda2[1:2]),
-      list(type = "buttons", direction = "right",
-           x = 0.68, y = -0.44, xanchor = "center", yanchor = "top",
+      list(type = "buttons", 
+           direction = "right",
+           x = 0.68, 
+           y = -0.44, 
+           xanchor = "center", 
+           yanchor = "top",
            buttons = buttons_lambda2[3:4])
     )
   ) %>%

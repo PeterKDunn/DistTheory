@@ -5,29 +5,37 @@ Various gamma distributions are shown in the visualisation below, for different 
 
 
 ```{r, GammaDemo, echo=FALSE, fig.align="center", fig.cap="Gamma distributions."}
-# --- Parameters ---
+###  Parameters  ###
 alphas <- c(1, 2, 3)     # shape parameter α
 betas  <- c(1, 2)        # scale parameter β
 
-x <- seq(0, 15, length.out = 600)  # x grid for gamma PDF
+x <- seq(0, 15, 
+         length.out = 600)  # x grid for gamma PDF
 
-# Compute axis ranges
+###  Compute axis ranges  ###
 xrange <- c(0, 15)
 # maximum of gamma PDFs over all alpha/beta
-yrange <- c(0, max(sapply(alphas, function(a) sapply(betas, function(b) dgamma((a-1)*b, shape=a, scale=b))))*1.1)
+yrange <- c(0, max(sapply(alphas, 
+                          function(a) sapply(betas, function(b) dgamma((a - 1) * b, 
+                                                                       shape = a, 
+                                                                       scale = b)))) * 1.1)
 
-# --- Create figure ---
-fig <- plot_ly(width = 700, height = 450)
+### Create figure ###
+fig <- plot_ly(width = 700, 
+               height = 450)
 
-# Add all traces
+### Add all traces ###
 counter <- 1
 for(a in alphas){
   for(b in betas){
     fig <- fig %>% add_lines(
       x = x,
-      y = dgamma(x, shape = a, scale = b),
+      y = dgamma(x, 
+                 shape = a, 
+                 scale = b),
       visible = FALSE,
-      line = list(color = "steelblue", width = 2.5),
+      line = list(color = "steelblue", 
+                  width = 2.5),
       name = paste0("α=", a, ", β=", b),
       showlegend = FALSE
     )
@@ -35,22 +43,23 @@ for(a in alphas){
   }
 }
 
-# --- Make default trace visible (first alpha/beta) ---
+### Make default trace visible (first alpha/beta) ###
 for(i in seq_along(fig$x$data)){
   trace <- fig$x$data[[i]]
-  if(trace$name == paste0("α=", alphas[1], ", β=", betas[1])){
+  if(trace$name == paste0("α = ", alphas[1], ", β = ", betas[1])){
     fig$x$data[[i]]$visible <- TRUE
   } else {
     fig$x$data[[i]]$visible <- FALSE
   }
 }
 
-# --- Build buttons ---
+###  Build buttons ###
 buttons <- list()
 counter <- 1
 for(a in alphas){
   for(b in betas){
-    vis <- rep(FALSE, length(alphas)*length(betas))
+    vis <- rep(FALSE, 
+               length(alphas) * length(betas))
     vis[counter] <- TRUE
     
     # Compute mean and variance for this α, β
@@ -67,12 +76,16 @@ for(a in alphas){
           yaxis = list(range = yrange),
           annotations = list(
             list(
-              x = 0.95, y = 0.95,
-              xref = "paper", yref = "paper",
+              x = 0.95, 
+              y = 0.95,
+              xref = "paper", 
+              yref = "paper",
               text = paste0("Mean = ", round(mean_val,2), "<br>Var = ", round(var_val,2)),
               showarrow = FALSE,
-              xanchor = "right", yanchor = "top",
-              font = list(size = 12, color = "black")
+              xanchor = "right", 
+              yanchor = "top",
+              font = list(size = 12, 
+                          color = "black")
             )
           )
         )
@@ -84,7 +97,7 @@ for(a in alphas){
   }
 }
 
-# --- Arrange buttons in 2 rows (β=1 top, β=2 bottom), 3 columns for α ---
+# Arrange buttons in 2 rows (β=1 top, β=2 bottom), 3 columns for α 
 # Since we have 3 alphas and 2 betas, top row = β=1, bottom row = β=2
 top_row_buttons    <- buttons[seq(1, length(buttons), 2)]  # β=1
 bottom_row_buttons <- buttons[seq(2, length(buttons), 2)]  # β=2

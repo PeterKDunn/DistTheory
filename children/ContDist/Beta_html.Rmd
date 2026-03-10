@@ -9,22 +9,29 @@ ns <- c(0.5, 1.8)      # n parameter
 
 x <- seq(0, 1, length.out = 600)
 
-# Compute y-range
-yrange <- c(0, max(sapply(ms, function(m) sapply(ns, function(n) dbeta((m-1)/(m+n-2), shape1 = m, shape2 = n))))*1.1)
+### Compute y-range
+yrange <- c(0, max(sapply(ms, 
+                          function(m) sapply(ns, function(n) dbeta((m - 1)/(m + n - 2), 
+                                                                   shape1 = m, 
+                                                                   shape2 = n)))) * 1.1)
 xrange <- c(0, 1)
 
-# --- Create figure ---
-fig <- plot_ly(width = 700, height = 450)
+###  Create figure  ###
+fig <- plot_ly(width = 700, 
+               height = 450)
 
-# Add all traces
+### Add all traces
 counter <- 1
 for(m in ms){
   for(n in ns){
     fig <- fig %>% add_lines(
       x = x,
-      y = dbeta(x, shape1 = m, shape2 = n),
+      y = dbeta(x, 
+                shape1 = m, 
+                shape2 = n),
       visible = FALSE,
-      line = list(color = "darkgreen", width = 2.5),
+      line = list(color = "darkgreen", 
+                  width = 2.5),
       name = paste0("m=", m, ", n=", n),
       showlegend = FALSE
     )
@@ -32,7 +39,7 @@ for(m in ms){
   }
 }
 
-# --- Set default visible trace (first m/n) ---
+###  Set default visible trace (first m/n)  ###
 for(i in seq_along(fig$x$data)){
   trace <- fig$x$data[[i]]
   if(trace$name == paste0("m=", ms[1], ", n=", ns[1])){
@@ -42,7 +49,7 @@ for(i in seq_along(fig$x$data)){
   }
 }
 
-# --- Create buttons with dynamic mean/variance annotation ---
+###  Create buttons with dynamic mean/variance annotation  ###
 buttons <- list()
 counter <- 1
 for(m in ms){
@@ -50,8 +57,8 @@ for(m in ms){
     vis <- rep(FALSE, length(ms)*length(ns))
     vis[counter] <- TRUE
     
-    mean_val <- m / (m+n)
-    var_val  <- (m*n)/((m+n)^2 * (m+n+1))
+    mean_val <- m / (m + n)
+    var_val  <- (m * n)/((m + n)^2 * (m + n + 1))
     
     buttons[[counter]] <- list(
       method = "update",
@@ -63,12 +70,16 @@ for(m in ms){
           yaxis = list(range = yrange),
           annotations = list(
             list(
-              x = 0.95, y = 0.95,
-              xref = "paper", yref = "paper",
+              x = 0.95, 
+              y = 0.95,
+              xref = "paper", 
+              yref = "paper",
               text = paste0("mean=", round(mean_val,2), "<br>var=", round(var_val,2)),
               showarrow = FALSE,
-              xanchor = "right", yanchor = "top",
-              font = list(size = 12, color = "black")
+              xanchor = "right", 
+              yanchor = "top",
+              font = list(size = 12, 
+                          color = "black")
             )
           )
         )
@@ -80,11 +91,11 @@ for(m in ms){
   }
 }
 
-# --- Arrange buttons in 2 rows (n=1 top, n=2 bottom) ---
+###  Arrange buttons in 2 rows (n=1 top, n=2 bottom)  ###
 top_row_buttons <- buttons[seq(1, length(buttons), 2)]
 bottom_row_buttons <- buttons[seq(2, length(buttons), 2)]
 
-# --- Layout ---
+###  Layout  ###
 fig <- fig %>% layout(
   title = list(text = "Beta distribution", x = 0.5),
   xaxis = list(title = "x", range = xrange),
