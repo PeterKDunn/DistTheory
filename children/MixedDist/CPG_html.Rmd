@@ -1,0 +1,108 @@
+
+Various Poisson distributions are shown in the visualisation below, for different values of\ $\lambda$.
+
+
+
+```{r, PoissonDemo, echo=FALSE, fig.align="center", fig.cap="Poisson distributions."}
+library(plotly)
+library(tweedie)
+
+# --- Parameters ---
+lambdas <- c(0.5, 2)       # Two lambda values for left/right grids
+alphas  <- c(1, 2)         # Gamma shape
+betas   <- c(1, 2)         # Gamma scale
+
+x_vals <- seq(0, 15, length.out = 500)  # x-axis for density
+
+fig <- plot_ly(width = 1200, height = 600)
+
+trace_idx <- 1
+trace_map <- list(lambda0 = numeric(0), lambda2 = numeric(0))  
+
+# --- Generate all traces ---
+for(LAMBDA in lambdas){
+  for(ALPHA in alphas){
+    for(BETA in betas){
+      
+      # Map lambda, alpha, beta -> Tweedie parameters
+      mu <- LAMBDA * ALPHA * BETA           # mean of compound distribution
+      phi <- BETA                            # dispersion approximation
+      p <- 1.5                               # compound Poisson-Gamma corresponds to 1<p<2
+      # note: dtweedie returns density scaled for continuous part; point mass at zero separately
+      
+      # Continuous density
+      dens_vals <- dtweedie(x_vals, mu=mu, phi=phi, power=p)
+      
+      # Probability mass at zero
+      p0 <- exp(-LAMBDA)
+      
+      # Add zero mass marker
+      fig <- fig %>% add_trace(
+        x=0, y=p0,
+        type="scatter", mode="markers",
+        marker=list(size=10, color="red"),
+        visible=(trace_idx==1),
+        name=paste0("λ=", LAMBDA, ", α=", ALPHA, ", β=", BETA)
+      )
+      
+      # Add continuous density
+      fig <- fig %>% add_trace(
+        x=x_vals, y=dens_vals,
+        type="scatter", mode="lines",
+        line=list(width=2),
+        visible=(trace_idx==1),
+        showlegend=FALSE
+      )
+      
+      # Store trace indices for buttons
+      if(LAMBDA == 0.5) trace_map$lambda0 <- c(trace_map$lambda0, trace_idx, trace_idx+1)
+      if(LAMBDA == 2)   trace_map$lambda2 <- c(trace_map$lambda2, trace_idx, trace_idx+1)
+      
+      trace_idx <- trace_idx + 2
+    }
+  }
+}
+
+# --- Build buttons ---
+build_buttons <- function(trace_indices, LAMBDA){
+  buttons <- list()
+  idx <- 1
+  for(ALPHA in alphas){
+    for(BETA in betas){
+      vis <- rep(FALSE, trace_idx-1)
+      vis[trace_indices[idx:(idx+1)]] <- TRUE
+      buttons[[length(buttons)+1]] <- list(
+        method="update",
+        args=list(
+          list(visible=vis),
+          list(title=paste0("Compound Poisson-Gamma: λ=", LAMBDA,
+                            ", α=", ALPHA, ", β=", BETA))
+        ),
+        label=paste0("α=", ALPHA, ", β=", BETA)
+      )
+      idx <- idx + 2
+    }
+  }
+  return(buttons)
+}
+
+buttons_lambda0 <- build_buttons(trace_map$lambda0, LAMBDA=0.5)
+buttons_lambda2 <- build_buttons(trace_map$lambda2, LAMBDA=2)
+
+# --- Layout with two vertical button grids outside plot ---
+fig <- fig %>% layout(
+  title="Compound Poisson-Gamma Distribution (Tweedie Approx.)",
+  xaxis=list(title="x", range=c(0,15)),
+  yaxis=list(title="Density / P(X=0)"),
+  updatemenus=list(
+    # left vertical buttons
+    list(type="buttons", direction="down",
+         x=-0.05, y=1, xanchor="left", yanchor="top", buttons=buttons_lambda0),
+    # right vertical buttons
+    list(type="buttons", direction="down",
+         x=1.05, y=1, xanchor="right", yanchor="top", buttons=buttons_lambda2)
+  )
+)
+
+fig
+```
