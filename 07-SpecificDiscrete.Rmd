@@ -36,7 +36,7 @@ If a random variable\ $X$ with range $\{a, a + 1, a + 2, \dots, b\}$, where\ $a$
    (\#eq:DiscreteUniform)
 \end{equation}
 then\ $X$ has a *discrete uniform distribution*.
-We write $X\sim U(a, b)$ or $X\sim \text{Unif}(a, b)$.
+We write $X\sim U(a, b)$ or $X\sim \text{Uniform}(a, b)$.
 :::
 
 
@@ -50,28 +50,19 @@ The symbol $\sim$ means 'is distributed with'; hence, '$X\sim U(a, b)$' means '$
 A plot of the probability function for a discrete uniform distribution is shown in Fig. \@ref(fig:DiscreteUnform).
 
 
-
-
-```{r DiscreteUnform, echo=FALSE, fig.align="center", fig.cap="The probability function for the discrete uniform distribution $\\text{Unif}(a, b)$.", fig.width=5, fig.height=3.5, out.width='50%'}
+```{r DiscreteUnform, echo=FALSE, fig.align="center", fig.cap="The probability function for the discrete uniform distribution $\\text{Uniform}(a, b)$.", fig.width=5, fig.height=3.5, out.width='50%'}
 x <- c(1:4, 7)
 y <- rep(1, length(x))
 
-plot(x = x,
-     y = y,
-     ylim = c(0, 1.3),
-     type = "h",
-     lwd = 2,
-     axes = FALSE,
-     lty = 3,
-     col = "grey",
-     main = "A discrete uniform distribution",
-     xlab = expression(italic(x)),
-     ylab = "Probability function",
-     las = 1)
-points(x = x,
-       y = y,
-       pch = 19)
-       
+plotDiscrete(x,
+             y,
+             type = "MF",
+             lwd = 2,
+             axes = FALSE,
+             main = "A discrete uniform distribution",
+             xlab = expression(italic(x)),
+             ylab = "Probability function")
+
 # Ellipses
 points( x = c(5.3, 5.5, 5.7),
         y = c(0.4, 0.4, 0.4),
@@ -83,8 +74,6 @@ points( x = c(5.3, 5.5, 5.7),
         col = plotColour1,
         cex = 0.4,
         pch = 20) # Smaller dots than  pch = 19
-
-
 
 axis(side = 2,
      at = c(0, 1),
@@ -196,7 +185,7 @@ More succinctly:
 :::{.definition #BrnoulliDistribution name="Bernoulli distribution"}
 Let\ $X$ be the number of successes in a single trial with $\Pr(\text{Success}) = p$ ($0\le p\le 1$).
 Then\ $X$ has a *Bernoulli probability distribution* with parameter\ $p$ and probability function given by \@ref(eq:BernoulliPMF).
-We write $X\sim\text{Bern}(p)$.
+We write $X\sim\text{Bernoulli}(p)$.
 :::
 
 
@@ -229,6 +218,28 @@ These ideas also introduces a common idea of a *Bernoulli trial*.
 A *Bernoulli trial* is a random process with only two possible outcomes, usually labelled 'success'\ $s$ and 'failure'\ $f$.
 The sample space can be denoted by $S = \{ s, f\}$.
 :::
+
+
+A plot of the probability function for a Bernouuli distribution is very simple, and shown in Fig. \@ref(fig:Bernoulli).
+
+
+```{r Bernoulli, echo=FALSE, fig.align="center", fig.cap="The probability function for the Bernoulli distribution $\\text{Bernoulli}(a, b)$.", fig.width=5, fig.height=3.5, out.width='50%'}
+par(mfrow = c(1, 2))
+
+p <- 0.35
+
+x <- c(-1, 0, 1, 2)
+y <- c(0, 1-p, p, 0)
+
+plotDiscrete(x, 
+             y,
+             type = "MF")
+
+
+plotDiscrete(x, 
+             y,
+             type = "DF")
+```
 
 
 ### Properties {#BernoulliProperties}
@@ -336,13 +347,11 @@ Then\ $X$ has a *binomial probability distribution* with parameters\ $n$, $p$ an
    p_X(x; n, p) = \binom{n}{x} p^x q^{n - x} \quad\text{for $x = 0, 1, \dots, n$}.
    (\#eq:BinomialPMF)
 \end{equation}
-We write $X\sim\text{Bin}(n, p)$.
+We write $X\sim\text{Bin}(n, p)$ or $X\sim\text{Binomial}(n, p)$.
 :::
 
 
 The distribution function is complicated and is not given.
-
-
 
 
 ```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/Binomial_html.Rmd' }
@@ -522,7 +531,7 @@ A random variable\ $X$ has a *geometric distribution* if the probability functio
    (\#eq:GeometricPMF)
 \end{equation}
 where $q = 1 - p$ and $0 < p < 1$ is the parameter of the distribution.
-We write $X\sim\text{Geom}(p)$.
+We write $X\sim\text{Geom}(p)$ or $X\sim\text{Geometric}(p)$.
 :::
 
 
@@ -539,10 +548,18 @@ where $\lfloor z \rfloor$ is the *floor function*.\index{Floor function}
 :::
 
 
+This is the parameterisation used by **R**.
+
+
+```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/Geometric_html.Rmd' }
+```
+
+```{r, child = if (knitr::is_latex_output()) './children/DiscreteDist/Geometric_latex.Rmd'}
+```
+
+
 ### Properties {#GeometricProperties}
 
-This is the parameterisation used by **R**.
-The probability function for a geometric distribution for various values of\ $p$ is shown in Fig.\ \@ref(fig:Geometric).
 The following are the basic properties of the geometric distribution.
 
 :::{.theorem #GeometricProperties name="Geometric distribution properties"}
@@ -562,17 +579,6 @@ This is left as an exercise (Ex.\ \@ref(exr:GeometricPropertiesProof)).
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 The four **R** functions for working with the geometric distribution have the form `[dpqr]geom(prob)`, where `prob`${} = p$ (see Appendix \@ref(UseRDistributions)).
 :::
-
-
-
-```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/Geometric_html.Rmd' }
-```
-
-```{r, child = if (knitr::is_latex_output()) './children/DiscreteDist/Geometric_latex.Rmd'}
-```
-
-
-
 
 
 :::{.example #GeometricNetball name="Netball shooting"}
@@ -642,9 +648,9 @@ Each successes occurs with probability $p$, and each failures with probability $
 Then finally, the $r$th success occurs in the final trial with probability\ $p$.
 Hence the probability of observing the $r$th\ success after\ $x$ failures is
 \begin{align*}
-    \text{No. ways}
-    \times \Pr\big(\text{$x$ failures}\big) \times \Pr(\text{$r$ successes}) \\
-   &\binom{x + r - 1}{r - 1} 
+    & \text{No. ways}
+      \times \Pr\big(\text{$x$ failures}\big) \times \Pr(\text{$r$ successes}) \\
+   =& \binom{x + r - 1}{r - 1} 
     \times (1 - p)^{x} \times p^{r}.
 \end{align*}
 
@@ -665,10 +671,21 @@ We write $X\sim\text{NB}(r, p)$.
 :::
 
 The distribution function is complicated and is not given.
-The basic properties of the negative binomial distribution follow.
+
+
+
+```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/NegBinomial_html.Rmd' }
+```
+
+```{r, child = if (knitr::is_latex_output()) './children/DiscreteDist/NegBinomial_latex.Rmd'}
+```
+
 
 
 ### Properties: standard parameterisation {#NegBinProperties}
+
+The basic properties of the negative binomial distribution follow.
+
 
 :::{.theorem #NegBinomialProperties name="Negative binomial properties"}
 If $X\sim \text{NB}(r, p)$ with the probability function in Eq.\ \@ref(eq:NegativeBinomialPMF) then
@@ -710,17 +727,6 @@ The four **R** functions for working with the negative binomial distribution are
 ::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
 When $r = 1$, the negative binomial distribution is the same as the geometric distribution: the geometric distribution is a special case of the negative binomial.
 :::
-
-
-
-
-```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/NegBinomial_html.Rmd' }
-```
-
-```{r, child = if (knitr::is_latex_output()) './children/DiscreteDist/NegBinomial_latex.Rmd'}
-```
-
-
 
 
 :::{.example #DemonstrationNB name="Negative binomial"}
@@ -1058,15 +1064,11 @@ where $\lfloor z \rfloor$ is the *floor function*.\index{Floor function}
 :::
 
 
-
-
 ```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/Poisson_html.Rmd' }
 ```
 
 ```{r, child = if (knitr::is_latex_output()) './children/DiscreteDist/Poisson_latex.Rmd'}
 ```
-
-
 
 
 ### Properties {#PoissonProperties}
