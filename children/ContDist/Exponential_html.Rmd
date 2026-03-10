@@ -1,0 +1,78 @@
+
+Various exponential distributions are shown in the visualisation below, for different values of $\lambda = 1/\beta$.
+
+
+
+
+```{r, ExpDemo, echo=FALSE, fig.align="center", fig.cap="Exponential distributions."}
+lambdas <- c(0.5, 1, 2, 5, 10)
+
+# Build x grid and densities for each lambda
+traces <- lapply(lambdas, function(lambda) {
+  x    <- seq(0, 
+              10, 
+              length.out = 600)
+  y  <- dexp(x, 
+             rate = lambda)
+  list(x = x, 
+       y = y, 
+       lambda = lambda)
+})
+
+# Build figure
+fig <- plot_ly(width = 600, 
+               height = 400)
+
+for (i in seq_along(lambdas)) {
+  vis <- (i == 3)   # default
+  fig <- fig %>%
+    add_lines(x = traces[[i]]$x, 
+              y = traces[[i]]$y,
+              visible    = vis,
+              name = paste0("Lambda =", lambdas[i]),
+              showlegend = FALSE,
+              line       = list(color = "steelblue", width = 2.5))
+}
+
+# One button per lambda
+lambda_buttons <- lapply(seq_along(lambdas), function(i) {
+  vis <- rep(FALSE, length(lambdas) * 2)
+  vis[i] <- TRUE
+  list(
+    method = "update",
+    args   = list(
+      list(visible = as.list(vis)),
+      list(title  = paste0("Lambda = ", lambdas[i]))
+    ),
+    label  = paste0("lambda = ", lambdas[i])
+  )
+})
+
+fig <- fig %>% layout(
+  title  = list(
+    text = "PDF of an exponential distribution",
+    x = 0.5,
+    xanchor = "center"),
+  xaxis  = list(title = "X"),
+  yaxis  = list(title = "Density"),
+   margin = list(t = 60, 
+                 b = 110),
+  legend = list(orientation = "h", 
+                x = 0.65, 
+                y = 1.0),
+  updatemenus = list(
+    list(
+      type      = "buttons",
+      direction = "right",
+      x         = 0.0,
+      y         = -0.28,
+      xanchor   = "left",
+      buttons   = lambda_buttons
+    )
+  )
+) %>%
+  config(displayModeBar = FALSE)
+
+fig
+```
+
