@@ -242,7 +242,7 @@ for <span class="math inline">\((x_1, x_2, x_3) \in \mathcal{X}\)</span>.</p>
   = \sum_{\substack{(x_1, x_2, x_3) \in \mathcal{X}\\ x_1 + x_2 + x_3 = 10}} p(x_1,x_2,x_3).
 \]</span></p>
 <p>To obtain the answer in <strong>R</strong>, use:</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># List all possible outcomes of rolling three dice</span></span>
 <span><span class="va">dice_Outcomes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span>x1 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, </span>
 <span>                             x2 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, </span>
@@ -314,7 +314,7 @@ The range is
   = \frac{1}{6}.
 \]</span></p>
 <p>The answer can be obtained using integration, knowledge of volumes, or using a simulation in <strong>R</strong>:</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">30991</span><span class="op">)</span> <span class="co"># For reproducibility</span></span>
 <span></span>
 <span><span class="co"># Generate 1 000 000 random points in each dimension of the cube</span></span>
@@ -462,9 +462,270 @@ The probability that all dice show a value less than or equal to <span class="m
 \]</span></p>
 </div>
 </div>
-<div id="MultivariateExercises" class="section level2" number="11.8">
+<div id="BVNormalDistribution" class="section level2" number="11.8">
 <h2>
-<span class="header-section-number">11.8</span> Exercises<a class="anchor" aria-label="anchor" href="#MultivariateExercises"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.8</span> The bivariate normal distribution<a class="anchor" aria-label="anchor" href="#BVNormalDistribution"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+A specific example of a <em>continuous</em> multivariate distribution is the <em>bivariate normal distribution</em>.</p>
+<div class="definition">
+<p><span id="def:BVNormalDistribution" class="definition"><strong>Definition 11.3  (The bivariate normal distribution) </strong></span>If a pair of random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> have the joint PDF
+<span class="math display" id="eq:bivarnormalPDF">\[\begin{equation}
+   f_{X, Y}(x, y; \mu_x, \mu_Y, \sigma^2_X, \sigma^2_Y, \rho) =
+   \frac{1}{2\pi\sigma_X\sigma_Y\sqrt{1 - \rho^2}}\exp(-Q/2)
+   \tag{11.1}
+\end{equation}\]</span>
+where
+<span class="math display">\[
+   Q = \frac{1}{1-\rho^2}\left[
+                      \left(\frac{x-\mu_X}{\sigma_X}\right)^2 -
+                2\rho\left( \frac{x-\mu_X}{\sigma_X}\right)\left(\frac{y-\mu_Y}{\sigma_Y}\right)
+                +     \left(\frac{y-\mu_Y}{\sigma_Y}\right)^2 \right],
+\]</span>
+then <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> have a <em>bivariate normal distribution</em>.
+We write
+<span class="math display">\[
+   (X, Y) \sim N_2(\mu_X, \mu_Y, \sigma^2_X, \sigma^2_Y, \rho ).
+\]</span></p>
+</div>
+<p>A typical graph of the bivariate normal surface above the <span class="math inline">\(x\)</span>–<span class="math inline">\(y\)</span> plane is shown
+below.
+Showing <span class="math inline">\(\int^\infty_{-\infty}\!\int^\infty_{-\infty}f_{X,Y}(x,y)\,dx\,dy = 1\)</span> is not straightforward and involves writing Eq. <a href="ChapMultivariate.html#eq:bivarnormalPDF">(11.1)</a> using polar coordinates.</p>
+<p>Some important facts about the bivariate normal distribution are contained in the theorem below.</p>
+<div class="theorem">
+<p><span id="thm:BivarNormalProperties" class="theorem"><strong>Theorem 11.1  (Bivariate normal distribution properties) </strong></span>For <span class="math inline">\((X, Y)\)</span> with PDF given in Eq. <a href="ChapMultivariate.html#eq:bivarnormalPDF">(11.1)</a>:</p>
+<ol style="list-style-type: decimal">
+<li>The marginal distributions of <span class="math inline">\(X\)</span> and of <span class="math inline">\(Y\)</span> are <span class="math inline">\(N(\mu_X, \sigma^2_X)\)</span> and <span class="math inline">\(N(\mu_Y, \sigma^2_Y)\)</span> respectively.</li>
+<li>The parameter <span class="math inline">\(\rho\)</span> appearing in Eq. <a href="ChapMultivariate.html#eq:bivarnormalPDF">(11.1)</a> is the correlation coefficient between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</li>
+<li>the conditional distributions of <span class="math inline">\(X\)</span> given <span class="math inline">\(Y = y\)</span>, and of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X = x\)</span>, are respectively
+<span class="math display">\[\begin{align*}
+  &amp;N\left( \mu_X + \rho \sigma_X(y - \mu_Y)/\sigma_Y, \sigma^2_X(1 - \rho^2)\right); \\
+  &amp;N\left( \mu_Y + \rho \sigma_Y(x - \mu_X)/\sigma_X, \sigma^2_Y(1 - \rho^2)\right).
+  \end{align*}\]</span>
+</li>
+</ol>
+<div class="proof">
+<p><span id="unlabeled-div-60" class="proof"><em>Proof</em>. </span>Recall that the marginal PDF of <span class="math inline">\(X\)</span> is <span class="math inline">\(f_X(x) = \int^\infty_{-\infty} f_{X, Y}(x, y)\,dy\)</span>.
+In the integral, put <span class="math inline">\(u = (x - \mu_X)/\sigma_X, v = (y - \mu_Y)/\sigma_Y,\, dy = \sigma_Y\,dv\)</span> and complete the square in the exponent on <span class="math inline">\(v\)</span>:
+<span class="math display">\[\begin{align*}
+     g(x)
+     &amp;= \frac{1}{2\pi\sigma_X\sqrt{1 - \rho^2}\sigma_Y}\int^\infty_{-\infty}\exp\left\{ -\frac{1}{2(1 - \rho^2)}\left[ u^2 - 2\rho uv + v^2\right]\right\} \sigma_Y\,dv\\[2mm]
+     &amp;= \frac{1}{2\pi \sigma_X\sqrt{1 - \rho^2}}\int^\infty_{-\infty} \exp\left\{ -\frac{1}{2(1 - \rho^2)}\left[ (v - \rho u)^2 + u^2 - \rho^2u^2\right]\right\}\,dv\\[2mm]
+     &amp;= \frac{e^{-u^2/2}}{\sqrt{2\pi} \sigma_X} \ \underbrace{\int^\infty_{-\infty} \frac{1}{\sqrt{2\pi (1 - \rho^2)}} \exp\left\{ -\frac{1}{2(1 - \rho^2)}(v - \rho u)^2\right\}\,dv}_{=1}.
+\end{align*}\]</span>
+Replacing <span class="math inline">\(u\)</span> by <span class="math inline">\((x - \mu_X )/\sigma_X\)</span>, we see from the PDF that <span class="math inline">\(X \sim N(\mu_X, \sigma^2_X)\)</span>.
+Similarly for the marginal PDF of <span class="math inline">\(Y\)</span>; i.e., <span class="math inline">\(f_Y(y)\)</span>.</p>
+<p>To show that <span class="math inline">\(\rho\)</span> in Eq. <a href="ChapMultivariate.html#eq:bivarnormalPDF">(11.1)</a> is the correlation coefficient of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, recall that
+<span class="math display">\[\begin{align*}
+     \rho_{X,Y}
+     &amp;= \operatorname{Cov}(X,Y)/\sigma_X\sigma_Y=\operatorname{E}[(X-\mu_X)(Y - \mu_Y)]/\sigma_X\sigma_Y   \\[2mm]
+     &amp; = \int^\infty_{-\infty}\!\int^\infty_{-\infty} \frac{(x - \mu_X)}{\sigma_X}\frac{(y - \mu_Y)}{\sigma_Y}f(x,y)\,dx\,dy\\[2mm]
+     &amp;= \int^\infty_{-\infty}\!\int^\infty_{-\infty} uv\frac{1}{2\pi\sqrt{1 - \rho^2} \sigma_X\sigma_Y}\exp\left\{ -\frac {1}{2(1 - \rho^2)}[u^2 - 2\rho uv + v^2]\right\} \sigma_X\sigma_Y\,du\,dv.
+\end{align*}\]</span></p>
+<p>The exponent is
+<span class="math display">\[
+   -\frac{[(u - \rho v)^2 + v^2 - \rho^2 v^2]}{2(1 - \rho^2)}
+   = - \frac{1}{2} \left\{\frac{(u - \rho v)^2}{(1 - \rho^2)} + v^2\right\}.
+\]</span>
+Then:
+<span class="math display">\[\begin{align*}
+   \rho_{X, Y}
+   &amp;=\int^\infty_{-\infty}\frac{v e^{-v^2/2}}{\sqrt{2\pi}}\underbrace{\int^\infty_{-\infty} \frac{u}{\sqrt{2\pi
+  (1 - \rho^2)}}\exp\{ -(u - \rho v)^2/2(1 - \rho^2)\}\,du}_{\displaystyle{= \operatorname{E}[U]\text{ where } u \sim N(\rho
+  v, 1 - \rho^2) = \rho v}}\,dv \\[2mm]
+   &amp;= \rho \int^\infty_{-\infty} \frac{v^2}{\sqrt{2\pi}}e^{-v^2/2}\,dv\\[2mm]
+   &amp;= \rho\quad \text{since the integral is $\operatorname{E}[V^2]$ where $V \sim N(0,1)$.}
+\end{align*}\]</span></p>
+<p>In finding the conditional PDF of <span class="math inline">\(X\)</span> given <span class="math inline">\(Y = y\)</span>, use
+<span class="math display">\[
+   f_{X \mid Y = y}(x) = f_{X, Y}(x, y)/f_Y(y).
+\]</span>
+Then in this ratio, the constant is
+<span class="math display">\[
+  \frac{\sqrt{2\pi} \sigma_Y}{2\pi \sigma_X\sigma_Y \sqrt{1 - \rho^2}}
+  = \frac{1}{\sqrt{2\pi}\sigma_X\sqrt{1 - \rho^2}}.
+\]</span>
+The exponent is
+<span class="math display">\[\begin{align*}
+       &amp; \frac{\exp\left\{ -\left[ \displaystyle{\frac{(x - \mu_X)^2}{\sigma^2_X}} -
+  \displaystyle{\frac{2\rho(x - \mu_X)(y - \mu_Y)}{\sigma_X\sigma_Y}} +
+  \displaystyle{\frac{(y - \mu_Y)^2}{\sigma^2_Y}}\right] / 2(1 - \rho^2) \right\}  }{\exp\left[ -(y - \mu_Y)^2 / 2\sigma^2_Y\right]}\\[2mm]
+       &amp;= \exp\left\{ - \frac{1}{2(1 - \rho^2)} \left[ \frac{(x - \mu_X)^2}{\sigma^2_X} - \frac{2\rho (x - \mu_X)(y - \mu_Y)}{\sigma_X\sigma_Y} +
+  \frac{(y - \mu_Y)^2}{\sigma^2_Y} (1 - 1 + \rho^2)\right] \right\}\\[2mm]
+       &amp;= \exp\left\{ - \frac{1}{2\sigma^2_X(1 - \rho^2)}
+       \left[ (x - \mu_X)^2 - 2\rho \frac{\sigma_X}{\sigma_Y} (x - \mu_X)(y - \mu_Y) +
+       \frac{\rho^2 \sigma^2_X}{\sigma^2_Y}(y - \mu_Y)^2\right]\right\}\\[2mm]
+       &amp;= \exp \left\{ - \frac{1}{2(1 - \rho^2)\sigma^2_X} \left[ x - \mu_X - \rho\frac{\sigma_X}{\sigma_Y}(y - \mu_Y)\right]^2\right\}.
+\end{align*}\]</span>
+So the conditional distribution of <span class="math inline">\(X\)</span> given <span class="math inline">\(Y = y\)</span> is
+<span class="math display">\[
+   N\left( \mu_X + \rho\frac{\sigma_X}{\sigma_Y}(y - \mu_Y), \sigma^2_X(1 - \rho^2)\right).
+\]</span>
+Recall the interpretation of the conditional distribution of <span class="math inline">\(X\)</span> given <span class="math inline">\(Y = y\)</span> (Sect. <a href="ChapBivariate.html#ConditionalDistributions">5.5</a>) and note the shape of this density
+below.</p>
+</div>
+</div>
+<p>Comments about Theorem <a href="ChapMultivariate.html#thm:BivarNormalProperties">11.1</a>:</p>
+<ul>
+<li>From the first and third parts, <span class="math inline">\(\operatorname{E}[X] = \mu_X\)</span> and <span class="math inline">\(\operatorname{E}[X \mid Y = y] = \mu_X + \rho \sigma_X (y - \mu_Y)/\sigma_Y\)</span> (and similarly for <span class="math inline">\(Y\)</span>).
+Notice that <span class="math inline">\(\operatorname{E}[X \mid Y = y]\)</span> is a linear function of <span class="math inline">\(y\)</span>; i.e., if <span class="math inline">\((X, Y)\)</span> is bivariate normal, the regression line of <span class="math inline">\(Y\)</span> on <span class="math inline">\(X\)</span> (and <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>) is linear.</li>
+<li>An important result follows from the second part.
+If <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are uncorrelated (i.e., if <span class="math inline">\(\rho = 0\)</span>) then <span class="math inline">\(f_{X, Y}(x, y) = f_X(x) f_Y(y)\)</span> and thus <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent.
+That is, if two normally distributed random variables are uncorrelated, they are also independent.</li>
+</ul>
+<div class="example">
+<p><span id="exm:BivariateHeights" class="example"><strong>Example 11.3  (Bivariate normal: Heights) </strong></span><span class="citation">(<a href="references.html#ref-data:Marsh1988:ExploringData">Badiou, Marsh, and Gauchet 1988</a>)</span> gives data from <span class="math inline">\(200\)</span> married men and their wives from the OPCS study of heights and weights of adults in Great Britain in 1980.
+Histograms of the husbands’ and wives’ heights are given in Fig. <a href="ChapMultivariate.html#fig:HtsPlots">11.1</a> (left and centre panels); the marginal distributions are approximately normal.
+The scatterplot of the heights is shown in Fig. <a href="ChapMultivariate.html#fig:HtsPlots">11.1</a> (right panel).</p>
+<p>From the histograms, there is reason to suspect that a bivariate normal distribution would be appropriate.
+Using <span class="math inline">\(H\)</span> to refer to heights (in mm) of husbands and <span class="math inline">\(W\)</span> to the heights (in mm) of wives, the sample statistics are shown below (and where the estimate of the correlation is <span class="math inline">\(+0.364\)</span>):</p>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr class="header">
+<th>Statistic</th>
+<th>Husbands</th>
+<th>Wives</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Sample mean (in mm):</td>
+<td>1732</td>
+<td>1602</td>
+</tr>
+<tr class="even">
+<td>Sample std dev (in mm):</td>
+<td>68.8</td>
+<td>62.4</td>
+</tr>
+</tbody>
+</table></div>
+<p>Note that <span class="math inline">\(\rho\)</span> is positive; this implies taller men marry taller women on average.
+Using this sample information, the bivariate normal distribution can be estimated.
+This <span class="math inline">\(3\)</span>-dimensional density function can be difficult to plot on a two-dimensional page, but see
+below.</p>
+<p>The PDF for the bivariate normal distribution for the heights of the husbands and wives could be written down in the form of <a href="ChapMultivariate.html#eq:bivarnormalPDF">(11.1)</a> for the values of <span class="math inline">\(\mu_H\)</span>, <span class="math inline">\(\mu_W\)</span>, <span class="math inline">\(\sigma^2_H\)</span>, <span class="math inline">\(\sigma^2_W\)</span> and <span class="math inline">\(\rho\)</span> above, but this is tedious.</p>
+<p>Given the information, what is the probability that a randomly chosen man in the UK in 1980 who is <span class="math inline">\(173\,\text{cm}\)</span> tall had married a woman taller than himself?</p>
+<p>The information implies that <span class="math inline">\(H = 1730\)</span> is given (remembering the data are given in millimetres).
+So we need the <em>conditional distribution</em> of <span class="math inline">\(W \mid H = 1730\)</span>.
+Using the results above, this conditional distribution will have mean
+<span class="math display">\[\begin{align*}
+   b
+   &amp;= \mu_W + \rho\frac{\sigma_W}{\sigma_H}(y_H - \mu_H) \\
+   &amp;= 1602 + 0.364\frac{62.4}{68.8}(1730 - 1732) \\
+   &amp;= 1601.34
+\end{align*}\]</span>
+and variance
+<span class="math display">\[
+   \sigma_2^2(1 - \rho^2) = 62.4^2(1 - 0.364^2) = 377.85.
+\]</span>
+In summary, <span class="math inline">\(W \mid  (H = 1730) \sim N(1601.34, 3377.85)\)</span>.
+Note that this conditional distribution has a univariate normal distribution, and so probabilities such as <span class="math inline">\(W &gt; 1730\)</span> are easily determined.
+Then,
+<span class="math display">\[\begin{align*}
+   \Pr(W &gt; 1730 \mid H = 1730)
+   &amp;= \Pr\left( Z &gt; \frac{1730 - 1601.34}{\sqrt{3377.85}}\right) \\
+   &amp;= \Pr( Z &gt; 2.2137)\\
+   &amp;= 0.013.
+\end{align*}\]</span>
+Approximately <span class="math inline">\(1.3\)</span>% of males <span class="math inline">\(173\,\text{cm}\)</span> tall had married women taller than themselves in the UK in 1980.</p>
+</div>
+<div class="figure">
+<span style="display:block;" id="fig:HtsPlots"></span>
+<img src="11-Multivariate_files/figure-html/HtsPlots-1.png" alt="Plots of the heights data." width="100%"><p class="caption">
+FIGURE 11.1: Plots of the heights data.
+</p>
+</div>
+<pre><code>#&gt; INSIDE</code></pre>
+<p></p>
+</div>
+<div id="MultinomialDistribution" class="section level2" number="11.9">
+<h2>
+<span class="header-section-number">11.9</span> Multinomial distribution<a class="anchor" aria-label="anchor" href="#MultinomialDistribution"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+A specific example of a <em>discrete</em> multivariate distribution is the <em>multinomial distribution</em>, a generalization of the binomial distribution.</p>
+<div class="definition">
+<p><span id="def:MultinomialDistribution" class="definition"><strong>Definition 11.4  (Multinomial distribution) </strong></span>Consider an experiment with the the sample space partitioned as <span class="math inline">\(S = \{B_1, B_2, \ldots, B_k\}\)</span>.
+Let <span class="math inline">\(p_i = \Pr(B_i), \ i = 1, 2,\ldots k\)</span> where <span class="math inline">\(\sum_{i = 1}^k p_i = 1\)</span>.
+Suppose there are <span class="math inline">\(n\)</span> repetitions of the experiment in which <span class="math inline">\(p_i\)</span> is constant.
+Let the random variable <span class="math inline">\(X_i\)</span> be the number of times (in the <span class="math inline">\(n\)</span> repetitions) that the event <span class="math inline">\(B_i\)</span> occurs.
+In this situation, the random vector <span class="math inline">\((X_1, X_2, \dots, X_k)\)</span> is said to have a <em>multinomial distribution</em> with probability function
+<span class="math display" id="eq:Multinomial">\[\begin{equation}
+   \Pr(X_1 = x_1, X_2 = x_2, \ldots, X_k = x_k)
+   = \frac{n!}{x_1! \, x_2! \ldots x_k!}
+      p_1^{x_1}\, p_2^{x_2} \ldots p_k^{x_k},
+   \tag{11.2}
+\end{equation}\]</span>
+where <span class="math inline">\(\mathcal{R}_X = \{(x_1, \ldots x_k) : x_i = 0,1,\ldots,n, \, i = 1, 2, \ldots k, \, \sum_{i = 1}^k x_i = n\}\)</span>.</p>
+</div>
+<p>The part of Eq. <a href="ChapMultivariate.html#eq:Multinomial">(11.2)</a> involving factorials arises as the number of ways of arranging <span class="math inline">\(n\)</span> objects, <span class="math inline">\(x_1\)</span> of which are of the first kind, <span class="math inline">\(x_2\)</span> of which are of the second kind, etc.
+The above distribution is <span class="math inline">\((k - 1)\)</span>-variate since <span class="math inline">\(x_k = n-\sum_{i = 1}^{k - 1}x_i\)</span>.
+In particular if <span class="math inline">\(k = 2\)</span>, the multinomial distribution reduces to the binomial distribution which is a univariate distribution.</p>
+<p><span class="math inline">\(X_i\)</span> is the number of times (out of <span class="math inline">\(n\)</span>) that the event <span class="math inline">\(B_i\)</span>, which has probability <span class="math inline">\(p_i\)</span>, occurs.
+So the random variable <span class="math inline">\(X_i\)</span> clearly has a binomial distribution with parameters <span class="math inline">\(n\)</span> and <span class="math inline">\(p_i\)</span>.
+We see then that the marginal probability distribution of one of the components of a multinomial distribution is a binomial distribution.</p>
+<p>Notice that the distribution in Example <a href="ChapBivariate.html#exm:BVDiscreteTwoDice">5.6</a> is an example of a <em>trinomial distribution</em>.
+The probabilities shown in Table <a href="ChapBivariate.html#tab:BVTwoDice">5.3</a> can be expressed algebraically as
+<span class="math display">\[
+   \Pr(X = x, Y = y)
+   = \frac{2!}{x! \, y!(2 - x - y)!}
+      \left(\frac{1}{6}\right)^x\left(\frac{1}{6}\right)^y\left(\frac{2}{3}\right)^ {2 - x - y}
+\]</span>
+for <span class="math inline">\(x, y = 0 , 1 , 2\)</span>; <span class="math inline">\(x + y \leq 2\)</span>.</p>
+<p>The following are the basic properties of the multinomial distribution.</p>
+<div class="theorem">
+<p><span id="thm:MultinomialProperties" class="theorem"><strong>Theorem 11.2  (Multinomial distribution properties) </strong></span>Suppose <span class="math inline">\((X_1, X_2, \ldots, X_k)\)</span> has the multinomial distribution given in Def. <a href="ChapMultivariate.html#def:MultinomialDistribution">11.4</a>.
+Then for <span class="math inline">\(i = 1, 2, \ldots, k\)</span>:</p>
+<ul>
+<li>
+<span class="math inline">\(\operatorname{E}[X_i] = np_i\)</span>.</li>
+<li>
+<span class="math inline">\(\operatorname{var}[X_i] = n p_i(1 - p_i)\)</span>.</li>
+<li>
+<span class="math inline">\(\operatorname{Cov}(X_i, X_j) = -n p_i p_j\)</span> for <span class="math inline">\(i \neq j\)</span>.</li>
+</ul>
+<div class="proof">
+<p><span id="unlabeled-div-61" class="proof"><em>Proof</em>. </span>The first two results follow from the fact that <span class="math inline">\(X_i \sim \text{Bin}(n, p_i)\)</span>.</p>
+<p>We will use <span class="math inline">\(x\)</span> for <span class="math inline">\(x_1\)</span> and <span class="math inline">\(y\)</span> for <span class="math inline">\(x_2\)</span> in the third for convenience.
+Consider only the case <span class="math inline">\(k = 3\)</span>, and note that
+<span class="math display">\[
+   \sum_{(x, y) \in R}
+   \frac{n!}{x! \, y! (n - x - y)!} p_1^x p_2^y (1 - p_1 - p_2)^{n - x - y} = 1.
+\]</span>
+Then, putting <span class="math inline">\(p_3 = 1 - p_1 - p_2\)</span>,
+<span class="math display">\[\begin{align*}
+  E(XY)
+  &amp;= \sum_{(x, y)}xy \Pr(X = x, Y = y)\\
+  &amp;= \sum_{(x, y)}\frac{n!}{(x - 1)!(y - 1)!(n - x - y)!} p_1^x  p_2^y p_3^{n - x - y}\\
+  &amp;= n(n - 1) p_1 p_2\underbrace{\sum_{(x,y)}\frac{(n - 2)!}{(x - 1)!(y - 1)!(n - x - y)!} p_1^{x - 1} p_2^{y - 1}p_3^{n - x - y}}_{ = 1}.
+\end{align*}\]</span>
+So <span class="math inline">\(\operatorname{Cov}(X, Y) = n^2 p_1 p_2 - n p_1 p_2 - (n p_1)(n p_2) = -n p_1 p_2\)</span>.</p>
+</div>
+</div>
+<div class="softwareBox software">
+<p>The two <strong>R</strong> functions for working with the multinomial distribution functions have the form <code>[dr]multinom(size, prob)</code> where <code>size</code><span class="math inline">\({}= n\)</span> and <code>prob</code><span class="math inline">\({} = (p_1, p_2, \dots, p_k)\)</span> for <span class="math inline">\(k\)</span> categories (see App. <a href="UseRDistributions.html#UseRDistributions">D</a>).
+Note that the functions <code>qmultinom()</code> and <code>pmultinom()</code> are not defined.</p>
+</div>
+<div class="example">
+<p><span id="exm:Multinomial" class="example"><strong>Example 11.4  (Multinomial distribution) </strong></span>Suppose that the four basic blood groups O, A, B and AB are known to occur in the proportions <span class="math inline">\(9:8:2:1\)</span>.
+Given a random sample of <span class="math inline">\(8\)</span> individuals, what is the probability that there will be <span class="math inline">\(3\)</span> each of Types O and A and <span class="math inline">\(1\)</span> each of Types B and AB?</p>
+<p>The probabilities are <span class="math inline">\(p_1 = 0.45\)</span>, <span class="math inline">\(p_2 = 0.4\)</span>, <span class="math inline">\(p_3 = 0.1\)</span>, <span class="math inline">\(p_4 = 0.05\)</span>, and
+<span class="math display">\[\begin{align*}
+   \Pr(X_O = 3, X_A = 3, X_B = 1, X_{AB} = 1)
+   &amp;= \frac{8!}{3!\,3!\,1!\,1!}(0.45)^3 (0.4)^3 (0.1)(.05)\\
+   &amp;= 0.033.
+\end{align*}\]</span>
+In <strong>R</strong>:</p>
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Multinom.html">dmultinom</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, </span>
+<span>          size <span class="op">=</span> <span class="fl">8</span>, </span>
+<span>          prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.45</span>, <span class="fl">0.4</span>, <span class="fl">0.1</span>, <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.0326592</span></span></code></pre></div>
+</div>
+<p></p>
+</div>
+<div id="MultivariateExercises" class="section level2" number="11.10">
+<h2>
+<span class="header-section-number">11.10</span> Exercises<a class="anchor" aria-label="anchor" href="#MultivariateExercises"><i class="fas fa-link"></i></a>
 </h2>
 <p>Selected answers appear in Sect. <a href="selected-short-solutions.html#AnswersChapMultivariate">E.10</a>.</p>
 <div class="exercise">
@@ -498,7 +759,9 @@ What does that tell us about the independence of the radius and the angle?
 <li><a class="nav-link" href="#MultivariateDistFn"><span class="header-section-number">11.5</span> Joint distribution functions</a></li>
 <li><a class="nav-link" href="#marginal-and-conditional-distributions"><span class="header-section-number">11.6</span> Marginal and conditional distributions</a></li>
 <li><a class="nav-link" href="#MultivariateIndependence"><span class="header-section-number">11.7</span> Multivariate independence</a></li>
-<li><a class="nav-link" href="#MultivariateExercises"><span class="header-section-number">11.8</span> Exercises</a></li>
+<li><a class="nav-link" href="#BVNormalDistribution"><span class="header-section-number">11.8</span> The bivariate normal distribution</a></li>
+<li><a class="nav-link" href="#MultinomialDistribution"><span class="header-section-number">11.9</span> Multinomial distribution</a></li>
+<li><a class="nav-link" href="#MultivariateExercises"><span class="header-section-number">11.10</span> Exercises</a></li>
 </ul>
 
       <div class="book-extra">
