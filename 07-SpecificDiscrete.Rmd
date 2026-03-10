@@ -331,40 +331,17 @@ We write $X\sim\text{Bin}(n, p)$.
 
 
 The distribution function is complicated and is not given.
-Fig. \@ref(fig:BinomialExamples) shows the probability function for the binomial distribution for various parameter values.
 
 
-```{r BinomialExamples, echo=FALSE, fig.align="center", fig.cap="The probability function for the binomial distribution for various values of\\ $p$ and\\ $n$.", fig.height = 7, fig.width=7, out.width='80%'}
-par( mfrow = c(2, 2))
 
-n <- c(8, 8, 
-       15, 15)
-prob <- c(0.2, 0.6, 
-          0.2, 0.6)
 
-for (i in (1:4)) {
-  ni <- n[i]
-  probi <- prob[i]
-  x <-  0:ni
-  y <- dbinom(x, 
-              size = ni,
-              prob = probi)
-  
-   plot( x = x,
-         y = y,
-         xlab = expression(italic(x)),
-         ylab = "Probability function",
-         main = bquote("Binomial: " ~ italic(n) == .(ni) ~ " and " ~ italic(p) == .(probi)),
-         las = 1,
-         lty = 3,
-         lwd = 2,
-         col = "grey",
-         type = "h")
-  points(x = x,
-         y = y,
-         pch = 19)
-}
+```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/Binomial_html.Rmd' }
 ```
+
+```{r, child = if (knitr::is_latex_output()) './children/DiscreteDist/NBinomial_latex.Rmd'}
+```
+
+
 
 
 The following are the basic properties of the binomial distribution.
@@ -576,41 +553,13 @@ The four **R** functions for working with the geometric distribution have the fo
 
 
 
-
-
-
-```{r Geometric, echo=FALSE, fig.align="center", fig.cap="The probability function for the geometric distribution for $p = 0.1$, $0.3$, $0.5$ and $0.8$.", fig.height = 7, fig.width=7, out.width='80%'}
-par( mfrow = c(2, 2))
-
-xmax <- c(15, 15, 15, 15)
-p <- c(0.1, 0.3, 
-       0.5, 0.8)
-
-for (i in (1:4)) {
-  pValue <- p[i]
-  x <-  0:xmax[i]
-  y <- dgeom(x,
-             prob = pValue)
-  
-   plot( x = x,
-         y = y,
-         xlim = c(0, xmax[i]),
-         xlab = expression(italic(x)),
-         ylab = "Probability function",
-         main = bquote("Geometric: " ~ italic(p) == .(pValue) ),
-         las = 1,
-         ylim = c(0, max(y)),
-         col = "grey",
-         lty = 3,
-         lwd = 2,
-         type = "h")
-  points(x = x,
-         y = y,
-         pch = 19)
-  
-}
-
+```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/Geometric_html.Rmd' }
 ```
+
+```{r, child = if (knitr::is_latex_output()) './children/DiscreteDist/Geometric_latex.Rmd'}
+```
+
+
 
 
 
@@ -675,15 +624,16 @@ The first two result can be proven from Theorem \@ref(thm:GeometricProperties).
 Consider a random process where independent Bernoulli trials are repeated until the $r$th\ success occurs. 
 Let the random variable\ $X$ be the number of *failures* before the $r$th success is observed, so that $X = 0, 1, 2, \dots$.
 
-To observe the $r$th\ success after $x$\ failures, $x$\ failures and $r - 1$ successes are observed first in these $x + r - 1$ trials.
-There are $\binom{x + r - 1}{r - 1}$ ways in which to allocate these successes to the first $x + r - 1$ trials.
-Each of the $r - 1$ successes occur with probability $p$, and the $x$ failures with probability $1 - p$ (assuming events are independent).
-Hence the probability of observing the $r$th\ success in trial $x$ is
+To observe the $r$th\ success after $x$\ failures, there are $x$\ failures and $r - 1$ successes are observed first in these $x + r - 1$ trials.
+There are $\binom{x + r - 1}{r - 1}$ ways in which to allocate these $r - 1$ successes among the first $x + r - 1$ trials.
+Each successes occurs with probability $p$, and each failures with probability $1 - p$ (assuming events are independent).
+Then finally, the $r$th success occurs in the final trial with probability\ $p$.
+Hence the probability of observing the $r$th\ success after\ $x$ failures is
 \begin{align*}
-   \text{No. ways}
-   &\times \Pr\big(\text{$x$ failures}\big) \times \Pr(\text{$r - 1$ successes}) \\
-   \binom{x + r - 1}{r - 1} 
-   &\times (1 - p)^{x} \times p^{r - 1}.
+    \text{No. ways}
+    \times \Pr\big(\text{$x$ failures}\big) \times \Pr(\text{$r$ successes}) \\
+   &\binom{x + r - 1}{r - 1} 
+    \times (1 - p)^{x} \times p^{r}.
 \end{align*}
 
 
@@ -694,7 +644,7 @@ The standard definition of the negative binomial distribution can now be given.
 :::{.definition #NegativeBinomialDistribution name="Negative binomial distribution"}
 A random variable\ $X$ with probability function
 \begin{equation}
-   p_X(x; p, r) = \binom{x + r - 1}{r - 1}(1 - p)^{x} p^{r - 1}
+   p_X(x; p, r) = \binom{x + r - 1}{r - 1}(1 - p)^{x} p^r
  \quad\text{for $x = 0, 1, 2, \dots$}
    (\#eq:NegativeBinomialPMF)
 \end{equation}
@@ -703,7 +653,7 @@ We write $X\sim\text{NB}(r, p)$.
 :::
 
 The distribution function is complicated and is not given.
-The following are the basic properties of the negative binomial distribution.
+The basic properties of the negative binomial distribution follow.
 
 
 :::{.theorem #NegBinomialProperties name="Negative binomial properties"}
@@ -728,9 +678,9 @@ The probability that a randomly-chosen person accepts the invitation is only\ $0
 Here, a 'success' is an acceptance to attend the demonstration. 
 Let\ $Y$ be the number of *failed* calls necessary to secure ten acceptances.
 Then\ $Y$ has a negative binomial distribution with $p = 0.15$ and $r = 10$.
-The mean number of failures made will is $\operatorname{E}[Y] = \{r(1 - p)\}/p = \{10 \times (1 - 0.15)\}/0.15 \approx  56.66667$.
+The mean number of failures made is $\operatorname{E}[Y] = \{r(1 - p)\}/p = \{10 \times (1 - 0.15)\}/0.15 \approx  56.66667$.
 
-Hence, including the ten calls that leads to a person accepting the invitation, the mean number of calls to be made will is $10 + \operatorname{E}[Y] = 66.66\dots$.
+Hence, including the ten calls that leads to a person accepting the invitation, the mean number of calls to be made is $10 + \operatorname{E}[Y] = 66.66\dots$.
 :::
 
 
@@ -748,45 +698,14 @@ When $r = 1$, the negative binomial distribution is the same as the geometric di
 :::
 
 
-The probability function for the negative binomial distribution for various values of\ $p$ and\ $r$ is shown in Fig. \@ref(fig:NegativeBinomial).
 
 
-```{r NegativeBinomial, echo=FALSE, fig.align="center", fig.cap="The probability function for the negative binomial distribution for $p = 0.2$ and $0.7$ and $r = 1$ and $r = 3$.", fig.height = 7, fig.width=7, out.width='80%'}
-par( mfrow = c(2, 2))
-xmax <- 15
-
-r <- c(1, 3, 
-       1, 3)
-p <- c(0.2, 0.2, 
-       0.6, 0.6)
-
-for (i in (1:4)) {
-  rValue <- r[i]
-  pValue <- p[i]
-  
-  x <-  0:xmax
-  y <- dnbinom(x, 
-              size = r[i],
-              prob = p[i])
-  
-   plot( x = x,
-         y = y,
-         xlim = c(0, xmax),
-         xlab = expression(italic(x)),
-         ylab = "Probability",
-         main = bquote("Negative binomial: " ~ italic(r) == ~ .(rValue) ~ ";" ~ italic(p) == .(pValue) ),
-         las = 1,
-         lty = 3,
-         lwd = 2,
-         col = "grey",
-         type = "h")
-  points(x = x,
-         y = y,
-         pch = 19)
-  
-}
-
+```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/NegBinomial_html.Rmd' }
 ```
+
+```{r, child = if (knitr::is_latex_output()) './children/DiscreteDist/NegBinomial_latex.Rmd'}
+```
+
 
 
 
@@ -1124,40 +1043,18 @@ where $\lfloor z \rfloor$ is the *floor function*.\index{Floor function}
 :::
 
 
-The PMF for a Poisson distribution for different values of\ $\lambda$ is shown in Fig.\ \@ref(fig:PoissonExamples).
 
 
-
-
-```{r PoissonExamples, echo=FALSE, fig.align="center", fig.cap="The probability function for the Poisson distribution for various values of $\\lambda$.", fig.height = 7, fig.width=7, out.width='80%'}
-par( mfrow = c(2, 2))
-
-xmax <- 10
-mu <- c(0.5, 1, 2, 5)
-
-for (i in (1:4)) {
-  muvalue <- mu[i]
-  x <-  0:xmax
-  y <- dpois(x, 
-             lambda = muvalue )
-  
-   plot( x = x,
-         y = y,
-         xlim = c(0, xmax),
-         xlab = expression(italic(x)),
-         ylab = "Probability function",
-         main = bquote("Poisson mean:" ~ lambda == .(muvalue)),
-         las = 1,
-         lty = 3,
-         lwd = 2,
-         col = "grey",
-         type = "h")
-  points(x = x,
-         y = y,
-         pch = 19)
-  
-}
+```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/Poisson_html.Rmd' }
 ```
+
+```{r, child = if (knitr::is_latex_output()) './children/DiscreteDist/Poisson_latex.Rmd'}
+```
+
+
+
+
+
 
 
 The following are the basic properties of the Poisson distribution.

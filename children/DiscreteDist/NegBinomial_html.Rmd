@@ -1,0 +1,113 @@
+Various negative binomial distributions are shown in the visualisation below, for different values of\ $n$ and\ $r$.
+
+
+
+```{r, NegBinomialDemo, echo=FALSE, fig.align="center", fig.cap="Negative binomial distributions."}
+library(plotly)
+
+# --- Parameters ---
+rs <- c(5, 10)       # Number of successes
+ps <- c(0.2, 0.5)    # Success probabilities
+x_max <- 50           # Maximum number of failures to display
+
+x <- 0:x_max
+
+# Compute y-axis range for all combinations
+max_y <- max(sapply(rs, function(r) sapply(ps, function(p) dnbinom(x, size = r, prob = p))))
+yrange <- c(0, max_y * 1.05)  # small padding
+
+# --- Create figure ---
+fig <- plot_ly(width = 700, height = 450)
+
+# Add all traces, first trace visible
+trace_index <- 1
+for(r in rs){
+  for(p in ps){
+    y <- dnbinom(x, size = r, prob = p)  # PMF
+    
+    fig <- fig %>% add_trace(
+      x = x,
+      y = y,
+      type = "scatter",
+      mode = "lines+markers",
+      line = list(color = "steelblue", width = 2, dash = "dash"),
+      marker = list(size = 8),
+      visible = ifelse(trace_index == 1, TRUE, FALSE),  # FIRST trace visible
+      name = paste0("r=", r, ", p=", p),
+      showlegend = FALSE
+    )
+    
+    trace_index <- trace_index + 1
+  }
+}
+
+# --- Build buttons ---
+buttons <- list()
+trace_index <- 1
+for(r in rs){
+  for(p in ps){
+    vis <- rep(FALSE, length(rs) * length(ps))
+    vis[trace_index] <- TRUE
+    
+    mean_val <- r * (1 - p) / p
+    var_val  <- r * (1 - p) / p^2
+    
+    buttons[[trace_index]] <- list(
+      method = "update",
+      args = list(
+        list(visible = vis),
+        list(
+          title = paste0("Negative Binomial PMF: r=", r, ", p=", p),
+          yaxis = list(range = yrange),
+          annotations = list(
+            list(
+              x = 0.95, y = 0.95,
+              xref = "paper", yref = "paper",
+              text = paste0("mean=", round(mean_val,2),
+                            "<br>var=", round(var_val,2)),
+              showarrow = FALSE,
+              xanchor = "right", yanchor = "top",
+              font = list(size = 12, color = "black")
+            )
+          )
+        )
+      ),
+      label = paste0("r=", r, ", p=", p)
+    )
+    
+    trace_index <- trace_index + 1
+  }
+}
+
+# --- Arrange buttons in 2x2 grid ---
+top_row_buttons <- buttons[sapply(buttons, function(b) grepl("r=5", b$label))]
+bottom_row_buttons <- buttons[sapply(buttons, function(b) grepl("r=10", b$label))]
+
+fig <- fig %>% layout(
+  title = list(text = "Negative Binomial Distribution PMF", x = 0.5),
+  xaxis = list(title = "Failures before r-th success", range = c(0, x_max)),
+  yaxis = list(title = "PMF", range = yrange),
+  updatemenus = list(
+    list(
+      type = "buttons",
+      direction = "right",
+      x = 0,
+      y = -0.2,
+      xanchor = "left",
+      yanchor = "top",
+      buttons = top_row_buttons
+    ),
+    list(
+      type = "buttons",
+      direction = "right",
+      x = 0,
+      y = -0.3,
+      xanchor = "left",
+      yanchor = "top",
+      buttons = bottom_row_buttons
+    )
+  )
+)
+
+fig
+```

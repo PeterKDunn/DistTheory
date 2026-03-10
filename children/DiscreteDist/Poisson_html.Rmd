@@ -1,0 +1,90 @@
+
+Various Poisson distributions are shown in the visualisation below, for different values of\ $\lambda$.
+
+
+
+```{r, PoissonDemo, echo=FALSE, fig.align="center", fig.cap="Poisson distributions."}
+# --- Parameters ---
+lambdas <- c(1, 3, 5)  # Different Poisson rates
+x_max <- 15            # Max x to display
+
+x <- 0:x_max
+
+# --- Create figure ---
+fig <- plot_ly(width = 700, height = 450)
+
+# Add all traces (PMFs), first trace visible by default
+for(i in seq_along(lambdas)){
+  lambda <- lambdas[i]
+  y <- dpois(x, lambda = lambda)
+  
+  fig <- fig %>% add_trace(
+    x = x,
+    y = y,
+    type = "scatter",
+    mode = "lines+markers",
+    line = list(color = "darkorange", width = 2, dash = "dash"),
+    marker = list(size = 8),
+    visible = ifelse(i == 1, TRUE, FALSE),  # FIRST trace visible
+    name = paste0("lambda=", lambda),
+    showlegend = FALSE
+  )
+}
+
+# --- Find global y-axis max ---
+y_max <- max(sapply(lambdas, function(lambda) max(dpois(x, lambda = lambda)))) * 1.1
+
+# --- Create buttons ---
+buttons <- list()
+for(i in seq_along(lambdas)){
+  vis <- rep(FALSE, length(lambdas))
+  vis[i] <- TRUE
+  
+  mean_val <- lambdas[i]
+  var_val  <- lambdas[i]
+  
+  buttons[[i]] <- list(
+    method = "update",
+    args = list(
+      list(visible = vis),
+      list(
+        title = paste0("Poisson PMF: λ=", lambdas[i]),
+        annotations = list(
+          list(
+            x = 0.95, y = 0.95,
+            xref = "paper", yref = "paper",
+            text = paste0("mean=", round(mean_val,2),
+                          "<br>var=", round(var_val,2)),
+            showarrow = FALSE,
+            xanchor = "right", yanchor = "top",
+            font = list(size = 12, color = "black")
+          )
+        )
+      )
+    ),
+    label = paste0("λ=", lambdas[i])
+  )
+}
+
+# --- Layout ---
+fig <- fig %>% layout(
+  title = list(text = "Poisson Distribution PMF", x = 0.5),
+  xaxis = list(title = "x", range = c(0, x_max)),
+  yaxis = list(title = "PMF", range = c(0, y_max)),
+  updatemenus = list(
+    list(
+      type = "buttons",
+      direction = "right",
+      x = 0,
+      y = -0.2,
+      xanchor = "left",
+      yanchor = "top",
+      buttons = buttons
+    )
+  )
+)
+
+fig
+```
+
+
