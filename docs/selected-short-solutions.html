@@ -2037,51 +2037,7 @@ FIGURE E.19: Service times
 2. <span class="math inline">\(\operatorname{var}(\overline{X}) = \operatorname{var}([X_1 + X_2 + \cdots + X_n]/n) = [\operatorname{var}(X_1) + \operatorname{var}(X_2) + \cdots + \operatorname{var}(X_n)]/n^2 = [n \sigma^2]/n^2 = \sigma^2/n\)</span>.</p>
 </div>
 <div class="answer">
-<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:PoissonGammaRainfall">12.2</a>.</strong></p>
-<p>For one month:</p>
-<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">932649</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">NumRainEvents</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span><span class="op">(</span><span class="fl">1</span>,</span>
-<span>                       lambda <span class="op">=</span> <span class="fl">0.78</span><span class="op">)</span></span>
-<span><span class="va">MonthlyRain</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
-<span></span>
-<span><span class="kw">if</span> <span class="op">(</span> <span class="va">NumRainEvents</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>     <span class="va">EventAmounts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html">rgamma</a></span><span class="op">(</span><span class="va">NumRainEvents</span>,</span>
-<span>                           shape <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>                           scale <span class="op">=</span> <span class="fl">6</span> <span class="op">)</span></span>
-<span>     <span class="va">MonthlyRain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span> <span class="va">EventAmounts</span> <span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-<p>For <span class="math inline">\(1000\)</span> simulations:</p>
-<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">932649</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">MonthlyRain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span><span class="fl">0</span>,  </span>
-<span>                     dim <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span><span class="op">{</span></span>
-<span> <span class="va">NumRainEvents</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span><span class="op">(</span><span class="fl">1</span>,</span>
-<span>                       lambda <span class="op">=</span> <span class="fl">0.78</span><span class="op">)</span></span>
-<span> <span class="va">MonthlyRain</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
-<span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span> <span class="va">NumRainEvents</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>       <span class="va">EventAmounts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html">rgamma</a></span><span class="op">(</span><span class="va">NumRainEvents</span>,</span>
-<span>                             shape <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>                             scale <span class="op">=</span> <span class="fl">6</span> <span class="op">)</span></span>
-<span>       <span class="va">MonthlyRain</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span> <span class="va">EventAmounts</span> <span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Exact zeros:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">MonthlyRain</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1000</span></span>
-<span><span class="co">#&gt; [1] 0.484</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">MonthlyRain</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 2.196798</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">MonthlyRain</span><span class="op">[</span><span class="va">MonthlyRain</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 4.25736</span></span></code></pre></div>
-</div>
-<div class="answer">
-<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:LinearCombinCovariance">12.3</a>.</strong></p>
+<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:LinearCombinCovariance">12.2</a>.</strong></p>
 <ol style="list-style-type: decimal">
 <li>
 <span class="math inline">\(\operatorname{E}[U] = \mu_x - \mu_Z\)</span>; <span class="math inline">\(\operatorname{E}[V] = \mu_x - 2\mu_Y + \mu_Z\)</span>.</li>
@@ -2102,7 +2058,7 @@ since the two middle terms become <span class="math inline">\(-2\text{Cov}[X, Y]
 </ol>
 </div>
 <div class="answer">
-<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:JointDiscrete11">12.4</a>.</strong></p>
+<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:JointDiscrete11">12.3</a>.</strong></p>
 <ol style="list-style-type: decimal">
 <li>First find marginal distribution.
 Then <span class="math inline">\(\operatorname{E}(X \mid Y = 2) = 1/3\)</span>.</li>
@@ -2111,11 +2067,11 @@ Then <span class="math inline">\(\operatorname{E}(X \mid Y = 2) = 1/3\)</span>.<
 </ol>
 </div>
 <div class="answer">
-<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:GammaExp">12.9</a>.</strong>
+<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:GammaExp">12.8</a>.</strong>
 Gamma distribution with parameters <span class="math inline">\(n\)</span> and <span class="math inline">\(\beta\)</span>.</p>
 </div>
 <div class="answer">
-<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:DiscreteJointTable">12.11</a>.</strong></p>
+<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:DiscreteJointTable">12.10</a>.</strong></p>
 <ol style="list-style-type: decimal">
 <li><p>Adding:
 <span class="math display">\[
@@ -2140,8 +2096,8 @@ However, for <span class="math inline">\(X = 1\)</span> (for example), the value
 </ol>
 </div>
 <div class="answer">
-<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:DailyRainfallSim">12.18</a>.</strong></p>
-<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
+<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:DailyRainfallSim">12.17</a>.</strong></p>
+<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">annualRainfallList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span> <span class="cn">NA</span>, dim <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span><span class="op">{</span></span>
 <span>   <span class="va">rainAmounts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span> <span class="fl">0</span>, dim <span class="op">=</span> <span class="fl">365</span><span class="op">)</span> <span class="co"># Reset for each simulation</span></span>
@@ -2156,7 +2112,7 @@ However, for <span class="math inline">\(X = 1\)</span> (for example), the value
 <span>   <span class="va">annualRainfallList</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">rainAmounts</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co"># hist( annualRainfallList)</span></span></code></pre></div>
-<div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Days</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">:</span> <span class="fl">365</span></span>
 <span><span class="va">prob</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span> <span class="op">*</span> <span class="va">Days</span><span class="op">/</span><span class="fl">365</span><span class="op">)</span> <span class="op">)</span> <span class="op">/</span> <span class="fl">2.2</span></span>
 <span></span>
@@ -2175,7 +2131,7 @@ However, for <span class="math inline">\(X = 1\)</span> (for example), the value
 <span>   <span class="va">annualRainfallList2</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">rainAmounts2</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#hist( annualRainfallList2)</span></span></code></pre></div>
-<div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Days</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">:</span> <span class="fl">365</span></span>
 <span></span>
 <span><span class="va">probList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span> dim <span class="op">=</span> <span class="fl">365</span><span class="op">)</span></span>
@@ -2222,7 +2178,7 @@ However, for <span class="math inline">\(X = 1\)</span> (for example), the value
 <span><span class="co">#hist( annualRainfallList3)</span></span></code></pre></div>
 </div>
 <div class="answer">
-<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:TrailMix">12.19</a>.</strong></p>
+<p><strong>Answer to Exercise <a href="MultivariateExtensions.html#exr:TrailMix">12.18</a>.</strong></p>
 <ol style="list-style-type: decimal">
 <li>Since <span class="math inline">\(X + Y + Z = 500\)</span>, once the values of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are known, the value of <span class="math inline">\(Z\)</span> has one specific value (i.e., all three values are not free to vary).</li>
 <li>See Fig. <a href="selected-short-solutions.html#fig:Mixture">E.20</a> (left panel).</li>
@@ -2404,7 +2360,7 @@ So then, <span class="math inline">\(\operatorname{E}(Y) = (1 - p)/p = 1.667\)</
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn and Taryn Axelsen. It was last built on Last updated: 2026-03-10.</p>
+    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn and Taryn Axelsen. It was last built on Last updated: 2026-03-11.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
