@@ -26,13 +26,154 @@ Outcomes that share a common numerical property are often grouped together.
 Rather than working directly with outcomes, we often map outcomes to numbers that represent quantities of interest.
 This leads to the idea of a *random variable*.
 *Random variable* is sometimes abbreviated to *rv* or *RV*.
-In probability theory, a random variable is a function from the sample space to the real numbers that encodes outcomes numerically.
+In probability theory, a random variable is a function from the sample space to the real numbers that encodes outcomes numerically (Fig.\ \@ref(fig:RVmapping)).
 
 
 :::{.definition #RandomVariable name="Random variable"}
 A *random variable*\index{Random variables} is a function that assigns a real number to each outcome\ $s$ in the sample space\ $S$.
 A random variable\ $X$ maps $S\to\mathbb{R}$, and the value assigned to an outcome $s\in S$ is written\ $X(s)$.
 :::
+
+
+```{r RVmapping, echo=FALSE, out.width='90%', fig.width=7, fig.align="center", fig.cap="A random variable is a functiomn that maps each outcome to a real number."}
+par(mar = c(3, 1, 3, 1), 
+    bg = "white")
+plot.new()
+plot.window(xlim = c(0, 10), 
+            ylim = c(0, 10))
+
+theta <- seq(0, 2 * pi, 
+             length.out = 300)
+col_s    <- "#2C6FAC"
+col_arr  <- "#C0392B"
+col_line <- "#222222"
+
+# =================================================================
+# OVAL (sample space S) — TOP, wide and shallow
+# centre y=7.5, spans most of the width
+# =================================================================
+cx <- 5.0
+cy <- 7.5
+rx <- 3.8
+ry <- 1.5
+
+polygon(cx + rx*cos(theta), 
+        cy + ry*sin(theta),
+        col = "#EEF4FB", 
+        border = col_s, 
+        lwd = 2)
+text(cx - rx - 0.4, 
+     cy, 
+     expression(italic(S)), 
+     cex = 1.5, 
+     col = col_s, 
+     font = 2)
+
+# sample points inside oval
+sp <- data.frame(
+  x   = c(2.0, 3.2, 4.4, 5.0, 5.8, 7.0, 8.0),
+  y   = c(7.5, 8.0, 7.2, 7.8, 7.3, 8.0, 7.5),
+  lab = c("s[1]","s[2]","s[3]","s[4]","s[5]","s[6]","s[7]")
+)
+points(sp$x, 
+       sp$y, 
+       pch = 19, 
+       cex = 0.9, 
+       col = col_s)
+
+for (i in seq_len(nrow(sp)))
+  text(sp$x[i], 
+       sp$y[i] + 0.35, 
+       parse(text = sp$lab[i]),
+       cex = 0.80, 
+       col = "#1a1a2e")
+
+# =================================================================
+# NUMBER LINE — BOTTOM
+# =================================================================
+line_y <- 2.2
+
+segments(1.0, 
+         line_y, 9.5, 
+         line_y, 
+         lwd = 2.5, 
+         col = col_line)
+arrows(9.5, 
+       line_y, 
+       9.7, 
+       line_y, 
+       length = 0.10, 
+       lwd = 2.5, 
+       col = col_line, 
+       code = 2)
+arrows(1.0, 
+       line_y, 
+       0.8, 
+       line_y, 
+       length = 0.10, 
+       lwd = 2.5, 
+       col = col_line, 
+       code = 2)
+
+ticks <- data.frame(
+  x   = c(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5),
+  lab = c("-3","-2","-1", "0", "1", "2", "3", "4")
+)
+for (i in seq_len(nrow(ticks))) {
+  segments(ticks$x[i], 
+           line_y - 0.15, 
+           ticks$x[i], 
+           line_y + 0.15,
+           lwd = 1.4, 
+           col = "#555555")
+  text(ticks$x[i], 
+       line_y - 0.48, 
+       ticks$lab[i], 
+       cex = 0.72, 
+       col = "#555555")
+}
+text(0.3, 
+     line_y, 
+     expression(bold(R)), 
+     cex = 1.4, 
+     col = col_line)
+
+# =================================================================
+# ARROWS from sample points down to values on number line
+# s1->2, s2->3, s3->0, s4->1, s5->1, s6->-1, s7->2
+# tick x positions: -1=3.5, 0=4.5, 1=5.5, 2=6.5, 3=7.5
+# =================================================================
+target_x <- c(6.5, 7.5, 4.5, 5.5, 5.5, 3.5, 6.5)
+
+for (i in seq_len(nrow(sp)))
+  arrows(sp$x[i], 
+         sp$y[i] - 0.15,
+         target_x[i], 
+         line_y + 0.18,
+         length = 0.09, 
+         lwd = 1.3, 
+         col = col_arr)
+
+# X label
+text(9.5, 
+     5.5, 
+     expression(italic(X) : italic(S) %->% bold(R)),
+     cex = 0.95, 
+     col = col_arr, 
+     adj = 1)
+
+title("Random Variables", 
+      cex.main = 1.2, 
+      font.main = 2, 
+      col.main = "#1a1a2e")
+mtext(expression("A random variable assigns a real number to each outcome" ~
+        italic(s) %in% italic(S)),
+      side = 1, 
+      line = 1.5, 
+      cex = 0.76, 
+      col = "#333333")
+
+```
 
 
 A random variable is a deterministic function evaluated at a random outcome.
