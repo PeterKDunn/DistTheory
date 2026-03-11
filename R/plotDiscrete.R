@@ -1,4 +1,4 @@
-plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
+plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, ...) {
   # Compute CDF and Survival:
   # "DF": distribution fn
   # "SF": survival function
@@ -14,6 +14,7 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
   if (type == "DF") {
     y          <- Fx
     y0         <- 0
+    ylim_use <- if (is.null(ylim)) c(0, 1) else ylim
     main_title <- ifelse(is.null(main), 
                          "Distribution function", 
                          main)
@@ -21,6 +22,7 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
   if (type == "SF") {
     y          <- Sx
     y0         <- 1
+    ylim_use <- if (is.null(ylim)) c(0, 1) else ylim
     main_title <- ifelse(is.null(main), 
                          "Distribution function", 
                          main)
@@ -28,6 +30,7 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
   if (type == "MF") {
     y          <- px
     y0         <- NA
+    ylim_use <- if (is.null(ylim)) c(0, max(px) * 1.05) else ylim
     main_title <- ifelse(is.null(main), 
                          "Prob. mass function", 
                          main)
@@ -42,7 +45,7 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
          las  = 1,
          xlim = c(min(x) - 0.75, 
                   max(x) + 0.75),
-         ylim = c(0, 1),
+         ylim = ylim_use,
          ...)
     
     
@@ -119,7 +122,7 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL,...) {
          las  = 1,
          xlim = c(min(x) - 0.75, 
                   max(x) + 0.75),
-         ylim = c(0, max(px)),
+         ylim = ylim_use,
          ...)
     
     lines(x   = x,
