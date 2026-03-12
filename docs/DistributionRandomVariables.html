@@ -1223,8 +1223,8 @@ If the distribution is <em>bounded</em>, <strong>R</strong> returns the actual m
   f_X(x)
   =
   \begin{cases}
-    x/2 &amp; \text{for $0 \le x \le 2$}\\
-    0   &amp; \text{elsewhere}.
+    (x - 1)^2/9   &amp; \text{for $1 \le x \le 4$}\\
+    0             &amp; \text{elsewhere}.
   \end{cases}
 \]</span>
 The distribution function (shown in Fig. <a href="DistributionRandomVariables.html#fig:QuantileFnContinuous1">4.12</a>, centre panel) is
@@ -1232,16 +1232,16 @@ The distribution function (shown in Fig. <a href="DistributionRandomVariables.h
   F_X(x)
   =
   \begin{cases}
-    0     &amp; \text{for $x &lt; 0$}\\
-    x^2/4 &amp; \text{for $0 \le x \le 2$}\\
-    1     &amp; \text{for $x &gt; 2$}.
+    0             &amp; \text{for $x &lt; 1$}\\
+    (x - 1)^3/27  &amp; \text{for $1 \le x \le 4$}\\
+    1             &amp; \text{for $x &gt; 4$}.
   \end{cases}
 \]</span>
-For <span class="math inline">\(0 &lt; p &lt; 1\)</span>, the quantile function <span class="math inline">\(Q_X(p)\)</span> is given by solving <span class="math inline">\(F_X(x) = p\)</span> (i.e., solving <span class="math inline">\(p = x^2 /4\)</span>), which gives <span class="math inline">\(Q_X(p) = 2\sqrt{p}\)</span>.
+For <span class="math inline">\(0 &lt; p &lt; 1\)</span>, the quantile function <span class="math inline">\(Q_X(p)\)</span> is given by solving <span class="math inline">\(F_X(x) = p\)</span> (i.e., solving <span class="math inline">\(p = (x - 1)^3/27\)</span>).
 This means the quantile function (shown in Fig. <a href="DistributionRandomVariables.html#fig:QuantileFnContinuous1">4.12</a>, right panel) is
 <span class="math display">\[
   Q_X(p)
-  = 2\sqrt{p} \quad\text{for $0 &lt; p &lt; 1$.}
+  = 1 + 3p^{1/3} \quad\text{for $0 &lt; p &lt; 1$.}
 \]</span></p>
 </div>
 <div class="figure" style="text-align: center">
@@ -1472,14 +1472,20 @@ FIGURE 4.15: The distribution function (left) and quantile function (right) for 
 <p>Many computers have facilities for generating pseudo-random numbers between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>, though random numbers from other distributions are often more useful in computer modelling and simulation (for example, Sects. <a href="DiscreteDistributions.html#SimulationDiscrete">7.10</a> and <a href="ContinuousDistributions.html#SimulationContinuous">8.8</a>).
 For instance, generating heights of people at random would requires the heights to have an average value of (say) <span class="math inline">\(180\,\text{cm}\)</span>, with most heights between about <span class="math inline">\(175\,\text{cm}\)</span> and <span class="math inline">\(185\,\text{cm}\)</span>, but a few smaller than <span class="math inline">\(175\,\text{cm}\)</span> and a few larger than <span class="math inline">\(185\,\text{cm}\)</span>.</p>
 <p>Random numbers are generated using distribution functions.
-We use <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code> to generate a target quantile between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> (i.e, a probability <span class="math inline">\(p^*\)</span> on the <span class="math inline">\(y\)</span>-axis (i.e., the range of <span class="math inline">\(F_X(x)\)</span>).
-Then, move horizontally to the curve of the distribution function; then, drop down to the <span class="math inline">\(x\)</span>-axis to find the corresponding value <span class="math inline">\(x^*\)</span>.</p>
-<p>Mathematically, this ‘dropping down to the <span class="math inline">\(x\)</span>-axis’ is what the quantile function does:
+Computer software can generally provide random numbers between between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>, which correspond to a probability <span class="math inline">\(p^*\)</span> (i.e., the range of <span class="math inline">\(F_X(x)\)</span>).
+Then, the quantile function is used to find the corresponding value <span class="math inline">\(x^*\)</span>:
 <span class="math display">\[
-   x^* = Q_X(p^*).
+   x^* = Q_X(p^*)
 \]</span>
-By repeating this process with many different random values of <span class="math inline">\(p^*\)</span>, we naturally generate more <span class="math inline">\(x\)</span> values in regions where the distribution function is steep (high density) and fewer <span class="math inline">\(x\)</span> values where the distribution function is flat (low density).
-In <strong>R</strong>, random numbers between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> are found using the function <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code>:</p>
+(see Fig. <a href="DistributionRandomVariables.html#fig:RNos">4.16</a>).
+By repeating this process with many different random values of <span class="math inline">\(p^*\)</span>, we naturally generate more <span class="math inline">\(x\)</span> values in regions where the distribution function is steep (high density) and fewer <span class="math inline">\(x\)</span> values where the distribution function is flat (low density).</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:RNos"></span>
+<img src="04-RandomVariables_files/figure-html/RNos-1.png" alt="Selecting a random number from a distribution, using the distribution function (left) or quantile function (right)." width="80%"><p class="caption">
+FIGURE 4.16: Selecting a random number from a distribution, using the distribution function (left) or quantile function (right).
+</p>
+</div>
+<p>In <strong>R</strong>, random numbers between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> are found using the function <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code>:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="co"># '10' here means to generate 10 random numbers between 0 and 1</span></span>
 <span><span class="co">#&gt;  [1] 0.2516103 0.5757754 0.0141046 0.8898474</span></span>
@@ -1505,13 +1511,13 @@ Random numbers from the distribution can be generated using <strong>R</strong>:
 <span></span>
 <span><span class="co"># A histogram of these random numbers should have a shape like the density fn</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">rSpecified</span><span class="op">)</span></span></code></pre></div>
-<p>The histogram (Fig. <a href="DistributionRandomVariables.html#fig:rRandomSpecified">4.16</a>) does indeed have a similar shape to the density function.</p>
+<p>The histogram (Fig. <a href="DistributionRandomVariables.html#fig:rRandomSpecified">4.17</a>) does indeed have a similar shape to the density function.</p>
 </div>
 <p></p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:rRandomSpecified"></span>
 <img src="04-RandomVariables_files/figure-html/rRandomSpecified-1.png" alt="Left: a density function. Right: a histogram of random numbers from the distribution." width="100%"><p class="caption">
-FIGURE 4.16: Left: a density function. Right: a histogram of random numbers from the distribution.
+FIGURE 4.17: Left: a density function. Right: a histogram of random numbers from the distribution.
 </p>
 </div>
 </div>
@@ -1580,7 +1586,7 @@ The PDF can be expressed in <strong>R</strong> as a function.
 The <code><a href="https://rdrr.io/r/stats/integrate.html">integrate()</a></code> function in <strong>R</strong>, which we use below, assumes the random variable is denoted by <code>x</code>, so the PDF is defined as a function of <code>x</code> rather than <code>w</code>:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fX</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fl">2</span> <span class="op">*</span> <span class="va">x</span><span class="op">}</span></span></code></pre></div>
-<p>Then, the PDF can be plotted (Fig. <a href="DistributionRandomVariables.html#fig:RDistributions">4.17</a>, left panel) using:</p>
+<p>Then, the PDF can be plotted (Fig. <a href="DistributionRandomVariables.html#fig:RDistributions">4.18</a>, left panel) using:</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="va">fX</span>, </span>
 <span>      main <span class="op">=</span> <span class="st">"Density function"</span>,  <span class="co"># Main title</span></span>
@@ -1608,7 +1614,7 @@ The <code><a href="https://rdrr.io/r/stats/integrate.html">integrate()</a></code
 <span>        <span class="fu"><a href="https://rdrr.io/r/stats/integrate.html">integrate</a></span><span class="op">(</span><span class="va">fX</span>,                  <span class="co"># Integrate f(x)... </span></span>
 <span>                  lower <span class="op">=</span> <span class="fl">0</span>,           <span class="co"># ... from 0 to x</span></span>
 <span>                  upper <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">value</span><span class="op">}</span><span class="op">)</span>   <span class="co"># Return the *value*</span></span></code></pre></div>
-<p>The DF can be plotted also (Fig. <a href="DistributionRandomVariables.html#fig:RDistributions">4.17</a>, right panel):</p>
+<p>The DF can be plotted also (Fig. <a href="DistributionRandomVariables.html#fig:RDistributions">4.18</a>, right panel):</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="va">FX</span>, </span>
 <span>      main <span class="op">=</span> <span class="st">"Distribution function"</span>,  <span class="co"># Main title</span></span>
@@ -1621,7 +1627,7 @@ The <code><a href="https://rdrr.io/r/stats/integrate.html">integrate()</a></code
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:RDistributions"></span>
 <img src="04-RandomVariables_files/figure-html/RDistributions-1.png" alt="The density function and distribution function for\ $W$, produced by R." width="80%"><p class="caption">
-FIGURE 4.17: The density function and distribution function for <span class="math inline">\(W\)</span>, produced by R.
+FIGURE 4.18: The density function and distribution function for <span class="math inline">\(W\)</span>, produced by R.
 </p>
 </div>
 <p>Then, <span class="math inline">\(\Pr(0.2 &lt; W &lt; 0.6)\)</span> can be found using the distribution function also:</p>
@@ -1785,17 +1791,17 @@ Find the value(s) of <span class="math inline">\(\alpha\)</span> so that <span c
 Find the value(s) of <span class="math inline">\(b\)</span> so that <span class="math inline">\(f_X(x)\)</span> is a valid probability function.</p>
 </div>
 <div class="exercise">
-<p><span id="exr:PDFtrickier" class="exercise"><strong>Exercise 4.11  </strong></span>Consider the random variable <span class="math inline">\(Y\)</span> with the probability density function shown in Fig. <a href="DistributionRandomVariables.html#fig:TwoDensities">4.18</a> (left panel).
+<p><span id="exr:PDFtrickier" class="exercise"><strong>Exercise 4.11  </strong></span>Consider the random variable <span class="math inline">\(Y\)</span> with the probability density function shown in Fig. <a href="DistributionRandomVariables.html#fig:TwoDensities">4.19</a> (left panel).
 Find the value(s) of <span class="math inline">\(a\)</span> so that this represents a valid probability function.</p>
 </div>
 <div class="exercise">
-<p><span id="exr:PDFtrickier2" class="exercise"><strong>Exercise 4.12  </strong></span>Consider the random variable <span class="math inline">\(T\)</span> with the probability density function shown in Fig. <a href="DistributionRandomVariables.html#fig:TwoDensities">4.18</a> (right panel).
+<p><span id="exr:PDFtrickier2" class="exercise"><strong>Exercise 4.12  </strong></span>Consider the random variable <span class="math inline">\(T\)</span> with the probability density function shown in Fig. <a href="DistributionRandomVariables.html#fig:TwoDensities">4.19</a> (right panel).
 Find the value(s) of <span class="math inline">\(a\)</span> so that this represents a valid probability function.</p>
 </div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:TwoDensities"></span>
 <img src="04-RandomVariables_files/figure-html/TwoDensities-1.png" alt="Two probability density functions" width="100%"><p class="caption">
-FIGURE 4.18: Two probability density functions
+FIGURE 4.19: Two probability density functions
 </p>
 </div>
 <div class="exercise">
