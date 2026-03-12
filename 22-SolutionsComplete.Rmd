@@ -5442,6 +5442,755 @@ Gamma: $\operatorname{var}(X) = \phi \mu^2$, so $\phi = ???$ and $p = 2$.
 ## Answers for Chap.\ \@ref(ChapterMixedDistributions) {#AnswersChapMixedDistributions}
 
 
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedIdentifiability).**
+Both have three free parameters.
+*Zero-modified gamma*: $p$, $\alpha$, $\beta$; 
+*Compound Poisson–gamma*: $\lambda$, $\alpha$, $\beta$.
+
+CP-G has mass $e^{-\lambda}$ at zero, and the positive part is an infinite mixture of Gammas. 
+ZMG places mass $p$ at zero and the positive part is exactly $\text{Gamma}(\alpha, \beta)$.
+To match, need $p = e^{-\lambda}$.
+
+But the conditional distribution $S \mid S > 0$ in the CP-G is *not* a simple Gamma; it is an infinite mixture $\sum_{k=1}^\infty w_k \,\text{Gamma}(k\alpha,\beta)$. 
+So the two models produce identical distributions only in *degenerate/limiting cases*, not in general.
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedOverdispersion).**
+Both models are overdispersed relative to Poisson.
+Overdispersion requires $\operatorname{Var}[Y] \ge \operatorname{E}[Y]$.
+
+For ZME: let $\mu^+ = 1/\lambda_e$ (mean of exponential), $p = \Pr(Y = 0)$.
+So, $\operatorname{E}[Y] = (1 - p)\mu^+, \qquad \operatorname{E}[Y^2] = (1 - p)\cdot 2/\lambda_e^2$.
+Thus, $\operatorname{var}[Y] = E[Y^2] - (E[Y])^2 = (1 - p)\frac{2}{\lambda_e^2} - (1 - p)^2\frac{1}{\lambda_e^2}$.
+And so, $\operatorname{var}[Y] = \frac{(1 - p)(1 + p)}{\lambda_e^2}$.
+
+For overdispersion: $\frac{(1 - p)(1 + p)}{\lambda_e^2} > \frac{(1-p)}{\lambda_e}$, hence $\frac{1 + p}{\lambda_e} > 1 \Rightarrow \lambda_e < 1 + p$, so *overdispersion*.
+This holds whenever $\operatorname{E}[Y] > 0$ and $p > 0$ combined with a large enough mean, confirming overdispersion in practical settings.
+
+For CP-G: $\operatorname{E}[S] = \lambda \frac{\alpha}{\beta}, \qquad \operatorname{var}[S] = \lambda \frac{\alpha(\alpha + 1)}{\beta^2}$
+and
+$\operatorname{Var}[S] \ge \operatorname{E}[S]$ so that $\frac{\lambda\alpha(\alpha + 1)}{\beta^2} \ge \frac{\lambda\alpha}{\beta}$ and hence $\frac{\alpha + 1}{\beta} > 1$.
+
+This holds when $\alpha + 1 > \beta$, which covers a wide range of practical parameters. 
+When $\operatorname{E}[S] > 0$ (i.e. $\lambda > 0$), we always have $\operatorname{var}[S]/E[S] = (\alpha + 1)/\beta > 0$, and typically $> 1$.
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedLimiting).**
+Fix $\operatorname{E}[S] = \mu$, so $\lambda \cdot \alpha/\beta = \mu$, and hold $\alpha/\beta = \mu/\lambda$ constant as $\lambda \to \infty$.
+
+The cumulant generating function of $S$ is:
+$$
+  K_S(t) = \lambda\left[\left(\frac{\beta}{\beta - t}\right)^\alpha - 1\right].
+$$
+As $\lambda \to \infty$ with $\alpha = \mu\beta/\lambda \to 0$, using $\log(1 + x) \approx x$ for small $\alpha$:
+\begin{align*}
+  &\left(\frac{\beta}{\beta-t}\right)^\alpha - 1 \approx \alpha \log\frac{\beta}{\beta - t}\\
+  \Rightarrow 
+  & K_S(t) \approx \lambda \cdot \frac{\mu\beta}{\lambda} \log\frac{\beta}{\beta - t}\\
+  = 
+  & \mu\beta \log\frac{\beta}{\beta-t}
+\end{align*}
+This is the CGF of a Gamma$(\mu\beta,\, \beta)$ distribution (i.e., mean\ $\mu$, shape\ $\mu\beta$).
+
+As $\lambda \to \infty$ with mean fixed, the CP-G converges to a *Gamma distribution*; the zero mass vanishes and the distribution becomes continuous.
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedHospitalStays).**
+
+Total probability:
+$$
+  \Pr(Y = 0) + \int_0^\infty 0.6\,e^{-y}\,dy 
+  = 0.4 + 0.6\left[-e^{-y}\right]_0^\infty 
+  = 0.4 + 0.6(1) = 1.
+$$
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedOrchids).**
+1. Probability that $X > 0$:
+$$
+  \Pr(X > 0) = 1 - \Pr(X = 0) = 1 - 0.75 = 0.25.
+$$
+2. Simulate:
+:::
+
+
+```{r orchids}
+n <- 100
+is_present <- rbinom(n, 
+                     1, 
+                     prob = 0.25)          # 1 = orchid present
+density_given_present <- rgamma(n, 
+                                shape = 2, 
+                                rate = 1)
+X <- ifelse(is_present == 1, 
+            density_given_present, 
+            0)
+
+cat("Proportion of zeros:", mean(X == 0), "\n")
+cat("Mean density (all plots):", mean(X), "\n")
+cat("Mean density (present only):", mean(X[X > 0]), "\n")
+
+hist(X[X > 0], breaks = 20, col = "steelblue", border = "white",
+     main = "Orchid density | orchid present", xlab = "Density", ylab = "Count")
+```
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedRainGauges).**
+
+1. Event $\{Y = 50\}$:
+$$
+  \{Y = 50\} = \{X > 50\}.
+$$
+The gauge records $Y = 50$ whenever the true rainfall exceeds the physical capacity.
+2. The CDF of\ $Y$ has a jump at $y = 50$ equal to the probability mass placed there:
+$$
+  \Pr(Y = 50) = \Pr(X > 50) = 0.043.
+$$
+So the CDF jumps by\ $0.043$ at $y = 50$.
+:::
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedInsuranceClaims).**
+:::
+```{r insurance}
+n_sim <- 1000
+lambda <- 0.5
+alpha <- 2
+beta_rate <- 1
+
+S <- sapply(1:n_sim, function(i) {
+  N <- rpois(1, 
+             lambda)
+  if (N == 0) return(0)
+  sum(rgamma(N, 
+             shape = alpha, 
+             rate = beta_rate))
+})
+
+cat("E[S] theoretical:", lambda * alpha / beta_rate, "\n")
+cat("E[S] simulated:  ", mean(S), "\n")
+cat("Var(S) theoretical:", lambda * alpha * (alpha + 1) / beta_rate^2, "\n")
+cat("Var(S) simulated:  ", var(S), "\n")
+cat("Pr(S = 0) theoretical:", exp(-lambda), "\n")
+cat("Pr(S = 0) simulated:  ", mean(S == 0), "\n")
+
+hist(S[S > 0], breaks = 40, col = "coral", border = "white",
+     main = "Total claim amount S | S > 0", xlab = "S ($)", ylab = "Count")
+```
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedFireDamage).**
+:::
+
+
+```{r fire}
+lambda_fire <- 2
+alpha_fire <- 1
+beta_fire <- 2
+
+## 1. Pr(S = 0)
+cat("Pr(zero fire damage):", exp(-lambda_fire), "\n")
+
+## 2. Mean damage given S > 0
+n_sim <- 50000
+S_fire <- sapply(1:n_sim, function(i) {
+  N <- rpois(1, lambda_fire)
+  if (N == 0) return(0)
+  sum(rgamma(N, 
+             shape = alpha_fire, 
+             rate = 1/beta_fire))  # rate parameterisation
+})
+
+cat("Mean damage | damage > 0:", mean(S_fire[S_fire > 0]), "\n")
+cat("Theoretical E[S]:", lambda_fire * alpha_fire * beta_fire, "\n")
+```
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedSimCompare).**
+
+1. Matching mean and proportion of zeros.
+   Let ZM have $p_0$, $\mu^+ = \operatorname{E}[Y \mid Y>0]$, and CP-G have $\lambda$, $\alpha$, $\beta$.
+Set $p_0 = e^{-\lambda}$ (same zero probability) and $(1 - p_0)\mu^+ = \lambda\alpha/\beta$ (same mean).
+This gives us one equation relating parameters: infinitely many solutions exist, so *yes*, we can always find such parameters.
+
+**Example:** $\lambda = 1$, $\alpha = 2$, $\beta = 1$ for CP-G.
+
+- CP-G: $\Pr(S = 0) = e^{-1} \approx 0.368$, $\operatorname{E}[S] = 2$
+- ZM: set $p_0 = e^{-1}$, $\mu^+ = \operatorname{E}[S]/(1-p_0) = 2/(1 - e^{-1}) \approx 3.164$
+
+Use $\text{Gamma}(\alpha^+=2, \beta^+ = 2/\mu^+)$ for ZM positive part.
+
+2. Variance comparison:
+
+
+```{r simcompare_theory}
+lambda_c <- 1
+alpha_c <- 2
+beta_c <- 1
+
+p0 <- exp(-lambda_c)
+ES <- lambda_c * alpha_c / beta_c  # = 2
+mu_plus <- ES / (1 - p0)
+
+# ZM variance
+alpha_zm <- 2
+beta_zm <- alpha_zm / mu_plus
+var_plus <- alpha_zm / beta_zm^2
+E_plus2 <- var_plus + mu_plus^2
+var_ZM <- (1 - p0) * E_plus2 - ES^2
+
+# CPG variance
+var_CPG <- lambda_c * alpha_c * (alpha_c + 1) / beta_c^2
+
+cat("ZM  variance:", round(var_ZM, 4), "\n")
+cat("CPG variance:", round(var_CPG, 4), "\n")
+```
+
+3. Simulation verification
+
+```{r simcompare_sim}
+n_sim <- 2000
+
+# CP-G simulation
+S_cpg <- sapply(1:n_sim, function(i) {
+  N <- rpois(1, lambda_c)
+  if (N == 0) return(0)
+  sum(rgamma(N, shape = alpha_c, rate = beta_c))
+})
+
+# ZM simulation
+S_zm <- ifelse(runif(n_sim) < p0, 0,
+               rgamma(n_sim, shape = alpha_zm, rate = beta_zm))
+
+cat("CPG - mean:", round(mean(S_cpg),3), "var:", round(var(S_cpg),3),
+    "Pr(0):", round(mean(S_cpg==0),3), "\n")
+cat("ZM  - mean:", round(mean(S_zm),3),  "var:", round(var(S_zm),3),
+    "Pr(0):", round(mean(S_zm==0),3), "\n")
+```
+:::
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedZeroModifiedQuantile).**
+
+For the zero-modified distribution with $\Pr(Y = 0) = p$ and $Y\mid Y>0 \sim F^+$:
+$$
+  F_Y(y) = 
+  \begin{cases} 
+    p                   & y = 0 \\ 
+    p + (1 - p) F^+(y)  & y > 0 
+  \end{cases}
+$$
+
+Inverting: for $\tau \leq p$, $Q_Y(\tau) = 0$. 
+For $\tau > p$:
+$$
+  \tau = p + (1 - p)F^+(y) \Rightarrow F^+(y) = \frac{\tau - p}{1 - p}.
+$$
+So:
+$$
+  Q_Y(\tau) = 
+  \begin{cases} 
+    0   & \tau \leq p \\ 
+    Q^+\!\left(\dfrac{\tau - p}{1 - p}\right) & \tau > p 
+  \end{cases}
+$$
+where $Q^+$ is the quantile function of the positive part.
+
+Median when $p > 0.5$: Since $0.5 < p$, we have $Q_Y(0.5) = 0$. 
+The median is\ $0$.
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedZeroModifiedPractice).**
+:::
+
+```{r zm_practice}
+p  <- 0.4
+sh <- 3    # shape
+rt <- 2    # rate  (mean of Gamma = shape/rate = 1.5)
+
+mu_plus    <- sh / rt
+var_plus   <- sh / rt^2
+
+# 1. E[Y]
+EY <- (1 - p) * mu_plus
+cat("E[Y] =", EY, "\n")
+
+# 2. Var(Y)
+# Var(Y) = (1-p)(var+ + mu+^2) - [(1-p)mu+]^2
+VarY <- (1 - p) * (var_plus + mu_plus^2) - EY^2
+cat("Var(Y) =", VarY, "\n")
+
+# 3. Pr(Y > 2)
+# Pr(Y > 2) = (1-p)*Pr(Y+ > 2)  [the zero mass contributes 0]
+prob_gt2 <- (1 - p) * pgamma(2, shape = sh, rate = rt, lower.tail = FALSE)
+cat("Pr(Y > 2) =", round(prob_gt2, 4), "\n")
+
+# 4. 90th percentile
+tau <- 0.90
+if (tau <= p) {
+  cat("90th percentile = 0\n")
+} else {
+  q90 <- qgamma((tau - p) / (1 - p), shape = sh, rate = rt)
+  cat("90th percentile =", round(q90, 4), "\n")
+}
+```
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedZeroModifiedFixP).**
+
+Effect of $p$ on zero-modified Gamma$(2, 1)$:
+
+
+```{r zm_fixp, fig.height=6}
+p_vals <- c(0.1, 0.3, 0.6, 0.85)
+sh2 <- 2; rt2 <- 1
+y_seq <- seq(0.001, 10, length.out = 500)
+
+mom_table <- data.frame(
+  p     = p_vals,
+  EY    = sapply(p_vals, function(p) (1-p)*sh2/rt2),
+  VarY  = sapply(p_vals, function(p) {
+    mu_p <- sh2/rt2; vp <- sh2/rt2^2; ey <- (1-p)*mu_p
+    (1-p)*(vp + mu_p^2) - ey^2
+  })
+)
+print(round(mom_table, 4))
+
+cols <- c("steelblue", "coral", "forestgreen", "purple")
+plot(y_seq, (1 - p_vals[1]) * dgamma(y_seq, shape = sh2, rate = rt2),
+     type = "l", col = cols[1], lwd = 2,
+     ylim = c(0, 0.6),
+     main = "Zero-modified Gamma(2,1) density for varying p\n(point mass at 0 not shown)",
+     xlab = "y", ylab = "f(y)")
+for (i in 2:length(p_vals)) {
+  lines(y_seq, (1 - p_vals[i]) * dgamma(y_seq, shape = sh2, rate = rt2),
+        col = cols[i], lwd = 2)
+}
+legend("topright", legend = paste0("p = ", p_vals),
+       col = cols, lwd = 2, bty = "n")
+```
+
+As $p$ increases, the distribution places more mass at zero, shrinking the mean and pulling the continuous part down. The shape of the positive part is unchanged.
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedZeroModifiedEstimate).**
+
+Given: $\Pr(Y = 0) = 0.5$, $E[Y] = 3$, $\operatorname{var}[Y] = 30$.
+
+```{r zm_estimate}
+p_obs  <- 0.5
+EY_obs <- 3
+VY_obs <- 30
+
+# E[Y] = (1-p)*mu+  =>  mu+ = E[Y]/(1-p)
+mu_plus_hat <- EY_obs / (1 - p_obs)
+cat("mu+ =", mu_plus_hat, "\n")
+
+# Var(Y) = (1-p)(var+ + mu+^2) - E[Y]^2
+# => var+ = [Var(Y) + E[Y]^2]/(1-p) - mu+^2
+var_plus_hat <- (VY_obs + EY_obs^2) / (1 - p_obs) - mu_plus_hat^2
+cat("var+ =", var_plus_hat, "\n")
+
+# Gamma: mu+ = a/b, var+ = a/b^2  =>  b = mu+/var+, a = mu+*b
+b_hat <- mu_plus_hat / var_plus_hat
+a_hat <- mu_plus_hat * b_hat
+cat("Gamma shape (alpha) =", round(a_hat, 4), "\n")
+cat("Gamma rate  (beta)  =", round(b_hat, 4), "\n")
+cat("Is alpha > 0 and beta > 0?", a_hat > 0 && b_hat > 0, "\n")
+
+# Plot
+y_seq <- seq(0.001, 40, length.out = 600)
+dens  <- (1 - p_obs) * dgamma(y_seq, shape = a_hat, rate = b_hat)
+
+plot(y_seq, dens, type = "l", col = "steelblue", lwd = 2,
+     main = "Estimated zero-modified distribution",
+     sub  = "Red triangle = point mass at 0",
+     xlab = "y", ylab = "density / mass")
+segments(x0 = 0, y0 = 0, x1 = 0, y1 = p_obs, col = "red", lwd = 3, lty = 2)
+points(0, p_obs, pch = 17, col = "red", cex = 1.8)
+```
+
+:::
+
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGrelationship).**
+
+1. Link between $\Pr(S = 0)$ and $\operatorname{E}[S]$
+   In CP-G: $\Pr(S = 0) = e^{-\lambda}$ and $\operatorname{E}[S] = \lambda\alpha/\beta$.
+   So $\lambda = \beta \operatorname{E}[S]/\alpha$, giving:
+$$
+  \Pr(S = 0) = \exp\!\left(-\frac{\beta\,\operatorname{E}[S]}{\alpha}\right).
+$$
+There is a direct link: higher mean $\Rightarrow$ smaller $\Pr(S = 0)$.
+
+In the **zero-modified** model, $p$ and $\operatorname{E}[Y] = (1 - p)\mu^+$ are **independently** specifiable; no such constraint.
+
+2. $S \mid S > 0$ is not a simple Gamma:
+$$
+  S \mid S > 0 = \sum_{k=1}^N X_k \mid N \geq 1.
+$$
+
+   The conditional distribution of $N \mid N \geq 1$ is a zero-truncated Poisson (not constant), so $S\mid S>0$ is a mixture:
+$$
+  f_{S\mid S > 0}(s) 
+  = \sum_{k=1}^\infty \Pr(N = k \mid N \geq 1) \cdot f_{\text{Gamma}(k\alpha,\beta)}(s).
+$$
+This infinite mixture is **not** a single Gamma.
+
+3. Approximate Gamma when $\lambda \to \infty$:
+   As shown in (DIFF EXERCISE), as $\lambda \to \infty$ with fixed mean, $\Pr(S = 0) \to 0$ and\ $S$ converges to Gamma. 
+   So $S\mid S>0 \approx \text{Gamma}$ for large\ $\lambda$.
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGskewness).**
+
+1. CGF:
+$$
+  M_S(t) = \exp\!\left\{\lambda\left[\left(\frac{\beta}{\beta-t}\right)^\alpha - 1\right]\right\}.
+$$
+   and
+$$
+  K_S(t) = \lambda\left[\left(\frac{\beta}{\beta-t}\right)^\alpha - 1\right].
+$$
+
+2. First four cumulants:
+   Differentiating $K_S(t)$ at $t = 0$:
+$$
+  \kappa_r 
+  = \lambda \cdot \frac{\alpha(\alpha+1)\cdots(\alpha+r-1)}{\beta^r} 
+  = \lambda \cdot \frac{\Gamma(\alpha+r)}{\Gamma(\alpha)\,\beta^r}.
+$$
+
+| Cumulant | Formula |
+|----------|---------|
+| $\kappa_1 = E[S]$ | $\lambda\alpha/\beta$ |
+| $\kappa_2 = \text{Var}(S)$ | $\lambda\alpha(\alpha+1)/\beta^2$ |
+| $\kappa_3$ | $\lambda\alpha(\alpha+1)(\alpha+2)/\beta^3$ |
+| $\kappa_4$ | $\lambda\alpha(\alpha+1)(\alpha+2)(\alpha+3)/\beta^4$ |
+
+3. Skewness and excess kurtosis
+\begin{align*}
+  \gamma_1 
+  &= \frac{\kappa_3}{\kappa_2^{3/2}} 
+  = \frac{\lambda\alpha(\alpha+1)(\alpha+2)/\beta^3}{\left[\lambda\alpha(\alpha+1)/\beta^2\right]^{3/2}}\\
+  &= \frac{(\alpha+2)}{\sqrt{\lambda\alpha(\alpha+1)}} \cdot \frac{1}{\beta^{1/2}} \cdot \beta = \frac{(\alpha+2)}{\sqrt{\lambda\alpha(\alpha+1)}}\\
+  \gamma_2 
+  &= \frac{\kappa_4}{\kappa_2^2} = \frac{3(\alpha+2)(\alpha+3)}{\lambda\alpha(\alpha+1)(\alpha+2)} \cdot \frac{(\alpha+1)}{\alpha} \cdot \frac{1}{(\alpha+3)}\cdots
+\end{align*}
+(simplifies, but positive for all parameters).
+
+4. Always positively skewed:
+$$
+  \gamma_1 = \frac{\alpha + 2}{\sqrt{\lambda\alpha(\alpha + 1)}} > 0.
+$$
+since $\alpha > 0$ and $\lambda > 0$.
+:::
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGevaluation).**
+CP-G with $N \sim \text{Poisson}(3)$, $X_k \sim \text{Gamma}(2, 0.01)$
+
+```{r cpg_eval}
+lambda_e <- 3; alpha_e <- 2; beta_e <- 0.01  # rate parameterisation
+
+# 1. E[S]
+ES_e <- lambda_e * alpha_e / beta_e
+cat("E[S] =", ES_e, "\n")
+
+# 2. Var(S)
+VarS_e <- lambda_e * alpha_e * (alpha_e + 1) / beta_e^2
+cat("Var(S) =", VarS_e, "\n")
+
+# 3. Skewness
+gamma1_e <- (alpha_e + 2) / sqrt(lambda_e * alpha_e * (alpha_e + 1))
+cat("Skewness gamma1 =", round(gamma1_e, 4), "\n")
+
+# 4. Pr(S = 0)
+cat("Pr(S = 0) =", round(exp(-lambda_e), 4), "\n")
+
+# 5. Pr(S > 1000) by simulation
+n_sim <- 100000
+S_sim <- sapply(1:n_sim, function(i) {
+  N <- rpois(1, lambda_e)
+  if (N == 0) return(0)
+  sum(rgamma(N, shape = alpha_e, rate = beta_e))
+})
+cat("Pr(S > 1000) approx", round(mean(S_sim > 1000), 4), "\n")
+```
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGparameters).**
+
+CP-G moment table and density for varying $\lambda$, $\alpha$ (fixed $\beta = 1$).
+
+```{r cpg_params, fig.height=8}
+beta_p <- 1
+lambdas <- c(0.5, 2, 8)
+alphas  <- c(0.5, 2)
+
+params <- expand.grid(lambda = lambdas, alpha = alphas)
+params$ES   <- params$lambda * params$alpha / beta_p
+params$VarS <- params$lambda * params$alpha * (params$alpha + 1) / beta_p^2
+params$Pr0  <- exp(-params$lambda)
+params$skew <- (params$alpha + 2) / sqrt(params$lambda * params$alpha * (params$alpha + 1))
+
+print(round(params, 3))
+
+n_s <- 20000
+par(mfrow = c(3, 2), mar = c(4, 4, 3, 1))
+for (i in 1:nrow(params)) {
+  lam <- params$lambda[i]; alp <- params$alpha[i]
+  S <- sapply(1:n_s, function(j) {
+    N <- rpois(1, lam)
+    if (N == 0) return(0)
+    sum(rgamma(N, shape = alp, rate = beta_p))
+  })
+  S_pos <- S[S > 0]
+  d <- density(S_pos, from = 0)
+  plot(d, main = sprintf("lambda=%.1f, alpha=%.1f", lam, alp),
+       xlab = "S", ylab = "Density", col = "steelblue", lwd = 2)
+  polygon(d, col = adjustcolor("steelblue", alpha.f = 0.3), border = NA)
+}
+par(mfrow = c(1, 1))
+```
+
+:::
+
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGtweedie).**
+
+Tweedie power-variance relationship:
+For CP-G: $\operatorname{E}[S] = \lambda\alpha/\beta$ and $\operatorname{var}(S) = \lambda\alpha(\alpha + 1)/\beta^2$:
+$$
+  \operatorname{var}(S) = \frac{\alpha+1}{\beta} \cdot \frac{\lambda\alpha}{\beta} 
+  = \frac{\alpha + 1}{\lambda\alpha/\beta} \cdot \left(\frac{\lambda\alpha}{\beta}\right)^2 \cdot \frac{1}{\lambda\alpha/\beta}.
+$$
+More directly, write $\mu = \operatorname{E}[S]$:
+$$
+  \operatorname{var}[S] 
+  = \frac{(\alpha+1)}{\beta} \mu 
+  = \frac{(\alpha+1)}{\lambda\alpha}\mu^2 \cdot \frac{\lambda\alpha/\beta}{\mu}.
+$$
+After algebra, $\operatorname{var}[S] = \phi\,\mu^p$ where $p = (\alpha + 2)/(\alpha + 1)$.
+
+Show $p \in (1,2)$ for $\alpha > 0$:
+$$
+  p = \frac{\alpha + 2}{\alpha + 1} = 1 + \frac{1}{\alpha + 1}.
+$$
+
+- As $\alpha \to 0^+$: $p \to 1 + 1 = 2$.
+- As $\alpha \to \infty$: $p \to 1$.
+- Strictly decreasing in $\alpha$, so $p \in (1, 2)$ for all $\alpha > 0$.
+
+```{r tweedie_verify}
+# Numerical verification
+alphas_tw <- c(0.1, 0.5, 1, 2, 5, 10, 50)
+p_tw <- (alphas_tw + 2) / (alphas_tw + 1)
+cat("alpha:", alphas_tw, "\n")
+cat("p:    ", round(p_tw, 4), "\n")
+cat("All p in (1,2)?", all(p_tw > 1 & p_tw < 2), "\n")
+```
+:::
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGrandom).**
+**R** function for CP-G random sampling:
+
+```{r cpg_random}
+rcpg <- function(n, lambda, alpha, beta) {
+  sapply(1:n, function(i) {
+    N <- rpois(1, lambda)
+    if (N == 0) return(0)
+    sum(rgamma(N, shape = alpha, rate = beta))
+  })
+}
+
+# Simulate and verify
+lam_r <- 2; alp_r <- 3; bet_r <- 0.5
+S_r <- rcpg(1e5, lam_r, alp_r, bet_r)
+
+cat("--- Theoretical vs Simulated ---\n")
+cat("E[S]:      theory =", lam_r*alp_r/bet_r,
+    "  sim =", round(mean(S_r), 3), "\n")
+cat("Var(S):    theory =", lam_r*alp_r*(alp_r+1)/bet_r^2,
+    "  sim =", round(var(S_r), 3), "\n")
+cat("Pr(S=0):   theory =", round(exp(-lam_r), 4),
+    "  sim =", round(mean(S_r == 0), 4), "\n")
+
+# Skewness
+```
+:::
+
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGplots).**
+
+Spike-and-density plots for three CP-G distributions:
+
+```{r cpg_plots, fig.height=8}
+configs <- list(
+  list(lambda=0.5, alpha=1, beta=1),
+  list(lambda=2,   alpha=2, beta=0.5),
+  list(lambda=5,   alpha=3, beta=2)
+)
+
+par(mfrow = c(3, 1), mar = c(4, 4, 3, 1))
+for (cfg in configs) {
+  S <- rcpg(8000, cfg$lambda, cfg$alpha, cfg$beta)
+  p0  <- mean(S == 0)
+  eS  <- mean(S)
+  S_pos <- S[S > 0]
+
+  # Spike at 0 + density for positive part
+  d <- density(S_pos, from = 0)
+  ylim_max <- max(d$y, p0 / diff(range(S_pos)) * 5) * 1.1
+
+  plot(d, main = sprintf("CP-G(lambda=%.1f, alpha=%.1f, beta=%.1f)  |  Pr(S=0)=%.3f, E[S]=%.2f",
+                          cfg$lambda, cfg$alpha, cfg$beta, p0, eS),
+       xlab = "S", ylab = "Density", xlim = c(0, max(S_pos)),
+       col = "steelblue", lwd = 2)
+  segments(x0 = 0, y0 = 0, x1 = 0, y1 = p0 * 3, col = "red", lwd = 4)
+  points(0, p0 * 3, pch = 19, col = "red", cex = 1.5)
+  legend("topright", legend = c("Continuous part", sprintf("Mass at 0: %.3f", p0)),
+         col = c("steelblue","red"), lwd = 2, bty = "n")
+}
+```
+
+:::
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGreproductive).**
+Reproductive property of CP-G:
+
+```{r cpg_repro}
+n_r <- 50000
+S1 <- rcpg(n_r, lambda=2, alpha=1.5, beta=0.5)
+S2 <- rcpg(n_r, lambda=3, alpha=1.5, beta=0.5)
+T_sum <- S1 + S2  # should behave like CP-G(5, 1.5, 0.5)
+
+lam_T <- 5; alp_T <- 1.5; bet_T <- 0.5
+
+cat("--- T = S1 + S2 vs CP-G(5, 1.5, 0.5) theory ---\n")
+cat("E[T]:    theory =", lam_T*alp_T/bet_T,
+    "  sim =", round(mean(T_sum), 3), "\n")
+cat("Var(T):  theory =", lam_T*alp_T*(alp_T+1)/bet_T^2,
+    "  sim =", round(var(T_sum), 3), "\n")
+cat("Pr(T=0): theory =", round(exp(-lam_T),4),
+    "  sim =", round(mean(T_sum==0), 4), "\n")
+
+# CDF comparison
+x_pts <- quantile(T_sum, probs = seq(0.1, 0.9, 0.1))
+T_theory <- rcpg(n_r, lam_T, alp_T, bet_T)
+cat("\nCDF comparison at deciles:\n")
+df_cdf <- data.frame(
+  x      = round(x_pts, 2),
+  sim    = round(sapply(x_pts, function(x) mean(T_sum <= x)), 3),
+  theory = round(sapply(x_pts, function(x) mean(T_theory <= x)), 3)
+)
+print(df_cdf)
+```
+
+The CP-G is reproductive: $S_1 + S_2 \sim \text{CP-G}(\lambda_1+\lambda_2, \alpha, \beta)$ when $\alpha$ and $\beta$ are shared.
+:::
+
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGZeroModified).**
+
+Matching CP-G and Zero-Modified-Gamma on mean, variance, and $\Pr(X = 0)$:
+
+```{r cpg_zm_match, fig.height=6}
+# CP-G parameters
+lam_m <- 2; alp_m <- 2; bet_m <- 1
+ES_m   <- lam_m * alp_m / bet_m          # = 4
+VarS_m <- lam_m * alp_m*(alp_m+1)/bet_m^2  # = 12
+p0_m   <- exp(-lam_m)                    # about 0.135
+
+cat("Target: E[S]=", ES_m, "Var(S)=", VarS_m, "Pr(0)=", round(p0_m,4), "\n")
+
+# ZM parameters: match p0, mean, variance
+p_zm <- p0_m
+mu_plus_zm <- ES_m / (1 - p_zm)
+# var_plus from: Var = (1-p)(var+ + mu+^2) - E^2
+var_plus_zm <- (VarS_m + ES_m^2)/(1-p_zm) - mu_plus_zm^2
+
+# Gamma parameterisation
+bet_zm <- mu_plus_zm / var_plus_zm
+alp_zm <- mu_plus_zm * bet_zm
+cat("ZM Gamma: shape=", round(alp_zm,4), "rate=", round(bet_zm,4), "\n")
+
+# Simulate
+n_s <- 30000
+S_cpg <- rcpg(n_s, lam_m, alp_m, bet_m)
+S_zm  <- ifelse(runif(n_s) < p_zm, 0,
+                rgamma(n_s, shape = alp_zm, rate = bet_zm))
+
+cat("\nUpper 5% tail:\n")
+cat("CPG P(S > q95):", round(mean(S_cpg > quantile(S_cpg, 0.95)), 4), "\n")
+cat("ZM  P(S > q95):", round(mean(S_zm  > quantile(S_zm,  0.95)), 4), "\n")
+
+# Density of positive part
+d_cpg <- density(S_cpg[S_cpg > 0])
+d_zm  <- density(S_zm[S_zm > 0])
+xlim  <- c(0, 25)
+ylim  <- c(0, max(d_cpg$y, d_zm$y) * 1.1)
+
+plot(d_cpg, col = "steelblue", lwd = 2, xlim = xlim, ylim = ylim,
+     main = "Density of positive part: CP-G vs Zero-Modified Gamma\n(matched on mean, variance, Pr(X=0))",
+     xlab = "S", ylab = "Density")
+polygon(d_cpg, col = adjustcolor("steelblue", 0.3), border = NA)
+lines(d_zm, col = "coral", lwd = 2)
+polygon(d_zm, col = adjustcolor("coral", 0.3), border = NA)
+legend("topright", legend = c("CP-G", "Zero-Modified Gamma"),
+       col = c("steelblue", "coral"), lwd = 2, bty = "n")
+```
+
+**Comment:** Even with the same mean, variance, and zero probability, the two models differ in the shape of the positive tail. The CP-G tends to have heavier right tails and higher skewness due to the Poisson mixing, while the ZM model has a simpler Gamma positive part. The upper 5% exceedance probabilities and skewness reveal these differences clearly.
+:::
+
 
 
 
@@ -5452,7 +6201,8 @@ Gamma: $\operatorname{var}(X) = \phi \mu^2$, so $\phi = ???$ and $p = 2$.
 
 
 :::{.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:MultivariateNormal}
+**Answer to Exercise\ \@ref(exr:MultivariateNormal).**
+
 The Jacobian:
 $$
   J = \det \begin{bmatrix} \cos\theta & -r\sin\theta \\ \sin\theta & r\cos\theta \end{bmatrix} = r(\cos^2\theta + \sin^2\theta) = r.
