@@ -52,8 +52,8 @@ The first step uses a Bernoulli distribution (Sect.\ \@ref(BernoulliDistribution
 $$
   \Pr(Y) = 
   \begin{cases}
-    1 - p    & \text{if $Y = 0$; i.e., the event of interest does not occur;}\\
-    p        & \text{if $Y = 1$; i.e., the event of interest does occur.}
+    p       & \text{if $Y = 0$; i.e., the event of interest does not occur;}\\
+    1 - p   & \text{if $Y = 1$; i.e., the event of interest does occur.}
   \end{cases}
 $$
 If the event does occur (i.e., conditional on $X > 0$), with probability $1 - p$, then the continuous component is modelled using a probability density function $f^+_X(x)$ defined for positive real values only (such as an exponential distribution\index{Exponential distribution}, a gamma distribution\index{Gamma distribution} or a log-normal distribution)\index{Log-normal distribution}.
@@ -62,8 +62,8 @@ The probability function for the mixed random variable\ $X$ is therefore
 $$
    f_X(x) = 
    \begin{cases} 
-      1 - p           & \text{if $x = 0$}\\
-      p\cdot f^+_X(x)    & \text{if $x > 0$,}
+      p                         & \text{if $x = 0$}\\
+      (1 - p)\cdot f^+_X(x)     & \text{if $x > 0$,}
    \end{cases}
 $$
 where $f^+_X(x) = f_{X \mid X > 0}(x)$ is the density function for the continuous distribution defined for $x\in\mathbb{R}_{+}$.
@@ -71,9 +71,9 @@ The distribution function is
 $$
    F_X(x) = 
    \begin{cases} 
-      0                             & \text{if $x < 0$}\\
-      1 - p                         & \text{if $x = 0$}\\
-      (1 - p) + p\cdot F^+_X(x)    & \text{if $x > 0$,}
+      0                            & \text{if $x < 0$}\\
+      p                            & \text{if $x = 0$}\\
+      p + (1 - p)\cdot F^+_X(x)    & \text{if $x > 0$,}
    \end{cases}
 $$
 where $F^+_X(x) = F_{X\mid X > 0}(x)$ is the distribution function for the continuous distribution defined for $x\in\mathbb{R}_{+}$.
@@ -99,7 +99,7 @@ Suppose that, when $X > 0$, an exponential distribution\index{Exponential distri
 $$
   f^+_X(x) = \lambda \exp(-\lambda x)\quad\text{for $x > 0$}.
 $$
-Then, using $p = 0.7$ and $\lambda = 1/2$, the probability function of\ $X$ is
+Then, using $p = 0.3$ and $\lambda = 1/2$, the probability function of\ $X$ is
 $$
   f_X(x)
   =
@@ -123,13 +123,13 @@ The probability function and distribution function are shown in Fig.\ \@ref(fig:
 
 
 ```{r ZeroModifiedPic, echo=FALSE, fig.align="center", fig.cap="Zero-modified distributions, showing an exponential distribution for the continuous component.", fig.width=8, fig.height=4, out.width="90%"}
-p <- 0.7
+p <- 0.3
 x.rate = 2
 
 x <- seq(0, 3,
          length = 100)
-y <-  p * dexp(x, 
-               rate = x.rate)
+y <-  (1 - p) * dexp(x, 
+                     rate = x.rate)
                      
 
 par( mfrow = c(1, 2))
@@ -137,10 +137,10 @@ plot(y ~ x,
      type = "l",
      axes = FALSE,
      ylim = c(0,
-              max( c(y, 1 - p) ) ),
+              max( c(y, p) ) ),
      xlab = expression(italic(X)),
      ylab = expression(Prob.~"function"),
-     main = expression(bold(atop(Zero*"-"*modified~Poisson,
+     main = expression(bold(atop(Zero*"-"*modified~exponential,
                                  Probability~"function"))),
      lwd = 3)
 abline(h = 0,
@@ -148,46 +148,21 @@ abline(h = 0,
 axis(side = 1)
 axis(side = 2,
      at = c(0, 
-            1 - p),
+            p),
      las = 2)
 box()
 
 points(x = 0, # Included
-       y = 1 - p,
+       y = p,
        pch = 19)
 points(x = 0, # Excluded
        y = max(y),
        pch = 1)
 
-# Explanatory labels
-arrows(x0 = 0.35,
-       x1 = 0,
-       y0 = 0.17,
-       y1 = 1 - p,
-       length = 0.15,
-       angle = 15)
-text(x = 0.35,
-     y = 0.17,
-     pos = 1,
-     label = expression(Pr*"("*italic(X)==0*")" ) )
-
-
-arrows(x0 = 1.5,
-       x1 = 1,
-       y0 = 0.8,
-       y1 = dexp(x = 1, 
-                 rate = x.rate) * p,
-       length = 0.15,
-       angle = 15)
-text(x = 1.5,
-     y = 0.8,
-     pos = 3,
-     label = expression( Exponential~distribution) )
-
 
 #############################################
 
-Fy <- (1 - p)  + p * pexp( x,
+Fy <- p  + (1 - p) * pexp( x,
                            rate = x.rate)
 plot(Fy ~ x,
      type = "l",
@@ -195,8 +170,8 @@ plot(Fy ~ x,
      ylim = c(0, 1),
      xlim = c(-1, max(x)),
      xlab = expression(italic(X)),
-     ylab = expression(Distribution.~"function"),
-     main = expression(bold(atop(Zero*"-"*modified~Poisson,
+     ylab = expression(Distribution~"function"),
+     main = expression(bold(atop(Zero*"-"*modified~exponential,
                                  Distribution~"function"))),
      lwd = 3)
 abline(h = 0,
@@ -212,13 +187,13 @@ points(x = 0,
 axis(side = 1)
 axis(side = 2,
      at = c(0, 
-            1 - p, 
+            p, 
             1),
      las = 2)
 box()
 
 points(x = 0, # Included
-       y = 1 - p,
+       y = p,
        pch = 19)
 
 ```
@@ -231,66 +206,65 @@ points(x = 0, # Included
 The expected value of the random variable\ $X$ can be found first separating the discrete and continuous parts of the distribution:
 \begin{align*}
   \operatorname{E}[X] 
-  &= \operatorname{E}[X\mid X = 0] + \operatorname{E}[X\mid X > 0]\\
-  &= (1 - p)\times 0 + p \operatorname{E}[X\mid X > 0]\\
-  &= p \mu^+,
+  &= \operatorname{E}[X\mid X = 0]  + \operatorname{E}[X\mid X > 0]\\
+  &= (p\times 0)                    + (1 - p) \operatorname{E}[X\mid X > 0]\\
+  &= (1 - p) \mu_c,
 \end{align*}
-where $\mu^+$ denotes $\operatorname{E}[X\mid X > 0]$, the expected value of the distribution defined for $X > 0$.
+where $\mu_c$ denotes $\operatorname{E}[X\mid X > 0]$, the expected value of the (conditional) distribution defined for $X > 0$.
 Similarly,
 $$
   \operatorname{E}[X^2] 
-  = \operatorname{E}[X^2 \mid X > 0]
-  = p (\mu^2)^+,
+  = (p\times 0) + (1 - p) \operatorname{E}[X^2 \mid X > 0]
+  = (1 - p)(\sigma_c^2 + \mu_c^2).
 $$
-where $(\mu^2)^+$ denotes $\operatorname{E}[X^2\mid X > 0]$.
 Then, the variance of\ $X$ is
 \begin{align*}
   \operatorname{var}[X]
-  &=  p[(\mu^2)^+ - p(\mu^+)^2]\\
-  &=  p(\sigma^2)^+ + p(1 - p)(\mu^+)^2.
+  &=  (1 - p)(\sigma^2_c + \mu^2_c) - (1 - p)^2\mu_c^2\\
+  &=  (1 - p) \sigma^2_c + p(1 - p)\mu_c^2
 \end{align*}
-where $\sigma^2 = \operatorname{var}[X \mid X > 0]$.
+where $\sigma^2_c = \operatorname{var}[X \mid X > 0]$.
 
 The same approach also gives the MGF as
 \begin{align*}
   M_X(t) 
-  &= (1 - p) + p\cdot M_{X^+}(t)\\
-  &= (1 - p) + p\cdot M_{X\mid X > 0}(t),
+  &= p + (1 - p)\cdot M_{X_c}(t)\\
+  &= p + (1 - p)\cdot M_{X\mid X > 0}(t),
 \end{align*}
-where $M_{X^+}(t)$ is the MGF of the distribution defined for $X > 0$.
+where $M_{X_c}(t)$ is the MGF of the conditional distribution $X\mid X > 0$.
 
-Clearly, further progress with these expressions requires knowing the distribution of\ $X \mid X > 0$
+Clearly, further progress with these expressions requires knowing the distribution of\ $X \mid X > 0$.
 
 
 
-:::{.example #ZeroModifiedGamma name="Zero-modified model, using gamma distribution"}
-Consider a random variable\ $X$ such that $p = 0.75$ (and hence $\Pr(X = 0) = 1 - p = 0.25$), and where the distribution when $X > 0$ follows a gamma distribution (Sect.\ \@ref(GammaDistribution)) having $\alpha = 2$ and $\beta = 1$, with the density function
+:::{.example #ZeroModifiedGamma name="Zero-modified gamma distribution"}
+Consider a random variable\ $X$ such that $p = 0.25$ (and hence $\Pr(X = 0) = 0.25$), and where the distribution when $X > 0$ follows a gamma distribution (Sect.\ \@ref(GammaDistribution)) having $\alpha = 2$ and $\beta = 1$, with the density function
 $$
   f_X^{+}(x; \alpha, \beta) 
   = f_{X\mid X > 0}(x; \alpha, \beta) 
   = \frac{1}{\Gamma(2)} x \exp(-x)
   \quad\text{for $x > 0$}.
 $$
-For this gamma distribution, using results from Sect.\ \@ref(GammaDistribution), $\mu^+ = \operatorname{E}[X\mid X > 0] = \alpha\beta = 2$ and $\operatorname{var}[X\mid X > 0] = \alpha\beta^2 = 2$.
+For this gamma distribution, using results from Sect.\ \@ref(GammaDistribution), $\mu_c = \operatorname{E}[X\mid X > 0] = \alpha\beta = 2$ and $\sigma_c^2 = \operatorname{var}[X\mid X > 0] = \alpha\beta^2 = 2$.
 Then, the probability function for\ $X$ is
 $$
   f_{X}(x) 
   = 
   \begin{cases}
-     0.25                                & \text{for $x = 0$}\\
+     0.25                                  & \text{for $x = 0$}\\
      0.75 \times f_X^{+}(x; \alpha, \beta) & \text{for $x > 0$.}
   \end{cases}
 $$
 Then 
 \begin{align*}
   \operatorname{E}[X] 
-   &= p\cdot \mu^+ 
+   &= (1 - p)\cdot \mu_c
     = 0.75 \times 2 
     = 1.5\\
   \operatorname{var}[X] 
-   &= p(\sigma^2)^+ + p(1 - p)(\mu^+)^2
-   = 0.75\times 2 + 0.75\times 0.25\times 1.5^2
-   \approx 1.921.
+   &= (1 - p) \sigma_c^2 + p(1 - p)\mu_c^2
+   = (0.75\times 2) + (0.75\times 0.25\times 2^2)
+   \approx 2.25.
 \end{align*}
 The probability function and distribution function are shown in Fig.\ \@ref(fig:ZeroModifiedGamma).
 :::
@@ -298,13 +272,13 @@ The probability function and distribution function are shown in Fig.\ \@ref(fig:
 
 
 ```{r ZeroModifiedGamma, echo=FALSE, fig.align="center", fig.cap="A zero-modified model, using a gamma distribution for the continuous component.", fig.width=8, fig.height=4, out.width="90%"}
-p <- 0.75
+p <- 0.25
 x.shape <- 2 # shape = alpha
 x.scale <- 1 # scale = beta
 
-x <- seq(0, 5,
+x <- seq(0, 6,
          length = 100)
-y <-  p * dgamma(x, 
+y <-  (1 -p) * dgamma(x, 
                  shape = x.shape,
                  scale = x.scale)
                      
@@ -314,7 +288,7 @@ plot(y ~ x,
      type = "l",
      axes = FALSE,
      ylim = c(0,
-              max( c(y, 1 - p) ) ),
+              max( c(y, p) ) ),
      xlab = expression(italic(X)),
      ylab = expression(Prob.~"function"),
      main = expression(bold(atop("Zero-modified"~distribution,
@@ -325,12 +299,12 @@ abline(h = 0,
 axis(side = 1)
 axis(side = 2,
      at = c(0, 
-            1 - p),
+            p),
      las = 2)
 box()
 
 points(x = 0, # Included
-       y = 1 - p,
+       y = p,
        pch = 19)
 points(x = 0, # Excluded
        y = y[1],
@@ -340,7 +314,7 @@ points(x = 0, # Excluded
 
 #############################################
 
-Fy <- (1 - p)  + p * pgamma(x, 
+Fy <- p  + (1 - p) * pgamma(x, 
                             shape = x.shape, 
                             scale = x.scale)
 plot(Fy ~ x,
@@ -366,13 +340,13 @@ points(x = 0,
 axis(side = 1)
 axis(side = 2,
      at = c(0, 
-            1 - p, 
+            p, 
             1),
      las = 2)
 box()
 
 points(x = 0, # Included
-       y = 1 - p,
+       y = p,
        pch = 19)
 ```
 
@@ -425,15 +399,24 @@ By this definition $X$ has a *compound Poisson--gamma distribution* (which are s
 The distribution of\ $X$ has a probability mass at $X = 0$ where $\Pr(Y = 0) = \Pr(N = 0) = \exp(-\lambda)$.
 
 
+:::{.definition name="Compound Poisson--gamma distribution"}
+A random variable\ $X$ has a *compound Poisson--gamma distribution* if its MGF is
+$$
+  M_X(t)
+  =
+  \exp\left\{ \lambda \right[ \left( \frac{1}{1 - \beta t}^\alpha - 1\right]\right\} \quad \text{for $t < 1/\beta$}
+$$
+where $\lambda > 0$, $\alpha > 0$ and $\beta > 0$. 
+We write $X\sim \text{CPG}(\lambda, \alpha, \beta)$.
+The support is $\{0\}\cup {0, \infty)$
+:::
+
 
 ```{r, child = if (knitr::is_html_output())  './children/MixedDist/CPG_html.Rmd' }
 ```
 
 ```{r, child = if (knitr::is_latex_output()) './children/MixedDist/CPG_latex.Rmd'}
 ```
-
-
-
 
 
 
@@ -561,7 +544,7 @@ If $N = 1$ with $\Pr(N = 1)$ (from the Poisson distribution), then, $X = Y$ has 
 That is,
 $$
   f_{X\mid N = 1}(x) 
-  = \frac{\beta^{\alpha}}{\Gamma(\alpha)} x^{\alpha -1}\exp(-\beta x) \quad \text{for $x > 0$}.
+  = \frac{1}{\Gamma(\alpha)\,\beta^{\alpha}} x^{\alpha -1}\exp(-x/\beta) \quad \text{for $x > 0$}.
 $$
 
 If $N = 2$ with $\Pr(N = 2)$ (from the Poisson distribution), then, $X = Y_1 + Y_2$, where $Y_i \sim\text{Gamma}(\alpha, \beta)$ for $i = 1, 2$.
@@ -569,24 +552,24 @@ This means that $X \sim \text{Gamma}(2\alpha, \beta)$ (Exercise\ \@ref(exr:Gamma
 That is, 
 $$
   f_{X\mid N = 2} (x) 
-  = \frac{\beta^{2\alpha}}{\Gamma(2\alpha)} x^{2\alpha -1}\exp(-\beta x) \quad \text{for $x > 0$}.
+  = \frac{1}{\Gamma(2\alpha)\,\beta^{2\alpha}} x^{2\alpha -1}\exp(-x/\beta) \quad \text{for $x > 0$}.
 $$
 
 More generally, if $N = n$ with $\Pr(N = n)$ (from the Poisson distribution), then, $X = Y_1 + Y_2+\cdots + Y_n$, and so $X \sim\text{Gamma}(n\alpha, \beta)$, so that
 $$
   f_{X\mid N = n} (x) 
-  = \frac{\beta^{n\alpha}}{\Gamma(n\alpha)} x^{n\alpha -1}\exp(-\beta x) \quad \text{for $x > 0$}.
+  = \frac{1}{\Gamma(n\alpha)\, \beta^{n\alpha}} x^{n\alpha -1}\exp(-x/\beta) \quad \text{for $x > 0$}.
 $$
 
 Then, using the *Law of total probability* (Theorem\ \@ref(thm:TotalProb)),
 \begin{align*}
   f_X(x)
-  &= \sum_{n = 1}^\infty \Pr(N = n) \cdot F_{X\mid N = n}(x)\\
-  &= \sum_{n = 1}^\infty \frac{\exp(-\lambda)\lambda^n}{n!} \cdot \frac{\beta^{n\alpha}}{\Gamma(n\alpha)} x^{n\alpha -1}\exp(-\beta x)\\
-  &= \exp(-\lambda - \beta x) \sum_{n = 1}^\infty \frac{\lambda^n}{n!} \frac{\beta^{n\alpha}}{\Gamma(n\alpha)} x^{n\alpha - 1} 
+  &= \sum_{n = 1}^\infty \Pr(N = n) \cdot f_{X\mid N = n}(x)\\
+  &= \sum_{n = 1}^\infty \frac{\exp(-\lambda)\lambda^n}{n!} \cdot \frac{1}{\Gamma(n\alpha)\,\beta^{n\alpha}} x^{n\alpha -1}\exp(-x/\beta)\\
+  &= \exp(-\lambda - x/\beta) \sum_{n = 1}^\infty \frac{\lambda^n}{n!} \frac{x^{n\alpha - 1}}{\Gamma(n\alpha)\, \beta^{n\alpha}}  
 \end{align*}
 for $x > 0$.
-In addition, of course, we have that
+In addition, of course, 
 $$
   \Pr(X = 0) = \exp(-\lambda).
 $$
@@ -597,7 +580,7 @@ To find the MGF, first consider the value of\ $N$ as fixed; then, $X = Y_1 + Y_2
 $$
   M_{X\mid N}(t) = \operatorname{E}[\exp(tX)\mid N].
 $$
-Since the MGF of a sum of independent random variables is the product of their MGFs (Theorem\ \@ref(thm:MGFIndependent)), we can assume that $N$ takes some specific value\ $n$ and write
+Since the MGF of a sum of independent random variables is the product of their MGFs (Theorem\ \@ref(thm:MGFIndependent)), we can assume that\ $N$ takes some specific value\ $n$ and write
 \begin{align*}
   M_{X\mid N}(t) 
   &= \operatorname{E}\left[ \exp\big(t(Y_1 + Y_2 + \cdots + Y_n)\big)\right] \\
@@ -611,18 +594,59 @@ So the MGF of $X$ (rather than $X\mid N$ as above) is
   &= \operatorname{E}\left[ M_{X\mid N}(t)\right] \\
   &= \operatorname{E}\left[ M_Y(t)^N\right].
 \end{align*}
-Substituting the MGF of a $\text{Gamma}(\alpha, \beta)$ random variable, $M_Y(t) = \left(\frac{\beta}{\beta - t}\right)^{\!\alpha}$, and then applying the MGF of a $\text{Poisson}(\lambda)$ random variable, $M_N(s) = \exp\{\lambda(s - 1)\}$ with $s = M_Y(t)$, gives
+Substituting the MGF of a $\text{Gamma}(\alpha, \beta)$ random variable, $M_Y(t) = \left(\frac{1}{1 - \beta t}\right)^{\!\alpha}$, and then applying the MGF of a $\text{Poisson}(\lambda)$ random variable, $M_N(s) = \exp\{\lambda(s - 1)\}$ with $s = M_Y(t)$, gives
 $$
-  M_X(t)=\exp\!\left\{\lambda\left[\Big(\frac{\beta}{\beta-t}\Big)^{\!\alpha}-1\right]\right\},\qquad\text{for $t < \beta$}.
+  M_X(t)=\exp\!\left\{\lambda\left[\Big(\frac{1}{1 - \beta t}\Big)^{\!\alpha}-1\right]\right\},\qquad\text{for $t < 1/\beta$}.
 $$
 
 From the MGF we can deduce
 \begin{align*}
   \operatorname{E}[X] 
-  &= \lambda\alpha/\beta\\
+  &= \lambda\alpha\beta\\
   \operatorname{var}[X]
-  &= \lambda\alpha(\alpha + 1)/\beta^2.
+  &= \lambda\alpha(\alpha + 1)\beta^2.
 \end{align*}
+
+
+
+---
+
+Distributional properties:
+
+The support is {0}∪(0,∞)\{0\} \cup (0, \infty)
+{0}∪(0,∞), which is worth stating explicitly given the mixed discrete-continuous nature
+
+The distribution is a special case of the Tweedie family with power variance parameter p=(α+2)/(α+1)p = (\alpha+2)/(\alpha+1)
+p=(α+2)/(α+1) — if this is relevant to your book's context
+
+
+Moments:
+
+Skewness and kurtosis, if you derive these elsewhere for other distributions for consistency
+The zero-modified conditional moments μc\mu_c
+μc​ and σc2\sigma_c^2
+σc2​ expressed in terms of λ,α,β\lambda, \alpha, \beta
+λ,α,β — connecting back to your earlier zero-modified framework would be nice, since you have:
+
+μc=λαβ1−e−λ,p=e−λ\mu_c = \frac{\lambda\alpha\beta}{1-e^{-\lambda}}, \qquad p = e^{-\lambda}μc​=1−e−λλαβ​,p=e−λ
+
+
+Reproductive property: If X1∼CPG(λ1,α,β)X_1 \sim \text{CPG}(\lambda_1, \alpha, \beta)
+X1​∼CPG(λ1​,α,β) and X2∼CPG(λ2,α,β)X_2 \sim \text{CPG}(\lambda_2, \alpha, \beta)
+X2​∼CPG(λ2​,α,β) independently, then X1+X2∼CPG(λ1+λ2,α,β)X_1 + X_2 \sim \text{CPG}(\lambda_1+\lambda_2, \alpha, \beta)
+X1​+X2​∼CPG(λ1​+λ2​,α,β) — this follows easily from the MGF and is useful in practice.
+
+Limiting cases:
+
+As λ→∞\lambda \to \infty
+λ→∞ the distribution approaches normality (by CLT)
+
+Relationship to the Poisson (α→0\alpha \to 0
+α→0) and gamma (λ→∞\lambda \to \infty
+λ→∞, α→0\alpha \to 0
+α→0 jointly) as limiting cases
+
+---
 
 
 :::{.example #PoissonGammaExample name="Poisson--gamma distribution"}
@@ -636,11 +660,11 @@ $$
 The mean and variance of\ $X$ is
 \begin{align*}
   \operatorname{E}[X]
-  &= \lambda\alpha/\beta
+  &= \lambda\alpha\beta
    = 3\times \frac{1}{2}\times\frac{2}{3} = 1;\\
   \operatorname{var}[X] 
   &= \lambda\alpha(\alpha + 1)\beta^2
-   = 3\times \left(\frac{1}{2}\times \frac{3}{2}\right)\left(\frac{5}{3}\right)^2 = 1.
+   = 3\times \left(\frac{1}{2}\times \frac{3}{2}\right)\left(\frac{2}{3}\right)^2 = 1.
 \end{align*}
 Furthermore, from Equation\ \@ref(eq:PGp0),
 $$
@@ -1153,3 +1177,15 @@ Comment.
 :::
 
 
+
+---
+
+SHOW:
+
+If $X_1 \sim \text{CPG}(\lambda_1, \\alpha, beta)$ and $X_2\sim \text{CPG}(\lambda_2,\alpha, \beta)$ independently, then $X_1 + X_2 \sim \text{CPG}(\lambda_1+\lambda_2, \alpha, \beta).
+
+This follows easily from the MGF and is useful in practice.
+
+---
+
+Relationship to the Poisson ($\alpha \to 0$) and gamma ($\lambda \to \infty$ and $\alpha\to 0$ jointly) as limiting cases
