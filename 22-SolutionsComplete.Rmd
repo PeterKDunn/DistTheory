@@ -4333,6 +4333,53 @@ as shown in Fig.\ \@ref(fig:AnswerRunnerVelocityVoltage) (right panel).
 
 
 
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:LogNormalProduct).**
+
+1. Taking logarithms of the product:
+$$
+  \log P 
+  = \log\!\left(\prod_{i=1}^n X_i\right) = \sum_{i=1}^n \log X_i
+$$
+by the standard property of logarithm.
+2. Since $\log X_i \sim N(\mu_i, \sigma_i^2)$ independently, and the sum of independent normal random variables is normal (with means and variances adding), we have:
+$$
+  \log P 
+  = 
+  \sum_{i=1}^n \log X_i \sim N\!\left(\sum_{i=1}^n \mu_i,\; \sum_{i=1}^n \sigma_i^2\right).
+$$
+Since $P = \exp(\log P)$, and its logarithm is normally distributed, by definition:
+$$
+  P \sim \text{LogNormal}\!\left(\sum_{i=1}^n \mu_i,\; \sum_{i=1}^n \sigma_i^2\right).
+$$
+3. From part 2, with $\mu_i = 0.2$ and $\sigma_i^2 = 0.09$ for each $i = 1, \ldots, 10$:
+$$
+  \log P \sim N(10 \times 0.2,\; 10 \times 0.09) = N(2,\; 0.9)
+$$
+so $P \sim \text{LogNormal}(2, 0.9)$.
+Then:
+$$
+  \Pr(P > \exp 3) 
+  = \Pr(\log P > 3) 
+  = \Pr\!\left(Z > \frac{3 - 2}{\sqrt{0.9}}\right) 
+  = \Pr(Z > 1.054) 
+  \approx 0.146.
+$$
+Using **R**:
+
+```{r}
+plnorm(exp(3), meanlog = 2, sdlog = sqrt(0.9), lower.tail = FALSE)
+```
+
+:::
+
+
+
+
+
+
+
+
 <!-- ********************************************************************************************* -->
 ## Answers for Chap.\ \@ref(DiscreteDistributions) {#AnswersChapDiscreteDistributions}
 
@@ -6193,9 +6240,54 @@ legend("topright", legend = c("CP-G", "Zero-Modified Gamma"),
 
 
 
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGReproductive).**
+Use the MGFs: The MGF of $T = X_1 + X_2$ is $M_T(t) = M_{X_1}(t) \cdot M_{X_2}(t)$.
+Substituting the MGFs for the CPG, 
+$$
+  M_T(t) 
+  = \exp\!\left\{(\lambda_1 + \lambda_2)\left[\left(\frac{1}{1-\beta t}\right)^\alpha - 1\right]\right\}
+$$
+
+This is the MGF of a CPG$(\lambda_1 + \lambda_2, \alpha, \beta)$ distribution. 
+Since the MGF uniquely determines the distribution, $T$ has a CPG$(\lambda_1 + \lambda_2, \alpha, \beta)$. 
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MixedCPGLimits).**
+Consider the CPG distribution.
+
+Hold $\mu = \lambda\alpha\beta$ fixed (so the mean of\ $X$ X is constant) and let $\lambda \to \infty$, $\alpha \to 0$ with $\lambda\alpha$ constant.
+
+The CGF of\ $X$ is:
+$$
+  K_X(t) = \lambda\left[\left(\frac{1}{1-\beta t}\right)^\alpha - 1\right].
+$$
+Write $(1 - \beta t)^{-\alpha} = \exp\{-\alpha \log(1 - \beta t)\}$ and expand for small\ $\alpha$:
+$$
+  (1 - \beta t)^{-\alpha} \approx 1 - \alpha\log(1-\beta t).
+$$
+So:
+$$
+  K_X(t) \approx \lambda \cdot (-\alpha)\log(1-\beta t) = -(\lambda\alpha)\log(1-\beta t).
+$$
+Setting $k = \lambda\alpha$ (which is fixed):
+$$
+  K_X(t) \to -k\log(1-\beta t) = \log(1-\beta t)^{-k}.
+$$
+This is the CGF (and hence the MGF) of a Gamma$(k, \beta) = \text{Gamma}(\lambda\alpha, \beta)$ distribution.
+
+So as $\lambda \to \infty$ and $\alpha \to 0$ with $\lambda\alpha$ fixed, the CPG distribution converges to a Gamma$(\lambda\alpha, \beta)$ distribution; the point mass at zero vanishes (since $\exp(-\lambda) \to 0$) and the distribution becomes purely continuous. 
+Intuitively, there are so many tiny jumps that the compound sum behaves like a continuous accumulation, converging to a gamma by a law-of-large-numbers argument.
+:::
+
+
+
+
 
 <!-- *********************************************************************************** -->
-## Answers for Chap.\ \@ref(ChapMultivariate) {#AnswersChapMultivariate}
+## Answers for Chap.\ \@ref(ChapMultivariate) {#AnswersMultivariateExpectation}
 
 
 
@@ -6218,7 +6310,7 @@ $$
 
 
 <!-- *********************************************************************************** -->
-## Answers for Chap.\ \@ref(MultivariateExtensions) {#AnswerMultivariateExtensions}
+## Answers for Chap.\ \@ref(MultivariateExtensions) {##AnswersChapMultivariate}
 
 
 
@@ -6934,7 +7026,7 @@ using the Poisson distribution.
 
 
 <!-- ************************************************************************************ -->
-## Answers for Chap.\ \@ref(OrderStatisticsChapter) {##AnswersOrderStatistics}
+## Answers for Chap.\ \@ref(OrderStatisticsChapter) {#AnswersOrderStatistics}
 
 :::{.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:OrderStatisticsUniform).**
