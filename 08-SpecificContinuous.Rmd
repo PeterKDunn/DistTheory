@@ -1523,6 +1523,241 @@ This is just the MGF for random variable\ $X$ with\ $k\beta$ in place of\ $\beta
 \index{Gamma distribution|)}
 
 
+
+
+
+## Log-normal distribution {#LognormalDistribution}
+
+### Definition {#LognormalDefinition}
+
+\index{Log-normal distribution|(}
+The log-normal distribution arises naturally as the distribution of a positive random variable\ $X$ whose logarithm $Y = \log X$ follows a normal distribution. 
+Because\ $X$ is strictly positive and right-skewed, the log-normal is a natural model for quantities such as incomes, rainfall amounts, and survival times
+
+
+:::{.definition #LognormalDist name="Log-normal distribution"}
+A random variable\ $X$ has a *log-normal distribution* if $Y = \log X$ has a
+normal distribution.
+That is, $X \sim \text{LogNormal}(\mu, \sigma^2)$ if and only if $\log X \sim N(\mu, \sigma^2)$.
+
+The PDF of\ $X$ is
+$$
+   f_X(x;\, \mu, \sigma^2)
+   = \frac{1}{x\,\sigma\sqrt{2\pi}}
+     \exp\!\left\{-\frac{(\log x - \mu)^2}{2\sigma^2}\right\},
+   \quad
+   \text{for $x > 0$},
+$$
+where $\mu \in \mathbb{R}$ is the *log-mean* (the mean of $\log X$) and $\sigma^2 > 0$ is the *log-variance* (the variance of $\log X$).
+We write $X \sim \text{LogNormal}(\mu, \sigma^2)$.
+:::
+
+
+::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
+If $X \sim \text{LogNormal}(\mu, \sigma^2)$ then $\log X \sim N(\mu, \sigma^2)$.
+Conversely, if $Z \sim N(\mu, \sigma^2)$ then $\exp Z \sim \text{LogNormal}(\mu, \sigma^2)$.
+The parameters\ $\mu$ and\ $\sigma^2$ are the mean and variance of the *logarithm* of\ $X$,
+not of\ $X$ itself.
+:::
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+In **R**, the four functions for working with the log-normal distribution have the form `[dpqr]lnorm(meanlog, sdlog)`, where `meanlog`${}= \mu$ and `sdlog`${}= \sigma$ (note: the standard deviation, not the variance).
+For example, `dlnorm(x, meanlog = 0, sdlog = 1)` gives the PDF of the
+standard log-normal distribution.
+:::
+
+
+```{r LognormalPlots, echo=FALSE, fig.align="center", fig.cap="Log-normal PDFs (left) and CDFs (right) for selected parameter combinations.", fig.width=8, fig.height=4, out.width="90%"}
+x <- seq(0.001, 6, length.out = 500)
+
+params <- list(
+  list(mu = 0,    sigma = 0.5,  lty = 1,  
+       lab = expression(mu==0 ~ ", " ~ sigma==0.5)),
+  list(mu = 0,    sigma = 1.0,  lty = 2,  
+       lab = expression(mu==0 ~ ", " ~ sigma==1.0)),
+  list(mu = 0.5,  sigma = 0.5,  lty = 3,  
+       lab = expression(mu==0.5 ~ ", " ~ sigma==0.5)),
+  list(mu = 1.0,  sigma = 0.5,  lty = 4,  
+       lab = expression(mu==1.0 ~ ", " ~ sigma==0.5))
+)
+
+par(mfrow = c(1, 2))
+
+# PDF
+plot(NA,
+     xlim = c(0, 6),
+     ylim = c(0, 1),
+     xlab = expression(italic(x)),
+     ylab = expression(italic(f)[italic(X)](italic(x))),
+     main = "Log-normal PDF",
+     lwd = 2,
+     las  = 1)
+for (p in params) {
+  lines(x, 
+        dlnorm(x, 
+               meanlog = p$mu, 
+               sdlog = p$sigma),
+        lty = p$lty, 
+        lwd = 2)
+}
+legend("topright",
+       legend = sapply(params, function(p) p$lab),
+       lty    = sapply(params, function(p) p$lty),
+       lwd    = 2,
+       bty    = "n",
+       cex    = 0.85)
+
+# CDF
+plot(NA,
+     xlim = c(0, 6), 
+     ylim = c(0, 1),
+     xlab = expression(italic(x)),
+     ylab = expression(italic(F)[italic(X)](italic(x))),
+     main = "Log-normal CDF",
+     las  = 1)
+for (p in params) {
+  lines(x, 
+        plnorm(x, 
+               meanlog = p$mu, 
+               sdlog = p$sigma),
+        lty = p$lty, 
+        lwd = 2)
+}
+legend("bottomright",
+       legend = sapply(params, function(p) p$lab),
+       lty    = sapply(params, function(p) p$lty),
+       lwd    = 2,
+       bty    = "n",
+       cex    = 0.85)
+```
+
+
+### Properties {#LognormalProperties}
+
+The log-normal distribution has a heavier right tail than the normal, exponential, or gamma distributions for the same mean and variance.
+Its shape is always right-skewed (for $\sigma > 0$), becoming more symmetric as $\sigma \to 0$.
+
+
+:::{.theorem #LognormalProperties name="Log-normal distribution properties"}
+If $X \sim \text{LogNormal}(\mu, \sigma^2)$ then
+
+1. $\operatorname{E}[X] = \exp\!\left(\mu + \tfrac{1}{2}\sigma^2\right)$.
+2. $\operatorname{var}[X] = \exp(2\mu + \sigma^2)\left[\exp(\sigma^2) - 1\right]$.
+3. The median of\ $X$ is $\exp(\mu)$.
+4. The mode of\ $X$ is $\exp(\mu - \sigma^2)$.
+5. The MGF of\ $X$ does not exist for $t > 0$.
+
+:::: {.proof}
+Let $Y = \log X \sim N(\mu, \sigma^2)$.
+For the expected value, write $X = \exp Y$ and use the MGF of the normal distribution, $M_Y(t) = \operatorname{E}[\exp(tY)] = \exp(\mu t + \sigma^2 t^2 / 2)$:
+$$
+     \operatorname{E}[X]
+   = \operatorname{E}[e^Y]
+   = M_Y(1)
+   = \exp\!\left(\mu + \tfrac{1}{2}\sigma^2\right).
+$$
+Similarly,
+$$
+     \operatorname{E}[X^2]
+   = \operatorname{E}[e^{2Y}]
+   = M_Y(2)
+   = \exp(2\mu + 2\sigma^2),
+$$
+and so
+$$
+     \operatorname{var}[X]
+   = \operatorname{E}[X^2] - \left(\operatorname{E}[X]\right)^2
+   = \exp(2\mu + 2\sigma^2) - \exp(2\mu + \sigma^2)
+   = \exp(2\mu + \sigma^2)\left[\exp(\sigma^2) - 1\right].
+$$
+The median follows because $\Pr(X \leq \exp\mu) = \Pr(Y \leq \mu) = 1/2$.
+
+The mode is found by differentiating $f_X(x)$ and setting to zero, giving $x^* = \exp(\mu - \sigma^2)$.
+
+The MGF $M_X(t) = \operatorname{E}[\exp(tX)]$ does not exist for $t > 0$ because the
+log-normal has a sufficiently heavy right tail that $\operatorname{E}[\exp(tX)] = \infty$
+for all $t > 0$.
+This can be seen by noting that $\exp(tX)$ grows faster than any polynomial in\ $X$, and the log-normal tail is not light enough to control this growth.
+::::
+:::
+
+
+Note that because the MGF does not exist, moments cannot be obtained by differentiating
+the MGF.
+Instead, the $r$-th raw moment follows directly from the normal MGF:
+$$
+   \operatorname{E}[X^r]
+   = \operatorname{E}[\exp(rY)]
+   = M_Y(r)
+   = \exp\!\left(r\mu + \tfrac{1}{2}r^2\sigma^2\right).
+$$
+
+A useful consequence is that the *coefficient of variation* $\operatorname{CV}(X) = \sqrt{\operatorname{var}[X]}/\operatorname{E}[X]$ simplifies to
+$$
+   \operatorname{CV}(X) = \sqrt{\exp(\sigma^2) - 1},
+$$
+which depends only on\ $\sigma^2$, not on\ $\mu$.
+
+
+:::{.example #LognormalIncome name="Income distribution"}
+Income data are commonly modelled using a log-normal distribution [@aitchison1957lognormal], since incomes are positive and right-skewed.
+Suppose annual household income\ $X$ (in thousands of dollars) follows a $\text{LogNormal}(\mu = 4, \sigma^2 = 0.25)$ distribution.
+
+The income is:
+\begin{align*}
+  \operatorname{E}[X]
+  &= \exp\!\left(4 + \tfrac{1}{2}(0.25)\right)
+   = \exp(4.125)
+   \approx 61.9 \text{ (i.e., \$61,900)}.\\
+  \text{Median}
+  &= \exp(4)
+   \approx 54.6 \text{ (i.e., \$54,600)}.
+\end{align*}
+Note that the mean exceeds the median, reflecting the right skew.
+
+The probability that a randomly selected household earns more than \$100\ 000 is $\Pr(X > 100) = \Pr(\log X > \log 100) = \Pr(Y > 4.605)$, where $Y \sim N(4, 0.25)$:
+$$
+  \Pr(X > 100)
+  = \Pr\!\left(Z > \frac{4.605 - 4}{0.5}\right)
+  = \Pr(Z > 1.21)
+  \approx 0.113.
+$$
+About $11$% of households earn more than \$100,000.
+
+Using **R**:
+```{r echo=TRUE}
+# Mean and median
+exp(4 + 0.5 * 0.25)   # Mean
+exp(4)                 # Median
+
+# P(X > 100)
+plnorm(100, meanlog = 4, sdlog = 0.5, lower.tail = FALSE)
+```
+:::
+
+
+:::{.example #LognormalTransformation name="Transformation property"}
+If $X \sim \text{LogNormal}(\mu, \sigma^2)$, find the distribution of $Y = X^k$ for some constant $k \neq 0$.
+
+Since $X = \exp W$ where $W \sim N(\mu, \sigma^2)$, we have
+$$
+   Y = X^k = \exp(kW).
+$$
+Now $kW \sim N(k\mu,\, k^2\sigma^2)$, and since $Y = \exp(kW)$ it follows that
+$$
+   Y \sim \text{LogNormal}(k\mu,\, k^2\sigma^2).
+$$
+In particular, $1/X = X^{-1} \sim \text{LogNormal}(-\mu, \sigma^2)$.
+The log-normal family is closed under power transformations.
+:::
+
+\index{Log-normal distribution|)}
+
+
+
+
+
 ## Beta distribution {#BetaDistribution}
 
 \index{Beta distribution|(}
