@@ -170,15 +170,16 @@ If a random variable\ $X$ has the PDF
    f_X(x; \mu, \sigma^2) =
    \displaystyle \frac{1}{\sigma \sqrt{2\pi}}
                  \exp\left\{ -\frac{1}{2}\left( \frac{x-\mu}{\sigma}\right)^2 \right\}
-   (\#eq:NormalPMF)
+  \quad\text{for $-\infty<x<\infty$}, 
+  (\#eq:NormalPMF)
 \end{equation}
-for $-\infty<x<\infty$, then\ $X$ has a *normal distribution*.
+then\ $X$ has a *normal distribution*.
 The two parameters are the mean\ $\mu$ such that $-\infty < \mu < \infty$; and the variance\ $\sigma^2$ such that $\sigma^2 > 0$.
 We write $X\sim N(\mu, \sigma^2)$ or $X\sim \text{Normal}(\mu, \sigma^2)$.
 :::
 
 
-Some authors---especially in non-theoretical work---use the notation $X\sim N(\mu,\sigma)$ (that is, the second argument is the standard deviation, rather than the variance) so it is wise to check each article or book for the notation used.
+Some authors---especially in non-theoretical work---use the notation $X\sim N(\mu,\sigma)$ (that is, the second argument is the standard deviation, rather than the variance) so it is wise to confirm the notation used.
 
 
 
@@ -293,7 +294,7 @@ where $\operatorname{erf}(\cdot)$ is the *error function* \@ref(eq:ErrorFunction
 
 ::: {.notationBox .notation data-latex="{iconmonstr-infinity-8-240.png}"}
 The density and distribution functions for the standard normal distribution are used so often that they have their own notation.
-The density function is denoted $\phi(\cdot)$, and the distribution function is denoted $\Phi(\cdot)$.
+The density function is denoted $\phi(\cdot)$, and the distribution function is denoted $\Phi(\cdot)$.\index{Standard normal distribution!density function}\index{Standard normal distribution!distribution function}
 Then, the density function a normal distribution with mean\ $\mu$ and standard deviation\ $\sigma$ is  $\phi\big( (x - \mu)/\sigma\big)$, and the corresponding distribution function  is $\Phi\big( (x - \mu)/\sigma\big)$.
 
 **Note:** $\displaystyle\frac{d}{dx} \Phi(x) = \phi(x)$.
@@ -394,8 +395,7 @@ $$
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the normal distribution have the form `[dpqr]norm(mean, sd)` (see App.\ \@ref(UseRDistributions)).
-By default, `mean = 0` and `sd = 1`, corresponding to the standard normal distribution.
+The four **R** functions for working with the normal distribution have the form `[dpqr]norm()` (see App.\ \@ref(UseRDistributions)) since, by default, `mean = 0` and `sd = 1` when using `[dpqr]norm()`, corresponding to the standard normal distribution.
 Note that the normal distribution is specified by giving the *standard deviation* and **not** the *variance*.
 :::
 \index{Standard normal distribution|)}
@@ -413,7 +413,7 @@ where\ $F_X(x)$ is the distribution function in Def. \@ref(def:StandardNormalDF)
 The integral in the distribution function cannot be written in terms of standard functions and in general must be evaluated for a particular\ $x$ numerically (e.g., using Simpson's rule or similar).
 However, all statistical packages have built-in procedures to evaluate\ $F_X(x)$ for any\ $z$ (such as `pnorm()` in **R**).
 
-Also, since any normal distribution can be transformed into a standard normal distribution, we can write
+Also, since any normal distribution can be transformed into a standard normal distribution,\index{Standard normal distribution} we can write
 $$
    z_1 = (a - \mu)/\sigma
    \quad\text{and}\quad
@@ -438,7 +438,7 @@ This $z$-value is then converted to a value of the original random variable usin
    x = \mu + z\sigma.
    (\#eq:Unstandardising)
 \end{equation}
-This process is sometimes referred to as *unstandardising*.
+This process is sometimes referred to as *unstandardising*.\index{Normal distribution!unstandardising}
 
 The following examples illustrate the use of **R**.
 Drawing rough graphs showing the relevant areas is encouraged.
@@ -771,14 +771,13 @@ polygon( x = c(2.5,
          y = c(0, 
                PDF.normal[shading], 
                0),
-         col = plotColour)
+         col = plotColour1)
 
+###################
 
-
-
-
-barplot(PDF.binomial,
-        space = 0, #Put bars together to make histogram
+out <- barplot(PDF.binomial,
+               plot = TRUE,
+               space = 0, #Put bars together to make histogram
         las = 1,
         names = as.character(xx),
         col = "white",
@@ -786,6 +785,23 @@ barplot(PDF.binomial,
         main = "With continuity correction",
         xlab = expression(italic(X)),
         ylab = "Prob. function")
+mtext("34.5", 
+      side = 1,
+      line = 0, 
+      at = 2)
+points(x = 2,
+       y = 0.005,
+       pch = 25,
+       bg = "black",
+       cex = 1.25)
+segments(x0 = 34.5,
+         x1 = 34.5,
+         y0 = 0, 
+         y1 = 0.07,
+         lwd = 2,
+         col = "grey",
+         lty = 3)
+
 # Now, this is plotted with x = 1, 2, 3, 4, 5... so make such normal PDF matches
 
 
@@ -812,9 +828,7 @@ polygon( x = c(2,
          y = c(0, 
                PDF.normal[shading], 
                0),
-         col = plotColour)
-
-
+         col = plotColour1)
 ```
 
 :::{.example #ContCorrectionDice name="Continuity correction"}
@@ -1062,7 +1076,7 @@ Equivalently, we can define $\lambda = 1/\beta$ as the *rate* parameter and writ
    f_X(x; \lambda) 
    = \lambda  \exp(-\lambda x)
    \quad
-   \text{for $x > 0$}
+   \text{for $x > 0$}.
    (\#eq:ExponentialPMFRate)
 \end{equation}
 We write $X\sim\text{Exp}(\lambda)$ or $X\sim\text{Exp}(\text{rate} = \lambda)$.
@@ -1267,6 +1281,8 @@ Equivalently, we can define $\lambda = 1/\beta$ as the *rate* parameter and writ
 $$
    f_X(x; \alpha, \lambda) 
    = \frac{\lambda^{\alpha}}{\Gamma(\alpha)} x^{\alpha - 1} \exp(-\lambda x)
+   \quad
+   \text{for $x > 0$}.
 $$
 We write $X \sim \text{Gamma}(\alpha, \lambda)$ or $X \sim \text{Gamma}(\text{shape} = \alpha, \text{rate} = \lambda)$.
 This is called the *rate parameterisation*.\index{Gamma distribution!rate parameterisation}
