@@ -43,8 +43,8 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, ...) {
          type = "n",
          main = main_title,
          las  = 1,
-         xlim = c(min(x) - 0.75, 
-                  max(x) + 0.75),
+         xlim = c(min(x) - 0.1, 
+                  max(x) + 0.1),
          ylim = ylim_use,
          ...)
     
@@ -120,8 +120,8 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, ...) {
          type = "n",
          main = main_title,
          las  = 1,
-         xlim = c(min(x) - 0.75, 
-                  max(x) + 0.75),
+         xlim = c(min(x) - 0.1, 
+                  max(x) + 0.1),
          ylim = ylim_use,
          ...)
     
