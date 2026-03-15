@@ -7,6 +7,8 @@ Upon completion of this chapter, you should be able to:
 * determine the probability function of random variables defined for a random process.
 * determine the distribution function of a random variable from its probability function.
 * apply probability functions and distribution functions to compute probabilities for defined events.
+* determine and use quantile function.
+* use random numbers over $(0, 1)$ to generate random numbers from an arbitrary distribution.
 * plot the probability function and distribution function of a random variable.
 :::
 
@@ -35,7 +37,7 @@ A random variable\ $X$ maps $S\to\mathbb{R}$, and the value assigned to an outco
 :::
 
 
-```{r RVmapping, echo=FALSE, out.width='90%', fig.width=7, fig.align="center", fig.cap="A random variable\\ $X$ is a function that maps each outcome in the sample space\\ $S$ to a real number."}
+```{r RVmapping, echo=FALSE, out.width='90%', fig.width=6.5, fig.align="center", fig.cap="A random variable\\ $X$ is a function that maps each outcome in the sample space\\ $S$ to a real number."}
 par(mar = c(2, 1, 3, 1), 
     bg = "white")
 plot.new()
@@ -242,6 +244,7 @@ Each element of the sample space is mapped to exactly one value of\ $X$.
 However, multiple elements of the sample space can be mapped to the same value of\ $X$:
 \begin{align*}
  (3, 4) &\mapsto X = 12; \quad\text{and}\\
+ (4, 3) &\mapsto X = 12; \quad\text{and}\\
  (6, 2) &\mapsto X = 12; \quad\text{and}\\
  (2, 6) &\mapsto X = 12.
 \end{align*}
@@ -345,8 +348,9 @@ Writing $N = 2$ means 'the number of tosses to observe the first head is two'.
 Consider drawing two cards from a standard, well-shuffled pack of cards, and observing the colour of the card (B: Black; R: Red).
 The sample space\ $\Omega$ is:
 $$
-   \Omega = \{ BB, BR, RR, RB\}.
+   \Omega = \{ BB, BR, RR, RB\},
 $$
+where the order represents the order in which the cards are drawn. 
 Many random variables could be defined on this sample space; for example:
 \begin{align*}
    T&: \text{The number of black cards drawn};\\
@@ -381,6 +385,9 @@ Each are discussed in the sections that follow.
 
 ### Discrete random variables {#RVsDiscrete}
 \index{Random variables!discrete|(}
+
+The examples used so far in this chapter has been examples of discrete random variables.
+
 
 :::{.definition #DiscreteRV name="Discrete random variable"}
 A **discrete random variable** takes values in a finite or countable infinite set.
@@ -721,8 +728,8 @@ if( knitr::is_html_output() ) {
 
 
 ```{r ProbDistributionCoin, echo=FALSE, fig.align="center", fig.width=4,fig.height=3.5,fig.cap="The probability function for\\ $H$, the number of heads on two tosses of a coin.", out.width="45%"}
-plotDiscrete( 0:2,
-              c(0.25, 0.50, 0.25),
+plotDiscrete( -1:3,
+              c(0, 0.25, 0.50, 0.25, 0),
               type = "MF",
               main = expression( bold(
                 paste("The probability distribution of ", italic(H))
@@ -814,7 +821,7 @@ $$
 and the answer is the same as before.
 
 Note that $f_W(w)$ is greater than one for some values of\ $w$.
-Since $f_W(w)$ does not represent probabilities at each point (as\ $W$ is continuous), this is not a problem.
+Since $f_W(w)$ does not represent probabilities at each point (as\ $W$ is continuous), this is not problematic.
 However, $\int_{\mathbb{R}} f_W(w) \, dw = 1$ as required of a probability density.
 :::
 
@@ -832,7 +839,7 @@ plot( x = c(-1, 2),
         paste("Values of the rv ", italic(W))
         ),
       ylab = expression(
-        paste("The probability function ", italic(p)[italic(W)](italic(w)))
+        paste("The probab. function ", italic(p)[italic(W)](italic(w)))
       )
 )
 
@@ -853,10 +860,13 @@ lines( x = c(1.5, 2),
        y = c(0, 0),
        lwd = 2,
        lty = 3)
-points(1, 2, 
-       pch = 1)
-points(1, 0, 
-       pch = 19)
+abline(v  = 1, 
+       lty = 2, 
+       col = "grey")
+#points(1, 2, 
+#       pch = 1)
+#points(1, 0, 
+#       pch = 19)
 ```
 
 
@@ -885,9 +895,10 @@ as required.
 
 Consider a diode for which $p = 0.4$.
 The distribution is displayed in Fig.\ \@ref(fig:Diode) where a solid dot is included to show the discrete mass at $Y = 0$.
+:::
+
 Representing the probability distribution in this mixed case is difficult, because of the need to combine a probability distribution and a PDF.
 These difficulties are overcome by using the distribution function (Sect.\ \@ref(DistributionFunction)).
-:::
 \index{Probability function|)}
 
 
@@ -940,7 +951,7 @@ The DF gives the probability that a random variable\ $X$ is less than *or equal 
 
 
 ::: {.definition #DistributionFunction name="Distribution function"}
-For any random variable\ $X$ the *distribution function*, $F_X(x)$, is given by
+For any random variable\ $X$ the *distribution function*, $F_X(x)$, is
 $$
      F_X(x) = \Pr(X \leq x) \quad \text{for $x\in\mathbb{R}$}.
 $$
@@ -948,7 +959,7 @@ $$
 
 
 The distribution function applies to discrete, continuous or mixed random variables.
-Importantly, the distribution functions is defined is  for *all* real numbers.
+Importantly, the distribution functions is defined for *all* real numbers.
 
 If\ $X$ is a discrete random variable with range\ $\mathcal{R}_X$, then the DF is
 \begin{align*}
@@ -964,7 +975,7 @@ If\ $X$ is a continuous random variable, the DF is
 \end{align*}
 
 
-Properties of the DF include:
+Properties of the distribution function include:
 
 1. $0\leq F_X(x)\leq 1$ because $F_X(x)$ is a probability.
 2. $F_X(x)$ is a non-decreasing function of\ $x$.
@@ -983,10 +994,10 @@ The above ideas can be applied in the discrete case, but care is needed at the v
 ::: {.example #TossingHeads2 name="Tossing heads"}
 Consider the simple example in Example\ \@ref(exm:TossingHeads) where a coin is tossed once.
 The probability function for\ $H$ is given in that example in numerous forms.
-To determine the DF, first note that when $h < 0$, the accumulated probability is zero; hence, $F_H(h) = 0$ when $h < 0$.
+To determine the distribution function, first note that when $h < 0$, the accumulated probability is zero; hence, $F_H(h) = 0$ when $h < 0$.
 At $h = 0$, the probability of $0.25$ is accumulated all at once, and no more probability is accumulated until $h = 1$.
 Thus, $F_H(h) = 0.25$ for $0 \le h < 1$.
-Continuing, the DF is
+Continuing, the distribution function is
 $$
    F_H(h) = \begin{cases}
                0 & \text{for $h < 0$};\\
@@ -995,7 +1006,7 @@ $$
                1 & \text{for $h\ge 2$}.
             \end{cases}
 $$
-The DF can be displayed graphically, being careful to clarify what happens at $H = 1$, $H = 2$ and $H = 3$ using open or filled circles (Fig.\ \@ref(fig:HeadsDF)).
+The distribution function can be displayed graphically, being careful to clarify what happens at $H = 1$, $H = 2$ and $H = 3$ using open or filled circles (Fig.\ \@ref(fig:HeadsDF)).
 :::
 
 
@@ -1060,7 +1071,7 @@ points(2, 1,
 
 ### Continuous random variables
 
-The same ideas apply for continuous random variables, where integrations are used rather than summations.
+The same ideas apply for continuous random variables, but probabilities are accumulated using integrations rather than summations.
 
 
 ::: {.example #DistributionFunction name="Distribution function"}
@@ -1071,7 +1082,7 @@ $$
                0 & \text{otherwise.}
             \end{cases}
 $$
-The DF is zero whenever $v\le 0$.
+The distribution function is zero whenever $v\le 0$.
 For $0 < v < 2$,
 $$
    F_V(v) = \int_0^v t/2\,dt = v^2/4.
@@ -1089,7 +1100,7 @@ A picture of the distribution function is shown in Fig.\ \@ref(fig:DFCont).
 :::
 
 
-```{r DFCont, echo=FALSE, fig.align="center", fig.cap="The probability function for\\ $V$.", fig.width=7, out.width='90%', fig.height=3.5}
+```{r DFCont, echo=FALSE, fig.align="center", fig.cap="The distribution function for\\ $V$.", fig.width=5, out.width='60%', fig.height=3.5}
 v <- seq(0, 2, 
          length = 100)
 Fv <- (v ^ 2 ) / 4
@@ -1100,7 +1111,7 @@ plot(Fv ~ v,
      xlim = c(-0.5, 2.5),
      xlab = expression(italic(V)),
      ylab = expression(italic(F)[italic(V)](italic(v))),
-     main = "Probability function",
+     main = expression(bold(Distribution~"function for"~italic(V))),
      axes = FALSE,
      las = 1)
 axis(side = 1,
@@ -1130,7 +1141,7 @@ Either write the integral as given in the example, or write $\int_0^t v/2\,dv = 
 
 ### Mixed random variables
 
-The distribution function for mixed random variables follow the same ideas as above.
+The distribution function for mixed random variables follow the same ideas as above, using summations and integrations as appropriate.
 
 
 ::: {.example #MixedRandomVariableDF name="Mixed random variable"}
@@ -1186,7 +1197,7 @@ plot(Fy ~ x,
      type = "l",
      xlab = expression(italic(Y)),
      ylab = expression(italic(F)[italic(y)](italic(y))),
-     main = "Distribution function",
+     main = expression(bold(Distribution~" function for"~italic(Y))),
      las = 1)
 points( x = 0,
         y = Fy[1],
@@ -1201,14 +1212,14 @@ lines( x = c(-1, 0),
 
 
 
-### Recovering the probability functiin from the DF {#PFfromDF}
+### Recovering the probability function from the DF {#PFfromDF}
 
 We have seen how to find $F_X(x)$ given $\Pr(X = x)$, or to find $F_X(x)$ given $f_X(x)$.
 But can we proceed in the other direction too?
-That is, given $F_X(x)$, how do we find $\Pr(X = x)$ for\ $X$ discrete, or $f_X(x)$ for\ $X$ continuous?
+That is, given $F_X(x)$, how do we find the corresponding probability function?
 
-As seen from the graph of the distribution in Example\ \@ref(exm:TossingHeads2), the values of\ $x$ where a 'jump' in $F_X(x)$ occurs are the points in the range, and the probability associated with a particular point in\ $\mathcal{R}_X$ is the 'height' of the corresponding jump.
-That is,
+As seen from the graph of the distribution in Example\ \@ref(exm:TossingHeads2), the values of\ $x$ where a 'jump' in $F_X(x)$ occurs are the points in the range with positive probabilities, and the probability associated with a particular point in\ $\mathcal{R}_X$ is the 'height' of the corresponding jump.
+This implies
 \begin{equation}
       p_X(x_j) = \Pr(X = x_j) = F_X(x_j) - F_X(x_{j - 1}).
    (\#eq:DFtoPDFdiscrete)
@@ -1236,8 +1247,8 @@ $$
       0.3   & \text{for $x = 11$}\\
       0.5   & \text{for $x = 15$}\\
       0.1   & \text{for $x = 17$}\\
-      0     & \text{elsewhere}\\
-   \end{cases}.
+      0     & \text{elsewhere}.
+   \end{cases}
 $$
 As shown in Fig.\ \@ref(fig:DFtoPDFdiscrete), the discrete jumps in the DF correspond to the value of the PMF at those values of\ $X$.
 :::
@@ -1372,16 +1383,17 @@ which is usually written as $f_X(x) = 2(1 - x)$ for $0 < x < 1$, and\ $0$ elsewh
 ## Survival functions {#SurvivalFunction}
 \index{Survival function|(}
 
-In many applications (particularly in medical research, climatology, engineering, and insurance), the probability that a subject 'survives' beyond a certain time is of more interest than the probability that an event has already occurred (i.e., the distribution function).
+In many applications (suc as medical research, climatology, engineering, and insurance), the probability remaining beyond a certain values is of more interest than the probability that an event has already occurred (i.e., the distribution function).
+This is akin to observing the probability that the quantity 'survives' beyond a given value.
 
-The *survival function*, denoted $S_X(x)$ and sometimes called the *reliability function*, is defined as the probability that the random variable\ $X$ *exceeds* a value $x$:
+The *survival function*, denoted $S_X(x)$ and sometimes called the *reliability function*, is defined as the probability that the random variable\ $X$ *exceeds* a value\ $x$:
 \begin{equation}
-  S_X(x) = \Pr(X > x)
+  S_X(x) = \Pr(X > x).
   (\#eq:SurvivalFunction)
 \end{equation}
 Since $F_X(x) = \Pr(X \le x)$, the survival function is simply the complement of the distribution function:
 $$
-  S_X(x) = 1 - F_X(x)
+  S_X(x) = 1 - F_X(x).
 $$
 
 Properties of the survival function include:
@@ -1402,17 +1414,14 @@ For discrete variables, $S_X(x)$ is the probability of the event occurring at an
 :::{.example #SurvivalVsDistributionCont name="Survival function"}
 Suppose the time\ $X$ (in years) until a specific LED bulb fails has a probability density function
 $$
-  f_X(x) - \exp(-x/2) \quad\text{for $x > 0$},
+  f_X(x) - \exp(-x/2) \quad\text{for $x > 0$}.
 $$
-with a mean of $2$\ years.
-The distribution function is $F_X(x) = 1 - e^{-x/2}$, so the survival function is
+The distribution function is $F_X(x) = 1 - \exp(-x/2)$, so the survival function is (Fig.\ \@ref(fig:SurvivalVsDistributionContPlot))
 $$
-  S_X(x) = 1 - (1 - e^{-x/2}) = e^{-x/2}.
+  S_X(x) = 1 - \left[1 - \exp(-x/2)\right] = \exp(-x/2).
 $$
-At $x = 0$, the bulb has just been turned on.
-$F_X(0) = 0$ (probability of failing instantly is zero) and $S_X(0) = 1$ ($100$% chance the bulb has survived to the start).
-As $x \to \infty$, $F_X(x)$ approaches\ $1$, while $S_X(x)$ approaches\ $0$. 
-Eventually, every bulb 'dies'.
+At $x = 0$, the bulb has just been turned on, and $F_X(0) = 0$ (probability of failing instantly is zero) and $S_X(0) = 1$ ($100$% chance the bulb has survived to the start).
+As $x \to \infty$, $F_X(x)$ approaches\ $1$, while $S_X(x)$ approaches\ $0$: eventually, every bulb 'dies'.
 :::
 
 
@@ -1541,8 +1550,8 @@ The value of\ $F_X(x)$ is a probability, so is a value between\ $0$ and\ $1$.
 
 The *quantile function* $Q_X(p)$ is the inverse of the distribution function; it takes a value between\ $0$ and\ $1$ (denoted\ $p$), and returns the *smallest* value\ $x$ such that $F_X(x) \ge p$ for given values of\ $p$.
 The $p$-quantile\index{Quantile} of a distribution is a value\ $x$ such that a fraction\ $p$ of the distribution lies at or below\ $x$.
-For example, the $0.9$-quantile (or the $90$% quantile) is a value with (at least) $90$% of the distribution below or at the value. 
-The median is the $0.5$-quantile---half the distribution (i.e., $50$%) on each side of the median.
+For example, the $0.9$-quantile (or the $90$% quantile) is the smallest value with (at least) $90$% of the distribution below or at the value. 
+The median is the $0.5$-quantile---half the distribution (i.e., $50$%) is on each side of the median.
 
 More formally,
 \begin{equation}
@@ -1558,11 +1567,22 @@ $$
 $$
 
 
+<!-- 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 For built-in distributions (see Chaps.\ \@ref(DiscreteDistributions) and\ \@ref(ContinuousDistributions)), **R** allows the values `p = 0` and `p = 1`.
 If the distribution is *unbounded*, **R** returns $-\infty$ or $+\infty$ as appropriate.
 If the distribution is *bounded*, **R** returns the actual minimum and maximum of the support.
 :::
+-->
+
+
+At the endpoints ($p = 0$ and $p = 1$), some ambiguity exists. 
+Some authors set $Q_X(0) = \min\{x \mid F_X(x) > 0\}$, which is the smallest support point with a positive mass.
+Other authors define $Q_X(0) = \lim_{p\downarrow 0} Q_X(p)$, which for some distributions may lead to $Q_X(0) \to -\infty$.
+
+Similarly, some authors leave $Q_X(1)$ undefined. 
+Others define it as the smallest value $x$ where the distribution function first reaches 1, i.e., $Q_X(1) = \inf\{x \mid F_X(x) = 1\}$. 
+This corresponds to the largest point in the distribution's support.
 
 
 :::{.example #QuantileFnContinuous1 name="Quantile function: continuous rv"}
@@ -1868,7 +1888,7 @@ $$
       0     & \text{for $x < 10$;}\\
       0.1   & \text{for $10 \le x < 11$;}\\
       0.4   & \text{for $11 \le x < 15$;}\\
-      0.9   & \text{for $15 \le x < 17$;}\\
+      0.8   & \text{for $15 \le x < 17$;}\\
       1     & \text{for $x \ge 17$,}
    \end{cases}
 $$
@@ -1881,8 +1901,8 @@ $$
   \begin{cases}
     10 & \text{for $0 < p \le 0.1$;}\\
     11 & \text{for $0.1 < p \le 0.4$;}\\
-    15 & \text{for $0.4 < p \le 0.9$;}\\
-    17 & \text{for $0.9 < p \le 1$.}
+    15 & \text{for $0.4 < p \le 0.8$;}\\
+    17 & \text{for $0.8 < p \le 1$.}
   \end{cases}
 $$
 as shown in Fig.\ \@ref(fig:QuantileFnDiscrete).
@@ -1900,9 +1920,9 @@ par(mfrow = c(1, 2))
 
 # Data from your example
 x_vals <- c(10, 11, 15, 17)
-p_vals <- c(0.1, 0.4, 0.9, 1.0)
+p_vals <- c(0.1, 0.4, 0.8, 1.0)
 
-# 1. Distribution Function Plot
+# Distribution Function Plot
 plot(NA, 
      xlim = c(8, 18), 
      ylim = c(0, 1), 
@@ -1911,30 +1931,49 @@ plot(NA,
      main = "Discrete DF", 
      las = 1)
 
+abline(h = c(0, 0.1, 0.4, 0.8, 1),
+       lwd = 1,
+       col = "grey",
+       lty = 2)
+abline(v = c(10, 11, 15, 17),
+       lwd = 1,
+       col = "grey",
+       lty = 2)
+
 # Draw horizontal lines for DF (Right-continuous)
 segments(x0 = c(8, 10, 11, 15, 17), 
          x1 = c(10, 11, 15, 17, 20), 
-         y0 = c(0, 0.1, 0.4, 0.9, 1), 
+         y0 = c(0, 0.1, 0.4, 0.8, 1), 
          lwd = 2)
 points(x_vals, 
-       c(0.1, 0.4, 0.9, 1), 
+       c(0.1, 0.4, 0.8, 1), 
        pch = 19) # Closed dots at jumps
 points(x_vals, 
-       c(0, 0.1, 0.4, 0.9), 
+       c(0, 0.1, 0.4, 0.8), 
        pch = 1)  # Open dots below jumps
 
-# 2. Quantile Function Plot
+
+# Quantile Function Plot
 plot(NA, 
      xlim = c(0, 1), 
-     ylim = c(8, 20), 
+     ylim = c(8, 19), 
      xlab = expression(italic(p)), 
      ylab = expression( italic(Q)(italic(p))), 
      main = "Discrete quantile function", 
      las = 1)
 # Draw horizontal lines for QF (Left-continuous)
-p_starts <- c(0, 0.1, 0.4, 0.9)
-p_ends   <- c(0.1, 0.4, 0.9, 1.0)
+p_starts <- c(0, 0.1, 0.4, 0.8)
+p_ends   <- c(0.1, 0.4, 0.8, 1.0)
 y_steps  <- c(10, 11, 15, 17)
+
+abline(v = c(0, 0.1, 0.4, 0.8, 1),
+      lwd = 1,
+      col = "grey",
+      lty = 2)
+abline(h = c(10, 11, 15, 17),
+       lwd = 1,
+       col = "grey",
+       lty = 2)
 
 segments(x0 = p_starts, 
          x1 = p_ends, 
@@ -1946,17 +1985,8 @@ points(c(0, p_ends),
 points(p_starts[-1], 
        y_steps[-1], 
        pch = 1) # Left-open (except p=0)
+
 ```
-
-
-
-At the endpoints ($p = 0$ and $p = 1$), some ambiguity exists. 
-Some authors set $Q_X(0) = \min\{x \mid F_X(x) > 0\}$, which is the smallest support point with a positive mass.
-Other authors define $Q_X(0) = \lim_{p\downarrow 0} Q_X(p)$, which for some distributions may lead to $Q_X(0) \to -\infty$.
-
-Similarly, some authors leave $Q_X(1)$ undefined. 
-Others define it as the smallest value $x$ where the distribution function first reaches 1, i.e., $Q_X(1) = \inf\{x \mid F_X(x) = 1\}$. 
-This corresponds to the largest point in the distribution's support.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -1965,7 +1995,7 @@ For $Q_X(0)$, we observe that while $F_X(x) = 0$ for all $x < 10$, the 'first' p
 :::
 
 
-If the distribution has a clear end (like the random variable\ $X$ in Example\ \@ref(exm:QuantileFnDiscrete) ending at\ $17$), $Q(1)$ is just that end point. 
+If the distribution has a clear end (like the random variable\ $X$ in Example\ \@ref(exm:QuantileFnDiscrete), where no furtehr probability is added after $X = 17$), $Q(1)$ is just that end point. 
 If the distribution has a tail that goes on forever (like the random variable\ $X$ in Example\ \@ref(exm:QuantileFnContinuous)), $Q(1)$ is infinity.
 
 
@@ -2120,11 +2150,10 @@ points(x = 0.5,
 \index{Generating random numbers|(}\index{Random numbers|(}
 
 Many computers have facilities for generating pseudo-random numbers between\ $0$ and\ $1$, though random numbers from other distributions are often more useful in computer modelling and simulation (for example, Sects.\ \@ref(SimulationDiscrete) and\ \@ref(SimulationContinuous)).
-For instance, generating heights of people at random would requires the heights to have an average value of (say) $180\cms$, with most heights between about $175\cms$ and $185\cms$, but a few smaller than $175\cms$ and a few larger than $185\cms$.
+For instance, generating heights of people at random may require the heights to have bell-shaped distribution, with an average value of (say) $180\cms$, with most heights between about $175\cms$ and $185\cms$, but a few smaller than $175\cms$ and a few larger than $185\cms$.
 
-Random numbers are generated using distribution functions.
-Computer software can generally provide random numbers between between\ $0$ and\ $1$, which correspond to a probability $p^*$ (i.e., the range of $F_X(x)$).
-Then, the quantile function is used to find the corresponding value $x^*$:
+Computer software can generally provide random numbers between\ $0$ and\ $1$, which correspond to the range of $F_X(x)$, or equivalently the domain of $Q_X(p)$, for any random variable\ $X$.
+Suppose a random number\ $p^*$ is chosen between\ $0$ and\ $1$; then, the quantile function is used to find the corresponding value $x^*$:
 $$
    x^* = Q_X(p^*)
 $$
@@ -2133,12 +2162,12 @@ By repeating this process with many different random values of $p^*$, we natural
 
 
 
-```{r, RNos, echo=FALSE, fig.align="center", fig.cap="Selecting a random number from a distribution, using the distribution function (left) or quantile function (right).", out.width='80%', fig.width=7, fig.height=4}
+```{r, RNos, echo=FALSE, fig.align="center", fig.cap="Selecting a random number from a distribution, using the distribution function (left) or quantile function (right).", out.width='60%', fig.width=5, fig.height=4}
 # CDF:        F(x) = (x-1)^3 / 27  for 1 < x < 4
 # Quantile:   Q(p) = 1 + (27p)^(1/3)
 
-par(mfrow = c(1, 2), 
-    mar = c(4, 4, 3, 2))
+#par(mfrow = c(1, 2), 
+#    mar = c(4, 4, 3, 2))
 
 x_seq <- seq(1, 4, 
              length.out = 500)
@@ -2149,76 +2178,76 @@ p_star <- 0.6
 x_star <- 1 + (27 * p_star)^(1/3)   # About 3.24
 
 ###  LEFT: Distribution Function  ###
-plot(x_seq, 
-     F_x, 
-     type = "l", 
-     lwd = 2.5,
-     xlim = c(1, 4), 
-     ylim = c(0, 1),
-     axes = FALSE,
-     xlab = expression(italic(X)), 
-     ylab = expression(italic(F)(italic(x))),
-     main = "Distribution Function",
-     las = 1, bty = "l")
-axis(side = 1,
-     at = seq(1, 4, by = 0.5),
-     labels = c(1, 1.5, 2, 2.5, 3, expression(italic(x)*"*") , 4))
-axis(side = 2,
-     las = 1,
-     at = c(0, 0.2, 0.4, 0.6, 0.8, 1),
-     labels = c(0, 0.2, 0.4, expression(italic(p)*"*"), 0.8, 1) )
-
-
-# Arrowheads: two-headed on the horizontal, one down to x-axis
-#arrows(x_star, 
-#       p_star, 
-#       1.1,      
-#       p_star, 
-#       length = 0.1, 
-#       angle = 15,
-#       col = "steelblue", 
-#       lwd = 2)
-arrows(1.15,
-       p_star, 
-       x_star, 
-       p_star, 
-       length = 0.1, 
-       col = "steelblue", 
-       lwd = 2)
-arrows(x_star, 
-       p_star, 
-       x_star, 
-       0,      
-       length = 0.1, 
-       col = "steelblue", 
-       lwd = 2)
-
-# Random text
-text(x = 1,
-     y = 0.5,
-     srt = 90,
-     label = "Pick a random number")
-points(x = 1.15,
-       y = p_star,
-       pch = 19,
-       col = "grey")
-
-# Up-down at random arrow
-arrows(x0 = 1.15,
-       x1 = 1.15, 
-       y0 = 0, 
-       y1 = 1,
-       lwd = 2,
-       code = 3,
-       angle = 15,
-       length = 0.1,
-       col = "grey")
-# Dot on curve
-points(x_star, 
-       p_star, 
-       pch = 19, 
-       cex = 1.1)
-box()
+# plot(x_seq, 
+#      F_x, 
+#      type = "l", 
+#      lwd = 2.5,
+#      xlim = c(1, 4), 
+#      ylim = c(0, 1),
+#      axes = FALSE,
+#      xlab = expression(italic(X)), 
+#      ylab = expression(italic(F)(italic(x))),
+#      main = "Distribution Function",
+#      las = 1, bty = "l")
+# axis(side = 1,
+#      at = seq(1, 4, by = 0.5),
+#      labels = c(1, 1.5, 2, 2.5, 3, expression(italic(x)*"*") , 4))
+# axis(side = 2,
+#      las = 1,
+#      at = c(0, 0.2, 0.4, 0.6, 0.8, 1),
+#      labels = c(0, 0.2, 0.4, expression(italic(p)*"*"), 0.8, 1) )
+# 
+# 
+# # Arrowheads: two-headed on the horizontal, one down to x-axis
+# #arrows(x_star, 
+# #       p_star, 
+# #       1.1,      
+# #       p_star, 
+# #       length = 0.1, 
+# #       angle = 15,
+# #       col = "steelblue", 
+# #       lwd = 2)
+# arrows(1.15,
+#        p_star, 
+#        x_star, 
+#        p_star, 
+#        length = 0.1, 
+#        col = "steelblue", 
+#        lwd = 2)
+# arrows(x_star, 
+#        p_star, 
+#        x_star, 
+#        0,      
+#        length = 0.1, 
+#        col = "steelblue", 
+#        lwd = 2)
+# 
+# # Random text
+# text(x = 1,
+#      y = 0.5,
+#      srt = 90,
+#      label = "Pick a random number")
+# points(x = 1.15,
+#        y = p_star,
+#        pch = 19,
+#        col = "grey")
+# 
+# # Up-down at random arrow
+# arrows(x0 = 1.15,
+#        x1 = 1.15, 
+#        y0 = 0, 
+#        y1 = 1,
+#        lwd = 2,
+#        code = 3,
+#        angle = 15,
+#        length = 0.1,
+#        col = "grey")
+# # Dot on curve
+# points(x_star, 
+#        p_star, 
+#        pch = 19, 
+#        cex = 1.1)
+# box()
 
 # ---- RIGHT: Quantile Function ----
 p_seq <- seq(0, 1, 
@@ -2312,8 +2341,7 @@ $$
   f_X(x) =2 \exp(-2x)
 $$
 as in Example\ \@ref(exm:QuantileFnContinuous).
-For the distribution, the quantile function is shown in Example\ \@ref(exm:QuantileFnContinuous).
-Random numbers from the distribution can be generated using\ **R**:
+Random numbers from the distribution can be generated using\ **R** using the idea shown in Fig.\ \@ref(fig:RNos)).:
 
 ```{r fig.show='hide'}
 # Create an R function for the quantile function
@@ -2326,7 +2354,7 @@ rnos <- runif(2000)
 rSpecified <- quantileFn(rnos)
 
 # A histogram of these random numbers should have a shape like the density fn
-hist(rSpecified)
+hist(rSpecified, freq = FALSE)
 ```
 The histogram (Fig.\ \@ref(fig:rRandomSpecified)) does indeed have a similar shape to the density function.
 :::
@@ -2481,7 +2509,7 @@ par( mfrow = c(1, 2) )
 <<CurveFx>>
 ```
 
-Then, $\Pr(0.2 < W < 0.6)$ can be found using the distribution function also:
+Then, $\Pr(0.2 < W < 0.6)$ can be found using the distribution function:
 
 ```{r}
 FX(0.6) - FX(0.2)
