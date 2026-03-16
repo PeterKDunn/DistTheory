@@ -472,6 +472,7 @@ A common example in applications is a random variable that is continuous on the 
 A **mixed random variable** has a distribution with both discrete probability mass and a continuous density component.
 :::
 
+
 A mixed random variable has some values with positive probability and also a continuous range of possible values described by a density function.
 In this book, we only consider mixed random variables with a point mass at $X = 0$ and a continuous component on\ $\mathbb{R}_{+}$, although more general mixtures are possible.
 
@@ -550,14 +551,20 @@ Probability functions are written and interpreted differently, depending on whet
 For a discrete random variable, the probability function indicates how probabilities are assigned to the values of the discrete random variable.
 For a discrete random variable, the probability function is often called the *probability mass function* (or PMF).
 
-::: {.definition #ProbabilityFunction name="Probability function"}
-Let the range of the discrete random variable\ $X$ be\ $\mathcal{R}_X$.
-With each $x\in \mathcal{R}_X$, associate a number
-$$
-   p_X(x) = \Pr(X = x).
-$$
-The function $p_X(x)$ is called the *probability mass function* of\ $X$.
+
+
+:::{.definition #ProbabilityDistribution name="Discrete probability mass function"}
+Let\ $X$ be a discrete random variable with range $\mathcal{R}_X$.
+The *probability mass function* (or PMF), denoted $p_X(x)$, assigns a probability to each outcome\ $x_i$ such that $p_X(x_i) = \Pr(X = x_i)$.
+
+This function must satisfy:
+\begin{align}
+  p_X(x) &\geq 0 \quad \text{for all } x \in \mathcal{R}_X \notag\\
+  \sum_{x_i \in \mathcal{R}_X} p_X(x_i) &= 1.
+\end{align}
+The collection of all pairs $\{(x_i, p_X(x_i))\}$ for all\ $i$ constitutes the *probability distribution* of\ $X$.
 :::
+
 
 
 The following properties of the probability function are implied by the definition and the rules of probability.
@@ -570,15 +577,6 @@ $$
       \Pr(A) = \sum_{t\in A} p_X(t).
 $$
 
-
-::: {.definition #ProbabilityDistribution name="Probability distribution"}
-If $\mathcal{R}_X =\{ x_1, x_2, \dots \}$, 
-the pair
-$$
-   \{ \big(x_i, p_X(x_i)\big); \quad i = 1, 2,\dots\}
-$$
-is called the *probability distribution* of the discrete random variable $X$.
-:::
 
 
 The probability distribution of a discrete random variable $X$ can be represented by listing each outcome with its probability; giving a formula; using a table; or using a graph which displays the probabilities\ $p(x)$ corresponding to each $x\in \mathcal{R}_X$.
@@ -751,13 +749,24 @@ However, in the continuous case, mass cannot be thought of as an attribute of a 
 The ideas from Sect.\ \@ref(AssignProbContinuous) are relevant here.
 
 
-::: {.definition #ProbabilityDensityFunction name="Probability density function"}
-The *probability density function* (PDF) of the continuous random variable\ $X$ is a function $f_X(\cdot)$ such that
+:::{.definition #ProbabilityDensityFunction name="Continuous probability density function"}
+The *probability density function* (or PDF) of a continuous random variable\ $X$ is a function $f_X(x)$ such that:
+
+* $f_X(x) \geq 0$ for all $x \in \mathcal{R}_X$; and
+* The total area under the curve is\ $1$:
 $$
-   \Pr(a < X \le b) = \int_a^b f_X(x)\,dx
+  \int_{\mathcal{R}_X} f_X(x) \, dx = 1.
 $$
-for any interval $(a, b]\subseteq \mathbb{R}$ with $a < b$.
+
+The probability that\ $X$ falls within a specific region\ $A$ is the area under the curve:
+$$
+  \Pr(X \in A) = \int_A f_X(x) \, dx.
+$$
 :::
+
+
+
+
 
 
 We are usually only concerned with $(a, b)\in \mathcal{R}_X$, but it makes sense to think of the PDF as defined for all\ $x$, insisting that $f_X(x) = 0$ for $x\notin \mathcal{R}_X$.
@@ -878,7 +887,30 @@ abline(v  = 1,
 
 Some random variables are not entirely continuous nor entirely discrete, but have components of both.
 These random variables are called *mixed random variables*.
-The most common example is when an exact probability exists when the value of the random variable is zero (discrete), and the random variable is then continuous for positive values.
+
+
+:::{.definition #UnivariateMixedPF name="Mixed probability function"}
+The *probability function* of a mixed random variable\ $X$ is characterized by:
+
+* A probability mass function $p_X(x)$ at each discrete mass point $x_i \in \mathcal{R}_X^d$, where $\mathcal{R}_X^d \subseteq \mathcal{R}_X$ is the discrete part of the range, and
+* A probability density function $f_X(x)$ over the continuous part $\mathcal{R}_X^c \subseteq \mathcal{R}_X$.
+
+These must satisfy:
+
+* $p_X(x_i) \geq 0$ for all $x_i \in \mathcal{R}_X^d$ and $f_X(x) \geq 0$ for all $x \in \mathcal{R}_X^c$, and
+* The total probability is\ $1$:
+$$
+  \sum_{x_i \in \mathcal{R}_X^d} p_X(x_i) + \int_{\mathcal{R}_X^c} f_X(x)\,dx = 1.
+$$
+:::
+
+The probability that\ $X$ falls within a region\ $A$ is:
+$$
+  \Pr(X \in A) = \sum_{x_i \in A \cap \mathcal{R}_X^d} p_X(x_i) + \int_{A \cap \mathcal{R}_X^c} f_X(x)\,dx.
+$$
+
+The most common example of a mixed random variable is when an exact probability exists when the value of the random variable is zero (discrete), and the random variable is then continuous for positive values.
+In other words, when $\mathcal{R}_X^d = \{0\}$ and $\mathcal{R}_X^c = (0, \infty)$. 
 
 
 ::: {.example #MixedRandomVariable name="Mixed random variable"}
