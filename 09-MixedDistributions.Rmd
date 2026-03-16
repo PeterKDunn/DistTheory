@@ -216,7 +216,17 @@ points(x = 0, # Included
 
 ### Properties {#ZeroModifiedProperties}
 
-The expected value of the random variable\ $X$ can be found first separating the discrete and continuous parts of the distribution:
+The following are the basic properties of the zero-modified distributions.
+
+:::{.theorem #ZMProperties name="Exponential distribution properties"}
+If $X\sim\text{ZM}(p)$ then, $\mu_c$ denotes $\operatorname{E}[X\mid X > 0]$ (the expected value of the conditional distribution defined for $X > 0$) and $\sigma^2_c = \operatorname{var}[X \mid X > 0]$,
+ 
+1. $\operatorname{E}[X] = (1 - p)\mu_c$.
+2. $\operatorname{var}[X] = (1 - p) \sigma^2_c + p(1 - p)\mu_c^2$.
+3. $M_X(t) = p + (1 - p)\cdot M_{X\mid X > 0}(t)$, where $M_{X_c}(t)$ is the MGF of the conditional distribution $X\mid X > 0$.
+
+::::{.proof}
+To compute the expected value of the random variable\ $X$, first separate the discrete and continuous parts of the distribution:
 \begin{align*}
   \operatorname{E}[X] 
   &= \operatorname{E}[X\mid X = 0]  + \operatorname{E}[X\mid X > 0]\\
@@ -247,6 +257,8 @@ The same approach also gives the MGF as
 where $M_{X_c}(t)$ is the MGF of the conditional distribution $X\mid X > 0$.
 
 Clearly, further progress with these expressions requires knowing the distribution of\ $X \mid X > 0$.
+::::
+:::
 
 
 
@@ -547,6 +559,16 @@ legend("topright",
 
 
 ### Properties
+
+The following are the basic properties of the zero-modified distributions.
+
+:::{.theorem #CPGProperties name="Exponential distribution properties"}
+If $X\sim\text{ZM}(p)$ then, $\mu_c$ denotes $\operatorname{E}[X\mid X > 0]$ (the expected value of the conditional distribution defined for $X > 0$) and $\sigma^2_c = \operatorname{var}[X \mid X > 0]$,
+ 
+1. $\operatorname{E}[X] = (1 - p)\mu_c$.
+2. $\operatorname{var}[X] = (1 - p) \sigma^2_c + p(1 - p)\mu_c^2$.
+3. $M_X(t) = p + (1 - p)\cdot M_{X\mid X > 0}(t)$, where $M_{X_c}(t)$ is the MGF of the conditional distribution $X\mid X > 0$.
+:::
 
 The probability functions for the compound Poisson--gamma distribution *cannot be written in closed form*.
 However, the probability function can be expressed as an infinite sum [@dunn2005series] or by inverting the MGF [@mypapers:Dunn:fourier],\index{Moment generating function} following the ideas in Sect.\ \@ref(DistributionFromMGF).
@@ -860,18 +882,18 @@ Simulation for the zero-modified and compound Poisson--gamma distributions can b
 To demonstrate, consider modelling monthly rainfall at a certain location for one specific month each year. 
 Monthly rainfall is a mixed random variable: some months record exactly zero rainfall, while months in which rain falls have a continuous positive amount recorded.
 
-Suppose the monthly rainfall (in mm)\ $R$ is modelled at a given location for a certain month, where about $30$% of months record zero rainfall; then. $0\Pr(R = 0) = 0.30$, and the mean monthly rainfall when rain is recorded is $\mu^+ = 50\,mms$.
+Suppose the monthly rainfall (in mm)\ $R$ is modelled at a given location for a certain month, where about $20$% of months record zero rainfall; then. $0\Pr(R = 0) = 0.20$, and the mean monthly rainfall when rain is recorded is $\mu^+ = 10\,mms$.
 
-For the *zero-modified distribution*, set $p 0.30$ for the probability of no rainfall; then, the probability that rain is recorded is $1 - p = 0.70$. 
+For the *zero-modified distribution*, set $p 0.20$ for the probability of no rainfall; then, the probability that rain is recorded is $1 - p = 0.80$. 
 For the positive component, suppose first that rainfall amounts follow an exponential distribution with rate $\lambda$.
-Since $\operatorname{E}[R \mid R > 0] = 1/\lambda = 50$, we have $\lambda = 0.02$. 
+Since $\operatorname{E}[R \mid R > 0] = 1/\lambda = 10$, we have $\lambda = 0.1$. 
 The zero-modified model is then (Fig.\ \@ref(fig:ZMExpRain)):
 $$
   f_R(r)
   =
   \begin{cases}
-    0.30                              & \text{for $r = 0$} \\
-    0.70 \times 0.02\, \exp(-0.02r)   & \text{for $r > 0$}.
+    0.20                              & \text{for $r = 0$} \\
+    0.80 \times 0.1\, \exp(-0.1r)     & \text{for $r > 0$}.
   \end{cases}
 $$
 The exponential distribution is a convenient starting point but imposes a monotonically decreasing density on the positive part, which may be unrealistic; observed rainfall amounts often show a mode above zero. 
@@ -882,25 +904,35 @@ A gamma distribution for the positive part is more flexible, allowing a range of
 set.seed(76103)
 num_sims <- 1000
 
-pi0    <- 0.30          # P(R = 0)
+pi0    <- 0.20          # P(R = 0)
 p      <- 1 - pi0       # P(R > 0)
-lambda <- 1 / 50        # exponential rate: E[R | R > 0] = 50
+lambda <- 1 / 10        # exponential rate: E[R | R > 0] = 10
 
 R <- numeric(num_sims)
-is_wet <- rbinom(num_sims, size = 1, prob = p)
+is_wet <- rbinom(num_sims, 
+                 size = 1, 
+                 prob = p)
 
 for (i in 1:num_sims) {
-  R[i] <- if (is_wet[i] == 0) 0 else rexp(1, rate = lambda)
+  R[i] <- ifelse(is_wet[i] == 0,
+                 0,
+                 rexp(1, 
+                      rate = lambda) )
 }
 
-hist(R,
+pData <- sum(R==0)/length(R)
+hist(R[R > 0],
      freq  = FALSE,
      las   = 1,
      breaks = 30,
+     ylim = c(0, pData),
+     xlim = c(0, 40),
      main  = "Zero-modified distribution: monthly rainfall",
      xlab  = expression(Rainfall ~ italic(R) ~ (mm)),
      ylab  = "Density")
-points(x = 0, y = pi0, pch = 19)
+points(x = 0, 
+       y = pData, 
+       pch = 19)
 ```
 
 
