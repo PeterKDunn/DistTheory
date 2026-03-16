@@ -47,7 +47,7 @@ The second process that describes the distribution of values, conditional on the
 A zero-modified distribution is useful when the zero-generating process is believed to be distinct from the process driving variation among positive values; for example, whether a household buys alcohol is a different process than how much a household spends on alcohol if they do buy alcohol.
 
 
-A *zero-modified distributions*\index{Zero-modified distribution} treats the zero values of the random variable\ $X$ as emerging from a two-step process.
+A *zero-modified distribution*\index{Zero-modified distribution} treats the values of the random variable\ $X$ as emerging from a two-step process.
 The first step uses a Bernoulli distribution (Sect.\ \@ref(BernoulliDistribution))\index{Bernoulli distribution} to model a random variable\ $Y$ that defines whether an event of interest occurs:
 $$
   \Pr(Y) = 
@@ -58,33 +58,52 @@ $$
 $$
 If the event does occur (i.e., conditional on $X > 0$), with probability $1 - p$, then the continuous component is modelled using a probability density function $f^+_X(x)$ defined for positive real values only (such as an exponential distribution\index{Exponential distribution}, a gamma distribution\index{Gamma distribution} or a log-normal distribution)\index{Log-normal distribution}.
 
-The probability function for the mixed random variable\ $X$ is therefore
+
+
+:::{.definition #ZeroModifiedDistribution name="Zero-modified distribution"}
+A random variable\ $X$ has a *zero-modified distribution* with continuous component $f^+_X(x)$ if its probability function is
 $$
-   f_X(x) = 
-   \begin{cases} 
-      p                         & \text{if $x = 0$}\\
-      (1 - p)\cdot f^+_X(x)     & \text{if $x > 0$,}
+   f_X(x) =
+   \begin{cases}
+      p                       & \text{if $x = 0$}\\
+      (1 - p)\cdot f^+_X(x)   & \text{if $x > 0$,}
    \end{cases}
 $$
-where $f^+_X(x) = f_{X \mid X > 0}(x)$ is the density function for the continuous distribution defined for $x\in\mathbb{R}_{+}$.
-The distribution function is
+where $p = \Pr(X = 0) \in (0, 1)$ and $f^+_X(x)$ is a probability density function defined for $x > 0$ satisfying $\int_0^\infty f^+_X(x)\,dx = 1$.
+
+The corresponding distribution function is
 $$
-   F_X(x) = 
-   \begin{cases} 
-      0                            & \text{if $x < 0$}\\
-      p                            & \text{if $x = 0$}\\
-      p + (1 - p)\cdot F^+_X(x)    & \text{if $x > 0$,}
+   F_X(x) =
+   \begin{cases}
+      0                          & \text{if $x < 0$}\\
+      p                          & \text{if $x = 0$}\\
+      p + (1-p)\cdot F^+_X(x)   & \text{if $x > 0$.}
    \end{cases}
 $$
-where $F^+_X(x) = F_{X\mid X > 0}(x)$ is the distribution function for the continuous distribution defined for $x\in\mathbb{R}_{+}$.
+Common choices for the continuous component $f^+_X(x)$ include the 
+exponential (Sect.\ \@ref(ExponentialDistribution)), 
+gamma (Sect.\ \@ref(GammaDistribution)), and 
+log-normal (Sect.\ \@ref(LognormalDistribution)) distributions.
+
+In general, we write $X \sim \text{ZM}(p,\, f^+_X)$.
+When a specific distribution is specified for $x > 0$, the distribution and its parameters are specified; for example, $X \sim \text{ZM-Gamma}(p, \alpha, \beta)$ specifies a zero-modified gamma distribution, where the $\text{Gamma}(\alpha, \beta)$ distribution is used to model the continuous component.
+:::
 
 
-
+<!-- Some example plots -->
 ```{r, child = if (knitr::is_html_output())  './children/MixedDist/ZME_html.Rmd' }
 ```
-
-```{r, child = if (knitr::is_latex_output()) './children/MixedDist/ZME_latex.Rmd'}
+```{r, child = if (knitr::is_html_output())  './children/MixedDist/ZMG_html.Rmd' }
 ```
+
+```{r, child = if (knitr::is_latex_output()) './children/MixedDist/ZMEG_latex.Rmd'}
+```
+
+
+
+
+
+
 
 
 :::{.example #ZeroModifiedExample name="Zero-modified model"}

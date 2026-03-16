@@ -1,0 +1,110 @@
+
+Various zero-modified gamma distributions are shown in the visualisation below, for different values of\ $\alpha$, $\beta$ and\ $p$.
+
+
+
+```{r, ZMGDemo, echo=FALSE, fig.align="center", fig.cap="Zero-modified exponential distributions."}
+###  Parameters  ###
+combos <- data.frame(
+  p     = c(0.30, 0.30, 0.20, 0.20, 0.15, 0.15),
+  alpha = c(1.50, 1.25, 1.50, 1.50, 2.50, 2.50),
+  beta  = c(0.50, 0.75, 1.80, 1.20, 1.80, 1.20)
+)
+x_vals <- c(0, seq(0.01, 10, length.out = 500))
+
+fig <- plot_ly(width = 650, height = 450)
+
+###  Traces  ###
+counter <- 1
+for (k in seq_len(nrow(combos))) {
+  P     <- combos$p[k]
+  ALPHA <- combos$alpha[k]
+  BETA  <- combos$beta[k]
+  dens  <- (1 - P) * dgamma(x_vals, shape = ALPHA, scale = BETA)
+
+  fig <- fig %>% add_trace(
+    x = 0, y = P,
+    type = "scatter", mode = "markers",
+    marker = list(size = 12, color = "steelblue"),
+    visible = (counter == 1),
+    showlegend = FALSE,
+    name = paste0("P(X=0) = ", round(P, 2))
+  )
+  fig <- fig %>% add_trace(
+    x = x_vals, y = dens,
+    type = "scatter", mode = "lines",
+    line = list(width = 2, color = "steelblue"),
+    visible = (counter == 1),
+    showlegend = FALSE
+  )
+  counter <- counter + 2
+}
+total_traces <- counter - 1
+
+###  Buttons  ###
+buttons <- list()
+for (k in seq_len(nrow(combos))) {
+  P     <- combos$p[k]
+  ALPHA <- combos$alpha[k]
+  BETA  <- combos$beta[k]
+  tidx  <- (k - 1) * 2 + 1
+  vis   <- rep(FALSE, total_traces)
+  vis[c(tidx, tidx + 1)] <- TRUE
+
+  buttons[[k]] <- list(
+    method = "update",
+    args = list(
+      list(visible = as.list(vis)),
+      list(
+        title = paste0("Zero-modified gamma:  p = ", P, ", \u03b1 = ", ALPHA, ", \u03b2 = ", BETA),
+        annotations = list(list(
+          x = 0.95, y = 0.95,
+          xref = "paper", yref = "paper",
+          text = paste0("P(X = 0) = ", round(P, 2), "<br>P(X > 0) = ", round(1 - P, 2)),
+          showarrow = FALSE,
+          xanchor = "right", yanchor = "top",
+          font = list(size = 12, color = "black")
+        ))
+      )
+    ),
+    label = paste0("p=", P, ", \u03b1=", ALPHA, ", \u03b2=", BETA)
+  )
+}
+
+top_row_buttons    <- buttons[1:3]
+bottom_row_buttons <- buttons[4:6]
+
+###  Layout  ###
+fig <- fig %>%
+  layout(
+    title = list(text = "Zero-modified gamma distribution", x = 0.5),
+    xaxis = list(title = "x", range = c(-0.2, 10)),
+    yaxis = list(title = "Density / P(X = 0)", range = c(0, 0.75)),
+    margin = list(t = 50, b = 120),
+    annotations = list(list(
+      x = 0.95, y = 0.95,
+      xref = "paper", yref = "paper",
+      text = paste0("P(X = 0) = ", round(combos$p[1], 2), "<br>P(X > 0) = ", round(1 - combos$p[1], 2)),
+      showarrow = FALSE,
+      xanchor = "right", yanchor = "top",
+      font = list(size = 12, color = "black")
+    )),
+    updatemenus = list(
+      list(
+        type = "buttons", direction = "right",
+        x = 0, y = -0.18,
+        xanchor = "left", yanchor = "top",
+        buttons = top_row_buttons
+      ),
+      list(
+        type = "buttons", direction = "right",
+        x = 0, y = -0.30,
+        xanchor = "left", yanchor = "top",
+        buttons = bottom_row_buttons
+      )
+    )
+  ) %>%
+  config(displayModeBar = FALSE)
+
+fig
+```
