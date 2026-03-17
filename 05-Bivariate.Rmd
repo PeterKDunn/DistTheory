@@ -1661,20 +1661,24 @@ However, it is also possible for one variable, say\ $X$, to be continuous and th
 
 :::{.definition #BivariateProbFunctionMixed name="Mixed bivariate probability function"}
 Let $(X, Y)$ be a random vector where\ $X$ is *continuous* with range $S_X \subseteq \mathbb{R}$, and\ $Y$ is *discrete* with range $S_Y = \{y_1, y_2, \dots\}$.
-The *joint density--mass function* of $(X, Y)$ is defined on
-$$
-  \mathcal{R}_{X, Y} = S_X \times S_Y
-$$
-by
-$$
-  f_{X, Y}(x, y_j) 
-  = f_{X \mid Y}(x \mid y_j) \cdot p_Y(y_j),
-$$
-where:
+A function $f_{X,Y}(x, y_j)$ defined on $\mathcal{R}_{X,Y} = S_X \times S_Y$ is a *joint density--mass function* of $(X, Y)$ if:
 
-- $p_Y(y_j) = \Pr(Y = y_j)$ is the probability *mass* function of\ $Y$, and
-- $f_{X \mid Y}(x \mid y_j)$ is the conditional *density* function of\ $X$ given\ $Y = y_j$.
+1. $f_{X,Y}(x, y_j) \geq 0$ for all $(x, y_j) \in \mathcal{R}_{X,Y}$, and
+2. $\displaystyle\sum_{j} \int_{S_X} f_{X,Y}(x, y_j)\, dx = 1$.
 :::
+
+In practice $f_{X,Y}$ is constructed via the multiplication rule:
+$$
+  f_{X,Y}(x, y_j) = f_{X \mid Y}(x \mid y_j) \cdot p_Y(y_j)
+$$
+which automatically satisfies both conditions above.
+
+The probability of any event is then given by:
+$$
+  \Pr(X \in A,\, Y = y_j) = \int_A f_{X,Y}(x, y_j)\, dx.
+$$
+
+
 
 
 Like all probability functions, the joint density--mass function is non-negative:
@@ -1725,7 +1729,7 @@ $$
   f_{X, Y}(x, 1) =
   \begin{cases}
     0.4  & 0 \le x \le 1, \\
-    0,   & \text{otherwise;}
+    0   & \text{otherwise;}
 \end{cases}
 \quad
 f_{X, Y}(x, 2) 
@@ -1750,11 +1754,193 @@ $$
   = \int_0^{0.5} 0.3\, dx
   = 0.15.
 $$
+
+The marginal distribution of\ $X$ is
+$$
+  f_X(x) 
+  = \sum_j f{X, Y} (x, y) 
+  =
+  \begin{cases}
+    0.4   & \text{for $0\le x \le 1$}\\
+    0.3   & \text{for $0\le x \le 2$}.
+  \end{cases}
+$$
+
 :::
 
 
+## Statistical computing with bivariate distributions {#BVStatisticalComputing}
 
-## Numerical approaches {#BivariateNumerical}
+### Discrete bivariate distributions
+
+Consider the bivariate discrete distribution with the joint probability function shown in Table\ \@ref(tab:SIM1).
+
+```{r SIM1, echo=FALSE}
+EG1 <- array( dim =c(3, 2))
+EG1[1, ] <- c(0.1, 0.2)
+EG1[2, ] <- c(0.3, 0.1)
+EG1[3, ] <- c(0.2, 0.1)
+row.names(EG1) <- c("$X = 1$",
+                    "$X = 2$",
+                    "$X = 3$")
+EG1.caption <- "The bivariate distribution function for $X$ and $Y$."
+if( knitr::is_latex_output() ) {
+  knitr::kable(EG1,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               col.names = c("$y = 1$" ,
+                             "$y = 2$" ),
+               caption = EG1.caption) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(EG1,
+               escape = TRUE,
+               col.names = c("$y = 1$" ,
+                             "$y = 2$" ),
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = EG1.caption) %>%
+    row_spec(0, bold = TRUE)  %>%
+    column_spec(1, bold = TRUE) 
+}
+```
+
+The joint PMF can be defined in\ **R**:\index{matrix()@\texttt{matrix()}}
+
+```{r}
+# Joint PMF as a matrix (rows = x, cols = y)
+x_vals <- c(1, 2, 3)
+y_vals <- c(1, 2)
+P <- matrix(c(0.1, 0.2,
+              0.3, 0.1,
+              0.2, 0.1),
+            nrow = 3, 
+            byrow = TRUE,
+            dimnames = list(x = x_vals, 
+                            y = y_vals))
+P
+sum(P)          # Verify that the sum of probabilities is 1
+```
+
+The marginal distribution can be found as follows:\index{rowSums()@\texttt{rowSums()}}\index{colSums()@\texttt{colSums()}}
+
+```{r}
+rowSums(P)      # Marginal distribution of X
+colSums(P)      # Marginal distribution of Y
+```
+
+The conditional distributions can also be found; for example, to find $\Pr(X = x \mid Y = 1)$:
+
+```{r}
+P[, "1"] / colSums(P)["1"]
+```
+
+To check if\ $X$ and\ $Y$ are independent, multiply the marginal distributions using `outer()`:\index{outer()@\texttt{outer()}}
+
+```{r}
+outer(rowSums(P), 
+      colSums(P))  # f_X * f_Y
+P                               # Compare to the joint PMF
+```
+
+The probabilities in the joint PMF are not the sameL $X$ and\ $Y$ are *not* independent.
+
+
+### Continuous bivariate distributions
+
+Consider the joint PDF in Example\ \@ref(exm:MixedRV).
+The joint PDF can be written as an\ **R** function:\index{ifelse()@\texttt{ifelse()}}
+
+
+```{r}
+# Joint PDF: f(x,y) = 2(x + y) for 0 < x < y < 1
+fXY <- function(x, y) {
+  ifelse( (x > 0) & (x < y) & (y < 1), 
+          2 * (x + y),    # If the values of x and y are within the defined region
+          0)              # If the values are outside the defined region
+}
+```
+
+
+We can verify that this is a valid joint PDF using `integrate()` twice, once in the $x$-direction and once in the $y$-direction:\index{integrate()@\texttt{integrate()}}
+
+```{r}
+# Verify integrates to 1 (integrate over y first, then x)
+integrate(function(x) {
+  sapply(x, function(xi) {
+    integrate(function(y) fXY(xi, y), 
+              lower = xi, 
+              upper = 1)$value
+  })
+}, lower = 0, 
+   upper = 1)$value
+```
+
+Marginal distribution can be found using `integrate()` also:\index{Vectorize()@\texttt{Vectorize()}}
+
+```{r}
+# Marginal of X at a specific value, say x = 0.3
+integrate(function(y) fXY(0.3, y), 
+          lower = 0.3, 
+          upper = 1)$value
+
+# Marginal of X as a function
+fX <- Vectorize(function(x) {
+  integrate(function(y) fXY(x, y), 
+            lower = x, 
+            upper = 1)$value
+})
+```
+
+Probabilities can be found similarly; for example, to find $\Pr(X < 0.5, Y < 0.8)$:
+
+```{r}
+integrate(function(x) {
+  sapply(x, function(xi) {
+    integrate(function(y) fXY(xi, y),
+              lower = xi, 
+              upper = 0.8)$value
+  })
+}, lower = 0, 
+   upper = 0.5)$value
+```
+
+
+### Simulation
+
+We can simulate from a joint distribution too, using the factorisation $f_{X,Y}(x, y) = f_{X\mid Y} (x \mid y) \cdot p_Y(y)$.
+Consider the mixed joint probability function in Example\ \@ref(exm:MixedRV).
+We can simulate from this distribution:\index{sample()@\texttt{sample()}}\index{ifelse()@\texttt{ifelse()}}
+
+
+```{r}
+n <- 10000                  # Number of simulations
+Y <- sample(c(1, 2),        # Select from the numbers 1 and 2
+            size = n,       # Select this many 
+            replace = TRUE, # Select *with* replacement
+            prob = c(0.4, 0.6))  # Select according to these probabilities
+X <- ifelse(Y == 1,               # If Y = 1:
+            runif(n, 0, 1),       # then: f(x | Y = 1) = U(0,1)
+            runif(n, 0, 2))       # If Y = 0: f(x | Y = 2) = U(0,2)
+```
+
+The marginal distribution is close to the $(0.4, 0.6)$ expected:
+
+```{r}
+# Verify marginal of Y
+table(Y) / n
+```
+
+
+
 
 ## Exercises {#ChapBivariateExercises}
 
