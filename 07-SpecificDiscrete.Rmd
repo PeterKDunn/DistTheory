@@ -1690,6 +1690,134 @@ var( NumberFertileEggs )
 ```
 
 
+### Simulating a call centre
+
+A call centre receives calls throughout the day.
+Three quantities are of interest to management:
+
+- The *number of calls*\ $C$ arriving in a one-hour period, modelled as $C \sim \text{Poisson}(\lambda = 12)$.
+- Whether each call is *resolved* on the first attempt, modelled as $\text{Bernoulli}(p = 0.7)$.
+  Thus, the *number of calls resolved* in an hour is $R \sim \text{Bin}(C, 0.7)$, but since\ $C$ is random, this is not a simple binomial.
+- The *number of calls until the first unresolved call*, modelled as $X \sim \text{Geom}(p = 0.7)$.
+
+We simulate $n = 10\,000$ hours of call centre operation:
+\index{rpois()@\texttt{rpois()}}\index{rbinom()@\texttt{rbinom()}}\index{rgeom()@\texttt{rgeom()}}
+
+```{r echo=FALSE}
+set.seed(55301)
+```
+```{r}
+n      <- 10000
+lambda <- 12
+p_res  <- 0.7
+
+n_calls    <- rpois(n, lambda = lambda)
+n_resolved <- rbinom(n, size = n_calls, prob = p_res)
+first_fail <- rgeom(n, prob = 1 - p_res)
+```
+
+The simulated summaries canbe compared to theoretical values:
+
+```{r}
+cat("--- Number of calls ---\n")
+cat("Theoretical mean:    ", lambda, "\n")
+cat("Simulated mean:      ", round(mean(n_calls), 2), "\n\n")
+
+cat("--- First unresolved call ---\n")
+cat("Theoretical mean:    ", (1 - p_res) / p_res, "\n")
+
+
+cat("Simulated mean:      ", round(mean(first_fail), 2), "\n\n")
+cat("--- Resolved calls per hour ---\n")
+cat("Simulated mean:      ", round(mean(n_resolved), 2), "\n")
+cat("Simulated variance:  ", round(var(n_resolved), 2), "\n")
+```
+
+
+Suppose we wanted to know the probability of receiving more than\ $15$ calls in an hour.
+This can be answered both analytically and via simulation:
+\index{ppois()@\texttt{ppois()}}
+
+```{r}
+cat("Theoretical P(C > 15):", 
+    round(1 - ppois(15, lambda = lambda), 3), "\n")
+cat("Simulated P(C > 15):  ", 
+    round(mean(n_calls > 15), 3), "\n")
+```
+
+A measure of efficiency is the proportion of hours have zero unresolved calls.
+The number of unresolved calls per hour is $C - R$; an hour has zero unresolved calls when every call is resolved:
+
+```{r}
+n_unresolved <- n_calls - n_resolved
+cat("Simulated P(no unresolved calls):", 
+    round(mean(n_unresolved == 0), 3), "\n")
+```
+
+
+We may also be interested in the probability of $3$\ or more consecutive unresolved calls in a sequence of $20$\ calls.
+Analytically this requires inclusion-exclusion over many cases; simulation is far more straightforward using `rle()`:
+
+```{r}
+streak3 <- replicate(n, {
+  resolved <- rbinom(20, 
+                     size = 1, 
+                     prob = p_res)
+  unres    <- 1 - resolved
+  any(rle(unres)$lengths[rle(unres)$values == 1] >= 3)
+})
+cat("P(3+ consecutive unresolved in 20 calls):",
+    round(mean(streak3), 3), "\n")
+```
+
+
+Suppose we also seek the probability that total handling time in an hour exceeds $60\mins$.
+Suppose each resolved call takes $H \sim \text{Geom}(p = 0.5)$ minutes to handle.
+The total handling time depends on both the random number of resolved calls and their random handling times, and this compound randomness makes an analytic answer intractable:
+
+```{r}
+total_time <- sapply(n_resolved, function(r) {
+  if (r == 0) 0 else sum(rgeom(r, prob = 0.5))
+})
+cat("P(total handling time > 60 min):",
+    round(mean(total_time > 60), 3), "\n")
+cat("Mean total handling time (min): ",
+    round(mean(total_time), 2), "\n")
+```
+
+Finally, what is the probability that at least one hour in an $8$-hour shift has more than $20$\ calls?
+This can also be answered analytically.
+
+```{r}
+busy_day <- replicate(n, {
+  any(rpois(8, lambda = lambda) > 20)
+})
+cat("Simulated probability:  ", round(mean(busy_day), 3), "\n")
+cat("Theoretical probability:", 
+    round(1 - ppois(20, lambda = lambda)^8, 3), "\n")
+```
+
+
+```{r echo=FALSE, fig.cap="XXXXXX"}
+par(mfrow = c(1, 2))
+barplot(table(n_calls) / n,
+        main   = "Calls per hour",
+        xlab   = "Number of calls",
+        ylab   = "Proportion",
+        las    = 1,
+        col    = "steelblue",
+        border = "white")
+hist(total_time,
+     breaks = 40,
+     main   = "Total handling time per hour",
+     xlab   = "Minutes",
+     freq   = FALSE,
+     las    = 1,
+     col    = "steelblue",
+     border = "white")
+```
+
+
 ## Exercises {#DiscreteExercises}
 
 Selected answers appear in Sect.\ \@ref(AnswersChapDiscreteDistributions).

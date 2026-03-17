@@ -2170,6 +2170,134 @@ hist( htP,
 
 
 
+### Example: Simulating patient recovery times
+
+A hospital is studying patient recovery times after a surgical procedure.
+Three quantities are of interest:
+
+- The *recovery time*\ $T$ (in days) until a patient is discharged.
+  $T$ is modelled as $T \sim \text{Exp}(\beta = 5)$ (i.e., the mean recovery time is $5$ days).
+- The *pain score*\ $P$ (on a continuous $0$--$10$ scale) at discharge.
+  $P$ is modelled as $P \sim \text{Beta}(\alpha = 2, \beta = 4)$, rescaled to the interval $[0, 10]$ (with a mean score of\ $2/(2 + 4) \times 10 = 3.33$).
+- Whether the patient is **readmitted** within $30$\ days\ $B$.
+  $B$ is modelled as a $\text{Bernoulli}(p = 0.15)$ random variable.
+
+We can use\ **R** to simulate $n = 10\,000$ patients:
+\index{rexp()@\texttt{rexp()}}\index{rbeta()@\texttt{rbeta()}}\index{rbinom()@\texttt{rbinom()}}
+
+```{r echo=FALSE}
+set.seed(30421)
+```
+```{r}
+n         <- 10000                      # Number of simulations
+recovery  <- rexp(n, rate = 1/5)        # Exp(scale = 5)
+pain <- rbeta(n, shape1 = 2, shape2 = 4) * 10
+readmit   <- rbinom(n, 
+                    size = 1, 
+                    prob = 0.15)
+```
+
+The simulated summaries can be compared to their theoretical values:
+
+```{r}
+cat("--- Recovery time ---\n")
+cat("Theoretical mean:    ", 5, "\n")
+cat("Simulated mean:      ", round(mean(recovery), 2), "\n\n")
+
+cat("--- Pain score ---\n")
+cat("Theoretical mean:    ", round(2/(2 + 4) * 10, 2), "\n")
+cat("Simulated mean:      ", round(mean(pain), 2), "\n")
+cat("Simulated sd:        ", round(sd(pain), 2), "\n\n")
+
+cat("--- Readmission ---\n")
+cat("Theoretical rate:    ", 0.15, "\n")
+cat("Simulated rate:      ", round(mean(readmit), 3), "\n")
+```
+
+Now consider some more complex questions that would be difficult to answer analytically.
+For example: What proportion of patients have a recovery time exceeding $7$ days?
+We can answer this both analytically and via simulation:
+\index{pexp()@\texttt{pexp()}}
+
+```{r}
+cat("Theoretical P(T > 7):", 
+    round(1 - pexp(7, rate = 1/5), 3), "\n")
+cat("Simulated P(T > 7):  ", 
+    round(mean(recovery > 7), 3), "\n")
+```
+
+We may also be interested in the mean recovery time for patients who are readmitted.
+This is a conditional expectation, and is straightforward to estimate from simulation:
+
+```{r}
+cat("Mean recovery time, readmitted patients:    ",
+    round(mean(recovery[readmit == 1]), 2), "\n")
+cat("Mean recovery time, non-readmitted patients:",
+    round(mean(recovery[readmit == 0]), 2), "\n")
+```
+
+Suppose we are interested in the probability that a patient has both a long recovery ($T > 7$) *and* a high pain score ($P > 6$):
+
+```{r}
+cat("P(T > 7 and P > 6):",
+    round(mean(recovery > 7 & pain > 6), 3), "\n")
+```
+If\ $T$ and\ $P$ were independent, we would expect this probability to be approximately:
+```{r}
+cat("P(T > 7) x P(P > 6):",
+    round(mean(recovery > 7) * mean(pain > 6), 3), "\n")
+```
+Since\ $T$ and\ $P$ were simulated independently, these are close (as expected).
+
+```{r RecoveryHistograms, echo=FALSE, fig.width=6.5, out.width='90%', fig.height=3.5, fig.cap="Distribution of simulated recovery times (left) and pain scores at discharge (right). The theoretical exponential density is overlaid on the left panel."}
+par(mfrow = c(1, 2))
+
+hist(recovery,
+     breaks = 40,
+     main   = "Recovery time",
+     xlab   = "Days",
+     las    = 1,
+     freq   = FALSE,
+     col    = "steelblue",
+     border = "white")
+curve(dexp(x, rate = 1/5),
+      add = TRUE, lwd = 2, col = "black")
+
+hist(pain,
+     breaks = 30,
+     main   = "Pain score at discharge",
+     xlab   = "Pain score",
+     las    = 1,
+     freq   = FALSE,
+     col    = "steelblue",
+     border = "white")
+curve(dbeta(x/10, shape1 = 2, shape2 = 4) / 10,
+      add = TRUE, lwd = 2, col = "black")
+```
+
+
+We may also wish to know the mean recovery time given high pain AND readmission, $\operatorname{E}[T\mid P > 6, \text{readmitted}]$.
+Conditioning on two things simultaneously is analytically messy but trivial in simulation:
+
+```{r}
+cat("Mean recovery time (high pain + readmitted):",
+    round(mean(recovery[pain > 6 & readmit == 1]), 2), "\n")
+```
+
+Finally, we may ask: What is the probability total bed usage exceeds $70$\ days?
+
+```{r}
+n_wards <- 10000
+total_beds <- replicate(n_wards, {
+  sum(rexp(10, rate = 1/5))
+})
+cat("P(total bed-days > 70):",
+    round(mean(total_beds > 70), 3), "\n")
+# Analytically: total ~ Gamma(10, 5), so verify:
+cat("Theoretical P(total > 70):",
+    round(1 - pgamma(70, shape = 10, scale = 5), 3), "\n")
+```
+
 
 ## Exercises {#ContinuousExercises}
 
