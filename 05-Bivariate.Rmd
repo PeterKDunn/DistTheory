@@ -24,7 +24,7 @@ Many situations require observing two (or more) numerical characteristics simult
 This chapter discusses the two-variable (bivariate) case.
 
 
-## Bivariate random variables and their distributions {#BivariateRVs}
+## Bivariate random variables and probability distributions {#BivariateRVs}
 
 The *joint probability function* simultaneously describes how two random variables vary and interact.
 The set of all possible pairs of outcomes, the *joint range* (or *support*) of $(X, Y)$, denoted $\mathcal{R}_{X,Y}$, is a subset of the Euclidean plane $\mathbb{R}^2$.
@@ -89,8 +89,7 @@ $$
 
 
 A *mixed joint distribution* occurs when one variable (say $X$) is discrete and the other ($Y$) is continuous.
-These situations are handled by combining the summation and integration approaches of Definitions\ \@ref(def
-:BivariatePMF) and\ @ref(def:BivariatePDF).
+These situations are handled by combining the summation and integration approaches of Defs.\ \@ref(def:BivariatePMF) and\ \@ref(def:BivariatePDF).
 
 In this case, the relationship is described using a set of conditional density functions rather than a single joint PDF $f(x,y)$, because $X$ cannot be integrated. 
 Instead, the total probability is still\ $1$ by using a hybrid approach:
@@ -106,7 +105,7 @@ $$
 $$
 The joint behaviour is described by:
 
-* $\Pr(X = 0, Y = 0) = 1 - p$ (a discrete point mass at $X = 0$); and
+* $\Pr(X = 0) = 1 - p$ (a discrete point mass at $X = 0$); and
 * $f_{X, Y}(1, y) = p \cdot  \exp(-y)$ for $y > 0$ (a continuous "slice" along the line $x = 1$)
 :::
 
@@ -577,8 +576,8 @@ JointPF[4, ] <- c("Total", "$1/6$", "$1/6$", "$1/6$", "$1/6$", "$1/6$", "$1/6$",
 
 
 JointPF.caption <- ifelse(knitr::is_latex_output(),
-                          "The joint PF for Example \\ref{exm:BVDiscrete3}.",
-                          "The joint PF for Example \\@ref(exm:BVDiscrete3).")
+                          "The joint PMF for Example \\ref{exm:BVDiscrete3}.",
+                          "The joint PMF for Example \\@ref(exm:BVDiscrete3).")
 
 if( knitr::is_latex_output() ) {
   knitr::kable(JointPF,
@@ -633,7 +632,7 @@ The ranges of\ $X$ and\ $Y$ are $\mathcal{R}_X = \{0, 1 ,2 \}$, $\mathcal{R}_Y =
 The probabilities in Table\ \@ref(tab:BVTwoDice) are $\Pr(X = x, Y = y)$ for the $(x, y)$ pairs in the range.
 
 The probabilities are found by realising we really have two repetitions of a simple random process with three possible outcomes, $\{5, 6, (\text{$5$ or $6$})^c \}$, with probabilities $\frac{1}{6}, \frac{1}{6}, \frac{2}{3}$, the same for each repetition.
-(Recall: $\overline{\text{$5$ or $6$}}$ means 'not 5 or 6'; see Def.\ \@ref(def:IntersectionUnionSubset).)
+(Recall: $\overline{\text{$5$ or $6$}}$ means 'not ($5$ or\ $6$)'; see Def.\ \@ref(def:IntersectionUnionSubset).)
 Of course the event $X = 2, Y = 1$ cannot occur in two trials, so has probability zero.
 :::
 
@@ -730,17 +729,18 @@ Then,
 The (cumulative) distribution function represents a sum of probabilities, or a volume under a surface, is denoted by $F_{X, Y}(x, y)$, and defined as follows.
 
 
-:::{.example #BVDistributionFN name="Bivariate distribution function"}
+:::{.definition #BVDistributionFN name="Bivariate distribution function"}
 The *bivariate distribution function* is
 \begin{align}
-   F(x, y)
-   &= \Pr(X \leq x, \, Y \leq y),                           & \text{for $(X,Y)$ discrete;}
+   F_{X, Y}(x, y)
+   &= \sum_{x_i \le x} \sum_{y_j\le y} p_{X, Y}(x_i, y_j)   & \text{for $(X,Y)$ discrete;}
    (\#eq:BivarXYdiscrete)\\
-   F(x, y)
-   &= \int_{-\infty}^y \int_{-\infty}^x f(u,v) \, du \, dv, & \text{for $(X,Y)$ continuous.}
+   F_{X, Y}(x, y)
+   &= \iint_{(u, v)\in \mathcal{R}_{\{X\times Y}: u\le x, v\le y\}} f_{X, Y}(u,v) \, du \, dv & \text{for $(X,Y)$ continuous.}
    (\#eq:BivarXYcontinuous)
 \end{align}
 :::
+
 
 :::{.example #BVDiscrete3DF name="Bivariate discrete"}
 Consider the random process in Example\ \@ref(exm:BVDiscrete3), where *two* coins are tossed, and *one* die is rolled (simultaneously).
@@ -775,7 +775,7 @@ Bivar2Table[, 1] <- c("$x\\lt 0$",
                       "$x\\le 2$")
 
 
-Bivar2Table.caption <- "The bivariate probability function for $X$ and $Y$."
+Bivar2Table.caption <- "The bivariate distribution function for $X$ and $Y$."
 if( knitr::is_latex_output() ) {
   knitr::kable(Bivar2Table,
                format = "latex",
@@ -823,10 +823,10 @@ if( knitr::is_html_output() ) {
 From Example\ \@ref(exm:BVDiscreteBank),
 \begin{align*}
    F_{X, Y}(x, y)
-   &= \frac{6}{5} \int_0^{x} \int_0^{y} (t_1 + t_2^2)\, dt_2 dt_1 \\
+   &= \frac{6}{5} \int_0^{x} \int_0^{y} (t_1 + t_2^2)\, dt_2\, dt_1 \\
    &= \frac{6}{5} \int_0^{x} (t_1 t_2 + t_2^3/3)\Big|_{t_2 = 0}^{t_2 = y} \, dt_1 \\
-   &= \frac{6}{5} \int_0^{x} (t_1 y + x_2^3/3)\, dt_1 \\
-   &= \frac{6}{5} \left( \frac{x y}{2} + \frac{x y^3}{3}\right)
+   &= \frac{6}{5} \int_0^{x} (t_1 y + y^3/3)\, dt_1 \\
+   &= \frac{6}{5} \left( \frac{x^2 y}{2} + \frac{x y^3}{3}\right)
 \end{align*}
 for $0 < x < 1$ and $0 < y < 1$. 
 So
@@ -834,7 +834,7 @@ $$
    F_{X, Y}(x, y)
    = \begin{cases}
       0 & \text{if $x < 0$ or $y < 0$};\\
-      \frac{6}{5} \left( x y/2 + x x_2^3/3\right) & \text{if $0 \le x \le 1$ and $0 \le y \le 1$};\\
+      \frac{6}{5} \left( x^2 y/2 + x y^3/3\right) & \text{if $0 \le x \le 1$ and $0 \le y \le 1$};\\
       1 & \text{if $x > 1$ and $y > 1$}.
      \end{cases}
 $$
@@ -862,11 +862,11 @@ Hence, the marginal distributions can be defined when $(X, Y)$ is a discrete ran
 
 
 :::{.definition #BVDiscreteMarginal name="Bivariate discrete marginal distributions"}
-Given $(X, Y)$ with joint discrete probability function $p(x, y)$, the *marginal probability functions* of\ $X$ and\ $Y$ are, respectively
+Given $(X, Y)$ with joint discrete probability function $p_{X, Y}(x, y)$, the *marginal probability functions* of\ $X$ and\ $Y$ are, respectively
 \begin{equation}
-   \Pr(X = x) = \sum_{y}p_{X, Y}(x, y)
+   p_X(x) = \sum_{y}p_{X, Y}(x, y)
    \quad\text{and}\quad
-   \Pr(Y = y) = \sum_{x}p_{X, Y}(x, y).
+   p_Y(y) = \sum_{x}p_{X, Y}(x, y).
    (\#eq:BivariateMarginal)
 \end{equation}
 :::
@@ -876,19 +876,19 @@ An analogous definition exists when the random vector $(X,Y)$ is continuous.
 
 
 :::{.definition #BVContMarginal name="Bivariate continuous marginal distributions"}
-If $(X, Y)$ has joint continuous PDF $f(x, y)$, the *marginal PDFs* of\ $X$ and\ $Y$, denoted by $f_X(x)$, $f_Y(y)$ respectively, are
+If $(X, Y)$ has joint continuous PDF $f_{X, Y}(x, y)$, the *marginal PDFs* of\ $X$ and\ $Y$, denoted by $f_X(x)$, $f_Y(y)$ respectively, are
 $$
-   f_X(x) = \int_{-\infty}^{\infty}f(x,y) \, dy 
+   f_X(x) = \int_{-\infty}^{\infty}f_{X, Y}(x,y) \, dy 
    \quad\text{and}\quad
-   f_Y(y) = \int_{-\infty}^{\infty}f(x,y) \, dx.
+   f_Y(y) = \int_{-\infty}^{\infty}f_{X, Y}(x,y) \, dx.
 $$
 :::
 
 
-:::{.example #BVContinuousMarginal name="Bivariate continuous marginal distributions"}
+:::{.example #BVContinuousMarginal name="Bivariate continuous marginal distribution"}
 The joint probability density functions of\ $X$ and\ $Y$ is
 $$
-   f(x, y) = 
+   f_{X, Y}(x, y) = 
    \left\{
    \begin{array}{ll}
        \frac{1}{3} (3x^2 + xy), & 0 \leq x \leq 1, \, 0 \leq y \leq 2;\\
@@ -896,7 +896,7 @@ $$
    \end{array} 
    \right.
 $$
-The marginal probability density functions for\ $X$ is
+The marginal probability density function for\ $X$ is
 \begin{align*}
    f_X(x)
    = \int_0^2\left(x^2 + \frac{xy}{3}\right) dy 
@@ -911,7 +911,8 @@ $$
 $$
 So $\displaystyle f_Y(y) = \frac{1}{6}(2 + y)$, for $0 \leq y \leq 2$.
 
-Consider computing $\Pr(Y < X)$; see Fig. \@ref(fig:regionXY); then
+Consider computing $\Pr(Y < X)$; see Fig. \@ref(fig:regionXY).
+Then
 \begin{align*}
    \Pr(Y < X)
    &= \int \!\!\int_{\substack{(x, y) \in A\\ y < x}} f(x,y) \, dx \, dy \\
@@ -956,10 +957,10 @@ Similarly for the other rows.
 Recalling that\ $X$ is the number of times a `r knitr::include_graphics("Dice/die1.png", dpi=2000)` is rolled when two dice are thrown, the distribution of\ $X$ should be $\text{Bin}(2,  1/6$); the probabilities given in the last row of the table agree with this. 
 That is,
 $$
-  \Pr(X = x) = \binom{2}{x}\left(\frac{1}{6}\right)^x \left(\frac{5}{6}\right)^{2 - x}
+  p_X(x) = \binom{2}{x}\left(\frac{1}{6}\right)^x \left(\frac{5}{6}\right)^{2 - x}
 $$
 for $x = 0, 1, 2$. 
-Of course, the distribution of\ $Y$ is the same.
+Of course, the distribution of\ $Y$ is the same since each die shows a `r knitr::include_graphics("Dice/die6.png", dpi=2000)` with the same probability $1/6$ as a `r knitr::include_graphics("Dice/die5.png", dpi=2000)`.
 :::
 
 
@@ -1017,7 +1018,7 @@ Consider again the random process in Example\ \@ref(exm:BVDiscrete3DF).
 From Table\ \@ref(tab:JointPF), the marginal distribution for\ $X$ is found simply by summing over the values for\ $Y$ in the table. 
 When $x = 0$,
 $$
-   p_{X}(0) = \sum_{y} p_{X, Y}(0, y) = 1/24 + 1/24 + 1/24 +\dots = 6/24.
+   p_{X}(0) = \sum_{y=1}^6 p_{X, Y}(0, y) = 6 \times \frac{1}{24} = \frac{6}{24} = \frac{1}{4}.
 $$
 Likewise,
 \begin{align*}
@@ -1034,7 +1035,6 @@ $$
      0 & \text{otherwise}.\\
   \end{cases}
 $$
-This is equivalent to adding the row probabilities in Table\ \@ref(tab:JointPF). 
 In this example, the marginal distribution is easily found from the total column of Table\ \@ref(tab:JointPF).
 :::
 
@@ -1130,13 +1130,16 @@ for $x \in \mathcal{R}_X$ and provided $f_Y(y) > 0$.
 :::
 
 
-The above conditional probability density functions satisfy the requirements for a univariate PDF; that is, $f_{X \mid Y}(x \mid y) \ge 0$ for all\ $x$ and $\int_0^\infty f_{X\mid Y}(x\mid y)\,dx = 1$.
+The above conditional probability density functions satisfy the requirements for a univariate PDF; that is, $f_{X \mid Y}(x \mid y) \ge 0$ for all\ $x$ and $\int_{\mathcal{R}_X} f_{X\mid Y}(x\mid y)\,dx = 1$.
 
 
-:::{.example #BVcontinuousMarginal2 name="Bivariate continuous marginal distributions"}
+:::{.example #BVcontinuousMarginal2 name="Bivariate continuous conditional distributions"}
 In Example \@ref(exm:BVContinuousMarginal), the joint PDF of\ $X$ and\ $Y$ considered was
 $$
-   f_{X,Y}(x,y) = 
+   f_{X,Y}(x,y)
+   = 
+   \frac{f_{X, Y}(x, y)}{f_X(x)}
+   = 
    \begin{cases}
       \frac{1}{3}(3x^2 + xy)  & \text{for $0 \leq x \leq 1$ and $0 \leq y \leq 2$};\\
       0                       & \text{elsewhere}. 
