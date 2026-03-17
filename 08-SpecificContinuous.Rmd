@@ -128,7 +128,7 @@ These proofs are left as exercises.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the continuous uniform distribution have the form `[dpqr]unif(min, max)` (see App.\ \@ref(UseRDistributions)).
+The four **R** functions for working with the continuous uniform distribution have the form `[dpqr]unif(min, max)` (see App.\ \@ref(UseRDistributions)).\index{dunif()@\texttt{dunif()}}
 :::
 
 
@@ -246,7 +246,7 @@ The proof is delayed until after Theorem\ \@ref(thm:StandardNormalProperties).
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the normal distribution have the form `[dpqr]norm(mean, sd)` (see App.\ \@ref(UseRDistributions)).
+The four **R** functions for working with the normal distribution have the form `[dpqr]norm(mean, sd)` (see App.\ \@ref(UseRDistributions)).\index{dnorm()@\texttt{dnorm()}}
 Note that the normal distribution in **R** is specified by giving the *standard deviation* and **not** the *variance*.
 
 The error function $\operatorname{erf}(\cdot)$\index{Error function} is not available directly in **R**, but can be evaluated using
@@ -1131,7 +1131,7 @@ Like the [Poisson distribution](#PoissonDistribution), the variance is defined o
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the exponential distribution have the form `[dpqr]exp(rate)` where `rate`${}= \lambda = 1/\beta$ (see App.\ \@ref(UseRDistributions)).
+The four **R** functions for working with the exponential distribution have the form `[dpqr]exp(rate)` where `rate`${}= \lambda = 1/\beta$ (see App.\ \@ref(UseRDistributions)).\index{dexp()@\texttt{dexp()}}
 :::
 
 
@@ -1316,7 +1316,7 @@ Sometimes we write $X \sim \text{Gamma}(\text{shape} = \alpha, \text{scale} = \b
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 In **R**, the gamma function $\Gamma(x)$ is evaluated using `gamma(x)`.
 
-The four **R** functions for working with the gamma distribution have the form `[dpqr]gamma(shape, rate, scale = 1/rate)`, where `shape`${}= \alpha$ and `scale`${}= \beta$ (see App.\ \@ref(UseRDistributions)).
+The four **R** functions for working with the gamma distribution have the form `[dpqr]gamma(shape, rate, scale = 1/rate)`, where `shape`${}= \alpha$ and `scale`${}= \beta$ (see App.\ \@ref(UseRDistributions)).\index{dgamma()@\texttt{dgamma()}}
 :::
 
 
@@ -1584,7 +1584,7 @@ not of\ $X$ itself.
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 In **R**, the four functions for working with the log-normal distribution have the form `[dpqr]lnorm(meanlog, sdlog)`, where `meanlog`${}= \mu$ and `sdlog`${}= \sigma$ (note: the standard deviation, not the variance).
 For example, `dlnorm(x, meanlog = 0, sdlog = 1)` gives the PDF of the
-standard log-normal distribution.
+standard log-normal distribution.\index{dlnorm()@\texttt{dlnorm()}}
 :::
 
 
@@ -1814,7 +1814,7 @@ $$
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 In **R**, the beta function is evaluated using `beta(a, b)`, where `a`${} = m$ and `b`${} = n$.
 
-The four **R** functions for working with the beta distribution have the form `[dpqr]beta(shape1, shape2)`, where `shape1`${}= m$ and `shape2`${}= n$ (see App.\ \@ref(UseRDistributions)).
+The four **R** functions for working with the beta distribution have the form `[dpqr]beta(shape1, shape2)`, where `shape1`${}= m$ and `shape2`${}= n$ (see App.\ \@ref(UseRDistributions)).\index{dbeta()@\texttt{dbeta()}}
 :::
 
 The distribution function for the beta distribution is complicated, involving incomplete beta functions, and will not be given.
@@ -2015,99 +2015,8 @@ The *$F$-distribution*\index{F-distribution@$F$-distribution} (Sect.\ \@ref(FDis
 
 
 
-## Simulation {#SimulationContinuous}
 
-### Examples
-
-As with discrete distributions (Sect. \@ref(SimulationDiscrete)), simulation can be used with continuous distributions.
-Again, in **R**, random numbers from a specific distribution use functions that start with the letter `r`; for example, to generate random numbers from a normal distribution, use `rnorm()`:
-
-```{r echo=FALSE}
-set.seed(107283)
-```
-
-```{r echo=TRUE}
-rnorm(3, # Generate three random numbers...
-      mean = 4,     # ... with mean = 4
-      sd = 2)       # ... with sd = 2
-```
-
-Suppose we are seeking women over $173\cms$ tall for a study; what percentage of women are over $173\cms$ tall?
-Assume that adult females have heights modelled by a normal distribution with mean $163\cms$ and a standard deviation of\ $5\cms$ [@data:ABS1995:MeasureUp].
-The percentage taller than $173\cms$ is:
-
-```{r}
-1 - pnorm(173, mean = 163, sd = 5)
-```
-
-Simulations can also be used, which allows us to consider more complex situations.
-For this simple question initially (Fig.\ \@ref(fig:HeightSimHistograms), left panel):
-
-```{r echo=FALSE}
-set.seed(17283)
-```
-
-```{r echo=TRUE}
-htW <- rnorm(1000,  # One thousand women
-             mean = 163,  # Mean ht
-             sd = 5)      # Sd of height
-pcTallWomen <- sum( htW > 173 )/1000 * 100
-
-cat("Percentage 'tall' women:", pcTallWomen, '%\n')
-```
-
-Now consider a more complex situation.
-Suppose adult males have heights with a mean of\ $175\cms$ with standard deviation of\ $7\cms$, and constitute $44$% of the population.
-Now, we are seeking women *or* men over $173\cms$ tall (Fig.\ \@ref(fig:HeightSimHistograms), right panel):
-
-
-```{r echo=FALSE}
-set.seed(107423)
-```
-
-```{r echo=TRUE}
-personSex <- rbinom(1000,  # Select sex of each person
-                    1,
-                    0.44) # So 0 = Female; 1 = Male
-
-htP <- rnorm(1000,  # change ht parameters according to sex
-             mean = ifelse(personSex == 1,
-                           175,
-                           163),
-             sd = ifelse(personSex == 1,
-                         7, 
-                         5))
-
-pcTallPeople <- sum( htP > 173 )/1000 * 100
-pcFemales <- sum( personSex == 0 ) / 1000 * 100
-
-cat("Percentage 'tall' people:", pcTallPeople, '%\n\n')
-cat("Percentage females:", pcFemales, '%\n\n')
-cat("Percentage of 'tall' people that are female:", 
-    round( sum(htP > 173 & personSex == 0) / sum(htP > 173) * 100, 1),
-    '%\n\n')
-cat("Variance of heights: ", var(htP), "\n")
-```
-
-```{r HeightSimHistograms, echo=FALSE, fig.width=6.5, out.width='90%', fig.height = 3.5, fig.cap="The distribution of heights of women (left panel) and men and women combined (right panel)."}
-par( mfrow = c(1, 2))
-
-hist( htW, 
-      xlab = "Heights (in cm)",
-      main = "Heights: women",
-      xlim = c(140, 200),
-      ylim = c(0, 400),
-      las = 1)
-hist( htP, 
-      xlab = "Heights (in cm)",
-      main = "Heights: women and men",
-      xlim = c(140, 200),
-      ylim = c(0, 400),
-      las = 1)
-```
-
-
-### Relationships between distributions
+## Relationships between distributions
 
 As seen before (Sect.\ \@ref(RVsStatisticalComputing)), many statistical distributions are generated from existing distributions.
 These relationships can be shown using computer simulation.
@@ -2167,6 +2076,97 @@ lines( dgamma(x_Plot, shape = 5, rate = 2) ~ x_Plot,
 
 
 
+
+## Simulation {#SimulationContinuous}
+
+### Examples
+
+As with discrete distributions (Sect. \@ref(SimulationDiscrete)), simulation can be used with continuous distributions.
+Again, in **R**, random numbers from a specific distribution use functions that start with the letter `r`; for example, to generate random numbers from a normal distribution, use `rnorm()`:\index{rnorm()@\texttt{rnorm()}}
+
+```{r echo=FALSE}
+set.seed(107283)
+```
+
+```{r echo=TRUE}
+rnorm(3, # Generate three random numbers...
+      mean = 4,     # ... with mean = 4
+      sd = 2)       # ... with sd = 2
+```
+
+Suppose we are seeking women over $173\cms$ tall for a study; what percentage of women are over $173\cms$ tall?
+Assume that adult females have heights modelled by a normal distribution with mean $163\cms$ and a standard deviation of\ $5\cms$ [@data:ABS1995:MeasureUp].
+The percentage taller than $173\cms$ is:\index{pnorm()@\texttt{pnorm()}}
+
+```{r}
+1 - pnorm(173, mean = 163, sd = 5)
+```
+
+Simulations can also be used, which allows us to consider more complex situations.
+For this simple question initially (Fig.\ \@ref(fig:HeightSimHistograms), left panel):\index{rnorm()@\texttt{rnorm()}}
+
+```{r echo=FALSE}
+set.seed(17283)
+```
+
+```{r echo=TRUE}
+htW <- rnorm(1000,  # One thousand women
+             mean = 163,  # Mean ht
+             sd = 5)      # Sd of height
+pcTallWomen <- sum( htW > 173 )/1000 * 100
+
+cat("Percentage 'tall' women:", pcTallWomen, '%\n')
+```
+
+Now consider a more complex situation.
+Suppose adult males have heights with a mean of\ $175\cms$ with standard deviation of\ $7\cms$, and constitute $44$% of the population.
+Now, we are seeking women *or* men over $173\cms$ tall (Fig.\ \@ref(fig:HeightSimHistograms), right panel):\index{rbinom()@\texttt{rbinom()}}\index{sum()@\texttt{sum()}}\index{var()@\texttt{var()}}
+
+
+```{r echo=FALSE}
+set.seed(107423)
+```
+
+```{r echo=TRUE}
+personSex <- rbinom(1000,  # Select sex of each person
+                    1,
+                    0.44) # So 0 = Female; 1 = Male
+
+htP <- rnorm(1000,  # change ht parameters according to sex
+             mean = ifelse(personSex == 1,
+                           175,
+                           163),
+             sd = ifelse(personSex == 1,
+                         7, 
+                         5))
+
+pcTallPeople <- sum( htP > 173 )/1000 * 100
+pcFemales <- sum( personSex == 0 ) / 1000 * 100
+
+cat("Percentage 'tall' people:", pcTallPeople, '%\n\n')
+cat("Percentage females:", pcFemales, '%\n\n')
+cat("Percentage of 'tall' people that are female:", 
+    round( sum(htP > 173 & personSex == 0) / sum(htP > 173) * 100, 1),
+    '%\n\n')
+cat("Variance of heights: ", var(htP), "\n")
+```
+
+```{r HeightSimHistograms, echo=FALSE, fig.width=6.5, out.width='90%', fig.height = 3.5, fig.cap="The distribution of heights of women (left panel) and men and women combined (right panel)."}
+par( mfrow = c(1, 2))
+
+hist( htW, 
+      xlab = "Heights (in cm)",
+      main = "Heights: women",
+      xlim = c(140, 200),
+      ylim = c(0, 400),
+      las = 1)
+hist( htP, 
+      xlab = "Heights (in cm)",
+      main = "Heights: women and men",
+      xlim = c(140, 200),
+      ylim = c(0, 400),
+      las = 1)
+```
 
 
 
