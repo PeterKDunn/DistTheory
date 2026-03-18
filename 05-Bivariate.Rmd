@@ -1628,7 +1628,7 @@ $$
       0        & \text{elsewhere}.
    \end{cases}
 $$
-A diagram of the region over which\ $X$ and\ $Y$ are defined is shown in Fig.\ \@ref(fig:BVRegion).
+A diagram of the region $R$ over which\ $X$ and\ $Y$ are defined is shown in Fig.\ \@ref(fig:BVRegion).
 
 When $X = 0.2$, the range of $Y$ is $(0.2, 1)$; when $X = 0.5$, the range of $Y$ is $(0.5, 1)$.
 The range of\ $Y$ depends on the value of\ $X$, which means the support $\{(x, y) \mid 0 < x < y < 1\}$ is not a rectangle. 
@@ -1636,13 +1636,13 @@ Thus, $X$ and\ $Y$ cannot be independent.
 :::
 
 
-```{r BVRegion, echo=FALSE, fig.align="center", fig.width=4, fig.height=4,fig.cap="The region over which $f_{X, Y}(x, y)$ is defined."}
+```{r BVRegion, echo=FALSE, fig.align="center", fig.width=4, fig.height=4,fig.cap="The region $R$ over which $f_{X, Y}(x, y)$ is defined."}
 plot( x = c(0, 1),
       y = c(0, 1),
       xlab = expression(italic(x)),
       ylab = expression(italic(y)),
       type = "n",
-      main = expression(bold(The~region~where~italic(f)~is~defined)),
+      main = expression(bold(The~region~italic(R)~where~italic(f)~is~defined)),
       las = 1)
 polygon( x = c(0, 1, 0, 0),
          y = c(0, 1, 1, 0),
@@ -1774,6 +1774,7 @@ $$
 ### Discrete bivariate distributions
 
 Consider the bivariate discrete distribution with the joint probability function shown in Table\ \@ref(tab:SIM1).
+The joint PMF can be defined in\ **R** as a matrix:\index{matrix()@\texttt{matrix()}}
 
 ```{r SIM1, echo=FALSE}
 EG1 <- array( dim =c(3, 2))
@@ -1813,45 +1814,44 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-The joint PMF can be defined in\ **R**:\index{matrix()@\texttt{matrix()}}
 
 ```{r}
 # Joint PMF as a matrix (rows = x, cols = y)
-x_vals <- c(1, 2, 3)
-y_vals <- c(1, 2)
-P <- matrix(c(0.1, 0.2,
+x_vals <- c(1, 2, 3)       # The values for the variable X 
+y_vals <- c(10, 20)        # The values for the variable Y
+P <- matrix(c(0.1, 0.2,    # The matrix contains the probabilities
               0.3, 0.1,
               0.2, 0.1),
-            nrow = 3, 
-            byrow = TRUE,
-            dimnames = list(x = x_vals, 
-                            y = y_vals))
+            nrow = 3,      # The matrix have 3 rows
+            byrow = TRUE,  # Fill the matrix with the data by rows first
+            dimnames = list(x = x_vals,    # The names for the rows...
+                            y = y_vals))   #... and the columns
 P
-sum(P)          # Verify that the sum of probabilities is 1
+sum(P)                     # Verify: the sum of probabilities is 1
 ```
 
-The marginal distribution can be found as follows:\index{rowSums()@\texttt{rowSums()}}\index{colSums()@\texttt{colSums()}}
+The marginal distributions can be found by summing over the rows or columns of the matrix as appropriate:\index{rowSums()@\texttt{rowSums()}}\index{colSums()@\texttt{colSums()}}
 
 ```{r}
-rowSums(P)      # Marginal distribution of X
-colSums(P)      # Marginal distribution of Y
+rowSums(P)      # Marginal distribution of X: sum the rows
+colSums(P)      # Marginal distribution of Y: sum the columns
 ```
 
-The conditional distributions can also be found; for example, to find $\Pr(X = x \mid Y = 1)$:
+The conditional distributions can also be found; for example, to find $\Pr(X = x \mid Y = 10)$:
 
 ```{r}
-P[, "1"] / colSums(P)["1"]
+P[, "10"] / colSums(P)["10"]   # "10" is the name of the column for "y = 10"
 ```
 
 To check if\ $X$ and\ $Y$ are independent, multiply the marginal distributions using `outer()`:\index{outer()@\texttt{outer()}}
 
 ```{r}
-outer(rowSums(P), 
-      colSums(P))  # f_X * f_Y
-P                               # Compare to the joint PMF
+outer(rowSums(P),            # Element-by-element multiplication
+      colSums(P))
+P                            # Compare to the joint PMF
 ```
 
-The probabilities in the joint PMF are not the sameL $X$ and\ $Y$ are *not* independent.
+The probabilities in the joint PMF are not the same: $X$ and\ $Y$ are *not* independent.
 
 
 ### Continuous bivariate distributions
@@ -1859,40 +1859,41 @@ The probabilities in the joint PMF are not the sameL $X$ and\ $Y$ are *not* inde
 Consider the joint PDF in Example\ \@ref(exm:MixedRV).
 The joint PDF can be written as an\ **R** function:\index{ifelse()@\texttt{ifelse()}}
 
-
 ```{r}
 # Joint PDF: f(x,y) = 2(x + y) for 0 < x < y < 1
 fXY <- function(x, y) {
-  ifelse( (x > 0) & (x < y) & (y < 1), 
+  ifelse( (x > 0) & (x < y) & (y < 1),  # This defines the support, R
           2 * (x + y),    # If the values of x and y are within the defined region
           0)              # If the values are outside the defined region
 }
 ```
 
-
-We can verify that this is a valid joint PDF using `integrate()` twice, once in the $x$-direction and once in the $y$-direction:\index{integrate()@\texttt{integrate()}}
+In **R**, the function `integrate()` can be used to evaluate one-dimensional definite integrals.
+Using `integrate()` twice, we can verify that the joint PDF is valid: we use `integrate()` once in the $x$-direction and once in the $y$-direction:\index{integrate()@\texttt{integrate()}}\index{sapply()@\texttt{sapply()}}
 
 ```{r}
-# Verify integrates to 1 (integrate over y first, then x)
-integrate(function(x) {
-  sapply(x, function(xi) {
-    integrate(function(y) fXY(xi, y), 
-              lower = xi, 
-              upper = 1)$value
-  })
-}, lower = 0, 
-   upper = 1)$value
+# Verify integrates to 1 (integrate: y inner integral, x outer integral)
+integrate(function(x) {           # Integrate over x
+  sapply(x,                       # To each of these values...
+         function(xi) {           # ... apply this function
+              integrate(function(y) fXY(xi, y), 
+                 lower = xi,      # The lower y-integration limit
+                 upper = 1)$value # The lower y-integration limit
+           })
+  }, lower = 0,                   # The lower x-integration limit 
+     upper = 1)$value             # The upper x-integration limit
 ```
 
-Marginal distribution can be found using `integrate()` also:\index{Vectorize()@\texttt{Vectorize()}}
+(`sapply(X, FUN)` is an\ **R** function that applies the function `FUN` to the elements of `X`.)
+Marginal distributions can be found using `integrate()` also:\index{Vectorize()@\texttt{Vectorize()}}
 
 ```{r}
 # Marginal of X at a specific value, say x = 0.3
-integrate(function(y) fXY(0.3, y), 
+integrate(function(y) {fXY(0.3, y)},   # The function fXY, with x set to 0.3 
           lower = 0.3, 
           upper = 1)$value
 
-# Marginal of X as a function
+# Create a function: the marginal distn of X
 fX <- Vectorize(function(x) {
   integrate(function(y) fXY(x, y), 
             lower = x, 
@@ -1900,7 +1901,8 @@ fX <- Vectorize(function(x) {
 })
 ```
 
-Probabilities can be found similarly; for example, to find $\Pr(X < 0.5, Y < 0.8)$:
+(`Vectorize()` allows the newly-created function `fX()` to accept vector inputs and return vector outputs.)
+Probabilities can be found similarly; for example, to find $\Pr(X < 0.5, Y < 0.8)$:\index{integrate()@\texttt{integrate()}}\index{sapply()@\texttt{sapply()}}
 
 ```{r}
 integrate(function(x) {
@@ -1912,33 +1914,6 @@ integrate(function(x) {
 }, lower = 0, 
    upper = 0.5)$value
 ```
-
-
-### Simulation
-
-We can simulate from a joint distribution too, using the factorisation $f_{X,Y}(x, y) = f_{X\mid Y} (x \mid y) \cdot p_Y(y)$.
-Consider the mixed joint probability function in Example\ \@ref(exm:MixedRV).
-We can simulate from this distribution:\index{sample()@\texttt{sample()}}\index{ifelse()@\texttt{ifelse()}}
-
-
-```{r}
-n <- 10000                  # Number of simulations
-Y <- sample(c(1, 2),        # Select from the numbers 1 and 2
-            size = n,       # Select this many 
-            replace = TRUE, # Select *with* replacement
-            prob = c(0.4, 0.6))  # Select according to these probabilities
-X <- ifelse(Y == 1,               # If Y = 1:
-            runif(n, 0, 1),       # then: f(x | Y = 1) = U(0,1)
-            runif(n, 0, 2))       # If Y = 0: f(x | Y = 2) = U(0,2)
-```
-
-The marginal distribution is close to the $(0.4, 0.6)$ expected:
-
-```{r}
-# Verify marginal of Y
-table(Y) / n
-```
-
 
 
 
