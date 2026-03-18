@@ -23,7 +23,11 @@
 
 (ref:ContinuousDistributions) Chap.\ \@ref(ContinuousDistributions)
 
+cumulants
 
+Characteristic function
+
+cumulant generating function
 
 
 
@@ -276,6 +280,234 @@ See the next section for the case where $n\to\infty$.
 
 Note that the expressions on the RHS above do not converge to the LHS for all values of $z$.
 
+
+
+
+<!-- ------------------------------------------------------------------------ -->
+
+# Some useful integrals {#UsefulIntegrals}
+
+For convenience and reference, integrals that arise frequently in probability and statistical distribution theory are collected here.
+Throughout, it is assumed that the parameters are such that the integrals converge (conditions are noted where they are non-obvious).
+The results are stated without proof; derivations typically use integration by parts, substitution, or contour integration.
+
+## Gamma and related integrals {#GammaIntegrals}
+
+The *gamma function* is defined by\index{Gamma function}
+\begin{equation}
+  \Gamma(\alpha) = \int_0^{\infty} x^{\alpha - 1} \exp(-x)\, dx \quad\text{for $\alpha > 0$}.
+  (\#eq:GammaFunction)
+\end{equation}
+The gamma function satisfies the recursion $\Gamma(\alpha) = (\alpha - 1)\,\Gamma(\alpha - 1)$, with $\Gamma(1) = 1$ and $\Gamma\!\left(\frac{1}{2}\right) = \sqrt{\pi}$.
+For positive integers, $\Gamma(n) = (n - 1)!$.
+
+A direct consequence is that for $\alpha > 0$ and $\beta > 0$:
+\begin{equation}
+  \int_0^{\infty} x^{\alpha - 1} \exp(-\beta x)\, dx
+  = \frac{\Gamma(\alpha)}{\beta^{\alpha}}.
+  (\#eq:GammaScaled)
+\end{equation}
+This is perhaps the single most-used integral in distribution theory; it underlies the gamma, exponential, chi-squared, and related distributions.
+
+Setting $\alpha = n + 1$ for non-negative integer $n$:
+\begin{equation}
+  \int_0^{\infty} x^{n} \exp(-\beta x)\, dx
+  = \frac{n!}{\beta^{n + 1}} \quad\text{for $n = 0, 1, 2, \ldots$ and $\beta > 0$}.
+  (\#eq:GammaInteger)
+\end{equation}
+
+The *incomplete gamma integral*\index{Incomplete gamma integral} appears in CDFs of the gamma and chi-squared distributions:
+\begin{equation}
+  \int_0^{x} t^{\alpha - 1} \exp(-t)\, dt = \gamma(\alpha,\, x),
+  (\#eq:IncompleteGamma)
+\end{equation}
+where $\gamma(\alpha, x)$ is the lower incomplete gamma function.\index{Lower incomplete gamma integral}
+The corresponding survival integral is $\Gamma(\alpha) - \gamma(\alpha, x)$.
+
+
+## Beta and related integrals {#BetaIntegrals}
+
+The *beta function*\index{Beta function} is defined by
+\begin{equation}
+  B(\alpha,\, \beta)
+  = \int_0^{1} x^{\alpha - 1}(1 - x)^{\beta - 1}\, dx
+  = \frac{\Gamma(\alpha)\,\Gamma(\beta)}{\Gamma(\alpha + \beta)},
+    \quad\text{for $\alpha > 0$ and $\beta > 0$}.
+  (\#eq:BetaFunction)
+\end{equation}
+This is the normalising constant of the beta distribution, and arises in order-statistic distributions and Bayesian conjugate analysis.
+
+The substitution $x = u/(1 + u)$ converts Eq.\ \@ref(eq:BetaFunction) to
+\begin{equation}
+  \int_0^{\infty} \frac{u^{\alpha - 1}}{(1 + u)^{\alpha + \beta}}\, du
+  = B(\alpha,\, \beta),
+  \qquad \alpha > 0,\; \beta > 0,
+  (\#eq:BetaF)
+\end{equation}
+which appears in the derivation of the $F$-distribution.
+
+More generally, for $a > 0$ and $b > 0$:
+\begin{equation}
+  \int_0^{\infty} \frac{x^{\alpha - 1}}{(a + bx)^{\alpha + \beta}}\, dx
+  = \frac{B(\alpha,\,\beta)}{a^{\beta}\, b^{\alpha}}.
+  (\#eq:BetaGeneralised)
+\end{equation}
+
+
+## Gaussian integrals {#GaussianIntegrals}
+
+The fundamental Gaussian integral is
+\begin{equation}
+  \int_{-\infty}^{\infty} \exp(-x^2)\, dx = \sqrt{\pi}.
+  (\#eq:GaussianFundamental)
+\end{equation}
+Rescaling gives, for $\sigma > 0$:
+\begin{equation}
+  \int_{-\infty}^{\infty} \exp(-x^2 / (2\sigma^2))\, dx = \sigma\sqrt{2\pi}.
+  (\#eq:GaussianScaled)
+\end{equation}
+This is the normalising constant of the normal distribution.
+
+For the moments of the standard normal, using symmetry and integration by parts:
+\begin{align}
+  \int_{-\infty}^{\infty} x^{2k}\, \exp(-x^2/2)\, dx
+  &= \sqrt{2\pi}\,(2k - 1)!! \quad\text{for $k = 1, 2, 3, \ldots$}
+  (\#eq:GaussianEvenMoment)\\
+  \int_{-\infty}^{\infty} x^{2k+1}\, \exp(-x^2/2)\, dx
+  &= 0,
+  (\#eq:GaussianOddMoment)
+\end{align}
+where $(2k - 1)!! = 1 \cdot 3 \cdot 5 \cdots (2k - 1)$ is the double factorial.\index{Double factorial}
+
+The *moment-generating integral* of the normal is
+\begin{equation}
+  \int_{-\infty}^{\infty}
+    \exp\!\left(tx - \frac{x^2}{2\sigma^2}\right) dx
+  = \sigma\sqrt{2\pi}\,\exp\!\left(\frac{\sigma^2 t^2}{2}\right),
+  (\#eq:GaussianMGF)
+\end{equation}
+obtained by completing the square in the exponent.
+This result is used in deriving the MGF of the normal distribution.
+
+The *complementary error function*\index{Complementary error function} appears in normal tail probabilities:
+\begin{equation}
+  \int_x^{\infty} e^{-t^2/2}\, dt
+  = \sqrt{\tfrac{\pi}{2}}\,\operatorname{erfc}\!\left(\frac{x}{\sqrt{2}}\right)
+  = \sqrt{2\pi}\,\bar{\Phi}(x),
+  (\#eq:NormalTail)
+\end{equation}
+where $\bar{\Phi}(x) = 1 - \Phi(x)$ is the standard normal survival function.
+This integral has no closed form in elementary functions.
+
+
+## Exponential and Laplace integrals {#ExponentialIntegrals}
+
+For $\lambda > 0$ and $n = 0, 1, 2, \ldots$:
+\begin{equation}
+  \int_0^{\infty} x^n \exp(-\lambda x)\, dx 
+  = \frac{n!}{\lambda^{n + 1}}.
+  (\#eq:ExponentialMoment)
+\end{equation}
+(This is Eq.\ \@ref(eq:GammaInteger) restated for emphasis.)
+
+The bilateral (two-sided) exponential integral, useful for the Laplace distribution, is
+\begin{equation}
+  \int_{-\infty}^{\infty} |x|^n \exp(-\lambda |x|)\, dx
+  = \frac{2\, n!}{\lambda^{n + 1}} \quad\text{where $n = 0, 1, 2, \ldots$}.
+  (\#eq:LaplaceIntegral)
+\end{equation}
+
+The *convolution integral*\index{Convolution integral} for two exponentials with possibly different rates ($\lambda_1 \neq \lambda_2$, both positive) is
+\begin{equation}
+  \int_0^x \exp(-\lambda_1 t)\, \exp(-\lambda_2(x - t))\, dt
+  = \frac{\exp(-\lambda_2 x) - \exp(-\lambda_1 x)}{\lambda_1 - \lambda_2}.
+  (\#eq:ExponentialConvolution)
+\end{equation}
+This arises in the distribution of the sum of two independent exponential random variables with different rates.
+
+
+
+<!-- 
+
+## Integration by parts?????????????? standard forms {#IBPForms}
+
+Integration by parts ($\int u\, dv = uv - \int v\, du$) generates several
+results that recur in moment calculations.
+
+For $n \geq 1$ and $\lambda > 0$, repeated integration by parts gives:
+\begin{equation}
+  \int x^n e^{-\lambda x}\, dx
+  = -e^{-\lambda x} \sum_{k=0}^{n} \frac{n!}{(n-k)!\,\lambda^{k+1}}\, x^{n-k} + C.
+  (\#eq:IBPGeneral)
+\end{equation}
+When evaluated on $(0, \infty)$ the boundary terms vanish (assuming $\lambda > 0$)
+and Eq.\ \@ref(eq:GammaInteger) is recovered.
+
+The **LOTUS identity** for integration by parts with a survival function:
+\begin{equation}
+  \int_0^{\infty} \bar{F}(x)\, dx = \mathrm{E}[X],
+  (\#eq:SurvivalMean)
+\end{equation}
+valid for non-negative random variables with $\bar{F}(x) = P(X > x)$.
+More generally,
+\begin{equation}
+  \int_0^{\infty} x^{n-1} \bar{F}(x)\, dx = \frac{\mathrm{E}[X^n]}{n},
+  \qquad n \geq 1.
+  (\#eq:SurvivalMoment)
+\end{equation}
+-->
+
+
+## Characteristic function integrals {#CFIntegrals}
+
+The *inversion formula* for recovering the PDF from the characteristic function $\varphi_X(t) = \operatorname{E}[\exp(itX)]$\index{Characteristic function} is
+\begin{equation}
+  f_X(x)
+  = \frac{1}{2\pi} \int_{-\infty}^{\infty} \varphi_X(t)\exp(-itx)\, dt.
+  (\#eq:CFInversion)
+\end{equation}
+(See Sect.\ \@ref(DistributionFromMGF) and the surrounding discussion.)
+
+Two integrals that arise in evaluating specific characteristic functions via contour integration are
+\begin{align}
+  \int_{-\infty}^{\infty} \frac{\cos(tx)}{1 + t^2}\, dt 
+  &= \pi \exp(-|x|),
+   (\#eq:CauchyCF1)\\
+  \int_{-\infty}^{\infty} \frac{t\sin(tx)}{1 + t^2}\, dt 
+  &= \pi\, \mathrm{sgn}(x)\, \exp(-|x|),
+  (\#eq:CauchyCF2)
+\end{align}
+and together give
+\begin{equation}
+  \frac{1}{2\pi}\int_{-\infty}^{\infty}
+    \frac{\cos(tx) + t\sin(tx)}{1 + t^2}\, dt
+  = \frac{1}{2}\bigl(1 + \mathrm{sgn}(x)\bigr)\, e^{-|x|}
+  = \exp(-x)\,\mathbf{1}(x \geq 0),
+  (\#eq:ExponentialCFInversion)
+\end{equation}
+which is the result used in Example\ \@ref(exm:DistFromMGFContinuous) to invert the exponential characteristic function.
+
+
+## Dirichlet and order-statistic integrals {#DirichletIntegrals}
+
+The *Dirichlet integral*, a multivariate generalisation of the beta function, is
+\begin{equation}
+  \int_0^1 \cdots \int_0^1
+    x_1^{\alpha_1 - 1} \cdots x_k^{\alpha_k - 1}
+    (1 - x_1 - \cdots - x_k)^{\alpha_{k+1} - 1}\, dx_1 \cdots dx_k
+  = \frac{\prod_{i=1}^{k+1} \Gamma(\alpha_i)}{\Gamma\!\left(\sum_{i=1}^{k+1}\alpha_i\right)},
+  (\#eq:DirichletIntegral)
+\end{equation}
+where the integration is over the $k$-dimensional simplex $\{x_i > 0,\; \sum x_i < 1\}$.
+This is the normalising constant of the Dirichlet distribution.
+
+The *order-statistic integral* gives the joint density of the $r$-th and $s$-th order statistics ($r < s$) from a sample of size $n$:
+\begin{equation}
+  \int_x^y (F(t) - F(x))^{s - r - 1}\, f(t)\, dt
+  = \frac{(F(y) - F(x))^{s - r}}{s - r},
+  (\#eq:OrderStatIntegral)
+\end{equation}
+a simple power substitution that reduces the marginalisation integrals for order statistics.
 
 
 
