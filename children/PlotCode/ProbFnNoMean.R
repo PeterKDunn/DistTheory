@@ -6,9 +6,9 @@ z <- seq(1, 6, length.out = 100)
 plot(x = z, y = z^(-2),
      type = "l", lwd = 2, las = 1,
      xlim = c(0, 6), ylim = c(-0.025, 1),
-     xlab = expression( italic(z)),
+     xlab = "z",
      ylab = "Density",
-     main = expression(paste(The~probability~"function for"~italic(Z))))
+     main = "Probability~function for Z")
 
 # Line for x = 0 to x = 1
 lines( x = c(-1, 1),
@@ -22,4 +22,3 @@ abline(v = 1, lty = 2, ### lty = 2: means 'dotted lines'
 # Show open point
 points(x = 1, y = 0,
        pch = 1) ### pch = 1: open circle
-
