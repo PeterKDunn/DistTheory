@@ -17,8 +17,18 @@ Upon completion of this chapter, you should be able to:
 
 ## Introduction
 
-In this chapter, some popular discrete distributions are discussed.
-Properties such as definitions and applications are considered.
+In statistics and probability, we rarely work with arbitrary distributions.
+Some distributions arise so frequently in practice that they are given names and are studied in detail. 
+These standard distributions act as building blocks for modelling real-world phenomena.
+In this chapter, the most commonly used discrete distributions are studied: 
+
+* the *discrete uniform distribution* models situations where every outcome is equally likely, such as rolling a fair die or drawing a card at random from a well-shuffled deck.
+* the *Bernoulli* and *binomial distributions* model the number of successes in repeated independent trials, relevant whenever we count how many times an event occurs in a fixed number of attempts, such as the number of defective items in a production run or the number of patients responding to a treatment.
+* the *geometric* and *negative binomial distributions* model waiting times: how long until a first success, or until a fixed number of successes occur, arising naturally in quality control, reliability, and queuing problems.
+* the *Poisson distribution* models the number of rare events occurring in a fixed interval of time or space; these are used widely in insurance, telecommunications, epidemiology, and traffic modelling.
+* the *hypergeometric distribution* models the number of successes when sampling without replacement from a finite population, applicable in quality inspection, ecology, and clinical trials where the population is small enough that each draw meaningfully changes the composition of what remains.
+
+The probability mass function, distribution function, and key properties (such as the mean, variance and moment generating function) are studied for each distribution.
 
 
 ## Discrete uniform distribution {#DiscreteUniform}
@@ -1574,38 +1584,32 @@ dhyper(x = 4, m = 13, n = 7, k = 5) +
 
 ## Other notable discrete distributions {#OtherDiscreteDistributions}
 
-The distributions discussed in this chapter are standard and commonly-used discrete distributions.
-The *discrete uniform distribution*\index{Discrete uniform distribution} is used for equally-likely outcomes (like coin tosses and rolls of a die).
-The *Bernoulli distribution*\index{Bernoulli distribution} is used to model single dichotomous (e.g., yes/no; true/false) outcomes.
-These two distributions are not often used in practice, but the basis for developing other distributions.
+The distributions discussed in this chapter are standard and commonly-used discrete distributions, but countless others exist; we mention a few.
 
-The *binomial distribution*\index{Binomial distribution} is used to model the number of successes in a fixed number of Bernoulli repetitions.
-The *geometric distribution*\index{Geometric distribution} is used to model the number of Bernoulli trials until the first success.
-The *negative binomial distribution*\index{Negative binomial distribution} can be used to model the number of Bernoulli trials until the $r$th success, but it also has mider uses for modelling count data (with no theoretical upper limit); it has greater flexibility for modelling counts than the Poisson distribution.
-The *Poisson distribution*\index{Poisson distribution} is commonly used to model count data (with no theoretical upper limit).
-
-The *hypergeometric distribution*\index{Hypergeometric distribution} is used to model the number of successes in a sample of size\ $n$ n drawn *without replacement* from population size of size\ $N$, with\ $K$ successes.
-The *multinomial distribution*\index{Multinomial distribution} is used to model counts of outcomes in\ $n$ independent categorical trials (whereas the binomial is used for two independent categorical trials).
-
-Countless other useful discrete distributions exist; we mention a few.
 The *Zeta distribution*\index{Zeta distribution} (or sometimes, the *Zipf distribution*),\index{Zipf distribution} defined for $x = 1, 2, \dots$, is often used in linguistics, and for heavy-tailed counts.
 
 While the Poisson distribution is commonly used to model counts, two important variations to the Poisson distribution exist.
 The *zero-truncated Poisson distribution*,\index{Poisson distribution!zero-truncated} with range $\mathcal{R}_X = \{1, 2, \dots\}$, is used to model counts where counts of zero are impossible (i.e., the number of night of hospital stay for in-patients).
 In contrast, the *zero-inflated Poisson distribution*,\index{Poisson distribution!zero-inflated} with range $\mathcal{R}_X = \{0, 1, 2, \dots\}$, is used to model counts where the proportion of zeros is higher than expected when using the Poisson distribution.
 
+The *beta-binomial distribution*\index{Beta-binomial distribution} occurs when with a binomial distribution where the success probability\ $p$ is itself random (beta-distributed) variable (see Chap.\ \@ref(BayesianIntro)).
+This distribution is useful when there is overdispersion relative to the binomial.
+
+The *Conway–Maxwell–Poisson* (COM-Poisson)\index{Conway–Maxwell–Poisson} is a flexible generalisation of the Poisson that can handle both overdispersion and underdispersion, and is increasingly used for modelling count data.
 
 
 ## Simulation {#SimulationDiscrete}
 \index{Simulation}
 
+### Simulating discrete distributions {#DiscreteSimulation}
+
 Simulation was introduced in Sect.\ \@ref(ProbStatisticalComputing) as a computer-based tool for helping understand and model specific scenarios.
 Probability distributions are usually crucial in simulations for modelling phenomena.
 Simulation effectively connects theory to real-world modelling.
-Many application (finance, epidemiology, engineering, AI) use simulation to study uncertainty in complex situations.
-This book provides the building blocks for those more complex situations.
+Many applications (in finance, epidemiology, engineering, machine learning) rely on simulation to study  uncertainty in complex situations, many of which may be difficult or impossible to analyse analytically.
+This book introduces the distributions that provide the building blocks for these more complex simulations.
 
-Distributions can be used to *simulate* practical situations, using random numbers generated from the distributions.
+Distributions can be used to *simulate* practical situations, using random numbers generated from specific distributions.
 In **R**, these function start with the letter `r`; for example, to generate three random numbers from a Poisson distribution, use `rpois()`:
 
 ```{r echo=FALSE}
@@ -1617,6 +1621,10 @@ rpois(3, # Generate three random numbers...
       lambda = 4) # ... with mean = 4
 ```
 
+By using random numbers from appropriate distributions, accurate models can be used to understand complex phenomena.
+
+
+### Example: laying eggs
 
 Consider a study of insects where a females lays $E$\ eggs, only some of which are fertile (based on @ito1977model).
 Suppose $E \sim \text{Poisson}(8.5)$, and the probability that any given egg is fertile is $p = 0.6$ (and assume the fertility of the eggs from any one female are independent).
@@ -1640,7 +1648,7 @@ cat("Number of eggs:", NumberOfEggs,
     "| Number of fertile eggs:", NumberFertileEggs, "\n")
 ```
 
-Since random numbers are being generated, each simulation will produce different results, so we repeat this over many simulations:
+Since random numbers are being generated, each simulation will produce different results, so we repeat this over many simulations (each generating different a realisation):
 
 
 ```{r echo=FALSE}
@@ -1648,17 +1656,18 @@ set.seed(109883)
 ```
 
 ```{r}
-# Many simulations
+numberSims <- 5000      # How many simulations (i.e., insects)
 
-numberSims <- 5000
-
+# Create some arrays to store information
 NumberOfEggs <- array( dim = numberSims )
 NumberFertileEggs <- array( dim = numberSims )
 
-for (i in (1:numberSims)){ 
-  NumberOfEggs[i] <- rpois(1, lambda = 8.5)
+# Now we use a loop:
+for (i in (1:numberSims)){       # For *each* simulation/insect...
+  NumberOfEggs[i] <- rpois(1,    # ... this many eggs are layed...
+                           lambda = 8.5)
   
-  # How many fertile?
+                                 # ... and this many are fertile
   NumberFertileEggs[i] <- rbinom(1, # Only one random number/female
                                  size = NumberOfEggs[i],
                                  prob = 0.6)
@@ -1676,38 +1685,66 @@ hist(NumberFertileEggs,
 ```
 
 Using this information, questions can be answered about the number of fertile eggs layed.
-For example:
+For example, what is the probability that a females lays more than six fertile eggs?
 
 ```{r echo=TRUE}
 sum( NumberFertileEggs > 6) / numberSims
 ```
 
-The chance that a female lays more than\ $6$ fertile eggs is about `r round(sum( NumberFertileEggs > 6) / numberSims * 100, 1)`%.
 The mean and variance of the number of fertile eggs laid is:
 ```{r echo=TRUE}
 mean( NumberFertileEggs )
 var( NumberFertileEggs )
 ```
 
+A sensitivity analysis (Sect.\ \@ref(SimulationSensitivityAnalysis)) can also be conducted.
+What happens if the number of eggs laid per females decreases to $\lambda = 7.0$, but the probability that an egg is fertile increases to $p = 0.65$?
 
-### Simulating a call centre
+```{r echo=FALSE}
+set.seed(2091)
+```
 
-A call centre receives calls throughout the day.
+```{r}
+numberSims <- 5000      # How many simulations (i.e., insects)
+
+# Create some arrays to store information
+NumberOfEggs <- array( dim = numberSims )
+NumberFertileEggs <- array( dim = numberSims )
+
+# Now we use a loop:
+for (i in (1:numberSims)){       # For *each* simulation/insect...
+  NumberOfEggs[i] <- rpois(1,    # ... this many eggs are layed...
+                           lambda = 7.0)
+  
+                                 # ... and this many are fertile
+  NumberFertileEggs[i] <- rbinom(1, # Only one random number/female
+                                 size = NumberOfEggs[i],
+                                 prob = 0.65)
+}
+
+mean( NumberFertileEggs )
+var( NumberFertileEggs )
+```
+
+
+### Example: simulating a call centre
+
+Suppose a call centre receives calls throughout the day.
 Three quantities are of interest to management:
 
 - The *number of calls*\ $C$ arriving in a one-hour period, modelled as $C \sim \text{Poisson}(\lambda = 12)$.
 - Whether each call is *resolved* on the first attempt, modelled as $\text{Bernoulli}(p = 0.7)$.
-  Thus, the *number of calls resolved* in an hour is $R \sim \text{Bin}(C, 0.7)$, but since\ $C$ is random, this is not a simple binomial.
+  Thus, the *number of calls resolved* in an hour is $R \sim \text{Bin}(C, 0.7)$, but since\ $C$ is random, this cannot be modelled using a simple binomial distribution.
 - The *number of calls until the first unresolved call*, modelled as $X \sim \text{Geom}(p = 0.7)$.
 
-We simulate $n = 10\,000$ hours of call centre operation:
+To simulate $n = 10\,000$ hours of call centre operation, we can use:
 \index{rpois()@\texttt{rpois()}}\index{rbinom()@\texttt{rbinom()}}\index{rgeom()@\texttt{rgeom()}}
 
 ```{r echo=FALSE}
 set.seed(55301)
 ```
 ```{r}
-n      <- 10000
+n      <- 10000     # Number of hours of simulation
 lambda <- 12
 p_res  <- 0.7
 
@@ -1716,21 +1753,21 @@ n_resolved <- rbinom(n, size = n_calls, prob = p_res)
 first_fail <- rgeom(n, prob = 1 - p_res)
 ```
 
-The simulated summaries canbe compared to theoretical values:
+The simulated summaries can be compared to theoretical values:\index{cat()@\texttt{cat()}}\index{round()@\texttt{round()}}
 
 ```{r}
-cat("--- Number of calls ---\n")
-cat("Theoretical mean:    ", lambda, "\n")
-cat("Simulated mean:      ", round(mean(n_calls), 2), "\n\n")
+cat("--- Number of calls ---\n",
+    "Theoretical mean:    ", lambda, "\n",
+    "Simulated mean:      ", round(mean(n_calls), 2), "\n\n")
 
-cat("--- First unresolved call ---\n")
-cat("Theoretical mean:    ", (1 - p_res) / p_res, "\n")
+cat("--- First unresolved call ---\n",
+    "Theoretical mean:    ", (1 - p_res) / p_res, "\n")
 
 
-cat("Simulated mean:      ", round(mean(first_fail), 2), "\n\n")
-cat("--- Resolved calls per hour ---\n")
-cat("Simulated mean:      ", round(mean(n_resolved), 2), "\n")
-cat("Simulated variance:  ", round(var(n_resolved), 2), "\n")
+cat("Simulated mean:      ", round(mean(first_fail), 2), "\n",
+    "--- Resolved calls per hour ---\n",
+    "Simulated mean:      ", round(mean(n_resolved), 2), "\n",
+    "Simulated variance:  ", round(var(n_resolved), 2), "\n")
 ```
 
 
@@ -1739,10 +1776,11 @@ This can be answered both analytically and via simulation:
 \index{ppois()@\texttt{ppois()}}
 
 ```{r}
-cat("Theoretical P(C > 15):", 
-    round(1 - ppois(15, lambda = lambda), 3), "\n")
-cat("Simulated P(C > 15):  ", 
-    round(mean(n_calls > 15), 3), "\n")
+###   Theoretical P(C > 15): 
+round(1 - ppois(15, lambda = lambda), 3)
+
+###   Simulated P(C > 15):
+round(mean(n_calls > 15), 3)
 ```
 
 A measure of efficiency is the proportion of hours have zero unresolved calls.
@@ -1750,13 +1788,14 @@ The number of unresolved calls per hour is $C - R$; an hour has zero unresolved 
 
 ```{r}
 n_unresolved <- n_calls - n_resolved
-cat("Simulated P(no unresolved calls):", 
-    round(mean(n_unresolved == 0), 3), "\n")
+
+###   Simulated P(no unresolved calls):
+round(mean(n_unresolved == 0), 3)
 ```
 
 
 We may also be interested in the probability of $3$\ or more consecutive unresolved calls in a sequence of $20$\ calls.
-Analytically this requires inclusion-exclusion over many cases; simulation is far more straightforward using `rle()`:
+Analytically this requires inclusion-exclusion over many cases; simulation is far more straightforward using `rle()`\index{rle()@\texttt{rle()}} (which compute the lengths of runs of equal values in a vector):
 
 ```{r}
 streak3 <- replicate(n, {
@@ -1766,23 +1805,25 @@ streak3 <- replicate(n, {
   unres    <- 1 - resolved
   any(rle(unres)$lengths[rle(unres)$values == 1] >= 3)
 })
-cat("P(3+ consecutive unresolved in 20 calls):",
-    round(mean(streak3), 3), "\n")
+
+###   "P(3+ consecutive unresolved in 20 calls):
+round(mean(streak3), 3)
 ```
 
-
 Suppose we also seek the probability that total handling time in an hour exceeds $60\mins$.
-Suppose each resolved call takes $H \sim \text{Geom}(p = 0.5)$ minutes to handle.
-The total handling time depends on both the random number of resolved calls and their random handling times, and this compound randomness makes an analytic answer intractable:
+Suppose each resolved call takes $H \sim \text{Geom}(p = 0.5)$ minutes to handle; then, the total handling time depends on both the random number of resolved calls and their random handling times.
+This compound randomness makes an analytic answer intractable:
 
 ```{r}
 total_time <- sapply(n_resolved, function(r) {
   if (r == 0) 0 else sum(rgeom(r, prob = 0.5))
 })
-cat("P(total handling time > 60 min):",
-    round(mean(total_time > 60), 3), "\n")
-cat("Mean total handling time (min): ",
-    round(mean(total_time), 2), "\n")
+
+###   P(total handling time > 60 min):
+round(mean(total_time > 60), 3)
+
+### Mean total handling time (min):
+round(mean(total_time), 2)
 ```
 
 Finally, what is the probability that at least one hour in an $8$-hour shift has more than $20$\ calls?
@@ -1792,13 +1833,16 @@ This can also be answered analytically.
 busy_day <- replicate(n, {
   any(rpois(8, lambda = lambda) > 20)
 })
-cat("Simulated probability:  ", round(mean(busy_day), 3), "\n")
-cat("Theoretical probability:", 
-    round(1 - ppois(20, lambda = lambda)^8, 3), "\n")
+
+###   "Simulated probability:
+round(mean(busy_day), 3)
+
+### Theoretical probability:
+round(1 - ppois(20, lambda = lambda)^8, 3)
 ```
 
 
-```{r echo=FALSE, fig.cap="XXXXXX"}
+```{r echo=FALSE, fig.cap="Plots from the call-center modelling. Left: the number of calls per hours. Right: the handling time per hour.", out.width='100%', fig.width=8, fig.align="center" }
 par(mfrow = c(1, 2))
 barplot(table(n_calls) / n,
         main   = "Calls per hour",
