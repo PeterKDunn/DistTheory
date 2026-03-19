@@ -2010,68 +2010,7 @@ The *$F$-distribution*\index{F-distribution@$F$-distribution} (Sect.\ \@ref(FDis
 ## Simulation {#SimulationContinuous}
 
 
-## Relationships between distributions
-
-As seen before (Sect.\ \@ref(RVsStatisticalComputing)), many statistical distributions are generated from existing distributions.
-These relationships can be shown using computer simulation.
-
-As an example, the gamma distribution\index{Gamma distribution} is related to the exponential distribution.\index{Exponential distribution}
-If a random variable\ $Y$ has an exponential distribution with rate parameter $\lambda$, then the distribution of
-$$
-  X = \sum_{i = 1}^k Y
-$$
-has a gamma distribution, with shape parameter $\alpha = k$ and rate parameter $\lambda$.
-This can be shown using simulation (Fig.\ \@ref(fig:GammaExpSimFig)):
-
-
-```{r GammaExpSim, fig.show='hide'}
-set.seed(67433)
-
-### An exponential variate with  rate = 2 
-Y <- rexp(n = 5000,
-          rate = 2)
-X <- matrix( data = Y,
-             ncol = 5, # Place 5 values in each of 1000 rows
-             nrow = 1000)
-X <- rowSums(X) # Sum five values in each row
-
-### Set up for two plots, side-by-side
-par(mfrow = c(1, 2) )
-
-### Plot two histograms: Y and X
-hist(Y,
-     freq = FALSE,
-     las = 1,
-     main = "Exponential density",
-     xlab = expression(italic(y) ),
-     ylab = "Density")
-hist(X,
-     freq = FALSE,
-     las = 1,
-     main = "Gamma density",
-     xlab = expression(italic(x) ),
-     ylab = "Density")
-
-### Now plot the theoretical gamma distribution
-# Use these values of X:
-x_Plot <- seq(0, 10,
-              length = 100)
-# Add lines to the histogram of chi-square random values
-lines( dgamma(x_Plot, shape = 5, rate = 2) ~ x_Plot,
-       type = "l",
-       lwd = 3)
-# dgamma()  is the density function for a gamma distribution
-```
-
-
-```{r GammaExpSimFig, fig.cap="Left: histogram of $5000$ simulated values from an exponential distribution. Right: histogram of the sum of five independent exponential distributions. The solid lines on the right panel is the theoretical distribution of a gamma distribution with a shape parameter of\\ $5$.",  out.width="100%", fig.align='centre', echo=FALSE, fig.width=10}
-<<GammaExpSim>>
-```
-
-
-
-
-### Examples
+### Simulating continuous distributions {#ContinuousSimulation}
 
 As with discrete distributions (Sect. \@ref(SimulationDiscrete)), simulation can be used with continuous distributions.
 Again, in **R**, random numbers from a specific distribution use functions that start with the letter `r`; for example, to generate random numbers from a normal distribution, use `rnorm()`:\index{rnorm()@\texttt{rnorm()}}
@@ -2086,12 +2025,81 @@ rnorm(3, # Generate three random numbers...
       sd = 2)       # ... with sd = 2
 ```
 
+
+Random numbers from discrete and continuous distributions can be used together to model and understand many phenomena.
+
+
+### Example: relationships between distributions {#ContinuousSimulationRships}
+
+Relationships commonly exist between distributions.
+For example, the gamma distribution\index{Gamma distribution} is related to the exponential distribution.\index{Exponential distribution}
+If a random variable\ $X$ has an exponential distribution with rate parameter $\lambda$, then the distribution of
+$$
+  Y = \sum_{i = 1}^k X
+$$
+has a gamma distribution, with shape parameter $\alpha = k$ and rate parameter $\lambda$.
+This can be shown using simulation (Fig.\ \@ref(fig:GammaExpSimFig)):
+
+```{echo=FALSE}
+set.seed(67433)
+```
+```{r GammaExpSim, fig.show='hide'}
+
+### An exponential variate with  rate = 2 
+X <- rexp(n = 5000,
+          rate = 3)
+Y <- matrix( data = X,
+             ncol = 5, # Place 5 values in each of 1000 rows
+             nrow = 1000)
+Y <- rowSums(Y) # Sum five values in each row
+```
+
+Histograms of\ $X$ and\ $Y$ 
+```{r}
+### Set up for two plots, side-by-side
+par(mfrow = c(1, 2) )
+
+### Plot two histograms: Y and X
+hist(X,
+     freq = FALSE,
+     las = 1,
+     main = "Exponential density",
+     xlab = expression(italic(x) ),
+     ylab = "Density")
+hist(Y,
+     freq = FALSE,
+     las = 1,
+     ylim = c(0, 0.6),
+     main = "Gamma density",
+     xlab = expression(italic(y) ),
+     ylab = "Density")
+
+### Now overlay  the theoretical gamma distribution
+# dgamma()  is the density function for a gamma distribution
+curve(dgamma(x, shape = 5, rate = 3), 
+      from = 0, 
+      to = 10, 
+      lwd = 3,    # Thicker lines
+      add = TRUE) # Add to existing plot
+
+```
+
+
+```{r GammaExpSimFig, fig.cap="Left: histogram of $5000$ simulated values from an exponential distribution. Right: histogram of the sum of five independent exponential distributions. The solid lines on the right panel is the theoretical distribution of a gamma distribution with a shape parameter of\\ $5$.",  out.width="100%", fig.align='centre', echo=FALSE, fig.width=10}
+<<GammaExpSim>>
+```
+
+
+### Example: heights {#ContinuousSimulationHts}
+
 Suppose we are seeking women over $173\cms$ tall for a study; what percentage of women are over $173\cms$ tall?
 Assume that adult females have heights modelled by a normal distribution with mean $163\cms$ and a standard deviation of\ $5\cms$ [@data:ABS1995:MeasureUp].
 The percentage taller than $173\cms$ is:\index{pnorm()@\texttt{pnorm()}}
 
 ```{r}
-1 - pnorm(173, mean = 163, sd = 5)
+1 - pnorm(173, 
+          mean = 163, 
+          sd = 5)
 ```
 
 Simulations can also be used, which allows us to consider more complex situations.
@@ -2111,7 +2119,7 @@ cat("Percentage 'tall' women:", pcTallWomen, '%\n')
 ```
 
 Now consider a more complex situation.
-Suppose adult males have heights with a mean of\ $175\cms$ with standard deviation of\ $7\cms$, and constitute $44$% of the population.
+Suppose adult males have heights with a mean of\ $175\cms$ with standard deviation of\ $7\cms$, and constitute $46$% of the population.
 Now, we are seeking women *or* men over $173\cms$ tall (Fig.\ \@ref(fig:HeightSimHistograms), right panel):\index{rbinom()@\texttt{rbinom()}}\index{sum()@\texttt{sum()}}\index{var()@\texttt{var()}}
 
 
@@ -2122,7 +2130,7 @@ set.seed(107423)
 ```{r echo=TRUE}
 personSex <- rbinom(1000,  # Select sex of each person
                     1,
-                    0.44) # So 0 = Female; 1 = Male
+                    0.46) # So 0 = Female; 1 = Male
 
 htP <- rnorm(1000,  # change ht parameters according to sex
              mean = ifelse(personSex == 1,
@@ -2135,12 +2143,11 @@ htP <- rnorm(1000,  # change ht parameters according to sex
 pcTallPeople <- sum( htP > 173 )/1000 * 100
 pcFemales <- sum( personSex == 0 ) / 1000 * 100
 
-cat("Percentage 'tall' people:", pcTallPeople, '%\n\n')
-cat("Percentage females:", pcFemales, '%\n\n')
-cat("Percentage of 'tall' people that are female:", 
-    round( sum(htP > 173 & personSex == 0) / sum(htP > 173) * 100, 1),
-    '%\n\n')
-cat("Variance of heights: ", var(htP), "\n")
+cat("Percentage 'tall' people:", pcTallPeople, "\n",
+    "Percentage females:", pcFemales, "\n",
+    "Percentage of 'tall' people that are female:", 
+       round( sum(htP > 173 & personSex == 0) / sum(htP > 173) * 100, 1), "\n",
+    "Variance of heights: ", var(htP), "\n")
 ```
 
 ```{r HeightSimHistograms, echo=FALSE, fig.width=6.5, out.width='90%', fig.height = 3.5, fig.cap="The distribution of heights of women (left panel) and men and women combined (right panel)."}
@@ -2192,39 +2199,39 @@ readmit   <- rbinom(n,
 The simulated summaries can be compared to their theoretical values:
 
 ```{r}
-cat("--- Recovery time ---\n")
-cat("Theoretical mean:    ", 5, "\n")
-cat("Simulated mean:      ", round(mean(recovery), 2), "\n\n")
+cat("--- Recovery time ---\n",
+    "Theoretical mean:    ", 5, "\n",
+    "Simulated mean:      ", round(mean(recovery), 2), "\n\n")
 
-cat("--- Pain score ---\n")
-cat("Theoretical mean:    ", round(2/(2 + 4) * 10, 2), "\n")
-cat("Simulated mean:      ", round(mean(pain), 2), "\n")
-cat("Simulated sd:        ", round(sd(pain), 2), "\n\n")
+cat("--- Pain score ---\n",
+    "Theoretical mean:    ", round(2/(2 + 4) * 10, 2), "\n",
+    "Simulated mean:      ", round(mean(pain), 2), "\n",
+    "Simulated sd:        ", round(sd(pain), 2), "\n")
 
-cat("--- Readmission ---\n")
-cat("Theoretical rate:    ", 0.15, "\n")
-cat("Simulated rate:      ", round(mean(readmit), 3), "\n")
+cat("--- Readmission ---\n",
+    "Theoretical rate:    ", 0.15, "\n",
+    "Simulated rate:      ", round(mean(readmit), 3), "\n\n")
 ```
 
-Now consider some more complex questions that would be difficult to answer analytically.
-For example: What proportion of patients have a recovery time exceeding $7$ days?
+What proportion of patients have a recovery time exceeding $7$\ days?
 We can answer this both analytically and via simulation:
 \index{pexp()@\texttt{pexp()}}
 
 ```{r}
 cat("Theoretical P(T > 7):", 
-    round(1 - pexp(7, rate = 1/5), 3), "\n")
-cat("Simulated P(T > 7):  ", 
+    round(1 - pexp(7, rate = 1/5), 3), "\n",
+    "Simulated P(T > 7):  ", 
     round(mean(recovery > 7), 3), "\n")
 ```
 
-We may also be interested in the mean recovery time for patients who are readmitted.
+Now consider some complex questions that would be difficult to answer analytically.
+Suppose we are interested in the mean recovery time for patients who are readmitted.
 This is a conditional expectation, and is straightforward to estimate from simulation:
 
 ```{r}
 cat("Mean recovery time, readmitted patients:    ",
-    round(mean(recovery[readmit == 1]), 2), "\n")
-cat("Mean recovery time, non-readmitted patients:",
+    round(mean(recovery[readmit == 1]), 2), "\n",
+    "Mean recovery time, non-readmitted patients:",
     round(mean(recovery[readmit == 0]), 2), "\n")
 ```
 
@@ -2268,7 +2275,7 @@ curve(dbeta(x/10, shape1 = 2, shape2 = 4) / 10,
 ```
 
 
-We may also wish to know the mean recovery time given high pain AND readmission, $\operatorname{E}[T\mid P > 6, \text{readmitted}]$.
+We may also wish to know the mean recovery time given high pain *and* readmission, $\operatorname{E}[T\mid P > 6, \text{readmitted}]$.
 Conditioning on two things simultaneously is analytically messy but trivial in simulation:
 
 ```{r}
@@ -2284,9 +2291,9 @@ total_beds <- replicate(n_wards, {
   sum(rexp(10, rate = 1/5))
 })
 cat("P(total bed-days > 70):",
-    round(mean(total_beds > 70), 3), "\n")
-# Analytically: total ~ Gamma(10, 5), so verify:
-cat("Theoretical P(total > 70):",
+    round(mean(total_beds > 70), 3), "\n",
+    # Analytically: total ~ Gamma(10, 5), so verify:
+    "Theoretical P(total > 70):",
     round(1 - pgamma(70, shape = 10, scale = 5), 3), "\n")
 ```
 
