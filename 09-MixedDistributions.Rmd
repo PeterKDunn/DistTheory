@@ -386,7 +386,7 @@ points(x = 0, # Included
 A compound Poisson--gamma model generates the point mass at zero through a physically-motivated compound process. 
 The model assumes that events occur according to a Poisson process, and each event contributes an independent gamma-distributed amount to the total.
 The observed variable\ $Y$ is the sum of all the independent contributions. 
-A compound Poisson--gamma distributions, therefore, is a Poisson sum of independent gamma distributions.
+A compound Poisson--gamma distribution, therefore, is a Poisson sum of independent gamma distributions.
 
 When the Poisson count is zero (i.e., when no events occur), the total is exactly zero, naturally producing the point mass without any separate modelling of zeros. 
 When at least one event occurs, the sum of gamma random variables gives a continuous positive value. 
@@ -403,9 +403,9 @@ $$
   \Pr(N = 0) = \exp(-\lambda)
 $$
 is the probability that zero events are observed (i.e., $N = 0$).
-If, however, $N > 0$, then for each $i = 1, 2, \dots, N$, a continuous random variable\ $Y_i$ is observed that follows a gamma distribution,\index{Poisson distribution} such that
+If, however, $N > 0$, then for each $i = 1, 2, \dots, N$, a continuous random variable\ $Y_i$ is observed that follows a gamma distribution,\index{Gamma distribution} such that
 $$
-   Y_i \sim \text{Gamma}(\alpha_i, \beta).
+   Y_i \sim \text{Gamma}(\alpha, \beta).
 $$
 If $N = 0$, then no events $Y_i$ are observed at all; however, if $N > 0$ then\ $N$ events are observed and
 $$
@@ -421,10 +421,10 @@ $$
   \end{cases}
 $$
 By this definition $X$ has a *compound Poisson--gamma distribution* (which are special cases of Tweedie distributions\index{Tweedie distribution}).
-The distribution of\ $X$ has a probability mass at $X = 0$ where $\Pr(Y = 0) = \Pr(N = 0) = \exp(-\lambda)$.
+The distribution of\ $X$ has a probability mass at $X = 0$ where $\Pr(X = 0) = \Pr(N = 0) = \exp(-\lambda)$.
 
 
-:::{.definition name="Compound Poisson--gamma distribution"}
+:::{.definition #CPGDefinitionMGF name="Compound Poisson--gamma distribution"}
 A random variable\ $X$ has a *compound Poisson--gamma distribution* if its MGF is
 $$
   M_X(t)
@@ -433,7 +433,7 @@ $$
 $$
 where $\lambda > 0$, $\alpha > 0$ and $\beta > 0$. 
 We write $X\sim \text{CPG}(\lambda, \alpha, \beta)$.
-The support is $\{0\}\cup (0, \infty)$
+The support is $\{0\}\cup (0, \infty)$.
 :::
 
 
@@ -560,29 +560,40 @@ legend("topright",
 
 ### Properties
 
-The following are the basic properties of the zero-modified distributions.
+The following are the basic properties of compound Poisson--gamma distributions.
 
-:::{.theorem #CPGProperties name="Exponential distribution properties"}
-If $X\sim\text{ZM}(p)$ then, $\mu_c$ denotes $\operatorname{E}[X\mid X > 0]$ (the expected value of the conditional distribution defined for $X > 0$) and $\sigma^2_c = \operatorname{var}[X \mid X > 0]$,
+:::{.theorem #CPGProperties name="Compound Poisson--gamma distribution properties"}
+If $X\sim\text{CPG}(\lambda, \alpha, \beta)$ then:
  
-1. $\operatorname{E}[X] = (1 - p)\mu_c$.
-2. $\operatorname{var}[X] = (1 - p) \sigma^2_c + p(1 - p)\mu_c^2$.
-3. $M_X(t) = p + (1 - p)\cdot M_{X\mid X > 0}(t)$, where $M_{X_c}(t)$ is the MGF of the conditional distribution $X\mid X > 0$.
+1. $\operatorname{E}[X] = \lambda\alpha\beta$.
+2. $\operatorname{var}[X] = \lambda\alpha\beta^2(1 + \alpha)$.
+3. The MGF is given in Def.\ \@ref(def:CPGDefinitionMGF).
+4. $\operatorname{E}[X\mid X > 0] = \lambda\alpha\beta/(1 - \exp(-\lambda))$.
+
+::::{.proof}
+The proofs rely on the Laws of total expectation and variance (Sect.\ \@ref(TotalExpectation)). 
+The proof for the expected value appears in Example\ \@ref(exm:LawTotalExpectationCPG).
+The proof for the variance appears in Example\ \@ref(exm:LawTotalVarianceCPG).
+
+The proof of the MGF ix given below.
+The proof of $\operatorname{E}[X\mid X > 0]$ is Exercise\ \@ref(exr:CGFConditionMean).
+::::
 :::
+
 
 The probability functions for the compound Poisson--gamma distribution *cannot be written in closed form*.
 However, the probability function can be expressed as an infinite sum [@dunn2005series] or by inverting the MGF [@mypapers:Dunn:fourier],\index{Moment generating function} following the ideas in Sect.\ \@ref(DistributionFromMGF).
 Likewise, the distribution function has no closed form and must be evaluated using numerical methods [@mypapers:Dunn:DF].
 
 The probability function as an infinite series can be determined from the development of the compound Poisson--gamma distribution above.
-If $N = 1$ with $\Pr(N = 1)$ (from the Poisson distribution), then, $X = Y$ has the $\text{Gamma}(\alpha, \beta)$ distribution.
+If $N = 1$, which occurs with $\Pr(N = 1) = \exp(-\lambda)$ (from the Poisson distribution), then, $X = Y$ has the $\text{Gamma}(\alpha, \beta)$ distribution.
 That is,
 $$
   f_{X\mid N = 1}(x) 
   = \frac{1}{\Gamma(\alpha)\,\beta^{\alpha}} x^{\alpha -1}\exp(-x/\beta) \quad \text{for $x > 0$}.
 $$
 
-If $N = 2$ with $\Pr(N = 2)$ (from the Poisson distribution), then, $X = Y_1 + Y_2$, where $Y_i \sim\text{Gamma}(\alpha, \beta)$ for $i = 1, 2$.
+If $N = 2$, then, $X = Y_1 + Y_2$, where $Y_i \sim\text{Gamma}(\alpha, \beta)$ for $i = 1, 2$.
 This means that $X \sim \text{Gamma}(2\alpha, \beta)$ (Exercise\ \@ref(exr:GammaSum); Sect.\ \@ref(GammaProperties)).
 That is, 
 $$
@@ -590,13 +601,13 @@ $$
   = \frac{1}{\Gamma(2\alpha)\,\beta^{2\alpha}} x^{2\alpha -1}\exp(-x/\beta) \quad \text{for $x > 0$}.
 $$
 
-More generally, if $N = n$ with $\Pr(N = n)$ (from the Poisson distribution), then, $X = Y_1 + Y_2+\cdots + Y_n$, and so $X \sim\text{Gamma}(n\alpha, \beta)$, so that
+More generally, if $N = n$, then $X = Y_1 + Y_2 + \cdots + Y_n$, and so $X \sim\text{Gamma}(n\alpha, \beta)$, so that
 $$
   f_{X\mid N = n} (x) 
   = \frac{1}{\Gamma(n\alpha)\, \beta^{n\alpha}} x^{n\alpha -1}\exp(-x/\beta) \quad \text{for $x > 0$}.
 $$
 
-Then, using the *Law of total probability* (Theorem\ \@ref(thm:TotalProb)),
+Then, conditioning on the value of\ $N$,
 \begin{align*}
   f_X(x)
   &= \sum_{n = 1}^\infty \Pr(N = n) \cdot f_{X\mid N = n}(x)\\
@@ -639,7 +650,7 @@ From the MGF we can deduce
   \operatorname{E}[X] 
   &= \lambda\alpha\beta\\
   \operatorname{var}[X]
-  &= \lambda\alpha(\alpha + 1)\beta^2.
+  &= \lambda\alpha\beta^2(\alpha + 1).
 \end{align*}
 
 
@@ -756,7 +767,7 @@ The zero (no-claim day) and positive values are structurally different; a no-cla
 
 ## Simulation {#MixedVariablesSimulation}
 
-### Simulating mixed distributions {#ContinuousSimulation}
+### Simulating mixed distributions {#MixedSimulation}
 
 Simulating mixed distribution is usually more involved than sampling for discrete and continuous distributions, as functions for generating random numbers are not always easily available for mixed distributions.
 However, an understanding of the process behind the mixed random variable can be used to generate random numbers.
@@ -769,7 +780,7 @@ set.seed(107283)
 ```{r echo=TRUE}
 n <- 10                             # How many random numbers to generate
 is_zero <- rbinom(n,                # Generate three random numbers...
-                  size = 1,         # ... from 0 ad 1 (i.e., Bernoulli)....
+                  size = 1,         # ... from 0 and 1 (i.e., Bernoulli)....
                   prob = 0.3)       # ... with prob = 0.3
 is_zero
 where_zero <- (is_zero == 0)       # Where the zeros are in the vector 
@@ -782,15 +793,15 @@ n_pos <- sum(where_pos)            # How many values are non-zero?
 cont_values <- rexp(n_pos,         # For each non-zero value use rexp()...
                     rate = 5)      # ... with rate = 5
 
-###   Now combine zeros and poisitive values
+###   Now combine zeros and positive values
 rnos <- numeric(n)                 # Create a vector to hold all random numbers
-rnos[where_pos] <- cont_values     # Place continuous vaklues where ones occur
+rnos[where_pos] <- cont_values     # Place continuous values where ones occur
 rnos[where_zero] <- 0              # Please zeros where zeros occur
 
 rnos
 ```
 
-If the random numbers is used frequently, a function can be written:\index{function()@\texttt{function()}}
+If the random numbers are used frequently, using a function is easier:\index{function()@\texttt{rbinom()}}\index{function()@\texttt{rbinom()}}\index{numeric()@\texttt{numeric()}}
 
 ```{r echo=FALSE}
 set.seed(88641)
@@ -798,7 +809,7 @@ set.seed(88641)
 
 ```{r}
 rzm_exp <- function(n, lambda, p0) {
-  is_zero <- rbinom(n,            # Gneerate n Bernoulli random numbers
+  is_zero <- rbinom(n,            # Generate n Bernoulli random numbers
                     size = 1,     # size = 1 ensure Bernoulli random numbers
                     prob = p0)    # Use the given probability
   n_exp <- sum(!is_zero)          # This counts how many random numbers are not-zero
@@ -811,10 +822,28 @@ rzm_exp <- function(n, lambda, p0) {
 rzm_exp(10, lambda = 5, p0 = 0.3)
 ```
 
-Clearly, the function needs to be adapted for other zero-modified distributions.
+Clearly, the function needs to be adapted for other zero-modified distributions (i.e., by using `rgamma()` or `rlnorm()` in place of `rexp()`).
+For example:
+
+```{r}
+rzm_gamma <- function(n, shape, scale, p0) {
+  is_zero <- rbinom(n,            # Generate n Bernoulli random numbers
+                    size = 1,     # size = 1 ensure Bernoulli random numbers
+                    prob = p0)    # Use the given probability
+  n_gm <- sum(!is_zero)           # This counts how many random numbers are not-zero
+  out <- numeric(n)               # Prepare a vector to hold the random numbers
+  out[!is_zero] <- rgamma(n_gm,   # For each non-zero value, generate using rgamma()
+                          shape = shape, 
+                          scale = scale)
+  out                             
+}
+
+rzm_gamma(10, shape = 2, scale = 1.5, p0 = 0.3)
+```
+
 
 Similarly, random numbers from a compound Poisson--gamma distribution can be generated by understanding the process.
-This time, we write a function straight away:
+This time, we write a function directly:\index{rpois()@\texttt{rpois()}}\index{rgamma()@\texttt{rgamma()}}
 
 ```{r echo=FALSE}
 set.seed(88641)
@@ -836,11 +865,11 @@ rcpg_first <- function(n, lambda, alpha, beta) {
 rcpg_first(10, lambda = 1, alpha = 1.25, beta = 5)
 ```
 
-The function can be made more efficient (especially for generating a large number of compound Poisson--gamma random numbers) using that the sum of\ $k$ independent $\text{Gamma}(\alpha, \beta$) distribution  is a $\text{Gamma}(k\alpha, \beta)$ distribution (XREF):
+The function can be made more efficient (especially for generating a large number of compound Poisson--gamma random numbers) using that the sum of\ $k$ independent $\text{Gamma}(\alpha, \beta$) distribution  is a $\text{Gamma}(k\alpha, \beta)$ distribution (Example\ \@ref(exm:Gamma)):\index{rgamma()@\texttt{rgamma()}}\index{rpois()@\texttt{rpois()}}
 
 ```{r}
 rcpg <- function(n, lambda, alpha, beta) {
-  N <- rpois(n,                       # For each n, N is how many events occur...
+  N <- rpois(n,                       # For each sim n, N is how many events occur...
              lambda = lambda)         # ... based on the Poisson mean (lambda)
   out <- numeric(n)                   # Prepare a vector to hold the random numbers
   pos <- N > 0                        # pos is TRUE if N is larger than zero
@@ -853,19 +882,7 @@ rcpg(10, lambda = 1, alpha = 1.25, beta = 5)
 
 ```
 
-
-### General
-
-A *zero-modified distribution* could be used to model daily rainfall (e.g., @stern1984model), using a Bernoulli distribution to distinguish wet and dry days, and then a gamma distribution to model rainfall amounts on wet days.
-
- Fig.\ \@ref(fig:ZeroModifiedSim)
-...
-
-
-A compound Poisson--gamma model could also be used to model daily rainfall (e.g., @yunus2017modelling).
-
-
-
+<!-- 
 
 ```{r ZeroModifiedSim, echo=FALSE, fig.align="center", fig.cap="A simulation of the zero-modified model. FIX!!!!! The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4, out.width="90%"}
 num_Sims <- 1000
@@ -914,10 +931,6 @@ points(x = 0,
   
 ```
 
-
-:::{.example #SimulationPGmodels name="Simulations for compound Poisson--gamma models"}
-Compound P--G; see Fig.\ \@ref(fig:PoissonGammaSim)
-:::
 
 
 ```{r PoissonGammaSim, echo=FALSE, fig.align="center", fig.cap="A simulation of the compound Poisson--gamma models, both with mean and variance set to $1$. The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4, out.width="90%"}
@@ -970,20 +983,23 @@ points(x = 0,
   
 ```
 
+-->
 
 
 
+### Example: rainfall {#MixedSimulationRainfall}
 
-### Rainfall
+Consider modelling monthly rainfall at a certain location for one specific month each year. 
+Monthly rainfall is a mixed random variable: some months record exactly zero rainfall, while months in which rain falls have a continuous positive amount of rain recorded.
+Both zero-modified models (e.g., @stern1984model) and compound Poisson--gamma distributions (e.g., @yunus2017modelling) can be used to model rainfall.
 
-Simulation for the zero-modified and compound Poisson--gamma distributions can be achieved by directly modelling the process by which the zeros are incorporated. 
-To demonstrate, consider modelling monthly rainfall at a certain location for one specific month each year. 
-Monthly rainfall is a mixed random variable: some months record exactly zero rainfall, while months in which rain falls have a continuous positive amount recorded.
+Suppose the monthly rainfall (in mm)\ $R$ is modelled at a given location for a certain month, where about $20$% of months record zero rainfall; then $\Pr(R = 0) = 0.20$.
+In addition, suppose the mean monthly rainfall when rain is recorded is $\mu^+ = 10\mms$.
 
-Suppose the monthly rainfall (in mm)\ $R$ is modelled at a given location for a certain month, where about $20$% of months record zero rainfall; then. $0\Pr(R = 0) = 0.20$, and the mean monthly rainfall when rain is recorded is $\mu^+ = 10\,mms$.
+<!--   Zero-modified    --->
 
-For the *zero-modified distribution*, set $p 0.20$ for the probability of no rainfall; then, the probability that rain is recorded is $1 - p = 0.80$. 
-For the positive component, suppose first that rainfall amounts follow an exponential distribution with rate $\lambda$.
+For the *zero-modified distribution*, set $p = 0.20$ for the probability of no rainfall; then, the probability that rain is recorded is $1 - p = 0.80$. 
+For the positive rainfall component, suppose first that rainfall amounts follow an exponential distribution with rate $\lambda$.
 Since $\operatorname{E}[R \mid R > 0] = 1/\lambda = 10$, we have $\lambda = 0.1$. 
 The zero-modified model is then (Fig.\ \@ref(fig:ZMExpRain)):
 $$
@@ -994,60 +1010,83 @@ $$
     0.80 \times 0.1\, \exp(-0.1r)     & \text{for $r > 0$}.
   \end{cases}
 $$
-The exponential distribution is a convenient starting point but imposes a monotonically decreasing density on the positive part, which may be unrealistic; observed rainfall amounts often show a mode above zero. 
-A gamma distribution for the positive part is more flexible, allowing a range of shapes, and is generally preferred in practice.
 
-
-```{r ZMExpRain, echo=FALSE, out.width='60%', fig.width=6, fig.align="center", fig.cap="The probability function for rainfall, for a zero-modified exponential distribution."}
+```{r RainSeed, iecho=FALSE}
 set.seed(76103)
-num_sims <- 1000
+```
 
-pi0    <- 0.20          # P(R = 0)
-p      <- 1 - pi0       # P(R > 0)
-lambda <- 1 / 10        # exponential rate: E[R | R > 0] = 10
+```{r Rain_ZME, echo=TRUE}
+pi0   <- 0.20          # P(R = 0) 
+mu_p  <- 10            # E[R | R > 0] = 10mm 
+num_sims <- 1000       # Number of simulations
 
-R <- numeric(num_sims)
-is_wet <- rbinom(num_sims, 
-                 size = 1, 
-                 prob = p)
+# --- Zero-modified exponential ---
+p        <- 1 - pi0
+lambda   <- 1 / mu_p
 
-for (i in 1:num_sims) {
-  R[i] <- ifelse(is_wet[i] == 0,
-                 0,
-                 rexp(1, 
-                      rate = lambda) )
-}
+Rain_zme <- rzm_exp(num_sims, lambda = 1/mu_p, p0 = p)
 
-pData <- sum(R==0)/length(R)
-hist(R[R > 0],
-     freq  = FALSE,
-     las   = 1,
-     breaks = 30,
-     ylim = c(0, pData),
-     xlim = c(0, 40),
-     main  = "Zero-modified distribution: monthly rainfall",
-     xlab  = expression(Rainfall ~ italic(r) ~ (mm)),
-     ylab  = "Density")
-points(x = 0, 
-       y = pData, 
-       pch = 19)
+
+pData_zme <- mean(Rain_zme == 0)
 ```
 
 
-For the *compound Poisson--gamma model*, monthly rainfall is the aggregate of a random number $N \sim \text{Poisson}(\lambda)$ of independent rainfall events, each contributing a gamma-distributed amount. 
-The zero probability is $\Pr(R = 0) = \exp(-\lambda)$, so matching $\Pr(R = 0) = 0.30$ gives
+```{r echo=TRUE}
+cat("Theoretical P(R = 0):  ", pi0, "\n",
+    "Simulated P(R = 0):    ", round(mean(Rain_zme == 0), 3), "\n\n",
+    "Theoretical E[R]:      ", (1 - pi0) * (1/lambda), "\n",
+    "Simulated E[R]:        ", round(mean(Rain_zme), 3), "\n")
+```
+
+
+The exponential distribution is a convenient starting point, but imposes a monotonically decreasing density on the positive part, which may be unrealistic; observed rainfall amounts often have a mode above zero. 
+A gamma distribution for the positive part is more flexible, allowing a range of shapes, and is generally preferred in practice.
+The mean of a gamma distribution is $\operatorname{E}[R] = \alpha\beta$, so we can set $\alpha = 2$ and $\beta = 2$ so that $\operatorname{E}[R^+] = 10$.
+
+```{r echo=FALSE}
+<<RainSeed>>
+```
+```{r Rain_ZMG, echo=TRUE}
+# --- Zero-modified gamma ---
+shape <- 2 / mu_p #### CHECK THESE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+scale <- 5
+  
+Rain_zmg   <- rzm_gamma(num_sims, 
+                     shape = shape,
+                     scale = scale,
+                     p0 = p)
+
+pData_zmg <- mean(Rain_zmg == 0)
+```
+
+
+```{r echo=TRUE}
+cat("Theoretical P(R = 0):  ", pi0, "\n",
+    "Simulated P(R = 0):    ", round(mean(Rain_zmg == 0), 3), "\n\n",
+    "Theoretical E[R]:      ", (1 - pi0) * (1/lambda), "\n",
+    "Simulated E[R]:        ", round(mean(Rain_zmg), 3), "\n")
+```
+
+
+
+
+<!--   Compound Poisson--gamma    --->
+
+For the *compound Poisson--gamma model*, monthly rainfall is the aggregate of a random number $N \sim \text{Poisson}(\lambda)$ of independent rainfall events, each contributing a gamma-distributed amount (e.g., @yunus2017modelling). 
+The zero probability is $\Pr(R = 0) = \exp(-\lambda)$, so matching $\Pr(R = 0) = 0.20$ gives
 $$
-  \lambda = -\log(0.30) \approx 1.204.
+  \lambda = -\log(0.20) \approx 1.6094.
 $$
 This leaves two free parameters: $\alpha$ and\ $\beta$ of the gamma distribution, and only one remaining condition: $\operatorname{E}[R] = \lambda\alpha/\beta$.
 We therefore fix $\alpha = 2$, which gives a unimodal gamma density for individual rainfall events (a reasonable physical assumption) and solve for\ $\beta$ (Fig.\ \@ref(fig:CPGRain)):
 $$
    \beta 
    = \frac{\lambda\alpha}{\operatorname{E}[R]} 
-   = \frac{1.204 \times 2}{50 \times 0.70} 
-   \approx 0.0687
+   = \frac{1.6094 \times 2}{50 \times 0.70} 
+   \approx 0.09197
 $$
 where $\operatorname{E}[R] = p \times \mu^+ = 0.70 \times 50 = 35\mms$ is the unconditional mean.
+
 
 ```{r CPGRain, echo=FALSE, out.width='60%', fig.width=6, fig.align="center", fig.cap="The probability function for rainfall, for a compound Poisson--gamma model."}
 set.seed(84201)
@@ -1058,21 +1097,18 @@ alpha  <- 2                 # fixed: unimodal gamma for individual events
 mu_R   <- 0.70 * 50         # unconditional mean = 35mm
 beta   <- lambda * alpha / mu_R
 
-N <- rpois(num_sims, lambda = lambda)
-R <- numeric(num_sims)
+Rain_cpg <- rcpg(n = num_sims, 
+                 lambda = lambda, 
+                 alpha = alpha, 
+                 beta = beta) 
+```
 
-for (i in 1:num_sims) {
-  R[i] <- if (N[i] == 0) 0 else sum(rgamma(N[i], shape = alpha, rate = beta))
-}
 
-hist(R[R > 0],
-     freq   = FALSE,
-     las    = 1,
-     breaks = 30,
-     main   = "Compound Poisson--gamma: monthly rainfall",
-     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
-     ylab   = "Density")
-points(x = 0, y = mean(R == 0), pch = 19)
+```{r echo=TRUE}
+cat("Theoretical P(R = 0):  ", pi0, "\n",
+    "Simulated P(R = 0):    ", round(mean(Rain_cpg == 0), 3), "\n\n",
+    "Theoretical E[R]:      ", (1 - pi0) * (1/lambda), "\n",
+    "Simulated E[R]:        ", round(mean(Rain_cpg), 3), "\n")
 ```
 
 Simulated rainfall sequences of this kind are rarely an end in themselves. 
@@ -1082,6 +1118,289 @@ In forestry, rainfall simulations inform fire risk assessments.
 In each case the goal is to propagate uncertainty in rainfall through to uncertainty in a downstream quantity, which is difficult or impossible to do analytically but straightforward via simulation once a model for\ $R$ has been specified and fitted.
 
 
+```{r}
+cat("Estimated drought probability (R < 5mm):\n",
+    "- using ZM-exponential model:",
+    round(mean(Rain_zme < 5), 3), "\n",
+    "- using ZM_Gamma model:",
+    round(mean(Rain_zmg < 5), 3), "\n",
+    "- using CP-G model:",
+    round(mean(Rain_cpg < 5), 3), "\n")
+```
+
+
+
+
+
+
+
+
+```{r ZMExpRain, echo=FALSE, out.width='100%', fig.width=8, fig.align="center", fig.cap="The probability function for rainfall, for a zero-modified exponential distribution, zero-modified gamma distribution, and compound Poisson--gamma distribution. AAAAAAAAAAAAAAAAAAAAAAA"}
+<<RainSeed>>
+
+par( mfrow = c(2, 2))
+
+hist(Rain_zme[Rain_zme > 0],
+     freq  = FALSE,
+     las   = 1,
+     breaks = 30,
+     ylim = c(0, pData_zme),
+     xlim = c(0, 40),
+     main  = "Zero-modified exponential:\nmonthly rainfall",
+     xlab  = expression(Rainfall ~ italic(r) ~ (mm)),
+     ylab  = "Density")
+points(x = 0, 
+       y = pData_zme, 
+       pch = 19)
+
+
+hist(Rain_zmg[Rain_zmg > 0],
+     freq  = FALSE,
+     las   = 1,
+     breaks = 30,
+     ylim = c(0, pData_zmg),
+     xlim = c(0, 40),
+     main  = "Zero-modified gamma:\nmonthly rainfall",
+     xlab  = expression(Rainfall ~ italic(r) ~ (mm)),
+     ylab  = "Density")
+points(x = 0, 
+       y = pData_zmg, 
+       pch = 19)
+
+
+hist(Rain_cpg[Rain_cpg > 0],
+     freq   = FALSE,
+     las    = 1,
+     breaks = 30,
+     main   = "Compound Poisson--gamma:\nmonthly rainfall",
+     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
+     ylab   = "Density")
+points(x = 0, 
+       y = mean(Rain_cpg == 0), 
+       pch = 19)
+
+
+par( mfrow = c(1, 1))
+```
+
+
+
+
+```{r fig.cap="XXXXXXXXXXXXXXXXPIUGIUGOUYGOUYGOUYGOUYGOUYG"}
+par(mfrow = c(1, 2))
+
+# --- Shared parameters ---
+
+hist(Rain_zme[Rain_zme > 0],
+     freq   = FALSE,
+     las    = 1,
+     breaks = 30,
+     xlim   = c(0, 50),
+     ylim   = c(0, 0.10),
+     main   = "Zero-modified exponential",
+     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
+     ylab   = "Density")
+points(x = 0, y = pData_zme, pch = 19, cex = 1.5)
+text(x = 2, y = pData_zme + 0.003,
+     labels = paste0("P(R = 0) = ", round(pData_zme, 2)),
+     adj = 0, cex = 0.85)
+
+# --- Compound Poisson--gamma ---
+set.seed(84201)
+lambda_cpg <- -log(pi0)       # matches P(R = 0) = 0.20
+alpha      <- 2               # unimodal gamma for individual events
+mu_R       <- p * mu_p        # unconditional mean = 0.80 * 10 = 8mm
+beta_cpg   <- lambda_cpg * alpha / mu_R
+
+N     <- rpois(num_sims, lambda = lambda_cpg)
+R_cpg <- sapply(N, function(n) {
+  if (n == 0) 0 else sum(rgamma(n, shape = alpha, rate = beta_cpg))
+})
+
+pData_cpg <- mean(R_cpg == 0)
+hist(R_cpg[R_cpg > 0],
+     freq   = FALSE,
+     las    = 1,
+     breaks = 30,
+     xlim   = c(0, 50),
+     ylim   = c(0, 0.10),
+     main   = "Compound Poisson\u2013gamma",
+     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
+     ylab   = "Density")
+points(x = 0, y = pData_cpg, pch = 19, cex = 1.5)
+text(x = 2, y = pData_cpg + 0.003,
+     labels = paste0("P(R = 0) = ", round(pData_cpg, 2)),
+     adj = 0, cex = 0.85)
+
+par(mfrow = c(1, 1))
+```
+
+
+### Example: workplace injury costs {#MixedSimulationInjury}
+
+Workplace injuries impose direct costs on employers through medical treatment, rehabilitation, and lost productivity.
+Some work days have no injuries, and hence zero cost.
+On other days, one or more injuries may occur, generating a positive total cost.
+Daily injury cost is a mixed random variable.
+
+Suppose daily injury costs (in thousands of dollars)\ $C$ are modelled as
+$$
+  f_C(c)
+  =
+  \begin{cases}
+    p                                    & \text{for $c = 0$} \\
+    (1 - p) \cdot f^+_C(c)               & \text{for $c > 0$},
+  \end{cases}
+$$
+where $p = \Pr(C = 0) = 0.70$ (i.e., injury-free days are common) and the positive component $f^+_C(c)$ follows a $\text{Gamma}(\alpha = 2, \beta = 5)$ distribution.
+Hence, the mean cost is \$10\,000 on days when injuries do occur.
+The unconditional mean daily cost is therefore
+$$
+  \operatorname{E}[C] = (1 - p) \cdot \alpha\beta = 0.30 \times 10 = \$3\,000.
+$$
+
+We can simulate $n = 10{,}000$ days of operation:\index{rgamma()@\texttt{rgamma()}}\index{rbinom()@\texttt{rbinom()}}
+```{r echo=FALSE}
+set.seed(30421)
+```
+```{r}
+n_days  <- 10000
+p0      <- 0.70          # P(C = 0): probability of injury-free day
+alpha   <- 2             # Gamma shape
+beta    <- 5             # Gamma scale: E[C | C > 0] = alpha * beta = 10
+
+injury_day <- rbinom(n_days, size = 1, prob = 1 - p0)
+C <- ifelse(injury_day == 0, 0,
+            rgamma(n_days, shape = alpha, scale = beta))
+```
+
+We can verify the simulated properties against their theoretical values:
+```{r}
+theo_mean <- (1 - p0) * alpha * beta
+theo_var  <- (1 - p0) * alpha * beta^2 + p0 * (1 - p0) * (alpha * beta)^2
+
+results <- c(
+  "Theoretical P(C = 0)" = p0,
+  "Simulated P(C = 0)"   = round(mean(C == 0), 3),
+  "Theoretical E[C]"     = theo_mean,
+  "Simulated E[C]"       = round(mean(C), 3),
+  "Theoretical Var[C]"   = round(theo_var, 2),
+  "Simulated Var[C]"     = round(var(C), 2)
+)
+print(results)
+```
+
+The model can be used to find answers to practical questions.
+For example, what is the distribution of daily costs?
+
+```{r InjuryDailyDist, fig.cap="Distribution of daily injury costs. The point shows the probability mass at zero (injury-free days); the histogram shows the distribution of costs on injury days, scaled by $(1-p)$.", out.width='60%', fig.width=6, fig.align='center'}
+pData <- mean(C == 0)
+x_seq <- seq(0.01, max(C), length.out = 500)
+cont_dens <- (1 - p0) * dgamma(x_seq, shape = alpha, scale = beta)
+
+plot(x_seq, cont_dens,
+     type = "l", lwd = 2, col = "steelblue",
+     xlim = c(-1, 60),
+     ylim = c(0, pData * 1.2),
+     las  = 1,
+     main = "Daily injury costs",
+     xlab = "Cost ($000s)",
+     ylab = "Probability / Defective density")
+segments(x0 = 0, y0 = 0, x1 = 0, y1 = pData,
+         lwd = 3, col = "steelblue")
+points(x = 0, y = pData, pch = 19, cex = 2, col = "steelblue")
+text(x = 1, y = pData * 1.08,
+     labels = paste0("P(C = 0) = ", round(pData, 2)),
+     adj = 0, cex = 0.85)
+```
+
+The model also can be used to find answers to questions that are difficult or impossible to answer analytically.
+One question is: what is the distribution of total annual costs?
+
+Annual cost is the sum of 250 daily costs (assuming 250 working days per year).
+The distribution of this sum is analytically intractable; it is a compound distribution mixing a point mass at zero with a continuous component.
+This is straightforward using simulation:
+
+```{r}
+n_sims       <- 10000
+annual_costs <- replicate(n_sims, {
+  days <- rbinom(250, size = 1, prob = 1 - p0)
+  sum(ifelse(days == 0, 0,
+             rgamma(250, shape = alpha, scale = beta)))
+})
+
+cat("Simulated mean annual cost ($000s):  ", 
+    round(mean(annual_costs), 1), "\n",
+    "Theoretical mean annual cost ($000s):", 
+    250 * (1 - p0) * alpha * beta, "\n\n",
+    "Simulated sd annual cost ($000s):    ", 
+    round(sd(annual_costs), 1), "\n")
+```
+
+We could also ask: what premium should an insurer charge to cover annual costs with 95% probability?
+
+The insurer needs the 95th percentile of annual costs.
+Quantile like this are easy to extract from simulations, but analytically intractable:
+
+```{r}
+premium_95 <- quantile(annual_costs, 0.95)
+cat("95th percentile of annual costs ($000s):", 
+    round(premium_95, 1), "\n",
+    "This is", round(premium_95 / mean(annual_costs), 2), 
+    "times the mean annual cost.\n")
+```
+
+
+Suppose the employer holds a monthly reserve of \$50{,}000.
+What is the probability that costs in any single month exceed a fixed reserve?
+
+The probability that monthly costs exceed this reserve is:
+
+```{r}
+n_sims        <- 10000
+monthly_costs <- replicate(n_sims, {
+  days <- rbinom(21, size = 1, prob = 1 - p0)   # ~21 working days per month
+  sum(ifelse(days == 0, 0,
+             rgamma(21, shape = alpha, scale = beta)))
+})
+
+cat("P(monthly costs > $50,000):", 
+    round(mean(monthly_costs > 50), 3), "\n")
+```
+
+How sensitive is the 95th percentile premium to the probability of an injury-free day?
+As $p$ increases (safer workplace), how does the required premium change?
+This sensitivity analysis is immediate via simulation, but otherwise would require re-deriving the entire distribution analytically for each value of $p$:
+
+```{r InjurySensitivity, fig.cap="The 95th percentile of annual costs as a function of the probability of an injury-free day $p$. As the workplace becomes safer (larger $p$), the required premium falls.", out.width='70%', fig.width=6.5, fig.align='center'}
+p_seq    <- seq(0.50, 0.95, by = 0.05)
+pct_95   <- numeric(length(p_seq))
+
+for (j in seq_along(p_seq)) {
+  p_j   <- p_seq[j]
+  costs <- replicate(5000, {
+    days <- rbinom(250, size = 1, prob = 1 - p_j)
+    sum(ifelse(days == 0, 0,
+               rgamma(250, shape = alpha, scale = beta)))
+  })
+  pct_95[j] <- quantile(costs, 0.95)
+}
+
+plot(p_seq, pct_95,
+     type = "b", pch = 19, lwd = 2,
+     col  = "steelblue",
+     las  = 1,
+     xlab = expression("P(injury-free day) " ~ italic(p)),
+     ylab = "95th percentile annual cost ($000s)",
+     main = "Premium sensitivity to workplace safety")
+abline(h = premium_95, lty = 2, col = "gray50")
+text(x    = 0.51, 
+     y    = premium_95 + 2,
+     labels = paste0("Baseline (p = ", p0, ")"),
+     adj  = 0, cex = 0.85, col = "gray40")
+```
+
+These simulations illustrate a key strength of the mixed distribution framework: once a model for\ $C$ has been specified, uncertainty can be propagated through to any downstream quantity of interest (e.g., annual totals, percentiles, reserve adequacy) without requiring any additional analytical derivation.
 
 
 ## Exercises {#MixedDistributionsExercises}
@@ -1295,4 +1614,8 @@ Consider the CPG distribution.
 1. What happens as $\lambda \to \infty$ and $\alpha\to 0$ jointly?
 :::
 
+
+:::{.exercise #CGFConditionMean}
+Prove $\operatorname{E}[X\mid X > 0] = \frac{\lambda\alpha\beta}{1 - \exp(-\lambda)}$ for the compound Poisson--gamma distribution, as given in Theorem\ \@ref(thm:CPGProperties).
+:::
 
