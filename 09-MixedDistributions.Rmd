@@ -218,7 +218,7 @@ points(x = 0, # Included
 
 The following are the basic properties of the zero-modified distributions.
 
-:::{.theorem #ZMProperties name="Exponential distribution properties"}
+:::{.theorem #ZMProperties name="Zero-modified distribution properties"}
 If $X\sim\text{ZM}(p)$ then, $\mu_c$ denotes $\operatorname{E}[X\mid X > 0]$ (the expected value of the conditional distribution defined for $X > 0$) and $\sigma^2_c = \operatorname{var}[X \mid X > 0]$,
  
 1. $\operatorname{E}[X] = (1 - p)\mu_c$.
@@ -229,7 +229,7 @@ If $X\sim\text{ZM}(p)$ then, $\mu_c$ denotes $\operatorname{E}[X\mid X > 0]$ (th
 To compute the expected value of the random variable\ $X$, first separate the discrete and continuous parts of the distribution:
 \begin{align*}
   \operatorname{E}[X] 
-  &= \operatorname{E}[X\mid X = 0]  + \operatorname{E}[X\mid X > 0]\\
+  &= p\cdot \operatorname{E}[X\mid X = 0]  + (1 - p)\cdot \operatorname{E}[X\mid X > 0]\\
   &= (p\times 0)                    + (1 - p) \operatorname{E}[X\mid X > 0]\\
   &= (1 - p) \mu_c,
 \end{align*}
@@ -431,7 +431,7 @@ $$
   =
   \exp\left\{ \lambda \left[ \left( \frac{1}{1 - \beta t}\right)^\alpha - 1\right]\right\} \quad \text{for $t < 1/\beta$}
 $$
-where $\lambda > 0$, $\alpha > 0$ and $\beta > 0$. 
+where $\lambda > 0$, $\alpha > 0$ and $\beta > 0$ is the scale parameter.
 We write $X\sim \text{CPG}(\lambda, \alpha, \beta)$.
 The support is $\{0\}\cup (0, \infty)$.
 :::
@@ -565,18 +565,19 @@ The following are the basic properties of compound Poisson--gamma distributions.
 :::{.theorem #CPGProperties name="Compound Poisson--gamma distribution properties"}
 If $X\sim\text{CPG}(\lambda, \alpha, \beta)$ then:
  
-1. $\operatorname{E}[X] = \lambda\alpha\beta$.
-2. $\operatorname{var}[X] = \lambda\alpha\beta^2(1 + \alpha)$.
+1. The expected value: $\operatorname{E}[X] = \lambda\alpha\beta$.
+2. The variance: $\operatorname{var}[X] = \lambda\alpha\beta^2(\alpha + 1)$.
 3. The MGF is given in Def.\ \@ref(def:CPGDefinitionMGF).
-4. $\operatorname{E}[X\mid X > 0] = \lambda\alpha\beta/(1 - \exp(-\lambda))$.
+4. The conditional mean: $\operatorname{E}[X\mid X > 0] = \lambda\alpha\beta/(1 - \exp(-\lambda))$.
+5. The reproductive property: If $X_1\sim \text{CPG}(\lambda_1, \alpha, \beta)$ and $X_2\sim\text{CPG}(\lambda_2, \alpha, \beta)$ independently, then $X_1 + X_2 \sim\text{CPG}(\lambda_1 + \lambda_2, \alpha, \beta)$.
 
 ::::{.proof}
 The proofs rely on the Laws of total expectation and variance (Sect.\ \@ref(TotalExpectation)). 
 The proof for the expected value appears in Example\ \@ref(exm:LawTotalExpectationCPG).
 The proof for the variance appears in Example\ \@ref(exm:LawTotalVarianceCPG).
-
-The proof of the MGF ix given below.
+The proof of the MGF is given below.
 The proof of $\operatorname{E}[X\mid X > 0]$ is Exercise\ \@ref(exr:CGFConditionMean).
+The proof of the reproductive property is Exercise\ \@ref(exr:MixedCPGReproductive)).
 ::::
 :::
 
@@ -852,12 +853,12 @@ set.seed(88641)
 ```{r}
 rcpg_first <- function(n, lambda, alpha, beta) {
   N <- rpois(n,                       # For each n, N is how many events occur...
-             lambda = lambda)         # ... based on the Piisson mean (lambda)
+             lambda = lambda)         # ... based on the Piosson mean (lambda)
   out <- numeric(n)                   # Prepare a vector to hold the random numbers
   for (i in which(N > 0)) {           # If i is greater than zero...
     out[i] <- sum(rgamma(N[i],        # ... add up that many gamma random numbers
                          shape = alpha, 
-                         rate = beta))
+                         scale = beta))
   }
   out
 }
@@ -875,7 +876,7 @@ rcpg <- function(n, lambda, alpha, beta) {
   pos <- N > 0                        # pos is TRUE if N is larger than zero
   out[pos] <- rgamma(sum(pos),        # Where N>0, generate gamma random numbers 
                      shape = N[pos] * alpha,   # Note: Gamma(k*alpha, beta)
-                     rate = beta)
+                     scale = beta)
   out
 }
 rcpg(10, lambda = 1, alpha = 1.25, beta = 5)
@@ -993,12 +994,12 @@ Consider modelling monthly rainfall at a certain location for one specific month
 Monthly rainfall is a mixed random variable: some months record exactly zero rainfall, while months in which rain falls have a continuous positive amount of rain recorded.
 Both zero-modified models (e.g., @stern1984model) and compound Poisson--gamma distributions (e.g., @yunus2017modelling) can be used to model rainfall.
 
-Suppose the monthly rainfall (in mm)\ $R$ is modelled at a given location for a certain month, where about $20$% of months record zero rainfall; then $\Pr(R = 0) = 0.20$.
-In addition, suppose the mean monthly rainfall when rain is recorded is $\mu^+ = 10\mms$.
+Suppose the monthly rainfall (in mm)\ $R$ is modelled at a given location for a certain month, where about $15$% of months record zero rainfall; then $\Pr(R = 0) = 0.15$.
+In addition, suppose the mean of the monthly rainfall is $\operatorname{E}[R] = \mu = 8.5\mms$, and the variance of the monthly rainfall is  $\operatorname{var}[R] = 56\mms^2$.
 
-<!--   Zero-modified    --->
+<!--   Zero-modified exp    --->
 
-For the *zero-modified distribution*, set $p = 0.20$ for the probability of no rainfall; then, the probability that rain is recorded is $1 - p = 0.80$. 
+For the *zero-modified distribution*, set $p = 0.15$ for the probability of no rainfall; then, the probability that rain is recorded is $1 - p = 0.85$. 
 For the positive rainfall component, suppose first that rainfall amounts follow an exponential distribution with rate $\lambda$.
 Since $\operatorname{E}[R \mid R > 0] = 1/\lambda = 10$, we have $\lambda = 0.1$. 
 The zero-modified model is then (Fig.\ \@ref(fig:ZMExpRain)):
@@ -1006,17 +1007,17 @@ $$
   f_R(r)
   =
   \begin{cases}
-    0.20                              & \text{for $r = 0$} \\
-    0.80 \times 0.1\, \exp(-0.1r)     & \text{for $r > 0$}.
+    0.15                              & \text{for $r = 0$} \\
+    0.85 \times 0.1\, \exp(-0.1r)     & \text{for $r > 0$}.
   \end{cases}
 $$
 
-```{r RainSeed, iecho=FALSE}
+```{r RainSeed, echo=FALSE}
 set.seed(76103)
 ```
 
 ```{r Rain_ZME, echo=TRUE}
-pi0   <- 0.20          # P(R = 0) 
+pi0   <- 0.15          # P(R = 0) 
 mu_p  <- 10            # E[R | R > 0] = 10mm 
 num_sims <- 1000       # Number of simulations
 
@@ -1024,10 +1025,10 @@ num_sims <- 1000       # Number of simulations
 p        <- 1 - pi0
 lambda   <- 1 / mu_p
 
-Rain_zme <- rzm_exp(num_sims, lambda = 1/mu_p, p0 = p)
-
+Rain_zme <- rzm_exp(num_sims, lambda = 1/mu_p, p0 = pi0)
 
 pData_zme <- mean(Rain_zme == 0)
+theo_var_zme <- (1 - pi0) * (1/lambda)^2 + pi0 * (1 - pi0) * (1/lambda)^2
 ```
 
 
@@ -1035,36 +1036,59 @@ pData_zme <- mean(Rain_zme == 0)
 cat("Theoretical P(R = 0):  ", pi0, "\n",
     "Simulated P(R = 0):    ", round(mean(Rain_zme == 0), 3), "\n\n",
     "Theoretical E[R]:      ", (1 - pi0) * (1/lambda), "\n",
-    "Simulated E[R]:        ", round(mean(Rain_zme), 3), "\n")
+    "Simulated E[R]:        ", round(mean(Rain_zme), 3), "\n",
+    "Theoretical Var[R]:    ", theo_var_zme, "\n",
+    "Simulated Var[R]:      ", round(var(Rain_zme), 3), "\n")
 ```
 
 
-The exponential distribution is a convenient starting point, but imposes a monotonically decreasing density on the positive part, which may be unrealistic; observed rainfall amounts often have a mode above zero. 
+<!--   Zero-modified gamma    --->
+
+The zero-modified exponential distribution is a convenient starting point, but imposes a monotonically decreasing density on the positive part, which may be unrealistic; observed rainfall amounts often have a mode above zero. 
 A gamma distribution for the positive part is more flexible, allowing a range of shapes, and is generally preferred in practice.
-The mean of a gamma distribution is $\operatorname{E}[R] = \alpha\beta$, so we can set $\alpha = 2$ and $\beta = 2$ so that $\operatorname{E}[R^+] = 10$.
+The values of\ $\alpha$ and\ $\beta$ can be chosen to match the (unconditional) mean $\mu^+ = 8.5$ and the (unconditional) variance $\operatorname{var}[R] = 56$.
+Then
+\begin{align*}
+  \operatorname{E}[R]   &= (1 - p_0)\alpha\beta = 8.5, \text{and}\\
+  \operatorname{var}[R] &= (1 - p_0)\alpha\beta^2 + p_0(1 - p_0)(\alpha\beta)^2 = 56.
+\end{align*}
+Substituting $\alpha\beta = 8.5/0.85 = 10$ into the variance equation and some algebra gives
+$$
+  \alpha \approx 1.965\quad\text{and}\quad\beta \approx 5.088.
+$$
+
 
 ```{r echo=FALSE}
 <<RainSeed>>
 ```
 ```{r Rain_ZMG, echo=TRUE}
 # --- Zero-modified gamma ---
-shape <- 2 / mu_p #### CHECK THESE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-scale <- 5
-  
+mu_c       <- mu_p                        # E[R | R > 0] = 10
+target_var <- 56                          # Var[R] unconditional
+# Solve: (1-pi0)*mu_c*scale + pi0*(1-pi0)*mu_c^2 = target_var
+scale <- (target_var - pi0 * (1 - pi0) * mu_c^2) / ((1 - pi0) * mu_c)  # = 5.088
+shape <- mu_c / scale                                                     # = 1.965
+
 Rain_zmg   <- rzm_gamma(num_sims, 
                      shape = shape,
                      scale = scale,
-                     p0 = p)
+                     p0 = pi0)
+theo_var_zmg <- (1 - pi0) * shape * scale^2 + 
+                pi0 * (1 - pi0) * (shape * scale)^2
 
 pData_zmg <- mean(Rain_zmg == 0)
+
+
 ```
 
 
 ```{r echo=TRUE}
 cat("Theoretical P(R = 0):  ", pi0, "\n",
     "Simulated P(R = 0):    ", round(mean(Rain_zmg == 0), 3), "\n\n",
-    "Theoretical E[R]:      ", (1 - pi0) * (1/lambda), "\n",
-    "Simulated E[R]:        ", round(mean(Rain_zmg), 3), "\n")
+    "Theoretical E[R]:      ", (1 - pi0) * shape * scale, "\n",
+    "Simulated E[R]:        ", round(mean(Rain_zmg), 3), "\n",
+    "Theoretical Var[R]:    ", theo_var_zmg, "\n",
+    "Simulated Var[R]:      ", round(var(Rain_zmg), 3), "\n")
 ```
 
 
@@ -1073,29 +1097,38 @@ cat("Theoretical P(R = 0):  ", pi0, "\n",
 <!--   Compound Poisson--gamma    --->
 
 For the *compound Poisson--gamma model*, monthly rainfall is the aggregate of a random number $N \sim \text{Poisson}(\lambda)$ of independent rainfall events, each contributing a gamma-distributed amount (e.g., @yunus2017modelling). 
-The zero probability is $\Pr(R = 0) = \exp(-\lambda)$, so matching $\Pr(R = 0) = 0.20$ gives
+The zero probability is $\Pr(R = 0) = \exp(-\lambda)$, so matching $\Pr(R = 0) = 0.15$ gives
 $$
-  \lambda = -\log(0.20) \approx 1.6094.
+  \lambda = -\log(0.15) \approx 1.89712.
 $$
-This leaves two free parameters: $\alpha$ and\ $\beta$ of the gamma distribution, and only one remaining condition: $\operatorname{E}[R] = \lambda\alpha/\beta$.
-We therefore fix $\alpha = 2$, which gives a unimodal gamma density for individual rainfall events (a reasonable physical assumption) and solve for\ $\beta$ (Fig.\ \@ref(fig:CPGRain)):
+This leaves two free parameters: $\alpha$ and\ $\beta$ of the gamma distribution.
+Since $\lambda\alpha\beta = 8.5$ and $\lambda\alpha\beta^2(\alpha + 1) = 56$, some algebra gives
 $$
-   \beta 
-   = \frac{\lambda\alpha}{\operatorname{E}[R]} 
-   = \frac{1.6094 \times 2}{50 \times 0.70} 
-   \approx 0.09197
+  \alpha \approx 2.127\quad\text{and}\quad\beta \approx 2.107.
 $$
-where $\operatorname{E}[R] = p \times \mu^+ = 0.70 \times 50 = 35\mms$ is the unconditional mean.
 
 
 ```{r CPGRain, echo=FALSE, out.width='60%', fig.width=6, fig.align="center", fig.cap="The probability function for rainfall, for a compound Poisson--gamma model."}
 set.seed(84201)
 num_sims <- 1000
 
-lambda <- -log(0.30)        # matches P(R = 0) = 0.30
-alpha  <- 2                 # fixed: unimodal gamma for individual events
-mu_R   <- 0.70 * 50         # unconditional mean = 35mm
-beta   <- lambda * alpha / mu_R
+lambda  <- -log(pi0)             # matches P(R = 0) = 0.15
+mu_R    <- (1 - pi0) * mu_p          # unconditional mean = 8mm
+target_var <- 56                         # match ZM-gamma variance
+  # From lambda*alpha*beta = mu_R 
+  # and 
+  #      lambda*alpha*beta^2*(alpha+1) = target_var:
+  # => beta*(alpha+1) = target_var/mu_R; beta = mu_R/(lambda*alpha)
+  # => mu_R/lambda * (alpha+1)/alpha = target_var/mu_R
+  # => alpha = mu_R^2 / (lambda * (target_var/mu_R*lambda - mu_R) ... solve:
+ratio <- target_var / mu_R               # beta*(alpha+1)
+# beta = mu_R/(lambda*alpha), so mu_R*(alpha+1)/(lambda*alpha) = ratio
+# => (alpha+1)/alpha = ratio*lambda/mu_R
+# => 1 + 1/alpha = ratio*lambda/mu_R
+alpha <- 1 / (ratio * lambda / mu_R - 1)  # = 2.127
+beta  <- mu_R / (lambda * alpha)          # = 2.107
+
+theo_var_cpg <- lambda * alpha * beta^2 * (alpha + 1)
 
 Rain_cpg <- rcpg(n = num_sims, 
                  lambda = lambda, 
@@ -1107,8 +1140,10 @@ Rain_cpg <- rcpg(n = num_sims,
 ```{r echo=TRUE}
 cat("Theoretical P(R = 0):  ", pi0, "\n",
     "Simulated P(R = 0):    ", round(mean(Rain_cpg == 0), 3), "\n\n",
-    "Theoretical E[R]:      ", (1 - pi0) * (1/lambda), "\n",
-    "Simulated E[R]:        ", round(mean(Rain_cpg), 3), "\n")
+    "Theoretical E[R]:      ", mu_R, "\n",
+    "Simulated E[R]:        ", round(mean(Rain_cpg), 3), "\n",
+    "Theoretical Var[R]:    ", round(theo_var_cpg, 3), "\n",
+    "Simulated Var[R]:      ", round(var(Rain_cpg), 3), "\n")
 ```
 
 Simulated rainfall sequences of this kind are rarely an end in themselves. 
@@ -1132,19 +1167,18 @@ cat("Estimated drought probability (R < 5mm):\n",
 
 
 
-
-
-
-```{r ZMExpRain, echo=FALSE, out.width='100%', fig.width=8, fig.align="center", fig.cap="The probability function for rainfall, for a zero-modified exponential distribution, zero-modified gamma distribution, and compound Poisson--gamma distribution. AAAAAAAAAAAAAAAAAAAAAAA"}
+```{r ZMExpRain, echo=FALSE, out.width='100%', fig.width=7, fig.height=7, fig.align="center", fig.cap="The probability function for rainfall, for a zero-modified exponential distribution, zero-modified gamma distribution, and compound Poisson--gamma distribution."}
 <<RainSeed>>
 
-par( mfrow = c(2, 2))
+par( mfrow = c(2, 3))
+
+###  Conditional R | R > 0
 
 hist(Rain_zme[Rain_zme > 0],
      freq  = FALSE,
      las   = 1,
      breaks = 30,
-     ylim = c(0, pData_zme),
+     ylim = c(0, 0.12),
      xlim = c(0, 40),
      main  = "Zero-modified exponential:\nmonthly rainfall",
      xlab  = expression(Rainfall ~ italic(r) ~ (mm)),
@@ -1158,7 +1192,7 @@ hist(Rain_zmg[Rain_zmg > 0],
      freq  = FALSE,
      las   = 1,
      breaks = 30,
-     ylim = c(0, pData_zmg),
+     ylim = c(0, 0.12),
      xlim = c(0, 40),
      main  = "Zero-modified gamma:\nmonthly rainfall",
      xlab  = expression(Rainfall ~ italic(r) ~ (mm)),
@@ -1172,6 +1206,7 @@ hist(Rain_cpg[Rain_cpg > 0],
      freq   = FALSE,
      las    = 1,
      breaks = 30,
+     ylim = c(0, 0.12),
      main   = "Compound Poisson--gamma:\nmonthly rainfall",
      xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
      ylab   = "Density")
@@ -1180,59 +1215,68 @@ points(x = 0,
        pch = 19)
 
 
-par( mfrow = c(1, 1))
-```
 
+###   UnconditionalL R
 
-
-
-```{r fig.cap="XXXXXXXXXXXXXXXXPIUGIUGOUYGOUYGOUYGOUYGOUYG"}
-par(mfrow = c(1, 2))
-
-# --- Shared parameters ---
 
 hist(Rain_zme[Rain_zme > 0],
-     freq   = FALSE,
-     las    = 1,
+     freq   = FALSE, 
+     las = 1, 
      breaks = 30,
-     xlim   = c(0, 50),
-     ylim   = c(0, 0.10),
-     main   = "Zero-modified exponential",
+     ylim   = c(0, 0.15), 
+     xlim = c(0, 40),
+     main   = "ZM-exponential",
      xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
-     ylab   = "Density")
-points(x = 0, y = pData_zme, pch = 19, cex = 1.5)
-text(x = 2, y = pData_zme + 0.003,
-     labels = paste0("P(R = 0) = ", round(pData_zme, 2)),
-     adj = 0, cex = 0.85)
+     ylab   = "Unconditional density")
+points(x = 0, 
+       y = pData_zme, 
+       pch = 19, 
+       cex = 1.5)
+text(x = 1, 
+     y = pData_zme + 0.005,
+     labels = paste0("P(R=0) = ", round(pData_zme, 2)),
+     adj = 0, 
+     cex = 0.8)
 
-# --- Compound Poisson--gamma ---
-set.seed(84201)
-lambda_cpg <- -log(pi0)       # matches P(R = 0) = 0.20
-alpha      <- 2               # unimodal gamma for individual events
-mu_R       <- p * mu_p        # unconditional mean = 0.80 * 10 = 8mm
-beta_cpg   <- lambda_cpg * alpha / mu_R
-
-N     <- rpois(num_sims, lambda = lambda_cpg)
-R_cpg <- sapply(N, function(n) {
-  if (n == 0) 0 else sum(rgamma(n, shape = alpha, rate = beta_cpg))
-})
-
-pData_cpg <- mean(R_cpg == 0)
-hist(R_cpg[R_cpg > 0],
-     freq   = FALSE,
-     las    = 1,
+hist(Rain_zmg[Rain_zmg > 0],
+     freq   = FALSE, 
+     las = 1, 
      breaks = 30,
-     xlim   = c(0, 50),
-     ylim   = c(0, 0.10),
-     main   = "Compound Poisson\u2013gamma",
+     ylim   = c(0, 0.15), 
+     xlim = c(0, 40),
+     main   = "ZM-gamma",
      xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
-     ylab   = "Density")
-points(x = 0, y = pData_cpg, pch = 19, cex = 1.5)
-text(x = 2, y = pData_cpg + 0.003,
-     labels = paste0("P(R = 0) = ", round(pData_cpg, 2)),
-     adj = 0, cex = 0.85)
+     ylab   = "Unconditional density")
+points(x = 0, 
+       y = pData_zmg, 
+       pch = 19, 
+       cex = 1.5)
+text(x = 1, 
+     y = pData_zmg + 0.005,
+     labels = paste0("P(R=0) = ", round(pData_zmg, 2)),
+     adj = 0, 
+     cex = 0.8)
 
-par(mfrow = c(1, 1))
+hist(Rain_cpg[Rain_cpg > 0],
+     freq   = FALSE, 
+     las = 1, 
+     breaks = 30,
+     ylim   = c(0, 0.15), 
+     xlim = c(0, 40),
+     main   = "Compound Poisson--gamma",
+     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
+     ylab   = "Unconditional density")
+points(x = 0, 
+       y = mean(Rain_cpg == 0), 
+       pch = 19, 
+       cex = 1.5)
+text(x = 1, 
+     y = mean(Rain_cpg == 0) + 0.005,
+     labels = paste0("P(R=0) = ", round(mean(Rain_cpg == 0), 2)),
+     adj = 0, 
+     cex = 0.8)
+
+par( mfrow = c(1, 1))
 ```
 
 
@@ -1270,8 +1314,9 @@ alpha   <- 2             # Gamma shape
 beta    <- 5             # Gamma scale: E[C | C > 0] = alpha * beta = 10
 
 injury_day <- rbinom(n_days, size = 1, prob = 1 - p0)
-C <- ifelse(injury_day == 0, 0,
-            rgamma(n_days, shape = alpha, scale = beta))
+C <- numeric(n_days)
+pos <- injury_day == 1
+C[pos] <- rgamma(sum(pos), shape = alpha, scale = beta)
 ```
 
 We can verify the simulated properties against their theoretical values:
@@ -1317,7 +1362,7 @@ text(x = 1, y = pData * 1.08,
 The model also can be used to find answers to questions that are difficult or impossible to answer analytically.
 One question is: what is the distribution of total annual costs?
 
-Annual cost is the sum of 250 daily costs (assuming 250 working days per year).
+Annual cost is the sum of $250$\ daily costs (assuming $250$ working days per year).
 The distribution of this sum is analytically intractable; it is a compound distribution mixing a point mass at zero with a continuous component.
 This is straightforward using simulation:
 
@@ -1325,9 +1370,11 @@ This is straightforward using simulation:
 n_sims       <- 10000
 annual_costs <- replicate(n_sims, {
   days <- rbinom(250, size = 1, prob = 1 - p0)
-  sum(ifelse(days == 0, 0,
-             rgamma(250, shape = alpha, scale = beta)))
-})
+  {pos <- days == 1
+    c_days <- numeric(250)
+    c_days[pos] <- rgamma(sum(pos), shape = alpha, scale = beta)
+    sum(c_days)}
+  })
 
 cat("Simulated mean annual cost ($000s):  ", 
     round(mean(annual_costs), 1), "\n",
@@ -1360,9 +1407,11 @@ The probability that monthly costs exceed this reserve is:
 n_sims        <- 10000
 monthly_costs <- replicate(n_sims, {
   days <- rbinom(21, size = 1, prob = 1 - p0)   # ~21 working days per month
-  sum(ifelse(days == 0, 0,
-             rgamma(21, shape = alpha, scale = beta)))
-})
+  {pos <- days == 1
+   c_days <- numeric(21)
+   c_days[pos] <- rgamma(sum(pos), shape = alpha, scale = beta)
+   sum(c_days)}}
+  )
 
 cat("P(monthly costs > $50,000):", 
     round(mean(monthly_costs > 50), 3), "\n")
@@ -1380,8 +1429,9 @@ for (j in seq_along(p_seq)) {
   p_j   <- p_seq[j]
   costs <- replicate(5000, {
     days <- rbinom(250, size = 1, prob = 1 - p_j)
-    sum(ifelse(days == 0, 0,
-               rgamma(250, shape = alpha, scale = beta)))
+    C_days <- numeric(250)
+    C_days[days == 1] <- rgamma(sum(days == 1), shape = alpha, scale = beta)
+    sum(C_days)
   })
   pct_95[j] <- quantile(costs, 0.95)
 }
@@ -1549,7 +1599,7 @@ Plot the resulting distribution.
 
 
 :::{.exercise #MixedCPGevaluation}
-Let $N \sim \text{Poisson}(3)$ and $X_k \sim \text{Gamma}(2, 0.01)$ (mean severity $200$).
+Let $N \sim \text{Poisson}(3)$ and $X_k \sim \text{Gamma}(2, \text{scale} = 100)$ (mean severity $200$).
 
 1. Compute $\operatorname{E}[S]$.
 1. Compute $\operatorname{var}(S)$.
@@ -1573,8 +1623,7 @@ Show $p \in (1,2)$ for all $\alpha > 0$, then verify numerically.\index{Tweedie 
 
 
 :::{.exercise #MixedCPGrandom}
-Write an **R** function `rcpg(n, lambda, alpha, beta)` to generate random numbers from a compound Poisson--gamma distribution.
-Simulate\ $10^5$ draws with $\lambda = 2$, $\alpha = 3$, $\beta = 0.5$ and verify $E[S]$, $\operatorname{var}(S)$, $\Pr(S = 0)$, skewness, and $F_S(10)$.
+Use the **R** function `rcpg(n, lambda, alpha, beta)` to simulate\ $10^5$ draws with $\lambda = 2$, $\alpha = 3$, $\beta = 0.5$ and verify $E[S]$, $\operatorname{var}(S)$, $\Pr(S = 0)$, skewness, and $F_S(10)$.
 :::
 
 
@@ -1585,9 +1634,14 @@ Produce spike-and-density plots and report $\Pr(S = 0)$ and $E[S]$.
 
 
 :::{.exercise #MixedCPGreproductive}
-Simulate $S_1 \sim \text{CP-G}(2, 1.5, 0.5)$ and $S_2 \sim \text{CP-G}(3, 1.5, 0.5)$ independently ($n = 50\,000$).
-Form $T = S_1 + S_2$.
-Compare moments and CDF against CP-G$(5, 1.5, 0.5)$ theory.
+Suppose $X_1 \sim \text{CPG}(\lambda_1, \alpha, \beta)$ and $X_2\sim \text{CPG}(\lambda_2,\alpha, \beta)$ independently.
+
+1. Show that $X_1 + X_2 \sim \text{CPG}(\lambda_1 + \lambda_2, \alpha, \beta)$.
+1. Simulate $S_1 \sim \text{CP-G}(2, 1.5, 0.5)$ and $S_2 \sim \text{CP-G}(3, 1.5, 0.5)$ independently ($n = 50\,000$).
+   Form $T = S_1 + S_2$.
+   Compare moments and CDF against CP-G$(5, 1.5, 0.5)$ theory.
+:::
+
 :::
 
 
@@ -1599,12 +1653,6 @@ Comment.
 :::
 
 
-
-:::{.exercise #MixedCPGReproductive}
-Suppose $X_1 \sim \text{CPG}(\lambda_1, \alpha, \beta)$ and $X_2\sim \text{CPG}(\lambda_2,\alpha, \beta)$ independently.
-
-Show that $X_1 + X_2 \sim \text{CPG}(\lambda_1 + \lambda_2, \alpha, \beta)$.
-:::
 
 
 :::{.exercise #MixedCPGLimits}
