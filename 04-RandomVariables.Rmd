@@ -2181,7 +2181,8 @@ points(x = 0.5,
 ## Generating random numbers {#RandomNumbers}
 \index{Generating random numbers|(}\index{Random numbers|(}
 
-Many computers have facilities for generating pseudo-random numbers between\ $0$ and\ $1$, though random numbers from other distributions are often more useful in computer modelling and simulation (for example, Sects.\ \@ref(SimulationDiscrete) and\ \@ref(SimulationContinuous)).
+Generating random numbers from a specified distribution is fundamental to simulations of real-world scenarios.
+However, computers often will only have the capacity to generatie (pseudo-)random numbers between\ $0$ and\ $1$, even though random numbers from other distributions are often more useful in computer modelling and simulation (for example, Sects.\ \@ref(SimulationDiscrete) and\ \@ref(SimulationContinuous)).
 For instance, generating heights of people at random may require the heights to have bell-shaped distribution, with an average value of (say) $180\cms$, with most heights between about $175\cms$ and $185\cms$, but a few smaller than $175\cms$ and a few larger than $185\cms$.
 
 Computer software can generally provide random numbers between\ $0$ and\ $1$, which correspond to the range of $F_X(x)$, or equivalently the domain of $Q_X(p)$, for any random variable\ $X$.
@@ -2194,7 +2195,7 @@ By repeating this process with many different random values of $p^*$, we natural
 
 
 
-```{r, RNos, echo=FALSE, fig.align="center", fig.cap="Selecting a random number from a distribution, using the distribution function (left) or quantile function (right).", out.width='60%', fig.width=5, fig.height=4}
+```{r, RNos, echo=FALSE, fig.align="center", fig.cap="Selecting a random number from a distribution, using the distribution function (left) or quantile function (right).", out.width='60%', fig.width=5, fig.height=3.5}
 # CDF:        F(x) = (x-1)^3 / 27  for 1 < x < 4
 # Quantile:   Q(p) = 1 + (27p)^(1/3)
 
@@ -2353,9 +2354,6 @@ box()
 ```
 
 
-
-
-
 In **R**, random numbers between\ $0$ and\ $1$ are found using the function `runif()`:
 
 
@@ -2379,45 +2377,15 @@ Random numbers from the distribution can be generated using\ **R** using the ide
 # Create an R function for the quantile function
 quantileFn <- function(p){ -log(1 - p) / 2}
 
-# Create 2000 random numbers between 0 and 1
-rnos <- runif(2000)
+# Create 20 random numbers between 0 and 1
+rnos <- runif(20)
 
 # Random numbers from the specified distribution
 rSpecified <- quantileFn(rnos)
-
-# A histogram of these random numbers should have a shape like the density fn
-hist(rSpecified, freq = FALSE)
+rSpecified
 ```
-The histogram (Fig.\ \@ref(fig:rRandomSpecified)) does indeed have a similar shape to the density function.
 :::
 \index{Random numbers|)}\index{Generating random numbers|)}
-
-
-
-```{r rRandomSpecified, echo=FALSE, fig.width=9, fig.height = 4, out.width='100%', fig.align="center", fig.cap="Left: a density function. Right: a histogram of random numbers from the distribution."}
-par(mfrow = c(1, 2))
-x <- seq(0, 4.5,
-         length = 100)
-fx <- function(x){ifelse(x < 0, 0, 2 * exp(-2 * x))}
-
-plot( fx(x) ~ x,
-      type ="l",
-      lwd = 2,
-      las = 1,
-      xlim = c(0, 4.5),
-      main = "The target distribution",
-      xlab = expression(italic(x)),
-      ylab = expression(Density~fn) )
-
-hist(rSpecified, 
-     xlab = expression(italic(x)),
-     ylab = expression(Number~of~values),
-     main = "Random numbers",
-     freq = FALSE,
-     xlim = c(0, 4.5),
-     breaks = seq(0, 5, by = 0.25),
-     las = 1)
-```
 
 
 ## Statistical computing with probability functions {#RVsStatisticalComputing}
@@ -2546,8 +2514,100 @@ Then, $\Pr(0.2 < W < 0.6)$ can be found using the distribution function:
 ```{r}
 FX(0.6) - FX(0.2)
 ```
-\index{Random variables!continuous|)}
 
+
+
+
+### Empirical probability functions {#EmpiricalProbFunctions}
+
+\index{Empirical probability function|(}
+When random numbers are generated from a probability distribution, the resulting numbers are called a *sample*\index{Sample}, and can be used as an *estimate* of the the probability function of the distribution.
+The estimated probability function is called an *empirical probability function*.
+
+For a continuous distribution, a histogram of the simulated values estimates the probability density function.
+The histogram divides the range of the data into bins and counts the number of values in each bin; when scaled so that the total area equals\ $1$, the histogram approximates the PDF.
+In **R**, `hist(x, freq = FALSE)` produces this scaled histogram.\index{hist()@\texttt{hist()}}
+The larger the number of simulated values, the closer the empirical probability function is to the true theoretical probability function.
+
+For a discrete distribution, a bar chart of the relative frequencies of the simulated values estimates the PMF.
+In **R**, `table(x) / length(x)` computes the relative frequencies, and `barplot()` displays them.\index{table()@\texttt{table()}}\index{barplot()@\texttt{barplot()}}
+
+For a mixed distribution, the empirical probability function combines both: a solid dot at $x = 0$ shows the simulated proportion of zeros (estimating the probability mass $\Pr(X = 0)$), and a histogram of the positive values estimates the continuous component of the density.
+
+
+:::{.example #RandomContinuousEH name="Empirical probability density"}
+In Example\ \@ref(exm:RandomContinuous), $20$ random numbers were generated from the continuous probability density function
+$f_X(x) =2 \exp(-2x)$ for $x > 0$.
+The empirical probability density function for increasing values of\ $n$ are show in Fig.\ \@ref(fig:EmpiricalPDFexp).
+The empirical probability function is closer to the actual probability density function as\ $n$ increases.
+:::
+
+
+```{r EmpiricalPDFexp, echo=FALSE, fig.align="center", out.width="100%", fig.width=5.75, fig.height=2.5, fig.cap="Empirical probability density functions based on samples of size $n = 50$, $500$, and $5000$. As $n$ increases, the empirical probability density function converges to the theoretical PDF (shown as solid lines)."}
+par(mfrow = c(1, 3))
+set.seed(12345)
+ns <- c(50, 500, 5000)
+breaks <- seq(0, 4.25, 
+              by = 0.25)
+
+for (n in ns) {
+  x <- rexp(n, 
+            rate = 2)
+  hist(x,
+       freq   = FALSE,
+       breaks = breaks,
+       las    = 1,
+       xlim   = c(0, max(breaks)),
+       ylim   = c(0, 1.75),
+       main   = paste0("n = ", n),
+       xlab   = expression(italic(x)),
+       ylab   = "Empirical density")
+  curve(dexp(x, rate = 2),
+        add = TRUE,
+        from = 0.01,
+        lwd = 2)
+}
+par(mfrow = c(1, 1))
+```
+
+
+:::{.example #RandomContinuousEH name="Empirical probability density"}
+Consider generating random numbers from the discrete probability mass function
+$$
+  p_X(x) = 0.6\cdot 0.4^x\quad\text{for $x = 0, 1, 2, \dots$}
+$$
+The empirical probability mass function for increasing values of\ $n$ are show in Fig.\ \@ref(fig:EmpiricalPMFgeom).
+The empirical probability function is closer to the actual probability mass function as\ $n$ increases.
+:::
+
+
+```{r EmpiricalPMFgeom, echo=FALSE, fig.align="center", out.width="100%", fig.width=5.75, fig.height=2.5, fig.cap="Empirical probability mass functions based on samples of size $n = 50$, $500$, and $5000$. As $n$ increases, the empirical probability mass function converges to the theoretical PMF (shown as the solid dots)."}
+par(mfrow = c(1, 3))
+set.seed(123456)
+ns <- c(50, 500, 5000)
+
+for (n in ns) {
+  x <- rgeom(n, 
+             p = 0.6)
+  out <- barplot(table(factor(x,
+                              levels = 0:8) ) 
+                 / n,
+                 las    = 1,
+                 xlim   = c(0, 9.5),
+                 ylim   = c(0, 0.7),
+                 main   = paste0("n = ", n),
+                 xlab   = expression(italic(x)),
+                 ylab   = "Empirical mass")
+  points(x = out,
+         y = dgeom(0 : (length(out) - 1), 
+                   p = 0.6),
+         pch = 19, 
+         lwd = 2)
+}
+par(mfrow = c(1, 1))
+```
+
+\index{Empirical probability function|)}\index{Random variables!continuous|)}
 
 
 

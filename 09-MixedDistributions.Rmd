@@ -1108,7 +1108,7 @@ $$
 $$
 
 
-```{r CPGRain, echo=FALSE, out.width='60%', fig.width=6, fig.align="center", fig.cap="The probability function for rainfall, for a compound Poisson--gamma model."}
+```{r CPGRain, echo=FALSE}
 set.seed(84201)
 num_sims <- 1000
 
@@ -1146,6 +1146,125 @@ cat("Theoretical P(R = 0):  ", pi0, "\n",
     "Simulated Var[R]:      ", round(var(Rain_cpg), 3), "\n")
 ```
 
+
+The empirical probability functions\index{Empirical probability function} from each model are shown in Fig.\ \@ref(fig:MixedRainEmp).
+The zero-modified expinential distribution looks different than the other empirical probability functions, as it is a two-parameter distribution rather than a three-parameter distribution so has less flexibility.
+
+
+```{r MixedRainEmp, echo=FALSE, out.width='100%', fig.width=6, fig.height=3, fig.align="center", fig.cap="The empirical probability functions for rainfall from $1000$ simulations, each with $\\Pr(R) = 0.15$, $\\operatorname{E}[R] = 8.5\\mms$ and $\\operatorname{var}[R] -= 56\\mms^2$ (apart from the zero-modified exponential). Left:a zero-modified exponential distribution. Centre: zero-modified gamma distribution. Right: compound Poisson--gamma distribution."}
+<<RainSeed>>
+
+par( mfrow = c(1, 3))
+
+###  Conditional R | R > 0
+
+# hist(Rain_zme[Rain_zme > 0],
+#      freq  = FALSE,
+#      las   = 1,
+#      breaks = 30,
+#      ylim = c(0, 0.12),
+#      xlim = c(0, 40),
+#      main  = "Zero-modified exponential:\nmonthly rainfall",
+#      xlab  = expression(Rainfall ~ italic(r) ~ (mm)),
+#      ylab  = "Density")
+# points(x = 0, 
+#        y = pData_zme, 
+#        pch = 19)
+# 
+# 
+# hist(Rain_zmg[Rain_zmg > 0],
+#      freq  = FALSE,
+#      las   = 1,
+#      breaks = 30,
+#      ylim = c(0, 0.12),
+#      xlim = c(0, 40),
+#      main  = "Zero-modified gamma:\nmonthly rainfall",
+#      xlab  = expression(Rainfall ~ italic(r) ~ (mm)),
+#      ylab  = "Density")
+# points(x = 0, 
+#        y = pData_zmg, 
+#        pch = 19)
+# 
+# 
+# hist(Rain_cpg[Rain_cpg > 0],
+#      freq   = FALSE,
+#      las    = 1,
+#      breaks = 30,
+#      ylim = c(0, 0.12),
+#      main   = "Compound Poisson--gamma:\nmonthly rainfall",
+#      xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
+#      ylab   = "Density")
+# points(x = 0, 
+#        y = mean(Rain_cpg == 0), 
+#        pch = 19)
+
+
+
+###   UnconditionalL R
+breaks <- seq(0, 80,
+              by = 2.5)
+
+hist(Rain_zme[Rain_zme > 0],
+     freq   = FALSE, 
+     las = 1, 
+     breaks = breaks,
+     ylim   = c(0, 0.15), 
+     xlim   = c(0, max(breaks)),
+     main   = "ZM-exponential\nmonthly rainfall",
+     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
+     ylab   = "Unconditional density")
+points(x = 0, 
+       y = pData_zme, 
+       pch = 19, 
+       cex = 1)
+text(x = 1, 
+     y = pData_zme,
+     labels = paste0("P(R=0) = ", round(pData_zme, 2)),
+     pos = 4,
+     cex = 0.9)
+
+hist(Rain_zmg[Rain_zmg > 0],
+     freq   = FALSE, 
+     las = 1, 
+     breaks = breaks,
+     ylim   = c(0, 0.15), 
+     xlim   = c(0, max(breaks)),
+     main   = "ZM-gamma\nmonthly rainfall",
+     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
+     ylab   = "Unconditional density")
+points(x = 0, 
+       y = pData_zmg, 
+       pch = 19, 
+       cex = 1)
+text(x = 1, 
+     y = pData_zmg,
+     labels = paste0("P(R=0) = ", round(pData_zmg, 2)),
+     pos = 4, 
+     cex = 0.9)
+
+hist(Rain_cpg[Rain_cpg > 0],
+     freq   = FALSE, 
+     las = 1, 
+     breaks = breaks,
+     ylim   = c(0, 0.15), 
+     xlim   = c(0, max(breaks)),
+     main   = "Compound Poisson--gamma\nmonthly rainfall",
+     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
+     ylab   = "Unconditional density")
+points(x = 0, 
+       y = mean(Rain_cpg == 0), 
+       pch = 19, 
+       cex = 1)
+text(x = 1, 
+     y = mean(Rain_cpg == 0),
+     labels = paste0("P(R=0) = ", round(mean(Rain_cpg == 0), 2)),
+     pos = 4, 
+     cex = 0.9)
+
+par( mfrow = c(1, 1))
+```
+
+
 Simulated rainfall sequences of this kind are rarely an end in themselves. 
 In agriculture, simulated monthly rainfall feeds into crop yield models, where the distribution of yields (and particularly the probability of drought) is of direct interest. 
 In hydrology, simulated rainfall drives runoff and reservoir models. 
@@ -1164,120 +1283,6 @@ cat("Estimated drought probability (R < 5mm):\n",
 ```
 
 
-
-
-
-```{r ZMExpRain, echo=FALSE, out.width='100%', fig.width=7, fig.height=7, fig.align="center", fig.cap="The probability function for rainfall, for a zero-modified exponential distribution, zero-modified gamma distribution, and compound Poisson--gamma distribution."}
-<<RainSeed>>
-
-par( mfrow = c(2, 3))
-
-###  Conditional R | R > 0
-
-hist(Rain_zme[Rain_zme > 0],
-     freq  = FALSE,
-     las   = 1,
-     breaks = 30,
-     ylim = c(0, 0.12),
-     xlim = c(0, 40),
-     main  = "Zero-modified exponential:\nmonthly rainfall",
-     xlab  = expression(Rainfall ~ italic(r) ~ (mm)),
-     ylab  = "Density")
-points(x = 0, 
-       y = pData_zme, 
-       pch = 19)
-
-
-hist(Rain_zmg[Rain_zmg > 0],
-     freq  = FALSE,
-     las   = 1,
-     breaks = 30,
-     ylim = c(0, 0.12),
-     xlim = c(0, 40),
-     main  = "Zero-modified gamma:\nmonthly rainfall",
-     xlab  = expression(Rainfall ~ italic(r) ~ (mm)),
-     ylab  = "Density")
-points(x = 0, 
-       y = pData_zmg, 
-       pch = 19)
-
-
-hist(Rain_cpg[Rain_cpg > 0],
-     freq   = FALSE,
-     las    = 1,
-     breaks = 30,
-     ylim = c(0, 0.12),
-     main   = "Compound Poisson--gamma:\nmonthly rainfall",
-     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
-     ylab   = "Density")
-points(x = 0, 
-       y = mean(Rain_cpg == 0), 
-       pch = 19)
-
-
-
-###   UnconditionalL R
-
-
-hist(Rain_zme[Rain_zme > 0],
-     freq   = FALSE, 
-     las = 1, 
-     breaks = 30,
-     ylim   = c(0, 0.15), 
-     xlim = c(0, 40),
-     main   = "ZM-exponential",
-     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
-     ylab   = "Unconditional density")
-points(x = 0, 
-       y = pData_zme, 
-       pch = 19, 
-       cex = 1.5)
-text(x = 1, 
-     y = pData_zme + 0.005,
-     labels = paste0("P(R=0) = ", round(pData_zme, 2)),
-     adj = 0, 
-     cex = 0.8)
-
-hist(Rain_zmg[Rain_zmg > 0],
-     freq   = FALSE, 
-     las = 1, 
-     breaks = 30,
-     ylim   = c(0, 0.15), 
-     xlim = c(0, 40),
-     main   = "ZM-gamma",
-     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
-     ylab   = "Unconditional density")
-points(x = 0, 
-       y = pData_zmg, 
-       pch = 19, 
-       cex = 1.5)
-text(x = 1, 
-     y = pData_zmg + 0.005,
-     labels = paste0("P(R=0) = ", round(pData_zmg, 2)),
-     adj = 0, 
-     cex = 0.8)
-
-hist(Rain_cpg[Rain_cpg > 0],
-     freq   = FALSE, 
-     las = 1, 
-     breaks = 30,
-     ylim   = c(0, 0.15), 
-     xlim = c(0, 40),
-     main   = "Compound Poisson--gamma",
-     xlab   = expression(Rainfall ~ italic(r) ~ (mm)),
-     ylab   = "Unconditional density")
-points(x = 0, 
-       y = mean(Rain_cpg == 0), 
-       pch = 19, 
-       cex = 1.5)
-text(x = 1, 
-     y = mean(Rain_cpg == 0) + 0.005,
-     labels = paste0("P(R=0) = ", round(mean(Rain_cpg == 0), 2)),
-     adj = 0, 
-     cex = 0.8)
-
-par( mfrow = c(1, 1))
-```
 
 
 ### Example: workplace injury costs {#MixedSimulationInjury}
