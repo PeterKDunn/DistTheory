@@ -1,4 +1,4 @@
-plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, ...) {
+plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, xlim = NULL, ...) {
   # Compute CDF and Survival:
   # "DF": distribution fn
   # "SF": survival function
@@ -11,29 +11,55 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, ...) {
   Fx <- cumsum(px)
   Sx <- 1 - Fx
   
+  # Check for some given parameters supplied via ...
+  plot_defaults <- list(
+    col = "black",
+    main = if (type == "DF") {
+              "Distribution function"
+            } else if (type=="MF") {
+              "Prob. mass function"
+            } else if (type=="SF") {
+              "Survival function"
+            }, 
+    xlab = expression(x),
+    ylab =  if (type == "DF") {
+              "Dist. Fn"
+            } else if (type=="MF") {
+              "Prob. fn"
+            } else if (type=="SF") {
+              "Survival fn"
+            }
+  )
+  point_defaults <- list(col = "black",
+                         cex = 1)
+  line_defaults  <- list(col = "black", 
+                         lwd = 1)
+  
+  plot_dots <- modifyList(plot_defaults, 
+                          list(...))
+  point_dots <- modifyList(point_defaults, 
+                           list(...))
+  line_dots  <- modifyList(line_defaults, 
+                           list(...))
+  
+
+  
+  
+  
+  
+  
+  
   if (type == "DF") {
     y          <- Fx
     y0         <- 0
-    ylim_use <- if (is.null(ylim)) c(0, 1) else ylim
-    main_title <- ifelse(is.null(main), 
-                         "Distribution function", 
-                         main)
   } 
   if (type == "SF") {
     y          <- Sx
     y0         <- 1
-    ylim_use <- if (is.null(ylim)) c(0, 1) else ylim
-    main_title <- ifelse(is.null(main), 
-                         "Distribution function", 
-                         main)
   }
   if (type == "MF") {
     y          <- px
     y0         <- NA
-    ylim_use <- if (is.null(ylim)) c(0, max(px) * 1.05) else ylim
-    main_title <- ifelse(is.null(main), 
-                         "Prob. mass function", 
-                         main)
   }
   
   if ( (type == "DF" ) | ( type == "SF") ) {
@@ -43,28 +69,28 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, ...) {
          type = "n",
          main = main_title,
          las  = 1,
-         xlim = c(min(x) - 0.1, 
-                  max(x) + 0.1),
-         ylim = ylim_use,
-         ...)
+         plot_dots)
     
     
     # Left tail
     lines(x   = c(min(x) - 2, 
                   min(x)),
           y   = rep(y0, 2),
-          lwd = 2)
+          lwd = 2,
+          line_dots)
   }  
   # Point at right end of left tail
   if (type == "DF") {
     points(x   = min(x),
            y   = y0,
-           pch = 1)
+           pch = 1,
+           point_dots)
   }
   if (type == "SF") {
     points(x   = min(x),
            y   = y0,
-           pch = 19)
+           pch = 19,
+           point_dots)
   }
   
   if ( (type == "DF") | (type == "SF") )  {
@@ -75,7 +101,7 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, ...) {
         lines(x   = c(x[i - 1], 
                       x[i]),
               y   = rep(y[i - 1], 2),
-              lwd = 2)
+              line_dots)
       }
       
       if (type == "DF") {
@@ -93,19 +119,21 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, ...) {
         lines(x   = c(max(x), 
                       max(x) + 2),
               y   = rep(y[length(y)], 2),
-              lwd = 2)
+              line_dots)
       } 
       if (type == "SF") {
         # Closed point at left of jump
         if (i > 1) {
           points(x   = x[i],
                  y   = y[i - 1],
-                 pch = 19)
+                 pch = 19,
+                 point_dots)
         }
         # Open point at right of jump
         points(x   = x[i],
                y   = y[i],
-               pch = 1)
+               pch = 1,
+               point_dots)
         # Right tail
         lines(x   = c(max(x), 
                       max(x) + 2),
@@ -120,20 +148,17 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, ...) {
          type = "n",
          main = main_title,
          las  = 1,
-         xlim = c(min(x) - 0.1, 
-                  max(x) + 0.1),
-         ylim = ylim_use,
-         ...)
+         plot_dots)
     
     lines(x   = x,
           y   = y,
           type = "h",
-          lty = 2,
-          pch = 19)
+          pch = 19,
+          line_dots)
     points(x   = x,
            y   = y,
-           type = "p",
-           pch = 19)
+           pch = 19,
+           line_dots)
   }
   
 }
