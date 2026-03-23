@@ -18,24 +18,35 @@ plotDiscrete <- function(x, px, type = "DF", pchIN = 19, pchOUT = 1, ...) {
   plot_defaults <- list(
     col = "black",
     las = 1,
-    main = if (type == "DF") {
-      "Distribution function"
-    } else if (type == "MF") {
-      "Prob. mass function"
-    } else if (type == "SF") {
-      "Survival function"
-    } else if (type == "QF") {
-      "Quantile function"
-    },
-    ylab = if (type == "DF") {
-      "Dist. Fn"
-    } else if (type == "MF") {
-      "Prob. fn"
-    } else if (type == "SF") {
-      "Survival fn"
-    } else if (type == "QF") {
-      "Quantile"
-    },
+    ylim = switch(type,
+                  DF = c(0, 1.05),
+                  SF = c(0, 1.05),
+                  MF = c(0,
+                         max(px, na.rm = TRUE) * 1.05),
+                  QF = c( min(x) * 0.95,
+                          max(x) * 1.05)
+    ),
+    xlim = switch(type,
+                  DF = c(min(x) * 0.95,
+                         max(x) * 1.05),
+                  SF = c(min(x) * 0.95,
+                         max(x) * 1.05),
+                  MF = c(min(x) * 0.95,
+                         max(x) * 1.05),
+                  QF = c(-0.05, 1.05)
+    ),
+    main = switch(type,
+                  DF = "Distribution function",
+                  MF = "Prob. mass function",
+                  SF = "Survival function",
+                  QF = "Quantile function"
+    ),
+    ylab = switch(type,
+                  DF = "Dist. fn",
+                  MF = "Prob. fn",
+                  SF = "Survival fn",
+                  QF = "Quantile fn"
+    ),
     xlab = expression(italic(x))
   )
   point_defaults <- list(col = "black",
@@ -52,16 +63,16 @@ plotDiscrete <- function(x, px, type = "DF", pchIN = 19, pchOUT = 1, ...) {
   
 
   if (type == "DF") {
-    y          <- Fx
-    y0         <- 0
+    y    <- Fx
+    y0   <- 0
   } 
   if (type == "SF") {
-    y          <- Sx
-    y0         <- 1
+    y    <- Sx
+    y0   <- 1
   }
   if (type == "MF") {
-    y          <- px
-    y0         <- NA
+    y    <- px
+    y0   <- NA
   }
   
   if ( (type == "DF" ) | ( type == "SF") ) {
