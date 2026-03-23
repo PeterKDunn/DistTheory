@@ -1,4 +1,4 @@
-plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, xlim = NULL, ...) {
+plotDiscrete <- function(x, px, type = "DF", pchIN = 19, pchOUT = 1, ...) {
   # Compute CDF and Survival:
   # "DF": distribution fn
   # "SF": survival function
@@ -14,6 +14,7 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, xlim = NU
   # Check for some given parameters supplied via ...
   plot_defaults <- list(
     col = "black",
+    las = 1,
     main = if (type == "DF") {
               "Distribution function"
             } else if (type=="MF") {
@@ -21,7 +22,7 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, xlim = NU
             } else if (type=="SF") {
               "Survival function"
             }, 
-    xlab = expression(x),
+    xlab = expression(italic(x)),
     ylab =  if (type == "DF") {
               "Dist. Fn"
             } else if (type=="MF") {
@@ -33,7 +34,7 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, xlim = NU
   point_defaults <- list(col = "black",
                          cex = 1)
   line_defaults  <- list(col = "black", 
-                         lwd = 1)
+                         lwd = 2)
   
   plot_dots <- modifyList(plot_defaults, 
                           list(...))
@@ -43,12 +44,6 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, xlim = NU
                            list(...))
   
 
-  
-  
-  
-  
-  
-  
   if (type == "DF") {
     y          <- Fx
     y0         <- 0
@@ -64,33 +59,42 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, xlim = NU
   
   if ( (type == "DF" ) | ( type == "SF") ) {
     
-    plot(x    = x,
-         y    = y,
-         type = "n",
-         main = main_title,
-         las  = 1,
-         plot_dots)
+    do.call( plot,
+             c(list( 
+               x    = x,
+               y    = y,
+               type = "n"
+               ),
+               plot_dots) )
     
     
     # Left tail
-    lines(x   = c(min(x) - 2, 
-                  min(x)),
-          y   = rep(y0, 2),
-          lwd = 2,
-          line_dots)
+    do.call( lines,
+             c(list(
+               x   = c(min(x) - 2, 
+                       min(x)),
+               y   = rep(y0, 2)
+             ),
+             line_dots) )
   }  
   # Point at right end of left tail
   if (type == "DF") {
-    points(x   = min(x),
-           y   = y0,
-           pch = 1,
-           point_dots)
+    do.call(points,
+            c(list(
+              x   = min(x),
+              y   = y0,
+              pch = pchOUT
+            ),
+            point_dots) )
   }
   if (type == "SF") {
-    points(x   = min(x),
-           y   = y0,
-           pch = 19,
-           point_dots)
+    do.call( points,
+             c(list(
+               x   = min(x),
+               y   = y0,
+               pch = pchIN
+             ),
+             point_dots) )
   }
   
   if ( (type == "DF") | (type == "SF") )  {
@@ -98,67 +102,96 @@ plotDiscrete <- function(x, px, type = "DF", main = NULL, ylim = NULL, xlim = NU
       # Horizontal segment
       step <- x[i+1] - x[i]
       if (i > 1) {
-        lines(x   = c(x[i - 1], 
-                      x[i]),
-              y   = rep(y[i - 1], 2),
-              line_dots)
+        do.call(lines,
+                c(list(
+                  x   = c(x[i - 1], 
+                          x[i]),
+                  y   = rep(y[i - 1], 2)
+                ),
+                line_dots) )
       }
       
       if (type == "DF") {
         # Closed point at top of jump
-        points(x   = x[i],
-               y   = y[i],
-               pch = 19)
+        do.call(points,
+                c(list(
+                  x   = x[i],
+                  y   = y[i],
+                  pch = pchIN
+                ),
+                point_dots) )
         # Open point at right end of segment (not needed after last jump)
         if (i < length(x)) {
-          points(x   = x[i] + step,
-                 y   = y[i],
-                 pch = 1)
-        }
+          do.call(points,
+                  c(list(
+                    x   = x[i] + step,
+                    y   = y[i],
+                    pch = pchOUT
+                  ),
+                  point_dots) )
+                  }
         # Right tail
-        lines(x   = c(max(x), 
-                      max(x) + 2),
-              y   = rep(y[length(y)], 2),
-              line_dots)
+        do.call( lines,
+                 c(list(
+                   x   = c(max(x), 
+                           max(x) + 2),
+                   y   = rep(y[length(y)], 2)
+                 ),
+              line_dots) ) 
       } 
       if (type == "SF") {
         # Closed point at left of jump
         if (i > 1) {
-          points(x   = x[i],
-                 y   = y[i - 1],
-                 pch = 19,
-                 point_dots)
+          do.call(points,
+                  c(list(
+                    x   = x[i],
+                    y   = y[i - 1],
+                    pch = pchIN
+                  ),
+                 point_dots) )
         }
         # Open point at right of jump
-        points(x   = x[i],
-               y   = y[i],
-               pch = 1,
-               point_dots)
+        do.call( points,
+                 c(list(x   = x[i],
+                        y   = y[i],
+                        pch = pchOUT
+                        ),
+                   point_dots) )
         # Right tail
-        lines(x   = c(max(x), 
-                      max(x) + 2),
-              y   = rep(y[length(y)], 2),
-              lwd = 2)
+        do.call(lines,
+                c(list(
+                  x   = c(max(x),
+                          max(x) + 2),
+                  y   = rep(y[length(y)], 2)
+                  ),
+                  line_dots) )
       }
     }
   }
   if (type == "MF") {
-    plot(x    = x,
-         y    = y,
-         type = "n",
-         main = main_title,
-         las  = 1,
-         plot_dots)
+    do.call(plot,
+            c(list(
+              x    = x,
+              y    = y,
+              type = "n"
+            ),
+            plot_dots) )
     
-    lines(x   = x,
-          y   = y,
-          type = "h",
-          pch = 19,
-          line_dots)
-    points(x   = x,
-           y   = y,
-           pch = 19,
-           line_dots)
+    do.call(lines,
+            c(list( x   = x,
+                    y   = y,
+                    type = "h",
+                    lty = 2,
+                    pch = pchIN
+            ),
+          line_dots) )
+    do.call(points,
+            c(list(
+              x   = x,
+              y   = y,
+              pch = pchIN
+            ),
+           line_dots) )
   }
   
 }
