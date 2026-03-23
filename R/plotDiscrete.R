@@ -3,6 +3,9 @@ plotDiscrete <- function(x, px, type = "DF", pchIN = 19, pchOUT = 1, ...) {
   # "DF": distribution fn
   # "SF": survival function
   # "MF": PMF
+  # "QF": quantile function
+  # pchIN, pchOUT: the ploiting characters to show that an exact value
+  #                INcluded or OUTcluded 
   
   if ( !(type %in% c("DF", "MF", "SF", "QF") ) ) {
     stop('type  must be one of "DF", "SF", "MF" "QF"')
