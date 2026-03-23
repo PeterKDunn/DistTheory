@@ -2537,9 +2537,19 @@ For a mixed distribution, the empirical probability function combines both: a so
 
 :::{.example #RandomContinuousEH name="Empirical probability density"}
 In Example\ \@ref(exm:RandomContinuous), $20$ random numbers were generated from the continuous probability density function
-$f_X(x) =2 \exp(-2x)$ for $x > 0$.
+$f_X(x) = 2 \exp(-2x)$ for $x > 0$.
+To generate and display $n = 50$ random numbers in **R**:\index{hist()@\texttt{hist()}}
+
+```{r eval = FALSE}
+rnos <- runif(20)
+x <- quantileFn(x)   # Function as defined previously
+hist(x,
+     freq   = FALSE)
+```
+
 The empirical probability density function for increasing values of\ $n$ are show in Fig.\ \@ref(fig:EmpiricalPDFexp).
 The empirical probability function is closer to the actual probability density function as\ $n$ increases.
+
 :::
 
 
@@ -2576,6 +2586,34 @@ Consider generating random numbers from the discrete probability mass function
 $$
   p_X(x) = 0.6\cdot 0.4^x\quad\text{for $x = 0, 1, 2, \dots$}
 $$
+The distribution function is
+$$
+  F_X(x) = 1 - 0.4^{x + 1},
+$$
+so the quantile function is found by solving
+$$
+  1 - 0.4^{x + 1} \ge p.
+$$
+So the quantile function is
+$$
+  Q_X(p) =  \left\lceil
+            \frac{\log(1 - p)}{\log 0.4} - 1
+            \right\rceil
+$$
+where $\lceil x \rceil$ is the *ceiling* function: the smallest integer not less than\ $x$ (e.g., $\lceil\pi\rceil = 4$).
+
+
+To generate and display $n = 50$ random numbers in **R**:\index{barplot()@\texttt{barplot()}}\index{table()@\texttt{table()}}\index{ceiling()@\texttt{ceiling()}}
+
+```{r eval = FALSE}
+rnos <- runif(20)
+quanFn <- function(p) {
+  ceiling( log(1 - p)/log(0.4) - 1 ) 
+  }
+x <- quanFn(rnos)
+barplot( table(x))
+```
+
 The empirical probability mass function for increasing values of\ $n$ are show in Fig.\ \@ref(fig:EmpiricalPMFgeom).
 The empirical probability function is closer to the actual probability mass function as\ $n$ increases.
 :::
