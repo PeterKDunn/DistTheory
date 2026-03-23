@@ -4,8 +4,8 @@ plotDiscrete <- function(x, px, type = "DF", pchIN = 19, pchOUT = 1, ...) {
   # "SF": survival function
   # "MF": PMF
   
-  if ( !(type %in% c("DF", "MF", "SF") ) ) {
-    stop('type  must be one of "DF", "SF", "MF"')
+  if ( !(type %in% c("DF", "MF", "SF", "QF") ) ) {
+    stop('type  must be one of "DF", "SF", "MF" "QF"')
   }
   
   Fx <- cumsum(px)
@@ -16,20 +16,24 @@ plotDiscrete <- function(x, px, type = "DF", pchIN = 19, pchOUT = 1, ...) {
     col = "black",
     las = 1,
     main = if (type == "DF") {
-              "Distribution function"
-            } else if (type=="MF") {
-              "Prob. mass function"
-            } else if (type=="SF") {
-              "Survival function"
-            }, 
-    xlab = expression(italic(x)),
-    ylab =  if (type == "DF") {
-              "Dist. Fn"
-            } else if (type=="MF") {
-              "Prob. fn"
-            } else if (type=="SF") {
-              "Survival fn"
-            }
+      "Distribution function"
+    } else if (type == "MF") {
+      "Prob. mass function"
+    } else if (type == "SF") {
+      "Survival function"
+    } else if (type == "QF") {
+      "Quantile function"
+    },
+    ylab = if (type == "DF") {
+      "Dist. Fn"
+    } else if (type == "MF") {
+      "Prob. fn"
+    } else if (type == "SF") {
+      "Survival fn"
+    } else if (type == "QF") {
+      "Quantile"
+    },
+    xlab = expression(italic(x))
   )
   point_defaults <- list(col = "black",
                          cex = 1)
@@ -194,4 +198,62 @@ plotDiscrete <- function(x, px, type = "DF", pchIN = 19, pchOUT = 1, ...) {
            line_dots) )
   }
   
+  if (type == "QF") {
+    # p-values at which the quantile function jumps
+    # Q(p) = min{x : F(x) >= p}
+    p_vals <- c(0, Fx)   # jump points on probability axis
+    
+    do.call(plot,
+            c(list(
+              x    = c(0, 1),
+              y    = c(min(x), max(x)),
+              type = "n",
+              xlab = expression(italic(p)),
+              ylab = plot_dots$ylab,
+              main = plot_dots$main,
+              las  = plot_dots[["las"]]
+            ),
+            list()) )
+    
+    # Left tail: Q(p) = -Inf for p = 0, just show flat line at min(x)
+    do.call(lines,
+            c(list(x = c(0, p_vals[1] + 1e-9),
+                   y = c(x[1], x[1])),
+              line_dots))
+    
+    for (i in seq_along(x)) {
+      p_lo <- p_vals[i]
+      p_hi <- p_vals[i + 1]
+      
+      # Horizontal segment at height x[i]
+      do.call(lines,
+              c(list(x = c(p_lo, p_hi),
+                     y = c(x[i], x[i])),
+                line_dots))
+      
+      # Closed point at left of segment (Q is left-continuous... 
+      # actually right-continuous for the standard definition)
+      do.call(points,
+              c(list(x = p_lo,
+                     y = x[i],
+                     pch = pchIN),
+                point_dots))
+      
+      # Open point at right end (except last)
+      if (i < length(x)) {
+        do.call(points,
+                c(list(x = p_hi,
+                       y = x[i],
+                       pch = pchOUT),
+                  point_dots))
+      }
+    }
+    
+    # Right tail: closed point at p = 1
+    do.call(points,
+            c(list(x = 1,
+                   y = max(x),
+                   pch = pchIN),
+              point_dots))
+  }
 }
