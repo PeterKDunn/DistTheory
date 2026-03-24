@@ -2597,6 +2597,73 @@ $$
 
 
 
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:JointDiscreteEvenPrime).
+Consider rolling a single die.
+There two events are defined:
+
+* $E$: the number of even numbers rolled; and
+* $P$: the number of prime numbers rolled ($2$, $3$ and\ $5$ are the prime numbers).
+
+1. Form the joint probability mass function for $(E, P)$.
+2. Find the two marginal distributions.
+
+
+
+1. The joint PMF
+:::
+
+```{r}
+EP <- array(dim = c(2, 2))
+
+EP[1, ] <- c("1/6", "2/6")
+EP[2, ] <- c("2/6", "1/6")
+EP.cap <- "The joint PMF of $E$ and $P$"
+
+rownames(EP) <- c("$p = 0$",
+                  "$p = 1$")
+colnames(EP) <- c("$e = 0$",
+                  "$e = 1$")
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(EP,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = EP.cap) %>%
+     kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(EdTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               caption = EP.cap)
+}
+```
+
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:JointPDFa}
+1. $f_X(x) = x(1 - x^2)/2$ for $0 < x < 1$.
+2. $f_{X\mid Y=y}(x) = 2xy/(x(1-x^2))$ for $0<y<\sqrt{1 - x^2}$.
+3. $f_{X\mid Y=1/2}(x) = 3y/2$ for $0 < y < \sqrt{3}/2$.
+:::
+
+
+:::{.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:JointPDFb}
+1. $f_Y(y) = 2 + 2y - 3y^2/2$ for $0 < y < 1$.
+   $f_X(x) = 3x^2/2$ for $0<x<1$; $f_X(x) = x + (1/2)$ for $1 < x < 2$.
+2. $f_{Y\mid X=x}(y) = 2(x + y)/(3x^2)$ for $0<y<x$ and $0<x<1$; 
+   $f_{Y\mid X=x}(y) = 2(x + y)/(2x + 1)$ for $0<y<1$ and $1<x<2$. 
+3. $f_{Y\mid X=1}(x) = 2(1 = Y0/3$ for $0 < y < 1$.
+:::
 
 
 
@@ -6206,42 +6273,6 @@ for (cfg in configs) {
 
 
 
-:::{.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:MixedCPGreproductive).**
-Reproductive property of CP-G:
-
-```{r cpg_repro}
-n_r <- 50000
-S1 <- rcpg(n_r, lambda=2, alpha=1.5, beta=0.5)
-S2 <- rcpg(n_r, lambda=3, alpha=1.5, beta=0.5)
-T_sum <- S1 + S2  # should behave like CP-G(5, 1.5, 0.5)
-
-lam_T <- 5; alp_T <- 1.5; bet_T <- 0.5
-
-cat("--- T = S1 + S2 vs CP-G(5, 1.5, 0.5) theory ---\n")
-cat("E[T]:    theory =", lam_T*alp_T/bet_T,
-    "  sim =", round(mean(T_sum), 3), "\n")
-cat("Var(T):  theory =", lam_T*alp_T*(alp_T+1)/bet_T^2,
-    "  sim =", round(var(T_sum), 3), "\n")
-cat("Pr(T=0): theory =", round(exp(-lam_T),4),
-    "  sim =", round(mean(T_sum==0), 4), "\n")
-
-# CDF comparison
-x_pts <- quantile(T_sum, probs = seq(0.1, 0.9, 0.1))
-T_theory <- rcpg(n_r, lam_T, alp_T, bet_T)
-cat("\nCDF comparison at deciles:\n")
-df_cdf <- data.frame(
-  x      = round(x_pts, 2),
-  sim    = round(sapply(x_pts, function(x) mean(T_sum <= x)), 3),
-  theory = round(sapply(x_pts, function(x) mean(T_theory <= x)), 3)
-)
-print(df_cdf)
-```
-
-The CP-G is reproductive: $S_1 + S_2 \sim \text{CP-G}(\lambda_1+\lambda_2, \alpha, \beta)$ when $\alpha$ and $\beta$ are shared.
-:::
-
-
 
 
 :::{.answer data-latex=""}
@@ -6311,6 +6342,39 @@ $$
 
 This is the MGF of a CPG$(\lambda_1 + \lambda_2, \alpha, \beta)$ distribution. 
 Since the MGF uniquely determines the distribution, $T$ has a CPG$(\lambda_1 + \lambda_2, \alpha, \beta)$. 
+
+
+Reproductive property of CP-G:
+
+```{r cpg_repro}
+n_r <- 50000
+S1 <- rcpg(n_r, lambda=2, alpha=1.5, beta=0.5)
+S2 <- rcpg(n_r, lambda=3, alpha=1.5, beta=0.5)
+T_sum <- S1 + S2  # should behave like CP-G(5, 1.5, 0.5)
+
+lam_T <- 5; alp_T <- 1.5; bet_T <- 0.5
+
+cat("--- T = S1 + S2 vs CP-G(5, 1.5, 0.5) theory ---\n")
+cat("E[T]:    theory =", lam_T*alp_T/bet_T,
+    "  sim =", round(mean(T_sum), 3), "\n")
+cat("Var(T):  theory =", lam_T*alp_T*(alp_T+1)/bet_T^2,
+    "  sim =", round(var(T_sum), 3), "\n")
+cat("Pr(T=0): theory =", round(exp(-lam_T),4),
+    "  sim =", round(mean(T_sum==0), 4), "\n")
+
+# CDF comparison
+x_pts <- quantile(T_sum, probs = seq(0.1, 0.9, 0.1))
+T_theory <- rcpg(n_r, lam_T, alp_T, bet_T)
+cat("\nCDF comparison at deciles:\n")
+df_cdf <- data.frame(
+  x      = round(x_pts, 2),
+  sim    = round(sapply(x_pts, function(x) mean(T_sum <= x)), 3),
+  theory = round(sapply(x_pts, function(x) mean(T_theory <= x)), 3)
+)
+print(df_cdf)
+```
+
+The CP-G is reproductive: $S_1 + S_2 \sim \text{CP-G}(\lambda_1+\lambda_2, \alpha, \beta)$ when $\alpha$ and $\beta$ are shared.
 :::
 
 
