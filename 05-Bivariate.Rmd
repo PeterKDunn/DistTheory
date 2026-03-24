@@ -28,23 +28,23 @@ This chapter discusses the two-dimensional (bivariate) case.
 ## Bivariate random variables and probability distributions {#BivariateRVs}
 
 The *joint probability function* simultaneously describes how two random variables vary and interact.
-The set of all possible pairs of outcomes, the *joint range* (or *support*) of $(X, Y)$, denoted $\mathcal{R}_{X,Y}$, is a subset of the Euclidean plane $\mathbb{R}^2$.
-Each outcome $(X(s), Y(s))$ (usually written as $(X, Y)$) is represented as a point $(x, y)$ in this plane. 
-As with univariate distributions, discrete and continuous random vectors must be distinguished to determine how probabilities are assigned to these points.
+The set of all possible pairs of outcomes, the *joint range* (or *support*)\index{Range!joint} of $(X, Y)$, denoted $\mathcal{R}_{X,Y}$, is a subset of the Euclidean plane $\mathbb{R}^2$.
+Each outcome $(X(s), Y(s))$ (usually written as $(X, Y)$) is represented as a point $(x, y)$ in this plane, and is called a *random vector*.\index{Random vector}\index{Random variable!two-dimensional}
+As with univariate distributions, discrete and continuous random variables must be distinguished to determine how probabilities are assigned to these points.
 
 
 :::{.definition #RandomVector name="Random vector"}
 Let $X = X(s)$ and $Y = Y(s)$ be two functions, each assigning a real number to each sample point $s \in S$. 
 The pair $(X, Y)$ is called a two-dimensional random variable, or a random vector.
-More formally, we write $(X, Y): S \to \mathbb{R}^2$.
+More formally, write $(X, Y): S \to \mathbb{R}^2$.\index{Random vector}
 :::
 
 
 :::{.example #BVDiscreteEG name="Bivariate discrete"}
-Consider a random process where:
+Consider a random process where:\index{Random vector!discrete}
 
 1. *two* coins are tossed, and\ $X$ is the number of heads that show on the two coins; and
-2. *one* die is rolled repeatedly, and\ $Y$\ is the number of rolls needed to roll a `r knitr::include_graphics("Dice/die6.png", dpi=2000)`.
+2. *one* die is rolled repeatedly, and\ $Y$\ is the number of rolls needed to roll a `r knitr::include_graphics("Dice/die6.png", dpi=4000)`.
 
 $X$ is discrete with $\mathcal{R}_X = \{0, 1, 2\}$.
 $Y$ is discrete with a countably infinite range $\mathcal{R}_Y = \{ 1, 2, 3, \dots\}$.
@@ -59,8 +59,8 @@ When\ $X$ and\ $Y$ are discrete, a joint probability mass function (joint PMF) i
 
 
 :::{.definition #BivariatePMF name="Discrete joint probability mass function"}
-Let $(X, Y)$ be a $2$-dimensional random variable.
-The *joint probability mass function* (or joint PMF), denoted $p_{X, Y}(x, y)$, assigns a probability to each pair of outcomes $(x_i, y_j)$ such that $p_{X, Y}(x_i, y_j) = \Pr(X = x_i \cap Y = y_j)$.
+Let $(X, Y)$ be a $2$-dimensional random variable.\index{Random vector!discrete} 
+The *joint probability mass function* (or joint PMF),\index{Probability mass function!joint}  denoted $p_{X, Y}(x, y)$, assigns a probability to each pair of outcomes $(x_i, y_j)$ such that $p_{X, Y}(x_i, y_j) = \Pr(X = x_i \cap Y = y_j)$.
 This function must satisfy:
 \begin{align}
   p_{X, Y}(x, y) &\geq 0 \quad \text{for all } (x, y) \in \mathcal{R}_{X\times Y}\notag \\
@@ -74,8 +74,8 @@ The collection of all triples $\{(x_i, y_j, p_{X,Y}(x_i, y_j))\}$ for all $i, j$
 When both $X$ and $Y$ are continuous, a joint probability density function (joint PDF) is defined. 
 
 
-:::{.definition #BivariatePDF name="Continuous probability density function"}
-The *joint probability density function* (joint PDF) function of the pair of continuous random variables\ $X$ and\ $Y$ is a function $f_{X, Y}(x, y)$ such that:
+:::{.definition #BivariatePDF name="Continuous joint probability density function"}
+The *joint probability density function* (joint PDF) function of the pair of continuous random variables\ $X$ and\ $Y$ is a function $f_{X, Y}(x, y)$ such that:\index{Probability density function!joint}
 
 * $f_{X, Y}(x, y) \ge 0$ for all $(x, y) \in \mathcal{R}_{X\times Y}$, and 
 * The total volume under the surface is\ $1$:
@@ -89,69 +89,14 @@ $$
 :::
 
 
-```{r echo=FALSE, fig.align="center", out.width="100%", fig.width=9, fig.height=3.75, fig.cap="The joint PMF (left), a joint PDF (right)."}
-# Set up a 1x3 layout
-par(mfrow = c(1, 2),
-    mar = c(4, 4, 3, 1))
-
-# 1. DISCRETE JOINT (e.g., Two Dice)
-x_disc <- 1:6
-y_disc <- 1:6
-z_disc <- matrix(1/36, 
-                 nrow = 6, 
-                 ncol = 6)
-
-# Use 'symbols' to create a "bubble plot" where size = probability
-plot(expand.grid(x_disc, y_disc), 
-     pch = 19, 
-     cex = 2, 
-     col = "steelblue",
-     xlab = expression(italic(x)),
-     ylab = expression(italic(y)),
-     main = "Discrete joint PMF",
-     xlim = c(0, 7), 
-     ylim = c(0, 7), 
-     las = 1)
-grid()
-
-# 2. CONTINUOUS JOINT (Bivariate Normal)
-x_cont <- seq(-3, 3, 
-              length = 50)
-y_cont <- seq(-3, 3, 
-              length = 50)
-
-# Create a simple 2D Gaussian surface
-z_cont <- outer(x_cont, 
-                y_cont, 
-                function(x, y) (1/(2*pi)) * exp(-(x^2 + y^2)/2))
-
-image(x_cont, 
-      y_cont, 
-      z_cont, 
-      col = hcl.colors(12, 
-                       "YlGnBu", 
-                       rev = TRUE),
-      xlab = expression(italic(x)),
-      ylab = expression(italic(y)),
-      main = "Continuous joint PDF", 
-      las = 1)
-contour(x_cont, 
-        y_cont, 
-        z_cont, 
-        add = TRUE)
-```
-
-
-
 While not common, the case where one variable, say\ $X$, is continuous and the other, say\ $Y$, is discrete also occurs.
-A *mixed joint distribution* occurs when one variable (say $X$) is discrete and the other ($Y$) is continuous.
+This gives a *mixed joint distribution*.
 The total probability is still\ $1$ by using a hybrid approach:
 $$
   \sum_{x \in \mathcal{R}_X} \int_{-\infty}^{\infty} f_{X,Y}(x, y)  \, dy = 1
 $$
 where $f_{X,Y}(x, y)$ is the joint density-mass function.
-To fully understand the mixed joint distribution case, *conditional distributions* must first be studied (Sect.\ \@ref(ConditionalDistributions)), so this case is deferred until later (Sect.\ \@ref(MixedJointPF))
-
+To fully understand the mixed joint distribution case, *conditional distributions* must first be studied (Sect.\ \@ref(ConditionalDistributions)), so this case is deferred until later (Sect.\ \@ref(JointDensityMass)).
 
 
 :::{.example #BVDiscrete2A name="Bivariate discrete"}
@@ -167,7 +112,7 @@ The joint PMF can also be described using a table (Table\ \@ref(tab:Bivar1A)) or
 }`
 Then, for example,
 $$
-  \Pr( \{X = 1, Y = 0, 1\} ) = \frac{12}{47} + \frac{6}{47} + 0 = \frac{18}{47}.
+  \Pr( \{X = 1, Y = 0, 1\} ) = \frac{12}{47} + \frac{6}{47} = \frac{18}{47}.
 $$
 :::
 
@@ -256,16 +201,16 @@ if (knitr::is_html_output()) {
       col.grid = grey(0.9),
       lwd.panel = 1,
       lwd.grid = 1,
-    lty = 2
-)
-#  rgl::plot3d( # Plots the sticks from z=0 to the points
-#    add = TRUE,
-#    x = PMF1$x,
-#    y = PMF1$y, 
-#    z = PMF1$f, 
-#    col = plotColour, 
-#    type = "h") # Plot the line segments from z = 0 
+    lty = 2,
+    axes = FALSE
+  )
 }
+
+# Add manual axes with only ticks at 0, 1, 2
+rgl::axis3d('x', at = c(0, 1, 2), labels = c("0", "1", "2"))
+rgl::axis3d('y', at = c(0, 1, 2), labels = c("0", "1", "2"))
+rgl::axis3d('z')   # z can remain automatic
+
 ```
 
 
@@ -292,24 +237,20 @@ if (knitr::is_latex_output()) {
                     phi = 25,
                     theta = 30,
                     ticktype = "detailed",
+                    nticks = 3,
                     xlab = "X", 
                     ylab = "Y", 
                     zlab = "PMF",
-                    bty = "u", # User defined, so these only work when bty = "u":
+                    bty = "u",
                     col.axis = "black",
                     col.panel = "white",
                     col.grid = grey(0.9),
                     lwd.panel = 1,
                     lwd.grid = 1,
-                    lty = 2
+                    lty = 2,
+                    axes = TRUE
   ) 
-#  rgl::plot3d( # Plots the sticks from z = 0 to the points
-#    add = TRUE,
-#    x = PMF1$x,
-#    y = PMF1$y, 
-#    z = PMF1$f, 
-#    col = plotColour, 
-#    type = "h") # Plot the line segments from z = 0 
+
 }
 ```
 
@@ -482,16 +423,6 @@ z      <- array(1,
 
 
 
-
-
-
-
-
-
-
-
-
-
 :::{.example #BVDiscrete3 name="Bivariate discrete"}
 Consider a random process where *two* coins are tossed, and *one* die is rolled simultaneously (Example\ \@ref(exm:BVDiscreteEG)).
 Let\ $X$ be the number of heads that show on the two coins, and\ $Y$ the number on the die.
@@ -583,7 +514,7 @@ The ranges of\ $X$ and\ $Y$ are $\mathcal{R}_X = \{0, 1 ,2 \}$, $\mathcal{R}_Y =
 The probabilities in Table\ \@ref(tab:BVTwoDice) are $\Pr(X = x, Y = y)$ for the $(x, y)$ pairs in the range.
 
 The probabilities are found by realising we really have two repetitions of a simple random process with three possible outcomes, $\{5, 6, (\text{$5$ or $6$})^c \}$, with probabilities $\frac{1}{6}, \frac{1}{6}, \frac{2}{3}$, the same for each repetition.
-(Recall: $\overline{\text{$5$ or $6$}}$ means 'not ($5$ or\ $6$)'; see Def.\ \@ref(def:IntersectionUnionSubset).)
+(Recall: $(\text{$5$ or $6$})^c$ means 'not ($5$ or\ $6$)'; see Def.\ \@ref(def:IntersectionUnionSubset).)
 Of course the event $X = 2, Y = 1$ cannot occur in two trials, so has probability zero.
 :::
 
@@ -637,7 +568,7 @@ Example\ \@ref(exm:BVDiscreteTwoDice) is a special case of the *multinomial dist
 
 
 :::{.example #BVDiscreteBank name="Banks"}
-A bank operates both an ATM and a teller. 
+A bank operates both an ATM and an in-branch teller. 
 On a randomly selected day, let\ $X_1$ be the proportion of time the ATM is in use (at least one customer is being served or waiting to be served), and\ $X_2$ is the proportion of time the teller is busy.
 
 The set of possible values for\ $X_1$ and\ $X_2$ is the rectangle $R = \{(x_1, x_2)\mid 0 \le x_1 \le 1, 0 \le x_2 \le 1\}$.
@@ -675,11 +606,11 @@ Then,
 :::
 
 
-
 ## Marginal distributions {#MarginalDistributions}
 
-With each two-dimensional random variable $(X, Y)$ two one-dimensional random variables, namely\ $X$ and\ $Y$, can be described. 
-We can find the probability distributions of each of\ $X$ and\ $Y$ separately.
+\index{Marginal distribution|(}
+With each two-dimensional random variable $(X, Y)$, two one-dimensional random variables ($X$ and\ $Y$) can be described. 
+The probability distributions of each of\ $X$ and\ $Y$ can be found separately.
 
 In the case of a discrete random vector $(X, Y)$, the event $X = x_i$ is the union of the mutually exclusive events
 $$
@@ -733,7 +664,7 @@ $$
 The marginal probability density function for\ $X$ is
 \begin{align*}
    f_X(x)
-   = \int_0^2\left(x^2 + \frac{xy}{3}\right) dy 
+   = \int_0^2\left(3x^2 + \frac{xy}{3}\right) dy 
    &= \left.x^2y + \frac{xy^2}{6}\right|_{y = 0}^2\\
    &= 2x^2 + \frac{2x}{3}\quad\text{for $0 \leq x \leq 1$}.
 \end{align*}
@@ -871,10 +802,12 @@ $$
 $$
 In this example, the marginal distribution is easily found from the total column of Table\ \@ref(tab:JointPF).
 :::
+\index{Marginal distribution|)}
 
 
 ## Conditional distributions {#ConditionalDistributions}
 
+\index{Conditional distribution|(}
 Consider $(X, Y)$ with joint probability function as in Example\ \@ref(exm:BVDiscrete2A), with marginal distributions of\ $X$ and\ $Y$ as shown in Table\ \@ref(tab:JointPFmarginals).
 
 
@@ -940,12 +873,12 @@ So, for each $x\in \mathcal{R}_X$ we could find $\Pr(X = x, Y = 1)$ and this is 
 
 :::{.definition #BVDiscreteConditional name="Bivariate discrete conditional distributions"}
 For a discrete random vector $(X, Y)$ with probability function $p_{X, Y}(x, y)$ the *conditional probability distribution* of\ $X$ given $Y = y$ is defined by
-\begin{align}
-   p_{X \mid Y}(x \mid Y = y)
+\begin{align*}
+   p_{X \mid Y=y}(x)
    &= \Pr(X = x \mid Y = y)\\
    &= \frac{\Pr(X = x, Y = y)}{\Pr(Y = y)}\\
    &= \frac{p_{X, Y}(x, y)}{p_Y(y)}
-\end{align}
+\end{align*}
 for $x \in \mathcal{R}_X$ and provided $p_Y(y) > 0$.
 :::
 
@@ -955,15 +888,15 @@ The continuous case is analogous.
 
 :::{.definition #BVContinuousConditional name="Bivariate continuous conditional distributions"}
 If $(X, Y)$ is a continuous $2$-dimensional random variable with joint PDF $f_{X, Y}(x, y)$ and respective marginal probability density functions $f_X(x)$, $f_Y(y)$, then the *conditional probability distribution* of\ $X$ given $Y = y$ is defined by
-\begin{equation}
-   f_{X \mid Y}(x \mid Y = y)
+$$
+   f_{X \mid Y=y}(x)
    = \frac{f_{X, Y}(x, y)}{f_Y(y)}
-\end{equation}
+$$
 for $x \in \mathcal{R}_X$ and provided $f_Y(y) > 0$.
 :::
 
 
-The above conditional probability density functions satisfy the requirements for a univariate PDF; that is, $f_{X \mid Y}(x \mid y) \ge 0$ for all\ $x$ and $\int_{\mathcal{R}_X} f_{X\mid Y}(x\mid y)\,dx = 1$.
+The above conditional probability density functions satisfy the requirements for a univariate PDF; that is, $f_{X \mid Y=y}(x) \ge 0$ for all\ $x$ and $\int_{\mathcal{R}_X} f_{X\mid Y=y}(x)\,dx = 1$.
 
 
 :::{.example #BVcontinuousMarginal2 name="Bivariate continuous conditional distributions"}
@@ -980,13 +913,13 @@ The marginal probability density functions of\ $X$ and\ $Y$ are
 \end{align*}
 Hence, the conditional distribution of $X \mid Y = y$ is
 $$
-   f_{X\mid Y}(x \mid Y = y) 
+   f_{X\mid Y=y}(x) 
    = \frac{(3x^2 + xy)/3}{(2 + y)/6}
    = \frac{2x(3x + y)}{2 + y} \quad\text{for $0 \leq x \leq 1$},
 $$
 and the conditional distribution of $Y \mid X = x$ is
 $$
-   f_{Y \mid X}(y \mid X = x) 
+   f_{Y \mid X=x}(y) 
    = \frac{3x + y}{2(3x + 1)}\quad\text{for $0 \leq y \leq 2$}.
 $$
 Both these conditional density functions are valid density functions (verify!).
@@ -1015,7 +948,7 @@ plot(fy(y) ~ y,
      xlab = expression(italic(y)),
      ylab = "Density",
      las = 1,
-     lwd = 2,
+     lwd = 3,
      ylim = c(0, 1),
      main = expression(atop(bold(Marginal~distribution),
                             bold(of~italic(Y)))) )
@@ -1035,7 +968,7 @@ plot(fyx(y, x = 0.1) ~ y,
      xlab = expression(italic(y)),
      ylab = "Density",
      las = 1,
-     lwd = 2,
+     lwd = 3,
      ylim = c(0, 1),
      main = expression(atop(bold(Conditional~distribution),
                             bold(of~italic(Y)~"|"~italic(X)==0.1) ) ) )
@@ -1047,7 +980,7 @@ plot(fyx(y, x = 0.9) ~ y,
      xlab = expression(italic(y)),
      ylab = "Density",
      las = 1,
-     lwd = 2,
+     lwd = 3,
      ylim = c(0, 1),
      main = expression(atop(bold(Conditional~distribution),
                             bold(of~italic(Y)~"|"~italic(X)==0.9) ) ) )
@@ -1056,7 +989,7 @@ grid(nx = NULL)
 ```
 
 
-To interpret the conditional distribution, for example $f_{X \mid Y = y}(x \mid y)$, consider slicing through the surface $f_{X, Y}(x, y)$
+To interpret the conditional distribution, for example $f_{X \mid Y = y}(x)$, consider slicing through the surface $f_{X, Y}(x, y)$
 with the plane $y = 0.5$ say 
 (as shown in
 `r if (knitr::is_latex_output()) {
@@ -1067,7 +1000,7 @@ with the plane $y = 0.5$ say
 The intersection of the plane with the surface is proportional to a $1$-dimensional PDF. 
 This is $f_{X, Y}(x, c)$, which will not, in general, be a density function since the area under this curve will be $f_Y(c)$. 
 Dividing by the constant $f_Y(c)$ ensures the area under $\displaystyle\frac{f_{X,Y}(x,c)}{f_Y(c)}$ is one. 
-This is a one-dimensional PDF, of\ $X$ given $Y = c$; that is $f_{X \mid Y = c}(x\mid c)$.
+This is a one-dimensional PDF, of\ $X$ given $Y = c$; that is $f_{X \mid Y = c}(x)$.
 
 
 ```{r joint-pdf-latex, echo=FALSE, eval=knitr::is_latex_output(), fig.align='center', fig.width=4, out.width='45%', fig.cap="The joint PDF."}
@@ -1193,52 +1126,37 @@ plot_ly() |>
 
 
 
-
-
-
-
-
-
 :::{.example #BVDiscreteConditional name="Bivariate discrete conditional distributions"}
-UPDATE FOR CONSISTENCY!!!!!!!!!!!!!!!!!!!!
-Maybe useful:
-
-$$p_{X\mid Y}(x \mid Y=0) = \frac{p_{X,Y}(x,0)}{p_Y(0)} = \frac{p_{X,Y}(x,0)}{36/47}$$
-giving $p(0\mid Y=0) = 6/36$, $p(1\mid Y=0) = 12/36 = 1/3$, $p(2\mid Y=0) = 18/36 = 1/2$.
-
-
-
--
-
-Consider again the random process in Example\ \@ref(exm:BVDiscrete3). 
-The conditional distribution for\ $Y$ given $X = 0$ can be found from Table\ \@ref(tab:JointPFmarginals).
-First, $p_{X}(x)$, is needed, which was found in Example\ \@ref(exm:BVDiscreteMarginal3). 
-Then,
-\begin{align*}
-   p_{Y\mid X}(y\mid X = 0)
-   &= \frac{p_{X, Y}(0, y)}{p_{X}(0)} \\
-   &= \frac{p_{X, Y}(0, y)}{1/4},
-\end{align*}
-from which we can deduce
+Consider again the joint distribution in Example\ \@ref(exm:BVDiscrete2A),
+with marginal distributions shown in Table\ \@ref(tab:JointPFmarginals).
+The conditional distribution of\ $X$ given $Y = 0$ is
 $$
-   p_{Y \mid X = 0}(y \mid X = 0) =
-   \begin{cases}
-      \frac{1/24}{1/4} = 1/6 & \text{for $y = 1$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $y = 2$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $y = 3$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $y = 4$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $y = 5$};\\
-      \frac{1/24}{1/4} = 1/6 & \text{for $y = 6$}.\\
-   \end{cases}
+  p_{X\mid Y=0}(x) 
+  = \frac{p_{X,Y}(x,0)}{p_Y(0)} 
+  = \frac{p_{X,Y}(x,0)}{36/47}
 $$
-The conditional distribution $p_{Y\mid X = x}(y\mid x)$ is a probability function for\ $Y$ (verify!).
-Since\ $Y$ was the number of the top face of the die, this is exactly as we should expect.
+giving $p_{X\mid Y=0}(0) = 6/36$, $p_{X\mid Y=0}(1) = 12/36 = 1/3$, $p_{X\mid Y=0}(2) = 18/36 = 1/2$.
 :::
 
+
+:::{.example #BVDiscreteConditional2 name="Bivariate discrete conditional distributions"}
+Consider again the random process in Example\ \@ref(exm:BVDiscrete3).
+The conditional distribution of\ $Y$ given $X = 0$ is
+\begin{align*}
+   p_{Y\mid X=0}(y)
+   &= \frac{p_{X, Y}(0, y)}{p_{X}(0)} 
+    = \frac{p_{X, Y}(0, y)}{1/4} 
+    = \frac{1}{6}\quad\text{for $y = 1, 2, 3, 4, 5, 6$}.
+\end{align*}
+Since\ $Y$ is the number on the top face of the die, this result is exactly as expected---knowing the number of heads on the coins tells us nothing about the die.
+:::
+
+\index{Conditional distribution|)}
 
 
 ## Joint density--mass function {#JointDensityMass}
 
+\index{Density--mass function|(}
 When one variable is discrete and the other is continuous, the joint probability function combines a PMF and a PDF into a joint density--mass function. 
 As shown in Sect.\ \@ref(BivariateRVs), the total probability is one via a hybrid sum--integral. 
 Using conditional distributions (Sect.\ \@ref(ConditionalDistributions)), the joint function can be factored into a marginal probability and a conditional density.
@@ -1310,8 +1228,106 @@ legend("bottom",
                   "Claims"))
 ```
 
+
+:::{.definition #BivariateProbFunctionMixed name="Mixed bivariate probability function"}
+Let $(X, Y)$ be a random vector where\ $X$ is *continuous* with range $S_X \subseteq \mathbb{R}$, and\ $Y$ is *discrete* with range $S_Y = \{y_1, y_2, \dots\}$.
+A function $f_{X,Y}(x, y_j)$ defined on $\mathcal{R}_{X,Y} = S_X \times S_Y$ is a *joint density--mass function* of $(X, Y)$ if:
+
+1. $f_{X,Y}(x, y_j) \geq 0$ for all $(x, y_j) \in \mathcal{R}_{X,Y}$, and
+2. $\displaystyle\sum_{j} \int_{S_X} f_{X,Y}(x, y_j)\, dx = 1$.
+:::
+
+
+In practice $f_{X,Y}$ is constructed via the multiplication rule:
+$$
+  f_{X,Y}(x, y_j) = f_{X \mid Y=y_j}(x) \cdot p_Y(y_j)
+$$
+which automatically satisfies both conditions above.
+
+The probability of any event $A \subseteq S_X$ and $y_j \in S_Y$ is
+$$
+  \Pr(X \in A, Y = y_j) = \int_A f_{X,Y}(x, y_j)\, dx.
+$$
+
+
+
+:::{.example #MixedRV name="Mixed random variable"}
+Suppose a random vector $(X, Y)$ is defined so that $Y \in \{1, 2\}$ with
+$$
+  p_Y(1) = 0.4, \quad p_Y(2) = 0.6.
+$$
+Conditional on $Y = 1$, the probability density function of\ $X$ is
+$$
+  f_{X \mid Y = 1}(x) = 
+  \begin{cases}
+    1 & 0 \le x \le 1, \\
+    0 & \text{otherwise,}
+  \end{cases}
+$$
+and conditional on $Y = 2$, the probability density function of\ $X$ is
+$$
+  f_{X \mid Y = 2}(x) 
+  = 
+  \begin{cases}
+    1/2   & 0 \le x \le 2, \\
+    0     & \text{otherwise.}
+  \end{cases}
+$$
+Then the joint density--mass function is
+$$
+  f_{X, Y}(x, y) 
+  = f_{X \mid Y=y}(x) \cdot p_Y(y)
+$$
+or, more explicitly:
+$$
+  f_{X,Y}(x,1) 
+  =
+  \begin{cases} 
+    0.4 & 0 \le x \le 1 \\ 
+    0 & \text{otherwise} 
+  \end{cases} 
+  \qquad 
+  f_{X,Y}(x,2) 
+  = \begin{cases} 
+    0.3 & 0 \le x \le 2 \\ 
+    0 & \text{otherwise} 
+\end{cases}
+$$
+Notice that 
+$$
+  \sum_{y \in \{1,2\}} \int_{-\infty}^{\infty} f_{X,Y}(x,y)\, dx
+  = \int_0^1 0.4 \, dx + \int_0^2 0.3 \, dx
+  = 0.4 + 0.6 = 1
+$$
+as required.
+
+Then, for instance, we can find $\Pr(X \le 0.5, Y = 2)$:
+$$
+  \Pr(X \le 0.5, Y = 2) 
+  = \int_0^{0.5} f_{X, Y}(x, 2)\, dx
+  = \int_0^{0.5} 0.3\, dx
+  = 0.15.
+$$
+
+The marginal distribution of\ $X$ is
+$$
+  f_X(x) 
+  = \sum_j f_{X, Y} (x, y) 
+  =
+  \begin{cases}
+    0.7  & \text{for $0 \le x \le 1$} \\
+    0.3  & \text{for $1 < x \le 2$.}
+\end{cases}
+$$
+
+:::
+
+\index{Density--mass function|)}
+
+
 ## Joint distribution function {#BivariateDistributionFunction}
 
+\index{Distribution function!joint|(}
 The (cumulative) distribution function represents a sum of probabilities, or a volume under a surface, is denoted by $F_{X, Y}(x, y)$, and defined as follows.
 
 
@@ -1425,10 +1441,13 @@ $$
      \end{cases}
 $$
 :::
+\index{Distribution function!joint|)}
+
 
 
 ## Independent random variables {#BivariateIndependentRVs}
 
+\index{Independent random variables|(}
 Recall that events\ $A$ and\ $B$ are independent if, and only if,
 $$
    \Pr(A \cap B) = \Pr(A)\Pr(B).
@@ -1564,7 +1583,7 @@ Thus we have $f_X(x) \cdot f_Y(y) = f(x,y)$, so\ $X$ and\ $Y$ are independent.
 :::{.example #BVDiscreteIndependence2 name="Bivariate discrete: independence"}
 Consider again the random process in Example\ \@ref(exm:BVDiscrete3). 
 The marginal distribution of\ $X$ was found in Example\ \@ref(exm:BVDiscreteMarginal3). 
-The marginal distribution of\ $Y$ is (CHECK!!!!!!)
+The marginal distribution of\ $Y$ is
 $$
   p_Y(y) 
   = \sum_{x = 0}^{2} p_{X,Y}(x,y) 
@@ -1616,7 +1635,7 @@ the random variables\ $X$ and\ $Y$ are *not independent*.
 
 The conditional distribution of\ $X$ given $Y = y$ is
 \begin{align*}
-   f_{X \mid Y = y}(x \mid y)
+   f_{X \mid Y = y}(x)
    &= \frac{ f_{X, Y}(x, y)}{ f_{Y}(y)} \\
    &= \frac{ (2/7) (x + 2y)}{ (1/7)(1 + 4y)}\\
    &= \frac{ 2 (x + 2y)}{ 1 + 4y}
@@ -1625,14 +1644,14 @@ for $0 < x < 1$ and any given value of $1 < y < 2$.
 (Again, this conditional density must be a valid probability density function.) 
 So, for example,
 $$
-   f_{X \mid Y}(x\mid Y = 1.5)
+   f_{X \mid Y = 1.5}(x)
    = \frac{ 2 (x + 2\times 1.5)}{ 1 + (4\times 1.5)}
    = \frac{2}{7}(x + 3)
 $$
 for $0 < x < 1$ and is zero elsewhere. 
 And,
 $$
-   f_{X\mid Y}(x \mid Y = 1)
+   f_{X\mid Y = 1}(x)
    = \frac{ 2 (x + 2\times 1)}{ 1 + (4\times 1)}
    = \frac{2}{5}(x + 2)
 $$
@@ -1674,116 +1693,8 @@ lines( x = c(0, 1, 0, 0),
        y = c(1, 1, 0, 1),
        lwd = 2)
 ```
+\index{Independent random variables|(=)}
 
-
-## Mixed joint probability functions {#MixedJointPF}
-
-So far, the bivariate distributions have included the cases of two discrete or two continuous random variables.
-However, it is also possible for one variable, say\ $X$, to be continuous and the other, say\ $Y$, to be discrete.
-
-
-:::{.definition #BivariateProbFunctionMixed name="Mixed bivariate probability function"}
-Let $(X, Y)$ be a random vector where\ $X$ is *continuous* with range $S_X \subseteq \mathbb{R}$, and\ $Y$ is *discrete* with range $S_Y = \{y_1, y_2, \dots\}$.
-A function $f_{X,Y}(x, y_j)$ defined on $\mathcal{R}_{X,Y} = S_X \times S_Y$ is a *joint density--mass function* of $(X, Y)$ if:
-
-1. $f_{X,Y}(x, y_j) \geq 0$ for all $(x, y_j) \in \mathcal{R}_{X,Y}$, and
-2. $\displaystyle\sum_{j} \int_{S_X} f_{X,Y}(x, y_j)\, dx = 1$.
-:::
-
-
-In practice $f_{X,Y}$ is constructed via the multiplication rule:
-$$
-  f_{X,Y}(x, y_j) = f_{X \mid Y}(x \mid y_j) \cdot p_Y(y_j)
-$$
-which automatically satisfies both conditions above.
-
-The probability of any event is then given by:
-$$
-  \Pr(X \in A,\, Y = y_j) = \int_A f_{X,Y}(x, y_j)\, dx.
-$$
-
-
-In addition, the total probability is one:
-$$
-  \sum_{j\in S_Y} \int_{S_X} f_{X,Y}(x, y_j)\, dx = 1.
-$$
-The probability of any event $A \subseteq S_X$ and $y_j \in S_Y$ is
-$$
-  \Pr(X \in A, Y = y_j) = \int_A f_{X,Y}(x, y_j)\, dx.
-$$
-
-
-
-:::{.example #MixedRV name="Mixed random variable"}
-Suppose a random vector $(X, Y)$ is defined so that $Y \in \{1, 2\}$ with
-$$
-  p_Y(1) = 0.4, \quad p_Y(2) = 0.6.
-$$
-Conditional on $Y = 1$, the probability density function of\ $X$ is
-$$
-  f_{X \mid Y}(x \mid Y = 1) = 
-  \begin{cases}
-    1 & 0 \le x \le 1, \\
-    0 & \text{otherwise,}
-  \end{cases}
-$$
-and conditional on $Y = 2$, the probability density function of\ $X$ is
-$$
-  f_{X \mid Y}(x \mid Y = 2) 
-  = 
-  \begin{cases}
-    1/2   & 0 \le x \le 2, \\
-    0     & \text{otherwise.}
-  \end{cases}
-$$
-Then the joint density--mass function is
-$$
-  f_{X, Y}(x, y) 
-  = f_{X \mid Y}(x \mid y) \cdot p_Y(y)
-$$
-or, more explicitly: CHECK!!!!!!!!!!!!!!!!
-$$
-  f_{X,Y}(x,1) 
-  =
-  \begin{cases} 
-    0.4 & 0 \le x \le 1 \\ 
-    0 & \text{otherwise} 
-  \end{cases} 
-  \qquad 
-  f_{X,Y}(x,2) 
-  = \begin{cases} 
-    0.3 & 0 \le x \le 2 \\ 
-    0 & \text{otherwise} 
-\end{cases}
-$$
-Notice that 
-$$
-  \sum_{y \in \{1,2\}} \int_{-\infty}^{\infty} f_{X,Y}(x,y)\, dx
-  = \int_0^1 0.4 \, dx + \int_0^2 0.3 \, dx
-  = 0.4 + 0.6 = 1
-$$
-as required.
-
-Then, for instance, we can find $\Pr(X \le 0.5, Y = 2)$:
-$$
-  \Pr(X \le 0.5, Y = 2) 
-  = \int_0^{0.5} f_{X, Y}(x, 2)\, dx
-  = \int_0^{0.5} 0.3\, dx
-  = 0.15.
-$$
-
-The marginal distribution of\ $X$ is
-$$
-  f_X(x) 
-  = \sum_j f_{X, Y} (x, y) 
-  =
-  \begin{cases}
-    0.7  & \text{for $0 \le x \le 1$} \\
-    0.3  & \text{for $1 < x \le 2$.}
-\end{cases}
-$$
-
-:::
 
 
 ## Statistical computing with bivariate distributions {#BVStatisticalComputing}
@@ -1801,7 +1712,7 @@ EG1[3, ] <- c(0.2, 0.1)
 row.names(EG1) <- c("$x = 1$",
                     "$x = 2$",
                     "$x = 3$")
-EG1.caption <- "The bivariate distribution function for $X$ and $Y$."
+EG1.caption <- "The bivariate probability function for $X$ and $Y$."
 if( knitr::is_latex_output() ) {
   knitr::kable(EG1,
                format = "latex",
@@ -2113,15 +2024,15 @@ for $1 < x < 2$ and $-1 < y < 1$.
 :::{.exercise #MixedXY}
 A random vector $(X, Y)$ is defined so that 
 $$
-  \Pr(X = 1) = 0.2;
-  \Pr(X = 2) = 0.3;
+  \Pr(X = 1) = 0.2;\quad
+  \Pr(X = 2) = 0.3;\quad
   \Pr(X = 3) = 0.5.
 $$
 Then,
 \begin{align*}
-  f_{Y\mid X = 1}(y\mid X = 1) &= 1\quad\text{for $0 < y < 1$};\\
-  f_{Y\mid X = 2}(y\mid X = 2) &= 0.5\quad\text{for $0 < y < 2$};\\
-  f_{Y\mid X = 3}(y\mid X = 3) &= 1\quad\text{for $1 < y < 2$}.
+  f_{Y\mid X = 1}(y) &= 1\quad\text{for $0 < y < 1$};\\
+  f_{Y\mid X = 2}(y) &= 0.5\quad\text{for $0 < y < 2$};\\
+  f_{Y\mid X = 3}(y) &= 1\quad\text{for $1 < y < 2$}.
 \end{align*}
 
 1. Determine the joint density--mass function.
@@ -2131,13 +2042,13 @@ Then,
 :::{.exercise #MixedXY2}
 A random vector $(X, Y)$ is defined so that 
 $$
-  \Pr(X = -1) = 0.3;
+  \Pr(X = -1) = 0.3;\quad
   \Pr(X = 1) = 0.7.
 $$
 Then,
 \begin{align*}
-  f_{Y\mid X = -1}(y\mid X = -1) &= 0.5\quad\text{for $-1 < y < 1$};\\
-  f_{Y\mid X =  1}(y\mid X = 1)  &= 0.25\quad\text{for $-2 < y < 2$}.
+  f_{Y\mid X = -1}(y)  &= 0.5\quad\text{for $-1 < y < 1$};\\
+  f_{Y\mid X =  1}(y)  &= 0.25\quad\text{for $-2 < y < 2$}.
 \end{align*}
 
 1. Determine the joint density--mass function.
@@ -2169,7 +2080,7 @@ For what value of\ $k$ is $f(x,y) = kxy$ (for $0 \le x \le 1$; $0 \le y \le 1$, 
 :::{.exercise #Marginal2}
 For the random vector $(X, Y)$, the conditional PDF of\ $Y$ given $X = x$ is
 $$
-  f_{Y \mid X = x}(y\mid x) = \frac{2(x + y)}{2x + 1},
+  f_{Y \mid X = x}(y) = \frac{2(x + y)}{2x + 1},
 $$
 for $0 < y <1$.
 The marginal PDF of\ $X$ is given by
@@ -2345,4 +2256,76 @@ $$
 :::
 
 
+:::{.exercise #JointPDFa}
+Consider the joint probability density function
+$$
+  f_{X, Y} = xy
+$$
+defined over the shaded region in Fig.\ \@ref(fig:TwoRegions) (left panel).
+
+1. Find the two marginal distributions.
+2. Find the conditional distribution $X\mid Y=y$.
+3. Find the conditional distribution $X\mid Y=1/2$.
+:::
+
+
+
+:::{.exercise #JointPDFb}
+Consider the joint probability density function
+$$
+  f_{X, Y} = x + y
+$$
+defined over the shaded region in Fig.\ \@ref(fig:TwoRegions) (right panel).
+
+1. Find the two marginal distributions.
+2. Find the conditional distribution $Y\mid X=x$.
+3. Find the conditional distribution $Y\mid X=1$.
+:::
+
+
+
+```{r TwoRegions, echo=FALSE, fig.align="center", fig.cap="Two regions over which joint probability density functions are defined", out.width='90%', fig.width=8}
+par(mfrow = c(1, 2))
+
+x <- seq(0, 1,
+         length = 100)
+y <- sqrt(1 - x^2)
+
+plot(y ~ x,
+     lwd = 2,
+     las = 1,
+     asp = 1,
+     type = "l",
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y)),
+     main = "An bivariate region"
+     )
+
+
+###
+
+
+xA <- seq(0, 1,
+         length = 100)
+yA <- xA
+xB <- c(1, 2)
+yB <- c(1, 1)
+polygon(x = c(x, 0),
+        y = c(y, 0),
+        col = "grey")
+plot(yA ~ xA,
+     lwd = 2,
+     las = 1,
+     type = "l",
+     xlim = c(0, 2),
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y)),
+     main = "An bivariate region"
+     )
+lines(yB ~ yB,
+      lwd = 2)
+polygon(x = c(0, 1, 2, 2, 0),
+        y = c(0, 1, 1, 0, 0),
+        col = "grey")
+```
 
