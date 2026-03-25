@@ -1,0 +1,668 @@
+## Censored model {#CensoredModels}
+\index{Censored models|(}
+
+### Definitions {#CensoredModelsDefinitions}
+
+Censored model assume a distribution for\ $Y$, such as a normal (or other continuous) distribution, but the value cannot always be observed exactly.
+Commonly, the value of the random variable is only observed when it exceeds some threshold (typically zero). 
+Below that threshold, the threshold vaklue is recorded.
+For example, daily rainfall in Australia less than $0.2\mms$ is recorded as zero rainfall; rainfall amount less than this cannot be measured.
+
+Censoring\index{Censoring} can occur at the lower end of the scale (left censoring, where values below a threshold are unobserved) or the upper end (right censoring, where values above a threshold are unobserved). 
+Right censoring\index{Censoring!right} is common in survival analysis, when individuals live beyond the end if the study; left censoring\index{Censoring!left} arises naturally when instruments cannot record below a detection limit.
+
+
+:::{.definition #Censoring name="Censoring"}
+  A random variable\ $Y$ is censored if its exact value is only observed when it falls within some interval $[L, U]$; otherwise, only the bound that was exceeded is recorded.\index{Censoring}
+  
+  *Left censoring*\index{Censoring!left} occurs when there is a finite lower threshold\ $L$ and no upper censoring: values below\ $L$ are unobserved and recorded as\ $L$.
+  For left censoring at\ $L$:
+    $$
+    Y^\text{obs} 
+  = 
+    \begin{cases}
+  L & \text{if $Y \le L$};\\
+  Y & \text{if $L > Y$}.
+  \end{cases}
+  $$
+    
+    
+    *Right censoring*\index{Censoring!right} occurs when there is a finite upper threshold\ $U$ and no lower censoring: values above\ $U$ are unobserved and recorded as\ $U$.
+  For right censoring at\ $L$:
+    $$
+    Y^\text{obs} 
+  = 
+    \begin{cases}
+  Y & \text{if $Y < U$};\\
+  U & \text{if $U \ge Y$}.
+  \end{cases}
+  $$
+    :::
+    
+    
+    One specific censored model is a *Tobit model*\index{Tobit model}.
+  A Tobit model assumes normal distribution,\index{Nornal distribution} left-censored\index{Censoring!left} at zero (i.e., $L = 0$).
+  We will focus on the left-censored case where $L = 0$, but the underlying distribution is not necessarily a normal distribution (CHECK!).
+  
+  
+  :::{.example #TobitAlcoholSpend name="Latent variables and censoring"}
+    FIX and change (Fig.\ \@ref(fig:AlcoholSpend)).
+    :::
+      
+      ```{r AlcoholSpend, echo=FALSE, fig.align="center", fig.cap="Left: the latent variable\\ $Y$, the desire to buy alcohol. Right: the observed variable\\ $X$, the average weekly spend on alcohol. The solid dot is the sum of all probabilities for which $Z \\le 0$.", fig.width=8, fig.height=4, out.width="100%"}
+    par(mfrow = c(1, 2))
+    
+    ############### Latent
+    zz <- seq(-3, 3.5, 
+              length = 1000) + 1 # 1 is the ncp
+    z <- zz * 15
+    
+    fz <- dt(zz, 
+             df = 4, 
+             ncp = 1)
+    
+    plot(fz ~ z,
+         type = "l",
+         xlim = range(z),
+         ylim = c(0, max(fz)),
+         lwd = 3,
+         col = plotColour1,
+         axes = FALSE,
+         main = expression(atop(Latent~variable~italic(Y)*":",
+                                Desire~to~buy~alcohol)),
+         xlab = expression(Latent~variable~italic(Y)),
+         ylab = expression(Probability~fn.)
+    )
+    lines(fz[z<0] ~ z[z<0],
+          lwd = 3,
+          col = "grey")
+    axis(side = 1)
+    box()
+    abline(h = 0,
+           col = "grey")
+    abline(v = 0,
+           lty = 2,
+           col = "grey",
+           lwd = 2)
+    
+    text(x = -18,
+         y = max(fz) * 0.75, 
+         label = "Aversion\nto buying\nalcohol",
+         cex = 0.9)
+    text(x = 45,
+         y = max(fz) * 0.75, 
+         label = "Propensity\nto buying\nalcohol",
+         cex = 0.9)
+    
+    
+    ############### Observed
+    y0 <- pt( 0, 
+              df = 4,
+              ncp = 1)
+    
+    plot(fz[z >= 0] ~ z[z >= 0],
+         xlim = range(z),
+         ylim = c(0, max(fz)),
+         type = "l",
+         lwd = 3,
+         col = plotColour1,
+         axes = FALSE,
+         main = expression(atop(Observed~variable~italic(X)*":",
+                                Average~weekly~spend~on~alcohol)),
+         xlab = expression(Observed~variable~italic(X)),
+         ylab = expression(Probability~fn.)
+    )
+    abline(h = 0,
+           col = "grey")
+    axis(side = 1)
+    axis(side = 2,
+         at = round(y0, 2),
+         las = 2)
+    box()
+    
+    # Grey where latent variable is less than zero
+    lines(x = z[z < 0],
+          y = fz[z < 0],
+          col = "grey",
+          lwd = 2,
+          lty = 3)
+    
+    abline(v = 0,
+           lty = 2,
+           col = "grey",
+           lwd = 2)
+    
+    # Points for Y = 0
+    points(x = 0,
+           y = y0,
+           pch = 19)
+    
+    #points(x = Z_to_Y(0),
+    #       y = dt(0, 
+    #              df = 4,
+    #              ncp = 1),
+    #       pch = 1)
+    text(x = 28,
+         y = max(fz)/5,
+         label = "Prob. that no\nalcohol purchased",
+         pos = 1,
+         cex = 0.9)
+    arrows(x0 = 28,
+           y0 = max(fz)/5,
+           x1 = 0,
+           y1 = pt(0, 
+                   df = 4,
+                   ncp = 1),
+           angle = 15,
+           length = 0.15)
+    
+    ```
+    
+    
+    In this context, the value of the observed variable\ $X$ is said to be *censored*.
+    
+    
+    :::{.definition #Censoring name="Censoring"}
+      A variable is called *censored*\index{Censoring} if its value is only observed when its above or below a certain threshold.
+      
+      *Left censoring*\index{Censoring!left} occurs when the true (latent) value is less than or equal to a known threshold, but the exact value is unknown.
+      We only know that the true (latent) value is *below* a certain threshold.
+      
+      *Right censoring*\index{Censoring!right} occurs when the true (latent) value is greater than or equal to a known threshold, but the exact value is unknown.
+      We only know that the true (latent) value is *above* a certain threshold.
+      :::
+        
+        
+        :::{.example #AlcoholLeftCensoring name="Left censoring"}
+          The latent variable 'desire to purchase alcohol' used in Example\ \@ref(exm:TobitAlcoholSpend) is *left censored*.\index{Censoring!left}
+          :::
+            
+            
+            :::{.example #insectLeftCensoring ame="Right censoring"}
+              In survival analysis,\index{Survival analysis} the time it takes insects to die (say\ $X$) may be studied.
+              If the study ends at time\ $t^*$, the time of death for any insects still alive is some value larger than $t^*$; that is, $X\ge t^*$ but the exact time of death remains unknown.
+              The time to death is *right censored*.\index{Censoring!right}
+              :::
+                
+                
+                
+                ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+              *Censoring*\index{Censoring} is not the same as *truncation*.\index{Truncation}
+              
+              *Censoring* retains observations, but the exact value remains unknown.
+              *Truncation* removes observations whose value falls above or below a threshold.
+              :::
+                
+                
+                
+                Usually $y^* = 0$ (as in Example\ \@ref(exm:TobitAlcoholSpend)), so that any value of\ $Y \le 0$ is recorded as\ $y = 0$.
+              That is, we observe the random variable\ $X$ such that
+              $$
+                X = \max(Y, 0).
+              $$
+                This means the probability function of\ $X$ is
+              $$
+                f_X(x) = 
+                \begin{cases}
+              0       & \text{if $X < 0$}\\
+              F_Y(0)  & \text{if $X = 0$}\\
+              f_Y(y)  & \text{if $X > 0$}
+              \end{cases}
+              $$
+                where $F_Y(y)$ is the distribution function of\ $Y$.
+              The probability function for $X\mid X > 0$, the continuous part of the distribution only, is
+              \begin{equation}
+              f_{X\mid X > 0}(x) 
+              = \frac{f_X(x)}{\Pr(X > 0)} 
+              = \frac{f_Y(y)}{1 - F_Y(0)}
+              (\#eq:PDFpositiveConditional)
+                \end{equation}
+                where again $F_Y(y)$ is the distribution function of\ $Y$.
+                The distribution function of\ $X$ is
+                $$
+                  F_{X\mid X>0}(x) =
+                  \begin{cases}
+                0             & \text{for $x < 0$}\\
+                F_Y(0)        & \text{for $x = 0$}\\ 
+                F_Y(x)        & \text{for $x > 0$}
+                \end{cases}
+                $$
+                  
+                  
+                  If the latent distribution is a normal distribution,\index{Normal distribution} Equation\ \@ref(eq:PDFpositiveConditional) can be written in terms of the standard normal density function $\phi(\cdot)$ and the standard normal distribution function $\Phi(\cdot)$ (see Sect.\ \@ref(StandardNormal)).
+                In this case only, notice that 
+                \begin{align*}
+                \Pr(X > 0) 
+                &= \Pr(Z > (0 - \mu)/\sigma)\quad\text{(where $Z$ is a standard normal variate)} \\ 
+                &= \Pr(Z > -\mu/\sigma) \\
+                &= 1 - \Phi( -\mu/\sigma) \\
+                &= \Phi(\mu/\sigma) \quad\text{(using the symmetry of the normal distribution)},
+                \end{align*}
+                and hence Equation\ \@ref(eq:PDFpositiveConditional) can be written as
+                \begin{equation}
+                f_{X\mid X>0}(x) 
+                = \frac{\phi\big((x-\mu)/\sigma\big)}{\Phi(\mu/\sigma)}.
+                (\#eq:PDFpositiveConditional2)
+                  \end{equation}
+                  If we write $t = \mu/\sigma$ and define $\lambda(t) = \phi(t)/\Phi(t)$, this expression becomes
+                  $$
+                    f_{X\mid X>0}(x) = ?????????????
+                    $$
+                    LOST:
+                    $$
+                    f_{X\mid X>0}(x) 
+                  = \frac{f_Z(x)}{\Pr(Z > 0)} 
+                  = \frac{f_Z(x)}{1 - F_Z(0)}
+                  $$
+                    
+                    
+                    
+                    
+                    :::{.example #TobitExamplesLatent2 name="Latent variables and censoring"}
+                      Consider the number of hours worked (which can be observed), which must take a non-negative value.
+                      We could assume an underlying, unobserved latent variable such as 'willingness to work'.
+                      Negative values for 'willingness to work', no matter how small or how large, all result in zero observed hours of work.
+                      :::
+                        
+                        
+                        ### Properties {#CensoredModelsProperties}
+                        
+                        The expected value of the censored random variable\ $X$ can be found first separating the discrete and continuous parts of the distribution:
+                        \begin{align*}
+                      \operatorname{E}[X] 
+                      &= \operatorname{E}[X\mid X = 0] + \operatorname{E}[X\mid X > 0]\\
+                      &= \Pr(X = 0)\times 0 + \operatorname{E}[X\mid X > 0]\\
+                      &= \operatorname{E}[X\mid X > 0]\\
+                      &= \int_0^\infty x\cdot f_{X\mid X > 0}(x)\,dx,\\
+                      &= \frac{1}{\Phi()} \int_0^\infty x\cdot f_{X}(x)\,dx,
+                      \end{align*}
+                      where $f_{X\mid X > 0}(x)$ is given in Equation\ \@ref(eq:PDFpositiveConditional2)).
+                
+                When the censoring happens at $x^* = 0$, the standardised score is $(x^* - \mu)/\sigma = -t$, where defining $t = \mu/\sigma$ proves useful.
+                Then $1 - \Phi()$
+                  Thus,
+                \begin{align*}
+                \operatorname{E}[X] 
+                &= \int_0^\infty x\cdot f_{X\mid X > 0}(x)\,dx,
+                &= \int_0^\infty x\cdot f_{X\mid X > 0}(x)\,dx,
+                \end{align*}
+                
+                Similarly,
+                $$
+                  \operatorname{E}[X^2] 
+                = \operatorname{E}[X^2 \mid X > 0]
+                = \int_0^\infty x^2 \cdot f_{X\mid X>0}(x)\, dx,
+                $$
+                  from which the variance can be obtained.
+                The same approach also gives the MGF as
+                $$
+                  M_X(t) = M_{X\mid X > 0}(t).
+                $$
+                  Clearly, further progress with these expressions requires knowing the distribution of\ $X$ and hence the distribution of the latent variable\ $Z$.
+                It is common, but by no means universal, for the latent variable to be described by a normal distribution (when the models are also called *Tobit models*).\index{Tobit models}
+                
+                
+                :::{.example #TobitExample0 name="Censored model"}
+                  Consider a latent variable\ $Y$, and an observed variable\ $X = \text{max}(0, Z)$.
+                  Suppose that\ $Z$ has the normal distribution\index{Normal distribution} (Fig.\ \@ref(fig:TobitPic), left panel))
+              $$
+                Z \sim N(\mu = 0, \sigma^2 = 1),
+              $$
+                so that $\operatorname{E}[Z] = 0$ and $\operatorname{var}[Z] = 1$.
+              That is, $Z$ has a standard normal distribution (Sect\ \@ref(StandardNormal)), and so
+              $$
+                \Pr(Z < 0) = \Phi(0) = 0.5.
+              $$
+                Recall the notation: $\Phi(\cdot)$ is the distribution function for a standard normal variate, and $\phi(\cdot)$ is the density function for a standard normal variate.
+              
+              Then, define the random variable\ $X$ as
+              $$
+                f_X(x) = 
+                \begin{cases}
+              0          & \text{if $Z < 0$};\\
+              \Phi(0)    & \text{if $Z = 0$};\\
+              \phi(x)    & \text{if $Z > 0$},
+              \end{cases}
+              $$
+                as shown in Fig.\ \@ref(fig:TobitPic) (right panel).
+              
+              From Equation\ \@ref(eq:PDFpositiveConditional),
+              $$
+                f_{X\mid X > 0}(x) 
+              = \frac{\phi(x)}{1 - \Phi(0)}
+              = 2 \phi(x)
+              $$
+                for $X > 0$.
+              From this expression, 
+              $$
+                \operatorname{E}[X] 
+              = \operatorname{E}[X \mid X > 0] 
+              = 2 \int_0^\infty x\cdot \phi(x)\, dx 
+              = \frac{2}{\sqrt{2\pi}} 
+              \approx 0.7979,
+              $$
+                integrating the expression for $\phi(x)$ (Equation\ \@ref(eq:StandardNormalPMF)).
+              Similarly, using integration by parts,
+              $$
+                \operatorname{E}[X^2] 
+              = \operatorname{E}[X^2 \mid X > 0] 
+              = 2 \int_0^\infty x^2\cdot \phi(x)\, dx 
+              = 1/2.
+              $$
+                Combining, this means that 
+              $$
+                \operatorname{var}[X] 
+              = \frac{1}{2} - \left(\frac{2}{\sqrt{2\pi}}\right)^2 
+              = \frac{1}{2} - \frac{1}{\pi} 
+              \approx 0.182.
+              $$
+                :::
+                
+                
+                
+                ```{r TobitPic, echo=FALSE, fig.align="center", fig.cap="A censored model, using a normal distribution for the continuous component, with the threshold value at $Z = 0$.", fig.width=8, fig.height=4, out.width="90%"}
+              par( mfrow = c(1, 2))
+              
+              x.mean <- 0
+              x.sd <- 1
+              p <- pnorm(0,
+                         mean = x.mean,
+                         sd = x.sd)
+              
+              x <- seq(from = x.mean - (3.5 * x.sd),
+                       to =   x.mean + (3.5 * x.sd),
+                       length = 1000)
+              
+              y <-  dnorm(x,
+                          mean = x.mean,
+                          sd = x.sd)
+              
+              plot(y ~ x,
+                   xlim = range(x),
+                   ylim = c(0, 0.5),
+                   type = "n",
+                   axes = FALSE,
+                   xlab = expression(Latent~variable~italic(Z)),
+                   ylab = expression(Prob.~"function"),
+                   main = expression( atop(A~censored~model*":",
+                                           the~latent~variable~italic(Z))),
+                   lwd = 3)
+              axis(side = 1)
+              abline(h = 0,
+                     col = "grey")
+              
+              # Shade for X < 0
+              xNeg <- x[ x <= 0]
+              yNeg <- y[ x <= 0]
+              
+              polygon( x = c(xNeg, rev(xNeg)),
+                       y = c(yNeg, rep(0, length(yNeg))),
+                       col = "lightgrey",
+                       border = NA) # Omit border
+              
+              # Different colours for x >= 0 and x < 0
+              lines( y[x > 0] ~ x[x > 0],
+                     lwd = 2,
+                     col = "black")
+              lines( y[x <= 0] ~ x[x <= 0],
+                     lwd = 3,
+                     col = "darkgrey")
+              
+              # x = 0
+              abline(v = 0,
+                     col = "grey",
+                     lty = 2)
+              
+              box()
+              
+              
+              # Explanatory labels
+              arrows(x0 = -2,
+                     x1 = -1,
+                     y0 = 0.2,
+                     y1 = 0.08,
+                     length = 0.15,
+                     angle = 15)
+              text(x = -2,
+                   y = 0.2,
+                   pos = 3,
+                   cex = 0.9,
+                   label = expression(atop(Where,
+                                           italic(Z)<0) ) )
+              
+              ################################################################################
+              
+              plot(y[x > 0] ~ x[x > 0],
+                   xlim = range(x),
+                   ylim = c(0, 0.5),
+                   type = "l",
+                   axes = FALSE,
+                   xlab = expression(Observed~variable~italic(X)),
+                   ylab = expression(Prob.~"function"),
+                   main = expression( atop(A~censored~model*":",
+                                           the~censored~variable~italic(X))),
+                   
+                   lwd = 3)
+              abline(h = 0,
+                     col = "grey")
+              axis(side = 1)
+              axis(side = 2,
+                   las = 1,
+                   at = p)
+              box()
+              
+              
+              points(x = 0,
+                     y = p,
+                     pch = 19)
+              
+              
+              # Explanatory labels
+              arrows(x0 = 2.25,
+                     x1 = 0,
+                     y0 = 0.4,
+                     y1 = p,
+                     length = 0.15,
+                     angle = 15)
+              text(x = 2.25,
+                   y = 0.4,
+                   pos = 1,
+                   cex = 0.9,
+                   label = expression( atop(Discrete~prob.,
+                                            at~italic(X)==0) ) )
+              
+              
+              # arrows(x0 = 4,
+              #        x1 = 3,
+              #        y0 = 0.3,
+              #        y1 = dnorm(3, mean = x.mean, sd = x.sd),
+              #        length = 0.15,
+              #        angle = 15)
+              # text(x = 4,
+              #      y = 0.3,
+              #      pos = 3,
+              #      cex = 0.9,
+              #      label = expression( atop(Normal~distribution)) ) 
+              
+              # X < 0 part
+              lines( y[x <= 0] ~ x[x <= 0],
+                     lwd = 1,
+                     lty = 3,
+                     col = "darkgrey")
+              
+              # x = 0
+              abline(v = 0,
+                     col = "grey",
+                     lty = 2)
+              
+              
+              ```
+              
+              
+              
+              
+              
+              \index{Censored models|)}
+              
+              
+              
+              
+              
+
+```{r CensoredSim, echo=FALSE, fig.align="center", fig.cap="FIX!!!!! The solid dot at $X = 0$ represents the discrete probability.", fig.width=8, fig.height=4, out.width="90%"}
+set.seed(76103) # For reproducibility
+num_Sims <- 1000
+
+Y <- rnorm(num_Sims,
+           mean = 1,
+           sd = 1.5)
+Yneg <- Y < 0  ### OR LESS THAN OR EQUAL TO????????????????????????????/
+X <- Y
+X[Yneg] <- 0
+p0 <- sum(Yneg)/num_Sims
+
+par(mfrow = c(1, 2))
+latent_Breaks <- seq(-5, 8,
+                     by = 1)
+hist(Y,
+     freq = FALSE,
+     las = 1,
+     breaks = latent_Breaks,
+     col = c( rep( "grey", length(latent_Breaks[latent_Breaks<0])),
+              rep(plotColour1, length(latent_Breaks[latent_Breaks>=0])) ),  
+     main = expression(Latent~variable),
+     ylab = "Probabiity fn",
+     xlab = expression(Observed~variable~italic(X)) )
+
+abline(v = 0,
+       lwd = 2,
+       col = "grey",
+       lty = 2)
+
+hist(X[Y > 0],
+     freq = FALSE,
+     las = 1,
+     breaks = latent_Breaks[latent_Breaks>=0],
+     main = expression(Observed~variable),
+     ylab = "Probabiity fn",
+     xlab = expression(Observed~variable~italic(X)) )
+points(x = 0,
+       y = p0,
+       pch = 19)
+```
+
+...
+
+
+
+
+
+First consider a censored model.
+The latent variable could represent how favourable the conditions are for rainfall' say $Y\sim N(\mu_R = 50, \sigma_R^2)$, with $\Phi(0) = \Pr(Y < 0) = 0.30$, for some variance $\sigma_R^2$.
+First, we can find the value of the standard normal variate\ $Z$ such that $\Phi(z) = 0.30 = \Pr(Y < 0)$:
+
+
+```{r}
+p_Zero_Rainfall <- 0.30
+qnorm(p_Zero_Rainfall) # This find z such that Phi(z) = 0.30
+```
+
+This value of\ $z$ is the value such that
+$$
+  z = -0.5244 = \frac{x^* - \mu_R}{\sigma^2_R} = \frac{0 - 50}{\sigma_R^2},
+$$
+from which we find $\sigma_R = 95.35$.
+Thus, the monthly rainfall can be simulated:
+
+
+
+
+```{r, fig.align="center", fig.width=7, fig.height=4,out.width="80%", fig.cap="The latent variable left panel), and the observed rainfall (right panel)."}
+set.seed(76103) # For reproducibility
+num_Sims <- 1000
+
+mean_R <- 50
+sd_R <- -mean_R / qnorm(p_Zero_Rainfall) 
+
+Y <- rnorm(num_Sims,
+           mean = mean_R,
+           sd = sd_R)
+p0 <- 0.30
+
+# To get sd_R, note: z = (0 - mu)/sigma = \Phi(p0) => -mu/sigma = qnorm(p0)
+threshold_R <- mean_R  - qnorm(p_Zero_Rainfall) * sd_R # SHOULD BE AT ZERO
+
+###
+
+par(mfrow = c(1, 2))
+latent_Breaks <- seq(-250, 450,
+                     by = 50)
+
+hist(Y,
+     freq = FALSE,
+     las = 1,
+     breaks = latent_Breaks,
+     col = c( rep( "grey", length(latent_Breaks[latent_Breaks < 0])),
+              rep(plotColour1, length(latent_Breaks[latent_Breaks >= 0])) ),  
+     main = expression(Latent~variable),
+     ylab = "Probabiity fn",
+     xlab = expression(Latent~variable~italic(X)) )
+
+abline(v = 0,
+       lwd = 2,
+       col = "grey",
+       lty = 2)
+
+hist(Y[Y>0],
+     freq = FALSE, 
+     las = 1,
+     breaks = latent_Breaks[latent_Breaks>=0],
+     main = expression(Observed~variable),
+     ylab = "Probabiity fn",
+     xlab = expression(Observed~variable~italic(X)) )
+points(x = 0,
+       y = p0,
+       pch = 19)
+```
+
+
+```{r}
+num_Sims <- 1000
+
+#Simulate
+
+# Compute max monthly rainfall
+
+```
+
+
+---
+
+
+
+
+If we use the variance from the censored model (i.e., $\sigma^2 = 95.35$), we can find the variance of the gamma distribution:
+\begin{align*}
+  \operatorname{var}[X] 
+  &= p(\sigma^2)^+ + p(1 - p)(\mu^+)^2\\
+  95.35
+  &= 0.7(\sigma^2)^+ + 0.7\times 0.3(71.43)^2;
+\end{align*}
+solving shows that we should use $(\sigma^2)^ = ??$ for the variance of the gamma distribution (when $X > 0$).
+
+
+We could suppose a gamma distribution for the rainfall amounts when rain is recorded; thus $\alpha\beta = 71.43$. 
+If we use the variance from the censored model (i.e., $\sigma^2 = 95.35$), we can find the variance of the gamma distribution:
+\begin{align*}
+  \operatorname{var}[X] 
+  &= p(\sigma^2)^+ + p(1 - p)(\mu^+)^2\\
+  95.35
+  &= 0.7(\sigma^2)^+ + 0.7\times 0.3(71.43)^2;
+\end{align*}
+solving shows that we should use $(\sigma^2)^ = ??$ for the variance of the gamma distribution (when $X > 0$).
+
+```{r}
+( 95.35 - 0.7*0.3*(71.43)^2 )/0.7
+```
+
+OOPS!!
