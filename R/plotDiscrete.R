@@ -11,6 +11,13 @@ plotDiscrete <- function(x, px, type = "DF", pchIN = 19, pchOUT = 1, ...) {
     stop('type  must be one of "DF", "SF", "MF" "QF"')
   }
   
+  # Parameters valid for plot() but NOT for lines()/points()
+  plot_only_params <- c("axes", "asp", "main", "sub", "xlab", "ylab",
+                        "xlim", "ylim", "log", "las", "frame.plot",
+                        "xaxt", "yaxt")
+  
+  dots <- list(...)
+  
   Fx <- cumsum(px)
   Sx <- 1 - Fx
   
@@ -54,13 +61,16 @@ plotDiscrete <- function(x, px, type = "DF", pchIN = 19, pchOUT = 1, ...) {
   line_defaults  <- list(col = "black", 
                          lwd = 2)
   
-  plot_dots <- modifyList(plot_defaults, 
-                          list(...))
-  point_dots <- modifyList(point_defaults, 
-                           list(...))
-  line_dots  <- modifyList(line_defaults, 
-                           list(...))
+  plot_dots  <- modifyList(plot_defaults, 
+                           dots)
   
+  # Strip plot-only params before passing to lines() / points()
+  safe_dots      <- dots[ setdiff(names(dots), 
+                                  plot_only_params) ]
+  point_dots <- modifyList(point_defaults, 
+                           safe_dots)
+  line_dots  <- modifyList(line_defaults, 
+                           safe_dots)
 
   if (type == "DF") {
     y    <- Fx
