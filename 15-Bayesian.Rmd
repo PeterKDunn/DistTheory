@@ -39,30 +39,30 @@ This number of kicks landed $X$ can be modelled using a binomial distribution wi
 
 In each of these examples, a distribution $f_{X}(x; \theta)$ describes the data for some given value of\ $\Theta$.
 However, the value of\ $\Theta$ itself has a distribution, $f_\Theta(\theta)$, so the actual distribution $f_{X}(x; \theta)$ depends in *which* value of\ $\Theta$ is realised.
-Hence, the distribution $f_X(x; \theta)$ is effectively a *conditional* distribution $f_{x|\Theta}(x \mid \Theta)$, and the parameter\ $\Theta$ is effectively a random variable.
+Hence, the distribution $f_X(x; \theta)$ is effectively a *conditional* distribution $f_{x\mid\Theta}(x)$, and the parameter\ $\Theta$ is effectively a random variable.
 
 The *marginal* distribution of $X$ (i.e., $f_X(x)$) can be found from Def.\ \@ref(def:BVContMarginal) if\ $X$ and\ $\Theta$ are continuous:
 \begin{equation}
    f_X(x)
-   = \int f_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta.
+   = \int f_{X \mid \Theta}(x)\,f_\Theta(\theta)\,d\theta.
    (\#eq:marg1)
 \end{equation}
 For\ $X$ and\ $\Theta$ discrete, Def. \@ref(def:BVDiscreteMarginal) yields
 \begin{equation}
    p_X(x) 
-   = \sum_\theta p_{X \mid \Theta}(x, \theta)p_\Theta(\theta).
+   = \sum_\theta p_{X \mid \Theta}(x)\,p_\Theta(\theta).
    (\#eq:marg2)
 \end{equation}
 The mixed cases can be dealt with similarly: 
 \begin{equation}
    f_X(x) 
-   = \sum_\theta f_{X \mid \Theta}(x, \theta)p_\Theta(\theta)
+   = \sum_\theta f_{X}(x)\,p_\Theta(\theta)
    (\#eq:marg3)
 \end{equation}
 for\ $X$ continuous and\ $\Theta$ discrete, and
 \begin{equation}
    p_X(x)
-   = \int p_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta
+   = \int p_{X \mid \Theta}(x)\, f_\Theta(\theta)\,d\theta
    (\#eq:marg4)
 \end{equation}
 for\ $X$ discrete and\ $\Theta$ continuous.
@@ -79,7 +79,7 @@ The mean\ $\Theta$ varies from student to student with a normal distribution, wi
 From Eq.\ \@ref(eq:marg1), the marginal PDF of\ $X$ is
 \begin{align}
   f_X(x)
-  &= \int f_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta\notag\\
+  &= \int f_{X \mid \Theta}(x)\,f_\Theta(\theta)\,d\theta\notag\\
   &= \int_{-\infty}^\infty \frac{1}{5\sqrt{2\pi}}
      \exp\left[ -\frac{1}{2}\left(\frac{x - \theta}{5}\right)^2 \right]
      \frac{1}{10\sqrt{2\pi}}
@@ -106,7 +106,7 @@ $$
 From Eq.\ \@ref(eq:marg2), the marginal PMF of\ $X$ is
 \begin{align}
   p_X(x)
-  &= \sum_\theta p_{X \mid \Theta}(x, \theta)p_\Theta(\theta)\notag\\
+  &= \sum_\theta p_{X \mid \Theta}(x)p_\Theta(\theta)\notag\\
   &= 0.9 \frac{e^{-10}10^x}{x!} + 0.1 \frac{e^{-20}{20^x}}{x!}\quad\text{for $x = 0, 1, 2, \dots$}.
   (\#eq:RandomParAccidents)
 \end{align}
@@ -121,7 +121,7 @@ From Eq.\ \@ref(eq:marg4), the marginal PDF of\ $X$ is
 
 \begin{align}
   p_X(x)
-  &= \int p_{X \mid \Theta}(x, \theta)f_\Theta(\theta)\,d\theta\notag\\
+  &= \int p_{X \mid \Theta}(x)\,f_\Theta(\theta)\,d\theta\notag\\
   &= \int_0^1 \binom{10}{x}\theta^x(1 - \theta)^{10 - x}
      \frac{\Gamma(8)}{\Gamma(4)\,\Gamma(4)} \theta^3(1 - \theta)^3\,d\theta\notag\\
   &= \frac{\Gamma(8)}{\Gamma(4)\,\Gamma(4)}\binom{10}{x}\int_0^1 \theta^{x + 3}(1 - \theta)^{10 - x + 3}\,d\theta\notag\\
@@ -214,31 +214,31 @@ $$
 assuming that $\Pr(E) \neq 0$.
 Bayes' theorem extends to random variables.
 
-Suppose that\ $X$ and\ $Y$ are discrete random variables, where $p_Y(y)$ is the probability function for\ $Y$ and $p_{X \mid Y}(x,y)$ is the conditional PMF for\ $X$ given\ $Y$.
+Suppose that\ $X$ and\ $Y$ are discrete random variables, where $p_Y(y)$ is the probability function for\ $Y$ and $p_{X \mid Y}(x)$ is the conditional PMF for\ $X$ given\ $Y$.
 Then the conditional PMF of\ $Y$ given\ $X$ is
 \begin{align}
-  p_{Y \mid X}(y, x)
+  p_{Y \mid X}(y)
   &= \frac{p_{X, Y}(x, y)}{p_X(x)} \\
-  &= \frac{p_{X \mid Y}(x, y)p_Y(y)}{\sum_y p_{X \mid Y}(x, y)p_Y(y)}.
+  &= \frac{p_{X \mid Y}(x)\,p_Y(y)}{\sum_y p_{X \mid Y}(x)p_Y(y)}.
   (\#eq:Bayesdis)
 \end{align}
 
 In their most usual form, the above equations for the combinations of continuous and discrete random variables produce these results:
 \begin{align}
-   f_{Y \mid X}(y, x)
+   f_{Y \mid X}(y)
    &= \frac{f_{X, Y}(x, y)}{f_X(x)}
-    = \frac{f_{X \mid Y}(x, y)f_Y(y)}{\int_y f_{X \mid Y}(x, y)f_Y(y)\,dy}
-    = \frac{f_{X \mid Y}(x, y)f_Y(y)}{f_X(x)};
+    = \frac{f_{X \mid Y}(x)\, f_Y(y)}{\int_y f_{X \mid Y}(x)\, f_Y(y)\,dy}
+    = \frac{f_{X \mid Y}(x)\,f_Y(y)}{f_X(x)};
    (\#eq:Bayescts)\\
-  p_{Y \mid X}(y, x)
+  p_{Y \mid X}(y)
   &= \frac{f_{X, Y}(x, y)}{p_X(x)}
-   = \frac{f_{X \mid Y}(x, y)p_Y(y)}{\sum_y f_{X \mid Y}(x, y)p_Y(y)}
-   = \frac{f_{X \mid Y}(x, y)p_Y(y)}{p_X(x)};
+   = \frac{f_{X \mid Y}(x)\,p_Y(y)}{\sum_y f_{X \mid Y}(x)\,p_Y(y)}
+   = \frac{f_{X \mid Y}(x)\,p_Y(y)}{p_X(x)};
   (\#eq:Bayesdiscts)\\
   f_{Y \mid X}(y, x)
   &= \frac{f_{X, Y}(x, y)}{p_X(x)}
-   = \frac{p_{X \mid Y}(x, y)f_Y(y)}{\int_y p_{X \mid Y}(x, y)f_Y(y)\,dy}
-   = \frac{p_{X \mid Y}(x, y)f_Y(y)}{p_X(x)}.
+   = \frac{p_{X \mid Y}(x)\,f_Y(y)}{\int_y p_{X \mid Y}(x)\,f_Y(y)\,dy}
+   = \frac{p_{X \mid Y}(x)\,f_Y(y)}{p_X(x)}.
   (\#eq:Bayesctsdis)
 \end{align}
 <!-- \begin{align} -->
@@ -263,7 +263,7 @@ The *denominator* of the right-hand side is only a function of the observed data
 Because of this, sometimes these expressions in \@ref(eq:Bayesdis) to \@ref(eq:Bayesctsdis) are written as proportionalities rather than equalities by omitting the denominator (the normalising constant); also, write\ $\Theta$ as the parameter of interest:
 \begin{align*}
    f_{\Theta|X}(\theta \mid x)      
-   &\propto f_{X|\Theta}(x\mid \theta)      \times f_\Theta(\theta)\\
+   &\propto f_{X|\Theta}(x)      \times f_\Theta(\theta)\\
    \text{Posterior distn} 
    &\propto \text{Sampling distn} \times \text{Prior distn}.
 \end{align*}
@@ -273,7 +273,7 @@ Here:
 * The *sampling distribution* or the *likelihood function*: This describes the distribution from which the data are assumed to come.
 * The *posterior distribution*: This describes the distribution of the parameter\ $\Theta$, after the data\ $X$ is observed.
 
-The distribution for\ $\Theta$ is assumed *prior* to seeing the data (i.e., $f_\Theta(\theta)$), and is then adjusted with the knowledge of the data\ $X$ to produce the *conditional* (or *posterior*) distribution $f_{\Theta|X}(\theta\mid x)$.
+The distribution for\ $\Theta$ is assumed *prior* to seeing the data (i.e., $f_\Theta(\theta)$), and is then adjusted with the knowledge of the data\ $X$ to produce the *conditional* (or *posterior*) distribution $f_{\Theta|X}(\theta)$.
 
 In this context:
 
@@ -282,15 +282,15 @@ In this context:
   This is called the *prior* distribution (modelling our beliefs about the parameter of the distribution  *prior* to seeing the data).
 * The data\ $X$ are then observed.
 * Using this extra available information, the description of\ $\theta$ is updated. 
-  This is the *conditional* distribution $f_{\Theta \mid X}(\theta, x)$, called the *posterior* distribution in this context.
+  This is the *conditional* distribution $f_{\Theta \mid X}(\theta)$, called the *posterior* distribution in this context.
 
 
 :::{.example #ExamScores3 name="Exam scores"}
 (Follows Examples\ \@ref(exm:RandomPar1) and\ \@ref(exm:RandomParExam).)
 The conditional PDF of the mean score\ $\Theta$, given an observed exam score $X = x$, follows directly from Eq.\  \@ref(eq:Bayescts) on substituting Eq.\ \@ref(eq:exam2):
 \begin{align}
-  f_{\Theta \mid X}(\theta, x)
-  &= \frac{f_{X|\Theta}(x, \theta)f_\Theta(\theta)}{f_X(x)}\notag\\
+  f_{\Theta \mid X}(\theta)
+  &= \frac{f_{X|\Theta}(x)\,f_\Theta(\theta)}{f_X(x)}\notag\\
   &= \frac{\frac{1}{5\sqrt{2\pi}}
   \exp\left[ -\frac{1}{2}\left(\frac{x - \theta}{5}\right)^2 \right]
   \frac{1}{10\sqrt{2\pi}}
@@ -307,7 +307,7 @@ This distribution derived above is for the mean score, *given* an observed value
 Thus we have:
 
 * The initial (*prior*) distribution about the mean score (Example \@ref(exm:RandomParExam)): $\Theta \sim N(60, 10^2)$.
-* After seeing an exam score $x$, the adjusted (*posterior*) distribution of the mean score is $\Theta\mid X\sim N(0.8x + 12, 4.472^2)$.
+* After seeing an exam score $x$, the adjusted (*posterior*) distribution of the mean score is $\Theta\mid (X=x) \sim N(0.8x + 12, 4.472^2)$.
 
 Consider the implications:
 
@@ -405,8 +405,8 @@ box()
 (Follows Example \@ref(exm:RandomPar1) and \@ref(exm:RandomParAccidents).)
 From \@ref(eq:RandomParAccidents) and \@ref(eq:Bayescts), the conditional pf of the mean number of accidents per day $\Theta$ given $X$ is 
 \begin{align}
-  p_{\Theta \mid X}(\theta, x)
-  &= \frac{f_{X \mid \Theta}(x, \theta)f_\Theta(\theta)}{p_X(x)}\notag\\
+  p_{\Theta \mid X}(\theta)
+  &= \frac{f_{X \mid \Theta}(x)\,f_\Theta(\theta)}{p_X(x)}\notag\\
   &= \begin{cases}
         \displaystyle \frac{0.9\frac{e^{-10}10^x}{x!}} {0.9 \frac{e^{-10}10^x}{x!} + 0.1 \frac{e^{-20}{20^x}}{x!}} & \text{for $\theta = 10$}\\[6pt]
         \displaystyle \frac{0.1\frac{e^{-20}20^x}{x!}}
@@ -432,7 +432,7 @@ After observing the number of crashes, the prior belief is adjusted accordingly 
 
 * If we observe $x = 8$ crashes, the prior belief is adjusted to
 $$
-  p_{\Theta\mid X}(\theta \mid X) = 
+  p_{\Theta\mid X}(\theta) = 
   \begin{cases}
      0.9987 & \text{for $\theta = 10$ (i.e., fine)};\\
      0.0013 & \text{for $\theta = 20$ (i.e., wet)}.
@@ -441,7 +441,7 @@ $$
 
 * If we observe $x = 17$ crashes, the prior belief is adjusted to
 $$
-  p_{\Theta|X}(m \mid \theta) = 
+  p_{\Theta\mid X}(\theta) = 
   \begin{cases}
      0.602 & \text{for $\theta = 10$ (i.e., fine)};\\
      0.398 & \text{for $\theta = 20$ (i.e., wet)}.
@@ -557,17 +557,17 @@ box()
 (Follows Example \@ref(exm:RandomPar3) and \@ref(exm:RandomParGoalKicking).)
 From Eq.\ \@ref(eq:marg4), the conditional PDF of\ $\Theta$ given\ $X$ is
 $$
-  f_{\Theta \mid X}(\theta, x)
-  = \frac{p_{X \mid \Theta}(x, \theta) f_\Theta(\theta)}{p_X(x)}
+  f_{\Theta \mid X}(\theta)
+  = \frac{p_{X \mid \Theta}(x)\, f_\Theta(\theta)}{p_X(x)}
 $$
 where $X \mid \theta \sim \text{Bin}(n = 10, p = \theta)$ so that
 $$
-  p(X \mid\Theta) = \binom{10}{x}\theta^x (1 - \theta)^{10 - x},
+  p_{X \mid\Theta}(x) = \binom{10}{x}\theta^x (1 - \theta)^{10 - x},
 $$
 and where $p_X(x)$ is given in Eq.\ \@ref(eq:goal2), and $\Theta \sim \text{Beta}(4, 4)$.
 Putting the pieces together:
 \begin{align}
-  f_{\Theta \mid X}(\theta, x)
+  f_{\Theta \mid X}(\theta)
   &= \frac{ \binom{10}{x}\theta^x (1 - \theta)^{10 - x}
      \frac{\Gamma(8)}{\Gamma(4)\Gamma(4)} \theta^3 (1 - \theta)^3}
           {\frac{7!\, 10!\, (x + 3)!\, (13 - x)!}{3!^2\, 17!\, x!\, (10 - x)!} } \\
@@ -734,6 +734,7 @@ if( knitr::is_latex_output() ) {
 
 ## Statistical computing
 
+Bayesian statistics is generally computational, as many of the integrals are difficult to compute or even impossible to compute.
 
 
 
@@ -746,7 +747,7 @@ Selected answers appear in Sect.\ \@ref(AnswersChapBayesianIntro).
 In studies of human reproduction [@paul2005testing], the number of menstrual cycles until pregnancy is denoted\ $Y$, where\ $Y$ is often modelled using a geometric distribution: $Y\sim \text{Geom}(\theta)$, where\ $\theta$ is the pre-cycle conception probability.
 $\theta$ is usually considered constant for each couple, but can vary between couples with a beta distribution: $\theta\sim \text{Beta}(m, n)$.
 
-1. Determine the *posterior* probability $f(\theta\mid y)$, and identify the distribution in terms of known distributions (including parameters).
+1. Determine the *posterior* probability $f_{\theta\mid y}(\theta)$, and identify the distribution in terms of known distributions (including parameters).
    (The normalising constant is not needed.)
 1. Determine the *prior* probability $\theta$ if $m = 1.2$ and $n = 2$, and hence the expected number of cycles till pregnancy.
 1. Determine the *posterior* probability $\theta$ if $m = 1.2$ and $n = 2$, and a couple takes three cycles to fall pregnant.
