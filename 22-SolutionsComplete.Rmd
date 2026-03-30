@@ -1390,7 +1390,7 @@ par(mfrow = c(1, 1))
 1. $\Pr(Z < 0) = F_Z(0) = 7/15 \approx 0.4666$.
 :::
 
-```{r DFZcontinuous, fig.align="center", fig.cap="The DF for $f(z)$"}
+```{r DFZcontinuous, echo=FALSE, fig.align="center", fig.cap="The DF for $Z$"}
 F1 <- function(x){
   F <- array( dim = length(x))
   F[ x < -1] <- 0
@@ -1415,34 +1415,36 @@ plot( F1(z) ~ z,
 **Exercise\ \@ref(exr:DFcontinuous2).**
 
 1. See Fig.\ \@ref(fig:DFZcontinuous2) (left panel).
-2. $F_X(x) = 0$ for $x \le 0$; $F_x(x) = (12 - x^2)x/16$ for $0 < x < 2$; $F_X(x) = 1$ for $x \ge 2$.
-3. $F_x(1) = 11/16 = 0.6875$.
-4. $11/16$.
-5. $Q_X(p) =...$: numerically?
-6. Solve $x^3 - 12x + 8 = 0$: $x \approx 0.694$.
+2. $F_X(x) = 0$ for $x \le 1$; $F_x(x) =x^3 - 1)/63$ for $1 < x < 4$; $F_X(x) = 1$ for $x \ge 4$.
+   See Fig.\ \@ref(fig:DFZcontinuous2) (right panel).
+3. $F_x(3) = 28/63 = 4/9 \approx 0.4444$.
+4. $Q_X(p) = \sqrt[3]{63 p + 1}$.
+   $Q_X(0) = 1$: correct.
+   $Q_X(1) = 4$: correct.
+6. Solve $Q_X(0.5)$: $x \approx 2.070$.
 :::
 
 
-```{r DFZcontinuous2, fig.align="center", fig.cap="The DF for $f(z)$"}
+```{r DFZcontinuous2, echo=FALSE, fig.align="center", fig.cap="The PDF and DF for $X$"}
 f2 <- function(x){
-  F <- array( dim = length(x))
-  F[ x < 0] <- 0
-  F[ x > 2] <- 0
-  Interesting <- (x > 0) & (x < 2)
-  F[ Interesting ] <- 3 * (4 - x[Interesting]^2) / 16
-  F
+  f <- array( dim = length(x))
+  f[ x < 1] <- 0
+  f[ x > 4] <- 0
+  Interesting <- (x > 1) & (x < 4)
+  f[ Interesting ] <- 3 * x[Interesting]^2 / 63
+  f
 }
 F2 <- function(x){
   F <- array( dim = length(x))
-  F[ x < 0] <- 0
-  F[ x > 2] <- 1
-  Interesting <- (x > 0) & (x < 2)
-  F[ Interesting ] <- (12 - x[Interesting]^2) * x[Interesting] / 16
+  F[ x < 1] <- 0
+  F[ x > 4] <- 1
+  Interesting <- (x > 1) & (x < 4)
+  F[ Interesting ] <- (x[Interesting]^3 - 1) / 63
   F
 }
 
 par(mfrow = c(1, 2))
-x <- seq(-1, 3, 
+x <- seq(0, 5, 
          length = 200)
 plot( f2(x) ~ x,
       las = 1,
@@ -2309,7 +2311,71 @@ barplot(PMF, main="Probability Mass Function of Rolls Needed to Sum to 4",
 
 
   
+:::{.answer data-latex=""}
+**Answer for Exercise\ \@ref(exr:Densityab).**
+1. $4ab = 1$.
+2. $f_X(x) = (x + 16)/32$ for $-1 < x < 1$.
+3. $F_X(x) = (x^2 + 32x + 31)/64$ for $-1 < x < 1$.
+4. $Q_X(p) = -16 + \sqrt{225 + 64 p}$ for $0 < p < 1$.
+   $Q_X(0) = -1$ as expected; $Q_X(1) = 1$ as expected.
+5. See Fig.\ \@ref(fig:DensityabPlot).
+:::
   
+  
+```{r DensityabPlot, echo=FALSE, fig.cap="PDF, DF and quantile functions", fig.align="center"}
+x <- seq(-1.5, 1.5,
+         length = 100)
+
+fx <- function(x){
+  ifelse(x < -1,
+         0,
+        ifelse(x > 1,
+               0,
+               (16 + x) /32)
+  )
+}
+
+Fx <- function(x){
+  ifelse(x < -1,
+         0,
+        ifelse(x > 1,
+               1,
+               (x^2 + 32*x + 31)/64)
+  )
+}
+
+
+p <- seq(0, 1,
+         length = 100)
+
+Qx <- function(p){
+  ifelse(p < -1,
+         -1,
+         ifelse(p > 1,
+                1,
+                -16 + sqrt(225 + 64 * p) )
+  )
+}
+
+par( mfrow = c(1, 3))
+
+curve(fx, 
+      from = min(x), 
+      to = max(x),
+      lwd = 2,
+      las = 1)
+curve(Fx, 
+      from = min(x), 
+      to = max(x),
+      lwd = 2,
+      las = 1)
+curve(Qx, 
+      from = min(p), 
+      to = max(p),
+      lwd = 2,
+      las = 1)
+
+```
   
   
   
@@ -2615,58 +2681,6 @@ $$
    \Pr(X > 0.5) =  \frac{15}{7} \int_{1/2}^1 (x - 1)(x^4 - 1)\, dx = \frac{183}{896}\approx 0.2042411.
 $$
 :::
-
-
-
-
-
-
-:::{.answer data-latex=""}
-**Exercise\ \@ref(exr:JointDiscreteEvenPrime).**
-
-Consider rolling a single die.
-There two events are defined:
-
-* $E$: the number of even numbers rolled; and
-* $P$: the number of prime numbers rolled ($2$, $3$ and\ $5$ are the prime numbers).
-
-1. Form the joint probability mass function for $(E, P)$.
-2. Find the two marginal distributions.
-3. The joint PMF
-:::
-
-```{r}
-EP <- array(dim = c(2, 2))
-
-EP[1, ] <- c("1/6", "2/6")
-EP[2, ] <- c("2/6", "1/6")
-EP.cap <- "The joint PMF of $E$ and $P$"
-
-rownames(EP) <- c("$p = 0$",
-                  "$p = 1$")
-colnames(EP) <- c("$e = 0$",
-                  "$e = 1$")
-
-if( knitr::is_latex_output() ) {
-  knitr::kable(EP,
-               format = "latex",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,                
-               escape = FALSE,
-               caption = EP.cap) %>%
-     kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(EP,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,
-               caption = EP.cap)
-}
-```
 
 
 
@@ -6563,7 +6577,7 @@ $$
 
 
 <!-- *********************************************************************************** -->
-## Answers for Chap.\ \@ref(MultivariateExtensions) {#AnswersChapMultivariate}
+## Answers for Chap.\ \@ref(ChapMultivariate) {#AnswersChapMultivariate}
 
 
 
