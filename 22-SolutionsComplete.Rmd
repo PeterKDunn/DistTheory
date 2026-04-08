@@ -2835,6 +2835,144 @@ par(mfrow = c(1, 1))
 
 
 
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:Discontinuous).**
+
+1. See Fig.\ \@ref(fig:PDFT2) (left panel).
+2. $\operatorname{E}[X] = (1/4) + (2/3) = 11/12$.
+3. $\operatorname{E}[T^2] = (1/6) + (11/12) = 13/12$.
+   So $\operatorname{var}[T] = (13/12) - (11/12)^2 = 35/144\approx 0.2431$.
+4. $F_T(t) = t/2$ for $0 < t < 1$; 
+   $F_T(t) = (1/2) - (t - 3)(t - 1)/2$ for $1 < t < 2$. 
+   See Fig.\ \@ref(fig:PDFT2) (right panel).
+5. $F_T(t = 1) = 1/2$.
+:::
+
+
+
+```{r, PDFT2, echo=FALSE, fig.align="center", fig.cap="The PDF for $T$ (left) and DF for $T$ (right).", out.width='90%', fig.width=7, fig.height=3}
+par(mfrow = c(1, 2))
+
+t <- seq(-0.5, 2.5, 
+          length = 500)
+ft <- function(t){
+  yt <- numeric(length(t))
+  
+  tsmall <- (t > 0) & (t < 1)
+  tbig   <- (t > 1) & (t < 2)
+
+  yt[tsmall] <- 1/2
+  yt[tbig]   <- (2 - t[tbig])
+  yt
+}
+
+plot(x = t,
+     y = ft(t),
+     lwd = 2,
+     type = "l",
+     las = 1,
+     main = expression("PDF for"~italic(T)),
+     xlab = expression(italic(T)),
+     ylab = "Prob. fn")
+
+
+Ft <- function(t){
+  yt <- numeric(length(t))
+  
+  tsmall <- (t > 0) & (t < 1)
+  tbig   <- (t > 1) & (t < 2)
+
+  yt[tsmall] <- t[tsmall]/2
+  yt[tbig]   <- (1 - (t[tbig] - 3) * (t[tbig] - 1) ) / 2
+  yt
+}
+
+
+plot(x = t,
+     y = Ft(t),
+     lwd = 2,
+     type = "l",
+     las = 1,
+     main = expression("DF for"~italic(T)),
+     xlab = expression(italic(T)),
+     ylab = "Dist. fn")
+
+par(mfrow = c(1, 1))
+```
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:Discontinuous2).**
+
+1. See Fig.\ \@ref(fig:PDFZ3) (left panel).
+2. $\operatorname{E}[Z] = (1/4) + (4/3) = 19/12$.
+3. $\operatorname{E}[Z^2] = (1/6) + (43/12) = 15/4$.
+   So $\operatorname{var}[Z] = (15/4) - (19/12)^2 = 179/144 \approx 1.243$.
+4. $F_Z(z) = z(2 - z)/2$ for $0 < z < 1$; 
+   $F_Z(z) = (z^2 - 4z + 5)/2$ for $2 < z < 3$; 
+   See Fig.\ \@ref(fig:PDFZ3) (right panel).
+5. $\Pr(Z > 2\mid Z > 1) = \Pr(Z > 2)/\Pr(Z > 1)$.
+   Then, $\Pr(Z > 2) = 1 - F_Z(z = 2) = 1/2$ and $\Pr(Z > 2) = 1 - F_Z(z = 2) = 1/2$.
+   Thus, $\Pr(Z > 2\mid Z > 1) = 1$, which should be obvious from a plot of the PDF.
+:::
+
+
+
+```{r, PDFZ3, echo=FALSE, fig.align="center", fig.cap="The PDF for $Z$ (left) and the DF for $Z$ (right).", out.width='90%', fig.width=7, fig.height=3}
+par(mfrow = c(1, 2))
+
+z <- seq(-0.5, 3.5, 
+          length = 500)
+fz <- function(z){
+  yz <- numeric(length(z))
+  
+  zsmall <- (z > 0) & (z < 1)
+  zbig   <- (z > 2) & (z < 3)
+
+  yz[zsmall] <- 1 - z[zsmall]
+  yz[zbig]   <- z[zbig] - 2
+  yz
+}
+
+plot(x = z,
+     y = fz(z),
+     lwd = 2,
+     type = "l",
+     las = 1,
+     main = expression("PDF for"~italic(T)),
+     xlab = expression(italic(T)),
+     ylab = "Prob. fn")
+
+
+Fz <- function(z){
+  yz <- numeric(length(z))
+  
+  zsmall <- (z > 0) & (z < 1)
+  zmid <-   (z >= 1) & (z <= 2)
+  zbig   <- (z > 2) & (z < 3)
+
+  yz[zsmall] <-  z[zsmall] * (2 - z[zsmall])/2
+  yz[zmid]   <-  max(yz[zsmall])
+  yz[zbig]   <- (z[zbig]^2 - 4*z[zbig] + 5)/2
+  yz
+}
+
+
+plot(x = z,
+     y = Fz(z),
+     lwd = 2,
+     type = "l",
+     las = 1,
+     main = expression("DF for"~italic(T)),
+     xlab = expression(italic(T)),
+     ylab = "Dist. fn")
+
+par(mfrow = c(1, 1))
+```
+
+
+
+
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:C3DiscreteA).**
 First: $k = 1/4$.
@@ -2852,14 +2990,42 @@ First: $k = 1/4$.
 **Exercise\ \@ref(exr:C3DiscreteA2).**
 First, $c = 144/205$.
 
-1. Plot not shown.
-2. $\operatorname{E}(D) = 60/41\approx 1.46\dots$; $\operatorname{var}(D) = 5616/8405\approx 0.668\dots$.
+1. See Fig.\ \@ref(fig:PDFDiscA) (right panel).
+2. $\operatorname{E}[Z] = \frac{144}{205} \sum_{z=1}^4 1/z = 60/41$.
+   $\operatorname{E}[Z^2] = \frac{576}{205}$ and so
+   $\operatorname{var}[Z] = (576/205) - (60/41)^2 =  5616/8405\approx 0.6682$.
 3. $M_Z(t) = \frac{\exp(t)}{205}(36\exp(t) + 16\exp(2t) + 9\exp(3t) + 144)$.
 4. Mean and variance as above.
-5. $61/205$.
+5. $\Pr(Z \ge 2) = 1 - \Pr(Z = 1) = 61/205$.
 :::
 
 
+
+```{r, PDFDiscA, echo=FALSE, fig.align="center", fig.cap="The PMF for $D$ (left) and the PMF for $Z$ (right).", out.width='90%', fig.width=7, fig.height=3}
+par(mfrow = c(1, 2))
+
+d <- 1:3
+pd <- c(1, 2, 1)/ 4
+
+ plotDiscrete(d, pd,
+              type = "MF",
+              main = expression("PMF for"~italic(D)),
+              xlab = expression(italic(D)),
+              ylab = "Prob. fn")
+
+ 
+ 
+z <- 1:4
+pz <- z^2
+
+plotDiscrete(z, pz,
+             type = "MF",
+             main = expression("PMF for"~italic(Z)),
+             xlab = expression(italic(Z)),
+             ylab = "Prob. fn")
+
+par(mfrow = c(1, 1))
+```
 
 
 
@@ -2910,8 +3076,8 @@ $[exp(tb) - \exp(ta)]/[t (b - a)]$ for $t\ne 0$.
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:C3MGFA).**
 
-1. $M'_G(t) = \alpha\beta(1 - \beta t)^{-\alpha - 1}$ so $\operatorname{E}(G) = \alpha\beta$.
-   $M''_G(t) = \alpha\beta^2(\alpha + 1)(1 - \beta t)^{-\alpha - 2}$ so $\operatorname{E}(G^2) = \alpha\beta^2(\alpha + 1)$ and $\operatorname{var}(G) = \alpha\beta^2$.
+1. $M'_G(t) = \alpha\beta(1 - \beta t)^{-\alpha - 1}$ so $\operatorname{E}[G] = \alpha\beta$.
+   $M''_G(t) = \alpha\beta^2(\alpha + 1)(1 - \beta t)^{-\alpha - 2}$ so $\operatorname{E}[G^2] = \alpha\beta^2(\alpha + 1)$ and $\operatorname{var}[G] = \alpha\beta^2$.
 :::
 
 
@@ -2923,13 +3089,13 @@ $[exp(tb) - \exp(ta)]/[t (b - a)]$ for $t\ne 0$.
 
 1. Proceed:
 $$
-  \mu'_r = \operatorname{E}(X^r) = \int_{x = 0}^1 x^r 2(1 - x)\, dx = 2\left[ \left(\frac{x^{r + 1}}{r + 1} - \frac{x^{r + 2}}{r + 2}\right)\Big|_{0}^{1}\right] 
+  \mu'_r = \operatorname{E}[X^r] = \int_{x = 0}^1 x^r 2(1 - x)\, dx = 2\left[ \left(\frac{x^{r + 1}}{r + 1} - \frac{x^{r + 2}}{r + 2}\right)\Big|_{0}^{1}\right] 
          = 2\left[ \frac{1}{r + 1} - \frac{1}{r + 2}\right].
 $$
-1. Expanding, $\operatorname{E}((X + 3)^2) = \operatorname{E}(X^2) + 6\operatorname{E}(X) + 9$.
-   Now, $\operatorname{E}(X) = \mu'_1 = 1/3$ from above, and $\operatorname{E}(X^2) = \mu'_2 = 1/6$ from above.
-   Hence $\operatorname{E}((X + 3)^2) = 67/6$.
-1. $\operatorname{var}(X) = \operatorname{E}(X^2) - \operatorname{E}(X)^2 = 1/18$.
+1. Expanding, $\operatorname{E}[(X + 3)^2] = \operatorname{E}[X^2] + 6\operatorname{E}[X] + 9$.
+   Now, $\operatorname{E}[X] = \mu'_1 = 1/3$ from above, and $\operatorname{E}[X^2] = \mu'_2 = 1/6$ from above.
+   Hence $\operatorname{E}[(X + 3)^2] = 67/6$.
+1. $\operatorname{var}[X] = \operatorname{E}[X^2] - \operatorname{E}[X]^2 = 1/18$.
 :::
 
 
@@ -2956,8 +3122,8 @@ $\left[6\left( (t - 2)\exp(t) + t + 2\right)\right]/t^3$ for $t\ne 0$.
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:C3NoMean).**
 
-1. $\operatorname{E}(Y) = \int_2^\infty y\frac{2}{y^2}\,dy = 2\log y\Big|_2^\infty$, which does not converge.
-1. If $\operatorname{E}(Y)$ is not defined, then $\operatorname{var}(Y)$ cannot be defined either.
+1. $\operatorname{E}[Y] = \int_2^\infty y\frac{2}{y^2}\,dy = 2\log y\Big|_2^\infty$, which does not converge.
+1. If $\operatorname{E}[Y]$ is not defined, then $\operatorname{var}[Y]$ cannot be defined either.
 1. See Fig.\ \@ref(fig:NoMeanPlots), left panel.
 1. $F_Y(y) = \int_2^y 2/t^2\, dt = 1 - (2/y)$; see Fig.\ \@ref(fig:NoMeanPlots), right panel.
 1. $F_Y(y) = 0.5$ gives the median as\ $4$.
@@ -3016,7 +3182,7 @@ plot( ycdf(y) ~ y,
 1. See Fig.\ \@ref(fig:Cauchy) (left panel).
 1. Evaluate $F_X(t) = \displaystyle \int_{-\infty}^t \frac{1}{\pi(1 + x^2)}\,dx = \frac{1}{\pi}\arctan(x) + \frac{1}{2}$.
    See Fig.\ \@ref(fig:Cauchy) (right panel).
-1. $\displaystyle \operatorname{E}(X) =  \int_{-\infty}^t \frac{x}{\pi(1 + x^2)}\,dx = ...$, which is not defined.
+1. $\displaystyle \operatorname{E}[X] =  \int_{-\infty}^t \frac{x}{\pi(1 + x^2)}\,dx = ...$, which is not defined.
 :::
 
 ```{r Cauchy, echo=FALSE, fig.align="center", fig.cap="The Cauchy distribution", fig.height=4, fig.width=7,out.width='70%'}
@@ -3060,7 +3226,8 @@ Transform the resulting integral.
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:Givena).**
 1. Any real\ $a$ satisfies the conditions.
-2. Need $a = -1$.
+2. $\operatorname{E}[X] = (3a + 7)/(3a+6)$, so need $a = -1$:
+   $f_X(x) = x/2$ for $0\le x\le 2$.
 :::
 
 
@@ -3089,9 +3256,9 @@ $$
    \end{cases}
 $$
 
-1. $\operatorname{E}(W)$ can be computed as usual across the two parts of the PDF: $\operatorname{E}(W) = \frac{1}{4} + \frac{51}{4} = 13$ minutes.
-1. $\operatorname{E}(W^2)$ can be computed in two parts also: $\operatorname{E}(W^2) = \frac{163}{144} + \frac{29\,699}{144} = 16598/8$.
-   Hence $\operatorname{var}(Y) = (1659/8) - 13^2 = 307/8\approx 38.375$, so the *standard deviation* is $\sqrt{38.375} = 6.19$  minutes.
+1. $\operatorname{E}[W]$ can be computed as usual across the two parts of the PDF: $\operatorname{E}[W] = \frac{1}{4} + \frac{51}{4} = 13$ minutes.
+1. $\operatorname{E}[W^2]$ can be computed in two parts also: $\operatorname{E}(W^2) = \frac{163}{144} + \frac{29\,699}{144} = 16598/8$.
+   Hence $\operatorname{var}[Y] = (1659/8) - 13^2 = 307/8\approx 38.375$, so the *standard deviation* is $\sqrt{38.375} = 6.19$  minutes.
 :::
 
 
@@ -3185,7 +3352,7 @@ text(5.5, fhi(5.5),
 
 Using the PMF from Exercise\ \@ref(exr:YouFriendInLine):
 $$
-   \operatorname{E}(X) =
+   \operatorname{E}[X] =
    \left(0\times\frac{4}{10}\right) +
    \left(1\times\frac{3}{10}\right) +
    \left(2\times\frac{2}{10}\right) +
