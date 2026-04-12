@@ -219,7 +219,7 @@ points(x = 0, # Included
 The following are the basic properties of the zero-modified distributions.
 
 :::{.theorem #ZMProperties name="Zero-modified distribution properties"}
-If $X\sim\text{ZM}(p)$ then, $\mu_c$ denotes $\operatorname{E}[X\mid X > 0]$ (the expected value of the conditional distribution defined for $X > 0$) and $\sigma^2_c = \operatorname{var}[X \mid X > 0]$,
+If $X\sim\text{ZM}(p)$ and $\mu_c$ denotes $\operatorname{E}[X\mid X > 0]$ (the expected value of the conditional distribution defined for $X > 0$) and $\sigma^2_c = \operatorname{var}[X \mid X > 0]$, then
  
 1. $\operatorname{E}[X] = (1 - p)\mu_c$.
 2. $\operatorname{var}[X] = (1 - p) \sigma^2_c + p(1 - p)\mu_c^2$.
@@ -1507,13 +1507,14 @@ What does the distribution of\ $X$ converge to, and why?
 
 
 
-
 :::{.exercise #MixedHospitalStays}
-In a zero-modified distribution, the sample space is partitioned into $\{0\}$ and $\{x : x > 0\}$. 
 Let $Y$ be hospital stay duration. 
-$\Pr(Y = 0) = 0.4$ and for $y > 0$, $f_Y(y) = 0.6 e^{-y}$.
+$\Pr(Y = 0) = 0.4$ and for $y > 0$, $f_Y(y) = 0.6 \exp(-y)$.
 
-Verify the total probability equals\ $1$.
+1. Verify the total probability equals\ $1$.
+2. Find the distribution function for\ $Y$.
+3. Find $\Pr(Y > 1)$.
+4. Find $\Pr( 0 \le Y \le 3)$.
 :::
 
 
@@ -1525,7 +1526,7 @@ If the orchid is present, the density is modelled by a Gamma distribution.
 Let $\Pr(X = 0) = 0.75$ and the remaining $0.25$ be distributed as $X \sim \text{Gamma}(\text{shape} = 2, \text{rate} = 1)$.
 
 1. What is the probability that $X > 0$?
-2. Write some **R** snippet to simulate $100$ plots using this logic.
+2. Write **R** code to simulate $100$ plots using this logic.
 :::
 
 
@@ -1546,7 +1547,7 @@ Assume $X \sim \text{Exponential}(\lambda = 1/20)$.
 Assume number of car insurance claims $N \sim \text{Poisson}(0.5)$. 
 The individual claim sizes (in dollars) are $X_i \sim \text{Gamma}(2, 1)$.
 
-Simulate $1\,000$ realizations of the total claim amount $S = \sum_{i=1}^N X_i$.
+Use **R** to simulate $1\,000$ realizations of the total claim amount $S = \sum_{i=1}^N X_i$.
 :::
 
 
@@ -1564,7 +1565,7 @@ The damage (in millions of dollars) per fire is $X \sim \text{Gamma}(1, 2)$.
 Consider a zero-modified distribution and a compound Poisson--gamma distribution.
 
 1. Show that it is possible to find parameters for both models, so that both have the same mean and the same proportion of zeros.
-1. For the two comparable model just found, how to the variances compare?
+1. For the two comparable model just found, how do the variances compare?
 1. Simulate $2000$\ observations from each model, using parameters chosen so that both have the same mean and the same proportion of zeros.
    Simulate both and verify your conclusion about the variances.
 :::
@@ -1590,15 +1591,14 @@ Let $p = 0.4$ and $Y \mid Y > 0 \sim \text{Gamma}(3, 2)$.
 :::{.exercise #MixedZeroModifiedFixP}
 In a zero-modified distribution, fix the positive component as $\text{Gamma}(2, 1)$ and let $p \in \{0.1, 0.3, 0.6, 0.85\}$.
 
-For each value of\ $p$, use **R** to compute $\operatorname{E}[Y]$ and $\operatorname{var}(Y)$.
-Plot the density/mass for each $p$.
-
-How does the value of\ $p$ change the shape of the distribution?
+1. For each value of\ $p$, use **R** to compute $\operatorname{E}[Y]$ and $\operatorname{var}(Y)$.
+1. Plot the probability function for each value of\ $p$.
+1. How does the value of\ $p$ change the shape of the distribution?
 :::
 
 
 :::{.exercise #MixedZeroModifiedEstimate}
-Suppose you observe $\Pr(Y = 0) = 0.5$, $\operatorname{E}[Y] = 3$ and $\operatorname{var}(Y) = 30$.  
+Suppose you observe $\Pr(Y = 0) = 0.5$, $\operatorname{E}[Y] = 3$ and $\operatorname{var}[Y] = 30$.  
 Find $\mu^+$ and $\sigma^{+2}$.  
 
 Is a Gamma distribution consistent with this information?
@@ -1618,7 +1618,7 @@ Plot the resulting distribution.
 :::{.exercise #MixedCPGskewness}
 1. Find the cumulant generating function $K_S(t) = \log M_S(t)$ for the compound Poisson--gamma distribution.
 1. Find the first four cumulants.
-1. Find the skewness and excess kurtosis.  
+1. Find the skewness and excess kurtosis.
 1. Show that\ $S$ is *always* positively skewed.
 :::
 
@@ -1627,7 +1627,7 @@ Plot the resulting distribution.
 Let $N \sim \text{Poisson}(3)$ and $X_k \sim \text{Gamma}(2, \text{scale} = 100)$ (mean severity $200$).
 
 1. Compute $\operatorname{E}[S]$.
-1. Compute $\operatorname{var}(S)$.
+1. Compute $\operatorname{var}[S]$.
 1. Compute $\gamma_1$.
 1. Compute $\Pr(S = 0)$.
 1. Compute $\Pr(S > 1000)$ by simulation.
@@ -1641,20 +1641,20 @@ For $\lambda \in \{0.5, 2, 8\}$ and $\alpha \in \{0.5, 2\}$, compute the moment 
 
 
 :::{.exercise #MixedCPGtweedie}
-Show $\operatorname{var}(S) = \phi (\operatorname{E}[S])^p$ where $p = (\alpha + 2)/(\alpha + 1)$.  
-Show $p \in (1,2)$ for all $\alpha > 0$, then verify numerically.\index{Tweedie distribution}
+Show $\operatorname{var}[S] = \phi (\operatorname{E}[S])^p$ where $p = (\alpha + 2)/(\alpha + 1)$.
+Show $p \in (1, 2)$ for all $\alpha > 0$, then verify numerically.\index{Tweedie distribution}
 :::
 
 
 
 :::{.exercise #MixedCPGrandom}
-Use the **R** function `rcpg(n, lambda, alpha, beta)` to simulate\ $10^5$ draws with $\lambda = 2$, $\alpha = 3$, $\beta = 0.5$ and verify $E[S]$, $\operatorname{var}(S)$, $\Pr(S = 0)$, skewness, and $F_S(10)$.
+Use the **R** function `rcpg(n, lambda, alpha, beta)` to simulate\ $10^5$ draws with $\lambda = 2$, $\alpha = 3$, $\beta = 0.5$ and verify $\operatorname{E}[S]$, $\operatorname{var}[S]$, $\Pr(S = 0)$, skewness, and $F_S(10)$.
 :::
 
 
 :::{.exercise #MixedCPGplots}
-Simulate $n = 8\,000$ from three CP-G distributions.  
-Produce spike-and-density plots and report $\Pr(S = 0)$ and $E[S]$.
+Simulate $n = 8\,000$ from three CP-G distributions.
+Produce probability plots and report $\Pr(S = 0)$ and $\operatorname{E}[S]$.
 :::
 
 
@@ -1663,16 +1663,17 @@ Suppose $X_1 \sim \text{CPG}(\lambda_1, \alpha, \beta)$ and $X_2\sim \text{CPG}(
 
 1. Show that $X_1 + X_2 \sim \text{CPG}(\lambda_1 + \lambda_2, \alpha, \beta)$.
 1. Simulate $S_1 \sim \text{CP-G}(2, 1.5, 0.5)$ and $S_2 \sim \text{CP-G}(3, 1.5, 0.5)$ independently ($n = 50\,000$).
-   Form $T = S_1 + S_2$.
+1. Form $T = S_1 + S_2$.
    Compare moments and CDF against CP-G$(5, 1.5, 0.5)$ theory.
 :::
 
 
 :::{.exercise #MixedCPGZeroModified}
 Match a CP-G and a zero-modified-Gamma to have the same mean, variance, and $\Pr(X = 0)$.
-Simulate $n=30\,000$ from each.  
-Compare skewness, the upper $5$% tail, and the density of the positive part.
-Comment.
+
+1. Simulate $n=30\,000$ from each.
+1. Compare skewness, the upper $5$% tail, and the density of the positive part.
+1. Comment.
 :::
 
 
@@ -1687,6 +1688,10 @@ Consider the CPG distribution.
 
 
 :::{.exercise #CGFConditionMean}
-Prove $\operatorname{E}[X\mid X > 0] = \frac{\lambda\alpha\beta}{1 - \exp(-\lambda)}$ for the compound Poisson--gamma distribution, as given in Theorem\ \@ref(thm:CPGProperties).
+Prove that
+$$
+  \operatorname{E}[X\mid X > 0] = \frac{\lambda\alpha\beta}{1 - \exp(-\lambda)}
+$$
+for the compound Poisson--gamma distribution, as given in Theorem\ \@ref(thm:CPGProperties).
 :::
 
