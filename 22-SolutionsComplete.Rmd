@@ -5156,22 +5156,20 @@ $f_X(x) = \lambda \exp(-\lambda x$)$ for $x > 0$ and $\lambda > 0$; hence $f'_X(
 
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:MixedIdentifiability).**
-Three free parameters.
-*Zero-modified gamma*: $p$, $\alpha$, $\beta$;
-*Compound Poisson--gamma*: $\lambda$, $\alpha$, $\beta$.
 
-CP-G has mass $e^{-\lambda}$ at zero, and the positive part is an infinite mixture of Gammas. 
-ZMG places mass $p$ at zero and the positive part is exactly $\text{Gamma}(\alpha, \beta)$.
-To match, need $p = e^{-\lambda}$.
-
-But the conditional distribution $S \mid S > 0$ in the CP-G is *not* a simple Gamma; it is an infinite mixture $\sum_{k=1}^\infty w_k \,\text{Gamma}(k\alpha,\beta)$. 
-So the two models produce identical distributions only in *degenerate/limiting cases*, not in general.
+1. Three free parameters.
+    *Zero-modified gamma*: $p$, $\alpha$, $\beta$;
+    *Compound Poisson--gamma*: $\lambda$, $\alpha$, $\beta$.
+2. CP-G has mass $\exp(-\lambda)$ at zero, and the positive part is an infinite sum of gamma distributions. 
+   ZMG places mass\ $p$ at zero and the positive part is exactly $\text{Gamma}(\alpha, \beta)$.
+   To match, need $p = \exp(-\lambda)$.
+   But the conditional distribution $S \mid S > 0$ in the CP-G is *not* a simple Gamma; it is an infinite sum $\sum_{k=1}^\infty w_k \,\text{Gamma}(k\alpha,\beta)$. 
+   So the two models produce identical distributions only in *degenerate/limiting cases*, but not in general.
 :::
 
 
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:MixedOverdispersion).**
-Both models are overdispersed relative to Poisson.
 Overdispersion requires $\operatorname{Var}[Y] \ge \operatorname{E}[Y]$.
 
 For ZME: let $\mu^+ = 1/\lambda_e$ (mean of exponential), $p = \Pr(Y = 0)$.
@@ -5201,11 +5199,9 @@ $$
 $$
 As $\lambda \to \infty$ with $\alpha = \mu\beta/\lambda \to 0$, using $\log(1 + x) \approx x$ for small $\alpha$:
 \begin{align*}
-  &\left(\frac{\beta}{\beta-t}\right)^\alpha - 1 \approx \alpha \log\frac{\beta}{\beta - t}\\
-  \Rightarrow 
-  & K_S(t) \approx \lambda \cdot \frac{\mu\beta}{\lambda} \log\frac{\beta}{\beta - t}\\
-  = 
-  & \mu\beta \log\frac{\beta}{\beta-t}
+              & \left(\frac{\beta}{\beta-t}\right)^\alpha - 1 \approx \alpha \log\frac{\beta}{\beta - t}\\
+  \Rightarrow & K_S(t) \approx \lambda \cdot \frac{\mu\beta}{\lambda} \log\frac{\beta}{\beta - t}\\
+  =           &\mu\beta \log\frac{\beta}{\beta-t}
 \end{align*}
 This is the CGF of a Gamma$(\mu\beta,\, \beta)$ distribution (i.e., mean\ $\mu$, shape\ $\mu\beta$).
 
@@ -5216,12 +5212,24 @@ As $\lambda \to \infty$ with mean fixed, the CP-G converges to a *Gamma distribu
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:MixedHospitalStays).**
 
-Total probability:
+1. Total probability:
 $$
   \Pr(Y = 0) + \int_0^\infty 0.6\,e^{-y}\,dy 
   = 0.4 + 0.6\left[-e^{-y}\right]_0^\infty 
   = 0.4 + 0.6(1) = 1.
 $$
+2. Find
+$$
+  F_Y(y) =
+  \begin{cases}
+    0                       & \text{for $y < 0$};\\
+    0.4                     & \text{for $y = 0$};\\
+    0.4 + 0.6(1 - \exp(-y)) & \text{for $y > 0$}.
+  \end{cases}
+$$
+3. $\Pr(Y > 1) = 1 - F_Y(1) = 0.4 + \exp(-1) \approx 0.7679$.
+4. $\Pr(0\le Y \le 3) = F_Y(3) - F_Y(0^{-}) = (1 - 0.6\exp(-3)) - 0 = \approx 0.9701$.
+   Note: We use $F(0^{-}) = 0$ and not $F(0)$ since the interval includes $Y = 0$, which already has probability mass\ $0.4$ included.
 :::
 
 
@@ -5299,8 +5307,14 @@ cat("Var(S) simulated:  ", var(S), "\n")
 cat("Pr(S = 0) theoretical:", exp(-lambda), "\n")
 cat("Pr(S = 0) simulated:  ", mean(S == 0), "\n")
 
-hist(S[S > 0], breaks = 40, col = "coral", border = "white",
-     main = "Total claim amount S | S > 0", xlab = "S ($)", ylab = "Count")
+hist(S[S > 0], 
+     breaks = 40, 
+     col = plotColour1, 
+     las = 1,
+     border = "white",
+     main = "Total claim amount S | S > 0", 
+     xlab = "S ($)", 
+     ylab = "Count")
 ```
 
 
@@ -5338,17 +5352,12 @@ cat("Theoretical E[S]:", lambda_fire * alpha_fire * beta_fire, "\n")
 
 1. Matching mean and proportion of zeros.
    Let ZM have $p_0$, $\mu^+ = \operatorname{E}[Y \mid Y>0]$, and CP-G have $\lambda$, $\alpha$, $\beta$.
-Set $p_0 = e^{-\lambda}$ (same zero probability) and $(1 - p_0)\mu^+ = \lambda\alpha/\beta$ (same mean).
-This gives us one equation relating parameters: infinitely many solutions exist, so *yes*, we can always find such parameters.
-
-**Example:** $\lambda = 1$, $\alpha = 2$, $\beta = 1$ for CP-G.
-
-- CP-G: $\Pr(S = 0) = e^{-1} \approx 0.368$, $\operatorname{E}[S] = 2$
-- ZM: set $p_0 = e^{-1}$, $\mu^+ = \operatorname{E}[S]/(1-p_0) = 2/(1 - e^{-1}) \approx 3.164$
-
-Use $\text{Gamma}(\alpha^+=2, \beta^+ = 2/\mu^+)$ for ZM positive part.
-
-2. Variance comparison:
+   Set $p_0 = \exp(-\lambda)$ (same zero probability) and $(1 - p_0)\mu^+ = \lambda\alpha/\beta$ (same mean).
+   This gives us one equation relating parameters: infinitely many solutions exist, so *yes*, we can always find such parameters.
+2. If $\lambda = 1$, $\alpha = 2$, $\beta = 1$ for CP-G, then $\Pr(S = 0) = \exp(-1) \approx 0.368$, $\operatorname{E}[S] = 2$.
+   For the ZM, set $p_0 = \exp(-1)$, $\mu^+ = \operatorname{E}[S]/(1 - p_0) = 2/(1 - \exp(-1) \approx 3.164$.
+   So, use $\text{Gamma}(\alpha^+=2, \beta^+ = 2/\mu^+)$ for ZM positive part.
+3. Variance comparison:
 
 
 ```{r simcompare_theory}
@@ -5410,7 +5419,6 @@ $$
     p + (1 - p) F^+(y)  & y > 0 
   \end{cases}
 $$
-
 Inverting: for $\tau \leq p$, $Q_Y(\tau) = 0$. 
 For $\tau > p$:
 $$
@@ -5426,7 +5434,7 @@ $$
 $$
 where $Q^+$ is the quantile function of the positive part.
 
-Median when $p > 0.5$: Since $0.5 < p$, we have $Q_Y(0.5) = 0$. 
+Median when $p > 0.5$: since $0.5 < p$, then $Q_Y(0.5) = 0$. 
 The median is\ $0$.
 :::
 
@@ -5471,7 +5479,7 @@ if (tau <= p) {
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:MixedZeroModifiedFixP).**
 
-Effect of $p$ on zero-modified Gamma$(2, 1)$:
+Effect of\ $p$ on zero-modified Gamma$(2, 1)$:
 
 
 ```{r zm_fixp, fig.height=6}
@@ -5503,14 +5511,15 @@ legend("topright", legend = paste0("p = ", p_vals),
        col = cols, lwd = 2, bty = "n")
 ```
 
-As $p$ increases, the distribution places more mass at zero, shrinking the mean and pulling the continuous part down. The shape of the positive part is unchanged.
+As\ $p$ increases, the distribution places more mass at zero, shrinking the mean and pulling the continuous part down. 
+The shape of the positive part is unchanged.
 :::
 
 
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:MixedZeroModifiedEstimate).**
 
-Given: $\Pr(Y = 0) = 0.5$, $E[Y] = 3$, $\operatorname{var}[Y] = 30$.
+Given: $\Pr(Y = 0) = 0.5$, $\operatorname{E}[Y] = 3$, $\operatorname{var}[Y] = 30$.
 
 ```{r zm_estimate}
 p_obs  <- 0.5
@@ -5554,7 +5563,7 @@ points(0, p_obs, pch = 17, col = "red", cex = 1.8)
 **Exercise\ \@ref(exr:MixedCPGrelationship).**
 
 1. Link between $\Pr(S = 0)$ and $\operatorname{E}[S]$
-   In CP-G: $\Pr(S = 0) = e^{-\lambda}$ and $\operatorname{E}[S] = \lambda\alpha/\beta$.
+   In CP-G: $\Pr(S = 0) = \exp(-\lambda)$ and $\operatorname{E}[S] = \lambda\alpha/\beta$.
    So $\lambda = \beta \operatorname{E}[S]/\alpha$, giving:
 $$
   \Pr(S = 0) = \exp\!\left(-\frac{\beta\,\operatorname{E}[S]}{\alpha}\right).
@@ -5586,7 +5595,7 @@ This infinite mixture is **not** a single Gamma.
 
 1. CGF:
 $$
-  M_S(t) = \exp\!\left\{\lambda\left[\left(\frac{\beta}{\beta-t}\right)^\alpha - 1\right]\right\}.
+  M_S(t) = \exp\!\left\{\lambda\left[\left(\frac{\beta}{\beta - t}\right)^\alpha - 1\right]\right\}.
 $$
    and
 $$
@@ -5597,8 +5606,8 @@ $$
    Differentiating $K_S(t)$ at $t = 0$:
 $$
   \kappa_r 
-  = \lambda \cdot \frac{\alpha(\alpha+1)\cdots(\alpha+r-1)}{\beta^r} 
-  = \lambda \cdot \frac{\Gamma(\alpha+r)}{\Gamma(\alpha)\,\beta^r}.
+  = \lambda \cdot \frac{\alpha(\alpha + 1)\cdots(\alpha + r - 1)}{\beta^r} 
+  = \lambda \cdot \frac{\Gamma(\alpha + r)}{\Gamma(\alpha)\,\beta^r}.
 $$
 
 | Cumulant | Formula |
@@ -5715,8 +5724,8 @@ $$
 More directly, write $\mu = \operatorname{E}[S]$:
 $$
   \operatorname{var}[S] 
-  = \frac{(\alpha+1)}{\beta} \mu 
-  = \frac{(\alpha+1)}{\lambda\alpha}\mu^2 \cdot \frac{\lambda\alpha/\beta}{\mu}.
+  = \frac{(\alpha + 1)}{\beta} \mu 
+  = \frac{(\alpha + 1)}{\lambda\alpha}\mu^2 \cdot \frac{\lambda\alpha/\beta}{\mu}.
 $$
 After algebra, $\operatorname{var}[S] = \phi\,\mu^p$ where $p = (\alpha + 2)/(\alpha + 1)$.
 
@@ -5727,7 +5736,7 @@ $$
 
 - As $\alpha \to 0^+$: $p \to 1 + 1 = 2$.
 - As $\alpha \to \infty$: $p \to 1$.
-- Strictly decreasing in $\alpha$, so $p \in (1, 2)$ for all $\alpha > 0$.
+- Strictly decreasing in\ $\alpha$, so $p \in (1, 2)$ for all $\alpha > 0$.
 
 ```{r tweedie_verify}
 # Numerical verification
@@ -5776,7 +5785,7 @@ cat("Pr(S=0):   theory =", round(exp(-lam_r), 4),
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:MixedCPGplots).**
 
-Spike-and-density plots for three CP-G distributions:
+Probability plots for three CP-G distributions:
 
 ```{r cpg_plots, fig.height=8}
 configs <- list(
@@ -5871,7 +5880,7 @@ legend("topright", legend = c("CP-G", "Zero-Modified Gamma"),
 
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:MixedCPGReproductive).**
-Use the MGFs: The MGF of $T = X_1 + X_2$ is $M_T(t) = M_{X_1}(t) \cdot M_{X_2}(t)$.
+Use the MGFs, the MGF of $T = X_1 + X_2$ is $M_T(t) = M_{X_1}(t) \cdot M_{X_2}(t)$.
 Substituting the MGFs for the CPG, 
 $$
   M_T(t) 
@@ -5920,7 +5929,7 @@ The CP-G is reproductive: $S_1 + S_2 \sim \text{CP-G}(\lambda_1+\lambda_2, \alph
 **Exercise\ \@ref(exr:MixedCPGLimits).**
 Consider the CPG distribution.
 
-Hold $\mu = \lambda\alpha\beta$ fixed (so the mean of\ $X$ X is constant) and let $\lambda \to \infty$, $\alpha \to 0$ with $\lambda\alpha$ constant.
+Hold $\mu = \lambda\alpha\beta$ fixed (so the mean of\ $X$ is constant) and let $\lambda \to \infty$, $\alpha \to 0$ with $\lambda\alpha$ constant.
 
 The CGF of\ $X$ is:
 $$
@@ -5949,7 +5958,7 @@ Intuitively, there are so many tiny jumps that the compound sum behaves like a c
 **Exercise\ \@ref(exr:CGFConditionMean).**
 From the law of total expectation,
 $$
-  \operatorname{E}[X] 
+    \operatorname{E}[X] 
   = \operatorname{E}[X \mid X = 0] \cdot \Pr(X = 0) + 
     \operatorname{E}[X \mid X > 0] \cdot \Pr(X > 0).
 $$
@@ -6858,7 +6867,7 @@ $$
 
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:SampleMean).**
-1. $\operatorname{E}[\overline{X}] = \operatorname{E}[(X_1 + X_2 + \cdots + X_n)/n] = [\operatorname{E}[X_1] + \operatorname{E}[X_2] + \cdots + \operatorname{E}{X_n])/n = (n \mu)/n = \mu$.
+1. $\operatorname{E}[\overline{X}] = \operatorname{E}[(X_1 + X_2 + \cdots + X_n)/n] = [\operatorname{E}[X_1] + \operatorname{E}[X_2] + \cdots + \operatorname{E}[X_n])/n = (n \mu)/n = \mu$.
 2. $\operatorname{var}[\overline{X}] = \operatorname{var}[(X_1 + X_2 + \cdots + X_n)/n] = (\operatorname{var}[X_1] + \operatorname{var}[X_2] + \cdots + \operatorname{var}[X_n])/n^2 = (n \sigma^2)/n^2 = \sigma^2/n$.
 :::
 
