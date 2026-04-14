@@ -19,28 +19,53 @@ Among several available techniques, three are considered:
 2. the distribution function method for continuous random variable only (Sect.\ \@ref(DistributonFunctionMethod));
 3. the moment generating function method (Sect.\ \@ref(TransformationMoments)).
 
-An important concept in this context is a *one-to-one transformation*.
+An important concept in this context is a *one-to-one transformation*.\index{Transformation!one-to-one}
 
 
 :::{.definition #OneOneTransformation name="One-to-one transformation"}
-Given random variables\ $X$ and\ $Y$ with ranges\ $\mathcal{R}_X$ and\ $\mathcal{R}_Y$ respectively, the function\ $u(\cdot)$ is a *one-to-one transformation* (or mapping) if, for each $y\in \mathcal{R}_Y$, there corresponds exactly one $x\in \mathcal{R}_X$.
+Let $Y = u(X)$, where the function $u(\cdot)$ is defined on the range $\mathcal{R}_X$ of the random variable\ $X$.
+The transformation $u(\cdot)$ is called a *one-to-one transformation* \index{Transformation!one-to-one}(or *one-to-one mapping*) on $\mathcal{R}_X$ if distinct values of $x\in\mathcal{R}_X$ produce distinct values of\ $y$; that is,
+$$
+  u(x_1) = u(x_2)\implies x_1=x_2.
+$$
+
+Equivalently, each $y\in\mathcal{R}_Y$ corresponds to exactly one $x\in\mathcal{R}_X$.
+We also write *1:1 transformation* or *1:1 mapping*.\index{Transformation!one-to-one}
 :::
 
 
-When $Y = u(X)$ is a one-to-one transformation, the inverse function is uniquely defined; that is, $X$ can be written uniquely in terms of\ $Y$. 
-This is important when considering the distribution of\ $Y$ when the distribution of\ $X$ is known.
+When $Y = u(X)$ is a one-to-one transformation on $\mathcal{R}_X$, the inverse function $u^{-1}$ is uniquely defined on $\mathcal{R}_Y$. Hence, $X = u^{-1}(Y)$.
+A function need not be one-to-one on all real numbers; it only needs to be one-to-one on the support of the random variable.
 
 
 :::{.example #OneToOneTransformation}
-The transformation $Y = (X - 1)^2$ is not a one-to-one transformation for $\mathcal{R}_X = \mathbb{R}$; that is, if $X$ is defined on $(-\infty, +\infty)$.
-For example, the inverse transformation is $X = 1 \pm \sqrt{Y}$, and two values of\ $X$ exists for any given value of $Y > 0$ (Fig.\ \@ref(fig:TwoTransforms), left panel).
+The transformation $Y = (X - 1)^2$ is not a one-to-one transformation in general.
+For example, the inverse transformation is 
+$$
+  X = 1 \pm \sqrt{Y},
+$$
+so two values of\ $X$ correspond to each $Y > 0$ (Fig.\ \@ref(fig:TwoTransforms), left panel).
 
-However, if the random variable\ $X$ is only defined for $X > 2$, then the transformation is a one-to-one function  (Fig.\ \@ref(fig:TwoTransforms), right panel).
+However, if\ $X$ is restricted to $\mathcal{R}_X = \{x\mid x > 2\}$, then the transformation is a one-to-one transformation (Fig.\ \@ref(fig:TwoTransforms), right panel).
 :::
 
 
-```{r TwoTransforms, echo=FALSE, fig.align="center", fig.cap="Two transformations: a non-one-to-one transformation (left panel), and a one-to-one transformation (right panel) where the random variable is defined only on $X > 2$.", fig.height=4, out.width='80%', fig.width=7}
-par(mfrow = c(1, 2))
+
+When $Y = u(X)$ is a one-to-one transformation over $\mathcal{R}_X$,\index{Transformation!one-to-one} the inverse function is uniquely defined over $\mathcal{R}_Y$; that is, $X$ can be written uniquely in terms of\ $Y$. 
+
+
+:::{.example #OneToOneTransformation}
+The transformation $Y = (X - 1)^2$ is not a one-to-one transformation in general.
+For example, the inverse transformation is $X = 1 \pm \sqrt{Y}$, and two values of\ $X$ exist for any given value of $Y > 0$ (Fig.\ \@ref(fig:TwoTransforms), left panel).
+
+However, if the random variable\ $X$ was only defined for $\mathcal{R}_X = \{x\mid x > 2\}$ for example, then the transformation is a one-to-one function (Fig.\ \@ref(fig:TwoTransforms), centre panel), and $X = 1 + \sqrt{Y}$.
+If instead the random variable\ $X$ was only defined for $\mathcal{R}_X = \{x\mid x < 1\}$ for example, then the transformation is a one-to-one function (Fig.\ \@ref(fig:TwoTransforms), right panel), and $X = 1 - \sqrt{Y}$.
+
+:::
+
+
+```{r TwoTransforms, echo=FALSE, fig.align="center", fig.cap="Three transformations: a non-one-to-one transformation (left panel), and two one-to-one transformation (centre and right panels).", fig.height=4, out.width='100%', fig.width=7}
+par(mfrow = c(1, 3))
 
 x <- seq(-2, 4, 
          length = 500)
@@ -49,6 +74,11 @@ y <- (x - 1)^2
 x1 <- seq(2, max(x) + 1,
           length = 500)
 y1 <- (x1 - 1)^2
+
+
+x2 <- seq(min(x) - 1, 1,
+          length = 500)
+y2 <- (x2 - 1)^2
 
 plot( y ~ x,
       type = "l",
@@ -67,9 +97,9 @@ plot( y ~ x,
       lty = 2,
       xlab = expression(italic(x)),
       ylab = expression(italic(y)),
-      main = "A transformation that is\none-to-one")
+      main = "A one-to-one\ntransformation")
 lines( y1 ~ x1,
-       col = plotColour1,
+       col = plotColour,
        lwd = 3)
 lines(x = c(min(x1), min(x1)),
       y = c(0, min(y1)),
@@ -77,6 +107,30 @@ lines(x = c(min(x1), min(x1)),
 lines(x = c(max(x1), max(x1)),
       y = c(0, max(y1)),
       lty = 3)
+
+
+
+
+
+plot( y ~ x,
+      type = "l",
+      las = 1,
+      col = "grey",
+      lwd = 3,
+      lty = 2,
+      xlab = expression(italic(x)),
+      ylab = expression(italic(y)),
+      main = "A one-to-one\ntransformation")
+lines( y2 ~ x2,
+       col = plotColour,
+       lwd = 3)
+lines(x = c(min(x2), min(x2)),
+      y = c(0, min(y2)),
+      lty = 3)
+lines(x = c(max(x2), max(x2)),
+      y = c(0, max(y2)),
+      lty = 3)
+
 ```
 
 
@@ -165,7 +219,7 @@ When the transformation \ $u(\cdot)$ is *not* 1:1, more care is needed.
 
 :::{.example #TransformNot11 name="Transformation not 1:1"}
 Suppose $\Pr(X = x)$ is defined as in Example\ \@ref(exm:Transform1), and define $Y = |X - 3|$.
-Since $\mathcal{R}_Y = \{0, 1, 2\}$ the mapping is *not* one-to-one: the event $Y = 0$ occurs if $X = 3$, the event $Y = 1$ occurs if $X = 2$ or $X = 4$, and the event $Y = 2$ occurs if $X = 1$ or $X = 5$.
+Since $\mathcal{R}_Y = \{0, 1, 2\}$ the mapping is *not* one-to-one:\index{Transformation!not one-to-one} the event $Y = 0$ occurs if $X = 3$, the event $Y = 1$ occurs if $X = 2$ or $X = 4$, and the event $Y = 2$ occurs if $X = 1$ or $X = 5$.
 Hence, $\mathcal{R}_Y  \{ 0, 1, 2\}$.
 
 To find the probability distribution of\ $Y$:
@@ -227,7 +281,7 @@ The Jacobian is needed to ensure the height of the corresponding density functio
 
 
 :::{.theorem #ChangeOfVarCont name="Change of variable (continuous rv)"}
-If\ $X$ has PDF $f_X(x)$ for $x\in \mathcal{R}_X$ and\ $u(\cdot)$ is a one-to-one function for $x\in \mathcal{R}_X$, then the random variable $Y = u(X)$ has PDF
+If\ $X$ has PDF $f_X(x)$ for $x\in \mathcal{R}_X$ and\ $u(\cdot)$ is a one-to-one function\index{Transformation!one-to-one} for $x\in \mathcal{R}_X$, then the random variable $Y = u(X)$ has PDF
 $$
    f_Y(y) = f_X(x) \left|\frac{dx}{dy}\right|
 $$
@@ -371,7 +425,7 @@ $$
    \end{cases}
 $$
 Consider the transformation $Y = u(X) = -2\log X$ (where $\log$ refers to logarithms to base\ $e$, or *natural logarithms*).
-The transformation is one-to-one, and the inverse transformation is
+The transformation is one-to-one,\index{Transformation!one-to-one} and the inverse transformation is
 $$
    X = \exp( -Y/2) = u^{-1}(Y) = w(Y).
 $$
@@ -466,7 +520,7 @@ Let random variable\ $X$ be uniformly distributed on $[-\pi/2, \pi/2]$.
 Suppose we seek the distribution of $Y = \tan X$ (Fig.\ \@ref(fig:TanXform)).
 
 For the mapping $Y = \tan X$, we see that $\mathcal{R}_Y = \{ y\mid -\infty <y<\infty\}$.
-The mapping is one-to-one, and so $X = \tan^{-1}Y$, and $dx/dy = 1/(1 + y^2)$.
+The mapping is one-to-one,\index{Transformation!one-to-one} and so $X = \tan^{-1}Y$, and $dx/dy = 1/(1 + y^2)$.
 Hence
 $$
    f_Y(y)
@@ -561,7 +615,7 @@ A case where the function\ $u(\cdot)$ is *not* a one-to-one transformation is co
 :::{.example #TransformationNon11 name="Transformation (not 1:1)"}
 Given a random variable\ $Z$ which follows a $N(0, 1)$ distribution, suppose we seek the probability distribution of $Y = \frac{1}{2} Z^2$.
 
-The relationship $Y = u(Z) = \frac{1}{2}z^2$ is not strictly increasing or decreasing in $(-\infty, \infty )$ so Theorem\ \@ref(thm:ChangeOfVarCont) cannot be applied directly.
+The relationship $Y = u(Z) = \frac{1}{2}z^2$ is not strictly increasing or decreasing in $(-\infty, \infty )$ so Theorem\ \@ref(thm:ChangeOfVarCont) cannot be applied directly.\index{Transformation!not one-to-one}
 Instead, subdivide the range of $Z$ and $Y$ so that in each portion the relationship *is* monotonic.
 Then:
 $$
