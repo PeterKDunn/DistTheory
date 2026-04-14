@@ -64,7 +64,7 @@ If instead the random variable\ $X$ was only defined for $\mathcal{R}_X = \{x\mi
 :::
 
 
-```{r TwoTransforms, echo=FALSE, fig.align="center", fig.cap="Three transformations: a non-one-to-one transformation (left panel), and two one-to-one transformation (centre and right panels).", fig.height=4, out.width='100%', fig.width=7}
+```{r TwoTransforms, echo=FALSE, fig.align="center", fig.cap="Three transformations: a non-one-to-one transformation (left panel), and two one-to-one transformations (centre and right panels).", fig.height=3.25, out.width='100%', fig.width=7}
 par(mfrow = c(1, 3))
 
 x <- seq(-2, 4, 
@@ -101,11 +101,7 @@ plot( y ~ x,
 lines( y1 ~ x1,
        col = plotColour,
        lwd = 3)
-lines(x = c(min(x1), min(x1)),
-      y = c(0, min(y1)),
-      lty = 3)
-lines(x = c(max(x1), max(x1)),
-      y = c(0, max(y1)),
+abline(v = 2,
       lty = 3)
 
 
@@ -124,11 +120,7 @@ plot( y ~ x,
 lines( y2 ~ x2,
        col = plotColour,
        lwd = 3)
-lines(x = c(min(x2), min(x2)),
-      y = c(0, min(y2)),
-      lty = 3)
-lines(x = c(max(x2), max(x2)),
-      y = c(0, max(y2)),
+abline(v = 1,
       lty = 3)
 
 ```
@@ -139,9 +131,8 @@ lines(x = c(max(x2), max(x2)),
 ## The change of variable method {#ChangeOfVariable}
 
 \index{Transformations of random variables!change of variable method|(}
-The method is relatively straightforward for one-to-one transformations (such as $Y = 1 - X$ or $Y = \exp(X)$).
-Considerable care needs to be exercised if the transformation is not one-to-one; examples are given below.
-The discrete and continuous cases are considered separately. 
+The method is relatively straightforward for one-to-one transformations, but considerable care is needed if the transformation is not one-to-one; examples are given below.
+The discrete and continuous cases are considered separately.
 
 
 ### Discrete random variables {#ChangeOfVarDiscrete}
@@ -151,7 +142,7 @@ Let $Y = u(X)$ define a *one-to-one transformation* that maps\ $\mathcal{R}_X$ o
 If we solve $Y = u(X)$ for\ $X$ in terms of $Y$, say $X = w(Y) = u^{-1}(Y)$, then for each $y \in \mathcal{R}_Y$, we have $x = w(y)\in \mathcal{R}_X$.
 
 
-:::{.example #Transform1 name="One-to-one transformation"}
+:::{.example #Transform1 name="Change of variable method: one discrete rv"}
 Suppose
 $$
    p_X(x) = 
@@ -202,7 +193,7 @@ $$
 $$
 To find the probability function of $Y = X^2$, first note that $Y = X^2$ is *not* a one-to-one transformation in general, but is one-to-one over the range of\ $X$ (i.e., for $x = 0, 1, 2, 3$).
 
-The transformation $y = u(x) = x^2$, $\mathcal{R}_X = \{ x \mid x = 0, 1, 2, 3 \}$ maps onto $\mathcal{R}_Y = \{y \mid y = 0, 1, 4, 9\}$.
+The transformation $y = u(x) = x^2$, $\mathcal{R}_X = \{x = 0, 1, 2, 3 \}$ maps onto $\mathcal{R}_Y = \{y = 0, 1, 4, 9\}$.
 The inverse function is $x = w(y) = \sqrt{y}$, and hence the probability function of $Y$ is
 $$
    p_Y(y) = p_X(\sqrt{y})
@@ -214,15 +205,26 @@ $$
 :::
 
 
-When the transformation \ $u(\cdot)$ is *not* 1:1, more care is needed.
+When the transformation \ $u(\cdot)$ is *not* 1:1, more care is needed.\index{Transformation!not one-to-one}
+An example follows.
 
 
 :::{.example #TransformNot11 name="Transformation not 1:1"}
 Suppose $\Pr(X = x)$ is defined as in Example\ \@ref(exm:Transform1), and define $Y = |X - 3|$.
-Since $\mathcal{R}_Y = \{0, 1, 2\}$ the mapping is *not* one-to-one:\index{Transformation!not one-to-one} the event $Y = 0$ occurs if $X = 3$, the event $Y = 1$ occurs if $X = 2$ or $X = 4$, and the event $Y = 2$ occurs if $X = 1$ or $X = 5$.
-Hence, $\mathcal{R}_Y  \{ 0, 1, 2\}$.
+Since $\mathcal{R}_Y = \{0, 1, 2\}$ the mapping is *not* one-to-one:\index{Transformation!not one-to-one} 
 
-To find the probability distribution of\ $Y$:
+$\Pr(X = x)$ |  $X$  |  $Y = |X - 3|$
+:-----------:+:-----:+:---------------:
+$1/15$       | $1$   | $2$
+$2/15$       | $2$   | $1$
+$3/15$       | $3$   | $0$
+$4/15$       | $4$   | $1$
+$5/15$       | $5$   | $2$
+
+So, for example, $X = 2$ and $X = 4$ both map to $Y = 1$.
+Also, we can see that $\mathcal{R}_Y  \{ 0, 1, 2\}$.
+
+Then, the probability distribution of\ $Y$ is
 \begin{align*}
    \Pr(Y = 0) 
    &= \Pr(X = 3) = 3/15 = \frac{1}{5};\\
@@ -264,9 +266,15 @@ plotDiscrete(x, px,
 plotDiscrete(y, py,
              type = "MF",
              ylim = c(0, 0.45),
+             axes = FALSE,
              main = expression(bold(The~PMF~"for"~italic(Y))),
              xlab = expression(italic(y)),
              ylab = "PMF")
+axis(side = 2, 
+     las = 1)
+axis(side = 1,
+     at = c(0, 1, 2))
+box()
 
 par(mfrow = c(1,1))
 ```
@@ -295,8 +303,8 @@ Let the inverse function be $X = w(Y)$ so that $w(y) = u^{-1}(x)$.
 If $a < y < b$ then $w(a) < x < w(b)$ and  $\Pr(a < Y < b) = \Pr\big(w(a) < X <w(b)\big)$, so
 $$
    {\int^b_a f_Y(y)\,dy
-   =\int^{w(b)}_{w(a)}f_X(x)\,dx
-   =\int^b_af\big( w(y)\big)\frac{dx}{dy}\,\,dy}.
+   =\int^{w(b)}_{w(a)} f_X(x)\,dx
+   =\int^b_a f_X\big( w(y)\big) \frac{dx}{dy}\,\,dy}.
 $$
 Therefore, $\displaystyle {f_Y(y) = f_X\big( w(y) \big)\frac{dx}{dy}}$, where $w(y) = u^{-1}(x)$.
 
@@ -304,12 +312,12 @@ Therefore, $\displaystyle {f_Y(y) = f_X\big( w(y) \big)\frac{dx}{dy}}$, where $w
 **Case\ 2:** $y = u(x)$ is a strictly *decreasing* function of $x$ (Fig.\ \@ref(fig:Transformation), right panel).
 If $a < y < b$ then $w(b) < x < w(a)$ and $\Pr(a < Y < b) = \Pr\big(w(b) < X < w(a)\big)$, so that
 \begin{align*}
-     \int^b_a f_Y(y)\,dy & = \int^{w(a)}_{w(b)}f_X(x)\,dx\\
-     & = \int^a_bf_X(x)\frac{dx}{dy}\,\,dy\\
-     & = - \int ^b_a f_X(x)\frac{dx}{dy}\,dy.
+     \int^b_a f_Y(y)\,dy & = \int^{w(a)}_{w(b)} f_X(x)\,dx\\
+     & = \int^a_b f_X(x) \frac{dx}{dy}\,\,dy\\
+     & = - \int ^b_a f_X(x) \frac{dx}{dy}\,dy.
 \end{align*}
 Therefore $f_Y(y) = -f_X\left( w(y) \right)\displaystyle{\frac{dx}{dy}}$.
-But $dx/dy$ is negative in the case of a decreasing function, so in general
+Since $dx/dy$ is negative in the case of a decreasing function, in general
 $$
    f_Y(y) = f_X(x)\left|\frac{dx}{dy} \right|. 
 $$
@@ -318,7 +326,7 @@ $$
 
 
 
-```{r Transformation, echo=FALSE, fig.align="center", fig.cap="A strictly increasing transformation function (left panel) and strictly decreasing function (right panel).", fig.width=9, fig.height=4, out.width='100%'}
+```{r Transformation, echo=FALSE, fig.align="center", fig.cap="A strictly increasing one-to-one transformation function (left panel) and strictly decreasing one-to-one function (right panel).", fig.width=9, fig.height=4, out.width='100%'}
 par( mfrow = c(1, 2))
 
 logit <- function(x) { 
@@ -489,7 +497,7 @@ fx <- exp(-x)
 plot(fx ~ x,
      xlab = expression(italic(x)),
      ylab = "Prob. fn.",
-     main = expression(bold(PF~"for"~italic(X))),
+     main = expression(bold(PDF~"for"~italic(X))),
      type="l",
      las = 1,
      lwd = 3,
@@ -507,7 +515,7 @@ fy <- 2 * y * exp(-y^2)
 plot(fy ~ y,
      xlab = expression(italic(y)),
      ylab = "Prob. fn.",
-     main = expression(bold(PF~"for"~italic(Y))),
+     main = expression(bold(PDF~"for"~italic(Y))),
      type="l",
      las = 1,
      lwd = 3,
@@ -516,8 +524,8 @@ plot(fy ~ y,
 
 
 ::: {.example #TransformationTan name="Tan transformation"}
-Let random variable\ $X$ be uniformly distributed on $[-\pi/2, \pi/2]$. 
-Suppose we seek the distribution of $Y = \tan X$ (Fig.\ \@ref(fig:TanXform)).
+Let random variable\ $X$ be uniformly distributed on $(-\pi/2, \pi/2)$ Fig.\ \@ref(fig:TanXform) (centre panel). 
+Suppose we seek the distribution of $Y = \tan X$ (Fig.\ \@ref(fig:TanXform), left panel).
 
 For the mapping $Y = \tan X$, we see that $\mathcal{R}_Y = \{ y\mid -\infty <y<\infty\}$.
 The mapping is one-to-one,\index{Transformation!one-to-one} and so $X = \tan^{-1}Y$, and $dx/dy = 1/(1 + y^2)$.
@@ -527,6 +535,7 @@ $$
    = f_X(x)\left|\frac{dx}{dy}\right|
    = \frac{1}{\pi(1 + y^2)}.
 $$
+The distribution is shown in Fig.\ \@ref(fig:TanXform) (right panel).
 This is the *Cauchy distribution*.\index{Cauchy distribution}
 :::
 <!-- CONNECT TO KICKING A FOOTBALL -->
@@ -609,7 +618,8 @@ plot(fy ~ y,
 ```
 
 
-A case where the function\ $u(\cdot)$ is *not* a one-to-one transformation is considered using an example, using a modification of Theorem\ \@ref(thm:ChangeOfVarCont).
+In cases where the function\ $u(\cdot)$ is *not* a one-to-one transformation over $\mathcal{R}_X$, usually $\mathcal{R}_X$ can be split into smaller sets where the transformation is one-to-one in each.
+We give an example next.
 
 
 :::{.example #TransformationNon11 name="Transformation (not 1:1)"}
