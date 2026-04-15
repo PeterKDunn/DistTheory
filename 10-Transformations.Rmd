@@ -222,18 +222,18 @@ $4/15$       | $4$   | $1$
 $5/15$       | $5$   | $2$
 
 So, for example, $X = 2$ and $X = 4$ both map to $Y = 1$.
-Also, we can see that $\mathcal{R}_Y  \{ 0, 1, 2\}$.
+Also, we can see that $\mathcal{R}_Y = \{ 0, 1, 2\}$.
 
 Then, the probability distribution of\ $Y$ is
 \begin{align*}
    \Pr(Y = 0) 
    &= \Pr(X = 3) = 3/15 = \frac{1}{5};\\
    \Pr(Y = 1) 
-   &= \Pr(X = 2 \text{ or } 4) = \frac{2}{15} + \frac{4}{15} = \frac{2}{5};\\
+   &= \Pr(X = 2) + \Pr(X = 4) = \frac{2}{15} + \frac{4}{15} = \frac{2}{5};\\
    \Pr(Y = 2) 
-   &= \Pr(X = 1 \text{ or } 5) = \frac{1}{15} + \frac{5}{15} = \frac{2}{5}.
+   &= \Pr(X = 1) + \Pr(X = 5) = \frac{1}{15} + \frac{5}{15} = \frac{2}{5}.
 \end{align*}
-The probability function of $Y$ is
+The probability function of\ $Y$ is
 $$
    p_Y(y) = 
    \begin{cases}
@@ -603,7 +603,7 @@ lines( x = c(pi/2, pi/2),
 
 #######################
 
-y <- seq(-3, 3,
+y <- seq(-4, 4,
          length = 500)
 fy <- 1 / (1 + y^2)
 
@@ -631,8 +631,9 @@ $$
 $$
 The inverse relation, $Z = u^{-1}(Y)$ is $Z = \pm \sqrt{2Y}$, which is not strictly increasing or decreasing on $\mathcal{R}_Z = (-\infty, \infty )$, so Theorem\ \@ref(thm:ChangeOfVarCont) cannot be applied directly.\index{Transformation!not one-to-one}
 
-However the region can be partitioned into two regions where the transformation is one-to-one: $Z \le 0$ (Region\ A) and $Z > 0$ (Region\ B), where the equality could be in either partition. 
-This is shown in Fig.\ \@ref(fig:Non11Xform), where values of\ $a < y < b$ correspond to *two* regions in $\mathcal{R}_Z$ (one in each partition):  $-\sqrt{2b} < z < -\sqrt{2a}$ and $\sqrt{2a} < z < \sqrt{2b}$.
+However, the support\ $\mathcal{R}_Z$ can be partitioned into two regions where the transformation is one-to-one: $Z \le 0$ (Region\ A) and $Z > 0$ (Region\ B), where the equality could be in either partition. 
+This is shown in Fig.\ \@ref(fig:Non11Xform).
+Values of $a < y < b$ correspond to *two* regions in $\mathcal{R}_Z$ (one in each partition):  $-\sqrt{2b} < z < -\sqrt{2a}$ in Region\ A, and $\sqrt{2a} < z < \sqrt{2b}$ in Region\ B.
 Thus,
 \begin{align*}
    \Pr(a < Y <b) 
@@ -658,10 +659,10 @@ It follows that if $X\sim N(\mu,\sigma^2)$, then the PDF of $Y = \frac{1}{2} (X 
 
 
 
-```{r Non11Xform, echo=FALSE, fig.align="center", fig.cap="A transformation that is not 1:1. The transformation is one-to-one in the two regions, Region A and Region B.", fig.height=3.5, fig.width=4.5, out.width='60%'}
+```{r Non11Xform, echo=FALSE, fig.align="center", fig.cap="A transformation that is not 1:1. The transformation is one-to-one in the two regions, Region A and Region B.", fig.height=3.5, fig.width=6.75, out.width='80%'}
 par(mar = c(5, 5, 4, 2) + 0.1) # Default:  5.1 4.1 4.1 2.1
 x <- seq(-5, 5,
-         length = 100)
+         by = 0.01)
 square <- function(x) { x^2 }
 
 y <- square(x)
@@ -702,7 +703,7 @@ lines( x = x[ x > xa & x < xb],
        y = y[ x > xa & x < xb],
        lwd = 3)
 
-# plot Region A\B line
+# plot Region B line
 lines( x = x[ x < -xa & x > -xb],
        y = y[ x < -xa & x > -xb],
        lwd = 3)
@@ -731,12 +732,27 @@ box()
 
 
 # Explanatory lines
-lines( x = c(x1, x1, x4, x4),
-       y = c(0, y1, y4, 0),
-       lty = 2)
+abline( h = y1,
+        lty = 2)
 lines( x = c(x2, x2, x3, x3),
        y = c(0, y2, y3, 0),
        lty = 2)
+
+lines( x = c( min(x) - 1, x1),
+       y = c(y2, y2),
+       lty = 2)
+lines( x = c(xb, max(x) + 1),
+       y = c(y3, y3),
+       lty = 2)
+
+lines(x = c(-xb,        -xb),
+      y = c(min(y) - 1, y1),
+      lty = 2)
+lines(x = c(xb,        xb),
+      y = c(min(y) - 1, y1),
+      lty = 2)
+
+
 
 abline(h = 0,
        col = "grey")
@@ -745,27 +761,44 @@ abline(v = 0,
 
 
 ## Explanatory polygon shading
-delta <- c(-0.08, 0.2)
-
 # vertical axis, left
 polygon( x = c(min(x) - 1, min(x) - 1, x1, x1),
          y = c(y1,         y2,         y2,                y1),
+         border = NA,
          col = "lightgrey")
 
 # vertical axis, right
 polygon( x = c(max(x) + 1, max(x) + 1, x4, x4),
          y = c(y1,         y2,         y2,                y1),
+         border = NA,
          col = "lightgrey")
 
 # bottom axis left
-polygon( x = c(-xa, -xa, -xb, -xb),
-         y = c(min(y) - 1, y2, y2, min(y - 1)),
+polygon( x = c(-xb,
+               -xb,
+               x[x >= -xb & x <= -xa],
+               -xa),
+         y = c(min(y) - 1, 
+               y1, 
+               y[x >= -xb & x <= -xa],
+               min(y) - 1),
+         border = NA,
          col = "lightgrey")
 
 # bottom axis right
-polygon( x = c(xa, xa, xb, xb),
-         y = c(min(y) - 1, y3, y3, min(y - 1)),
+polygon( x = c(xa,
+               xa,
+               x[x >= xa & x <= xb],
+               xb),
+         y = c(min(y) - 1, 
+               y3, 
+               y[x >= xa & x <= xb],
+               min(y) - 1),
+         border = NA,
          col = "lightgrey")
+
+
+
 
 ```
 
@@ -783,7 +816,7 @@ $$
    y_1 = u_1( x_1, x_2)\qquad\text{and}\qquad y_2 = u_2( x_1, x_2)
 $$
 that map\ $R^2_X$ onto\ $R^2_Y$ (the two-dimensional set of points for which $p(y_1, y_2) > 0$).
-The two inverse functions are
+Denote the two inverse functions as
 $$
    x_1 = w_1( y_1, y_2)\qquad\text{and}\qquad x_2 = w_2( y_1, y_2).
 $$
@@ -801,18 +834,19 @@ $$
 Let the two discrete random variables\ $X_1$ and\ $X_2$ have the joint probability function shown in Table\ \@ref(tab:Bivar4).
 Consider the two one-to-one transformations
 $$
-   Y_1 = X_1 + X_2 \qquad\text{and}\qquad Y_2 = 2 X_1.
+   Y_1 = |X_1 + X_2| \qquad\text{and}\qquad Y_2 = X_1 + 1.
 $$
 The joint probability function of\ $Y_1$ and\ $Y_2$ can be found by noting where the $(x_1, x_2)$ pairs are mapped to in the $y_1, y_2$ space:
 
-| $(x_1, x_2)$ | $\mapsto$ | $(y_1,y_2)$
-|:-----------:|:----------:|:----------------:
-| $(-1, 0)$   | $\mapsto$  | $(-1, -2)$ 
-| $(-1, 1)$   | $\mapsto$  | $(0, -2)$
-| $(-1, 2)$   | $\mapsto$  | $(1, -2)$
-| $(1, 0)$    | $\mapsto$  | $(1, 2)$ 
-| $(1, 1)$    | $\mapsto$  | $(2, 2)$ 
-| $(1, 2)$    | $\mapsto$  | $(3, 2)$ 
+
+$\Pr(x_1, x_2)$ | $(x_1, x_2)$ | $\mapsto$ | $(y_1,y_2)$
+:--------------:|:-----------:|:----------:|:----------------:
+$0.3$           | $(-1, 0)$   | $\mapsto$  | $(1, 1)$ 
+$0.1$           | $(-1, 1)$   | $\mapsto$  | $(0, 2)$
+$0.1$           | $(-1, 2)$   | $\mapsto$  | $(1, 3)$
+$0.2$           | $(1, 0)$    | $\mapsto$  | $(1, 1)$ 
+$0.2$           | $(1, 1)$    | $\mapsto$  | $(2, 2)$ 
+$0.1$           | $(1, 2)$    | $\mapsto$  | $(3, 3)$ 
 
 
 The joint probability function can then be constructed as shown in Table\ \@ref(tab:Bivar5).
@@ -865,10 +899,11 @@ if( knitr::is_html_output() ) {
 
 
 ```{r Bivar5, echo=FALSE}
-Bivar5Table <- array( dim = c(2, 6))
+Bivar5Table <- array( dim = c(3, 5))
 
-Bivar5Table[1, ] <- c("$y_2 = -2$", "$0.3$", "$0.1$", "$0.1$", "$0.0$", "$0.0$")
-Bivar5Table[2, ] <- c("$y_2 = +2$", "$0.0$", "$0.0$", "$0.2$", "$0.2$", "$0.1$")
+Bivar5Table[1, ] <- c("$y_2 = 1$", "$0.0$", "$0.5$", "$0.0$", "$0.0$")
+Bivar5Table[2, ] <- c("$y_2 = 2$", "$0.1$", "$0.0$", "$0.2$", "$0.0$")
+Bivar5Table[3, ] <- c("$y_2 = 3$", "$0.0$", "$0.1$", "$0.0$", "$0.1$")
 
 
 Bivar5Table.caption <- "The joint probability function for $Y_1$ and $Y_2$"
@@ -877,11 +912,10 @@ if( knitr::is_latex_output() ) {
                format = "latex",
                booktabs = TRUE,
                col.names = c("",
-                             "$y_1 = -1$",
-                             "$y_2 = 0$",
-                             "$y_3 = 1$",
-                             "$y_4 = 2$",
-                             "$y_5 = 3$"),
+                             "$y_1 = 0$",
+                             "$y_1 = 1$",
+                             "$y_1 = 2$",
+                             "$y_1 = 3$"),
                align = "r",
                longtable = FALSE,                
                escape = FALSE,
@@ -897,7 +931,6 @@ if( knitr::is_html_output() ) {
                align = "r",
                longtable = FALSE,                
                col.names = c("",
-                             "$y_1 = -1$",
                              "$y_1 = 0$",
                              "$y_1 = 1$",
                              "$y_1 = 2$",
@@ -913,25 +946,30 @@ In this case, a second (dummy) transformation is used, usually a very simple tra
 
 
 :::{.example #TransformBivariate2 name="Transformation (bivariate)"}
-Let\ $X_1$ and\ $X_2$ be two independent random variables with the joint probability function
+Let\ $X_1$ and\ $X_2$ be two independent Poisson random variables:
+\begin{align*}
+  p_{X_1}(x_1) &= \frac{\lambda_1^{x_1} \exp(-\lambda_1)}{x_1!}\ \text{for $x_1 = 0, 1, 2, \dots$}
+  \quad\text{and}\\
+  p_{X_2}(x_2) &= \frac{\lambda_2^{x_2} \exp(-\lambda_2)}{x_2!}\ \text{for $x_2 = 0, 1, 2, \dots$}.
+\end{align*}
+The joint probability function is
 $$
    p_{X_1, X_2}(x_1, x_2) =
-         \frac{\mu_1^{x_1} \mu_x^{x_2} \exp( -\mu_1 - \mu_2 )}{x_1!\, x_2!}
+         \frac{\lambda_1^{x_1} \lambda_2^{x_2} \exp( -\lambda_1 - \lambda_2 )}{x_1!\, x_2!}
          \quad\text{for $x_1$ and $x_2 = 0, 1, 2, \dots$}
 $$
-This is the joint probability function of two independent Poisson random variables.
 Suppose we wish to find the probability function of $Y_1 = X_1 + X_2$.
 
-Consider the two *one-to-one transformations*, where $Y_2 = X_2$ is just a dummy transformation:
+Consider the two *one-to-one transformations* (where $Y_2 = X_2$ is just a dummy transformation since we need to work with *two* transformations):
 \begin{align}
    y_1 &= x_1 + x_2             = u_1(x_1, x_2)\\
    y_2 &= x_2\phantom{{} + x_2} = u_2(x_1, x_2)
 \end{align}
-which map the points in\ $R^2_X$ onto
+which map the points in\ $\mathcal{R}^2_X$ onto
 $$
-   R^2_Y = \left\{ (y_1, y_2)\mid y_1 = 0, 1, 2, \dots; y_2 = 0, 1, 2, \dots, y_1\right\}.
+   \mathcal{R}^2_Y = \left\{ (y_1, y_2)\mid y_1 = 0, 1, 2, \dots; y_2 = 0, 1, 2, \dots, y_1\right\}.
 $$
-$Y_2$ is a dummy transform, and is chosen to be very simple; any second transform could be chosen (as it is not of direct interest).
+$Y_2$ is a dummy transform, and is chosen to be very simple; any second transform could be chosen (since it is not of direct interest).
 The inverse functions are
 \begin{align*}
    x_1 &= y_1 - y_2              = w_1(y_1, y_2)\\
@@ -942,25 +980,34 @@ Then the *joint* probability function of\ $Y_1$ and\ $Y_2$ is
 \begin{align*}
    p_{Y_1, Y_2}(y_1, y_2)
    &= p_{X_1, X_2}\big( w_1(y_1, y_2), w_2(y_1, y_2)\big) \\
-   &= \frac{\mu_1^{y_1 - y_2}\mu_2^{y_2} \exp(-\mu_1 - \mu_2)}{(y_1 - y_2)! y_2!}\quad
-   \text{for $(y_1, y_2)\in R^2_Y$}.
+   &= \frac{\lambda_1^{y_1 - y_2}\lambda_2^{y_2} \exp(-\lambda_1 - \lambda_2)}{(y_1 - y_2)! y_2!}\quad
+   \text{for $(y_1, y_2)\in \mathcal{R}^2_Y$}.
 \end{align*}
 Recall that we seek the probability function of just\ $Y_1$, so we need to find the marginal probability function of $p_{Y_1, Y_2}(y_1, y_2)$.
 The marginal probability function of\ $Y_1$ is
 $$
-   p_{Y_1}(y_1) = \sum_{y_2 = 0}^{y_1} p_{Y_1, Y_2}(y_1, y_2)
-   = \sum_{y_2 = 0}^{y_1} \frac{\mu_1^{y_1 - y_2}\mu_2^{y_2} \exp(-\mu_1 - \mu_2)}{(y_1 - y_2)!\, y_2!},
+   p_{Y_1}(y_1) 
+   = \sum_{y_2 = 0}^{y_1} p_{Y_1, Y_2}(y_1, y_2)
+   = \sum_{y_2 = 0}^{y_1} \frac{\lambda_1^{y_1 - y_2}\lambda_2^{y_2} \exp(-\lambda_1 - \lambda_2)}{(y_1 - y_2)!\, y_2!}.
 $$
-which is equivalent to
-$$
-   p_{Y_1}(y_1) =
-   \begin{cases}
-      \displaystyle{\frac{(\mu_1 + \mu_2)^{y_1}\exp\big[-(\mu_1 + \mu_2)\big]}{y_1!}} & \text{for $y_1 = 0, 1, 2, \dots$}\\
-      0 & \text{otherwise}.
-   \end{cases}
-$$
-You should recognise this as the probability function of a Poisson random variable (Def.\ \@ref(def:PoissonDistribution)) with mean $\mu_1 + \mu_2$.
-Thus $Y_1 \sim \text{Poisson}(\lambda = \mu_1 + \mu_2)$.
+To simplify, first multiply and divide by\ $y_1!$:
+\begin{align*}
+  p_{Y_1}(y_1)
+  &= \frac{\exp(-\lambda_1 - \lambda_2)}{y_1!} 
+    \sum_{y_2 = 0}^{y_1} \frac{y_1!}{(y_1 - y_2)!\, y_2!} \lambda_1^{y_1 - y_2}\lambda_2^{y_2}\\
+  &= \frac{\exp(-(\lambda_1 + \lambda_2))}{y_1!} 
+     \sum_{y_2 = 0}^{y_1} \binom{y_1}{y_2} \lambda_1^{y_1 - y_2}\lambda_2^{y_2}.\\ 
+\end{align*}
+Then, using the binomial theorem (Sect.\ \@ref(FiniteSeries))\index{Binomial theorem}, this simplifies to
+\begin{align*}
+  p_{Y_1}(y_1)
+  &= \frac{\exp\big(-(\lambda_1 + \lambda_2)\big)}{y_1!} 
+     (\lambda_1 + \lambda_2)^{y_1} \\
+  &= \frac{\exp(-\Lambda)}{y_1!} \Lambda^{y_1} \quad\text{for $y_1 = 0, 1, 2, \dots$}
+\end{align*}
+where $\Lambda = \lambda_1 + \lambda_2$.
+This is the probability function of a Poisson random variable (Def.\ \@ref(def:PoissonDistribution)) with mean $\Lambda$.
+Thus $Y_1 = X_1 + X_2$ has a Poisson distribution with a mean of $\lambda_1 + \lambda_2$: the sum of two independent Poisson random variables is also a Poisson random variable.
 :::
 
 
@@ -972,33 +1019,34 @@ $$
 $$
 The joint PDF of the new variables is
 $$
-  f_{Y_1, Y_2}(y_1, y_2) = f_{X_1, X_2}(x_1, x_2) \cdot |J|
+  f_{Y_1, Y_2}(y_1, y_2) = f_{X_1, X_2}(x_1, x_2) \cdot |\det J|
 $$
-where $|J|$ is the *absolute value* of the *Jacobian*\index{Jacobian} determinant:
+where $|\det J|$ is the *absolute value* of the *Jacobian determinant*:\index{Jacobian!determinant}
 $$
-  J = \det 
-        \begin{bmatrix} 
-          {\partial x_1}/{\partial y_1} &  {\partial x_1}/{\partial y_2} \\ 
-          {\partial x_2}/{\partial y_1} &  {\partial x_2}/{\partial y_2} 
-        \end{bmatrix}.
+  J = 
+  \begin{bmatrix} 
+    {\partial x_1}/{\partial y_1} &  {\partial x_1}/{\partial y_2} \\[6pt]
+    {\partial x_2}/{\partial y_1} &  {\partial x_2}/{\partial y_2} 
+  \end{bmatrix}.
 $$
-The Jacobian plays an equivalent role as $\left|dx/dy\right|$ in the univariate case.
+The Jacobian plays an equivalent role to $\left|dx/dy\right|$ in the univariate case.
 
 
 :::{.example #BivarContExample name="Transformation continuous (bivariate)"}
 Let\ $X_1$ and\ $X_2$ be independent exponential random variables with $\lambda = 1$, such that both PDFs are
 $$
-  f_X(x) = \exp(-x)\quad\text{for $x > 0$}.
+  f_{X_1}(x_1) = \exp(-x_1)\quad\text{for $x_1 > 0$}
+  \quad\text{and}\quad
+  f_{X_2}(x_2) = \exp(-x_2)\quad\text{for $x_2 > 0$}.
 $$
 Consider the two transformations $Y_1 = X_1 + X_2$ (the sum) and $Y_2 = X_1 / X_2$ (the ratio).
 Then, $y_1 > 0$ and $y_2 > 0$.
 
-Since the random variable\ $X_1$ and\ $X_2$ are independent, the joint PDF is
+Since the random variable\ $X_1$ and\ $X_2$ are independent, the joint PDF of\ $X_1$ and\ $X_2$ is
 $$
   f_{X_1, X_2}(x_1, x_2) = \exp(-x_1) \cdot \exp(-x_2) = \exp\left(-(x_1 + x_2)\right) \quad \text{for $x_1, x_2 > 0$}.
 $$
-Inverting the transformations gives $y_1 = x_1 + x_2$ and $y_2 = x_1 / x_2$ (and so $x_1 = y_2 x_2$).
-These give
+Inverting the transformations gives
 $$
   x_1 = \frac{y_1 y_2}{1 + y_2}
   \quad\text{and}\quad
@@ -1007,18 +1055,18 @@ $$
 The Jacobian requires the four partial derivatives:
 $$
 \begin{array}{ll}
-  \displaystyle \frac{\partial x_1}{\partial y_1} = \frac{y_2}{1+y_2};\quad & \quad\displaystyle \frac{\partial x_1}{\partial y_2} = \frac{y_1(1+y_2) - y_1 y_2}{(1+y_2)^2} = \frac{y_1}{(1+y_2)^2};\\[6pt]
+  \displaystyle \frac{\partial x_1}{\partial y_1} = \frac{y_2}{1+y_2};\quad & \quad\displaystyle \frac{\partial x_1}{\partial y_2} = \frac{y_1(1+y_2) - y_1 y_2}{(1+y_2)^2} = \frac{y_1}{(1+y_2)^2};\\[12pt]
   \displaystyle \frac{\partial x_2}{\partial y_1} = \frac{1}{1+y_2};\quad & \quad\displaystyle \frac{\partial x_2}{\partial y_2} = \frac{-y_1}{(1+y_2)^2}.
 \end{array}
 $$
-So the determinant of the Jacobian is 
+So the Jacobian determinant is 
 \begin{align*}
   \det J 
   &= \left( \frac{y_2}{1+y_2} \cdot \frac{-y_1}{(1+y_2)^2} \right) - \left( \frac{1}{1+y_2} \cdot \frac{y_1}{(1+y_2)^2} \right)\\
   &= \frac{-y_1 y_2 - y_1}{(1+y_2)^3}\\
   &= \frac{-y_1(y_2 + 1)}{(1+y_2)^3}.
 \end{align*}
-Finally, substitute\ $x_1$ and\ $x_2$ and\ $|J|$ into the formula:
+Finally, substitute\ $x_1$ and\ $x_2$ and\ $\det J$ into the formula:
 $$
   f_{Y_1, Y_2}(y_1, y_2) = \exp(-(x_1 + x_2)) \cdot \left| \frac{-y_1}{(1 + y_2)^2} \right|.
 $$
@@ -1038,11 +1086,11 @@ The change of variable method requires find the pre-image, then accounting for t
 CoVsummary <- array( dim = c(2, 3))
 
 CoVsummary[1, ] <- c("Univariate",
-                     "Sum $p_X$ over every $x$ that transforms into $y$",
-                     "Substitute inverse; multiply by $\\|J\\|$")
+                     "Sum $p_X(x)$ over every $x$ that transforms into $y$",
+                     "Substitute inverse; multiply by $|\\det J|$")
 CoVsummary[2, ] <- c("Bivariate",
-                     "Sum $p_{(X_1, X_2)}$ over every $(x_1, x_2)$ that transforms into $(y_1, y_2)$",
-                     "Substitute inverses; multiply by $\\|J\\|$ (det of matrix)" )
+                     "Sum $p_{X_1, X_2}(x_1, x_2)$ over every $(x_1, x_2)$ that transforms into $(y_1, y_2)$",
+                     "Substitute inverses; multiply by $|\\det J|$" )
 
 colnames(CoVsummary) <- c("Setting",
                           "Discrete",
@@ -1057,8 +1105,8 @@ if( knitr::is_latex_output() ) {
                escape = FALSE,
                caption = "Summarising the change of variable method.") %>%
     kable_styling(font_size = 10) %>%
-    column_spec(2, width = "5cm") %>%
-    column_spec(3, width = "5cm") %>%
+    column_spec(2, width = "6cm") %>%
+    column_spec(3, width = "6cm") %>%
     row_spec(0, bold = TRUE) %>% 
     column_spec(1, bold = TRUE) 
 }
