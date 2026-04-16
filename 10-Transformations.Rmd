@@ -135,6 +135,11 @@ The method is relatively straightforward for one-to-one transformations, but con
 The discrete and continuous cases are considered separately.
 
 
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The functions that are produced should be valid probability functions; check that this is the case.
+:::
+
+
 ### Discrete random variables {#ChangeOfVarDiscrete}
 
 Let\ $X$ be a discrete random variable with probability function $p_X(x)$, and let\ $\mathcal{R}_X$ denote the set of discrete points for which $p_X(x) > 0$.
@@ -196,7 +201,7 @@ To find the probability function of $Y = X^2$, first note that $Y = X^2$ is *not
 The transformation $y = u(x) = x^2$, $\mathcal{R}_X = \{x = 0, 1, 2, 3 \}$ maps onto $\mathcal{R}_Y = \{y = 0, 1, 4, 9\}$.
 The inverse function is $x = w(y) = \sqrt{y}$, and hence the probability function of $Y$ is
 $$
-   p_Y(y) = p_X(\sqrt{y})
+   p_Y(y) = p_X(\sqrt{y}\,)
    = \begin{cases}
                \binom{3}{\sqrt{y}}0.2^{\sqrt{y}} (0.8)^{3 - \sqrt{y}} & \text{for $y = 0, 1, 4, 9$};\\
                0 & \text{otherwise}.
@@ -1077,458 +1082,6 @@ $$
 :::
 
 
-### Summary
-
-The change of variable method requires find the pre-image, then accounting for the how transformation redistributes probability (through counting in the discrete case; through the Jacobian in the continuous case); see Table\ \@ref(tab:CoVSummary).
-
-
-```{r CoVSummary, echo=FALSE}
-CoVsummary <- array( dim = c(2, 3))
-
-CoVsummary[1, ] <- c("Univariate",
-                     "Sum $p_X(x)$ over every $x$ that transforms into $y$",
-                     "Substitute inverse; multiply by $|\\det J|$")
-CoVsummary[2, ] <- c("Bivariate",
-                     "Sum $p_{X_1, X_2}(x_1, x_2)$ over every $(x_1, x_2)$ that transforms into $(y_1, y_2)$",
-                     "Substitute inverses; multiply by $|\\det J|$" )
-
-colnames(CoVsummary) <- c("Setting",
-                          "Discrete",
-                          "Continuous")
-
-if( knitr::is_latex_output() ) {
-  knitr::kable(CoVsummary,
-               format = "latex",
-               booktabs = TRUE,
-               align = c("r", "c", "c"),
-               longtable = FALSE,                
-               escape = FALSE,
-               caption = "Summarising the change of variable method.") %>%
-    kable_styling(font_size = 10) %>%
-    column_spec(2, width = "6cm") %>%
-    column_spec(3, width = "6cm") %>%
-    row_spec(0, bold = TRUE) %>% 
-    column_spec(1, bold = TRUE) 
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(CoVsummary,
-               escape = TRUE,
-               format = "html",
-               booktabs = TRUE,
-               align = "r",
-               longtable = FALSE,                
-               caption = "Summarising the change of variable method.") %>%
-    column_spec(2, width = "20%") %>%
-    column_spec(2, width = "40%") %>%
-    column_spec(3, width = "40%") %>%
-    row_spec(0, bold = TRUE) %>% 
-    column_spec(1, bold = TRUE)
-}
-
-```
-
-
-
-
-## The distribution function method {#DistributonFunctionMethod}
-
-The distribution function method is the most broadly applicable technique for finding the distribution of a transformed random variable. 
-The strategy is to:
-
-1. Write $F_Y(y) = \Pr(Y \leq y) = \Pr(g(X) \leq y)$.
-2. Re-express the event $\{g(X) \leq y\}$ as an equivalent event in terms of\ $X$.
-3. Evaluate using the known distribution of\ $X$.
-4. Differentiate (continuous case) or take differences (discrete case) to obtain the PDF: $f_Y(y) = F_Y'(y)$.
-
-The method operates with probabilities rather than densities, so it works with non-monotone transformations, awkward supports, and many-to-one mappings without requiring the special conditions needed with the change of variables method.
-
-
-### Continuous random variables
-
-\index{Transformations of random variables!distribution function method|(}
-
-The general procedure above is best demonstrated using an example.
-
-
-:::{.example #DFMethod name="Distribution function method"}
-Consider the random variable\ $X$ with PDF
-$$
-   f_X(x) = \begin{cases}
-               x/4 & \text{for $1 < x < 3$};\\
-               0 & \text{elsewhere}.
-            \end{cases}
-$$
-To find the PDF of the random variable\ $Y$ where $Y = X^2$, first see that $1 < y < 9$ and the transformation is monotonic over this region.
-The distribution function for\ $Y$ is
-\begin{align*}
-   F_Y(y)
-   &= \Pr(Y\le y) \qquad\text{(by definition)}\\
-   &= \Pr(X^2 \le y) \qquad\text{(since $Y = X^2$)}\\
-   &= \Pr(X\le \sqrt{y}\,).
-\end{align*}
-This last step is not trivial, but is critical. 
-Sometimes, more care is needed (see Example\ \@ref(exm:TransformA)). 
-In this case, there is a one-to-one relationship between\ $X$ and\ $Y$ over the region of which\ $X$ is defined (i.e., has a positive probability); see Fig.\ \@ref(fig:SquaringXform).
-
-Then continue as follows:
-\begin{align*}
-   F_Y(y)
-    =\Pr( X\le \sqrt{y}\,)
-   &= F_X\big(\sqrt{y}\,\big) \qquad\text{(definition of $F_X(x)$)} \\
-   &= \int_1^{\sqrt{y}} (x/4) \,dx
-    = (y - 1)/8
-\end{align*}
-for $1 < y < 9$, and is zero elsewhere. 
-This is the *distribution function* of\ $Y$; to find the PDF:
-$$
-   f_Y(y)
-   = \frac{d}{dy} (y - 1)/8
-   = \begin{cases}
-        1/8 & \text{for $1 < y < 9$};\\
-        0 & \text{elsewhere}.
-     \end{cases}
-$$
-Note the range for which\ $Y$ is defined; since $1 < x < 3$, then $1 < y < 9$.
-:::
-
-
-```{r SquaringXform, echo=FALSE, warning=FALSE, fig.align="center", fig.cap="The transformation $Y = X^2$ when $X$ is defined from $1$ to $3$. The thicker line corresponds to the region where the transformation applies. Note that if $Y < y$, then $2 - \\sqrt{y - 1} < X < 2 + \\sqrt{y - 1}$.", fig.width=8, fig.height=4, out.width='100%'}
-par( mfrow = c(1, 3))
-
-x <- seq(-1, 4,
-         length = 100)
-y <- x^2
-
-plot(x = x,
-     y = y,
-     type = "l",
-     col = plotColour1,
-     lwd = 1,
-     axes = FALSE,
-     xlab = expression(italic(x)),
-     ylab = expression(italic(y) == italic(x)^2),
-     main = "The squaring\ntransformation",
-     las = 1)
-
-Thicker <- ( x >= 1 ) & ( x <= 3 )
-lines(x = x[ Thicker],
-      y = y[Thicker],
-      lwd = 5)
-lines( x = c( min(x), sqrt(3), sqrt(3)),
-       y = c( 3, 3, 0),
-       lty = 2)
-axis(side = 2,
-     at = c(0, 3, 6, 8, 10, 12, 14, 16),
-     las = 1,
-     labels = c(0, "y = 3", 6, 8, 10, 12, 14, 16))
-axis(side = 1,
-     at = c(-1, 0, 1, sqrt(3), 3, 4),
-     labels = c(-1, 0, 1, 
-                expression(italic(x) == sqrt(3) ),
-                3, 4))
-box()
-
-
-
-
-funx <- function(x){
-  y <- array(0, dim = length(x))
-  y <- ifelse( (x > 1) & (x < 3), x/4, 0)
-}
-
-x <- seq(0, 4,
-         length = 500)
-fx <- funx(x)
-
-plot(fx ~ x,
-     xlab = expression(italic(x)),
-     ylab = "Prob. fn.",
-     main = expression(bold(PF~"for"~italic(X))),
-     type="l",
-     las = 1,
-     lwd = 2)
-
-
-
-
-
-funy <- function(y){
-   fy <- ifelse( (y > 1) & (y < 2),
-                 1/(2 * sqrt(y - 1)),
-                 0)  
-}
-
-y <- seq(0, 3,
-         length = 500)
-fy <- funy(y)
-
-plot(fy ~ y,
-     xlab = expression(italic(y)),
-     ylab = "Prob. fn.",
-     main = expression(bold(PF~"for"~italic(Y))),
-     type="l",
-     las = 1,
-     lwd = 2)
-```
-
-
-
-:::{.example #TransformA name="Transformation"}
-Consider the same random variable\ $X$ as in the previous example, but the transformation $Y = (X - 2)^2 + 1$ (Fig.\ \@ref(fig:SquaringXform2)).
-
-In this case, the transformation is **not** a one-to-one transform.
-Proceed as before to find the distribution function of\ $Y$:
-\begin{align*}
-   F_Y(y)
-   &= \Pr(Y\le y) \qquad\text{(by definition)}\\
-   &= \Pr\big( (X - 2)^2 + 1  \le y\big)
-\end{align*}
-since $Y = (X - 2)^2 + 1$.
-From Fig.\ \@ref(fig:SquaringXform2), whenever $(X - 2)^2 + 1 < y$ for some value\ $y$, then\ $X$ must be in the range $2 - \sqrt{y - 1}$ to $2 + \sqrt{y - 1}$.
-So:
-\begin{align*}
-   F_Y(y)
-   &= \Pr\big( (X - 2)^2 + 1 \le y\big) \\
-   &= \Pr\left( 2 - \sqrt{y - 1} < X < 2 + \sqrt{y - 1} \right)\\
-   &= \int_{2-\sqrt{y - 1}}^{2 + \sqrt{y - 1}} x/4\,dx \\
-   &=  \sqrt{y - 1}.
-\end{align*}
-Again, this is the distribution function; so differentiating:
-$$
-   f_Y(y) = \begin{cases}
-               \frac{1}{2\sqrt{y - 1}} & \text{for $1 < y < 2$};\\
-               0 & \text{elsewhere}.
-            \end{cases}
-$$
-:::
-
-
-
-
-
-```{r SquaringXform2, echo=FALSE, fig.align="center", fig.cap="The transformation $Y = (X - 2)^2 + 1$ when $X$ is defined from $1$ to $3$. The thicker line corresponds to the region where the transformation applies. Note that if $Y < y$, then $2 - \\sqrt{y - 1} < X < 2 + \\sqrt{y - 1}$.", fig.width=5, fig.height=4}
-
-x <- seq(0, 4,
-         length = 100)
-xf <- function(x) { (x - 2)^2 + 1}
-
-y <- xf(x)
-
-plot(x = x,
-     y = y,
-     type = "l",
-     lwd = 1,
-     col = plotColour1,
-     ylim = c(0, 2.25),
-     axes = FALSE,
-     xlab = expression(italic(x)),
-     ylab = expression(italic(y)==group("(", italic(x)-2,")")^2+1),
-     main = "Another transformation",
-     las = 1)
-
-x0 <- 1.25
-x1 <- 2.75
-y0 <- xf( x0 )
-y1 <- xf( x1 )
-
-
-Thicker <- ( x >= 1 ) & ( x <= 3 )
-lines(x = x[ Thicker],
-      y = y[Thicker],
-      lwd = 5)
-
-lines( x = c( min(x), x0, x0),
-       y = c(y0, y0, 0),
-       lty = 2)
-lines( x = c( min(x), x1, x1),
-       y = c(y1, y1, 0),
-       lty = 2)
-axis(side = 2,
-     at = c(0, 1, y0, 2),
-     las = 1,
-     labels = c(0, 1, expression(italic(y)), 2))
-axis(side = 1,
-     at = c(x0, 2, x1),
-     labels = c(expression(2-sqrt(italic(y)-1)),
-                2, 
-                expression(2+sqrt(italic(y)-1)) ))
-box()
-```
-
-
-:::{.example #TransformB name="Transformation"}
-Example\ \@ref(exm:TransformationNon11) is repeated here using the distribution function method.
-Given\ $Z$ is distributed $N(0, 1)$ we seek the probability distribution of $Y = \frac{1}{2} Z^2$.
-First,
-$$
-   f_Z(z) 
-   = (2\pi )^{-\frac 12}\,e^{-z^2/2}\quad\text{for $z\in (-\infty ,\,\infty )$}.
-$$
-Let\ $Y$ have PDF $f_Y(y)$ and df $F_Y(y)$. 
-Then
-\begin{align*}
-     F_Y(y) 
-      = \Pr(Y\leq y) 
-     &= \Pr\left(\frac{1}{2}Z^2\leq y\right)\\
-     &= \Pr(Z^2\leq 2y)\\
-     & = \Pr(-\sqrt{2y}\leq Z\leq \sqrt{2y}\,)\\
-     & = F_Z(\sqrt{2y}\,) - F_Z(-\sqrt{2y}\,)
-\end{align*}
-where\ $F_Z$ is the distribution function of\ $Z$.
-Hence
-\begin{align*}
-     f_Y(y) 
-       = F_Y'(y)
-     &= F_Z'(\sqrt{2y}\,)-F_Z'(-\sqrt{2y}\,)\\
-     &= \frac{\sqrt{2}}{2\sqrt{y}}f_Z(\sqrt{2y}\,) - \frac{\sqrt{2}}{-
-2\sqrt{y}}f_Z(-\sqrt{2y}\,)\\[2mm]
-     &= \frac{1}{\sqrt{2y}}[f_Z(\sqrt{2y}\,) + f_Z(-\sqrt{2y}\,)]\\
-     &= \frac{1}{\sqrt{2y}} \left[ \frac{1}{\sqrt{2\pi}}\,\exp(-y) + \frac{1}{\sqrt{2\pi}}\,\exp(-y)\right]\\
-     &= \frac{\exp(-y)y^{-\frac{1}{2}}}{\sqrt{\pi}}
-\end{align*}
-as before.
-:::
-
-Care is needed to ensure the steps are followed logically. 
-Diagrams like Fig.\ \@ref(fig:SquaringXform) and\ \@ref(fig:SquaringXform2) are encouraged. 
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The functions that are produced should be PDFs; check that this is the case.
-:::
-
-
-:::{.example #LOTUSProof name="Proof of Theorem\ \@ref(thm:ExpectationFunction)"}
-Theorem\ \@ref(thm:ExpectationFunction) gave an important theorem involving the expectation of function of a random variable.
-Here, we prove this theorem on the discrete and continuous cases.
-
-For the *discrete* case , we need to show that $\sum_y y \Pr(g(X) = y) = \sum_x g(x) \Pr(X = x)$.
-
-Let $Y = g(X)$. 
-By definition, $\operatorname{E}[Y] = \sum_y y \Pr(Y = y)$.
-Recall that the event $\{Y = y\}$ is actually the set of all\ $x$ such that $g(x) = y$, so substituting gives $\Pr(Y = y) = \sum_{x: g(x) = y} \Pr(X = x)$.
-Substituting this into the expectation:
-$$
-  \operatorname{E}[g(X)] = \sum_y y \left( \sum_{x: g(x) = y} \Pr(X = x) \right).
-$$
-Since $y = g(x)$ for all\ $x$ in that inner sum, it can be moved inside the inner summation:
-\begin{align*}
-  \operatorname{E}[g(X)] 
-  &= \sum_y \sum_{x: g(x) = y} y \Pr(X = x)\\
-  &= \sum_y \sum_{x: g(x) = y} g(x) \Pr(X = x).
-\end{align*}
-Summing over all $y$, and then all $x$ that map to those $y$, is just the same as summing over all possible $x$.
-In other word, $\operatorname{E}[g(X)] = \sum_x g(x) \Pr(X = x)$.
-
-For the *continuous* case, we need to show that  $\int y f(g(X)=y) = \int_x g(x) f(x)$.
-
-Assume $g(x)$ is a strictly increasing, differentiable function (this makes the proof simpler, but the result applies more generally). 
-Let $Y = g(X)$.
-Find the PDF of $Y$ using the transformation method:
-$$
-  f_Y(y) = f_X(x) \left| \frac{dx}{dy} \right| \quad \text{where } x = g^{-1}(y).
-$$
-Then, using the definition of $\operatorname{E}[Y]$:
-$$
-  \operatorname{E}[Y] = \int_{-\infty}^{\infty} y f_Y(y) \, dy.
-$$
-Substitute $y = g(x)$ and $f_Y(y) dy = f_X(x) dx$:
-$$
-  \operatorname{E}[g(X)] = \int_{-\infty}^{\infty} g(x) f_X(x) \, dx.
-$$
-:::
-
-
-### Discrete univariate case
-
-Let\ $X$ be a discrete random variable with PMF $p_X(x)$ and CDF $F_X(x) = \Pr(X \leq x)$.
-For $Y = g(X)$, the CDF of $Y$ is
-$$
-  F_Y(y) = \Pr(Y \leq y) = \Pr(g(X) \leq y) = \sum_{\{x:\, g(x) \leq y\}} p_X(x).
-$$
-The PMF of\ $Y$ is then recovered as
-$$
-  p_Y(y) = F_Y(y) - F_Y(y^-) = \Pr(Y \leq y) - \Pr(Y \leq y - 1)
-$$
-where\ $y^-$ denotes the largest value in the support of\ $Y$ strictly less than\ $y$.
-
-In the discrete case, the CDF method and the change of variables method are closely related---the difference is mainly one of presentation. 
-The CDF framing is especially natural when\ $g()$ is monotone non-decreasing, since the event $\{g(X) \leq y\}$ maps cleanly to $\{X \leq g^{-1}(y)\}$.
-
-
-:::{.example name="Shifting the geometric distribution"}
-Let $X \sim \text{Geometric}(p)$, so that\ $X$ represents the number of *failures* until the first success, with support $\{0, 1, 2, \ldots\}$ (as in Sect.\ \@ref(GeometricDistribution)).
-Then,
-$$
-  \Pr(X \leq x) = 1 - (1-p)^{\lfloor x\rfloor + 1}, \quad x = 0, 1, 2, \ldots
-$$
-Define $Y = X + 1$, so that\ $Y$ is the number of *trials* before the first success, with support $\{1, 2, 3, \ldots\}$. 
-For $y \in \{1, 2, 3, \ldots\}$:
-$$
-  F_Y(y) = \Pr(Y \leq y) = \Pr(X + 1 \leq y) = \Pr(X \leq y - 1) = 1 - (1 - p)^{(y - 1) + 1} = 1 - (1 - p)^{y},
-$$
-using the DF for\ $X$ above.
-The PMF is the difference between the DF at the values of\ $Y$ with positive probabilities (see Sect.\ \@ref(PFfromDF)):
-$$
-  p_Y(y) = F_Y(y) - F_Y(y - 1) = (1 - p)^{y - 1} p, \quad y = 1, 2, 3, \ldots
-$$
-This is the $\text{Geometric}(p)$ distribution with a different parameterisation.
-A simple shift of support corresponds to a reparameterisation within the Geometric family of distributions.
-:::
-
-
-```{r echo=FALSE, fig.align="center", fig.cap="The PMF and DF of $X$ following a geometric distribution (left panels), and the PMF and DF of the transformation $Y = X + 1$.", fig.width=7, fig.height=7, out.width="80%"}
-prob <- 0.3
-x <- 0 : 12
-px <- dgeom(x, 
-            prob = prob)
-
-y <- 0:12
-py <- dgeom( (x - 1),
-            prob = prob) 
-
-par( mfrow = c(2, 2))
-plotDiscrete(x, px, 
-             type = "MF",
-             ylab = "PMF",
-             xlab = expression(italic(x)),
-             main = expression(bold(Prob.~mass~"function"~of~italic(X))))
-plotDiscrete(y, py, 
-             type = "MF",
-             ylab = "PMF",
-             xlab = expression(italic(y)),
-             main = expression(bold(Prob.~mass~"function"~of~italic(Y))))
-
-plotDiscrete(x, px, 
-             type = "DF",
-             ylab = "DF",
-             xlab = expression(italic(x)),
-             main = expression(bold(Distribution~"function"~of~italic(X))))
-plotDiscrete(y, py, 
-             type = "DF",
-             ylab = "DF",
-             xlab = expression(italic(y)),
-             main = expression(bold(Distribution~"function"~of~italic(Y))))
-
-par( mfrow = c(1, 1))
-```
-
-
-
-
-### Continuous univariate case
-
-Let\ $X$ be a continuous random variable with PDF\ $f_X$ and CDF $F_X$. 
-Then, for $Y = g(X)$
-$$
-  F_Y(y) = \Pr(g(X) \leq y).
-$$
-Re-express $\{g(X) \leq y\}$ as an event in\ $X$, evaluate using $F_X$, then differentiate:
-$$
-  f_Y(y) = \frac{d}{dy} F_Y(y).
-$$
-When $g()$ is monotone increasing: $F_Y(y) = F_X(g^{-1}(y))$, and differentiation immediately recovers the change of variables formula. 
-The CDF method is more flexible because it handles non-monotone transformations $g()$ without partitioning.
 
 
 :::{.example name="Distribution of squared normal rv"}
@@ -1616,18 +1169,468 @@ plot( fY ~ y,
 
 
 
+### Summary
+
+The change of variable method requires find the pre-image, then accounting for the how transformation redistributes probability (through counting in the discrete case; through the Jacobian in the continuous case); see Table\ \@ref(tab:CoVSummary).
+
+
+```{r CoVSummary, echo=FALSE}
+CoVsummary <- array( dim = c(2, 3))
+
+CoVsummary[1, ] <- c("Univariate",
+                     "Sum $p_X(x)$ over every $x$ that transforms into $y$",
+                     "Substitute inverse; multiply by $|\\det J|$")
+CoVsummary[2, ] <- c("Bivariate",
+                     "Sum $p_{X_1, X_2}(x_1, x_2)$ over every $(x_1, x_2)$ that transforms into $(y_1, y_2)$",
+                     "Substitute inverses; multiply by $|\\det J|$" )
+
+colnames(CoVsummary) <- c("Setting",
+                          "Discrete",
+                          "Continuous")
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(CoVsummary,
+               format = "latex",
+               booktabs = TRUE,
+               align = c("r", "c", "c"),
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "Summarising the change of variable method.") %>%
+    kable_styling(font_size = 10) %>%
+    column_spec(2, width = "6cm") %>%
+    column_spec(3, width = "6cm") %>%
+    row_spec(0, bold = TRUE) %>% 
+    column_spec(1, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(CoVsummary,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "Summarising the change of variable method.") %>%
+    column_spec(2, width = "20%") %>%
+    column_spec(2, width = "40%") %>%
+    column_spec(3, width = "40%") %>%
+    row_spec(0, bold = TRUE) %>% 
+    column_spec(1, bold = TRUE)
+}
+
+```
+
+
+
+
+## The distribution function method {#DistributonFunctionMethod}
+
+The distribution function method is the most broadly applicable technique for finding the distribution of a transformed random variable. 
+The strategy is to:
+
+1. Write $F_Y(y) = \Pr(Y \leq y) = \Pr(g(X) \leq y)$.
+2. Re-express the event $\{g(X) \leq y\}$ as an equivalent event in terms of\ $X$.
+3. Evaluate using the known distribution of\ $X$.
+4. Differentiate (continuous case) or take differences (discrete case) to obtain the PDF: $f_Y(y) = F_Y'(y)$.
+
+The distribution function method operates with *probabilities* rather than *densities*, so it works with non-monotone transformations, awkward supports, and many-to-one mappings without requiring the special conditions needed with the change of variables method (i.e., one-to-one transformations; differentiable transformations).
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The functions that are produced should be valid probability functions; check that this is the case.
+:::
+
+### Continuous random variables
+
+\index{Transformations of random variables!distribution function method|(}
+
+The general procedure above is best demonstrated using an example.
+
+
+:::{.example #DFMethod name="Distribution function method"}
+Consider the random variable\ $X$ with PDF
+$$
+   f_X(x) = \begin{cases}
+               x/4 & \text{for $1 < x < 3$};\\
+               0 & \text{elsewhere}.
+            \end{cases}
+$$
+To find the PDF of the random variable\ $Y$ where $Y = X^2$, first see that $1 < y < 9$ and the transformation is monotonic over this region.
+The distribution function for\ $Y$ is
+\begin{align*}
+   F_Y(y)
+   &= \Pr(Y\le y) \qquad\text{(by definition)}\\
+   &= \Pr(X^2 \le y) \qquad\text{(since $Y = X^2$)}\\
+   &= \Pr(X\le \sqrt{y}\,).
+\end{align*}
+This last step is not trivial, but is critical. 
+Sometimes, more care is needed (see Example\ \@ref(exm:TransformA)). 
+In this case, there is a one-to-one relationship between\ $X$ and\ $Y$ over the region of which\ $X$ is defined (i.e., has a positive probability); see Fig.\ \@ref(fig:SquaringXform).
+
+Then continue as follows:
+\begin{align*}
+   F_Y(y)
+    =\Pr( X\le \sqrt{y}\,)
+   &= F_X\big(\sqrt{y}\,\big) \qquad\text{(definition of $F_X(x)$)} \\
+   &= \int_1^{\sqrt{y}} (x/4) \,dx
+    = (y - 1)/8
+\end{align*}
+for $1 < y < 9$, and is zero elsewhere. 
+This is the *distribution function* of\ $Y$; the PDF is
+$$
+   f_Y(y)
+   = \frac{d}{dy} (y - 1)/8
+   = \begin{cases}
+        1/8 & \text{for $1 < y < 9$};\\
+        0 & \text{elsewhere}.
+     \end{cases}
+$$
+Note the range for which\ $Y$ is defined; since $1 < x < 3$, then $1 < y < 9$.
+:::
+
+
+```{r SquaringXform, echo=FALSE, warning=FALSE, fig.align="center", fig.cap="The transformation $Y = X^2$ when $X$ is defined from $1$ to $3$. The thicker line corresponds to the region where the transformation applies. Note that if $Y < y$, then $2 - \\sqrt{y - 1} < X < 2 + \\sqrt{y - 1}$.", fig.width=7.25, fig.height=3, out.width='100%'}
+par( mfrow = c(1, 3),
+     mar = c(5, 5, 4, 2) + 0.1)  # DEFAULT: 5.1 4.1 4.1 2.1
+
+x <- seq(-1, 4,
+         length = 100)
+y <- x^2
+
+plot(x = x,
+     y = y,
+     type = "l",
+     col = plotColour1,
+     lwd = 1,
+     axes = FALSE,
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y) == italic(x)^2),
+     main = "The squaring\ntransformation",
+     las = 1)
+
+Thicker <- ( x >= 1 ) & ( x <= 3 )
+lines(x = x[ Thicker],
+      y = y[Thicker],
+      lwd = 5)
+lines( x = c( min(x), sqrt(3), sqrt(3)),
+       y = c( 3, 3, 0),
+       lty = 2)
+axis(side = 2,
+     at = c(0, 3, 6, 8, 10, 12, 14, 16),
+     las = 1,
+     labels = c(0, expression(italic(y)==3), 6, 8, 10, 12, 14, 16))
+axis(side = 1,
+     at = c(-1, 0, 1, sqrt(3), 3, 4),
+     labels = c(-1, 0, "",
+                expression(italic(x) == sqrt(3) ),
+                3, 4))
+box()
+
+
+
+
+funx <- function(x){
+  y <- array(0, dim = length(x))
+  y <- ifelse( (x > 1) & (x < 3), x/4, 0)
+}
+
+x <- seq(0, 4,
+         length = 500)
+fx <- funx(x)
+
+plot(fx ~ x,
+     xlab = expression(italic(x)),
+     ylab = "Prob. fn.",
+     main = expression(bold(PF~"for"~italic(X))),
+     type="l",
+     las = 1,
+     lwd = 2)
+
+
+
+
+
+funy <- function(y){
+   fy <- ifelse( (y > 1) & (y < 2),
+                 1/(2 * sqrt(y - 1)),
+                 0)  
+}
+
+y <- seq(0, 3,
+         length = 500)
+fy <- funy(y)
+
+plot(fy ~ y,
+     xlab = expression(italic(y)),
+     ylab = "Prob. fn.",
+     main = expression(bold(PF~"for"~italic(Y))),
+     type="l",
+     las = 1,
+     lwd = 2)
+```
+
+
+
+:::{.example #TransformA name="Transformation"}
+Consider the same random variable\ $X$ as in the previous example, but the transformation $Y = (X - 2)^2 + 1$ (Fig.\ \@ref(fig:SquaringXform2)).
+
+In this case, the transformation is *not* a one-to-one transform.
+Proceed as before to find the distribution function of\ $Y$:
+\begin{align*}
+   F_Y(y)
+   &= \Pr(Y\le y) \qquad\text{(by definition)}\\
+   &= \Pr\big( (X - 2)^2 + 1  \le y\big)
+\end{align*}
+since $Y = (X - 2)^2 + 1$.
+From Fig.\ \@ref(fig:SquaringXform2), whenever $(X - 2)^2 + 1 < y$ for some value\ $y$, then\ $X$ must be in the range $2 - \sqrt{y - 1}$ to $2 + \sqrt{y - 1}$.
+So:
+\begin{align*}
+   F_Y(y)
+   &= \Pr\big( (X - 2)^2 + 1 \le y\big) \\
+   &= \Pr\left( 2 - \sqrt{y - 1} < X < 2 + \sqrt{y - 1} \right)\\
+   &= \int_{2-\sqrt{y - 1}}^{2 + \sqrt{y - 1}} x/4\,dx \\
+   &=  \sqrt{y - 1}.
+\end{align*}
+Again, this is the distribution function; so differentiating to find the PDF gives
+$$
+   f_Y(y) = \begin{cases}
+               \frac{1}{2\sqrt{y - 1}} & \text{for $1 < y < 2$};\\
+               0 & \text{elsewhere}.
+            \end{cases}
+$$
+:::
+
+
+
+
+
+```{r SquaringXform2, echo=FALSE, fig.align="center", fig.cap="The transformation $Y = (X - 2)^2 + 1$ when $X$ is defined from $1$ to $3$. The thicker line corresponds to the region where the transformation applies. Note that if $Y < y$, then $2 - \\sqrt{y - 1} < X < 2 + \\sqrt{y - 1}$.", fig.width=7, fig.height=4, out.width='80%'}
+
+x <- seq(0, 4,
+         length = 100)
+xf <- function(x) { (x - 2)^2 + 1}
+
+y <- xf(x)
+
+par( mar = c(5, 5, 4, 2) + 0.1)
+
+plot(x = x,
+     y = y,
+     type = "l",
+     lwd = 1,
+     col = plotColour1,
+     ylim = c(0, 2.25),
+     axes = FALSE,
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y)==group("(", italic(x)-2,")")^2+1),
+     main = "A transformation thta\nis not one-to-one",
+     las = 1)
+
+x0 <- 1.25
+x1 <- 2.75
+y0 <- xf( x0 )
+y1 <- xf( x1 )
+
+
+Thicker <- ( x >= 1 ) & ( x <= 3 )
+lines(x = x[ Thicker],
+      y = y[Thicker],
+      lwd = 5)
+
+lines( x = c( min(x), x0, x0),
+       y = c(y0, y0, 0),
+       lty = 2)
+lines( x = c( min(x), x1, x1),
+       y = c(y1, y1, 0),
+       lty = 2)
+axis(side = 2,
+     at = c(0, 1, y0, 2),
+     las = 1,
+     labels = c(0, 1, expression(italic(y)), 2))
+axis(side = 1,
+     at = c(x0, 2, x1),
+     labels = c(expression(2-sqrt(italic(y)-1)),
+                2, 
+                expression(2+sqrt(italic(y)-1)) ))
+box()
+```
+
+
+:::{.example #TransformB name="Transformation"}
+Example\ \@ref(exm:TransformationNon11) is repeated here using the distribution function method.
+Given\ $Z$ is distributed $N(0, 1)$ we seek the probability distribution of $Y = \frac{1}{2} Z^2$.
+First,
+$$
+   f_Z(z) 
+   = (2\pi )^{-\frac 12}\,\exp(-z^2/2)\quad\text{for $z\in (-\infty ,\,\infty )$}.
+$$
+Let\ $Y$ have PDF $f_Y(y)$ and df $F_Y(y)$. 
+Then
+\begin{align*}
+     F_Y(y) 
+      = \Pr(Y\leq y) 
+     &= \Pr\left(\frac{1}{2}Z^2\leq y\right)\\
+     &= \Pr(Z^2\leq 2y)\\
+     & = \Pr(-\sqrt{2y}\leq Z\leq \sqrt{2y}\,)\\
+     & = F_Z(\sqrt{2y}\,) - F_Z(-\sqrt{2y}\,)
+\end{align*}
+where\ $F_Z$ is the distribution function of\ $Z$.
+Hence
+\begin{align*}
+     f_Y(y) 
+       = F_Y'(y)
+     &= F_Z'(\sqrt{2y}\,)-F_Z'(-\sqrt{2y}\,)\\
+     &= \frac{\sqrt{2}}{2\sqrt{y}}f_Z(\sqrt{2y}\,) - \frac{\sqrt{2}}{-
+2\sqrt{y}}f_Z(-\sqrt{2y}\,)\\[2mm]
+     &= \frac{1}{\sqrt{2y}}[f_Z(\sqrt{2y}\,) + f_Z(-\sqrt{2y}\,)]\\
+     &= \frac{1}{\sqrt{2y}} \left[ \frac{1}{\sqrt{2\pi}}\,\exp(-y) + \frac{1}{\sqrt{2\pi}}\,\exp(-y)\right]\\
+     &= \frac{\exp(-y)y^{-\frac{1}{2}}}{\sqrt{\pi}}
+\end{align*}
+as before.
+:::
+
+Care is needed to ensure the steps are followed logically. 
+Diagrams like Fig.\ \@ref(fig:SquaringXform) and\ \@ref(fig:SquaringXform2) are encouraged. 
+
+
+
+:::{.example #LOTUSProof name="Proof of Theorem\ \@ref(thm:ExpectationFunction)"}
+Theorem\ \@ref(thm:ExpectationFunction) gave an important theorem involving the expectation of function of a random variable.
+Here, we prove this theorem for the discrete and continuous cases.
+
+For the *discrete* case , we need to show that $\sum_{\mathcal{R}_Y} y\cdot \Pr(u(X) = y) = \sum_x u(x)\, \Pr(X = x)$ for $y \in \mathcal{R}_Y$, for some transformation $Y = u(X)$.
+
+By definition, $\operatorname{E}[Y] = \sum_{\mathcal{R}_Y} y\cdot \Pr(Y = y)$.
+Recall that the event $\{Y = y\}$ is actually the set of all\ $x$ such that $u(x) = y$, so substituting gives $\Pr(Y = y) = \sum_{x: u(x) = y} \Pr(X = x)$.
+Substituting this into the expectation:
+$$
+  \operatorname{E}[u(X)] = \sum_{\mathcal{R}_Y} y \left( \sum_{x: u(x) = y} \Pr(X = x) \right).
+$$
+Since $y = u(x)$ for all\ $x$ in the inner sum, it can be moved inside the inner summation:
+\begin{align*}
+  \operatorname{E}[u(X)] 
+  &= \sum_{\mathcal{R}_Y} \sum_{x: u(x) = y} y\cdot \Pr(X = x)\\
+  &= \sum_{\mathcal{R}_Y} \sum_{x: u(x) = y} u(x)\cdot \Pr(X = x).
+\end{align*}
+The double sum partitions the range of\ $X$, so every\ $x$ appears exactly once.
+In other words, $\operatorname{E}[u(X)] = \sum_x u(x) \Pr(X = x)$.
+
+For the *continuous* case, we need to show that $\int_{-\infty}^\infty y\cdot f_Y(y)\, dy = \int_{-\infty}^\infty u(x)\, f_X(x)\, dx$.
+
+Assume $u(x)$ is a strictly increasing, differentiable function (this makes the proof simpler, but the result applies more generally). 
+Let $Y = u(X)$.
+Find the PDF of\ $Y$ using the transformation method:
+$$
+  f_Y(y) = f_X(x) \left| \frac{dx}{dy} \right| \quad \text{where } x = u^{-1}(y).
+$$
+Then, using the definition of $\operatorname{E}[Y]$:
+$$
+  \operatorname{E}[Y] = \int_{-\infty}^{\infty} y\cdot f_Y(y) \, dy.
+$$
+Substitute $y = u(x)$ and $f_Y(y)\, dy = f_X(x)\, dx$:
+\begin{align*}
+  \operatorname{E}[Y] 
+  &= \int_{-\infty}^{\infty} u(x) \cdot f_X(x) |u'(x)| \cdot \frac{1}{|u'(x)|} \, dx\\
+  &= \int_{-\infty}^{\infty} u(x)\,f_X(x)\,dx
+\end{align*}
+:::
+
+
+### Discrete univariate case
+
+Let\ $X$ be a discrete random variable with PMF $p_X(x)$ and CDF $F_X(x) = \Pr(X \leq x)$.
+For $Y = u(X)$, the CDF of $Y$ is
+$$
+  F_Y(y) = \Pr(Y \leq y) = \Pr(u(X) \leq y) = \sum_{\{x:\, u(x) \leq y\}} p_X(x).
+$$
+The PMF of\ $Y$ is then recovered as
+$$
+  p_Y(y) = F_Y(y) - F_Y(y^-)
+$$
+where\ $y^-$ denotes the largest value in the support of\ $Y$ that is strictly less than\ $y$.
+When\ $Y$ takes consecutive integer values (such as $\{0, 1, 2, \dots\}$ or $\{1, 2, 3, \dots\}$), this simplifies to $F_Y(y) - F_Y(y - 1)$.
+
+In the discrete case, the CDF method and the change of variables method are closely related; the difference is mainly one of presentation. 
+The distribution function is especially natural when\ $u(\cdot)$ is monotone non-decreasing, since the event $\{u(X) \leq y\}$ maps cleanly to $\{X \leq u^{-1}(y)\}$.
+
+
+:::{.example name="Shifting the geometric distribution"}
+Let $X \sim \text{Geometric}(p)$, so that\ $X$ represents the number of *failures* until the first success, with support $\{0, 1, 2, \ldots\}$ (as in Sect.\ \@ref(GeometricDistribution)).
+Then,
+$$
+  \Pr(X \leq x) = 1 - (1-p)^{\lfloor x\rfloor + 1}, \quad x = 0, 1, 2, \ldots
+$$
+Define $Y = X + 1$, so that\ $Y$ is the number of *trials* up to and including the first success, with support $\{1, 2, 3, \ldots\}$. 
+For $y \in \{1, 2, 3, \ldots\}$:
+\begin{align*}
+  F_Y(y) 
+  = \Pr(Y \leq y) 
+  &= \Pr(X + 1 \leq y)\\
+  &= \Pr(X \leq y - 1)\\
+  &= 1 - (1 - p)^{(y - 1) + 1}\\
+  &= 1 - (1 - p)^{y},
+\end{align*}
+using the DF for\ $X$ above.
+The PMF is the difference between the DF at the values of\ $Y$ with positive probabilities (see Sect.\ \@ref(PFfromDF)):
+$$
+  p_Y(y) = F_Y(y) - F_Y(y - 1) = (1 - p)^{y - 1} p, \quad y = 1, 2, 3, \ldots
+$$
+This is the $\text{Geometric}(p)$ distribution with a different parameterisation.
+A simple shift of support corresponds to a reparameterisation within the Geometric family of distributions.
+:::
+
+
+```{r echo=FALSE, fig.align="center", fig.cap="The PMF and DF of $X$ following a geometric distribution (left panels), and the PMF and DF of the transformation $Y = X + 1$.", fig.width=7, fig.height=7, out.width="80%"}
+prob <- 0.3
+x <- 0 : 12
+px <- dgeom(x, 
+            prob = prob)
+
+y <- 0:12
+py <- dgeom( (x - 1),
+            prob = prob) 
+
+par( mfrow = c(2, 2))
+plotDiscrete(x, px, 
+             type = "MF",
+             ylab = "PMF",
+             xlab = expression(italic(x)),
+             main = expression(bold(Prob.~mass~"function"~of~italic(X))))
+plotDiscrete(y, py, 
+             type = "MF",
+             ylab = "PMF",
+             xlab = expression(italic(y)),
+             main = expression(bold(Prob.~mass~"function"~of~italic(Y))))
+
+plotDiscrete(x, px, 
+             type = "DF",
+             ylab = "DF",
+             xlab = expression(italic(x)),
+             main = expression(bold(Distribution~"function"~of~italic(X))))
+plotDiscrete(y, py, 
+             type = "DF",
+             ylab = "DF",
+             xlab = expression(italic(y)),
+             main = expression(bold(Distribution~"function"~of~italic(Y))))
+
+par( mfrow = c(1, 1))
+```
+
+
+
+
+
+
 ### Bivariate continuous case
 
-Let $(X_1, X_2)$ have joint PDF $f_{\mathbf{X}}(x_1, x_2)$. 
-To find the distribution of $Y = g(X_1, X_2)$ (a scalar function of\ $X_1$ and\ $X_2$), compute
+Let $(X_1, X_2)$ have joint PDF $f_{X_1, X_2}(x_1, x_2)$. 
+To find the distribution of $Y = u(X_1, X_2)$ (a scalar function of\ $X_1$ and\ $X_2$), compute
 $$
-  F_Y(y) = \Pr(g(X_1, X_2) \leq y) 
+  F_Y(y) = \Pr(u(X_1, X_2) \leq y) 
   = 
   \iint_{\{(x_1,x_2):\, g(x_1,x_2) \leq y\}} f_{X_1, X_2}(x_1, x_2)\, dx_1\, dx_2,
 $$
 then differentiate: $f_Y(y) = F_Y'(y)$.
 
-The key step is characterising the region of integration $\{g(x_1,x_2) \leq y\}$ carefully as a function of $y$, paying attention to how its boundaries move as $y$ changes. 
+The key step is characterising the region of integration $\{u(x_1,x_2) \leq y\}$ carefully as a function of $y$, paying attention to how its boundaries move as $y$ changes. 
 This is often where the difficulty lies, and a sketch of the support is strongly recommended.
 
 
@@ -1895,7 +1898,7 @@ where $M_{X_i}(t)$ is the MGF of\ $X_i$ at $t$ for $i = 1, 2, \dots, n$.
 
 
 :::{.example #MGFLinearX name="MGF method for transformations"}
-Suppose that $X_i \sim \text{Poisson}(\lambda_i)$ for $i  =  1, 2, \dots, n$, and we wish to find the distribution of $Y  =  X_1  +  X_2  + \dots  +  X_n$.
+Suppose that $X_i \sim \text{Poisson}(\lambda_i)$ for $i = 1, 2, \dots, n$, and we wish to find the distribution of $Y = X_1 + X_2 + \dots + X_n$.
 
 Since\ $X_i$ has a Poisson distribution with parameter $\lambda_i$ for $i, 2, \dots n$, the MGF of\ $X_i$ is
 $$
