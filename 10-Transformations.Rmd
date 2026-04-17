@@ -1495,6 +1495,111 @@ Hence
 as before.
 :::
 
+
+
+
+
+:::{.example #XformDFTwoParts name="Distribution function method, with two parts"}
+Consider the random variable\ $X$ with the probability density function (Fig.\ \@ref(fig:RVxy2), left panel)
+$$
+  f_X(x) =
+  \begin{cases}
+    1/2         & \text{for $0 < x < 1$};\\
+    (3 - x)/4   & \text{for $1 < x < 3$.}
+  \end{cases}
+$$
+Then, consider the distribution of $Y = X^2$; then, $0 < y < 9$.
+More specifically, $\{ x \mid 0 < x < 1\}$ maps to $\{y \mid 0 < y < 1\}$ and 
+$\{ x \mid 1 < x < 3\}$ maps to $\{y \mid 1 < y < 9\}$.
+
+To use the distribution function method, the distribution function of\ $X$ is needed:
+$$
+  F_X(x) = 
+  \begin{cases}
+    0                 & \text{for $x < 0$}\\
+    x/2               & \text{for $0 < x < 1$};\\
+    -(x^2 - 6x + 1)/8 & \text{for $1 < x < 3$}\\
+    1                 & f\text{for $x \ge 3$}.
+  \end{cases}
+$$
+Then proceed:
+\begin{align*}
+  F_Y(y) 
+  &= \Pr(Y \le y)\\
+  &= \Pr(X^2 \le y)\\
+  &= \Pr(X \le \sqrt{Y})\\
+  &= F_X(\sqrt{y}\,)\\
+  &=  \begin{cases}
+        \sqrt{y}/2              & \text{for $0 < y < 1$}\\
+        -(y - 6\sqrt{y} + 1)/8  & \text{for $1 < y < 9$}.
+      \end{cases}
+\end{align*}
+To recover the PDF of\ $Y$ (Fig.\ \@ref(fig:RVxy2), right panel), differentiate to obtain
+$$
+  f_Y(y) = 
+  \begin{cases}
+    \displaystyle \frac{1}{4\sqrt{y}}                 & \text{for $0 < y < 1$}\\[6pt]
+    \displaystyle \frac{3}{8\sqrt{y}} - \frac{1}{8}   & \text{for $1 < y < 9$}.
+  \end{cases}
+$$
+:::
+
+
+```{r RVxy2, echo=FALSE, fig.align="center", fig.cap="The probability density functions of $X$ (left) and $Y = X^2$ (right).", out.width="90%", fig.width=7.5, fig.height=3.5}
+par(mfrow = c(1, 2))
+
+x <- c(0, 0, 1, 3)
+fx <- c(0, 1, 1, 0)/2
+
+plot( x = x,
+      y = fx,
+      lwd = 2,
+      type = "l",
+      las = 1,
+      xlab = expression(italic(x)),
+      main = expression(The~PDF~"for"~the~rv~italic(X)),
+      ylab = "Density")
+polygon(x = x,
+        y = fx,
+        col = "lightgrey")
+abline(v = 1,
+       lty = 2,
+       col = "grey")
+
+
+##
+
+
+y <- seq(0, 9, 
+         length = 500)
+fy <- function(y){
+  pdfy <- numeric( length(y) )
+  yA <- (y > 0) & (y < 1)
+  yB <- (y > 1) & (y < 9)
+  pdfy[yA] <- 1/(4 * sqrt( y[yA] ))
+  pdfy[yB] <- 3/(8 * sqrt( y[yB] )) - 1/8
+  pdfy
+}
+plot(x = y,
+     y = fy(y),
+     lwd = 2,
+     las = 1,
+     type = "l",
+     ylim = c(0, 1),
+     main = expression(The~PDF~"for"~the~rv~italic(Y)==italic(X)^2),
+     xlab = expression(italic(Y)),
+     ylab = "Density")
+polygon( x = c(y),
+         y = c(fy(y)),col = "lightgrey"
+         )
+abline(v = 1,
+       lty = 2,
+       col = "grey")
+```
+
+
+
+
 Care is needed to ensure the steps are followed logically. 
 Diagrams like Fig.\ \@ref(fig:SquaringXform) and\ \@ref(fig:SquaringXform2) are encouraged. 
 
