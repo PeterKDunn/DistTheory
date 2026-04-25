@@ -1039,7 +1039,11 @@ $$
   \begin{bmatrix} 
     {\partial x_1}/{\partial y_1} &  {\partial x_1}/{\partial y_2} \\[6pt]
     {\partial x_2}/{\partial y_1} &  {\partial x_2}/{\partial y_2} 
-  \end{bmatrix}.
+  \end{bmatrix}
+  =
+    \frac{\partial x_1}{\partial y_1} \times \frac{\partial x_2}{\partial y_2}
+    -
+    \frac{\partial x_1}{\partial y_2} \times \frac{\partial x_2}{\partial y_1}. 
 $$
 The Jacobian plays an equivalent role to $\left|dx/dy\right|$ in the univariate case.
 
@@ -1117,7 +1121,7 @@ The final expressions identifies this as the $\chi^2(1)$ distribution\index{Chi-
 :::
 
 
-```{r DFcontinuousUnivariate, echo=FALSE, fig.align="center", out.width="100%", fig.width=8.25, fig.height=3.5, fig.cap="A normal distribution (left panel), the transformation (centre panel), and the resulting chi-squared distribution (right panel)."}
+```{r DFcontinuousUnivariate, echo=FALSE, fig.align="center", out.width="100%", fig.width=8, fig.height=3.5, fig.cap="A normal distribution (left panel), the transformation (centre panel), and the resulting chi-squared distribution (right panel)."}
 x <- seq(-4, 4,
          length = 100)
 fX <- dnorm(x)
@@ -1749,7 +1753,7 @@ This is often where the difficulty lies, and a sketch of the support is strongly
 
 
 :::{.example #JointMaximumUniform name="Distribution of $M = \max(X_1, X_2)$ for independent uniforms distributions"}
-Let $X_1, X_2 \overset{\text{iid}}{\sim} \text{Uniform}(0,1)$ with joint PDF $f_{X_1, X_2}(x_1, x_2) = 1$ on the unit square. 
+Let $X_1, X_2 \overset{\text{iid}}{\sim} \text{Uniform}(0,1)$ with joint PDF $f_{X_1, X_2}(x_1, x_2) = 1$ on the unit square (Fig.\ \@ref(fig:BivariateContinuous), left panel).
 Define $M = \max(X_1, X_2)$.
 
 The event $\{M \leq m\}$ is equivalent to $\{X_1 \leq m \text{ and } X_2 \leq m\}$ (see Fig.\ \@ref(fig:BivariateContinuous)),
@@ -1757,11 +1761,11 @@ so for $m \in [0, 1]$:
 $$
   F_M(m) = \Pr(X_1 \leq m,\, X_2 \leq m) = m \cdot m = m^2.
 $$
-Differentiating,
+Differentiating, the PDF is
 $$
   f_M(m) = 2m, \quad m \in [0, 1].
 $$
-This is the $\text{Beta}(2, 1)$ distribution. 
+This is the $\text{Beta}(2, 1)$ distribution (Fig.\ \@ref(fig:BivariateContinuous), right panel). 
 More generally, for $X_1, X_2, \dots, X_n \overset{\text{iid}}{\sim} \text{Uniform}(0,1)$, we find $M = \max(X_1,\ldots,X_n)$ has CDF $m^n$ and PDF $nm^{n-1}$, a $\text{Beta}(n, 1)$ distribution. 
 This extends naturally to order statistics (Chap.\ \@ref(OrderStatisticsChapter)).
 :::
@@ -1781,72 +1785,61 @@ m_seq <- seq(0, 1,
 par(mfrow = c(1, 2), 
     mar = c(4, 4, 3, 1))
 
+m_ex <- 0.65
+
 # Show the integration region
 plot(c(0,1), 
      c(0,1), 
      type = "n",
      xlab = expression(italic(x)[1]), 
      ylab = expression(italic(x)[2]),
-     main = expression("Region {max(X"[1]*", X"[2]*") " <= " m}"),
-     las = 1, asp = 1)
+     main = expression(bold("Region {max(X"[1]*", X"[2]*") " <= " m}")),
+     axes = FALSE,
+     las = 1, 
+     asp = 1)
+axis(side = 1,
+     at = c(0, 0.2, 0.4, m_ex, 0.8, 1.0),
+     labels = c(0, 0.2, 0.4, expression(italic(m)), 0.8, 1.0))
+axis(side = 2,
+     las = 1,
+     at = c(0, 0.2, 0.4, m_ex, 0.8, 1.0),
+     labels = c(0, 0.2, 0.4, expression(italic(m)), 0.8, 1.0))
+box()
 
-m_ex <- 0.65
 rect(0,    0, 
      m_ex, m_ex, 
-     col = adjustcolor("#2c7bb6", 0.25), 
+     col = "lightgrey", 
      border = NA)
 rect(0, 0, 
      1, 1,
-     border = "grey40", 
+     border = "darkgrey", 
      lwd = 1.5)
 
 abline(v = m_ex, 
        lty = 2, 
-       col = "#2c7bb6", 
+       col = "grey", 
        lwd = 1.5)
 abline(h = m_ex, 
        lty = 2, 
-       col = "#2c7bb6", 
+       col = "grey", 
        lwd = 1.5)
 
 text(x = m_ex / 2, 
      y = m_ex / 2,
      expression(paste("Area = ", italic(m)^2)), 
-     cex = 1, 
-     col = "#2c7bb6")
-text(x = m_ex + 0.03, 
-     y = 0.05, 
-     expression(italic(m)), 
-     col = "#2c7bb6", 
-     cex = 0.9)
-grid(col = "grey85", 
+     cex = 1)
+grid(col = "darkgrey", 
      lty = 1)
 
 # Derived pdf vs simulation
-hist(M, 
-     breaks = 60, 
-     freq = FALSE,
-     col = "grey85", 
-     border = "white",
-     main = expression("pdf of M = max(X"[1]*", X"[2]*") ~ Beta(2,1)"),
-     xlab = expression(italic(m)), 
-     las = 1, 
-     xlim = c(0, 1))
-lines(m_seq, 
-      2 * m_seq, 
-      col = "#d7191c", 
-      lwd = 2.5)
-lines(m_seq, 
-      dbeta(m_seq, 2, 1), 
-      col = "#1a9641", 
-      lwd = 1.5, 
-      lty = 2)
-legend("topleft",
-       legend = c("f(m) = 2m  (derived)", "Beta(2,1) pdf"),
-       col = c("#d7191c", "#1a9641"), 
-       lwd = c(2.5, 1.5),
-       lty = c(1, 2), 
-       bty = "n")
+plot( x = c(0, 1),
+      y = c(0, 2), 
+      lwd = 3,
+      type = "l",
+      las = 1,
+      xlab = expression(italic(m)),
+      ylab = "PDF",
+      main = expression(bold(PDF~of~italic(M))))
 grid(col = "grey85", 
      lty = 1)
 
@@ -1982,6 +1975,7 @@ if( knitr::is_latex_output() ) {
                escape = FALSE,
                caption = "Summarising the distribution function method.") %>%
     kable_styling(font_size = 10) %>%
+    column_spec(1, width = "7mm") %>%
     column_spec(2, width = "60mm") %>%
     column_spec(3, width = "45mm") %>%
     row_spec(0, bold = TRUE) %>% 
@@ -2003,17 +1997,6 @@ if( knitr::is_html_output() ) {
 }
 
 ```
-
-
-
-
-
-| Setting | Strategy | PDF recovery |
-|---------|----------|--------------|
-| **Discrete univariate** | $F_Y(y) = \sum_{\{x:\,g(x)\leq y\}} p_X(x)$; pmf = $\Delta F_Y$ | Difference the CDF |
-| **Continuous univariate** | $F_Y(y) = \Pr(g(X)\leq y)$; invert inequality; use $F_X$ | Differentiate the CDF|
-| **Bivariate continuous** | $F_Y(y) = \iint_{\{g\leq y\}} f_\mathbf{X}$; characterise region | Differentiate the CDF |
-| **Bivariate discrete** | $F_Y(y) = \sum\sum_{\{g\leq y\}} p_\mathbf{X}$; pmf = $\Delta F_Y$ | Difference the CDF |
 
 \index{Transformations of random variables!distribution function method|(}
 
@@ -2502,5 +2485,10 @@ $$
 :::
 
 
+:::{.exercise #XformSimBetaMaxuniforms}
+As in Example\ \@ref(exm:JointMaximumUniform), consider the maximum of two independent continuous uniform distributions $X_1$ and $X_2$ defined on $[0, 1]$.
+
+1. Create an **R** simulation to show that the distribution of $M = \max(X_1, X_2)$ is a $\text{Beta}(2, 1)$ distribution. 2. Extend the simulation to show that the distribution of $M = \max(X_1, \dots, X_n)$ is a $\text{Beta}(n, 1)$ distribution for $n = 3, 5$ and\ $10$, for $X_n \overset{\text{iid}}{\sim} \text{Uniform}(0, 1)$. 
+:::
 
 
