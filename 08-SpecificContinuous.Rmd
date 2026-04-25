@@ -317,8 +317,9 @@ Note that the normal distribution in **R** is specified by giving the *standard 
 
 The error function $\operatorname{erf}(\cdot)$\index{Error function} is not available directly in **R**, but can be evaluated using
 $$
-  \operatorname{erf}(x) = 2\times \texttt{pnorm}(x\sqrt{2}) - 1.
+  \operatorname{erf}(x) = 2\times \texttt{pnorm}(x\sqrt{2}\,) - 1,
 $$
+since `mean'${} = \mu = 0$ and `sd'${} = \sigma = 1$ are the defaults.
 :::
 
 
@@ -400,7 +401,7 @@ $$
    \operatorname{var}[X] = \operatorname{E}[Z^2]
    = \frac {1}{\sqrt{2\pi}}\int^\infty_{-\infty}z^2e^{-\frac{1}{2}z^2}\,dz.
 $$
-To integrate by parts (i.e., $\int u\,dv = uv - \int v\, du$), set $u = z$ (so that $du = 1$) and set
+To integrate by parts (i.e., $\int u\,dv = uv - \int v\, du$), set $u = z$ (so that $du = 1$)\index{Integration by parts} and set
 $$
    dv = ze^{-\frac{1}{2}z^2}
    \quad\text{so that}\quad
@@ -438,7 +439,7 @@ $$
 ::::
 :::
 
-This distribution is important in practice since *any* normal distribution can be rescaled into a standard normal distribution using
+The standard normal distribution is important in practice since *any* normal distribution can be rescaled into a standard normal distribution using
 \begin{equation}
    Z = \frac{X - \mu}{\sigma}.
    (\#eq:ConvertToZ)
@@ -461,12 +462,6 @@ However, $\operatorname{E}\big[\exp(t\sigma Z)\big] = M_Z(t\sigma) = \exp\left\{
 $$
    M_Z(t) = \displaystyle \exp\left(\frac{t^2}{2}\right).
 $$
-
-
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the normal distribution have the form `[dpqr]norm()` (see App.\ \@ref(UseRDistributions)) since, by default, `mean = 0` and `sd = 1` when using `[dpqr]norm()`, corresponding to the standard normal distribution.
-Note that the normal distribution is specified by giving the *standard deviation* and **not** the *variance*.
-:::
 \index{Standard normal distribution|)}
 
 
@@ -919,7 +914,7 @@ mn <- n * prob
 stdev <- sqrt( n * prob * (1 - prob) )
 
 CCTable <- array( "",
-                  dim = c(5, 5) )
+                  dim = c(6, 5) )
 colnames(CCTable) <- c("Event (binomial)",
                        "Prob (binomial)",
                        " ",  # Spacer
@@ -950,10 +945,15 @@ CCTable[4, ] <- c("$\\Pr(X \\ge 21)$",
                   round( 1 - pnorm(20.5, mean = mn, sd = stdev), 4) )
 
 CCTable[5, ] <- c("$\\Pr(15 \\lt X \\le 17)$",
-                  round(pbinom(17, prob = prob, size = n) - pbinom(16, prob = prob, size = n), 4),
+                  round(pbinom(17, prob = prob, size = n) - pbinom(15, prob = prob, size = n), 4),
                   "",
                   "$\\Pr(15.5 \\lt Y \\lt 17.5)$",
                   round( pnorm(16.5, mean = mn, sd = stdev) - pnorm(15.5, mean = mn, sd = stdev), 4) )
+CCTable[6, ] <- c("$\\Pr(15 \\le X \\le 17)$",
+                  round(pbinom(17, prob = prob, size = n) - pbinom(14, prob = prob, size = n), 4),
+                  "",
+                  "$\\Pr(14.5 \\lt Y \\lt 17.5)$",
+                  round( pnorm(16.5, mean = mn, sd = stdev) - pnorm(14.5, mean = mn, sd = stdev), 4) )
 
 if( knitr::is_latex_output() ) {
 CCTable[1, ] <- c("$\\Pr(X < 10)$",
@@ -985,6 +985,11 @@ CCTable[5, ] <- c("$\\Pr(15 < X \\le 17)$",
                   "$\\Pr(15.5 < Y < 17.5)$",
                   round( pnorm(17.5, mean = mn, sd = stdev) - pnorm(15.5, mean = mn, sd = stdev), 4) )
 
+CCTable[6, ] <- c("$\\Pr(15 \\le X \\le 17)$",
+                  round(pbinom(17, prob = prob, size = n) - pbinom(14, prob = prob, size = n), 4),
+                  "",
+                  "$\\Pr(14.5 < Y < 17.5)$",
+                  round( pnorm(17.5, mean = mn, sd = stdev) - pnorm(14.5, mean = mn, sd = stdev), 4) )
   knitr::kable(CCTable,
                format = "latex",
                booktabs = TRUE,
@@ -1064,7 +1069,7 @@ Many distributions can be used for modelling right-skewed data defined on the po
 ### Derivation {#ExponentialDerivation}
 
 The exponential distribution is closely related to the Poisson distribution.
-To show this, consider a [Poisson process](#PoissonDerivation), where events occur at an average rate of $\lambda$ events per unit time (e.g., $\lambda = 0.5$ per minute).
+To show this, consider a Poisson process (Sect.\ \@ref(PoissonDerivation)), where events occur at an average rate of $\lambda$\ events per unit time (e.g., $\lambda = 0.5$ per minute).
 
 Then consider a fixed length of time $t > 0$; then, the number of occurrences\ $Y$ would have an average rate of\ $\lambda t$ (e.g., in 12 minutes, we'd expect an average rate of $0.5\times 12 = 6$ occurrences).
 That is, the number of events occurring in the interval $(0, t)$ has Poisson distribution with mean $\lambda t$, with probability function
@@ -1083,12 +1088,12 @@ $$
 using $Y = 0$ in \@ref(eq:PoissonPMF2).
 
 Now, introduce a new random variable\ $T$ that represent the *time until the first event occurs*.
-Then, $Y = 0$ (i.e., no events occur in the interval $(0, t)$) corresponds to $T > t$ (i.e., the time till the first event occurs must be great than the time interval $t$).
+Then, $Y = 0$ (i.e., no events occur in the interval $(0, t)$) corresponds to $T > t$ (i.e., the time till the first event occurs must be great than the time interval\ $t$).
 That is,
 $$
   \Pr(Y = 0) = \exp(-\lambda t) = \Pr(T  > t).
 $$
-Rewriting in terms of a distribution function for $T$,
+Rewriting in terms of a distribution function for\ $T$,
 $$
   F_T(t) = 1 - \Pr(T > t) = 1 - \exp(-\lambda t)
 $$
@@ -1219,7 +1224,6 @@ There are\ $799$ observations which we do not give here.
 The mean time between pulses is $\beta = 0.2186$ seconds. 
 An exponential distribution might be expected to model the data well.
 This is indeed the case (Fig.\ \@ref(fig:ExpNerves)).
-
 
 Define\ $X$ as the time between successive nerve pulses (in seconds); then $X\sim \text{Exp}(\beta = 0.2186)$ (so the *rate parameter* is $\lambda = 1/0.2186 = 4.575$ per second).
 To find the proportion of time intervals longer than $1$\ second:
@@ -1364,7 +1368,6 @@ $$
 We write $X \sim \text{Gamma}(\alpha, \lambda)$ or $X \sim \text{Gamma}(\text{shape} = \alpha, \text{rate} = \lambda)$.
 This is called the *rate parameterisation*.\index{Gamma distribution!rate parameterisation}
 :::
-
 
 
 ::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
@@ -1613,7 +1616,7 @@ Using any method, the probability is about\ $20$%.
 If $X\sim \text{Gamma}(\alpha, \beta)$, find the distribution of $Y = kX$ for some constant\ $k$.
 
 One way to approach this question is to use moment generating functions.
-Since\ $X$ has a gamma distribution, $M_X(t) = (1-\beta t)^{-\alpha}$.
+Since\ $X$ has a gamma distribution, $M_X(t) = (1 - \beta t)^{-\alpha}$.
 Now,
 \begin{align*}
    M_Y(t)
@@ -1630,8 +1633,6 @@ This is just the MGF for random variable\ $X$ with\ $k\beta$ in place of\ $\beta
 
 
 
-
-
 ## Log-normal distribution {#LognormalDistribution}
 
 ### Definition {#LognormalDefinition}
@@ -1642,8 +1643,7 @@ Because\ $X$ is strictly positive and right-skewed, the log-normal distribution 
 
 
 :::{.definition #LognormalDist name="Log-normal distribution"}
-A random variable\ $X$ has a *log-normal distribution* if $Y = \log X$ has a
-normal distribution.
+A random variable\ $X$ has a *log-normal distribution* if $Y = \log X$ has a normal distribution.
 That is, $X \sim \text{LogNormal}(\mu, \sigma^2)$ if and only if $\log X \sim N(\mu, \sigma^2)$.
 
 The PDF of\ $X$ is
@@ -1662,8 +1662,7 @@ We write $X \sim \text{LogNormal}(\mu, \sigma^2)$.
 ::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
 If $X \sim \text{LogNormal}(\mu, \sigma^2)$ then $\log X \sim N(\mu, \sigma^2)$.
 Conversely, if $Z \sim N(\mu, \sigma^2)$ then $\exp Z \sim \text{LogNormal}(\mu, \sigma^2)$.
-The parameters\ $\mu$ and\ $\sigma^2$ are the mean and variance of the *logarithm* of\ $X$,
-not of\ $X$ itself.
+The parameters\ $\mu$ and\ $\sigma^2$ are the mean and variance of the *logarithm* of\ $X$, not of\ $X$ itself.
 :::
 
 
@@ -1786,18 +1785,12 @@ and so
 \end{align*}
 The median follows because $\Pr(X \leq \exp\mu) = \Pr(Y \leq \mu) = 1/2$.
 
-
-
-The MGF $M_X(t) = \operatorname{E}[\exp(tX)]$ does not exist for $t > 0$ because the
-log-normal has a sufficiently heavy right tail that $\operatorname{E}[\exp(tX)] = \infty$
-for all $t > 0$.
-This can be seen by noting that $\exp(tX)$ grows faster than any polynomial in\ $X$, and the log-normal tail is not light enough to control this growth.
+The MGF $M_X(t) = \operatorname{E}[\exp(tX)]$ does not exist for $t > 0$ because the log-normal has a sufficiently heavy right tail that $\operatorname{E}[\exp(tX)] = \infty$ for all $t > 0$: $\exp(tX)$ grows faster than any polynomial in\ $X$, and the log-normal tail is not light enough to control this growth.
 ::::
 :::
 
 
-Note that because the MGF does not exist, moments cannot be obtained by differentiating
-the MGF.
+Note that because the MGF does not exist, moments cannot be obtained by differentiating the MGF.
 Instead, the $r$-th raw moment follows directly from the normal MGF:
 $$
    \operatorname{E}[X^r]
@@ -1806,7 +1799,7 @@ $$
    = \exp\!\left(r\mu + \tfrac{1}{2}r^2\sigma^2\right).
 $$
 
-A useful consequence is that the *coefficient of variation* $\operatorname{CV}(X) = \sqrt{\operatorname{var}[X]}/\operatorname{E}[X]$ simplifies to
+A useful consequence is that the *coefficient of variation*\index{Coefficient of variation} $\operatorname{CV}(X) = \sqrt{\operatorname{var}[X]}/\operatorname{E}[X]$ simplifies to
 $$
    \operatorname{CV}(X) = \sqrt{\exp(\sigma^2) - 1},
 $$
@@ -2472,7 +2465,7 @@ We write $X\sim \text{Kumaraswamy}(a, b)$.
 
 
 :::{.exercise #GammaCV}
-Show that the gamma distribution\index{Gamma distribution} has a constant *coefficient of variation*, where the *coefficient of variation* is the standard deviation divided by the mean.
+Show that the gamma distribution\index{Gamma distribution} has a constant *coefficient of variation*,\index{Coefficient of variation} where the *coefficient of variation* is the standard deviation divided by the mean.
 :::
 
 
