@@ -85,8 +85,8 @@ exponential (Sect.\ \@ref(ExponentialDistribution)),
 gamma (Sect.\ \@ref(GammaDistribution)), and 
 log-normal (Sect.\ \@ref(LognormalDistribution)) distributions.
 
-In general, we write $X \sim \text{ZM}(p,\, f^+_X)$.
-When a specific distribution is specified for $x > 0$, the distribution and its parameters are specified; for example, $X \sim \text{ZM-Gamma}(p, \alpha, \beta)$ specifies a zero-modified gamma distribution, where the $\text{Gamma}(\alpha, \beta)$ distribution is used to model the continuous component.
+In general, we write $X \sim \text{ZM-$D$}(p, \dots)$, where $D$ is any distribution on $(0, \infty)$ and the parameters of the distribution\ $D$ are listed after\ $p$.
+For example, $X \sim \text{ZM-Gamma}(p, \alpha, \beta)$ specifies a zero-modified gamma distribution, where the $\text{Gamma}(\alpha, \beta)$ distribution is used to model the continuous component.
 :::
 
 
@@ -118,7 +118,7 @@ $$
   =
   \begin{cases}
     0.3                   & \text{if $x = 0$}\\
-    0.35\cdot \exp(-x/2)  & \text{if $x > 0$;}
+    0.35\cdot \exp(-x/2)  & \text{if $x > 0$.}
   \end{cases}
 $$
 Similarly, the distribution function of\ $X$ is
@@ -128,7 +128,7 @@ $$
   \begin{cases}
     0                                     & \text{if $ x < 0$}\\ 
     0.3                                   & \text{if $x = 0$}\\
-    0.7\cdot \left(1 - \exp(-x/2)\right)  & \text{if $x > 0$;}
+    0.7\cdot \left(1 - \exp(-x/2)\right)  & \text{if $x > 0$.}
   \end{cases}
 $$
 The probability function and distribution function are shown in Fig.\ \@ref(fig:ZeroModifiedPic).
@@ -256,7 +256,7 @@ The same approach also gives the MGF as
 \end{align*}
 where $M_{X_c}(t)$ is the MGF of the conditional distribution $X\mid X > 0$.
 
-Clearly, further progress with these expressions requires knowing the distribution of\ $X \mid X > 0$.
+Further progress with these expressions requires knowing the distribution of\ $X \mid X > 0$.
 ::::
 :::
 
@@ -423,6 +423,8 @@ $$
 By this definition $X$ has a *compound Poisson--gamma distribution* (which are special cases of Tweedie distributions\index{Tweedie distribution}).
 The distribution of\ $X$ has a probability mass at $X = 0$ where $\Pr(X = 0) = \Pr(N = 0) = \exp(-\lambda)$.
 
+In general, the probability function for the compound Poisson--gamma distributions cannot be written in closed form, but instead are described by the MGF.
+
 
 :::{.definition #CPGDefinitionMGF name="Compound Poisson--gamma distribution"}
 A random variable\ $X$ has a *compound Poisson--gamma distribution* if its MGF is
@@ -462,7 +464,7 @@ When a rainfall event does occur, the amount of rainfall is described by a gamma
 $$
   Y_i \sim \text{Gamma}(\alpha_i, 2),
 $$
-where $\alpha_i$ may be different for each month~$i$.
+where $\alpha_i$ may be different for each month\ $i$.
 
 Suppose $\alpha_1 = 1.75$ in January and $\alpha_6 = 0.3$ in June.
 The Poisson distribution remains the same for both months (Fig.\ \@ref(fig:CPGrain), left panel), meaning that the distribution of the *number* of rainfall events is the same in January and in June.
@@ -823,8 +825,8 @@ rzm_exp <- function(n, lambda, p0) {
 rzm_exp(10, lambda = 5, p0 = 0.3)
 ```
 
-Clearly, the function needs to be adapted for other zero-modified distributions, by using `rgamma()` or `rlnorm()` in place of `rexp()`.
-For example:\index{rgamma()@\texttt{rgamma()}}
+Clearly, the function needs to be adapted for other zero-modified distributions, by using `rgamma()` or `rlnorm()` in place of `rexp()`.\index{rgamma()@\texttt{rgamma()}}
+For example:
 
 ```{r}
 rzm_gamma <- function(n, shape, scale, p0) {
@@ -1361,9 +1363,10 @@ plot(x_seq, cont_dens,
      ylab = "Probability / Defective density")
 #segments(x0 = 0, y0 = 0, x1 = 0, y1 = pData,
 #         lwd = 3, col = "steelblue")
-points(x = 0, y = pData, 
+points(x = 0, 
+       y = pData, 
        pch = 19, 
-       cex = 2)
+       cex = 1.25)
 text(x = 1, 
      y = pData,
      labels = paste0("P(C = 0) = ", round(pData, 2)),
