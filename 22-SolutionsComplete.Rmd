@@ -4006,7 +4006,68 @@ Let $D = 1$ if defective (prob\ $0.1$), $D = 0$ otherwise.
 :::
 
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:Jensen1).**
 
+1. Differentiating twice, $g'(x) = 1/x$ and $g''(x) = -1/x^2 < 0$ for all $x > 0$. 
+   Since the second derivative is everywhere negative, $g$ is strictly concave.
+2. Since $g(x) = \log x$ is strictly concave, Jensen's inequality reverses:
+$$
+  \operatorname{E}[g(X)] \leq g(\operatorname{E}[X]),
+$$
+  that is,
+$$
+  \operatorname{E}[\log X] \leq \log \operatorname{E}[X] = \log \mu,
+$$
+  with equality if and only if $X$ is degenerate. $\square$
+3. For $X \sim \operatorname{Exponential}(\lambda)$, we have $\operatorname{E}[X] = 1/\lambda$, so
+$$
+  \log(\operatorname{E}[X]) = \log\frac{1}{\lambda} = -\log\lambda.
+$$
+  To compute $\operatorname{E}[\log X]$, we use the PDF $f(x) = \lambda e^{-\lambda x}$ for $x > 0$:
+$$
+  \operatorname{E}[\log X]
+  = \int_0^\infty (\log x)\,\lambda e^{-\lambda x}\,\mathrm{d}x.
+$$
+  Using the substitution $u = \lambda x$ and the known result $\int_0^\infty (\log u)\, e^{-u}\,du = -\gamma$, where $\gamma \approx 0.5772$ is the Euler--Mascheroni constant,
+$$
+  \operatorname{E}[\log X]
+  = \int_0^\infty \log\!\left(\frac{u}{\lambda}\right) e^{-u}\,du
+  = \int_0^\infty (\log u)\,e^{-u}\,du - \log\lambda
+  = -\gamma - \log\lambda.
+$$
+  Since $\gamma > 0$, we have
+$$
+  \operatorname{E}[\log X] = -\gamma - \log\lambda < -\log\lambda = \log(\operatorname{E}[X]),
+$$
+  confirming the strict inequality from part (b). $\square$
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:Jensen2).**
+
+1. For fixed $t$, let $g(x) = e^{tx}$. Then $g''(x) = t^2 e^{tx} > 0$ for all $x$ and all $t \neq 0$, so $g$ is strictly convex. 
+  By Jensen's inequality,
+$$
+  \operatorname{E}[e^{tX}] \geq e^{t\operatorname{E}[X]} = e^{t\mu},
+$$
+  with equality if and only if $X$ is degenerate. For $t = 0$ both sides equal $1$ trivially.
+2. Since $\log$ is a strictly increasing function and $M_X(t) \geq e^{t\mu}$ from part\ 1.,
+$$
+  \log M_X(t) \geq \log e^{t\mu} = t\mu. \quad \square
+$$
+3. Differentiating $K_X(t) = \log M_X(t)$,
+$$
+  K_X'(t) = \frac{M_X'(t)}{M_X(t)}.
+$$
+  At $t = 0$, $M_X(0) = 1$ and $M_X'(0) = \operatorname{E}[X] = \mu$, so
+$$
+  K_X'(0) = \frac{\mu}{1} = \mu.
+$$
+  The result of part\ 2. says $K_X(t) \geq t\mu = tK_X'(0)$, which states that the cumulant generating function lies above its tangent line at $t = 0$.
+  This is precisely the condition that $K_X$ is convex at the origin, consistent with the general result that cumulant generating functions are convex wherever they exist.
+:::
 
 
 
@@ -7588,7 +7649,59 @@ using the Poisson distribution.
 :::
 
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:Unbiased1).**
+By linearity of expectation and $\operatorname{E}[X_i] = \lambda$:
+$$
+\operatorname{E}[\bar{X}]
+  = \operatorname{E}\!\left[\frac{1}{n}\sum_{i=1}^n X_i\right]
+  = \frac{1}{n}\sum_{i=1}^n \operatorname{E}[X_i]
+  = \frac{1}{n} \cdot n\lambda
+  = \lambda.
+$$
+Hence $\bar{X}$ is unbiased for $\lambda$.
+:::
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:Unbiased2}
+
+1. Since $X_i \sim \operatorname{Uniform}(0,\theta)$, we have $\operatorname{E}[X_i] = \theta/2$.
+   By linearity of expectation,
+$$
+  \operatorname{E}[2\bar{X}]
+  = \frac{2}{n}\sum_{i=1}^n \operatorname{E}[X_i]
+  = \frac{2}{n} \cdot \frac{n\theta}{2}
+  = \theta.
+$$
+  Hence $2\bar{X}$ is unbiased for $\theta$. $\square$
+
+2. The CDF of each $X_i$ is $F(x) = x/\theta$ for $x \in [0,\theta]$.
+   Since the $X_i$ are independent,
+$$
+  F_M(x)
+  = \Pr(M \leq x)
+  = \Pr(X_1 \leq x, \ldots, X_n \leq x)
+  = \left(\frac{x}{\theta}\right)^{\!n}, \quad x \in [0, \theta].
+$$
+  Differentiating, the PDF of $M$ is
+$$
+  f_M(x) = \frac{n}{\theta^n}\,x^{n - 1}, \quad x \in [0,\theta].
+$$
+  Hence
+$$
+  \operatorname{E}[M]
+  = \int_0^\theta x \cdot \frac{n}{\theta^n}\,x^{n - 1}\,dx
+  = \frac{n}{\theta^n}\int_0^\theta x^n\,dx
+  = \frac{n}{\theta^n} \cdot \frac{\theta^{n + 1}}{n + 1}
+  = \frac{n}{n + 1}\,\theta.
+$$
+  Since $\operatorname{E}[M] = n\theta/(n + 1) \neq \theta$, $M$ is biased for $\theta$, with bias $-\theta/(n + 1) < 0$, i.e.\ $M$ systematically underestimates $\theta$.
+3. From part\ 2, $\operatorname{E}[M] = n\theta/(n + 1)$, so
+$$
+  \operatorname{E}\!\left[\frac{n+1}{n}M\right] = \theta.
+$$
+Hence $\tfrac{n+1}{n}M$ is an unbiased estimator of $\theta$. $\square$
+:::
   
 
 
