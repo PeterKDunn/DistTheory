@@ -1126,6 +1126,62 @@ Substitute <span class="math inline">\(y = u(x)\)</span> and <span class="math i
   &amp;= \int_{-\infty}^{\infty} u(x)\,f_X(x)\,dx
 \end{align*}\]</span></p>
 </div>
+<p>An important result that follows is Jensen’s inequality, for which convex and concave function must be first defined.</p>
+<div class="definition">
+<p><span id="def:def-convex" class="definition"><strong>Definition 10.2  (Convex and concave functions) </strong></span>
+A twice-differentiable function <span class="math inline">\(g(\cdot)\)</span> is <em>convex</em> on an interval <span class="math inline">\(I\)</span> if
+<span class="math display">\[
+  g''(x) \geq 0 \quad \text{for all } x \in I,
+\]</span>
+and <em>strictly convex</em> if <span class="math inline">\(g''(x) &gt; 0\)</span> for all <span class="math inline">\(x \in I\)</span>.</p>
+<p>The function <span class="math inline">\(g(\cdot)\)</span> is <em>concave</em> (respectively <em>strictly concave</em>) if <span class="math inline">\(-g(\cdot)\)</span> is convex (respectively strictly convex).</p>
+</div>
+<p>Geometrically (see Fig. <a href="ChapterTransformations.html#fig:ConvexConcave">10.11</a>), a convex function lies <em>below</em> any chord joining two points on its graph: for all <span class="math inline">\(x_1, x_2 \in I\)</span> and <span class="math inline">\(\lambda \in [0,1]\)</span>,
+<span class="math display">\[
+  g(\lambda x_1 + (1-\lambda)x_2) \leq \lambda g(x_1) + (1-\lambda)g(x_2).
+\]</span>
+This is sometimes taken as the definition of convexity, and does not require differentiability.
+For a concave function the inequality reverses.
+The proof of Jensen’s inequality makes the geometric meaning precise: a convex function lies above every tangent line, which is the key step in the proof.</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:ConvexConcave"></span>
+<img src="10-Transformations_files/figure-html/ConvexConcave-1.png" alt="A convex function (left) and a concave function (right)." width="100%"><p class="caption">
+FIGURE 10.11: A convex function (left) and a concave function (right).
+</p>
+</div>
+<div class="theorem">
+<p><span id="thm:Jensen" class="theorem"><strong>Theorem 10.2  (Jensen's Inequality) </strong></span>Let <span class="math inline">\(X\)</span> be a random variable and <span class="math inline">\(g(\cdot)\)</span> a convex function.
+Then
+<span class="math display">\[
+  g(\operatorname{E}[X]) \leq \operatorname{E}[g(X)].
+\]</span>
+If <span class="math inline">\(g(\cdot)\)</span> is strictly convex, equality holds if and only if <span class="math inline">\(X\)</span> is degenerate; that is, <span class="math inline">\(\Pr(X = c) = 1\)</span> for some constant <span class="math inline">\(c\)</span>.</p>
+<div class="proof">
+<p><span id="unlabeled-div-51" class="proof"><em>Proof</em>. </span>We give the proof for <span class="math inline">\(g(\cdot)\)</span> differentiable.
+Since <span class="math inline">\(g(\cdot)\)</span> is convex, it lies above every tangent line.
+In particular, at the point <span class="math inline">\(\mu = \operatorname{E}[X]\)</span>,
+<span class="math display">\[
+  g(x) \geq g(\mu) + g'(\mu)(x - \mu) \quad \text{for all } x.
+\]</span>
+Taking expectations of both sides,
+<span class="math display">\[
+  \operatorname{E}[g(X)]
+  \geq g(\mu) + g'(\mu)\operatorname{E}[X - \mu]
+  = g(\mu) + g'(\mu) \cdot 0
+  = g(\operatorname{E}[X]). \quad \square
+\]</span></p>
+</div>
+</div>
+<p>Common <em>convex</em> functions to which Jensen’s inequality applies include <span class="math inline">\(g(x) = x^2\)</span>, <span class="math inline">\(g(x) = e^x\)</span>, <span class="math inline">\(g(x) = -\log x\)</span> (<span class="math inline">\(x &gt; 0\)</span>), and <span class="math inline">\(g(x) = 1/x\)</span> (<span class="math inline">\(x &gt; 0\)</span>).</p>
+<p>For <em>concave</em> <span class="math inline">\(g(\cdot)\)</span> the inequality reverses: <span class="math inline">\(\operatorname{E}[g(X)] \leq g(\operatorname{E}[X])\)</span>; a common example is <span class="math inline">\(g(x) = \log x\)</span>.
+:::</p>
+<div class="example">
+<p><span id="exm:JensensInequality" class="example"><strong>Example 10.18  (Jensen's inequality applied) </strong></span>Let <span class="math inline">\(X &gt; 0\)</span> be a non-degenerate random variable with <span class="math inline">\(\operatorname{E}[X] = \mu\)</span>.
+Since <span class="math inline">\(g(x) = 1/x\)</span> is strictly convex for <span class="math inline">\(x &gt; 0\)</span>, Jensen’s inequality gives
+<span class="math display">\[
+  \operatorname{E}\!\left[\frac{1}{X}\right] &gt; \frac{1}{\operatorname{E}[X]} = \frac{1}{\mu}.
+\]</span></p>
+</div>
 </div>
 <div id="discrete-univariate-case" class="section level3" number="10.3.2">
 <h3>
@@ -1145,7 +1201,7 @@ When <span class="math inline">\(Y\)</span> takes consecutive integer values (s
 <p>In the discrete case, the CDF method and the change of variables method are closely related; the difference is mainly one of presentation.
 The distribution function is especially natural when <span class="math inline">\(u(\cdot)\)</span> is monotone non-decreasing, since the event <span class="math inline">\(\{u(X) \leq y\}\)</span> maps cleanly to <span class="math inline">\(\{X \leq u^{-1}(y)\}\)</span>.</p>
 <div class="example">
-<p><span id="exm:unlabeled-div-51" class="example"><strong>Example 10.18  (Shifting the geometric distribution) </strong></span>Let <span class="math inline">\(X \sim \text{Geometric}(p)\)</span>, so that <span class="math inline">\(X\)</span> represents the number of <em>failures</em> until the first success, with support <span class="math inline">\(\{0, 1, 2, \ldots\}\)</span> (as in Sect. <a href="DiscreteDistributions.html#GeometricDistribution">7.5</a>).
+<p><span id="exm:XformShiftGeometric" class="example"><strong>Example 10.19  (Shifting the geometric distribution) </strong></span>Let <span class="math inline">\(X \sim \text{Geometric}(p)\)</span>, so that <span class="math inline">\(X\)</span> represents the number of <em>failures</em> until the first success, with support <span class="math inline">\(\{0, 1, 2, \ldots\}\)</span> (as in Sect. <a href="DiscreteDistributions.html#GeometricDistribution">7.5</a>).
 Then,
 <span class="math display">\[
   \Pr(X \leq x) = 1 - (1-p)^{\lfloor x\rfloor + 1}, \quad x = 0, 1, 2, \ldots
@@ -1166,12 +1222,12 @@ The PMF is the difference between the DF at the values of <span class="math inl
   p_Y(y) = F_Y(y) - F_Y(y - 1) = (1 - p)^{y - 1} p, \quad y = 1, 2, 3, \ldots
 \]</span>
 This is the <span class="math inline">\(\text{Geometric}(p)\)</span> distribution with a different parameterisation.
-A simple shift of support corresponds to a reparameterisation within the Geometric family of distributions.</p>
+A simple shift of support corresponds to a reparameterisation within the geometric family of distributions.</p>
 </div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:unnamed-chunk-1"></span>
 <img src="10-Transformations_files/figure-html/unnamed-chunk-1-1.png" alt="The PMF and DF of $X$ following a geometric distribution (left panels), and the PMF and DF of the transformation $Y = X + 1$." width="80%"><p class="caption">
-FIGURE 10.11: The PMF and DF of <span class="math inline">\(X\)</span> following a geometric distribution (left panels), and the PMF and DF of the transformation <span class="math inline">\(Y = X + 1\)</span>.
+FIGURE 10.12: The PMF and DF of <span class="math inline">\(X\)</span> following a geometric distribution (left panels), and the PMF and DF of the transformation <span class="math inline">\(Y = X + 1\)</span>.
 </p>
 </div>
 </div>
@@ -1190,9 +1246,9 @@ then differentiate: <span class="math inline">\(f_Y(y) = F_Y'(y)\)</span>.</p>
 <p>The key step is characterising the region of integration <span class="math inline">\(\{u(x_1,x_2) \leq y\}\)</span> carefully as a function of <span class="math inline">\(y\)</span>, paying attention to how its boundaries move as <span class="math inline">\(y\)</span> changes.
 This is often where the difficulty lies, and a sketch of the support is strongly recommended.</p>
 <div class="example">
-<p><span id="exm:JointMaximumUniform" class="example"><strong>Example 10.19  (Distribution of $M = \max(X_1, X_2)$ for independent uniforms distributions) </strong></span>Let <span class="math inline">\(X_1, X_2 \overset{\text{iid}}{\sim} \text{Uniform}(0,1)\)</span> with joint PDF <span class="math inline">\(f_{X_1, X_2}(x_1, x_2) = 1\)</span> on the unit square (Fig. <a href="ChapterTransformations.html#fig:BivariateContinuous">10.12</a>, left panel).
+<p><span id="exm:JointMaximumUniform" class="example"><strong>Example 10.20  (Distribution of $M = \max(X_1, X_2)$ for independent uniforms distributions) </strong></span>Let <span class="math inline">\(X_1, X_2 \overset{\text{iid}}{\sim} \text{Uniform}(0,1)\)</span> with joint PDF <span class="math inline">\(f_{X_1, X_2}(x_1, x_2) = 1\)</span> on the unit square (Fig. <a href="ChapterTransformations.html#fig:BivariateContinuous">10.13</a>, left panel).
 Define <span class="math inline">\(M = \max(X_1, X_2)\)</span>.</p>
-<p>The event <span class="math inline">\(\{M \leq m\}\)</span> is equivalent to <span class="math inline">\(\{X_1 \leq m \text{ and } X_2 \leq m\}\)</span> (see Fig. <a href="ChapterTransformations.html#fig:BivariateContinuous">10.12</a>),
+<p>The event <span class="math inline">\(\{M \leq m\}\)</span> is equivalent to <span class="math inline">\(\{X_1 \leq m \text{ and } X_2 \leq m\}\)</span> (see Fig. <a href="ChapterTransformations.html#fig:BivariateContinuous">10.13</a>),
 so for <span class="math inline">\(m \in [0, 1]\)</span>:
 <span class="math display">\[
   F_M(m) = \Pr(X_1 \leq m,\, X_2 \leq m) = m \cdot m = m^2.
@@ -1201,14 +1257,14 @@ Differentiating, the PDF is
 <span class="math display">\[
   f_M(m) = 2m, \quad m \in [0, 1].
 \]</span>
-This is the <span class="math inline">\(\text{Beta}(2, 1)\)</span> distribution (Fig. <a href="ChapterTransformations.html#fig:BivariateContinuous">10.12</a>, right panel).
+This is the <span class="math inline">\(\text{Beta}(2, 1)\)</span> distribution (Fig. <a href="ChapterTransformations.html#fig:BivariateContinuous">10.13</a>, right panel).
 More generally, for <span class="math inline">\(X_1, X_2, \dots, X_n \overset{\text{iid}}{\sim} \text{Uniform}(0,1)\)</span>, we find <span class="math inline">\(M = \max(X_1,\ldots,X_n)\)</span> has CDF <span class="math inline">\(m^n\)</span> and PDF <span class="math inline">\(nm^{n-1}\)</span>, a <span class="math inline">\(\text{Beta}(n, 1)\)</span> distribution.
 This extends naturally to order statistics (Chap. <a href="OrderStatisticsChapter.html#OrderStatisticsChapter">14</a>).</p>
 </div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:BivariateContinuous"></span>
 <img src="10-Transformations_files/figure-html/BivariateContinuous-1.png" alt="The joint distribution of the maximum from two uniform distributions." width="90%"><p class="caption">
-FIGURE 10.12: The joint distribution of the maximum from two uniform distributions.
+FIGURE 10.13: The joint distribution of the maximum from two uniform distributions.
 </p>
 </div>
 </div>
@@ -1224,7 +1280,7 @@ For <span class="math inline">\(Y = u(X_1, X_2)\)</span>, the CDF of <span clas
 and the PMF is recovered as <span class="math inline">\(p_Y(y) = F_Y(y) - F_Y(y^-)\)</span> where <span class="math inline">\(y^-\)</span> denotes the largest value in the support of <span class="math inline">\(Y\)</span> strictly less than <span class="math inline">\(y\)</span>.</p>
 <p>The bivariate discrete CDF method is often the most natural approach when <span class="math inline">\(u(\cdot)\)</span> is a many-to-one function (such as a maximum or minimum), where enumerating pre-images directly would be cumbersome, but the event <span class="math inline">\(\{u(X_1, X_2) \leq y\}\)</span> has a simple geometric or combinatorial description.</p>
 <div class="example">
-<p><span id="exm:TwoIndBinomials" class="example"><strong>Example 10.20  (Maximum of two independent binomial distributions) </strong></span>Let <span class="math inline">\(X_1 \sim \text{Binomial}(n_1, p)\)</span> and <span class="math inline">\(X_2 \sim \text{Binomial}(n_2, p)\)</span> independently.
+<p><span id="exm:TwoIndBinomials" class="example"><strong>Example 10.21  (Maximum of two independent binomial distributions) </strong></span>Let <span class="math inline">\(X_1 \sim \text{Binomial}(n_1, p)\)</span> and <span class="math inline">\(X_2 \sim \text{Binomial}(n_2, p)\)</span> independently.
 Define <span class="math inline">\(M = \max(X_1, X_2)\)</span>.</p>
 <p>Using the same ideas as in the continuous case, for <span class="math inline">\(m \in \{0, 1, \ldots, \max(n_1, n_2)\}\)</span>:
 <span class="math display">\[
@@ -1347,7 +1403,7 @@ The above result also holds for discrete variables, where summations replace int
 \]</span>
 where <span class="math inline">\(M_{X_i}(t)\)</span> is the MGF of <span class="math inline">\(X_i\)</span> at <span class="math inline">\(t\)</span> for <span class="math inline">\(i = 1, 2, \dots, n\)</span>.</p>
 <div class="example">
-<p><span id="exm:MGFLinearX" class="example"><strong>Example 10.21  (MGF method for transformations) </strong></span>Suppose that <span class="math inline">\(X_i \sim \text{Poisson}(\lambda_i)\)</span> for <span class="math inline">\(i = 1, 2, \dots, n\)</span>, and we wish to find the distribution of <span class="math inline">\(Y = X_1 + X_2 + \dots + X_n\)</span>.</p>
+<p><span id="exm:MGFLinearX" class="example"><strong>Example 10.22  (MGF method for transformations) </strong></span>Suppose that <span class="math inline">\(X_i \sim \text{Poisson}(\lambda_i)\)</span> for <span class="math inline">\(i = 1, 2, \dots, n\)</span>, and we wish to find the distribution of <span class="math inline">\(Y = X_1 + X_2 + \dots + X_n\)</span>.</p>
 <p>Since <span class="math inline">\(X_i\)</span> has a Poisson distribution with parameter <span class="math inline">\(\lambda_i\)</span> for <span class="math inline">\(i, 2, \dots n\)</span>, the MGF of <span class="math inline">\(X_i\)</span> is
 <span class="math display">\[
    M_{X_i}(t) = \exp[ \lambda_i(e^t - 1)].
@@ -1583,7 +1639,7 @@ Ensure all important features and points are clearly labelled.</li>
 <p><span id="exr:ChiSquaredGamma" class="exercise"><strong>Exercise 10.19  </strong></span>Show that the chi-squared distribution is a special case of the gamma distribution, with <span class="math inline">\(\alpha = \nu/2\)</span> and <span class="math inline">\(\beta = 2\)</span>.</p>
 </div>
 <div class="exercise">
-<p><span id="exr:TrickyXform1" class="exercise"><strong>Exercise 10.20  </strong></span>Suppose the random variable <span class="math inline">\(X\)</span> is defined as shown in Fig. <a href="ChapterTransformations.html#fig:TrickyX">10.13</a>.</p>
+<p><span id="exr:TrickyXform1" class="exercise"><strong>Exercise 10.20  </strong></span>Suppose the random variable <span class="math inline">\(X\)</span> is defined as shown in Fig. <a href="ChapterTransformations.html#fig:TrickyX">10.14</a>.</p>
 <ol style="list-style-type: decimal">
 <li>Determine the distribution function for <span class="math inline">\(X\)</span>.</li>
 <li>Find the probability density function for the random variable <span class="math inline">\(Y\)</span>, where <span class="math inline">\(Y = 6 - 2X\)</span>.</li>
@@ -1594,11 +1650,11 @@ Ensure all important features and points are clearly labelled.</li>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:TrickyX"></span>
 <img src="10-Transformations_files/figure-html/TrickyX-1.png" alt="The probability density function for the random variable\ $X$." width="90%"><p class="caption">
-FIGURE 10.13: The probability density function for the random variable <span class="math inline">\(X\)</span>.
+FIGURE 10.14: The probability density function for the random variable <span class="math inline">\(X\)</span>.
 </p>
 </div>
 <div class="exercise">
-<p><span id="exr:TrickyXform2" class="exercise"><strong>Exercise 10.21  </strong></span>Suppose the random variable <span class="math inline">\(X\)</span> is defined as shown in Fig. <a href="ChapterTransformations.html#fig:TrickyX">10.13</a>.</p>
+<p><span id="exr:TrickyXform2" class="exercise"><strong>Exercise 10.21  </strong></span>Suppose the random variable <span class="math inline">\(X\)</span> is defined as shown in Fig. <a href="ChapterTransformations.html#fig:TrickyX">10.14</a>.</p>
 <ol style="list-style-type: decimal">
 <li>Determine the distribution function for <span class="math inline">\(X\)</span> (this was done in Exercise <a href="ChapterTransformations.html#exr:TrickyXform1">10.20</a>).</li>
 <li>Find the probability density function for the random variable <span class="math inline">\(Z\)</span>, where <span class="math inline">\(Z = (X - 2)^2\)</span>.</li>
@@ -1607,7 +1663,7 @@ FIGURE 10.13: The probability density function for the random variable <span cl
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:RunnerVelocity" class="exercise"><strong>Exercise 10.22  </strong></span>The time taken to run a distance <span class="math inline">\(D\)</span> (in metres) by a professional athlete, say <span class="math inline">\(T\)</span> (in seconds), varies with the distribution shown in Fig. <a href="ChapterTransformations.html#fig:RunnerVelocityVoltage">10.14</a> (left panel).
+<p><span id="exr:RunnerVelocity" class="exercise"><strong>Exercise 10.22  </strong></span>The time taken to run a distance <span class="math inline">\(D\)</span> (in metres) by a professional athlete, say <span class="math inline">\(T\)</span> (in seconds), varies with the distribution shown in Fig. <a href="ChapterTransformations.html#fig:RunnerVelocityVoltage">10.15</a> (left panel).
 The average velocity of the runner, say <span class="math inline">\(V\)</span>, is related to the time by <span class="math inline">\(V = D/T\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>Determine the probability density function for the runner’s velocity.</li>
@@ -1618,7 +1674,7 @@ Plot the probability density function for <span class="math inline">\(V\)</span
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:RunnerVelocityVoltage"></span>
 <img src="10-Transformations_files/figure-html/RunnerVelocityVoltage-1.png" alt="The probability density function for the random variable\ $T$, the time for the run." width="90%"><p class="caption">
-FIGURE 10.14: The probability density function for the random variable <span class="math inline">\(T\)</span>, the time for the run.
+FIGURE 10.15: The probability density function for the random variable <span class="math inline">\(T\)</span>, the time for the run.
 </p>
 </div>
 <div class="exercise">
@@ -1626,7 +1682,7 @@ FIGURE 10.14: The probability density function for the random variable <span cl
 <span class="math display">\[
   f_V(v) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{ -\frac{x^2}{2\sigma^2}\right\}.
 \]</span>
-as shown in Fig. <a href="ChapterTransformations.html#fig:RunnerVelocityVoltage">10.14</a> (right panel).
+as shown in Fig. <a href="ChapterTransformations.html#fig:RunnerVelocityVoltage">10.15</a> (right panel).
 (Later, we will identify this as the <em>normal distribution</em>.)</p>
 <ol style="list-style-type: decimal">
 <li>Determine the probability density function of the instantaneous <em>power</em> in the circuit <span class="math inline">\(P\)</span>, where <span class="math inline">\(P = V^2/R\)</span> for some circuit resistance <span class="math inline">\(R\)</span> (in ohms).</li>
@@ -1661,9 +1717,31 @@ Find the distribution of <span class="math inline">\(P = \prod_{i=1}^{10} X_i\)<
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:XformSimBetaMaxuniforms" class="exercise"><strong>Exercise 10.26  </strong></span>As in Example <a href="ChapterTransformations.html#exm:JointMaximumUniform">10.19</a>, consider the maximum of two independent continuous uniform distributions <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> defined on <span class="math inline">\([0, 1]\)</span>.</p>
+<p><span id="exr:XformSimBetaMaxuniforms" class="exercise"><strong>Exercise 10.26  </strong></span>As in Example <a href="ChapterTransformations.html#exm:JointMaximumUniform">10.20</a>, consider the maximum of two independent continuous uniform distributions <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> defined on <span class="math inline">\([0, 1]\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>Create an <strong>R</strong> simulation to show that the distribution of <span class="math inline">\(M = \max(X_1, X_2)\)</span> is a <span class="math inline">\(\text{Beta}(2, 1)\)</span> distribution. 2. Extend the simulation to show that the distribution of <span class="math inline">\(M = \max(X_1, \dots, X_n)\)</span> is a <span class="math inline">\(\text{Beta}(n, 1)\)</span> distribution for <span class="math inline">\(n = 3, 5\)</span> and <span class="math inline">\(10\)</span>, for <span class="math inline">\(X_n \overset{\text{iid}}{\sim} \text{Uniform}(0, 1)\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:Jensen1" class="exercise"><strong>Exercise 10.27  </strong></span>Let <span class="math inline">\(X\)</span> be a positive non-degenerate random variable with <span class="math inline">\(\operatorname{E}[X] = \mu\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>State whether <span class="math inline">\(g(x) = \log x\)</span> is convex or concave for <span class="math inline">\(x &gt; 0\)</span>, justifying your answer.</li>
+<li>Hence show that
+<span class="math display">\[
+  \operatorname{E}[\log X] \leq \log \mu.
+\]</span>
+</li>
+<li>Let <span class="math inline">\(X \sim \operatorname{Exponential}(\lambda)\)</span>.
+Verify the inequality in part 2 directly by computing <span class="math inline">\(\operatorname{E}[\log X]\)</span> and <span class="math inline">\(\log(\operatorname{E}[X])\)</span> and confirming the correct relationship holds.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:Jensen2" class="exercise"><strong>Exercise 10.28  </strong></span>Let <span class="math inline">\(X\)</span> be a non-degenerate random variable with mean <span class="math inline">\(\mu\)</span> and let <span class="math inline">\(M_X(t) = \operatorname{E}[e^{tX}]\)</span> be its moment generating function, which is assumed to exist.</p>
+<ol style="list-style-type: decimal">
+<li>Show using Jensen’s inequality that <span class="math inline">\(M_X(t) \geq e^{t\mu}\)</span> for all <span class="math inline">\(t\)</span>, with equality if and only if <span class="math inline">\(X\)</span> is degenerate.</li>
+<li>Hence show that <span class="math inline">\(\log M_X(t) \geq t\mu\)</span>.</li>
+<li>The <strong>cumulant generating function</strong> is defined as <span class="math inline">\(K_X(t) = \log M_X(t)\)</span>.
+Show that <span class="math inline">\(K_X'(0) = \mu\)</span>, and interpret the result of part 2 as a statement about <span class="math inline">\(K_X\)</span>.</li>
 </ol>
 </div>
 
@@ -1724,7 +1802,7 @@ Find the distribution of <span class="math inline">\(P = \prod_{i=1}^{10} X_i\)<
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn and Taryn Axelsen. It was last built on Last updated: 2026-04-25.</p>
+    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn and Taryn Axelsen. It was last built on Last updated: 2026-04-26.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
