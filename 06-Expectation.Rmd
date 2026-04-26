@@ -276,6 +276,150 @@ $$
       \operatorname{E}[Z] = \operatorname{E}[2X] = 2\operatorname{E}[X] = 2 \times 13/6 = 13/3.
 $$
 :::
+
+
+An important result that follows is *Jensen's inequality*,\index{Jensen's inequality} which applies for convex and concave functions.
+
+
+:::{.definition #def-convex name="Convex and concave functions"}
+\index{Convex function}\index{Concave function}
+A twice-differentiable function $g(\cdot)$ is *convex* on an interval\ $I$ if
+$$
+  g''(x) \geq 0 \quad \text{for all } x \in I,
+$$
+and *strictly convex* if $g''(x) > 0$ for all $x \in I$.
+
+The function $g(\cdot)$ is *concave* on an interval\ $I$ if
+$$
+  g''(x) \leq 0 \quad \text{for all } x \in I,
+$$
+and *strictly concave* if $g''(x) < 0$ for all $x \in I$.
+:::
+
+
+:::{.example #ConcaveConvexFunction name="Concave and convex functions"}
+The function $g(x) = x^2$ is *strictly convex* over $\mathbb{R}$ (Fig.\ \@ref(fig:ConvexConcave), left panel), because
+$$
+  g''(x) = 2 > 0
+$$
+for all real values of\ $x$.
+Similarly, the function $g(x) = \log x$ is *strictly concave* over the interval $\{I: x > 0\}$ (Fig.\ \@ref(fig:ConvexConcave), right panel), because
+$$
+  g''(x) = -\frac{1}{x^2} < 0
+$$
+for all values of\ $x\in I$.
+:::
+
+```{r ConvexConcave, echo=FALSE, fig.align="center", fig.cap="A convex function (left) and a concave function (right).", out.width='100%', fig.width=8, fig.height=3.5}
+par(mfrow = c(1, 2))
+
+# Convex: g(x) = x^2
+x <- seq(-2, 2, 
+         length = 200)
+g <- x^2
+
+# Tangent line at x0 = -1: g(x0) + g'(x0)(x - x0) = 1 - 2(x+1)
+x0 <- -1
+tangent <- g[which.min(abs(x - x0))] + 2 * x0 * (x - x0)
+
+# Chord between x1 = -1.5 and x2 = 1.5
+x1 <- -1.5
+x2 <- 1.5
+
+g1 <- x1^2
+g2 <- x2^2
+
+plot(x = x, 
+     y = g, 
+     type = "l", 
+     lwd = 2,
+     main = expression(atop(bold("A convex function"),
+                            italic(g)(italic(x)) == italic(x)^2)),
+     xlab = expression(italic(x)), 
+     ylab = expression(italic(g)(italic(x))), 
+     las = 1)
+
+
+# --- Concave: g(x) = log(x) ---
+x <- seq(0.1, 4, 
+         length = 200)
+g <- log(x)
+
+# Tangent line at x0 = 1: log(1) + (1/1)(x - 1) = x - 1
+x0 <- 1
+tangent <- log(x0) + (1 / x0) * (x - x0)
+
+# Chord between x1 = 0.5 and x2 = 3.5
+x1 <- 0.5
+x2 <- 3.5
+
+g1 <- log(x1)
+g2 <- log(x2)
+
+plot(x = x, 
+     y = g, 
+     type = "l", 
+     lwd = 2,
+     main = expression(atop(bold("A concave function"),
+                            italic(g)(italic(x)) == log(italic(x)))),
+     xlab = expression(italic(x)), 
+     ylab = expression(italic(g)(italic(x))), 
+     las = 1)
+par(mfrow = c(1, 1))
+```
+
+:::{.theorem #Jensen name="Jensen's inequality"}
+Let\ $X$ be a random variable and\ $g(\cdot)$ a convex function. 
+Then
+$$
+  g(\operatorname{E}[X]) \leq \operatorname{E}[g(X)].
+$$
+If $g(\cdot)$ is strictly convex, equality holds if and only if\ $X$ is degenerate; that is, $\Pr(X = c) = 1$ for some constant $c$.
+
+Similarly, if $g(\cdot)$ is a concave function, then
+$$
+  g(\operatorname{E}[X]) \geq \operatorname{E}[g(X)].
+$$
+
+
+::::{.proof}
+We prove the case for convex function only.
+Since $g(\cdot)$ is convex, it lies *above* every tangent line (see Fig.\ \@ref(fig:ConvexConcave), left panel) at any point\ $x_0$.
+Assume the tangent line at $x = x_0$ has a slope\ $b$; then this implies that 
+$$
+  g(x) > g(x_0) + b(x - x_0).
+$$
+In particular, at the point $\mu = \operatorname{E}[X]$,
+$$
+  g(x) \geq g(\mu) + g'(\mu)(x - \mu) \quad \text{for all } x.
+$$
+Taking expectations of both sides,
+$$
+  \operatorname{E}[g(X)]
+  \geq g(\mu) + g'(\mu)\operatorname{E}[X - \mu]
+  = g(\mu) + g'(\mu) \cdot 0
+  = g(\operatorname{E}[X]). \quad \square
+$$
+::::
+:::
+
+
+
+Common *convex* functions to which Jensen's inequality applies include $g(x) = x^2$, $g(x) = e^x$, $g(x) = -\log x$ ($x > 0$), and $g(x) = 1/x$ ($x > 0$). 
+
+For *concave* $g(\cdot)$ the inequality reverses: $\operatorname{E}[g(X)] \leq g(\operatorname{E}[X])$; a common example is $g(x) = \log x$.
+
+
+
+:::{.example #JensensInequality name="Jensen's inequality applied"}
+Let $X > 0$ be a non-degenerate random variable with $\operatorname{E}[X] = \mu$.
+Since $g(x) = 1/x$ is strictly convex for $x > 0$, Jensen's inequality gives
+$$
+  \operatorname{E}\!\left[\frac{1}{X}\right] > \frac{1}{\operatorname{E}[X]} = \frac{1}{\mu}.
+$$
+:::
+
+
 \index{Expected value!of a function of a rv|)}
 
 
@@ -3425,4 +3569,28 @@ The CGF of a random variable\ $X$ is $K_X(t) = \lambda(e^t - 1)$.
 3. Identify the distribution of\ $X$, and verify your answers using known properties of that distribution.
 :::
 
+
+
+
+:::{.exercise #Jensen1}
+Let\ $X$ be a positive non-degenerate random variable with $\operatorname{E}[X] = \mu$.
+
+1. State whether $g(x) = \log x$ is convex or concave for $x > 0$, justifying your answer.
+2. Hence show that
+$$
+  \operatorname{E}[\log X] \leq \log \mu.
+$$
+3. Let $X \sim \operatorname{Exponential}(\lambda)$. 
+   Verify the inequality in part\ 2 directly by computing $\operatorname{E}[\log X]$ and $\log(\operatorname{E}[X])$ and confirming the correct relationship holds.
+:::
+
+
+:::{.exercise #Jensen2}
+Let\ $X$ be a non-degenerate random variable with mean\ $\mu$ and let $M_X(t) = \operatorname{E}[e^{tX}]$ be its moment generating function, which is assumed to exist.
+
+1. Show using Jensen's inequality that $M_X(t) \geq e^{t\mu}$ for all $t$, with equality if and only if\ $X$ is degenerate.
+2. Hence show that $\log M_X(t) \geq t\mu$.
+3. The **cumulant generating function** is defined as $K_X(t) = \log M_X(t)$.
+   Show that $K_X'(0) = \mu$, and interpret the result of part\ 2 as a statement about $K_X$.
+:::
 
