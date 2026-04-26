@@ -34,50 +34,48 @@ For example, we may find the heights are: $160\cms$; $173\cms$; $169\cms$; $\ldo
 :::
 
 
-So while heights are (in theory) continuous, we *observe* rounded measurements, which must be discrete values.
+Heights are (in theory) continuous, we *observe* rounded measurements, which must be discrete values.
 Using these values then, the *expected value* (or population mean) height can be found as
 $$
   \operatorname{E}[X] = \mu = \sum_{i = 1}^{86} p_X(x_i) \times x_i
 $$
 using the formula for a discrete random variable (using Def.\ \@ref(def:Expectation)).
-Since the population contains $N = 86$ equally-important observations, the expected value is
+Since the population contains $N = 86$ equally-important observations, $p_X(x_i) = 1/N$ for $i = 1, 2, \dots, 86$, and so
 $$
-  \operatorname{E}[X] = \mu = \sum_{i = 1}^{86} \frac{1}{86} \times x_i.
+  \operatorname{E}[X] = \mu = \frac{1}{86} \sum_{i = 1}^{86} x_i,
 $$
 Using this same idea more generally, the *population mean* can be computed as
 $$
   \mu = \frac{1}{N} \sum_{i = 1}^N x_i.
 $$
-Similarly, the variance of the population can be found as (Def.\ \@ref(def:Variance)):
+Similarly, the variance of the population can be found (Def.\ \@ref(def:Variance)) as
 $$
   \sigma^2 = \frac{1}{N} \sum_{i = 1}^N (x_i - \mu)^2.
 $$
 
 
-
 ### Estimating the population mean
 
 \index{Mean!estimation}
-Having all values of a population available is almost never possible, and we instead study a sample of size\ $n$ from some probably-unknown distribution: $x_1, x_2, \ldots, x_n$.
+Having all values of a population available is almost never possible, and we instead study a *sample* of size\ $n$ from some probably-unknown distribution: $x_1, x_2, \ldots, x_n$.
 That is, $X_1, X_2\cdots, X_n$ are iid from some unknown distribution.\index{iid}
 
 Given the formula for computing value of the *population* mean, a sensible approach for computing the value of the *sample* would seem to be using
 $$
   \overline{X} = \frac{1}{n}(X_1 + X_2 + \cdots X_n) = \frac{1}{n}\sum_{i=1}^n X_i.
 $$
-In turns out that this is a 'good' estimate of\ $\mu$, in the sense that is an *unbiased* estimate of\ $\mu$.
+Indeed, this is a 'good' estimate of\ $\mu$, in the sense that is an *unbiased* estimate of\ $\mu$.
 
 
 :::{.definition #Unbiased name="Unbiased estimator"}
-\index{Unbiased estimator}
-For some parameter\ $\theta$, the estimate $\hat{\theta}$ is called an *unbiased* estimator of\ $\theta$ if
+A statistic\ $\hat{\theta}$ is an *unbiased estimator*\index{Unbiased estimator} of a parameter\ $\theta$ if
 $$
   \operatorname{E}[\hat{\theta}] = \theta.
 $$
 :::
 
 
-This means that an unbiased estimator produces estimates that, *on average*, have the correct (population) value that they are estimating.
+This means that an unbiased estimator from a *random* sample produces estimates that, *on average*, have the correct (population) value that they are estimating.
 This seems a sensible property for a 'good' estimator.
 (There are other properties of 'good' estimators too, we but do not explore these here.)
 When we say that\ $\overline{X}$ is an unbiased estimator of\ $\mu$ then, we mean that $\operatorname{E}[\overline{X}] = \mu$,
@@ -106,11 +104,80 @@ The estimator\ $\overline{X}$ is an *unbiased* of\ $\mu$.
 :::
 
 
+:::{.example #UnbiasedPoisson name="A unbiased estimate"}
+Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Poisson}(\lambda)$, and consider the estimate $\bar{X}$.
+
+Because the expectation is a linear operator, and because $\operatorname{E}[X_i] = \lambda$, 
+$$
+  \operatorname{E}[\bar{X}] 
+  = 
+  \operatorname{E}\!\left[\frac{1}{n}\sum_{i=1}^n X_i\right] = \frac{1}{n}\sum_{i=1}^n \operatorname{E}[X_i] = \frac{1}{n} \cdot n\lambda = \lambda.
+$$
+Hence $\bar{X}$ is an unbiased estimator of\ $\lambda$ for a Poisson distribution.
+:::
+
+
+:::{.example #BiasedEstimate name="A biased estimate"}
+Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Exponential}(\lambda)$, where $\lambda > 0$ is the rate parameter, so that $\operatorname{E}[X_i] = 1/\lambda$.
+Consider the natural estimator of $\lambda$: that is, $1/\bar{X}$. 
+
+Since $X_i \sim \operatorname{Exponential}(\lambda)$, we have $\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$, and it is known that
+$$
+  \bar{X} \sim \operatorname{Gamma}(n,\, n\lambda),
+$$
+where we use the shape--rate parameterisation, so $\operatorname{E}[\bar{X}] = 1/\lambda$ and $\operatorname{Var}(\bar{X}) = 1/(n\lambda^2)$.
+
+Since $g(x) = 1/x$ is strictly convex for $x > 0$, Jensen's inequality (Theorem\ \@ref(thm:Jensen)) gives
+$$
+  \operatorname{E}\!\left[\frac{1}{\bar{X}}\right]
+  > \frac{1}{\operatorname{E}[\bar{X}]}
+  = \lambda.
+$$
+So $1/\bar{X}$ overestimates $\lambda$, and is therefore biased.
+
+
+The expression for $\operatorname{E}[1/\bar{X}]$ can be computed directly:
+$$
+  \operatorname{E}\!\left[\frac{1}{\bar{X}}\right]
+  = \int_0^\infty \frac{1}{x} \cdot
+    \frac{(n\lambda)^n}{\Gamma(n)}\,x^{n-1}e^{-n\lambda x}\,dx
+  = \frac{(n\lambda)^n}{\Gamma(n)}
+    \int_0^\infty x^{n-2}e^{-n\lambda x}\,dx.
+$$
+The integral is related to the probability density function of a gamma distribution (Def.\ \@ref(def:GammaDistribution)) with shape $n - 1$ and rate $n\lambda$, and so
+$$
+  \int_0^\infty x^{n-2}e^{-n\lambda x}\,dx
+  = 
+  \frac{\Gamma(n-1)}{(n\lambda)^{n-1}},
+$$
+valid for $n > 1$. 
+Substituting then,
+$$
+  \operatorname{E}\!\left[\frac{1}{\bar{X}}\right]
+  = \frac{(n\lambda)^n}{\Gamma(n)} \cdot \frac{\Gamma(n - 1)}{(n\lambda)^{n - 1}}
+  = n\lambda \cdot \frac{\Gamma(n - 1)}{\Gamma(n)}
+  = n\lambda \cdot \frac{1}{n-1}
+  = \frac{n\lambda}{n - 1},
+$$
+using $\Gamma(n) = (n - 1)\,\Gamma(n-1)$. 
+Hence
+$$
+  \operatorname{E}\!\left[\frac{1}{\bar{X}}\right]
+  = \frac{n}{n - 1}\,\lambda
+  = \lambda + \frac{\lambda}{n - 1},
+$$
+and so the bias is $\lambda/(n - 1) > 0$: the estimator $1/\bar{X}$ systematically *overestimates* the value of $\lambda$. 
+This is consistent with Jensen's inequality, since $g(x) = 1/x$ is strictly convex and so $\operatorname{E}[1/\bar{X}] > 1/\operatorname{E}[\bar{X}] = \lambda$.
+
+Note also that the bias $\lambda/(n - 1) \to 0$ as $n \to \infty$, so $1/\bar{X}$ is *asymptotically unbiased*.\index{Unbiased estimator!asymptotically}
+:::
+
+
 
 ### Estimating the population variance {#EstimatePopVariance}
 
 \index{Variance!estimation}
-Similarly, given the formula for the population variance, we might suggest the following estimate of the population variance.
+Given the formula for the population variance, we might suggest the following estimate of the population variance.
 
 
 :::{.theorem #SampleVarianceUnbiased name="An unbiased estimator for $\sigma^2$"}
@@ -1970,3 +2037,22 @@ Consider a compound Poisson--gamma distributions\index{Compound Poisson--gamma d
    Comment.
 :::
 
+
+:::{.exercise #Unbiased1}
+Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Exponential}(\lambda)$, where\ $\lambda$ is the rate parameter so that $\operatorname{E}[X_i] = 1/\lambda$
+
+1. Show that $\bar{X}$ is an unbiased estimator of $1/\lambda$.
+2. Find an unbiased estimator of\ $\lambda$.
+:::
+
+
+:::P.exercise #Unbiased2}
+Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Uniform}(0, \theta)$. 
+Show that $2\bar{X}$ is an unbiased estimator of\ $\theta$.
+
+1. Show that $2\bar{X}$ is an unbiased estimator of\ $\theta$.
+2. Let $M = \max(X_1, \ldots, X_n)$. 
+   Derive the distribution of $M$ and show that\ $M$ is not unbiased for $\theta$.
+3. Find a function of\ $M$ that is unbiased for\ $\theta$.
+
+:::
