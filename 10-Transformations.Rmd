@@ -1651,6 +1651,174 @@ Substitute $y = u(x)$ and $f_Y(y)\, dy = f_X(x)\, dx$:
 :::
 
 
+An important result that follows is Jensen's inequality,\index{Jensen's inequality} for which convex and concave function must be first defined.
+
+
+:::{.definition #def-convex name="Convex and concave functions"}
+\index{Convex function}\index{Concave function}
+A twice-differentiable function $g(\cdot)$ is *convex* on an interval\ $I$ if
+$$
+  g''(x) \geq 0 \quad \text{for all } x \in I,
+$$
+and *strictly convex* if $g''(x) > 0$ for all $x \in I$.
+
+The function $g(\cdot)$ is *concave* (respectively *strictly concave*) if $-g(\cdot)$ is convex (respectively strictly convex).
+:::
+
+
+Geometrically (see Fig.\ \@ref(fig:ConvexConcave)), a convex function lies *below* any chord joining two points on its graph: for all $x_1, x_2 \in I$ and $\lambda \in [0,1]$,
+$$
+  g(\lambda x_1 + (1-\lambda)x_2) \leq \lambda g(x_1) + (1-\lambda)g(x_2).
+$$
+This is sometimes taken as the definition of convexity, and does not require differentiability. 
+For a concave function the inequality reverses. 
+The proof of Jensen's inequality makes the geometric meaning precise: a convex function lies above every tangent line, which is the key step in the proof.
+
+
+
+```{r ConvexConcave, echo=FALSE, fig.align="center", fig.cap="A convex function (left) and a concave function (right).", out.width='100%', fig.width=8, fig.height=3.5}
+par(mfrow = c(1, 2))
+
+# Convex: g(x) = x^2
+x <- seq(-2, 2, 
+         length = 200)
+g <- x^2
+
+# Tangent line at x0 = -1: g(x0) + g'(x0)(x - x0) = 1 - 2(x+1)
+x0 <- -1
+tangent <- g[which.min(abs(x - x0))] + 2 * x0 * (x - x0)
+
+# Chord between x1 = -1.5 and x2 = 1.5
+x1 <- -1.5
+x2 <- 1.5
+
+g1 <- x1^2
+g2 <- x2^2
+
+chord_x <- c(x1, x2)
+chord_y <- c(g1, g2)
+
+plot(x = x, 
+     y = g, 
+     type = "l", 
+     lwd = 2,
+     main = expression(bold("Convex: " * italic(g)(italic(x)) == italic(x)^2)),
+     xlab = expression(italic(x)), 
+     ylab = expression(italic(g)(italic(x))), 
+     las = 1)
+lines(x, 
+      tangent, 
+      lty = 2, 
+      col = "black", 
+      lwd = 1.5)
+lines(chord_x, 
+      chord_y, 
+      lty = 3, 
+      col = "grey", 
+      lwd = 1.5)
+legend("top",
+       legend = c("Tangent at x = -1", 
+                  "Chord"),
+       lty    = c(2, 3),
+       col    = c("black", "grey"),
+       lwd    = c(1.5, 1.5),
+       bty    = "n")
+#text(0, 3.2,
+#     "g(x) \u2265 tangent  |  g(x) \u2264 chord",
+#     cex = 0.85)
+
+# --- Concave: g(x) = log(x) ---
+x <- seq(0.1, 4, 
+         length = 200)
+g <- log(x)
+
+# Tangent line at x0 = 1: log(1) + (1/1)(x - 1) = x - 1
+x0 <- 1
+tangent <- log(x0) + (1 / x0) * (x - x0)
+
+# Chord between x1 = 0.5 and x2 = 3.5
+x1 <- 0.5
+x2 <- 3.5
+
+g1 <- log(x1)
+g2 <- log(x2)
+
+chord_x <- c(x1, x2)
+chord_y <- c(g1, g2)
+
+plot(x = x, 
+     y = g, 
+     type = "l", 
+     lwd = 2,
+     main = expression(bold("Concave: " * italic(g)(italic(x)) == log(italic(x)))),
+     xlab = expression(italic(x)), 
+     ylab = expression(italic(g)(italic(x))), 
+     las = 1)
+lines(x, 
+      tangent, 
+      lty = 2, 
+      col = "black", 
+      lwd = 1.5)
+lines(chord_x, 
+      chord_y, 
+      lty = 3, 
+      col = "grey", 
+      lwd = 1.5)
+legend("bottom",
+       legend = c("Tangent at x = 1", 
+                  "Chord"),
+       lty    = c(2, 3),
+       col    = c("black", "grey"),
+       lwd    = c(1.5, 1.5),
+       bty    = "n")
+#text(2.5, -1.2,
+#     "g(x) \u2264 tangent  |  g(x) \u2265 chord",
+#     cex = 0.85)
+par(mfrow = c(1, 1))
+```
+
+:::{.theorem #Jensen name="Jensen's Inequality"}
+Let\ $X$ be a random variable and\ $g(\cdot)$ a convex function. 
+Then
+$$
+  g(\operatorname{E}[X]) \leq \operatorname{E}[g(X)].
+$$
+If $g(\cdot)$ is strictly convex, equality holds if and only if\ $X$ is degenerate; that is, $\Pr(X = c) = 1$ for some constant $c$.
+
+::::{.proof}
+We give the proof for $g(\cdot)$ differentiable. 
+Since $g(\cdot)$ is convex, it lies above every tangent line. 
+In particular, at the point $\mu = \operatorname{E}[X]$,
+$$
+  g(x) \geq g(\mu) + g'(\mu)(x - \mu) \quad \text{for all } x.
+$$
+Taking expectations of both sides,
+$$
+  \operatorname{E}[g(X)]
+  \geq g(\mu) + g'(\mu)\operatorname{E}[X - \mu]
+  = g(\mu) + g'(\mu) \cdot 0
+  = g(\operatorname{E}[X]). \quad \square
+$$
+::::
+:::
+
+
+
+Common *convex* functions to which Jensen's inequality applies include $g(x) = x^2$, $g(x) = e^x$, $g(x) = -\log x$ ($x > 0$), and $g(x) = 1/x$ ($x > 0$). 
+
+For *concave* $g(\cdot)$ the inequality reverses: $\operatorname{E}[g(X)] \leq g(\operatorname{E}[X])$; a common example is $g(x) = \log x$.
+:::
+
+
+:::{.example #JensensInequality name="Jensen's inequality applied"}
+Let $X > 0$ be a non-degenerate random variable with $\operatorname{E}[X] = \mu$.
+Since $g(x) = 1/x$ is strictly convex for $x > 0$, Jensen's inequality gives
+$$
+  \operatorname{E}\!\left[\frac{1}{X}\right] > \frac{1}{\operatorname{E}[X]} = \frac{1}{\mu}.
+$$
+:::
+
+
 ### Discrete univariate case
 
 Let\ $X$ be a discrete random variable with PMF $p_X(x)$ and CDF $F_X(x) = \Pr(X \leq x)$.
@@ -1669,7 +1837,7 @@ In the discrete case, the CDF method and the change of variables method are clos
 The distribution function is especially natural when\ $u(\cdot)$ is monotone non-decreasing, since the event $\{u(X) \leq y\}$ maps cleanly to $\{X \leq u^{-1}(y)\}$.
 
 
-:::{.example name="Shifting the geometric distribution"}
+:::{.example #XformShiftGeometric name="Shifting the geometric distribution"}
 Let $X \sim \text{Geometric}(p)$, so that\ $X$ represents the number of *failures* until the first success, with support $\{0, 1, 2, \ldots\}$ (as in Sect.\ \@ref(GeometricDistribution)).
 Then,
 $$
@@ -1691,7 +1859,7 @@ $$
   p_Y(y) = F_Y(y) - F_Y(y - 1) = (1 - p)^{y - 1} p, \quad y = 1, 2, 3, \ldots
 $$
 This is the $\text{Geometric}(p)$ distribution with a different parameterisation.
-A simple shift of support corresponds to a reparameterisation within the Geometric family of distributions.
+A simple shift of support corresponds to a reparameterisation within the geometric family of distributions.
 :::
 
 
@@ -2489,6 +2657,29 @@ $$
 As in Example\ \@ref(exm:JointMaximumUniform), consider the maximum of two independent continuous uniform distributions $X_1$ and $X_2$ defined on $[0, 1]$.
 
 1. Create an **R** simulation to show that the distribution of $M = \max(X_1, X_2)$ is a $\text{Beta}(2, 1)$ distribution. 2. Extend the simulation to show that the distribution of $M = \max(X_1, \dots, X_n)$ is a $\text{Beta}(n, 1)$ distribution for $n = 3, 5$ and\ $10$, for $X_n \overset{\text{iid}}{\sim} \text{Uniform}(0, 1)$. 
+:::
+
+
+:::{.exercise #Jensen1}
+Let\ $X$ be a positive non-degenerate random variable with $\operatorname{E}[X] = \mu$.
+
+1. State whether $g(x) = \log x$ is convex or concave for $x > 0$, justifying your answer.
+2. Hence show that
+$$
+  \operatorname{E}[\log X] \leq \log \mu.
+$$
+3. Let $X \sim \operatorname{Exponential}(\lambda)$. 
+   Verify the inequality in part\ 2 directly by computing $\operatorname{E}[\log X]$ and $\log(\operatorname{E}[X])$ and confirming the correct relationship holds.
+:::
+
+
+:::{.exercise #Jensen2}
+Let\ $X$ be a non-degenerate random variable with mean\ $\mu$ and let $M_X(t) = \operatorname{E}[e^{tX}]$ be its moment generating function, which is assumed to exist.
+
+1. Show using Jensen's inequality that $M_X(t) \geq e^{t\mu}$ for all $t$, with equality if and only if\ $X$ is degenerate.
+2. Hence show that $\log M_X(t) \geq t\mu$.
+3. The **cumulant generating function** is defined as $K_X(t) = \log M_X(t)$.
+   Show that $K_X'(0) = \mu$, and interpret the result of part\ 2 as a statement about $K_X$.
 :::
 
 
