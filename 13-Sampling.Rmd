@@ -13,15 +13,15 @@
 
 
 
-## Introduction {#SamplingIntro}
+## Introduction {#ChapterSamplingIntro}
 
 This chapter introduces the application of distribution theory to the discipline of statistics.
 Recall (Chap.\ \@ref(ChapterIntroduction)): distribution theory is about describing random variables using probability, and statistics is about data collection and extracting information from data. 
 
 
-## From theoretical distributions to practical observations
+## Populations and samples {#PopulationsSamples}
 
-### Sampling {#Sampling}
+### From populations to observations {#Sampling}
 
 \index{Sampling|(}
 
@@ -59,27 +59,64 @@ $$
 $$
 
 
+### Random sampling {#RandomSamples}
 
-An important idea when moving from studying complete theoretical populations to studying samples is the idea of a *random sample*.\index{Sampling!random}
+An important idea when moving from studying complete theoretical populations to studying samples is that of a *random sample*.\index{Sampling!random}
+
 
 :::{.definition #RandomSample name="Random sample"}
-A *random sample* of size\ $n$ from a population is a collection of\ $n$ random variables $X_1, X_2, \ldots, X_n$ defined on a common probability space, where each $X_i$ is drawn according to some probabilistic mechanism.
+The set of random variables $X_1, X_2,\dots,X_n$ is said to be a *random sample* of size\ $n$ from a population with distribution function $F_X(x)$ if the\ $X_i$ are identically and independently distributed (iid) with distribution function $F_X(x)$.
 :::
+
+
+The definition uses the distribution function to accommodate discrete, continuous and mixed random variables.
+
+This definition of a random sample is standard in theoretical statistics.
+In statistical practice, however, many sampling designs are called "random",\index{Sampling!random} such as simple random sampling, stratified sampling, and systematic sampling. 
+These sampling methods produce 'random samples', even though the samples produced don't necessarily satisfy Def.\ \@ref(def:RandomSample).
+Usually the context makes it clear whether the strict or loose meaning of 'random sample' is intended.
+
+When a sample of size\ $n$ is assumed to be chosen 'at random' *without replacement* from a population of size\ $N$, this sample does *not* constitute a random sample in the sense of Def.\ \@ref(def:RandomSample).
+Even though each member of the sample has the same distribution as the population, the members of the sample are not independent.
+For example, consider the second element $X_2$ of the samples in Sect.\ \@ref(AllPossibleSamples).
+Here, $\Pr(X_2 = 2) = 0.2$ but that $\Pr(X_2 = 2 \mid X_1 = 2) = 0$. 
+Therefore $\Pr(X_2 = 2 \mid X_1 = 2) \ne\Pr(X_2 = 2)$ and so $X_2$ and $X_1$ are dependent.
+
+However, sampling at random without replacement *approximates* a random sample *if the sample size\ $n$ is small compared to the population size $N$*. 
+In this case, the impact of removing some members of the population has minimal impact on the distribution of the population remaining, and the observations will be approximately independent.
+Populations sizes are commonly *much* larger than sample sizes (which we write as $N>\!>n$).
+
+In Sect.\ \@ref(AllPossibleSamples), if the sampling is performed *with replacement* then $\Pr(X_2 = 2 \mid X_1 = 2) = \Pr(X_2 = 2) = \Pr(X_1 = 2)$.
+Similar statements can be made for all sample members and all values of the population. 
+In this case, the sample is a random sample according to Def.\ \@ref(def:RandomSample).
+
+Sampling at random *with* replacement gives rise to a random sample, and sampling at random *without* replacement approximates a random sample provided $N >\!> n$.
+Sampling without replacement when the sample size is not much smaller than the population size does not give rise to a random sample.
+This situation is often referred to as *sampling from a finite population*.
+
+Sampling at random *with* replacement is also known as *repeated sampling*.
+A typical example is a sequence of independent trials (Bernoulli or otherwise) such as occur when a coin or die is tossed repeatedly.
+Each trial involves random sampling from a population, which in the case of a coin comprises\ H and\ T with equal probability.
+
+Sampling from a continuous distribution is really a theoretical concept in which the population is assumed uncountably infinite.
+Consequently, sampling at random in this situation is assumed to produce a random sample.
+
+The strict definition above requires independence. 
+It is therefore natural to ask what additional structure is implied when we additionally require the $X_i$ to share a common distribution, which leads to the following.
 
 The key requirement here is that the sampling mechanism is *probabilistic* and so chosen on the basis of impersonal chance, but this alone does not specify the dependence structure between observations.
 
 
 :::{.definition #SimpleRandomSample name="Simple random sample"}
-A *simple random sample*\index{Sampling!simple random} (or iid sample)\{iid} of size\ $n$ from a distribution\ $P$ is a collection of random variables $X_1, X_2, \ldots, X_n$ that are:
+A *simple random sample*\index{Sampling!simple random sample} (or iid sample)\index{iid} of size\ $n$ from a distribution\ $P$ is a collection of random variables $X_1, X_2, \ldots, X_n$ that are:
 
 * Independent: 
   The joint probability function factors as
 $$ 
   f(x_1, x_2, \dots, x_n)
   = 
-  \prod_{i=1}^n f(x_i)
+  \prod_{i=1}^n f(x_i).
 $$
-for all measurable sets $A_1, \ldots, A_n$.
 * Identically distributed: 
   Each\ $X_i \sim P$ for all $i = 1, 2, \dots n$.
   
@@ -89,7 +126,30 @@ Compactly, we write that $X_1, X_2, \dots X_n \overset{\text{iid}}\sim P$, where
 Intuitively, a *simple random sample* models the act of drawing observations *independently* from the same population, each draw is unaffected by the others.
 This is the default assumption underlying most classical inference: writing $X_1, \ldots, X_n \overset{\text{iid}}{\sim} P$ means exactly this. 
 
-The more general notion of a *random sample* relaxes both conditions, which becomes important in settings like time series or cluster sampling, where observations naturally exhibit dependence.
+A simple random sample is therefore the special case of a random sample (Def.\ \@ref(def:RandomSample)) in which the common distribution is explicitly specified. 
+The more general notion of a random sample permits dependence between observations, which becomes important in settings such as time series or cluster sampling.
+
+A *statistic*\index{Statistic} is a numerical value that is computed from a sample.
+Since samples can vary, the value of a statistic can vary from sample to sample.
+
+
+:::{.definition #Statistic name="Statistic"}
+Let $X_1, X_2, \ldots, X_n$ be a random sample. 
+A *statistic* is any function $T = g(X_1, X_2, \ldots, X_n)$ of the sample that does not depend on any unknown parameters.
+:::
+
+
+Since a statistic is a function of the random variables $X_1, \ldots, X_n$, its value changes from sample to sample.
+The distribution of those values has a name.
+
+
+:::{.definition #SamplingDistributionStatistic name="Sampling distribution of a statistic"}
+The *sampling distribution of a statistic* is the theoretical probability distribution of the statistic associated with *all* possible samples of a particular size drawn from a particular population.
+:::
+
+
+The following sections illustrate this idea concretely before developing
+the theory.
 \index{Sampling|)}
 
 
@@ -99,11 +159,14 @@ The more general notion of a *random sample* relaxes both conditions, which beco
 Having all values of a population available is almost never possible, and we instead study a *sample* of size\ $n$ from some probably-unknown distribution: $x_1, x_2, \ldots, x_n$.
 That is, $X_1, X_2\cdots, X_n$ are iid from some unknown distribution.\index{iid}
 
-Given the formula for computing value of the *population* mean in Eq.\ \@ref(eq:PopulationMean), a sensible approach for computing the value of the *sample* would seem to be using
+Given the formula for computing value of the *population* mean in Eq.\ \@ref(eq:PopulationMean), a sensible approach for estimating the value of the population mean would seem to be using
 $$
   \overline{X} = \frac{1}{n}(X_1 + X_2 + \cdots X_n) = \frac{1}{n}\sum_{i=1}^n X_i.
 $$
 Indeed, this is a 'good' estimate of\ $\mu$, in the sense that is an *unbiased* estimate of\ $\mu$.
+
+We use\ $\overline{X}$ to represent the mean of a sample whose value is as yet unknown (and depends on *which* sample is selected).
+The symbol\ $\overline{x}$ is used to denoted the value of the *sample* mean, computed from the data found in a particular sample.
 
 
 :::{.definition #Unbiased name="Unbiased estimator"}
@@ -117,7 +180,7 @@ $$
 This means that an unbiased estimator from a *random* sample produces estimates that, *on average*, have the same value as the population value being estimated.
 This seems a sensible property for a 'good' estimator.
 (There are other properties of 'good' estimators too, we but do not explore these here. 
-This topic is a whole branch of statistics called *inferential statistics*.)
+This topic is a whole branch of statistics called *inferential statistics*.)\index{Inferential statistics}
 When we say that\ $\overline{X}$ is an unbiased estimator of\ $\mu$ then, we mean that $\operatorname{E}[\overline{X}] = \mu$,
 
 
@@ -139,14 +202,13 @@ Using the definition of an unbiased estimator:
   &= \frac{1}{n} (n\times \mu) = \mu.
 \end{align*}
 That is, the expected value of\ $\overline{X}$ is equal to\ $\mu$.
-The estimator\ $\overline{X}$ is an *unbiased* of\ $\mu$.
+The estimator\ $\overline{X}$ is an *unbiased estimator* of\ $\mu$.
 ::::
 :::
 
 
 :::{.example #UnbiasedPoisson name="A unbiased estimate"}
 Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Poisson}(\lambda)$, and consider the estimate $\bar{X}$.
-
 Because the expectation is a linear operator, and because $\operatorname{E}[X_i] = \lambda$, 
 $$
   \operatorname{E}[\bar{X}] 
@@ -222,9 +284,8 @@ is an unbiased estimator of the population variance\ $\sigma^2$.
 Again starting with the definition of an unbiased estimator:
 \begin{align*}
     \operatorname{E}[S^2_n] 
-    &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2\right]\\
-    &= \frac{1}{n} \operatorname{E}\left[  (X_1 - \mu)^2 + (X_2 - \mu)^2 + \cdots + (X_n - \mu)^2\right]\\
-    &= \frac{1}{n} \left( \operatorname{E}[  (X_1 - \mu)^2] + \operatorname{E}[(X_2 - \mu)^2] + \cdots + \operatorname{E}[X_n - \mu]^2\right)\\
+    &= \frac{1}{n} \operatorname{E}\left[ (X_1 - \mu)^2 + (X_2 - \mu)^2 + \cdots + (X_n - \mu)^2\right]\\
+    &= \frac{1}{n} \left( \operatorname{E}[ (X_1 - \mu)^2] + \operatorname{E}[(X_2 - \mu)^2] + \cdots + \operatorname{E}[X_n - \mu]^2\right)\\
     &= \frac{1}{n} \left( \sigma^2 + \sigma^2 + \cdots + \sigma^2 \right)\\
     &= \frac{1}{n} \times n\sigma^2 = \sigma^2.
 \end{align*}
@@ -234,7 +295,7 @@ Thus, $S^2_n$ is an unbiased estimator of $\sigma^2$.
 
 
 Equation\ \@ref(eq:S2WithPopMean) has a practical difficulty however; this equation is used to estimate the *unknown* value of the population variance, but relies on *knowing* the value of the population mean\ $\mu$.
-Knowing the value of\ $\mu$ is highly unlikely; knowing the value of\ $mu$ but not the value of $\sigma^2$ almost never occurs.
+Knowing the value of\ $\mu$ is highly unlikely; knowing the value of\ $\mu$ but not the value of $\sigma^2$ almost never occurs.
 Almost always, we would only have an estimate\ $\overline{X}$ of the population mean\ $\mu$.
 
 This may suggest using
@@ -247,16 +308,16 @@ Since\ $\overline{X}$ estimates\ $\mu$ imprecisely (from just one of the many po
 
 To see this, start again with the definition of an unbiased estimator:
 \begin{align*}
-    \operatorname[S^2_n] 
-  &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]
+    \operatorname{E}[S^2_n] 
+  &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]\\
   &= \frac{1}{n}\operatorname{E}\left[ \sum_{i=1}^n (X_i - \overline{X})^2\right]\\
   &= \frac{1}{n}\operatorname{E}\left[ \sum_{i=1}^n \left(X^2_i - 2X_i\overline{X} + \overline{X}^2\right)\right]\\
   &= \frac{1}{n}\operatorname{E}\left[ \sum_{i=1}^n X^2_i - \overline{X}\sum_{i=1}^n 2X_i + \sum_{i=1}^n \overline{X}^2\right].
 \end{align*}
 Now observe that since $\overline{X} = \sum_i X_i/n$, then $\sum_i X_i = n \overline{X}$; hence
 \begin{align*}
-     \operatorname[S^2_n] 
-  &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]
+     \operatorname{E}[S^2_n] 
+  &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]\\
   &= \frac{1}{n}\operatorname{E}\left[ \sum_{i=1}^n X^2_i - \overline{X}^2 + n \overline{X}^2\right]\\
   &= \frac{1}{n}\operatorname{E}\left[ \sum_{i=1}^n X^2_i - n \overline{X}^2 \right]\\
   &= \frac{1}{n}\left(\operatorname{E}\left[ \sum_{i=1}^n X^2_i\right] - n\operatorname{E}\left[ \overline{X}^2 \right]\right).
@@ -267,18 +328,18 @@ $$
   = \operatorname{E}[\overline{X}^2] - \operatorname{E}[\overline{X}]^2 
   = \operatorname{E}[\overline{X}^2] - \mu^2, 
 $$
-and so $\operatorname{E}[\overline{X}^2] = \operatorname{var}{\overline{X}} + \mu^2 = \sigma^2/n + \mu^2$.
+and so $\operatorname{E}[\overline{X}^2] = \operatorname{var}(\overline{X}) + \mu^2 = \sigma^2/n + \mu^2$.
 Also, 
 $$
   \operatorname{var}[X] 
   = \operatorname{E}[X^2] - \operatorname{E}[X]^2 
   = \operatorname{E}[X^2] - \mu^2,
 $$
-so that $\operatorname{E}[X^2] = \sigma + \mu^2$.
+so that $\operatorname{E}[X^2] = \sigma^2 + \mu^2$.
 Hence,
 \begin{align*}
-     \operatorname[S^2_n] 
-  &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]
+     \operatorname{E}[S^2_n] 
+  &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]\\
   &= \frac{1}{n}\left(\operatorname{E}\left[ \sum_{i=1}^n X^2_i\right] - n\operatorname{E}\left[\sum_{i=1}^n \overline{X}^2 \right]\right)\\
   &= \frac{1}{n}\left\{ \sum(\sigma^2 + \mu^2) - n\left(\frac{\sigma^2}{n} + \mu^2\right)\right\}\\
   &= \frac{1}{n}\left\{ n\sigma^2 + n\mu^2 - \sigma^2 - n\mu^2\right\}\\
@@ -298,18 +359,17 @@ When the value of\ $\mu$ is unknown, an *unbiased* estimator of\ $\sigma^2$ is
 Notice that the divisor in front of the summation is now\ $n - 1$ rather than\ $n$. 
 
 ::::{.proof}
-Easily shown using the result for $S^2_n$ above.
+Easily shown by adapting the proof for $S^2_n$ above.
 ::::
 :::
 
 
-## A example using a small population
+## Sampling distributions: a small example {#SamplingDistributionsSmallExample}
 
-### Some results for samples
+### All possible samples {#AllPossibleSamples}
 
-\index{Sampling}\index{Sampling!simple random samples}
-Suppose a *simple random sample*\index{Simple random sample} of size\ $n$ is taken from a population.
-The main interest is in the *mean* of the sample to estimate the unknown mean of the population\ $\mu$.
+Suppose a *simple random sample*\index{Sampling!simple random sample} of size\ $n$ is taken from a population.
+The main interest is in the *mean* of the sample as an estimate the unknown mean of the population\ $\mu$.
 Typically, a population will be *very* large, and listing all elements of the population is impossible.
 However, for demonstration purposes, suppose the population contains only $N = 5$ elements:
 $$
@@ -329,7 +389,7 @@ mu_P
 
 Similarly the variance of the population is
 $$
-  \sigma^2 = \frac{1}{N} \sum_{i = 1}^n  (X_i - \mu)^2 = 4.4:
+  \sigma^2 = \frac{1}{N} \sum_{i = 1}^N  (X_i - \mu)^2 = 4.4:
 $$
 ```{r}
 N <- length(Population)
@@ -338,7 +398,7 @@ sum( (Population - mu_P)^2 ) / N
 var(Population) * (N - 1) / N
 ```
 
-The cumbersome second formula in **R** for the *population* variance is necessary because the **R** function `var()` computes the variance of a *sample*, rather than the variance of a *population* as we have here.
+The cumbersome second formula in **R** for the *population* variance is necessary because the **R** function `var()` computes the variance of a *sample* (as in Eq.\ \@ref(eq:S2WithoutPopMean)), rather than the variance of a *population* as we have here.
 The factor $(n - 1)/n$ comes from the difference between the formulas (Sect.\ \@ref(EstimatePopVariance)).
 
 
@@ -349,7 +409,7 @@ Assume we do not know the values of\ $\mu$ and\ $\sigma^2$, which is usually the
 Then, to estimate the value of\ $\mu$, we take a sample of size $n = 2$ from this population, *without* replacement.
 Because samples are taken at random, we do not know which elements will be in the sample, so we do not know what the value of\ $\overline{X}$ will be.
 
-*Simple random sampling*\index{Simple random sample} refers to *all* possible samples of size\ $n$ being equally likely.
+*Simple random sampling*\index{Sampling!simple random sample} refers to *all* possible samples of size\ $n$ being equally likely.
 Since there are $\binom{N}{n}$ samples of size\ $n$ when sampling without replacement from\ $N$ objects, $\binom{5}{2} = 10$ equally-likely possible samples of size $n = 2$ are possible in this example.
 For instance, the sample $\{2, 3\}$ has a probability of $1/10$ of being selected, and the mean of this sample is\ $2.5$.
 
@@ -358,11 +418,11 @@ We can use **R** to list *all* possible samples of size $n = 2$ from the populat
 ```{r}
 ### All possible combinations of 2 elements:
 AllSamples <- combn(Population,
-                    m = 2)
+                    m = 2)  # Take 2 elements at a time
 AllSamples
 
 ### Mean of each possible sample:
-MeanAllSamples <- colMeans(AllSamples)
+MeanAllSamples <- colMeans(AllSamples)  # Find the mean of each column 
 MeanAllSamples
 ```
 
@@ -376,7 +436,8 @@ cbind(                 t(AllSamples),
 ```
 
 The *sample* mean varies from sample to sample.
-The mean of a sample depends on *which* sample is selected at random.
+The mean of a sample depends on *which* sample is selected at random, and so the estimate of\ $\mu$ depends on which sample is chosen.
+Some sample estimates will be smaller than $\mu = 4$ and some larger than $\mu = 4$.
 From this information, the *distribution* of the sample mean itself can be determined (Fig.\ \@ref(fig:SampleMeanDistn)):
 
 ```{r SampleMeanDistn, fig.align="center", fig.cap="The distribution of the sample means."}
@@ -384,7 +445,6 @@ prop.table(table(MeanAllSamples))
 
 plot( prop.table(table(MeanAllSamples)),
       las = 1,
-      ylim = c(0, 0.22),
       xlab = "Sample mean",
       ylab = "Probability",
       main = "The distribution of sample means")
@@ -393,15 +453,15 @@ points( x = names(prop.table(table(MeanAllSamples))),
         pch = 19)
 ```
 
-This distribution is known as the *sampling distribution of the sample mean*, recognising that the distribution is that of the sample mean.
+This distribution is known as the *sampling distribution of the sample mean*: it shows how the values of\ $\overline{x}$ are distributed.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The sample mean has a distribution: the value of the sample mean varies, depending on which sample is obtained.
+The sample mean has a distribution: the value of the sample mean varies, depending on which random sample is obtained.
 :::
 
 
-The mean *of the sampling distribution* in Fig.\  \@ref(fig:SampleMeanDistn) is $\mu_{\overline{X}} = 4$:
+The mean *of the sampling distribution* in Fig.\  \@ref(fig:SampleMeanDistn) is $\mu_{\bar{X}} = 4$: it is the mean of all possible sample means: 
 
 ```{r}
 mean(MeanAllSamples)
@@ -414,7 +474,7 @@ n <- length(MeanAllSamples)
 var(MeanAllSamples) * (n - 1) / n
 ```
 
-Note that since we have the mean of *all* possible samples, we have the 'population' of sample means.
+Note that we have *all* possible samples, so this is the 'population' of sample means.
 
 
 \index{Selecting!without replacement}
@@ -432,7 +492,7 @@ n <- length(MeanAllSamples)
 var(MeanAllSamples) * (n - 1) / n
 ```
 
-The mean of all possible samples is the same ($\mu_{\overline{X}} = 4$), but the variance is smaller ($\sigma^2_{\overline{X}} = 0.7333$ rather than $1.65$).
+The mean of all possible samples is the same ($\mu_{\bar{X}} = 4$), but the variance is smaller ($\sigma^2_{\bar{X}} = 0.7333$ rather than $1.65$).
 For $n = 4$, the mean of all possible samples remains the same, but the variance is smaller again:
 
 ```{r}
@@ -447,6 +507,7 @@ n <- length(MeanAllSamples)
 var(MeanAllSamples) * (n - 1) / n
 ```
 
+Thus, the sampling distribution of\ $\overline{X}$ always has a mean of $\mu_{\bar{x}} = 4$, but the variance decreases as the sample size increases.
 
 ### Distribution of the sample mean (*with* replacement) {#SamplingWithReplacement}
 
@@ -495,53 +556,28 @@ var(MeanAllSamplesWithReplacement) * (n - 1) / n
 
 
 
-### The sampling distribution of other statistics
+## Sampling distributions {#SamplingDistributionsTheory}
 
-In principle, the distribution of *any* statistic could be found using the approach in the example above; that is, the median, variance, range, etc. all have a sampling distribution.
-For example, we can display the distribution of the sample *range*:
-
-
-```{r SampleRangeDistnWithReplacement, fig.align="center", fig.cap="The distribution of the sample range.", fig.width=5, fig.height=3.5, out.width="60%"}
-## Define a function to compute the range
-myRange <- function(x){ max(x) - min(x) }
-
-## The range of the population:
-myRange(Population)
-
-## Sampling:
-AllSamplesWithReplacement <- expand.grid(Population, Population)
-names(AllSamplesWithReplacement) <- c(NA, 
-                                      NA)
-RangeAllSamplesWithReplacement <- apply(AllSamplesWithReplacement,
-                                        1,
-                                       "myRange")
-prop.table(table(RangeAllSamplesWithReplacement))
-
-plot( prop.table(table(RangeAllSamplesWithReplacement)),
-      las = 1,
-      ylim = c(0, 0.35),
-      xlab = "Sample range",
-      ylab = "Probability",
-      main = "The distribution of sample range\n(sampling with replacement)")
-points( x = names(prop.table(table(RangeAllSamplesWithReplacement))),
-        y = prop.table(table(RangeAllSamplesWithReplacement)),
-        pch = 19)
-```
+The previous section illustrated sampling distributions concretely using a small population.
+In practice, populations are almost always very large and the number of possible samples is huge, infinite, or the exact elements of the population are impossible to list.
+In these cases, enumerating all possible samples to obtain the exact sampling distribution is not feasible, and theoretical results are needed instead.
 
 
+:::{.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+*Any* statistic (i.e., value computed from a sample) has a sampling distribution, because it's value varies from sample to sample.
+:::
 
-## Sampling distributions {#SamplingDistributionsIntro}
 
 The previous section displays numerous *sampling distributions*: the distributions of sample statistics.
 In practice, populations are almost always very large and the number of possible samples huge, infinite, or the exact elements of the population difficult or impossible to list.
 In these cases, listing all possible samples and computing the exact sampling distributions is impossible.
 
 In terms of distribution theory, the probability distributions in Figs.\ \@ref(fig:SampleMeanDistn) and\ \@ref(fig:SampleMeanDistnWithReplacement) are just the distribution of a random variable, since *the sample mean is a random variable*. 
-Statistically, these distribution describe what to expect for the sample means when we randomly sample from a population.
+Statistically, these distributions describe what values to expect for the sample means when random samples are taken from a population.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Any quantity computed from a sample is a random variable, since its value is unknown beforehand.
+Any quantity computed from a sample is a random variable, since its value is unknown before taking the sample.
 The observed value of the quantity depends on *which* sample is selected (at random).
 
 Consequently, sample means, sample standard deviations, sample medians etc. all are random variables.
@@ -554,78 +590,9 @@ Also, the variance of the sampling distribution is *smaller* than the variance o
 The exact relationship between $\sigma^2_{\overline{X}}$ and $\sigma^2$ is expanded on in Theorem\ \@ref(thm:SamplingDistMean).
 
 
-:::{.definition #Statistic name="Statistic"}
-A *statistic* is a real-valued function of the observations in a *sample*.
-:::
-
-
-If $X_1, X_2, \dots, X_n$ represents a numerical sample of size $n$ from some population, then $T = g(X_1, X_2, \dots, X_n)$ represents a *statistic*.
-Examples include the sample mean, sample standard deviation, sample variance and sample proportion.
-The individual observations in a sample are also statistics.
-Hence, for example, the minimum value in a sample (usually denoted $\min$ or $X_{[1]}$), the maximum value, and the range $\max - \min$ are statistics. 
-Furthermore, even the *first* observation in a sample\ $X_1$ is a statistic.
-
-A random variable is a numeric variable which is fully determined by the values of all, some or even no members of the sample.
-
-
-:::{.example #SamplingDistributionStatistic name="Sampling distribution of a statistic"}
-The *sampling distribution of a statistic* is the theoretical probability distribution of the statistic associated with *all* possible samples of a particular size drawn from a particular population.
-:::
-
-
-Notice that this definition is not confined to *random* samples.
-However, in practically all applications the sample involved is assumed to be random in some sense.
-Random sampling imposes a probability structure on the possible values of the statistic, allowing the sampling distribution to be defined.
-
-We use\ $\overline{X}$ to represent the mean of a sample whose value is as yet unknown (and depends on *which* sample is selected).
-The symbol\ $\overline{x}$ is used to denoted the value of the *sample* mean, computed from the data found in a particular sample.
-
-
-### Random sampling {#RandomSamples}
-
-For our purposes, a random sample is defined as follows:
-
-
-:::{.definition #RandomSample name="Random sample"}
-The set of random variables $X_1, X_2,\dots,X_n$ is said to be a *random sample* of size\ $n$ from a population with df $F_X(x)$ if the\ $X_i$ are identically and independently distributed (iid) with df $F_X(x)$.
-:::
-
-
-The definition uses the distribution function to accommodate both discrete and continuous random variables.
-
-This definition of a random sample is standard in theoretical statistics.
-In statistical practice, however, many sampling designs are called "random",\index{Sampling!random} such as simple random sampling, stratified sampling, and systematic sampling. 
-These sampling methods produce 'random samples', even though the samples produced don't necessarily satisfy Def.\ \@ref(def:RandomSample).
-Usually the context makes it clear whether the strict or loose meaning of 'random sample' is intended.
-
-When a sample of size\ $n$ is assumed to be chosen 'at random' *without replacement* from a population of size\ $N$, this sample does *not* constitute a random sample in the sense of Def.\ \@ref(def:RandomSample).
-Even though each member of the sample has the same distribution as the population, the members of the sample are not independent.
-For example, consider the second element $X_2$ of the samples in Sect.\ \@ref(SamplingIntro).
-Here, $\Pr(X_2 = 2) = 0.2$ but that $\Pr(X_2 = 2 \mid X_1 = 2) = 0$. 
-Therefore $\Pr(X_2 = 2 \mid X_1 = 2) \ne\Pr(X_2 = 2)$ and so $X_2$ and $X_1$ are dependent.
-
-However, sampling at random without replacement *approximates* a random sample *if the sample size\ $n$ is small compared to the population size $N$*. 
-In this case, the impact of removing some members of the population has minimal impact on the distribution of the population remaining, and the observations will be approximately independent.
-Populations sizes are commonly *much* larger than sample sizes (which we write as $N>\!>n$).
-
-In Sect.\ \@ref(SamplingIntro), if the sampling is performed *with replacement* then $\Pr(X_2 = 2 \mid X_1 = 2) = \Pr(X_2 = 2) = \Pr(X_1 = 2)$.
-Similar statements can be made for all sample members and all values of the population. 
-In this case, the sample is a random sample according to Def.\ \@ref(def:RandomSample).
-
-Sampling at random *with* replacement gives rise to a random sample, and sampling at random *without* replacement approximates a random sample provided $N >\!> n$.
-Sampling without replacement when the sample size is not much smaller than the population size does not give rise to a random sample.
-This situation is often referred to as *sampling from a finite population*.
-
-Sampling at random *with* replacement is also known as *repeated sampling*.
-A typical example is a sequence of independent trials (Bernoulli or otherwise) such as occur when a coin or die is tossed repeatedly.
-Each trial involves random sampling from a population, which in the case of a coin comprises\ H and\ T with equal probability.
-
-Sampling from a continuous distribution is really a theoretical concept in which the population is assumed uncountably infinite.
-Consequently, sampling at random in this situation is assumed to produce a random sample.
-
-
 ### The sampling distribution of the mean {#SamplingDistributionMean}
 
+Usually the sample mean $\overline{X}$ is of greatest interest when sampling.
 Some powerful results exist to describe the sampling distribution of the mean of a random sample.
 
 
@@ -639,7 +606,7 @@ This is a application of Corollary\ \@ref(cor:IID) with $a_i = 1/n$.
 
 
 Theorem\ \@ref(thm:SamplingDistMean) applies to a random sample as defined in Sect.\ \@ref(RandomSamples).
-The remarkable feature of Theorem\ \@ref(thm:SamplingDistMean) is that the distribution of\ $X$ is not important.
+The remarkable feature of Theorem\ \@ref(thm:SamplingDistMean) is that the population distribution of\ $X$ is not important to the result.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -667,14 +634,14 @@ $$
 
 
 :::{.example #CLTwithoutReplacement name="Sampling without replacement"}
-In Sect.\ \@ref(SamplingIntro), $\mu = 4.4$ and $\sigma^2 = 5.04$ for the *population*.
+In Sect.\ \@ref(AllPossibleSamples), $\mu = 4$ and $\sigma^2 = 4.4$ for the *population*.
 The FPC is
 $$
    \text{FPC} = \sqrt{ \frac{5 - 2}{5 - 1} } = 0.8660\dots.
 $$
-If sampling is done *with* replacement, then $\mu_{\overline{X}} = \mu = 4.4$ and $\operatorname{var}[\overline{X}] = 2.52 = 5.04/2$, agreement with the theorem.
+If sampling is done *with* replacement, then $\mu_{\overline{X}} = \mu = 4$ and $\operatorname{var}[\overline{X}] = 2.2 = 4.4/2$, agreement with the theorem.
 
-If sampling is done *without* replacement, the sampling distribution of the mean has mean $\mu_{\overline{X}} = \mu = 4.4$ and variance $\operatorname{var}[\overline{X}] = 1.89 = \frac{5.04}{2} \times \text{FPC}^2$, in agreement with the note following Theorem\ \@ref(thm:CLT).
+If sampling is done *without* replacement, the sampling distribution of the mean has mean $\mu_{\overline{X}} = \mu = 4$ and variance $\operatorname{var}[\overline{X}] = 1.65 = \frac{4.4}{2} \times \text{FPC}^2$, in agreement with the note following Theorem\ \@ref(thm:CLT).
 
 :::
 
@@ -682,11 +649,16 @@ If sampling is done *without* replacement, the sampling distribution of the mean
 Theorem\ \@ref(thm:CLT) describes the location and spread of the sampling distribution of the mean, but not the shape of the sampling distribution.
 Remarkably, the *shape* of the sampling distribution only depends on the shape of the population  distribution *when the sample is small* (Sect.\ \@ref(CentralLimitTheorem)).
 
+Theorem\ \@ref(thm:SamplingDistMean) is remarkable in that it makes no assumption about the shape of the population distribution: the result holds whether\ $X$ is normal, Poisson, exponential, or anything else. 
+However, the theorem tells us the *mean* and *variance* of the sampling distribution of\ $\overline{X}$, but says nothing about its *shape*. 
 
-## Sampling distributions related to the normal distribution {#SamplingDistributionsRelatedToNormal}
+Describing the shape, and deriving the sampling distribution of $S^2$ requires additional assumptions. When the population is normally distributed, exact results are available, and these are the subject of Sect.\ \@ref(SamplingDistributionsRelatedToNormal). 
+When the population is *not* normally distributed, the Central Limit Theorem (Sect.\ \@ref(CentralLimitTheorem)) provides an approximate answer for large\ $n$.
 
 
-### General results {#NormalGeneralResults}
+## Sampling distributions: when $X_i$ have a normal distribution {#SamplingDistributionsRelatedToNormal}
+
+### Linear combinations of normal random variables {#NormalGeneralResults}
 
 The normal distribution is used to model many naturally occurring phenomena (Sect.\ \@ref(Normal)). 
 Consequently, we begin by studying the sampling distributions of statistics of random samples that come from normal populations.
@@ -714,7 +686,7 @@ So, for a constant\ $a_i$ (using Theorem\ \@ref(thm:ExpectationLinear) with $\be
    &= M_{X_i}(a_it)\\
    &= \exp\left\{\mu_i a_i t + \frac{1}{2} \sigma^2_i a^2_i t^2\right\}.
 \end{align*}
-Since the MGF of a sum of independent random variables is equal to the product of their MGFs, then
+Since the MGF of a sum of independent random variables is equal to the product of their MGFs,
 \begin{align*}
      M_Y(t)   
      &= \prod^n_{i = 1} \exp\left( \mu_i a_i t + \frac{1}{2} \sigma^2_i a^2_i t^2 \right)\\
@@ -797,7 +769,8 @@ Exercise.
 
 
 Corollary\ \@ref(cor:SumMean) relies only on the population from which the sample is drawn having a normal distribution, and on the properties of expectation; it does not depend on the sample size\ $n$.
-It is the basis for inference about the population mean of a normal distribution with known variance.
+This means that for any size sample drawn from a normal distribution, the sample means have a normal distribution.
+This is the basis for inference about the population mean of a normal distribution with known variance.
 
 
 :::{.example #CLTEnvelopes name="Sums of rvs"}
@@ -824,7 +797,7 @@ In **R**:
 :::
 
 
-```{r EnvelopeDist, echo=FALSE, out.width='90%', fig.width=8, fig.height=4, fig.align="center", fig.cap="The envelope question. Left panel: The distribution of the weight of individual envelopes; right panel: The distribution of the weight of packs of $25$\\ envelopes."}
+```{r EnvelopeDist, echo=FALSE, out.width='90%', fig.width=8, fig.height=4, fig.align="center", fig.cap="The envelope example. Left panel: The distribution of the weight of individual envelopes; right panel: The distribution of the weight of packs of $25$\\ envelopes."}
 par( mfrow = c(1, 2))
 
 x <- seq(3 - 4 * 0.6,
@@ -856,7 +829,7 @@ plot( y ~ x,
       lwd = 2,
       las = 1,
       axes = FALSE,
-      main = "Weight of\npacks of envelopes",
+      main = "Weight of packs of\n25 envelopes",
       xlab = "Pack weight (in g)",
       ylab = "Density")
 axis(side = 1)
@@ -869,7 +842,7 @@ shadeNormal(x, y,
 
 
 :::{.example #CLTweights name="CLT"}
-The IQs for a large population of $10$\ year-old boys (assumed normally distributed) were determined and found to have a mean of\ $110$ and a variance of\ $144$. 
+The IQs for a large population of $10$\ year-old boys is assumed to be normally distributed, and were determined and found to have a mean of\ $110$ and a variance of\ $144$. 
 How large a sample would have to be taken in order to have a probability of\ $0.9$ that the *mean* IQ of the sample would not differ from the expected value\ $110$ by more than\ $5$?
 
 Let\ $X_i$ be the IQ of the $i$th\ boy; then $X_i \sim N(110, 144)$.
@@ -921,141 +894,24 @@ pnorm( -1.78 )
 
 
 
+## Distributions related to the normal distribution {#DistributionsRelatedToNormal}
+
 ### The $\chi^2$ distribution {#ChiSquareDistribution}
 
 \index{Chi-squared distribution}
 Having studied the sampling distribution of the *mean*, we now study the sampling distribution of the *variance* in a normal population.
-First, we present a useful result which is a variation of Theorem\ \@ref(thm:SumSquaredNormals).
-
-
-:::{.theorem #ChiSquare name="Chi-square distribution"}
-Let $X_1, X_2, \dots, X_n$ be a random sample of size\ $n$ from $N(\mu, \sigma^2)$.
-Then $\sum_{i = 1}^n \left(\displaystyle{\frac{X_i - \mu}{\sigma}}\right)^2$ has a chi-square distribution with $n$ degrees of freedom (df), written as $\chi^2_n$.
-
-::::{.proof}
-If $Z_i = \displaystyle{\frac{X_i - \mu}{\sigma}}$, then
-$$
-   \sum_{i = 1}^n \left(\frac{X_i - \mu}{\sigma}\right)^2 = \sum_{i = 1}^n Z_i^2.
-$$
-Here, $Z_i$ is the standardised version of\ $X_i$ and has a standard normal $N(0, 1)$ distribution.
-Also, the random variables\ $Z_i$ are independent because the\ $X_i$ are independent ($i = 1, 2, \dots, n$).
-The required result follows directly from Theorem\ \@ref(thm:SumSquaredNormals).
-::::
-:::
-
-
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the $\chi^2$ distribution have the form `[dpqr]chisq(df)`, where `df` is the degrees of freedom (see Appendix\  \@ref(UseRDistributions)). 
-:::
-
-
-The sample variance is given by
-\begin{equation}
-   S^2
-   = \frac{1}{n - 1}\sum_{i = 1}^n (X_i - \overline{X})^2.
-   (\#eq:SampleVarDist)
-\end{equation}
-All sample estimates ('statistics') vary from sample to sample, so the *sample* variance has a distribution.
-The sampling distribution of the sample variance follows.
-
-
-:::{.theorem #SampleVarDist name="Distribution of the sample variance"}
-Let $X_1, X_2, \dots, X_n$ be a random sample of size\ $n$ from $N(\mu, \sigma^2)$.
-Then
-$$
-   \frac{(n - 1)S^2}{\sigma^2} \sim \chi^2_{n - 1}.
-$$
-
-::::{.proof}
-Only a *partial proof* is provided.
-Using\ \@ref(eq:SampleVarDist),
-$$
-   \frac{(n - 1)S^2}{\sigma^2}
-   = \sum_{i = 1}^n \left(\frac{X_i - \overline{X}}{\sigma}\right)^2,
-$$
-which looks much like the conditions for Theorem\ \@ref(thm:ChiSquare). 
-The difference is that $\overline{X}$ replaces\ $\mu$. 
-*This difference is important:*
-$\mu$ is a fixed value that does not vary, whereas\ $\overline{X}$ is a random variable that has a distribution.
-
-Writing
-\begin{align*}
-  \sum_{i = 1}^n \left( \frac{X_i - \overline{X}}{\sigma} \right)^2
-    &= \sum_{i = 1}^n \left( \frac{X_i - \overline{X} + \mu - \mu}{\sigma} \right)^2\\
-    &= \sum_{i = 1}^n \left( \frac{X_i - \mu}{\sigma} \right)^2 -
-       n\frac{(\overline{X} - \mu)^2}{\sigma^2}.
-\end{align*}
-(Check!)
-Rewrite as $V = W - U$ where
-$$
-   V
-   = \sum_{i = 1}^n \left(\frac{X_i - \overline{X}}{\sigma}\right)^2;\qquad
-   W
-   = \sum_{i = 1}^n \left( \frac{X_i - \mu}{\sigma} \right)^2;\quad\text{and}\qquad
-   U
-   = n\frac{(\overline{X} - \mu)^2}{\sigma^2}.\qquad
-$$
-So we can write $W = U + V$.
-Then observe:
-
-* $W \sim \chi^2_n$ by Theorem\ \@ref(thm:ChiSquare), so that the MGF of\ $W$ is $M_W(t) = (1 - 2t)^{-n}$. 
-* $V \sim \chi^2_1$ because\ $V$ is the square of a standard normal random variable, since $\overline{X}\sim N(\mu, \sigma^2/n)$.
-  Therefore, the MGF of $V$ is $M_V(t) = (1 - 2t)^{-1}$.
-  
-Provided\ $W$ and\ $V$ are independent, the MGF of\ $W$ is the product of the MGFs of\ $U$ and\ $V$. 
-This means that the MGF of\ $U$ is
-$$
-   M_U(t)
-   = \frac{M_W(t)}{M_V(t)}
-   = (1 - 2t)^{n - 1}
-$$
-which is the MGF of the chi-square distribution with $n - 1$ df.
-
-This is only a *partial proof*, because the independence of\ $U$ and\ $V$ has not been shown.
-::::
-:::
-
-
-:::{.example #SampleVar name="Distribution of sample variance"}
-A random sample of size $n = 10$ is selected from the $N(20, 5)$ distribution.
-What is the probability that the variance of this sample exceeds\ $10$?
-
-By Theorem\ \@ref(thm:SampleVarDist),
-$$
-   \frac{(n - 1)S^2}{\sigma^2}
-   = \frac{9 S^2}{5} \sim \chi^2_9.
-$$
-Therefore
-$$
-   \Pr(S^2 > 10) 
-   = \Pr\left( \frac{9S^2}{5} > \frac{9\times10}{5} \right)
-   = \Pr(X^2 > 18),
-$$
-where $X^2 \sim \chi^2(9)$.
-Using **R**, $\Pr(S^2 > 10) = 0.03517$:
-
-```{r, echo=TRUE}
-1 - pchisq(18, df = 9)
-pchisq(18, df = 9, lower.tail = FALSE)   # Alternatively
-```
-:::
-
----
-
-
-CHECK FOR REPEATED STUFF IN CHI-SQUARE
-
-Examples\ \@ref(exm:TransformationNon11) and\ \@ref(exm:TransformB) produce the chi-square distribution, which is an important model in statistical theory (Theorem\ \@ref(thm:ChiSquare)).
+We begin with the definition and properties of the chi-squared distribution, which were first encountered in Examples\ \@ref(exm:TransformationNon11) and\ \@ref(exm:TransformB).
 
 
 :::{.definition #ChiSquaredDistribution name="Chi-squared distribution"}
 A continuous random variable\ $X$ with probability density function\index{Chi-squared distribution}
 \begin{equation}
    f_X(x)
-   = \frac{x^{(\nu/2) - 1}e^{-x/2}}{2^{\nu/2}\Gamma(\nu/2)}\quad\text{for $x > 0$}
+   = \frac{x^{(\nu/2) - 1}e^{-x/2}}{2^{\nu/2}\Gamma(\nu/2)}
+   \quad\text{for $x > 0$}
 \end{equation}
-is said to have a *chi-square distribution* with parameter $\nu > 0$.
-The parameter\ $\nu$ is called the *degrees of freedom*. 
+is said to have a *chi-squared distribution* with parameter $\nu > 0$.
+The parameter\ $\nu$ is called the *degrees of freedom*.
 We write $X \sim \chi^2(\nu)$.
 :::
 
@@ -1072,21 +928,17 @@ This means that properties of the chi-squared distribution can be obtained direc
 ```{r ChisqPlots, echo=FALSE, out.width='100%', fig.height=3, fig.width=6.5, fig.cap="Some $\\chi^2$-distributions."}
 par( mfrow = c(1, 3))
 
-xx <- seq(0.01, 4,
-          length = 100)
-
+xx <- seq(0.01, 4, length = 100)
 plot( x = xx,
       y = dchisq(xx, df = 1),
-#      ylim = c(0, 0.4),
       lwd = 2,
       type = "l",
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(chi^2*~distribution: df==1)))
+      main = expression( bold(chi^2*-distribution: df==1)))
 
-xx <- seq(0.001, 15,
-          length = 100)
+xx <- seq(0.001, 15, length = 100)
 plot( x = xx,
       y = dchisq(xx, df = 5),
       lwd = 2,
@@ -1094,11 +946,9 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression(bold(chi^2*-distribution: df==6)))
+      main = expression( bold(chi^2*-distribution: df==5)))
 
-
-xx <- seq(0.001, 50,
-          length = 100)
+xx <- seq(0.001, 50, length = 100)
 plot( x = xx,
       y = dchisq(xx, df = 20),
       lwd = 2,
@@ -1109,15 +959,13 @@ plot( x = xx,
       main = expression( bold(chi^2*-distribution: df==20)))
 ```
 
-The basic properties of the chi-square follow directly from those of the gamma distribution (Theorem\ \@ref(thm:GammaProperties)).
 
-
-:::{.theorem #ChisqProperties name="Properties of chi-squared distribution"}
+:::{.theorem #ChisqProperties name="Properties of the chi-squared distribution"}
 If $X\sim\chi^2(\nu)$ then
 
 * $\operatorname{E}(X) = \nu$.
 * $\operatorname{var}(X) = 2\nu$.
-* $M_X(t) = (1 - 2t)^{-\nu/2}$.
+* $M_X(t) = (1 - 2t)^{-\nu/2}$ for $t < 1/2$.
 
 ::::{.proof}
 See Theorem\ \@ref(thm:GammaProperties).
@@ -1125,37 +973,31 @@ See Theorem\ \@ref(thm:GammaProperties).
 :::
 
 
-The importance of the chi-square distribution is hinted at in Examples\ \@ref(exm:TransformationNon11) and\ \@ref(exm:TransformB), which essentially prove the following theorem.
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+The four **R** functions for working with the $\chi^2$ distribution have the form `[dpqr]chisq(df)`, where `df`${} = \nu$ is the degrees of freedom (see Appendix\ \@ref(UseRDistributions)):
 
-
-:::{.theorem #ChiSqDistribution name="Chi-square distribution with 1 df"}
-If $Z\sim N(0, 1)$ then $Z^2$ has a chi-square distribution with one degree of freedom.
-
-::::{.proof}
-Exercise; see Example\ \@ref(exm:TransformationNon11).
-::::
+* `dchisq(x, df)` computes the PDF at $X = {}$`x`;
+* `pchisq(q, df)` computes the CDF at $X = {}$`q`;
+* `qchisq(p, df)` computes the quantile for cumulative probability `p`; and
+* `rchisq(n, df)` generates `n` random observations.
 :::
 
 
-A useful property of the chi-square distribution is that the sum of independent random variables, each with a chi-square distribution, also has a chi-square distribution.
-This property is given in the following theorem, which will be used later.
+Two results established earlier are needed for what follows.
+The first (proved in Example\ \@ref(exm:TransformationNon11)) is that if $Z\sim N(0,1)$ then $Z^2\sim\chi^2(1)$; this is
+Theorem\ \@ref(thm:SumSquaredNormals).
+The second extends this to a sum of squares.
 
 
-:::{.theorem #SumSquaredNormals name="Chi-squared distribution"}
-If $Z_1, Z_2,\dots, Z_n$ are independently and identically distributed (iid) as $N(0, 1)$, then the sum of squares $S = \sum_i Z_i^2$ has a $\chi^2(n)$ distribution.
+:::{.theorem #SumSquaredNormals name="Sum of squared standard normals"}
+If $Z_1, Z_2,\dots, Z_n$ are iid $N(0, 1)$, then $\displaystyle\sum_{i=1}^n Z_i^2 \sim \chi^2(n)$.
 
 ::::{.proof}
-Since\ $S$ is a linear combination of known distributions, using the MGF method is appropriate.
-Since $Z_i \sim \chi^2(1)$, from Theorem\ \@ref(thm:ChisqProperties)
-$$
-   M_{Z_i}(t)
-   = (1 - 2t)^{-1/2}.
-$$
-From Theorem\ \@ref(thm:MGFIndependent) then, $S = \sum_{i = 1}^n Z_i^2$ has MGF
+Since $Z_i^2 \sim \chi^2(1)$, from Theorem\ \@ref(thm:ChisqProperties) its MGF is $M_{Z_i^2}(t) = (1 - 2t)^{-1/2}$.
+By independence and Theorem\ \@ref(thm:MGFIndependent),
 \begin{align*}
-   M_{S}(t)
-   &= \prod_{i = 1}^n (1 - 2t)^{-1/2}\\
-   &= \left[(1 - 2t)^{-1/2}\right]^n 
+   M_{\sum Z_i^2}(t)
+   &= \prod_{i = 1}^n (1 - 2t)^{-1/2}
     = (1 - 2t)^{-n/2},
 \end{align*}
 which is the MGF of $\chi^2(n)$.
@@ -1163,29 +1005,108 @@ which is the MGF of $\chi^2(n)$.
 :::
 
 
-Chi-square probabilities cannot in general be calculated without computers or tables.
+We can now state the main result connecting a random sample from a normal population to the chi-squared distribution.
 
 
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the chi-squared distribution have the form `[dpqr]chisq(df)`, where `df`${} = \nu$ refers to the degrees of freedom (see Appendix\ \@ref(UseRDistributions)).
+:::{.theorem #ChiSquare name="Chi-squared distribution of standardised sum of squares"}
+Let $X_1, X_2, \dots, X_n$ be a random sample from $N(\mu, \sigma^2)$.
+Then
+$$
+  \sum_{i = 1}^n \left(\frac{X_i - \mu}{\sigma}\right)^2
+  \sim \chi^2_n.
+$$
+
+::::{.proof}
+Setting $Z_i = (X_i - \mu)/\sigma$ gives iid $N(0,1)$ variables, and the result follows immediately from Theorem\ \@ref(thm:SumSquaredNormals).
+::::
 :::
 
 
-:::{.example #ChisqProb name="Chi-squared distributions"}
-The variable\ $X$ has a chi-square distribution with $12$\ df. 
+The sample variance is given by
+\begin{equation}
+   S^2 = \frac{1}{n - 1}\sum_{i = 1}^n (X_i - \overline{X})^2.
+   (\#eq:SampleVarDist)
+\end{equation}
+Since\ $S^2$ is a statistic, it has a sampling distribution.
+Theorem\ \@ref(thm:ChiSquare) almost applies, but $\overline{X}$ appears in place of the known constant\ $\mu$---a difference that
+costs one degree of freedom. ??????????
+
+
+:::{.theorem #SampleVarDist name="Sampling distribution of the sample variance"}
+Let $X_1, X_2, \dots, X_n$ be a random sample from $N(\mu, \sigma^2)$. 
+Then
+$$
+   \frac{(n - 1)S^2}{\sigma^2} \sim \chi^2_{n - 1}.
+$$
+
+::::{.proof}
+Only a *partial proof* is provided.
+From Eq.\ \@ref(eq:SampleVarDist),
+$$
+   \frac{(n - 1)S^2}{\sigma^2}
+   = \sum_{i = 1}^n \left(\frac{X_i - \overline{X}}{\sigma}\right)^2.
+$$
+This resembles Theorem\ \@ref(thm:ChiSquare), except that the known constant\ $\mu$ is replaced by the random variable\ $\overline{X}$.
+Writing $X_i - \overline{X} = (X_i - \mu) - (\overline{X} - \mu)$ and expanding gives
+\begin{align*}
+  \sum_{i = 1}^n \left(\frac{X_i - \overline{X}}{\sigma}\right)^2
+    &= \sum_{i = 1}^n \left(\frac{X_i - \mu}{\sigma}\right)^2
+       - n\frac{(\overline{X} - \mu)^2}{\sigma^2}.
+\end{align*}
+(Check!)
+Define $W = \sum_{i=1}^n\bigl((X_i-\mu)/\sigma\bigr)^2$, $U = n(\overline{X}-\mu)^2/\sigma^2$, and $V = (n-1)S^2/\sigma^2$, so that $W = U + V$.
+Then:
+
+* $W \sim \chi^2_n$ by Theorem\ \@ref(thm:ChiSquare), with MGF   $M_W(t) = (1 - 2t)^{-n/2}$.
+* $U \sim \chi^2_1$ because $\overline{X}\sim N(\mu, \sigma^2/n)$, so $(\overline{X}-\mu)/(\sigma/\sqrt{n})$ is standard normal and   $U$ is its square; thus $M_U(t) = (1 - 2t)^{-1/2}$.
+
+Provided\ $U$ and\ $V$ are independent (not proved here), the MGF of\ $V$ is
+$$
+   M_V(t) = \frac{M_W(t)}{M_U(t)} = (1 - 2t)^{-(n-1)/2},
+$$
+which is the MGF of $\chi^2_{n-1}$.
+::::
+:::
+
+
+:::{.example #ChisqProb name="Chi-squared quantile"}
+The variable\ $X$ has a chi-squared distribution with $12$\ df.
 Determine the value of\ $X$ below which lies 90% of the distribution.
 
-We seek a value\ $c$ such that $\Pr(X < c) = F_X(c) = 0.90$ where $X\sim\chi^2(12)$.
+We seek\ $c$ such that $\Pr(X \le c) = 0.90$ where $X\sim\chi^2(12)$. 
 In **R**:
 
 ```{r}
 qchisq(0.9, df = 12)
 ```
 
-That is, about\ $90$% of the distribution lies below `r round(qchisq(0.9, df = 12), 3)`.
+About 90% of the distribution lies below
+`r round(qchisq(0.9, df = 12), 3)`.
 :::
 
 
+:::{.example #SampleVar name="Distribution of sample variance"}
+A random sample of size $n = 10$ is selected from the $N(20, 5)$ distribution.
+What is the probability that the sample variance exceeds\ $10$?
+
+By Theorem\ \@ref(thm:SampleVarDist),
+$$
+   \frac{9 S^2}{5} \sim \chi^2_9,
+$$
+so
+$$
+   \Pr(S^2 > 10)
+   = \Pr\!\left(\frac{9S^2}{5} > 18\right)
+   = \Pr(\chi^2_9 > 18).
+$$
+In **R**:
+
+```{r, echo=TRUE}
+pchisq(18, df = 9, lower.tail = FALSE)
+```
+
+Hence $\Pr(S^2 > 10) \approx 0.035$.
+:::
 
 
 ### The $t$-distribution {#TDistribution}
@@ -1246,15 +1167,21 @@ This proof is not given.
 :::
 
 
-The PDF of the $T$-distribution is very similar to the standard normal distribution (Fig.\ \@ref(fig:TPlots)): bell-shaped and symmetric about zero. 
-KURTOSIS?? SKEWNESS??
+The probability denisty function of the $T$-distribution is very similar to the standard normal distribution (Fig.\ \@ref(fig:TPlots)): bell-shaped and symmetric about zero. 
 
-However, the variance is greater than one (Theorem\ \@ref(thm:TDistProperties)) is dependent on\ $\nu$.
+However, the variance is greater than one (Theorem\ \@ref(thm:TDistProperties)) and so is larger than the variance of the standard normal distribution, and is dependent on\ $\nu$.
 
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the $t$\ distribution have the form `[dpqr]t(df)`, where `df` is the degrees of freedom (see Appendix\ \@ref(UseRDistributions)). 
+The four **R** functions for working with the $t$\ distribution have the form `[dpqr]t(df)`:
+
+* `dt(x, df)` computes the PDF at $X = {}$`x`;
+* `pt(q, df)` computes the CDF at $X = {}$`q`;
+* `qt(p, df)` computes the quantiles for cumulative probability `p`; and
+* `rt(n, df)` generates `n` random numbers,
+
+where `df` is the degrees of freedom (see Appendix\ \@ref(UseRDistributions)). 
 :::
 
 
@@ -1273,7 +1200,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(The~italic(t)*-distribution~with~2~df)))
+      main = expression( bold(The~italic(t)*"-"*distribution~with~2~df)))
 axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
@@ -1289,7 +1216,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(The~italic(t)*distribution~with~7~df)))
+      main = expression( bold(The~italic(t)*"-"*distribution~with~7~df)))
 axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
@@ -1305,7 +1232,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(The~italic(t)*-distribution~with~30~df)))
+      main = expression( bold(The~italic(t)*"-"*distribution~with~30~df)))
 axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
@@ -1340,7 +1267,7 @@ Then the random variable
 $$
    T = \frac{\overline{X} - \mu}{S/\sqrt{n}}
 $$
-follows a $t_{n - 1}$-distribution where\ $\overline{X}$ is the sample variance and\ $S^2$ is the sample variance as defined in\ q.\@ref(eq:SampleVarDist).
+follows a $t_{n - 1}$-distribution where\ $\overline{X}$ is the sample mean and\ $S^2$ is the sample variance as defined in\ Eq.\ \@ref(eq:SampleVarDist).
 
 ::::{.proof}
 **We give a partial proof only.**
@@ -1360,7 +1287,7 @@ Using Def.\ \@ref(def:TDistribution) then, $T$ has a $T$-distribution.
 
 Notice that\ $T$ represents a *standardised* version of the sample mean.
 Because of this, the $T$\ statistic is important in statistical inference.
-You probably have used it is hypothesis testing, for example.
+You may have used a $t$-test in hypothesis testing, for example.
 
 
 :::{.example #CalcaltingT name="Calculating $T$"}
@@ -1385,33 +1312,34 @@ pt(-0.645, df = 4)
 ### The $F$-distribution {#FDistribution}
 
 \index{F-distribution@$F$-distribution}
-Definition\ \@ref(def:FDistribution) introduces the $F$-distribution, which describes the ratio of two sample variances from normal populations.
-The $F$-distribution is used in inferences comparing two sample variances.
-This distribution is also used in *analysis of variance*, a common technique used to test the equality of several means.
+The $F$-distribution arises naturally when comparing the variability of two independent normal populations, and is also used in *analysis of variance*, a common technique for testing the equality of several means.
 
 
-:::{.definition #FDistribution name="$F$ distribution"}
+:::{.definition #FDistribution name="$F$-distribution"}
 A continuous random variable\ $X$ with probability density function
 \begin{equation}
   f_X(x)
   = \frac{\Gamma\big( (\nu_1 + \nu_2)/2 \big)
     \nu_1^{\nu_1/2} \nu_2^{\nu_2/2} x^{(\nu_1/2) - 1}}
-   {\Gamma(\nu_1/2)\Gamma(\nu_2/2)(\nu_1 x + \nu_2)^{(\nu_1 + \nu_2)/2}}\quad\text{for $x > 0$}
+   {\Gamma(\nu_1/2)\Gamma(\nu_2/2)(\nu_1 x + \nu_2)^{(\nu_1 + \nu_2)/2}}
+  \quad\text{for $x > 0$}
 \end{equation}
-is said to have an *$F$-distribution* with parameters $\nu_1 > 0$ and $\nu_2 > 0$.
-The parameters are known respectively as the numerator and denominator degrees of freedom. 
+is said to have an *$F$-distribution* with parameters $\nu_1 > 0$ and $\nu_2 > 0$, known respectively as the numerator and denominator degrees of freedom.
 We write $X \sim F_{\nu_1, \nu_2}$.
 :::
 
 
 Some $F$-distributions are shown in Fig.\ \@ref(fig:FPlots).
-The basic properties of the $F$-distribution are as follows.
 
-:::{.theorem #FProperties name="Properties of $F$ distribution"}
-If $X\sim F(\nu_1, \nu_2)$ then
 
-* For $\nu_2 > 2$, $\operatorname{E}[F] = \displaystyle{\frac{\nu_2}{\nu_2-2}}$.
-* For $\nu_2 > 4$, $\operatorname{var}[F] = \displaystyle{\frac{2\nu_2^2(\nu_1 + \nu_2-2)} {\nu_1(\nu_2 - 2)^2(\nu_2 - 4)}}$.
+:::{.theorem #FProperties name="Properties of the $F$-distribution"}
+If $X\sim F_{\nu_1, \nu_2}$ then
+
+* For $\nu_2 > 2$,
+  $\operatorname{E}[X] = \displaystyle{\frac{\nu_2}{\nu_2-2}}$.
+* For $\nu_2 > 4$,
+  $\operatorname{var}[X] = \displaystyle{\frac{2\nu_2^2(\nu_1 + \nu_2-2)}
+  {\nu_1(\nu_2 - 2)^2(\nu_2 - 4)}}$.
 * The MGF does not exist.
 
 ::::{.proof}
@@ -1420,25 +1348,32 @@ Not covered.
 :::
 
 
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+The four **R** functions for working with the $F$-distribution have the form `[dpqr]f(df1, df2)`, where `df1`${} = \nu_1$ and
+`df2`${} = \nu_2$ are the degrees of freedom (see Appendix\ \@ref(UseRDistributions)):
+
+* `df(x, df1, df2)` computes the PDF at $X = {}$`x`;
+* `pf(q, df1, df2)` computes the CDF at $X = {}$`q`;
+* `qf(p, df1, df2)` computes the quantile for cumulative probability `p`;
+  and
+* `rf(n, df1, df2)` generates `n` random observations.
+:::
 
 
 ```{r FPlots, echo=FALSE, out.width='100%', fig.height=2.5, fig.width=6.5, fig.cap="Some $F$-distributions."}
-par( mfrow = c(1, 3))
+par(mfrow = c(1, 3))
 
-xx <- seq(0.01, 4,
-          length = 100)
+xx <- seq(0.01, 4, length = 100)
 
 plot( x = xx,
-      y = df(xx, df1 = 1, df = 4),
-#      ylim = c(0, 0.4),
+      y = df(xx, df1 = 1, df2 = 4),
       lwd = 2,
       type = "l",
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(atop(The~italic(F)*-distribution,
-                                   with~df=="(1, 4)"))) ) 
-
+      main = expression(bold(atop(The~italic(F)*-distribution,
+                                  with~df=="(1, 4)"))))
 
 plot( x = xx,
       y = df(xx, df1 = 6, df2 = 1),
@@ -1447,9 +1382,8 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold( atop(The~italic(F)*-distribution,
-                                    with~df=="(6, 1)"))) )
-
+      main = expression(bold(atop(The~italic(F)*-distribution,
+                                  with~df=="(6, 1)"))))
 
 plot( x = xx,
       y = df(xx, df1 = 30, df2 = 5),
@@ -1458,81 +1392,67 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(atop(The~italic(F)*-distribution,
-                                   with~df=="(30, 5)"))) )
+      main = expression(bold(atop(The~italic(F)*-distribution,
+                                  with~df=="(30, 5)"))))
 ```
 
 
+The main result connecting the $F$-distribution to samples from normal populations is the following.
 
 
-
-The relationship between the\ $T$- and $F$-distribution can be established.
-Using Eq.\ \@ref(eq:Tdist),
-$$
-  T^2 
-  = \frac{Z^2}{V/n}
-  = \frac{Z^2/1}{V/n}
-$$
-and the numerator has a $\chi^2_1$\ distribution; hence, $T^2$ has an $F_{1, n}$-distribution.
-
-
-
-:::{.theorem #FGenerate name="$F$ distribution"}
+:::{.theorem #FGenerate name="Sampling distribution of the ratio of two sample variances"}
 Let $X_1, X_2, \dots, X_{n_1}$ be a random sample of size\ $n_1$ from $N(\mu_1, \sigma_1^2)$ and $Y_1, Y_2,\dots, Y_{n_2}$ be an independent random sample of size\ $n_2$ from $N(\mu_2, \sigma_2^2)$.
 Then the random variable
 $$
-   F
-   = \frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}
+   F = \frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}
 $$
-follows a $F_{n_1 - 1, n_2 - 1}$-distribution.
+follows an $F_{n_1 - 1,\, n_2 - 1}$-distribution.
 
 ::::{.proof}
-**We give a partial proof only.**
-The $F$-statistic can be rewritten as
+**A partial proof only is given.**
+By Theorem\ \@ref(thm:SampleVarDist),
 $$
-   F
-   = \frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}
-   = \frac{U_1/\nu_1}{U_2/\nu_2}
+   U_1 = \frac{(n_1 - 1)S_1^2}{\sigma_1^2} \sim \chi^2_{n_1 - 1}
+   \qquad\text{and}\qquad
+   U_2 = \frac{(n_2 - 1)S_2^2}{\sigma_2^2} \sim \chi^2_{n_2 - 1},
 $$
-where
-\begin{align*}
-   U_1 
-     &= \displaystyle{\frac{(n_1 - 1)S_1^2}{\sigma_1^2}}
-   \nu_1 
-     = n_1 - 1, \\
-   U_2 
-     &= \displaystyle{\frac{(n_2 - 1)S_2^2}{\sigma_2^2}},
-   \nu_2 
-     = n_2 - 1.
-\end{align*}
-$U_1$ and\ $U_2$ have chi-square distributions.
-The PDF of $\frac{U_1/\nu_1}{U_2/\nu_2}$ and the rest of the proof is not given.
+and $U_1$, $U_2$ are independent because the two samples are independent.
+Setting $\nu_1 = n_1 - 1$ and $\nu_2 = n_2 - 1$, the statistic can be written as
+$$
+   F = \frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}
+     = \frac{U_1/\nu_1}{U_2/\nu_2}.
+$$
+That this ratio has an $F_{\nu_1, \nu_2}$-distribution follows directly from Def.\ \@ref(def:FDistribution); the derivation of the PDF is not given here.
 ::::
 :::
 
 
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the $F$-distribution have the form `[dpqr]f(df1, df2)`, where `df1`${} = \nu_1$ and `df2`${} = \nu2$ (see Appendix\ \@ref(UseRDistributions)). 
+:::{.corollary}
+If $T \sim t_n$ then $T^2 \sim F_{1,\, n}$.
+
+::::{.proof}
+From Def.\ \@ref(def:TDistribution), $T = Z / \sqrt{V/n}$ where $Z \sim N(0,1)$ and $V \sim \chi^2_n$ are independent.
+Then
+$$
+  T^2 = \frac{Z^2/1}{V/n}.
+$$
+Since $Z^2 \sim \chi^2_1$ (Theorem\ \@ref(thm:SumSquaredNormals)), this is a ratio of the form $\chi^2_1/1$ over $\chi^2_n/n$, which by Def.\ \@ref(def:FDistribution) has an $F_{1,n}$-distribution.
+::::
 :::
 
 
-:::{.example #FProbs name="$F$ distribution probabilities"}
-Suppose $X\sim F_{2, 10}$. 
+:::{.example #FProbs name="$F$-distribution probabilities"}
+Suppose $X\sim F_{2, 10}$.
 Find:
 
-*  $\Pr(X < 1)$
-*  $x$ such that $\Pr(X > x) = 0.01$
-
+* $\Pr(X < 1)$
+* $x$ such that $\Pr(X > x) = 0.01$
 
 Using **R**:
 
 ```{r echo=TRUE}
-pf(1, 
-   df1 = 2, 
-   df2 = 10)
-qf(0.99, 
-   df1 = 2, 
-   df2 = 10)
+pf(1,    df1 = 2, df2 = 10)
+qf(0.99, df1 = 2, df2 = 10)
 ```
 :::
 
@@ -1805,7 +1725,7 @@ The probability is approximately\ $35$%.
 
 
 
-## The normal approximation to the binomial {#NormalApproxCLT}
+## The normal approximation to the binomial {#NormalApproxBinomialCLT}
 
 \index{Binomial distribution!normal approximation}
 The normal approximation to the binomial distribution (Sect.\ \@ref(NormalApproxBinomial) can be seen as an application of the [Central Limit Theorem](#thm:CLT).\index{Central Limit Theorem}
@@ -1896,7 +1816,6 @@ $$
 
 1. Determine the probability that a single observation will be within one standard deviation of the population mean.
 1. Determine the probability that the sample mean will be within one standard deviation of the population mean, using the [*Central Limit Theorem*](#CentralLimitTheorem).
-1. Determine the probability that the sample mean will be within one standard deviation of the population mean, using the [*Central Limit Theorem*](#CentralLimitTheorem).
 :::
 
 
@@ -1940,7 +1859,7 @@ Generate a random sample of size $n = 9$ from a $N(10, 36)$ distribution hundred
 Obtain the mean and variance of\ $\sum X_i$ and\ $\overline{X}$ for each sample.
 
 1. Verify that the distribution of the sample means is approximately normally distributed as expected.
-1, Explain *why* this is expected.
+1. Explain *why* this is expected.
 :::
 
 
@@ -2079,9 +1998,8 @@ Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Exponential}(\lam
 :::
 
 
-:::P.exercise #Unbiased2}
+:::{.exercise #Unbiased2}
 Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Uniform}(0, \theta)$. 
-Show that $2\bar{X}$ is an unbiased estimator of\ $\theta$.
 
 1. Show that $2\bar{X}$ is an unbiased estimator of\ $\theta$.
 2. Let $M = \max(X_1, \ldots, X_n)$. 
