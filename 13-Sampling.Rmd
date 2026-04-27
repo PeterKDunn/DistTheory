@@ -21,37 +21,76 @@ Recall (Chap.\ \@ref(ChapterIntroduction)): distribution theory is about describ
 
 ## From theoretical distributions to practical observations
 
-Until now, our results have concerned theoretical probability distributions (i.e., distribution *theory*) that describe ideal distributions of infinite populations.
-In practice, of course, we do not have infinite populations, and we observe finite (usually relatively small) samples from unknown distributions.\index{Sampling}
+### Sampling {#Sampling}
+
+\index{Sampling|(}
+
+Until now, theoretical probability distributions (i.e., distribution *theory*) that describe ideal distributions of infinite populations have been our focus.
+In practice, of course, infinite populations do not exist, and finite (usually relatively small) samples from unknown distributions are observed.\index{Sampling}
 
 
 :::{.example #Heights}
 Suppose our *population* of interest is only female residents currently living in a local nursing home.
-(Usually, populations are much broader than this.)
-While the heights\ $X$ of such residents may be described theoretically as, for example, $X\sim N(170, 3^2)$, the actual heights of each of the $N = 86$ female residents is one value from this theoretical distribution, and then rounded (for convenience) to the nearest centimetre.
+(Usually, populations are much larger than this.)
+While the heights\ $X$ of such residents may be described theoretically as $X\sim N(170, 3^2)$ for example, the actual heights of each of the $N = 86$ female residents is one value from this theoretical distribution, rounded (for convenience) to the nearest centimetre.
 
-For example, we may find the heights are: $160\cms$; $173\cms$; $169\cms$; $\ldots$; $171\cms$.
+For example, we may find the residents' heights are: $160\cms$; $173\cms$; $169\cms$; $\ldots$; $171\cms$.
 :::
 
 
-Heights are (in theory) continuous, we *observe* rounded measurements, which must be discrete values.
-Using these values then, the *expected value* (or population mean) height can be found as
+Heights are (in theory) continuous, but the *observed* rounded measurements and rounded, and must be discrete values.
+Using these discrete, observed values then, the *expected value* (or population mean) height can be found as
 $$
   \operatorname{E}[X] = \mu = \sum_{i = 1}^{86} p_X(x_i) \times x_i
 $$
 using the formula for a discrete random variable (using Def.\ \@ref(def:Expectation)).
-Since the population contains $N = 86$ equally-important observations, $p_X(x_i) = 1/N$ for $i = 1, 2, \dots, 86$, and so
+Since the population contains $N = 86$ observations, $p_X(x_i) = 1/N$ for $i = 1, 2, \dots, 86$, and so
 $$
   \operatorname{E}[X] = \mu = \frac{1}{86} \sum_{i = 1}^{86} x_i,
 $$
-Using this same idea more generally, the *population mean* can be computed as
-$$
+Using this same idea more generally, the *population mean* for a population of\ $N$ values $x_1, x_2, \dots x_N$ can be computed as
+\begin{equation}
   \mu = \frac{1}{N} \sum_{i = 1}^N x_i.
-$$
+   (\#eq:PopulationMean)
+\end{equation}
 Similarly, the variance of the population can be found (Def.\ \@ref(def:Variance)) as
 $$
   \sigma^2 = \frac{1}{N} \sum_{i = 1}^N (x_i - \mu)^2.
 $$
+
+
+
+An important idea when moving from studying complete theoretical populations to studying samples is the idea of a *random sample*.\index{Sampling!random}
+
+:::{.definition #RandomSample name="Random sample"}
+A *random sample* of size\ $n$ from a population is a collection of\ $n$ random variables $X_1, X_2, \ldots, X_n$ defined on a common probability space, where each $X_i$ is drawn according to some probabilistic mechanism.
+:::
+
+The key requirement here is that the sampling mechanism is *probabilistic* and so chosen on the basis of impersonal chance, but this alone does not specify the dependence structure between observations.
+
+
+:::{.definition #SimpleRandomSample name="Simple random sample"}
+A *simple random sample*\index{Sampling!simple random} (or iid sample)\{iid} of size\ $n$ from a distribution\ $P$ is a collection of random variables $X_1, X_2, \ldots, X_n$ that are:
+
+* Independent: 
+  The joint probability function factors as
+$$ 
+  f(x_1, x_2, \dots, x_n)
+  = 
+  \prod_{i=1}^n f(x_i)
+$$
+for all measurable sets $A_1, \ldots, A_n$.
+* Identically distributed: 
+  Each\ $X_i \sim P$ for all $i = 1, 2, \dots n$.
+  
+Compactly, we write that $X_1, X_2, \dots X_n \overset{\text{iid}}\sim P$, where 'iid'\index{iid} means 'independently and identically distributed'.
+:::
+
+Intuitively, a *simple random sample* models the act of drawing observations *independently* from the same population, each draw is unaffected by the others.
+This is the default assumption underlying most classical inference: writing $X_1, \ldots, X_n \overset{\text{iid}}{\sim} P$ means exactly this. 
+
+The more general notion of a *random sample* relaxes both conditions, which becomes important in settings like time series or cluster sampling, where observations naturally exhibit dependence.
+\index{Sampling|)}
 
 
 ### Estimating the population mean
@@ -60,7 +99,7 @@ $$
 Having all values of a population available is almost never possible, and we instead study a *sample* of size\ $n$ from some probably-unknown distribution: $x_1, x_2, \ldots, x_n$.
 That is, $X_1, X_2\cdots, X_n$ are iid from some unknown distribution.\index{iid}
 
-Given the formula for computing value of the *population* mean, a sensible approach for computing the value of the *sample* would seem to be using
+Given the formula for computing value of the *population* mean in Eq.\ \@ref(eq:PopulationMean), a sensible approach for computing the value of the *sample* would seem to be using
 $$
   \overline{X} = \frac{1}{n}(X_1 + X_2 + \cdots X_n) = \frac{1}{n}\sum_{i=1}^n X_i.
 $$
@@ -75,9 +114,10 @@ $$
 :::
 
 
-This means that an unbiased estimator from a *random* sample produces estimates that, *on average*, have the correct (population) value that they are estimating.
+This means that an unbiased estimator from a *random* sample produces estimates that, *on average*, have the same value as the population value being estimated.
 This seems a sensible property for a 'good' estimator.
-(There are other properties of 'good' estimators too, we but do not explore these here.)
+(There are other properties of 'good' estimators too, we but do not explore these here. 
+This topic is a whole branch of statistics called *inferential statistics*.)
 When we say that\ $\overline{X}$ is an unbiased estimator of\ $\mu$ then, we mean that $\operatorname{E}[\overline{X}] = \mu$,
 
 
@@ -167,13 +207,13 @@ Note also that the bias $\lambda/(n - 1) \to 0$ as $n \to \infty$, so $1/\bar{X}
 ### Estimating the population variance {#EstimatePopVariance}
 
 \index{Variance!estimation}
-Given the formula for the population variance, we might suggest the following estimate of the population variance.
+Given the formula for the population variance, the following estimate of the population variance is suggested.
 
 
 :::{.theorem #SampleVarianceUnbiased name="An unbiased estimator for $\sigma^2$"}
 The sample variance
 \begin{equation}
-  S^2_n = \frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2.
+  S^2_\mu = \frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2.
    (\#eq:S2WithPopMean)
 \end{equation}
 is an unbiased estimator of the population variance\ $\sigma^2$.
@@ -193,28 +233,30 @@ Thus, $S^2_n$ is an unbiased estimator of $\sigma^2$.
 :::
 
 
-Equation\ \@ref(eq:S2WithPopMean) has a practical difficulty however; this equation is used to estimate the *unknown* value of the population variance, but relies on knowing the value of the population mean $\mu$.
-Knowing the value of $\mu$ but not the value of $\sigma^2$ seems unlikely.
-Almost always, we would only have an estimate of the population mean $\overline{X}$.
+Equation\ \@ref(eq:S2WithPopMean) has a practical difficulty however; this equation is used to estimate the *unknown* value of the population variance, but relies on *knowing* the value of the population mean\ $\mu$.
+Knowing the value of\ $\mu$ is highly unlikely; knowing the value of\ $mu$ but not the value of $\sigma^2$ almost never occurs.
+Almost always, we would only have an estimate\ $\overline{X}$ of the population mean\ $\mu$.
 
 This may suggest using
 $$
-  \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2.
+  S^2_n = \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2.
 $$
 to estimate the population variance.
 However, *this estimate is not unbiased* (i.e., it is biased).
-Since\ $\overline{X}$ estimates $\mu$ imprecisely (from just one of the many possible samples), this introduces an extra source of variation into the estimation of\ $\sigma^2$.
+Since\ $\overline{X}$ estimates\ $\mu$ imprecisely (from just one of the many possible samples), an extra source of variation is introduced into the estimation of\ $\sigma^2$.
 
 To see this, start again with the definition of an unbiased estimator:
 \begin{align*}
-  \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]
+    \operatorname[S^2_n] 
+  &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]
   &= \frac{1}{n}\operatorname{E}\left[ \sum_{i=1}^n (X_i - \overline{X})^2\right]\\
   &= \frac{1}{n}\operatorname{E}\left[ \sum_{i=1}^n \left(X^2_i - 2X_i\overline{X} + \overline{X}^2\right)\right]\\
   &= \frac{1}{n}\operatorname{E}\left[ \sum_{i=1}^n X^2_i - \overline{X}\sum_{i=1}^n 2X_i + \sum_{i=1}^n \overline{X}^2\right].
 \end{align*}
 Now observe that since $\overline{X} = \sum_i X_i/n$, then $\sum_i X_i = n \overline{X}$; hence
 \begin{align*}
-  \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]
+     \operatorname[S^2_n] 
+  &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]
   &= \frac{1}{n}\operatorname{E}\left[ \sum_{i=1}^n X^2_i - \overline{X}^2 + n \overline{X}^2\right]\\
   &= \frac{1}{n}\operatorname{E}\left[ \sum_{i=1}^n X^2_i - n \overline{X}^2 \right]\\
   &= \frac{1}{n}\left(\operatorname{E}\left[ \sum_{i=1}^n X^2_i\right] - n\operatorname{E}\left[ \overline{X}^2 \right]\right).
@@ -235,27 +277,28 @@ $$
 so that $\operatorname{E}[X^2] = \sigma + \mu^2$.
 Hence,
 \begin{align*}
-  \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]
+     \operatorname[S^2_n] 
+  &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]
   &= \frac{1}{n}\left(\operatorname{E}\left[ \sum_{i=1}^n X^2_i\right] - n\operatorname{E}\left[\sum_{i=1}^n \overline{X}^2 \right]\right)\\
   &= \frac{1}{n}\left\{ \sum(\sigma^2 + \mu^2) - n\left(\frac{\sigma^2}{n} + \mu^2\right)\right\}\\
   &= \frac{1}{n}\left\{ n\sigma^2 + n\mu^2 - \sigma^2 - n\mu^2\right\}\\
   &= \frac{1}{n}\left\{ n\sigma^2  - \sigma^2\right\}\\
   &= \frac{n - 1}{n} \sigma^2.
 \end{align*}
-Thus the estimator is a *biased estimator* of\ $\sigma^2$.
+This shows that $\operatorname{E}[S^2_n] \ne\sigma^2$, and so the estimator is a *biased estimator* of\ $\sigma^2$.
 However, multiplying the estimator by $(n - 1)/n$ *would* produce an unbiased estimator.
 
 
 :::{.theorem #SampleVarianceUnbiasedXbar name="An unbiased estimator for $\sigma^2$ ($\mu$ unknown)"}
 When the value of\ $\mu$ is unknown, an *unbiased* estimator of\ $\sigma^2$ is 
 \begin{equation}
-  S^2_{n - 1} = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \overline{X})^2.
+  s^2_{n - 1} = s^2 = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \overline{X})^2.
    (\#eq:S2WithoutPopMean)
 \end{equation}
 Notice that the divisor in front of the summation is now\ $n - 1$ rather than\ $n$. 
 
 ::::{.proof}
-Easily shown using the result above.
+Easily shown using the result for $S^2_n$ above.
 ::::
 :::
 
@@ -267,7 +310,7 @@ Easily shown using the result above.
 \index{Sampling}\index{Sampling!simple random samples}
 Suppose a *simple random sample*\index{Simple random sample} of size\ $n$ is taken from a population.
 The main interest is in the *mean* of the sample to estimate the unknown mean of the population\ $\mu$.
-Typically, a population will be *very* large, and often it will not even be possible to list all elements of the population.
+Typically, a population will be *very* large, and listing all elements of the population is impossible.
 However, for demonstration purposes, suppose the population contains only $N = 5$ elements:
 $$
    2\qquad 3\qquad 3\qquad 4\qquad 8.
