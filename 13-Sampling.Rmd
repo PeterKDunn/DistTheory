@@ -16,23 +16,92 @@
 ## Introduction {#ChapterSamplingIntro}
 
 This chapter introduces the application of distribution theory to the discipline of statistics.
-Recall (Chap.\ \@ref(ChapterIntroduction)): distribution theory is about describing random variables using probability, and statistics is about data collection and extracting information from data. 
+Distribution theory is about describing random variables in theoretical population using probability, while statistics is about data collection and extracting information from data (Chap.\ \@ref(ChapterIntroduction)). 
 
+
+
+---
+
+
+1. The Idealized Population (Continuous)
+
+* Start with the assumption that the variable $X$ (e.g., height) exists on a continuum. 
+* In this realm, the population is described by a Probability Density Function (PDF), $f(x)$.
+* The Parameter: The "true" population mean $\mu$ is an integral:
+$$\mu = E[X] = \int_{-\infty}^{\infty} x f(x) \, dx$$
+The Reality Gap: We can never "see" this integral because we cannot measure with infinite precision.
+
+2. The Measurement Act (Discretization)
+
+* When we observe a continuous variable, we are essentially applying a quantization function.
+* The Logic: Even if height is continuous, our tools (rulers) have a minimum unit $\delta$ (e.g., 0.1 cm).
+* The Discrete Population: If we were to measure every single member of a finite population of size $N$, we would have a list of values $\{x_1, x_2, \dots, x_N\}$.
+* The Bridge: For a finite population, the "Population Mean" is calculated using the discrete expectation formula because the population itself is now treated as a discrete set of outcomes:
+$$\mu = \frac{1}{N} \sum_{i=1}^{N} x_i$$
+* Rigorous Note: As $N \to \infty$ and the rounding interval $\delta \to 0$, this sum converges to the Riemann integral $\int x f(x) dx$.
+
+3. Sampling from the Discrete Set
+
+* Now, we pull a sample of size $n$ from that population of size $N$.
+* The Statistic: We calculate the sample mean $\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$.
+* The Nature of $\bar{x}$: Since each $x_i$ is a discrete "rounded" value, $\bar{x}$ is technically a discrete random variable. 
+  If you measure to the nearest cm, $\bar{x}$ can only take values that are multiples of $1/n$.
+  
+4. The Return to Continuity (The Sampling Distribution)
+
+This is where students often get tripped up: How does a discrete $\bar{x}$ become a continuous Normal distribution?
+
+* The Convolution Logic:
+  The sampling distribution of the sum (and thus the mean) is the result of repeated convolutions of the population distribution.
+  As $n$ increases, the number of possible values for $\bar{x}$ grows exponentially.
+  The "gaps" between the possible discrete values of $\bar{x}$ become infinitesimally small.
+* The Central Limit Theorem (CLT): 
+  The CLT provides the rigorous "limit" that justifies treating the sampling distribution as continuous.
+$$\frac{\bar{X}_n - \mu}{\sigma / \sqrt{n}} \xrightarrow{d} N(0,1)$$
+  Even though the individual $\bar{x}$ values are discrete, the cumulative distribution function (CDF) of the sample mean converges to the CDF of a continuous Normal distribution
+
+
+
+even if the population is finite (and thus discrete), we often use a continuous model to describe it because it's mathematically more tractable than keeping track of 700+ individual points. We aren't just "rounding" because our rulers are bad; we are "smoothing" because our brains prefer curves to 700-point lists.
+
+
+
+
+---
 
 ## Populations and samples {#PopulationsSamples}
 
 ### From populations to observations {#Sampling}
 
 \index{Sampling|(}
-
-Until now, theoretical probability distributions (i.e., distribution *theory*) that describe ideal distributions of infinite populations have been our focus.
+Until now, theoretical probability distributions describing ideal distributions of infinite populations have been our focus.
 In practice, of course, infinite populations do not exist, and finite (usually relatively small) samples from unknown distributions are observed.\index{Sampling}
 
 
 :::{.example #Heights}
-Suppose our *population* of interest is only female residents currently living in a local nursing home.
-(Usually, populations are much larger than this.)
-While the heights\ $X$ of such residents may be described theoretically as $X\sim N(170, 3^2)$ for example, the actual heights of each of the $N = 86$ female residents is one value from this theoretical distribution, rounded (for convenience) to the nearest centimetre.
+Suppose our *population* of interest is Australian females, and we are interested in their heights.
+We may decide to model their heights theoretically using a normal distribution.
+Using this model, heights are continuous, and the mean height is
+$$
+  \mu = \operatorname{E}[X] = \int_{-\infty}^\infty x\cdot f_X(x)\,dx.
+$$
+However, actual height measurements in practice and *not* made with infinite precision, and height must be rounded in practice.
+Even though height is continuous, any tool to measure heights must record a *rounded* version of the heights, to some minimum unit\  $\delta$.
+Heights, for example, may be rounded to the nearest centimetre (i.e., $\delta = 1\cms$) or the nearest millimetre (i.e., $\delta = 0.1\cms$).
+So even if it was possible to measure the height of every Australian female, we would in practice have a list of discrete values $\{x_1, x_2, \dots , x_N\}$, where\ $N$ is the size of the population.
+
+So, these observed heights are actually discrete (rounded) value, and the mean would be computed using
+$$
+  \mu = \frac{1}{N} \sum_{i = 1}^N x_i.
+$$
+As $N \to \infty$ and as $\delta \to 0$, this discrete sum converges to the Riemann integral:
+$$
+  \lim_{\substack{\delta \to 0 \\ N \to \infty}} \frac{1}{N} \sum_{i = 1}^N x_i = \int_{-\infty}^\infty x\cdot f_X(x)\,dx.
+$$
+
+---
+
+the actual heights of each female female residents is one value from this theoretical distribution, rounded (for convenience) to the nearest centimetre.
 
 For example, we may find the residents' heights are: $160\cms$; $173\cms$; $169\cms$; $\ldots$; $171\cms$.
 :::
@@ -896,7 +965,7 @@ pnorm( -1.78 )
 
 ## Distributions related to the normal distribution {#DistributionsRelatedToNormal}
 
-### The $\chi^2$ distribution {#ChiSquareDistribution}
+### The $\chi^2$-distribution {#ChiSquareDistribution}
 
 \index{Chi-squared distribution}
 Having studied the sampling distribution of the *mean*, we now study the sampling distribution of the *variance* in a normal population.
@@ -974,7 +1043,7 @@ See Theorem\ \@ref(thm:GammaProperties).
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the $\chi^2$ distribution have the form `[dpqr]chisq(df)`, where `df`${} = \nu$ is the degrees of freedom (see Appendix\ \@ref(UseRDistributions)):
+The four **R** functions for working with the $\chi^2$-distribution have the form `[dpqr]chisq(df)`, where `df`${} = \nu$ is the degrees of freedom (see Appendix\ \@ref(UseRDistributions)):
 
 * `dchisq(x, df)` computes the PDF at $X = {}$`x`;
 * `pchisq(q, df)` computes the CDF at $X = {}$`q`;
@@ -1868,7 +1937,7 @@ Consider the random variable\ $A$, defined as
 $$
     A = \frac{Z}{\sqrt{W/\nu}},
 $$
-where\ $Z$ has a standard normal distribution independent of\ $W$, which has a $\chi^2$ distribution with $\nu$\ degrees of freedom.
+where\ $Z$ has a standard normal distribution independent of\ $W$, which has a $\chi^2$-distribution with $\nu$\ degrees of freedom.
 Also, consider the random variable\ $B$, defined as
 $$
     B = \frac{W_1/\nu_1}{W_2/\nu_2},
