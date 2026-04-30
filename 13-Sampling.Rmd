@@ -19,56 +19,6 @@ This chapter introduces the application of distribution theory to the discipline
 Distribution theory is about describing random variables in theoretical population using probability, while statistics is about data collection and extracting information from data (Chap.\ \@ref(ChapterIntroduction)). 
 
 
-
----
-
-
-1. The Idealized Population (Continuous)
-
-* Start with the assumption that the variable $X$ (e.g., height) exists on a continuum. 
-* In this realm, the population is described by a Probability Density Function (PDF), $f(x)$.
-* The Parameter: The "true" population mean $\mu$ is an integral:
-$$\mu = E[X] = \int_{-\infty}^{\infty} x f(x) \, dx$$
-The Reality Gap: We can never "see" this integral because we cannot measure with infinite precision.
-
-2. The Measurement Act (Discretization)
-
-* When we observe a continuous variable, we are essentially applying a quantization function.
-* The Logic: Even if height is continuous, our tools (rulers) have a minimum unit $\delta$ (e.g., 0.1 cm).
-* The Discrete Population: If we were to measure every single member of a finite population of size $N$, we would have a list of values $\{x_1, x_2, \dots, x_N\}$.
-* The Bridge: For a finite population, the "Population Mean" is calculated using the discrete expectation formula because the population itself is now treated as a discrete set of outcomes:
-$$\mu = \frac{1}{N} \sum_{i=1}^{N} x_i$$
-* Rigorous Note: As $N \to \infty$ and the rounding interval $\delta \to 0$, this sum converges to the Riemann integral $\int x f(x) dx$.
-
-3. Sampling from the Discrete Set
-
-* Now, we pull a sample of size $n$ from that population of size $N$.
-* The Statistic: We calculate the sample mean $\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$.
-* The Nature of $\bar{x}$: Since each $x_i$ is a discrete "rounded" value, $\bar{x}$ is technically a discrete random variable. 
-  If you measure to the nearest cm, $\bar{x}$ can only take values that are multiples of $1/n$.
-  
-4. The Return to Continuity (The Sampling Distribution)
-
-This is where students often get tripped up: How does a discrete $\bar{x}$ become a continuous Normal distribution?
-
-* The Convolution Logic:
-  The sampling distribution of the sum (and thus the mean) is the result of repeated convolutions of the population distribution.
-  As $n$ increases, the number of possible values for $\bar{x}$ grows exponentially.
-  The "gaps" between the possible discrete values of $\bar{x}$ become infinitesimally small.
-* The Central Limit Theorem (CLT): 
-  The CLT provides the rigorous "limit" that justifies treating the sampling distribution as continuous.
-$$\frac{\bar{X}_n - \mu}{\sigma / \sqrt{n}} \xrightarrow{d} N(0,1)$$
-  Even though the individual $\bar{x}$ values are discrete, the cumulative distribution function (CDF) of the sample mean converges to the CDF of a continuous Normal distribution
-
-
-
-even if the population is finite (and thus discrete), we often use a continuous model to describe it because it's mathematically more tractable than keeping track of 700+ individual points. We aren't just "rounding" because our rulers are bad; we are "smoothing" because our brains prefer curves to 700-point lists.
-
-
-
-
----
-
 ## Populations and samples {#PopulationsSamples}
 
 ### From populations to observations {#Sampling}
@@ -80,136 +30,93 @@ In practice, of course, infinite populations do not exist, and finite (usually r
 
 :::{.example #Heights}
 Suppose our *population* of interest is Australian females, and we are interested in their heights.
-We may decide to model their heights theoretically using a normal distribution.
-Using this model, heights are continuous, and the mean height is
+'Height of Australian females' is a continuous random variable, say\ $X$.
+
+We may decide to model their heights theoretically using some specified distribution, with the probability density function $f_X(x)$.
+Using this model, the mean height of Australian females is modelled as
 $$
   \mu = \operatorname{E}[X] = \int_{-\infty}^\infty x\cdot f_X(x)\,dx.
 $$
-However, actual height measurements in practice and *not* made with infinite precision, and height must be rounded in practice.
-Even though height is continuous, any tool to measure heights must record a *rounded* version of the heights, to some minimum unit\  $\delta$.
-Heights, for example, may be rounded to the nearest centimetre (i.e., $\delta = 1\cms$) or the nearest millimetre (i.e., $\delta = 0.1\cms$).
-So even if it was possible to measure the height of every Australian female, we would in practice have a list of discrete values $\{x_1, x_2, \dots , x_N\}$, where\ $N$ is the size of the population.
 
-So, these observed heights are actually discrete (rounded) value, and the mean would be computed using
-$$
-  \mu = \frac{1}{N} \sum_{i = 1}^N x_i.
-$$
-As $N \to \infty$ and as $\delta \to 0$, this discrete sum converges to the Riemann integral:
-$$
-  \lim_{\substack{\delta \to 0 \\ N \to \infty}} \frac{1}{N} \sum_{i = 1}^N x_i = \int_{-\infty}^\infty x\cdot f_X(x)\,dx.
-$$
-
----
-
-the actual heights of each female female residents is one value from this theoretical distribution, rounded (for convenience) to the nearest centimetre.
-
-For example, we may find the residents' heights are: $160\cms$; $173\cms$; $169\cms$; $\ldots$; $171\cms$.
+If we model their heights theoretically using the normal distribution $N(\mu = 173, \sigma^2 = 9)$, the mean is modelled as\ $173\cms$.
 :::
 
 
-Heights are (in theory) continuous, but the *observed* rounded measurements and rounded, and must be discrete values.
-Using these discrete, observed values then, the *expected value* (or population mean) height can be found as
+
+In practice however, height measurements are *not* made with infinite precision, and measured heights must be rounded as hence recorded as discrete values.
+Even though height is continuous, any tool to measure heights must record a *rounded* version of the heights, to some minimum unit\ $\delta$.
+Heights, for example, may be rounded to the nearest centimetre (i.e., $\delta = 1\cms$) or the nearest millimetre (i.e., $\delta = 0.1\cms$).
+So even if it was possible to measure the height of every Australian female, we would in practice have a list of discrete values $\{x_1, x_2, \dots , x_N\}$, where\ $N$ is the size of the population.
+
+So, these observed heights are actually discrete (rounded) values, and the mean would be computed using
 $$
-  \operatorname{E}[X] = \mu = \sum_{i = 1}^{86} p_X(x_i) \times x_i
+  \mu 
+  = \operatorname{E}[X]
+  = \frac{1}{N} \sum_{i = 1}^N x_i.
 $$
-using the formula for a discrete random variable (using Def.\ \@ref(def:Expectation)).
-Since the population contains $N = 86$ observations, $p_X(x_i) = 1/N$ for $i = 1, 2, \dots, 86$, and so
+As $N \to \infty$ and as $\delta \to 0$, this discrete sum converges to the Riemann integral:
 $$
-  \operatorname{E}[X] = \mu = \frac{1}{86} \sum_{i = 1}^{86} x_i,
-$$
-Using this same idea more generally, the *population mean* for a population of\ $N$ values $x_1, x_2, \dots x_N$ can be computed as
-\begin{equation}
-  \mu = \frac{1}{N} \sum_{i = 1}^N x_i.
-   (\#eq:PopulationMean)
-\end{equation}
-Similarly, the variance of the population can be found (Def.\ \@ref(def:Variance)) as
-$$
-  \sigma^2 = \frac{1}{N} \sum_{i = 1}^N (x_i - \mu)^2.
+  \mu
+  =
+  \lim_{\substack{\delta \to 0 \\ N \to \infty}} \frac{1}{N} \sum_{i = 1}^N x_i 
+  = 
+  \int_{-\infty}^\infty x\cdot f_X(x)\,dx.
 $$
 
 
 ### Random sampling {#RandomSamples}
 
-An important idea when moving from studying complete theoretical populations to studying samples is that of a *random sample*.\index{Sampling!random}
+In practice, entire populations can almost never be studied: for example, the population may to be too large, or all members may be inaccessible.
+So rather than studying entire populations, a *sample* of observations from that population are studied.
+
+The task of the *inferential statistics*\index{Inferential statistics}\index{Statistic} is to attempt to understand the entire population, based on what is learnt from studying a small subset of that population: the *sample*. \index{Sampling!sample}
+
+
+:::{.definition #RandomSample name="Sample"}
+A subset of observations from the population is called a sample
+:::
+
+
+This definition is very broad: *any* subset from the population is a *sample*.
+Importantly, *how* the sample is drawn determines its statistical properties; the most important case for statistical inference is the idea of a *random sample*.\index{Sampling!random}
 
 
 :::{.definition #RandomSample name="Random sample"}
-The set of random variables $X_1, X_2,\dots,X_n$ is said to be a *random sample* of size\ $n$ from a population with distribution function $F_X(x)$ if the\ $X_i$ are identically and independently distributed (iid) with distribution function $F_X(x)$.
+The set of random variables $X_1, X_2, \dots, X_n$ from a distribution\ $D$ is a collection of random variables $X_1, X_2, \dots, X_n$ that are independently and identically distributed (iid) with distribution function $F_X(x)$.
+
+We write $X_1, X_2, \dots, X_n \sim D$.
 :::
 
 
-The definition uses the distribution function to accommodate discrete, continuous and mixed random variables.
+The definition uses the distribution function and so applies to discrete, continuous and mixed random variables.
+Because the elements of the random sample are assumed to be independent, all the previous theory based on independence applies.
 
-This definition of a random sample is standard in theoretical statistics.
-In statistical practice, however, many sampling designs are called "random",\index{Sampling!random} such as simple random sampling, stratified sampling, and systematic sampling. 
-These sampling methods produce 'random samples', even though the samples produced don't necessarily satisfy Def.\ \@ref(def:RandomSample).
-Usually the context makes it clear whether the strict or loose meaning of 'random sample' is intended.
-
-When a sample of size\ $n$ is assumed to be chosen 'at random' *without replacement* from a population of size\ $N$, this sample does *not* constitute a random sample in the sense of Def.\ \@ref(def:RandomSample).
-Even though each member of the sample has the same distribution as the population, the members of the sample are not independent.
-For example, consider the second element $X_2$ of the samples in Sect.\ \@ref(AllPossibleSamples).
-Here, $\Pr(X_2 = 2) = 0.2$ but that $\Pr(X_2 = 2 \mid X_1 = 2) = 0$. 
-Therefore $\Pr(X_2 = 2 \mid X_1 = 2) \ne\Pr(X_2 = 2)$ and so $X_2$ and $X_1$ are dependent.
-
-However, sampling at random without replacement *approximates* a random sample *if the sample size\ $n$ is small compared to the population size $N$*. 
-In this case, the impact of removing some members of the population has minimal impact on the distribution of the population remaining, and the observations will be approximately independent.
-Populations sizes are commonly *much* larger than sample sizes (which we write as $N>\!>n$).
-
-In Sect.\ \@ref(AllPossibleSamples), if the sampling is performed *with replacement* then $\Pr(X_2 = 2 \mid X_1 = 2) = \Pr(X_2 = 2) = \Pr(X_1 = 2)$.
-Similar statements can be made for all sample members and all values of the population. 
-In this case, the sample is a random sample according to Def.\ \@ref(def:RandomSample).
-
-Sampling at random *with* replacement gives rise to a random sample, and sampling at random *without* replacement approximates a random sample provided $N >\!> n$.
-Sampling without replacement when the sample size is not much smaller than the population size does not give rise to a random sample.
-This situation is often referred to as *sampling from a finite population*.
-
-Sampling at random *with* replacement is also known as *repeated sampling*.
-A typical example is a sequence of independent trials (Bernoulli or otherwise) such as occur when a coin or die is tossed repeatedly.
-Each trial involves random sampling from a population, which in the case of a coin comprises\ H and\ T with equal probability.
-
-Sampling from a continuous distribution is really a theoretical concept in which the population is assumed uncountably infinite.
-Consequently, sampling at random in this situation is assumed to produce a random sample.
-
-The strict definition above requires independence. 
-It is therefore natural to ask what additional structure is implied when we additionally require the $X_i$ to share a common distribution, which leads to the following.
-
-The key requirement here is that the sampling mechanism is *probabilistic* and so chosen on the basis of impersonal chance, but this alone does not specify the dependence structure between observations.
-
-
-:::{.definition #SimpleRandomSample name="Simple random sample"}
-A *simple random sample*\index{Sampling!simple random sample} (or iid sample)\index{iid} of size\ $n$ from a distribution\ $P$ is a collection of random variables $X_1, X_2, \ldots, X_n$ that are:
-
-* Independent: 
-  The joint probability function factors as
-$$ 
-  f(x_1, x_2, \dots, x_n)
-  = 
-  \prod_{i=1}^n f(x_i).
-$$
-* Identically distributed: 
-  Each\ $X_i \sim P$ for all $i = 1, 2, \dots n$.
-  
-Compactly, we write that $X_1, X_2, \dots X_n \overset{\text{iid}}\sim P$, where 'iid'\index{iid} means 'independently and identically distributed'.
-:::
-
-Intuitively, a *simple random sample* models the act of drawing observations *independently* from the same population, each draw is unaffected by the others.
-This is the default assumption underlying most classical inference: writing $X_1, \ldots, X_n \overset{\text{iid}}{\sim} P$ means exactly this. 
-
-A simple random sample is therefore the special case of a random sample (Def.\ \@ref(def:RandomSample)) in which the common distribution is explicitly specified. 
-The more general notion of a random sample permits dependence between observations, which becomes important in settings such as time series or cluster sampling.
-
-A *statistic*\index{Statistic} is a numerical value that is computed from a sample.
+Once the sample is obtained, the data can be used to compute the value of some *statistics*.
+A *statistic*\index{Statistic} is simply a numerical value that is computed from a sample.
 Since samples can vary, the value of a statistic can vary from sample to sample.
 
 
 :::{.definition #Statistic name="Statistic"}
 Let $X_1, X_2, \ldots, X_n$ be a random sample. 
-A *statistic* is any function $T = g(X_1, X_2, \ldots, X_n)$ of the sample that does not depend on any unknown parameters.
+A *statistic* is any function $T = g(X_1, X_2, \ldots, X_n)$ of the sample.
 :::
 
 
-Since a statistic is a function of the random variables $X_1, \ldots, X_n$, its value changes from sample to sample.
-The distribution of those values has a name.
+:::{.example #StatisticsExampleMin name="Minimum is a statistic"}
+Suppose we take a sample of $n = 12$ Australian females, and measure their heights to the nearest centimetre.
+
+From the sample, we could compute the *minimum* height.
+Since this minimum value is computed from the sample data, the sample minimum is a *statistic*.
+
+The *sample minimum* is a random variable, since its value is likely to be different when computed from another sample of $12$\ Australian women.
+:::
+\index{Sampling|)}
+
+
+### Sampling distributions
+
+Since a statistic is a function of the random variables $X_1, X_2, \ldots, X_n$, *sample statistics are random variables*.
+In other words, the value of a sample statistic changes from sample to sample, and so *sample statistics have a distribution*.
 
 
 :::{.definition #SamplingDistributionStatistic name="Sampling distribution of a statistic"}
@@ -217,20 +124,157 @@ The *sampling distribution of a statistic* is the theoretical probability distri
 :::
 
 
-The following sections illustrate this idea concretely before developing
-the theory.
-\index{Sampling|)}
+The idea of a sampling distribution of a statistic can be simulated in \ **R**.
+
+
+:::{.example}
+Consider taking two random samples of $n = 5$ observations from a $N(\mu = 173, \sigma^2 = 9)$ distribution, and computing the mean and minimum value in the sample:
+
+```{r echo=FALSE}
+set.seed(1592875)
+```
+```{r}
+x_Mn <- 173; x_Sd <- 3        # Population (model) mean, std dev.
+sample_Size <- 5              # Sample size is 5
+x1 <- rnorm(sample_Size,      # Take a sample of this size
+            mean = x_Mn, sd = x_Sd)
+mean(x1)   # Compute the sample mean for this sample
+min(x1)    # Compute the sample minimum for this sample
+
+
+x2 <- rnorm(sample_Size, 
+            mean = x_Mn, sd = x_Sd)
+mean(x2)   # Compute the sample mean for this sample
+min(x2)    # Compute the sample minimum for this sample
+```
+
+The mean and the minimum value varies from sample to sample.
+Suppose we compute the mean and the minimum for *many* samples of size $n = 5$ (Fig.\ \@ref(fig:SDmeanPlots), top panels):
+
+```{r SDmean1, fig.show='hide'}
+num_Sims <- 10000           # Number of simulations
+
+# Generate random values
+Xvals <- rnorm(num_Sims * sample_Size,
+               mean = x_Mn, sd = x_Sd)
+
+# Place these into an array, with each sample as a column 
+Xvals <- array(Xvals,
+               dim = c(sample_Size, num_Sims) )
+
+# Find the mean of each sample (i.e., column)
+Xmeans <- colMeans(Xvals)
+
+# Find the minimum of each sample (i.e., column)
+Xmin   <- apply(Xvals, 
+                MARGIN = 2, 
+                FUN = "min") 
+hist(Xmeans)        # Create the histogram of sample means
+hist(Xmin)          # Create the histogram of sample minimums
+```
+
+Suppose we take larger samples, and find the sampling distribution again (Fig.\ \@ref(fig:SDmeanPlots), right panel):
+
+```{r SDmean2, fig.show='hide'}
+sample_Size <- 100
+num_Sims <- 10000
+
+# Generate random values
+Xvals2 <- rnorm(num_Sims * sample_Size,
+                mean = x_Mn, sd = x_Sd)
+
+# Place these into an array, with each sample as a column 
+Xvals2 <- array(Xvals,
+                dim = c(sample_Size, num_Sims) )
+
+# Find the mean and minimum of each sample (i.e., column)
+Xmeans2 <- colMeans(Xvals2)
+Xmin2   <- apply(Xvals2, 
+                MARGIN = 2, 
+                FUN = "min") 
+hist(Xmeans2)        # Create the histogram of sample means
+hist(Xmin2)          # Create the histogram of sample minimums
+```
+
+:::
+
+```{r SDmeanPlots, echo=FALSE, out.width='100%', fig.width=8.5, fig.height = 5.5, fig.align="center", fig.cap="Sampling distributions for the sample mean (left panels) and sample minimums (right panels)), for samples of size\ $5$ (top panels) and size\ $100$ (right panels)."}
+par( mfrow = c(2, 2))
+
+set.seed(1592875)
+
+x_Mn <- 173
+x_Sd <- 3
+num_Sims <- 10000
+
+#####
+
+sample_Size <- 4
+
+Xvals <- rnorm(num_Sims * sample_Size,
+               mean = x_Mn, sd = x_Sd)
+Xvals <- array(Xvals,
+               dim = c(sample_Size, num_Sims) )
+Xmeans <- colMeans(Xvals)
+Xmins  <- apply(Xvals, 
+                MARGIN = 2, 
+                FUN = "min") 
+hist(Xmeans, 
+     xlim = c(168, 179),
+     xlab = "Sample means",
+     ylab = "",
+     main = "Sample means:\nsamples of size 25",
+     axes = FALSE)
+axis(side = 1)
+
+hist(Xmins, 
+     xlim = c(160, 177),
+     xlab = "Sample minimum",
+     ylab = "",
+     main = "Sampling minimums:\nsamples of size 25",
+     axes = FALSE)
+axis(side = 1)
+
+#####
+
+sample_Size2 <- 100
+
+Xvals2 <- rnorm(num_Sims * sample_Size2,
+                mean = x_Mn, sd = x_Sd)
+Xvals2 <- array(Xvals2,
+                dim = c(sample_Size2, num_Sims) )
+Xmeans2 <- colMeans(Xvals2)
+Xmins2  <- apply(Xvals2, 
+                MARGIN = 2, 
+                FUN = "min") 
+
+hist(Xmeans2, 
+     xlim = c(168, 179),
+     xlab = "Sample means",
+     ylab = "",
+     main = "Sampling means:\nsamples of size 100",
+     axes = FALSE)
+axis(side = 1)
+
+hist(Xmins2, 
+     xlim = c(160, 177),
+     xlab = "Sample minimum",
+     ylab = "",
+     main = "Sampling minimums:\nsamples of size 100",
+     axes = FALSE)
+axis(side = 1)
+```
+
+These histograms display the sampling distributions of the sample means and sample minimums.
+These histograms show two things:
+
+* The *shape* of the sampling distributions:
+  The sampling distributions for the sample means have approximate normal distributions; the sampling distributions for the sample minimums are less easy to classify. 
+* The *variation* in the sampling distributions:
+  For both the sample mean and the sample variance, the larger sample size produces a sampling distribution with less variation.
 
 
 ### Estimating the population mean
-
-
----
-
-Sticking with the height example is a great move. It keeps the cognitive load low because students are already comfortable with the "units" of the problem.To bridge the gap to the sample mean $\bar{x}$ without the CLT, you can focus on the "Graininess" vs. "Smoothness" of the data. Here are a few suggestions for your workbook:1. The "Resolution" ArgumentExplain that $\bar{x}$ has a higher "resolution" than the individual measurements $x_i$.If you measure to the nearest 1 cm ($\delta = 1$), an individual can only be 160, 161, 162...But for a sample of $n=2$, the mean $\bar{x}$ can be 160.5. For $n=10$, it can be 160.1.The Bridge: As $n$ increases, the "dots" on the number line where $\bar{x}$ can land become so crowded that they effectively form a continuous line. This justifies why we use a continuous model (the Normal distribution) for a statistic that is technically discrete.2. Compare the "Discrete" PDF to the "Continuous" PDFYou can present a "Discrete PDF" (a probability mass function) for the sample mean of rounded data.Show a plot of the possible values of $\bar{x}$ for $n=5$ versus $n=30$.Even without the CLT, students will see the "spikes" getting closer together and forming a bell-like shape.The Lesson: We use the continuous integral as a computational convenience. It is much easier to integrate a smooth curve than to sum up thousands of tiny, discrete probabilities.3. Focus on the "Rounding Error" in the MeanIntroduce the idea that $\bar{x}$ "dilutes" the rounding error.The maximum error for one person is $\pm \delta/2$.The average of $n$ people "averages out" those errors.This is a perfect place to introduce the standard error ($\sigma / \sqrt{n}$) as the measure of "precision" without getting lost in the formal proof of the CLT.4. Technical Note for your RMarkdown/BookdownSince you’re using Lua filters and specific formatting for the tutor version, you could include a "Tutor Only" note (using your clickable icons) that reminds TAs to emphasize this point:Tutor Note: Remind students that $\bar{x}$ is technically a discrete variable because our rulers are discrete. We only treat it as continuous because the "gaps" between possible averages are too small for us to care about in practice.A Quick Notation CheckIn your previous limit equation, you used $N \to \infty$. When you transition to the sample mean, make sure to distinguish between:$N$: The population size (where the sum becomes the integral).$n$: The sample size (where the discrete "spikes" of the sampling distribution become a smooth curve).Do you find that your students usually grasp the difference between $N$ and $n$ easily, or do they tend to use them interchangeably?
-
----
-
 
 \index{Mean!estimation}
 Having all values of a population available is almost never possible, and we instead study a *sample* of size\ $n$ from some probably-unknown distribution: $x_1, x_2, \ldots, x_n$.
