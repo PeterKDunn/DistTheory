@@ -33,22 +33,23 @@ Suppose our *population* of interest is Australian females, and we are intereste
 'Height of Australian females' is a continuous random variable, say\ $X$.
 
 We may decide to model their heights theoretically using some specified distribution, with the probability density function $f_X(x)$.
-Using this model, the mean height of Australian females is modelled as
+Using this model, the mean height of Australian females is modelled as (Def.\ 
+\@ref(def:Expectation))
 $$
   \mu = \operatorname{E}[X] = \int_{-\infty}^\infty x\cdot f_X(x)\,dx.
 $$
 
-If we model their heights theoretically using the normal distribution $N(\mu = 173, \sigma^2 = 9)$, the mean is modelled as\ $173\cms$.
+If we model their heights using the normal distribution $N(\mu = 173, \sigma^2 = 9)$, the mean is modelled as\ $173\cms$.
 :::
 
 
-
-In practice however, height measurements are *not* made with infinite precision, and measured heights must be rounded as hence recorded as discrete values.
-Even though height is continuous, any tool to measure heights must record a *rounded* version of the heights, to some minimum unit\ $\delta$.
+In practice however, height measurements of individual Australian females are *not* made with infinite precision, and measured heights must be rounded as hence recorded as discrete values.
+Even though the random variable 'Height' is continuous, any tool to measure actual heights must record a *rounded* version of the heights, to some minimum unit\ $\delta$.
 Heights, for example, may be rounded to the nearest centimetre (i.e., $\delta = 1\cms$) or the nearest millimetre (i.e., $\delta = 0.1\cms$).
 So even if it was possible to measure the height of every Australian female, we would in practice have a list of discrete values $\{x_1, x_2, \dots , x_N\}$, where\ $N$ is the size of the population.
 
-So, these observed heights are actually discrete (rounded) values, and the mean would be computed using
+So, these observed heights are actually discrete (rounded) values, and the mean would be computed using (Def.\ 
+\@ref(def:Expectation))
 $$
   \mu 
   = \operatorname{E}[X]
@@ -66,7 +67,7 @@ $$
 
 ### Random sampling {#RandomSamples}
 
-In practice, entire populations can almost never be studied: for example, the population may to be too large, or all members may be inaccessible.
+In practice, entire populations are very rarely studied: the population may to be too large, or all members may be inaccessible.
 So rather than studying entire populations, a *sample* of observations from that population are studied.
 
 The task of the *inferential statistics*\index{Inferential statistics}\index{Statistic} is to attempt to understand the entire population, based on what is learnt from studying a small subset of that population: the *sample*. \index{Sampling!sample}
@@ -78,7 +79,7 @@ A subset of observations from the population is called a sample
 
 
 This definition is very broad: *any* subset from the population is a *sample*.
-Importantly, *how* the sample is drawn determines its statistical properties; the most important case for statistical inference is the idea of a *random sample*.\index{Sampling!random}
+Importantly, *how* the sample is drawn determines its statistical properties; the most important type of sample for statistical inference is the idea of a *random sample*.\index{Sampling!random}
 
 
 :::{.definition #RandomSample name="Random sample"}
@@ -89,11 +90,11 @@ We write $X_1, X_2, \dots, X_n \sim D$.
 
 
 The definition uses the distribution function and so applies to discrete, continuous and mixed random variables.
-Because the elements of the random sample are assumed to be independent, all the previous theory based on independence applies.
+Because the elements of the random sample are assumed to be independent,\index{Independence} the results in previous chapters that are based on independence therefore apply.
 
-Once the sample is obtained, the data can be used to compute the value of some *statistics*.
+Once the sample is obtained, the data can be used to compute the value of some *statistic*.
 A *statistic*\index{Statistic} is simply a numerical value that is computed from a sample.
-Since samples can vary, the value of a statistic can vary from sample to sample.
+Since the individuals in the sample can vary, the value of a statistic can vary from sample to sample.
 
 
 :::{.definition #Statistic name="Statistic"}
@@ -102,7 +103,7 @@ A *statistic* is any function $T = g(X_1, X_2, \ldots, X_n)$ of the sample.
 :::
 
 
-:::{.example #StatisticsExampleMin name="Minimum is a statistic"}
+:::{.example #StatisticsExampleMin name="The minimum is a statistic"}
 Suppose we take a sample of $n = 12$ Australian females, and measure their heights to the nearest centimetre.
 
 From the sample, we could compute the *minimum* height.
@@ -116,12 +117,51 @@ The *sample minimum* is a random variable, since its value is likely to be diffe
 ### Sampling distributions
 
 Since a statistic is a function of the random variables $X_1, X_2, \ldots, X_n$, *sample statistics are random variables*.
-In other words, the value of a sample statistic changes from sample to sample, and so *sample statistics have a distribution*.
+In other words, the value of a sample statistic changes from sample to sample, and so *sample statistics have a distribution* that describes *how* they vary.
 
 
 :::{.definition #SamplingDistributionStatistic name="Sampling distribution of a statistic"}
 The *sampling distribution of a statistic* is the theoretical probability distribution of the statistic associated with *all* possible samples of a particular size drawn from a particular population.
 :::
+
+
+Suppose a *random sample*\index{Sampling!random sample} of size\ $n$ is taken from a population.
+The main interest is in the *mean* of the sample as an estimate the unknown mean of the population\ $\mu$.
+Typically, a population will be *very* large, and listing all elements of the population is impossible.
+However, for demonstration purposes, suppose the population contains only $N = 5$ elements:
+$$
+   2\qquad 3\qquad 3\qquad 4\qquad 8.
+$$
+The mean of the population is
+$$
+  \mu = \frac{2 + 3 + 3 + 4 + 8}{5} = 4.
+$$
+Using **R**:
+
+```{r}
+Population <- c(2, 3, 3, 4, 8)
+mu_P <- mean(Population)
+mu_P
+```
+
+Similarly the variance of the population is
+$$
+  \sigma^2 = \frac{1}{N} \sum_{i = 1}^N  (X_i - \mu)^2 = 4.4:
+$$
+```{r}
+N <- length(Population)
+sum( (Population - mu_P)^2 ) / N
+
+var(Population) * (N - 1) / N
+```
+
+The cumbersome second formula in **R** for the *population* variance is necessary because the **R** function `var()` computes the variance of a *sample* (as in Eq.\ \@ref(eq:S2WithoutPopMean)), rather than the variance of a *population* as we have here.
+The factor $(n - 1)/n$ comes from the difference between the formulas (Sect.\ \@ref(EstimatePopVariance)).
+
+
+
+--
+
 
 
 The idea of a sampling distribution of a statistic can be simulated in \ **R**.
@@ -488,40 +528,6 @@ Easily shown by adapting the proof for $S^2_n$ above.
 ## Sampling distributions: a small example {#SamplingDistributionsSmallExample}
 
 ### All possible samples {#AllPossibleSamples}
-
-Suppose a *simple random sample*\index{Sampling!simple random sample} of size\ $n$ is taken from a population.
-The main interest is in the *mean* of the sample as an estimate the unknown mean of the population\ $\mu$.
-Typically, a population will be *very* large, and listing all elements of the population is impossible.
-However, for demonstration purposes, suppose the population contains only $N = 5$ elements:
-$$
-   2\qquad 3\qquad 3\qquad 4\qquad 8.
-$$
-The mean of the population is
-$$
-  \mu = \frac{2 + 3 + 3 + 4 + 8}{5} = 4.
-$$
-Using **R**:
-
-```{r}
-Population <- c(2, 3, 3, 4, 8)
-mu_P <- mean(Population)
-mu_P
-```
-
-Similarly the variance of the population is
-$$
-  \sigma^2 = \frac{1}{N} \sum_{i = 1}^N  (X_i - \mu)^2 = 4.4:
-$$
-```{r}
-N <- length(Population)
-sum( (Population - mu_P)^2 ) / N
-
-var(Population) * (N - 1) / N
-```
-
-The cumbersome second formula in **R** for the *population* variance is necessary because the **R** function `var()` computes the variance of a *sample* (as in Eq.\ \@ref(eq:S2WithoutPopMean)), rather than the variance of a *population* as we have here.
-The factor $(n - 1)/n$ comes from the difference between the formulas (Sect.\ \@ref(EstimatePopVariance)).
-
 
 ### Distribution of the sample mean (*without* replacement)
 
