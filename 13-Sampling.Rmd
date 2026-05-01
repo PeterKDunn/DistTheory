@@ -28,7 +28,7 @@ Until now, theoretical probability distributions describing ideal distributions 
 In practice, of course, infinite populations do not exist, and finite (usually relatively small) samples from unknown distributions are observed.\index{Sample}
 
 
-:::{.example #Heights}
+:::{.example #Heights name="Populations and models"}
 Suppose our *population* of interest is Australian females, and we are interested in their heights.
 'Height of Australian females' is a continuous random variable, say\ $X$.
 
@@ -65,7 +65,7 @@ $$
 $$
 
 
-### Random sampling {#RandomSamples}
+### Random sampling and statistics {#RandomSamples}
 
 In practice, entire populations are very rarely studied: the population may to be too large, or all members may be inaccessible.
 So rather than studying entire populations, a *sample* of observations from that population are studied.
@@ -94,7 +94,11 @@ Because the elements of the random sample are assumed to be independent,\index{I
 
 Once the sample is obtained, the data can be used to compute the value of some *statistic*.
 A *statistic*\index{Statistic} is simply a numerical value that is computed from a sample.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Since the individuals in the sample can vary, the value of a statistic can vary from sample to sample.
+:::
 
 
 :::{.definition #Statistic name="Statistic"}
@@ -102,22 +106,45 @@ Let $X_1, X_2, \ldots, X_n$ be a random sample.
 A *statistic* is any function $T = g(X_1, X_2, \ldots, X_n)$ of the sample.\index{Statistic}
 :::
 
+:::{.example #StatisticdsExample name="Statistic"}
+For a sample $X_1, X_2, \dots, X_n$, we could define a statistic\ $M$ such that
+$$
+  M = \left(\max\{X_1, X_2, \dots, X_n\} - \min\{X_1, X_2, \dots, X_n\}\right) / 2
+$$
+:::
+
+
+An *estimator*\index{Estimator} is a *statistic* with a specific purpose: to estimate the unknown value of a population parameter.
+As a statistic, an estimator is a random variable.
+An *estimate*\index{Estimate} is the actual numerical value of the estimator that is computed after observing data.
+We often say that an estimate is a *realisation* of an estimator.
+
 
 :::{.example #StatisticsExampleMin name="The minimum is a statistic"}
 Suppose we take a sample of $n = 12$ Australian females, and measure their heights to the nearest centimetre.
 
-From the sample, we could compute the *minimum* height.
-Since this minimum value is computed from the sample data, the sample minimum is a *statistic*.
+We could define the *statistic*\index{Statistic}
+$$
+  X_{(1)} = \min(\{X_1, X_2, \dots, X_N\}).
+$$
+This statistic computes the minimum value of the sample.
+If the purpose of computing the sample minimum is to estimate the minimum value in the population, then $X_{(1)}$ is an *estimator* of the population minimum.
+Since $X_{(1)}$ is likely to be different when computed from another sample of $12$\ Australian women, it is a random variable. 
 
-The *sample minimum* is a random variable, since its value is likely to be different when computed from another sample of $12$\ Australian women.
+If the smallest height in the sample is $144\cms$, then
+$$
+  x_{(1)} = 144
+$$
+is an *estimate* of the population minimum.
 :::
 \index{Sample|)}
 
 
-## Sampling distributions {#SamplingDistributions}
+## Estimators and estimates {#SamplingDistributions}
+
+### Sampling distributions: a small example {#SamplingDistributionsSmallExample}
 
 \index{Sampling distribution|(}
-### Sampling distributions: a small example {#SamplingDistributionsSmallExample}
 Since a statistic is a function of the random variables $X_1, X_2, \ldots, X_n$, *sample statistics are random variables*.
 In other words, the value of a sample statistic changes from sample to sample, and so *sample statistics have a distribution* that describes *how* they vary.
 
@@ -245,7 +272,7 @@ hist(Xmin)          # Create the histogram of sample minimums
 
 :::
 
-```{r SDminPlots, echo=FALSE, out.width='100%', fig.width=8.5, fig.height = 3.5, fig.align="center", fig.cap="Sampling distributions for the sample minimums, for samples of size\ $5$ (left) and size\ $100$ (right)."}
+```{r SDminPlots, echo=FALSE, out.width='90%', fig.width=8.5, fig.height = 3.5, fig.align="center", fig.cap="Sampling distributions for the sample minimums, for samples of size\ $5$ (left) and size\ $100$ (right)."}
 par( mfrow = c(1, 2))
 
 set.seed(1592875)
@@ -311,13 +338,13 @@ The value of the sample statistic varies less from sample to sample again.
 Using a sample to estimate a minimum value is not often helpful; a more useful statistic is the sample mean or the sample variance.
 But how should the population mean be estimated from a sample?
 
-For a sample of\ $N$ discretely measured observed values, the population mean is
+For a population of\ $N$ discretely measured observed values $X_1, X_2, \dots, X_n$, the population mean is
 $$
   \mu = \frac{1}{N}\sum_{i = 1}^N x_i.
 $$
-The obvious suggestion for computing a sample mean from a sample of size\ $n$ is *sample mean* $\overline{x}$, defined as
+The obvious suggestion for computing a sample mean from a sample of size\ $n$ (i.e., $x_1, x_2, \dots, x_n$) is *sample mean* $\overline{X}$, an *estimator*,\index{Estimator} defined as
 $$
-  \overline{x} = \frac{1}{n}\sum_{i = 1}^n x_i.
+  \overline{X} = \frac{1}{n}\sum_{i = 1}^n X_i.
 $$
 
 We can use\ **R** to simulate selecting many samples of size $n = 5$, and many sample of size $n = 100$, and compute the sample mean for each, using the same samples created above (Fig.\ \@ref(fig:SDmeanPlots)):
@@ -337,7 +364,7 @@ hist(Xmean2)          # Create the histogram of sample minimums
 ```
 
 
-```{r SDmeanPlots, echo=FALSE, out.width='100%', fig.width=8.5, fig.height = 3.5, fig.align="center", fig.cap="Sampling distributions for the sample mean for sample of size $n = 5$ (left) and $n = 100$ (right). The solid dots represent the population mean."}
+```{r SDmeanPlots, echo=FALSE, out.width='90%', fig.width=8.5, fig.height = 3.5, fig.align="center", fig.cap="Sampling distributions for the sample mean for sample of size $n = 5$ (left) and $n = 100$ (right). The solid dots represent the population mean."}
 par( mfrow = c(1, 2))
 
 hist(Xmean, 
@@ -346,6 +373,7 @@ hist(Xmean,
      ylab = "",
      breaks = seq(150, 180, by = 1),
      main = "Sampling mean:\nsamples of size 5",
+     sub = paste0("(Average value: ", round(mean(Xmean), 1), ")"),
      axes = FALSE)
 axis(side = 1)
 points(x = x_Mn, 
@@ -362,6 +390,7 @@ hist(Xmean2,
      ylab = "",
      #breaks = seq(150, 180, by = 1),
      main = "Sampling mean:\nsamples of size 100",
+     sub = paste0("(Average value: ", round(mean(Xmean2), 1), ")"),
      axes = FALSE)
 axis(side = 1)
 points(x = x_Mn, 
@@ -375,14 +404,15 @@ The sample estimates of the mean appear, on average, to be good estimates of the
 The larger sample produces better estimates of the population mean in general, and less variation in the values of the sample statistic.
 
 
-### Unbiased estimates/estimators
+### Unbiased estimators {#UnbiasedEstimators}
 
 It seems sensible that, on average, a sample estimate would produce the population value.
-We say that the sample mean is an *unbiased estimate* of the population mean.
+Sometimes the sample estimate may be a little smaller than the population value, and sometimes a bit larger, but on average the value of the sample estimate is the value of the population parameter.
+Any such estimator is called *unbiased*.
 
 
 :::{.definition #Unbiased name="Unbiased estimator"}
-A statistic\ $\hat{\theta}$ is an *unbiased estimator*\index{Unbiased estimator} of a parameter\ $\theta$ if
+A statistic\ $\hat{\theta}$ is an *unbiased estimator*\index{Estimator!unbiased} of a parameter\ $\theta$ if
 $$
   \operatorname{E}[\hat{\theta}] = \theta.
 $$
@@ -402,7 +432,7 @@ The sample mean
 $$
   \overline{X} = \frac{1}{n} \sum_{i = 1}^n X_i
 $$
-is an unbiased estimator of the population mean\ $\mu$.
+is an unbiased estimator\index{Estimator!unbiased}\index{Estimator!sample mean} of the population mean\ $\mu$.
 
 ::::{.proof}
 Using the definition of an unbiased estimator:
@@ -431,7 +461,7 @@ The sample variance
   S^2_\mu = \frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2.
    (\#eq:S2WithPopMean)
 \end{equation}
-is an unbiased estimator of the population variance\ $\sigma^2$.
+is an unbiased estimator\index{Estimator!unbiased} of the population variance\ $\sigma^2$.
 
 ::::{.proof}
 Again starting with the definition of an unbiased estimator:
@@ -447,66 +477,16 @@ Thus, $S^2_n$ is an unbiased estimator of $\sigma^2$.
 :::
 
 
-Equation\ \@ref(eq:S2WithPopMean) has a practical difficulty however; this equation is used to estimate the *unknown* value of the population variance, but relies on *knowing* the value of the population mean\ $\mu$.
+While $S^2_\mu$ is an unbiased estimator of\ $\sigma^2$, Eq.\ \@ref(eq:S2WithPopMean) has a practical difficulty: its computation relies on *knowing* the value of the population mean\ $\mu$.
 Knowing the value of\ $\mu$ is highly unlikely; knowing the value of\ $\mu$ but not the value of $\sigma^2$ almost never occurs.
 Almost always, we would only have an estimate\ $\overline{X}$ of the population mean\ $\mu$.
 
-This may suggest using
+This suggests using the estimator
 $$
   S^2_n = \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2.
 $$
 to estimate the population variance.
-
-
-```{r SDvarPlots, echo=FALSE, out.width='100%', fig.width=8.5, fig.height = 3.5, fig.align="center", fig.cap="Sampling distributions for the sample variance for sample of size $n = 5$ (left) and $n = 100$ (right). The solid dots represent the population variance."}
-par( mfrow = c(1, 2))
-
-Xvar   <- apply(Xvals, 
-                MARGIN = 2, 
-                FUN = var) 
-Xvar2   <- apply(Xvals2, 
-                 MARGIN = 2, 
-                 FUN = var) 
-xRange <- c(1, 2)
-
-hist(Xvar, 
-#     xlim = xRange,
-     xlab = "Sample variance",
-     ylab = "",
-     #breaks = seq(150, 180, by = 1),
-     main = "Sample variance:\nsamples of size 5",
-     axes = FALSE)
-axis(side = 1)
-points(x = x_Sd^2, 
-       y = 0,
-       pch = 19)
-
-
-
-#####
-
-hist(Xvar2, 
-#     xlim = c(165, 180),
-     xlab = "Sample variance",
-     ylab = "",
-     #breaks = seq(150, 180, by = 1),
-     main = "Sample variance:\nsamples of size 100",
-     axes = FALSE)
-axis(side = 1)
-points(x = x_Sd^2, 
-       y = 0,
-       pch = 19)
-
-```
-
-
-
-
-
-However, *this estimate is not unbiased* (i.e., it is biased).
-Since\ $\overline{X}$ estimates\ $\mu$ imprecisely (from just one of the many possible samples), an extra source of variation is introduced into the estimation of\ $\sigma^2$.
-
-To see this, start again with the definition of an unbiased estimator:
+To determine if this is an unbiased estimator, proceed as usual:
 \begin{align*}
     \operatorname{E}[S^2_n] 
   &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]\\
@@ -547,13 +527,63 @@ Hence,
   &= \frac{n - 1}{n} \sigma^2.
 \end{align*}
 This shows that $\operatorname{E}[S^2_n] \ne\sigma^2$, and so the estimator is a *biased estimator* of\ $\sigma^2$.
-However, multiplying the estimator by $(n - 1)/n$ *would* produce an unbiased estimator.
+Since\ $\overline{X}$ estimates\ $\mu$ imprecisely (from just one of the many possible samples), an extra source of variation is introduced into the estimation of\ $\sigma^2$.
+
+
+
+```{r SDvarPlots, echo=FALSE, out.width='90%', fig.width=8.5, fig.height = 3.5, fig.align="center", fig.cap="Sampling distributions for the sample variance for sample of size $n = 5$ (left) and $n = 100$ (right). The solid dots represent the population variance."}
+par( mfrow = c(1, 2))
+
+Xvar   <- apply(Xvals, 
+                MARGIN = 2, 
+                FUN = var) 
+Xvar2   <- apply(Xvals2, 
+                 MARGIN = 2, 
+                 FUN = var) 
+xRange <- c(1, 2)
+
+hist(Xvar, 
+#     xlim = xRange,
+     xlab = "Sample variance",
+     ylab = "",
+     #breaks = seq(150, 180, by = 1),
+     main = "Sample variance:\nsamples of size 5",
+     sub = paste0("(Average value: ", round(mean(Xvar), 3), ")"),
+     axes = FALSE)
+axis(side = 1)
+points(x = x_Sd^2, 
+       y = 0,
+       pch = 19)
+
+
+
+#####
+
+hist(Xvar2, 
+#     xlim = c(165, 180),
+     xlab = "Sample variance",
+     ylab = "",
+     #breaks = seq(150, 180, by = 1),
+     main = "Sample variance:\nsamples of size 100",
+     sub = paste0("(Average value: ", round(mean(Xvar2), 3), ")"),
+     axes = FALSE)
+axis(side = 1)
+points(x = x_Sd^2, 
+       y = 0,
+       pch = 19)
+
+```
+
+
+
+We could, however, multiply $S^2_n$ by $(n - 1)/n$, which *would* produce an unbiased estimator.
+
 
 
 :::{.theorem #SampleVarianceUnbiasedXbar name="An unbiased estimator for $\sigma^2$ ($\mu$ unknown)"}
 When the value of\ $\mu$ is unknown, an *unbiased* estimator of\ $\sigma^2$ is 
 \begin{equation}
-  s^2_{n - 1} = s^2 = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \overline{X})^2.
+  S^2 = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \overline{X})^2.
    (\#eq:S2WithoutPopMean)
 \end{equation}
 Notice that the divisor in front of the summation is now\ $n - 1$ rather than\ $n$. 
@@ -564,8 +594,7 @@ Easily shown by adapting the proof for $S^2_n$ above.
 :::
 
 
-
-
+This shows that not all estimators\index{Estimator} are unbiased estimators; even estimators that appear to be 'obvious' estimators may not be unbiased estimators.\index{Estimator!unbiased}
 
 
 :::{.example #UnbiasedPoisson name="A unbiased estimate"}
@@ -626,236 +655,23 @@ Note also that the bias $\lambda/(n - 1) \to 0$ as $n \to \infty$, so $1/\bar{X}
 :::
 
 
-
-
-
-
-
-
-
-
-
----
-
-
-
-\index{Mean!estimation}
-
-Having all values of a population available is almost never possible, and we instead study a *sample* of size\ $n$ from some probably-unknown distribution: $x_1, x_2, \ldots, x_n$.
-That is, $X_1, X_2\cdots, X_n$ are iid from some unknown distribution.\index{iid}
-
-Given the formula for computing value of the *population* mean in Eq.\ \@ref(eq:PopulationMean), a sensible approach for estimating the value of the population mean would seem to be using
-$$
-  \overline{X} = \frac{1}{n}(X_1 + X_2 + \cdots X_n) = \frac{1}{n}\sum_{i=1}^n X_i.
-$$
-Indeed, this is a 'good' estimate of\ $\mu$, in the sense that is an *unbiased* estimate of\ $\mu$.
-
-We use\ $\overline{X}$ to represent the mean of a sample whose value is as yet unknown (and depends on *which* sample is selected).
-The symbol\ $\overline{x}$ is used to denoted the value of the *sample* mean, computed from the data found in a particular sample.
-
-
-
-\index{Sampling distribution|)}
-
-
-
-
-## Sampling distributions: a small example {#SamplingDistributionsSmallExample}
-
-### All possible samples {#AllPossibleSamples}
-
-### Distribution of the sample mean (*without* replacement)
-
-\index{Selecting!without replacement}
-Assume we do not know the values of\ $\mu$ and\ $\sigma^2$, which is usually the case.
-Then, to estimate the value of\ $\mu$, we take a sample of size $n = 2$ from this population, *without* replacement.
-Because samples are taken at random, we do not know which elements will be in the sample, so we do not know what the value of\ $\overline{X}$ will be.
-
-*Simple random sampling*\index{Sample!simple random sample} refers to *all* possible samples of size\ $n$ being equally likely.
-Since there are $\binom{N}{n}$ samples of size\ $n$ when sampling without replacement from\ $N$ objects, $\binom{5}{2} = 10$ equally-likely possible samples of size $n = 2$ are possible in this example.
-For instance, the sample $\{2, 3\}$ has a probability of $1/10$ of being selected, and the mean of this sample is\ $2.5$.
-
-We can use **R** to list *all* possible samples of size $n = 2$ from the population:
-
-```{r}
-### All possible combinations of 2 elements:
-AllSamples <- combn(Population,
-                    m = 2)  # Take 2 elements at a time
-AllSamples
-
-### Mean of each possible sample:
-MeanAllSamples <- colMeans(AllSamples)  # Find the mean of each column 
-MeanAllSamples
-```
-
-
-All $10$\ possible samples of size $n = 2$ can be listed, with the mean of each sample:
-
-```{r}
-cbind(                 t(AllSamples), 
-       "Sample mean" = MeanAllSamples,
-       "Probability" = 1/10)
-```
-
-The *sample* mean varies from sample to sample.
-The mean of a sample depends on *which* sample is selected at random, and so the estimate of\ $\mu$ depends on which sample is chosen.
-Some sample estimates will be smaller than $\mu = 4$ and some larger than $\mu = 4$.
-From this information, the *distribution* of the sample mean itself can be determined (Fig.\ \@ref(fig:SampleMeanDistn)):
-
-```{r SampleMeanDistn, fig.align="center", fig.cap="The distribution of the sample means."}
-prop.table(table(MeanAllSamples))
-
-plot( prop.table(table(MeanAllSamples)),
-      las = 1,
-      xlab = "Sample mean",
-      ylab = "Probability",
-      main = "The distribution of sample means")
-points( x = names(prop.table(table(MeanAllSamples))),
-        y = prop.table(table(MeanAllSamples)),
-        pch = 19)
-```
-
-This distribution is known as the *sampling distribution of the sample mean*: it shows how the values of\ $\overline{x}$ are distributed.
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The sample mean has a distribution: the value of the sample mean varies, depending on which random sample is obtained.
-:::
-
-
-The mean *of the sampling distribution* in Fig.\  \@ref(fig:SampleMeanDistn) is $\mu_{\bar{X}} = 4$: it is the mean of all possible sample means: 
-
-```{r}
-mean(MeanAllSamples)
-```
-
-The variance *of the sampling distribution* in Fig.\  \@ref(fig:SampleMeanDistn) is $\sigma^2_{\overline{X}} = 1.65$:
-
-```{r}
-n <- length(MeanAllSamples)
-var(MeanAllSamples) * (n - 1) / n
-```
-
-Note that we have *all* possible samples, so this is the 'population' of sample means.
-
-
-\index{Selecting!without replacement}
-We can increase the sample size to $n = 3$, and repeat:
-
-```{r}
-### All possible combinations of 3 elements:
-AllSamples <- combn(Population,
-                    m = 3)
-
-### Mean of each possible sample:
-MeanAllSamples <- colMeans(AllSamples)
-mean(MeanAllSamples)
-n <- length(MeanAllSamples)
-var(MeanAllSamples) * (n - 1) / n
-```
-
-The mean of all possible samples is the same ($\mu_{\bar{X}} = 4$), but the variance is smaller ($\sigma^2_{\bar{X}} = 0.7333$ rather than $1.65$).
-For $n = 4$, the mean of all possible samples remains the same, but the variance is smaller again:
-
-```{r}
-### All possible combinations of 3 elements:
-AllSamples <- combn(Population,
-                    m = 4)
-
-### Mean of each possible sample:
-MeanAllSamples <- colMeans(AllSamples)
-mean(MeanAllSamples)
-n <- length(MeanAllSamples)
-var(MeanAllSamples) * (n - 1) / n
-```
-
-Thus, the sampling distribution of\ $\overline{X}$ always has a mean of $\mu_{\bar{x}} = 4$, but the variance decreases as the sample size increases.
-
-### Distribution of the sample mean (*with* replacement) {#SamplingWithReplacement}
-
-\index{Selecting!with replacement}
-All the above examples use sampling *without replacement*.
-However, *sampling randomly with replacement* could be used too.
-Then, there are $5\times 5 = 25$ equally-likely samples possible:
-
-```{r results="markup"}
-AllSamplesWithReplacement <- expand.grid(Population, Population)
-names(AllSamplesWithReplacement) <- c(NA, 
-                                      NA)
-MeanAllSamplesWithReplacement <- rowMeans(AllSamplesWithReplacement)
-
-cbind( AllSamplesWithReplacement[, 1],
-       AllSamplesWithReplacement[, 2],
-       "Sample mean" = MeanAllSamplesWithReplacement, 
-       "Probability" = 1/25)
-```
-
-From this table, the *distribution* of the sample mean itself can again be determined (Fig.\ \@ref(fig:SampleMeanDistnWithReplacement)):
-
-```{r SampleMeanDistnWithReplacement, fig.align="center", fig.cap="The distribution of the sample means.", fig.width=5, fig.height=3.5, out.width="60%"}
-prop.table(table(MeanAllSamplesWithReplacement))
-
-plot( prop.table(table(MeanAllSamplesWithReplacement)),
-      las = 1,
-      ylim = c(0, 0.25),
-      xlab = "Sample mean",
-      ylab = "Probability",
-      main = "The distribution of sample means\n(sampling with replacement)")
-points( x = names(prop.table(table(MeanAllSamplesWithReplacement))),
-        y = prop.table(table(MeanAllSamplesWithReplacement)),
-        pch = 19)
-```
-
-The mean and variance of the sampling distribution in this case are $\mu_{\overline{X}} = 4$ and $\sigma^2_{\overline{X}} = 2.2$ respectively:
-
-
-```{r}
-mean(MeanAllSamplesWithReplacement)
-n <- length(MeanAllSamplesWithReplacement)
-var(MeanAllSamplesWithReplacement) * (n - 1) / n
-
-```
-
-
-
 ## Sampling distributions {#SamplingDistributionsTheory}
 
-The previous section illustrated sampling distributions concretely using a small population.
-In practice, populations are almost always very large and the number of possible samples is huge, infinite, or the exact elements of the population are impossible to list.
-In these cases, enumerating all possible samples to obtain the exact sampling distribution is not feasible, and theoretical results are needed instead.
+### Introduction
 
+In previous sections, estimators were introduced and studied, specifically unbiased estimators.
+All estimators are random variables, and so they have distributions. 
+Previously, we used simulations to display sampling distributions of various statistics.
 
-:::{.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-*Any* statistic (i.e., value computed from a sample) has a sampling distribution, because it's value varies from sample to sample.
-:::
-
-
-The previous section displays numerous *sampling distributions*: the distributions of sample statistics.
-In practice, populations are almost always very large and the number of possible samples huge, infinite, or the exact elements of the population difficult or impossible to list.
-In these cases, listing all possible samples and computing the exact sampling distributions is impossible.
-
-In terms of distribution theory, the probability distributions in Figs.\ \@ref(fig:SampleMeanDistn) and\ \@ref(fig:SampleMeanDistnWithReplacement) are just the distribution of a random variable, since *the sample mean is a random variable*. 
-Statistically, these distributions describe what values to expect for the sample means when random samples are taken from a population.
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Any quantity computed from a sample is a random variable, since its value is unknown before taking the sample.
-The observed value of the quantity depends on *which* sample is selected (at random).
-
-Consequently, sample means, sample standard deviations, sample medians etc. all are random variables.
-:::
-
-
-This knowledge is essential for extracting information from samples. 
-Observe that the mean of the sampling distribution in the example (when taken *without replacement*) is the same as the mean of the population itself: $\mu = (2 + 3 + 3 + 4 + 8 )/5 = 4$.
-Also, the variance of the sampling distribution is *smaller* than the variance of the population ($\sigma^2 = 4.4$). 
-The exact relationship between $\sigma^2_{\overline{X}}$ and $\sigma^2$ is expanded on in Theorem\ \@ref(thm:SamplingDistMean).
+However, theoretical sampling distributions of various estimators can be found, which leads to numerous very powerful and practical results.
 
 
 ### The sampling distribution of the mean {#SamplingDistributionMean}
 
-Usually the sample mean $\overline{X}$ is of greatest interest when sampling.
-Some powerful results exist to describe the sampling distribution of the mean of a random sample.
+Usually the sample mean\ $\overline{X}$ is of greatest interest when sampling.
+Section\ \@ref(SamplingDistributionsSmallExample) shows that the sample mean, like all estimators, varies from sample to sample.
+Figure\ \@ref(fig:SDmeanPlots) suggests that larger sample sizes produce sampling distributions with smaller variances.
+The following theorem quantifies this idea.
 
 
 :::{.theorem #SamplingDistMean name="Sampling distribution of the mean"}
@@ -868,7 +684,7 @@ This is a application of Corollary\ \@ref(cor:IID) with $a_i = 1/n$.
 
 
 Theorem\ \@ref(thm:SamplingDistMean) applies to a random sample as defined in Sect.\ \@ref(RandomSamples).
-The remarkable feature of Theorem\ \@ref(thm:SamplingDistMean) is that the population distribution of\ $X$ is not important to the result.
+The remarkable feature of Theorem\ \@ref(thm:SamplingDistMean) is that the distribution of the population\ $X$ is not important to the result.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -876,40 +692,8 @@ In Theorem\ \@ref(thm:SamplingDistMean), the distribution of the population from
 :::
 
 
-Theorem\ \@ref(thm:SamplingDistMean) applies to samples randomly selected *with replacement* from a finite population as described in Sect.\ \@ref(SamplingWithReplacement).
-In the case where sample are taken *without replacement*, $\mu_{\overline{X}}$ still equals $\mu$ (as this result does not depend on the observations being independent), but
-\begin{equation}
-   \operatorname{var}[\overline{X}]
-   = \frac{\sigma^2}{n} \times \frac{(N - n)}{(N - 1)}
-\end{equation}
-which is *smaller* than $\sigma^2/n$ by the factor $(N - n)/(N - 1)$.
-This means that the *standard deviation* of\ $\overline{X}$ is *smaller* than $\sigma/\sqrt{n}$ by a factor of $\sqrt{(N - n)/(N - 1)}$.
-(This factor was also seen in Exercise\ \@ref(exr:HypergeometricFPC).)
-
-
-:::{.definition #FPC name="Finite Population Correction (FPC)"}
-The finite population correction (FPC) factor is\index{Finite Population Correction Factor (FPCF)}
-$$
-   \sqrt{ \frac{N - n}{N - 1} }.
-$$
-:::
-
-
-:::{.example #CLTwithoutReplacement name="Sampling without replacement"}
-In Sect.\ \@ref(AllPossibleSamples), $\mu = 4$ and $\sigma^2 = 4.4$ for the *population*.
-The FPC is
-$$
-   \text{FPC} = \sqrt{ \frac{5 - 2}{5 - 1} } = 0.8660\dots.
-$$
-If sampling is done *with* replacement, then $\mu_{\overline{X}} = \mu = 4$ and $\operatorname{var}[\overline{X}] = 2.2 = 4.4/2$, agreement with the theorem.
-
-If sampling is done *without* replacement, the sampling distribution of the mean has mean $\mu_{\overline{X}} = \mu = 4$ and variance $\operatorname{var}[\overline{X}] = 1.65 = \frac{4.4}{2} \times \text{FPC}^2$, in agreement with the note following Theorem\ \@ref(thm:CLT).
-
-:::
-
-
-Theorem\ \@ref(thm:CLT) describes the location and spread of the sampling distribution of the mean, but not the shape of the sampling distribution.
-Remarkably, the *shape* of the sampling distribution only depends on the shape of the population  distribution *when the sample is small* (Sect.\ \@ref(CentralLimitTheorem)).
+Theorem\ \@ref(thm:SamplingDistMean) describes the *location* and *spread* of the sampling distribution of the mean, but not the *shape* of the sampling distribution.
+Remarkably, the *shape* of the sampling distribution only depends on the shape of the population distribution *when the sample is small* (Sect.\ \@ref(CentralLimitTheorem)).
 
 Theorem\ \@ref(thm:SamplingDistMean) is remarkable in that it makes no assumption about the shape of the population distribution: the result holds whether\ $X$ is normal, Poisson, exponential, or anything else. 
 However, the theorem tells us the *mean* and *variance* of the sampling distribution of\ $\overline{X}$, but says nothing about its *shape*. 
@@ -918,9 +702,55 @@ Describing the shape, and deriving the sampling distribution of $S^2$ requires a
 When the population is *not* normally distributed, the Central Limit Theorem (Sect.\ \@ref(CentralLimitTheorem)) provides an approximate answer for large\ $n$.
 
 
-## Sampling distributions: when $X_i$ have a normal distribution {#SamplingDistributionsRelatedToNormal}
+```{r, fig.show='hide'}
+set.seed(123)
 
-### Linear combinations of normal random variables {#NormalGeneralResults}
+ns <- c(5, 15, 100)
+lambda <- 4
+B <- 10000  # number of simulations
+
+sim_means <- lapply(ns, function(n) {
+  replicate(B, mean(rexp(n, rate = lambda)))
+})
+
+hist(sim_means[[1]]) 
+hist(sim_means[[2]])
+hist(sim_means[[3]])
+```
+
+
+```{r ExpSD, echo=FALSE, fig.align="center", fig.cap="Sampling distributions, for samples drawn from an exponential distribution with $\\lambda = 4$, for various sample sizes.", out.width='100%', fig.width=8, fig.heoight=3.5}
+par(mfrow = c(1, 3))
+
+hist(sim_means[[1]], 
+     axes = FALSE,
+     main = "Sample means:\nn = 5", 
+     ylab = "",
+     xlab = "Sample means")
+axis(side = 1)
+
+hist(sim_means[[2]], 
+     axes = FALSE,
+     main = "Sample means:\nn = 15", 
+     ylab = "",
+     xlab = "Sample mean")
+axis(side = 1)
+
+hist(sim_means[[3]], 
+     axes = FALSE,
+     main = "Sample means:\nn = 100", 
+     ylab = "",
+     xlab = "Sample mean")
+axis(side = 1)
+
+
+```
+
+
+
+
+
+### Sampling distributions: when $X_i$ have a normal distribution {#SamplingDistributionsRelatedToNormal}
 
 The normal distribution is used to model many naturally occurring phenomena (Sect.\ \@ref(Normal)). 
 Consequently, we begin by studying the sampling distributions of statistics of random samples that come from normal populations.
@@ -1097,6 +927,7 @@ plot( y ~ x,
 axis(side = 1)
 box()
 shadeNormal(x, y,
+            col = "grey",
             lo = 70,
             hi = 80)
 ```
@@ -1198,7 +1029,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(chi^2*-distribution: df==1)))
+      main = expression( bold(chi^2*"-"*distribution: df==1)))
 
 xx <- seq(0.001, 15, length = 100)
 plot( x = xx,
@@ -1208,7 +1039,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(chi^2*-distribution: df==5)))
+      main = expression( bold(chi^2*"-"*distribution: df==5)))
 
 xx <- seq(0.001, 50, length = 100)
 plot( x = xx,
@@ -1218,7 +1049,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(chi^2*-distribution: df==20)))
+      main = expression( bold(chi^2*"-"*distribution: df==20)))
 ```
 
 
@@ -1634,7 +1465,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression(bold(atop(The~italic(F)*-distribution,
+      main = expression(bold(atop(The~italic(F)*"-"*distribution,
                                   with~df=="(1, 4)"))))
 
 plot( x = xx,
@@ -1644,7 +1475,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression(bold(atop(The~italic(F)*-distribution,
+      main = expression(bold(atop(The~italic(F)*"-"*distribution,
                                   with~df=="(6, 1)"))))
 
 plot( x = xx,
@@ -1654,7 +1485,7 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression(bold(atop(The~italic(F)*-distribution,
+      main = expression(bold(atop(The~italic(F)*"-"*distribution,
                                   with~df=="(30, 5)"))))
 ```
 
