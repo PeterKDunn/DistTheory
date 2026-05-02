@@ -1,6 +1,6 @@
 # (PART) Sampling distributions {-}
 
-# Describing samples {#SamplingDistributions}
+# Describing samples {#ChapDescribingSamples}
 
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
 
@@ -11,15 +11,11 @@
 :::
 
 
-
-
-## Introduction {#ChapterSamplingIntro}
+## Populations and samples {#PopulationsSamples}
 
 This chapter introduces the application of distribution theory to the discipline of statistics.
-Distribution theory is about describing random variables in theoretical population using probability, while statistics is about data collection and extracting information from data (Chap.\ \@ref(ChapterIntroduction)). 
+Distribution theory is about describing random variables in theoretical populations using probability, while statistics is about data collection and extracting information from data (Chap.\ \@ref(ChapterIntroduction)). 
 
-
-## Populations and samples {#PopulationsSamples}
 
 ### From populations to observations {#Sampling}
 
@@ -32,7 +28,7 @@ In practice, of course, infinite populations do not exist, and finite (usually r
 Suppose our *population* of interest is Australian females, and we are interested in their heights.
 'Height of Australian females' is a continuous random variable, say\ $X$.
 
-We may decide to model their heights theoretically using some specified distribution, with the probability density function $f_X(x)$.
+We may decide to model this population of heights theoretically using some specified distribution, with the probability density function $f_X(x)$.
 Using this model, the mean height of Australian females is modelled as (Def.\ 
 \@ref(def:Expectation))
 $$
@@ -48,7 +44,7 @@ Even though the random variable 'Height' is continuous, any tool to measure actu
 Heights, for example, may be rounded to the nearest centimetre (i.e., $\delta = 1\cms$) or the nearest millimetre (i.e., $\delta = 0.1\cms$).
 So even if it was possible to measure the height of every Australian female, we would in practice have a list of discrete values $\{x_1, x_2, \dots , x_N\}$, where\ $N$ is the size of the population.
 
-So, these observed heights are actually discrete (rounded) values, and the mean would be computed using (Def.\ 
+So, the observed heights are actually discrete (rounded) values, and the mean would be computed using (from Def.\ 
 \@ref(def:Expectation))
 $$
   \mu 
@@ -67,10 +63,11 @@ $$
 
 ### Random sampling and statistics {#RandomSamples}
 
-In practice, entire populations are very rarely studied: the population may to be too large, or all members may be inaccessible.
-So rather than studying entire populations, a *sample* of observations from that population are studied.
+In practice, entire populations are very rarely studied: for example, the population are usually too large, and some members of population may be inaccessible.
+So rather than studying entire populations, a *sample* of observations from that population is almost always studied.
 
 The task of the *inferential statistics*\index{Inferential statistics}\index{Statistic} is to attempt to understand the entire population, based on what is learnt from studying a small subset of that population: the *sample*. \index{Sample}
+Inferential statistics requires an understanding of how samples behave.
 
 
 :::{.definition #RandomSample name="Sample"}
@@ -83,7 +80,7 @@ Importantly, *how* the sample is drawn determines its statistical properties; th
 
 
 :::{.definition #RandomSample name="Random sample"}
-The set of random variables $X_1, X_2, \dots, X_n$ from a distribution\ $D$ is a collection of random variables $X_1, X_2, \dots, X_n$ that are independently and identically distributed (iid) with distribution function $F_X(x)$.
+The set of random variables $X_1, X_2, \dots, X_n$ from a distribution\ $D$ is a collection of random variables $X_1, X_2, \dots, X_n$ that are independently and identically distributed (iid)\index{iid} with distribution function $F_X(x)$.
 
 We write $X_1, X_2, \dots, X_n \sim D$.
 :::
@@ -97,19 +94,20 @@ A *statistic*\index{Statistic} is simply a numerical value that is computed from
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Since the individuals in the sample can vary, the value of a statistic can vary from sample to sample.
+Since the individuals chosen to be in the sample can vary, the value of a statistic can vary from sample to sample.
 :::
 
 
 :::{.definition #Statistic name="Statistic"}
-Let $X_1, X_2, \ldots, X_n$ be a random sample. 
+Let $X_1, X_2, \ldots, X_n$ be a random sample of size\ $n$.
 A *statistic* is any function $T = g(X_1, X_2, \ldots, X_n)$ of the sample.\index{Statistic}
 :::
+
 
 :::{.example #StatisticdsExample name="Statistic"}
 For a sample $X_1, X_2, \dots, X_n$, we could define a statistic\ $M$ such that
 $$
-  M = \left(\max\{X_1, X_2, \dots, X_n\} - \min\{X_1, X_2, \dots, X_n\}\right) / 2
+  M = \left(\max\{X_1, X_2, \dots, X_n\} - \min\{X_1, X_2, \dots, X_n\}\right) / 2.
 $$
 :::
 
@@ -140,7 +138,7 @@ is an *estimate* of the population minimum.
 \index{Sample|)}
 
 
-## Estimators and estimates {#SamplingDistributions}
+## Sampling distributions {#SamplingDistributions}
 
 ### Sampling distributions: a small example {#SamplingDistributionsSmallExample}
 
@@ -159,12 +157,8 @@ However, for demonstration purposes, suppose the population contains only $N = 5
 $$
    22\qquad 23\qquad 27\qquad 28\qquad 38.
 $$
-The mean of the population is
-$$
-  \mu = \frac{22 + 23 + 27 + 28 + 38}{5} = 27.6.
-$$
-and the minimum value in the population is\ $2$.
-These two values are called *parameters*\index{Parameter} as they are numbers that describe the population.
+We can define the sample minimum as a statistic, and then the minimum value in the population is\ $2$.
+This value is called a *parameters*\index{Parameter} since it is a number that describe the population.
 
 The minimum value of any sample of size $n < 5$ drawn from the population can be found: the sample minimum is a *statistic*, as it is computed from the sample.
 Since the population is (artificially) small in this scenario, the sampling distribution can be determined by enumerating every possible sample of any given size\ $n$.
@@ -190,16 +184,15 @@ min_S <- combn(Population, 2, FUN = min)
 min_S
 ```
 
-The sampling distribution is just the distribution of these sample minimums, which can be displayed a table (or graph):
+The *sampling distribution* is just the distribution of these sample minimums (which are the sample minimums from all possible samples), which can be displayed a table (or graph):
 
 ```{r}
 table(min_S)
 ```
 
-This a *sampling distribution*.
-The population minimum is\ $22$, so the sample minimum is often a poor estimate of the population minimum.
+Since the population minimum is\ $22$, the sample minimums are often a poor estimate of the population minimum.
 
-Suppose we looked at larger sample size; say, sample of size $n = 4$:
+Suppose we looked at larger sample size; say, samples of size $n = 4$:
 
 ```{r}
 min_S <- combn(Population, 4, FUN = min)
@@ -223,14 +216,14 @@ Consider taking a random samples of $n = 5$ observations from a $N(\mu = 173, \s
 set.seed(1592875)
 ```
 ```{r}
-x_Mn <- 173; x_Sd <- 3        # Population (model) mean, std dev.
+x_Mn <- 173; x_Sd <- 3        # Population (model) mean and std dev.
 sample_Size <- 5              # Sample size is 5
-x1 <- rnorm(sample_Size,      # Take a sample of this size
-            mean = x_Mn, sd = x_Sd)
-min(x1)    # Compute the sample minimum for this sample
+x1 <- rnorm(sample_Size,      # Take a sample of this size...
+            mean = x_Mn, sd = x_Sd)     # ... from this distribution
+min(x1)                       # Compute the sample minimum for this sample
 ```
 
-We can use\ **R** to simulate selecting many samples of size $n=5$, and compute the minimum for each (Fig.\ \@ref(min:SDminPlots), left panel):
+We can use\ **R** to simulate selecting many samples of size $n=5$, and compute the minimum for each (Fig.\ \@ref(fig:SDminPlots), left panel):
 
 ```{r SDmin1, fig.show='hide'}
 num_Sims <- 100000           # Number of simulations
@@ -265,9 +258,9 @@ Xvals <- array(Xvals,
 
 # Find the minimum of each sample (i.e., column)
 Xmin   <- apply(Xvals, 
-                MARGIN = 2, 
-                FUN = min) 
-hist(Xmin)          # Create the histogram of sample minimums
+                MARGIN = 2,    # MARGIN = 2 means the columns
+                FUN = min)     # Find the minimum of each column
+hist(Xmin)                     # Create the histogram of sample minimums
 ```
 
 :::
@@ -303,7 +296,7 @@ hist(Xmin,
      xlab = "Sample minimum",
      ylab = "",
      breaks = seq(150, 180, by = 1),
-     main = "Sampling minimums:\nsamples of size 25",
+     main = "Sampling minimums:\nsamples of size 5",
      axes = FALSE)
 axis(side = 1)
 
@@ -335,7 +328,7 @@ The value of the sample statistic varies less from sample to sample again.
 
 ### Estimating the population mean {#SampligDistributionMean}
 
-Using a sample to estimate a minimum value is not often helpful; a more useful statistic is the sample mean or the sample variance.
+Using a sample to estimate a minimum value is not often helpful; a more useful statistic is the sample mean.
 But how should the population mean be estimated from a sample?
 
 For a population of\ $N$ discretely measured observed values $X_1, X_2, \dots, X_n$, the population mean is
@@ -347,7 +340,7 @@ $$
   \overline{X} = \frac{1}{n}\sum_{i = 1}^n X_i.
 $$
 
-We can use\ **R** to simulate selecting many samples of size $n = 5$, and many sample of size $n = 100$, and compute the sample mean for each, using the same samples created above (Fig.\ \@ref(fig:SDmeanPlots)):
+We can use\ **R** to simulate the selection of many samples of size $n = 5$, and many sample of size $n = 100$, and compute the sample mean for each sample, using the same samples created above (Fig.\ \@ref(fig:SDmeanPlots)):
 
 ```{r SDmean, fig.show='hide'}
 # Mean: n = 5
@@ -401,14 +394,16 @@ points(x = x_Mn,
 ```
 
 The sample estimates of the mean appear, on average, to be good estimates of the population mean.
+Some sample means are smaller than\ $\mu$, and some are smaller than\ $\mu$, but the estimate vary about\ $\mu$.
 The larger sample produces better estimates of the population mean in general, and less variation in the values of the sample statistic.
 
 
 ### Unbiased estimators {#UnbiasedEstimators}
 
+On average, the values of the sample means are centred around\ $\mu$.
 It seems sensible that, on average, a sample estimate would produce the population value.
 Sometimes the sample estimate may be a little smaller than the population value, and sometimes a bit larger, but on average the value of the sample estimate is the value of the population parameter.
-Any such estimator is called *unbiased*.
+Any estimator with this property is called an *unbiased estimator*.
 
 
 :::{.definition #Unbiased name="Unbiased estimator"}
@@ -420,8 +415,8 @@ $$
 
 
 This means that an unbiased estimator from a *random* sample produces estimates that, *on average*, have the same value as the population value being estimated.
-This seems a sensible property for a 'good' estimator.
-(There are other properties of 'good' estimators too, we but do not explore these here. 
+This seems a sensible property for a estimator.
+(There are other desirable properties of estimators too, we but do not explore these here. 
 This topic is a whole branch of statistics called *inferential statistics*.)\index{Inferential statistics}
 When we say that\ $\overline{X}$ is an unbiased estimator of\ $\mu$ then, we mean that $\operatorname{E}[\overline{X}] = \mu$,
 
@@ -452,6 +447,9 @@ The estimator\ $\overline{X}$ is an *unbiased estimator* of\ $\mu$.
 ### Estimating the population variance {#EstimatePopVariance}
 
 \index{Variance!estimation}
+
+POP VAR FORMULA NEEDED.
+
 Given the formula for the population variance, the following estimate of the population variance is suggested.
 
 
@@ -478,8 +476,8 @@ Thus, $S^2_n$ is an unbiased estimator of $\sigma^2$.
 
 
 While $S^2_\mu$ is an unbiased estimator of\ $\sigma^2$, Eq.\ \@ref(eq:S2WithPopMean) has a practical difficulty: its computation relies on *knowing* the value of the population mean\ $\mu$.
-Knowing the value of\ $\mu$ is highly unlikely; knowing the value of\ $\mu$ but not the value of $\sigma^2$ almost never occurs.
-Almost always, we would only have an estimate\ $\overline{X}$ of the population mean\ $\mu$.
+Knowing the value of\ $\mu$ but having to estimate the population variance is highly unlikely.
+Almost always, only have an estimate\ $\overline{X}$ of the population mean\ $\mu$ would be known.
 
 This suggests using the estimator
 $$
