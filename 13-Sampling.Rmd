@@ -331,9 +331,9 @@ The value of the sample statistic varies less from sample to sample again.
 Using a sample to estimate a minimum value is not often helpful; a more useful statistic is the sample mean.
 But how should the population mean be estimated from a sample?
 
-For a population of\ $N$ discretely measured observed values $X_1, X_2, \dots, X_n$, the population mean is
+For a population of\ $N$ discretely-measured observed values $X_1, X_2, \dots, X_n$, the population mean is
 $$
-  \mu = \frac{1}{N}\sum_{i = 1}^N x_i.
+  \mu = \operatorname{E}[X] = \frac{1}{N}\sum_{i = 1}^N x_i.
 $$
 The obvious suggestion for computing a sample mean from a sample of size\ $n$ (i.e., $x_1, x_2, \dots, x_n$) is *sample mean* $\overline{X}$, an *estimator*,\index{Estimator} defined as
 $$
@@ -447,10 +447,11 @@ The estimator\ $\overline{X}$ is an *unbiased estimator* of\ $\mu$.
 ### Estimating the population variance {#EstimatePopVariance}
 
 \index{Variance!estimation}
-
-POP VAR FORMULA NEEDED.
-
-Given the formula for the population variance, the following estimate of the population variance is suggested.
+In the same way that a population mean can be computed from discrete, observed values, the population variance for a population of\ $N$ discretely-measured observed values $X_1, X_2, \dots, X_n$, the population variance is
+$$
+  \operatorname{var}[X] = \sigma^2 = \frac{1}{N}\sum_{i = 1}^N (x_i - \mu)^2.
+$$
+This suggests the following estimate of the population variance.
 
 
 :::{.theorem #SampleVarianceUnbiased name="An unbiased estimator for $\sigma^2$"}
@@ -462,17 +463,66 @@ The sample variance
 is an unbiased estimator\index{Estimator!unbiased} of the population variance\ $\sigma^2$.
 
 ::::{.proof}
-Again starting with the definition of an unbiased estimator:
-\begin{align*}
-    \operatorname{E}[S^2_n] 
-    &= \frac{1}{n} \operatorname{E}\left[ (X_1 - \mu)^2 + (X_2 - \mu)^2 + \cdots + (X_n - \mu)^2\right]\\
-    &= \frac{1}{n} \left( \operatorname{E}[ (X_1 - \mu)^2] + \operatorname{E}[(X_2 - \mu)^2] + \cdots + \operatorname{E}[X_n - \mu]^2\right)\\
-    &= \frac{1}{n} \left( \sigma^2 + \sigma^2 + \cdots + \sigma^2 \right)\\
-    &= \frac{1}{n} \times n\sigma^2 = \sigma^2.
-\end{align*}
-Thus, $S^2_n$ is an unbiased estimator of $\sigma^2$.
+See Exercise\ \@ref(exr:UnbiasedVarianceMu)
 ::::
 :::
+
+
+Again, using the sample found earlier, the estimates\ $S^2$ can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SampleVarMu)):
+
+
+```{r, fig.show='hide'}
+s2mu <- function(x, n) { (sum(x - x_Mn)^2) / n}
+Xvar   <- apply(Xvals,
+                MARGIN = 2,
+                FUN = s2mu,
+                n = sample_Size)
+
+hist(Xvar) 
+
+Xvar2   <- apply(Xvals,
+                 MARGIN = 2,
+                 FUN = s2mu,
+                 n = sample_Size2)
+
+hist(Xvar2) 
+```
+
+```{r SampleVarMu, echo=FALSE, out.width='90%', fig.cap="qiwuhqiuxoqibxqovxqvqox"}
+par( mfrow = c(1, 2))
+
+s2mu <- function(x, n) { (sum( (x - x_Mn)^2) ) / n}
+Xvar   <- apply(Xvals,
+                MARGIN = 2,
+                FUN = s2mu,
+                n = sample_Size)
+
+hist(Xvar,
+     xlab = expression(italic(x)),
+     main = "Variance estimates\nn = 100",
+     ylab = "",
+     axes = FALSE) 
+axis(side = 1)
+
+points(x = x_Sd^2,
+       y = 0,
+       pch = 19)
+
+Xvar2   <- apply(Xvals2,
+                 MARGIN = 2,
+                 FUN = s2mu,
+                 n = sample_Size2)
+
+hist(Xvar2,
+     xlab = expression(italic(x)),
+     main = "Variance estimates\nn = 100",
+     ylab = "",
+     axes = FALSE) 
+axis(side = 1)
+points(x = x_Sd^2,
+       y = 0,
+       pch = 19)
+```
 
 
 While $S^2_\mu$ is an unbiased estimator of\ $\sigma^2$, Eq.\ \@ref(eq:S2WithPopMean) has a practical difficulty: its computation relies on *knowing* the value of the population mean\ $\mu$.
@@ -527,10 +577,27 @@ Hence,
 This shows that $\operatorname{E}[S^2_n] \ne\sigma^2$, and so the estimator is a *biased estimator* of\ $\sigma^2$.
 Since\ $\overline{X}$ estimates\ $\mu$ imprecisely (from just one of the many possible samples), an extra source of variation is introduced into the estimation of\ $\sigma^2$.
 
+Using the sample found earlier, the estimates\ $S^2_n$ can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SDvarPlots), top panels).
+The values of $\operatorname{E}[S^2_n]$ for $n = 5$ and $n = 100$ are
+$$
+  \operatorname{E}[S^2_n] = \frac{5 - 1}{5}\times 3^2 = 7.2
+  \quad\text{and}\quad
+  \operatorname{E}[S^2_n] = \frac{100 - 1}{100}\times 3^2 = 8.91
+$$
+respectively, similar to those means from the **R** simulation.
 
 
-```{r SDvarPlots, echo=FALSE, out.width='90%', fig.width=8.5, fig.height = 3.5, fig.align="center", fig.cap="Sampling distributions for the sample variance for sample of size $n = 5$ (left) and $n = 100$ (right). The solid dots represent the population variance."}
-par( mfrow = c(1, 2))
+```{r SDvarPlots, echo=FALSE, out.width='90%', fig.width=8.5, fig.height = 5.5, fig.align="center", fig.cap="Sampling distributions for the sample variance for sample of size $n = 5$ (left panels) and $n = 100$ (right panels), using the biased estimator $S^2_n$ (top panels) and the unbiased estimator $s^2$ (bottom panels). The solid dots represent the population variance."}
+
+s2n <- function(x, n) { (sum( (x - mean(x))^2) ) / length(x)}
+
+Xvarn   <- apply(Xvals, 
+                MARGIN = 2, 
+                FUN = s2n) 
+Xvarn2   <- apply(Xvals2, 
+                 MARGIN = 2, 
+                 FUN = s2n) 
+
 
 Xvar   <- apply(Xvals, 
                 MARGIN = 2, 
@@ -539,6 +606,46 @@ Xvar2   <- apply(Xvals2,
                  MARGIN = 2, 
                  FUN = var) 
 xRange <- c(1, 2)
+
+
+#####
+
+par( mfrow = c(2, 2))
+
+
+hist(Xvarn, 
+#     xlim = xRange,
+     xlab = "Sample variance",
+     ylab = "",
+     #breaks = seq(150, 180, by = 1),
+     main = "Sample variance:\nsamples of size 5",
+     sub = paste0("(Average value: ", round(mean(Xvarn), 3), ")"),
+     axes = FALSE)
+axis(side = 1)
+points(x = x_Sd^2, 
+       y = 0,
+       pch = 19)
+
+
+
+#####
+
+hist(Xvarn2, 
+#     xlim = c(165, 180),
+     xlab = "Sample variance",
+     ylab = "",
+     #breaks = seq(150, 180, by = 1),
+     main = "Sample variance:\nsamples of size 100",
+     sub = paste0("(Average value: ", round(mean(Xvarn2), 3), ")"),
+     axes = FALSE)
+axis(side = 1)
+points(x = x_Sd^2, 
+       y = 0,
+       pch = 19)
+
+
+##
+
 
 hist(Xvar, 
 #     xlim = xRange,
@@ -574,8 +681,7 @@ points(x = x_Sd^2,
 
 
 
-We could, however, multiply $S^2_n$ by $(n - 1)/n$, which *would* produce an unbiased estimator.
-
+To obtain an *unbiased estimator*, we could multiply $S^2_n$ by $(n - 1)/n$, which *would* produce an unbiased estimator.
 
 
 :::{.theorem #SampleVarianceUnbiasedXbar name="An unbiased estimator for $\sigma^2$ ($\mu$ unknown)"}
@@ -587,7 +693,7 @@ When the value of\ $\mu$ is unknown, an *unbiased* estimator of\ $\sigma^2$ is
 Notice that the divisor in front of the summation is now\ $n - 1$ rather than\ $n$. 
 
 ::::{.proof}
-Easily shown by adapting the proof for $S^2_n$ above.
+Easily shown by adapting the proof for $S^2_n$ above; see
 ::::
 :::
 
@@ -2096,5 +2202,38 @@ Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Uniform}(0, \thet
 2. Let $M = \max(X_1, \ldots, X_n)$. 
    Derive the distribution of $M$ and show that\ $M$ is not unbiased for $\theta$.
 3. Find a function of\ $M$ that is unbiased for\ $\theta$.
-
 :::
+
+
+:::{.exerecise #UnbiasedVarianceMu}
+Show that the estimator 
+$$
+  S^2_\mu = \frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2.
+$$
+is an unbiased estimator of the population variance\ $\sigma^2$.
+:::
+
+
+
+:::{.exerecise #UnbiasedVarianceMu}
+Show that the estimator 
+$$
+  S^2 = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \overline{X})^2.
+$$
+is an unbiased estimator of the population variance\ $\sigma^2$.
+:::
+
+
+:::{.theorem #SampleVarianceUnbiasedXbar name="An unbiased estimator for $\sigma^2$ ($\mu$ unknown)"}
+When the value of\ $\mu$ is unknown, an *unbiased* estimator of\ $\sigma^2$ is 
+\begin{equation}
+  S^2 = \frac{1}{n - 1} \sum_{i=1}^n (X_i - \overline{X})^2.
+   (\#eq:S2WithoutPopMean)
+\end{equation}
+Notice that the divisor in front of the summation is now\ $n - 1$ rather than\ $n$. 
+
+::::{.proof}
+Easily shown by adapting the proof for $S^2_n$ above; see
+::::
+:::
+
