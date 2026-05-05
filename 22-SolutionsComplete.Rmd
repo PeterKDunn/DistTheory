@@ -7730,6 +7730,78 @@ Easily shown by adapting the proof for $S^2_n$ above.
 :::
 
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MeanSdIndependent).**
+1. The sample mean and variances appear independent.
+2. The sample mean and variances appear independent.
+3. Proceed:
+\begin{align*}
+     \operatorname{Cov}(\bar{X}, \bar{X} - X_i) 
+  &= \operatorname{Cov}(\bar{X}, \bar{X}) - 
+     \operatorname{Cov}(\bar{X}, X_i)\\
+  &= \operatorname{Cov}(\frac{1}{n}\sum X_i, X_i) - \operatorname{var}(\bar{X})\\
+  &= \sigma^2/n - \sigma^2/n = 0
+\end{align*}
+:::
+
+
+```{r}
+num_Sims <- 1000
+n <- 50
+mnx <- sdx <- numeric(n)
+
+for (i in (1:num_Sims)){
+  # Take a sample
+  x <- rnorm(n, 
+             mean = 1, sd = 3)
+  
+  # Find mean, sd
+  mnx[i] <- mean(x)
+  sdx[i] <- sd(x)
+}
+
+plot(mnx ~ sdx)
+cor(mnx, sdx)
+```
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:ChisqProb).**
+We seek\ $c$ such that $\Pr(X \le c) = 0.90$ where $X\sim\chi^2(12)$. 
+In **R**:
+
+```{r}
+qchisq(0.9, df = 12)
+```
+
+About 90% of the distribution lies below
+`r round(qchisq(0.9, df = 12), 3)`.
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:ChisqProb2).**
+By Theorem\ \@ref(thm:SampleVarDist),
+$$
+   \frac{9 S^2}{5} \sim \chi^2_9,
+$$
+so
+$$
+   \Pr(S^2 > 10)
+   = \Pr\!\left(\frac{9S^2}{5} > 18\right)
+   = \Pr(\chi^2_9 > 18).
+$$
+In **R**:
+
+```{r, echo=TRUE}
+pchisq(18, df = 9, lower.tail = FALSE)
+```
+
+Hence $\Pr(S^2 > 10) \approx 0.035$.
+:::
+
+
 
 
 <!-- ************************************************************************************ -->

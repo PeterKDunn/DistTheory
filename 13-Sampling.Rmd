@@ -748,9 +748,9 @@ Easily shown by adapting the proof for $S^2_n$ above; see Exercise\ \@ref(exr:Un
 
 
 
-## The distribution of the sample mean {#SamplingDistributionsTheory}
+## The distribution of the sample mean {#SamplingDistributionsMean}
 
-### Introduction
+### Introduction {#SamplingDistributionsMeanIntro}
 
 In previous sections, estimators were introduced and studied, specifically unbiased estimators.
 All estimators are random variables, and so they have distributions. 
@@ -955,7 +955,7 @@ mean(Y); var(Y)
 
 ```
 
-```{r HistLinearComb, echo=FALSE, out.width='60%', fig.width=5, fig.height=3, fig.align="center", fig.cap="The distribution of a linear combination of normal random variates in a normal distribution. The solid dot represents the theoretical mean of $Y$. The solid curve is the theoretical distribution of\\ $Y$."}
+```{r HistLinearComb, echo=FALSE, out.width='60%', fig.width=7, fig.height=3, fig.align="center", fig.cap="The distribution of a linear combination of normal random variates in a normal distribution. The solid dot represents the theoretical mean of $Y$. The solid curve is the theoretical distribution of\\ $Y$."}
 hist(Y,
      axes = FALSE,
      freq = FALSE,
@@ -1205,7 +1205,7 @@ $$
 $$
 
 The function $\exp(-t^2/2)$ is the CF of the $N(0, 1)$ distribution.
-By *Lévy's continuity theorem*, if $\varphi_{Z_n}(t) \to \varphi(t)$ pointwise for all\ $t$, and the limit $\varphi(t)$ is continuous at $t = 0$, then $Z_n \overset{d}{\to} Z$, where\ $Z$ has characteristic function $\varphi(t)$, and $\overset{d}{\to}$ means 'converges in distribution'.
+Since $\varphi_{Z_n}(t) \to \varphi(t)$ pointwise for all\ $t$, and the limit $\varphi(t)$ is continuous at $t = 0$, then $Z_n \overset{d}{\to} Z$, where\ $Z$ has characteristic function $\varphi(t)$, and $\overset{d}{\to}$ means 'converges in distribution'.
 Since $\exp(-t^2/2)$ is continuous everywhere and is the CF of $N(0, 1)$, conclude that
 $$
   Z_n \overset{d}{\to} N(0, 1).
@@ -1214,11 +1214,12 @@ $$
 :::
 
 
-This is a partial proof since the concept of convergence in distribution has not been defined. 
-However, the arguments used in the proof are powerful and worth understanding.
 'Convergence in distribution' means that the distribution of $Z_n$ converges to a standard normal as $n\to \infty$. 
 So when\ $n$ is 'large', $Z_n$ is expected to approximate a standard normal distribution. 
 Transforming $Z_n$ back to the sample mean, $\overline{X}$ can be expected to approximate a $N(\mu, \sigma^2/n)$ distribution.
+
+This is a partial proof since the concept of convergence in distribution has not been formally defined. 
+However, the arguments used in the proof are powerful and worth understanding.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -1414,51 +1415,47 @@ The probability is approximately\ $35$%.
 
 
 
-## The distribution of the sample variance
+## The distribution of the sample variance {#SamplingDistributionsVariance}
+
+### Introduction {#SamplingDistributionsVarianceIntro}
 
 The two most important and used descriptions of a sample are the sample mean and the sample variance.
-Having discussion the sampling distribution of the sample mean, we now turn to the sampling distribution of the sample variance.
-
-For a sample $X_1, \dots, X_n \overset{\text{iid}}{\sim} N(\mu, \sigma^2)$ (i.e., independently and identically\index{iid} distributed from a normal distribution), the sample variance is (see Theorem\ \@ref(thm:SampleVarianceUnbiasedXbar)):
-$$
+Having already discussed the sampling distribution of the sample mean, we now turn to the sampling distribution of the sample variance
+\begin{equation}
   S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2.
-$$
+  (\#eq:S2)
+\end{equation}
+for a sample $X_1, \dots, X_n \overset{\text{iid}}{\sim} N(\mu, \sigma^2)$ (i.e., independently and identically\index{iid} distributed from a normal distribution) (Theorem\ \@ref(thm:SampleVarianceUnbiasedXbar)).
 We are seeking the distribution of $S^2$.
 
 
-### The $\chi^2$-distribution
+### The $\chi^2$-distribution {#ChiSquaredDistribution}
 
-The formula for the estimator\ $S^2$ involves an\ $X^2$ term, where each $X_i$ has a normal distribution.
+\index{Chi-squared distribution|(}
+The formula for the estimator\ $S^2$ in Eq.\ \@ref(eq:S2) involves an\ $X_i^2$ term, where each $X_i$ has a normal distribution.
 Hence, to find the distribution of\ $S^2$, we start with the distribution of a squared normal variate; specifically, consider
 $$
   Z = \frac{X - \mu}{\sigma} \sim N(0,1)
 $$
 and the distribution of $Y = Z^2$.
-This is simply finding the distribution of a transformation of a random variable (Chap.\ 
-@ref(ChapterTransformations)), and yields
+This is simply finding the distribution of a transformation of a random variable (Chap.\  \@ref(ChapterTransformations)), and yields
 $$
-  f_Y(y) = \frac{y^{-1/2}\exp(-y/2)}{\sqrt{2\pi}} \quad\text{for $y > 0$},
+  f_Y(y) = \frac{y^{-1/2}\exp(-y/2)}{\sqrt{2\pi}} \quad\text{for $y > 0$}.
 $$
-where the proof is left as an exercise.
+The proof is Exercise\ \@ref(exr:DistZ2)).
 Note that $Y \sim \text{Gamma}(\alpha = 1/2, \beta = 2)$.
 
-Now consider $Z_1, Z_2, \dots Z_n\overset{\text{iid}}{\sim} N(0, 1)$, and the summation $W = \sum_{i = 1}^n Z_i^2$.
-Since each\ $Z_i$ has a gamma distribution, the distribution of the summation can be found using the MGF method (Sect.\ \@ref(TransformationMoments)).
-This produces the following result.
-
-
-Suppose $Z_1, Z_, \dots, Z_n$ are independently drawn from a $N(0, 1)$ distribution.
-Then, 
+Now consider $Z_1, Z_2, \dots Z_n\overset{\text{iid}}{\sim} N(0, 1)$, and the summation $\sum_{i = 1}^n Z_i^2$.
+Since each\ $Z_i$ has the same gamma distribution, the distribution of the summation can be found (Exercise\ \@ref(exr:SumZ2)) as
 $$
-  \sum_{i = 1}^n Z_i 
+  \sum_{i = 1}^n Z_i \sim \text{Gamma}(\alpha = n/2, \beta = 2).
 $$
-has a $\text{Gamma}(\alpha = n/2, \beta = 2)$.
-
 This distribution occurs so often in practice that is has its own name: a $\chi^2$-distribution.
 That is,
-$$
+\begin{equation}
   \sum_{i = 1}^n Z_i \sim \chi^2(n),
-$$
+  (\#eq:SumZ2)
+\end{equation}
 where\ $n$ here is the *degrees of freedom*.\index{Degrees of freedom}
 
 
@@ -1466,7 +1463,7 @@ where\ $n$ here is the *degrees of freedom*.\index{Degrees of freedom}
 A continuous random variable\ $X$ with probability density function\index{Chi-squared distribution}
 \begin{equation}
    f_X(x)
-   = \frac{x^{(\nu/2) - 1}e^{-x/2}}{2^{\nu/2}\Gamma(\nu/2)}
+   = \frac{x^{(\nu/2) - 1}\exp(-x/2)}{2^{\nu/2}\,\Gamma(\nu/2)}
    \quad\text{for $x > 0$}
 \end{equation}
 is said to have a *chi-squared distribution* with parameter $\nu > 0$, called the *degrees of freedom*.
@@ -1483,7 +1480,7 @@ This means that properties of the chi-squared distribution can be obtained direc
 :::
 
 
-```{r ChisqPlots, echo=FALSE, out.width='100%', fig.height=3, fig.width=6.5, fig.cap="Some $\\chi^2$ -distribution probability density functions."}
+```{r ChisqPlots, echo=FALSE, out.width='100%', fig.height=2.75, fig.width=6.5, fig.cap="Some $\\chi^2$-distribution probability density functions."}
 par( mfrow = c(1, 3))
 
 xx <- seq(0.01, 4, length = 100)
@@ -1519,7 +1516,7 @@ plot( x = xx,
 
 
 :::{.theorem #ChisqProperties name="Properties of the chi-squared distribution"}
-If $X\sim\chi^2(., \nu)$ then
+If $X\sim\chi^2(\nu)$ then
 
 * $\operatorname{E}(X) = \nu$.
 * $\operatorname{var}(X) = 2\nu$.
@@ -1531,135 +1528,62 @@ See Theorem\ \@ref(thm:GammaProperties).
 :::
 
 
-
-
-
-:::{.definition #ChiSquaredDistribution name="Chi-squared distribution"}
-A continuous random variable\ $X$ with probability density function\index{Chi-squared distribution}
-\begin{equation}
-   f_X(x)
-   = \frac{x^{(\nu/2) - 1}e^{-x/2}}{2^{\nu/2}\Gamma(\nu/2)}
-   \quad\text{for $x > 0$}
-\end{equation}
-is said to have a *chi-squared distribution* with parameter $\nu > 0$.
-The parameter\ $\nu$ is called the *degrees of freedom*.
-We write $X \sim \chi^2(\nu)$.
+:::{.example}
+Some example.
 :::
+\index{Chi-squared distribution|)}
 
 
-Some plots of $\chi^2$-distributions are shown in Fig.\ \@ref(fig:ChisqPlots).
-
-
-::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
-The chi-squared distribution is a special case of the gamma distribution, with $\alpha = \nu/2$ and $\beta = 2$ (Exercise\ \@ref(exr:ChiSquaredGamma)).
-This means that properties of the chi-squared distribution can be obtained directly from those for the gamma distribution (Sect.\ \@ref(GammaDistribution)).
-:::
-
-
-
-:::{.theorem #ChisqProperties name="Properties of the chi-squared distribution"}
-If $X\sim\chi^2(., \nu)$ then
-
-* $\operatorname{E}(X) = \nu$.
-* $\operatorname{var}(X) = 2\nu$.
-* $M_X(t) = (1 - 2t)^{-\nu/2}$ for $t < 1/2$.
-
-::::{.proof}
-See Theorem\ \@ref(thm:GammaProperties).
-::::
-:::
-
-
-Then:
+Having found the distribution of the sum of\ $n$ random variables, we can return to the original task: finding the sampling distribution of the sample variance\ $S^2$ (in Eq.\ \@ref(eq:S2)).
+First, write
 $$
-  \sum_{i=1}^n Z_i^2 
+  \sum_{i=1}^n (X_i - \overline{X})^2
   = 
-  \sum_{i=1}^n \frac{(X_i - \mu)^2}{\sigma^2} \sim \chi^2(n)
+  \sum_{i=1}^n (X_i - \mu)^2 - 
+  \sum_{i=1}^n (\bar{X} - \mu)^2
 $$
+(see Exercise\ \@ref(Exercise3)).
+Dividing this expression by\ $\sigma^2$ then gives
+\begin{align*}
+  \sum_{i=1}^n \frac{(X_i - \overline{X})^2}{\sigma^2}
+  &= 
+  \sum_{i=1}^n \frac{(X_i - \mu)^2}{\sigma^2} - 
+  \sum_{i=1}^n \frac{(\bar{X} - \mu)^2}{\sigma^2}\\
+  &= 
+  \sum_{i=1}^n \left( \frac{X_i - \mu}{\sigma}\right)^2 - 
+  \frac{n(\bar{X} - \mu)^2}{\sigma^2}.
+\end{align*}
+The term on the left side has a $\chi^2(n)$ distribution (Eq~\@ref(\#eq:SumZ2)).
+The final term has the form $Z^2$, where $Z = (\bar{X} - \mu)/(\sigma/\sqrt{n})$; thus the third term has a $\chi^2(1)$ distribution.
 
-### Step 2: Decomposition Identity
-
-We use the identity:
+Now, *if those two terms are independent*, we can use the MGF method to show that
 $$
-\sum_{i=1}^n (X_i - \mu)^2 =
-\sum_{i=1}^n (X_i - \bar{X})^2 + n(\bar{X} - \mu)^2
+  \sum_{i=1}^n \frac{(X_i - \bar{X})^2}{\sigma^2} \sim \chi^2(n-1)
 $$
-
-Dividing through by $\sigma^2$:
+Showing that the two terms are independent is not straightforward, but it is equivalent to showing that\ $S^2$ and $\bar{X}$ are independent since the\ $X_i$ are normally distributed (Exercise\ \@ref(exr:MeanSdIndependent)).
+Assuming the independence holds, this means that
 $$
-\sum_{i=1}^n \frac{(X_i - \mu)^2}{\sigma^2}
-=
-\sum_{i=1}^n \frac{(X_i - \bar{X})^2}{\sigma^2}
-+
-\frac{n(\bar{X} - \mu)^2}{\sigma^2}
+  \frac{1}{\sigma^2} \sum_{i=1}^n (X_i - \bar{X})^2 \sim \chi^2(n-1)
 $$
-
-### Step 3: Distribution of Each Term
-
-- Left-hand side:
+and hence
 $$
-\sim \chi^2(n)
+  \frac{(n - 1)S^2}{\sigma^2} \sim \chi^2(n-1)
 $$
+after substituting Eq.\ \@ref(eq:S2) and rearranging.
+This means that $S^2$ follows a scaled $\chi^2(n-1)$ distribution.
 
-- Second term:
-$$
-\frac{\sqrt{n}(\bar{X} - \mu)}{\sigma} \sim \mathcal{N}(0,1)
-\Rightarrow
-\frac{n(\bar{X} - \mu)^2}{\sigma^2} \sim \chi^2(1)
-$$
 
-### Step 4: Independence (Normal Case)
+:::{.theorem #SamplingDistMean name="Sampling distribution of the mean"}
+If $X_1, X_2, \dots, X_n$ is an *iid sample* of size\ $n$ from a population with a $N(\mu, \sigma^2)$ distribution, then the sample variance\ $S^2$ has a sampling distribution distributed as  $\chi^2(n-1)$.
 
-A key result for normal samples:
-
-- $\bar{X}$ and $\sum (X_i - \bar{X})^2$ are independent
-
-Thus we can decompose:
-$$
-\chi^2(n) = \chi^2(n-1) + \chi^2(1)
-$$
-
-### Final Result
-
-Therefore:
-$$
-\sum_{i=1}^n \frac{(X_i - \bar{X})^2}{\sigma^2} \sim \chi^2(n-1)
-$$
-
-and hence:
-$$
-\frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1)
-$$
-
-### Interpretation
-
-- One degree of freedom is lost due to estimation of $\bar{X}$
-- This result holds **only under normality**
-
-### Summary
-
-The sampling distribution of the sample variance is:
-
-$$
-\frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1)
-$$
-
-This result underpins:
-- Confidence intervals for $\sigma^2$
-- The derivation of the $t$-distribution
-
----
-
-### The $\chi^2$-distribution {#ChiSquareDistribution}
-
-\index{Chi-squared distribution}
-Having studied the sampling distribution of the *mean*, we now study the sampling distribution of the *variance* in a normal population.
-We begin with the definition and properties of the chi-squared distribution, which were first encountered in Examples\ \@ref(exm:TransformationNon11) and\ \@ref(exm:TransformB).
-
+::::{.proof}
+The proof has been outlined in the above discussion.
+::::
+:::
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the $\chi^2$-distribution have the form `[dpqr]chisq(df)`, where `df`${} = \nu$ is the degrees of freedom (see Appendix\ \@ref(UseRDistributions)):
+The four **R** functions for working with the $\chi^2$-distribution have the form `[dpqr]chisq(., df)`, where `df`${} = \nu$ is the degrees of freedom (see Appendix\ \@ref(UseRDistributions)):
 
 * `dchisq(x, df)` computes the PDF at $X = {}$`x`;
 * `pchisq(q, df)` computes the CDF at $X = {}$`q`;
@@ -1668,129 +1592,132 @@ The four **R** functions for working with the $\chi^2$-distribution have the for
 :::
 
 
-Two results established earlier are needed for what follows.
-The first (proved in Example\ \@ref(exm:TransformationNon11)) is that if $Z\sim N(0,1)$ then $Z^2\sim\chi^2(1)$; this is
-Theorem\ \@ref(thm:SumSquaredNormals).
-The second extends this to a sum of squares.
-
-
-:::{.theorem #SumSquaredNormals name="Sum of squared standard normals"}
-If $Z_1, Z_2,\dots, Z_n$ are iid $N(0, 1)$, then $\displaystyle\sum_{i=1}^n Z_i^2 \sim \chi^2(n)$.
-
-::::{.proof}
-Since $Z_i^2 \sim \chi^2(1)$, from Theorem\ \@ref(thm:ChisqProperties) its MGF is $M_{Z_i^2}(t) = (1 - 2t)^{-1/2}$.
-By independence and Theorem\ \@ref(thm:MGFIndependent),
-\begin{align*}
-   M_{\sum Z_i^2}(t)
-   &= \prod_{i = 1}^n (1 - 2t)^{-1/2}
-    = (1 - 2t)^{-n/2},
-\end{align*}
-which is the MGF of $\chi^2(n)$.
-::::
+:::{.example}
+Consider taking samples of size $n = 5$ and $n = 20$ from a $N(5, \sigma^2 = 4)$ distribution.
+The sampling distribution of
+$$
+  \frac{n - 1}{4} S^2 \sim \chi^2(n - 1).
+$$
+Figure\ \@ref(fig:ChiS2R) shows the sampling distribution for the scaled sample standard deviation for both sample sizes.
 :::
 
+```{r fig.show='hide'}
+set.seed(42)
 
-We can now state the main result connecting a random sample from a normal population to the chi-squared distribution.
+n_a <- 5; n_b <- 20
+mu <- 5; sigma2 <- 4
+num_Sims   <- 10000
 
+# Simulate nsim values of (n-1)S^2 / sigma^2
+scaled_S2_a <- replicate(num_Sims, {
+  x <- rnorm(n_a, 
+             mean = mu, sd = sqrt(sigma2))
+  (n_a - 1) * var(x) / sigma2
+})
+scaled_S2_b <- replicate(num_Sims, {
+  x <- rnorm(n_b, 
+             mean = mu, sd = sqrt(sigma2))
+  (n_b - 1) * var(x) / sigma2
+})
 
-:::{.theorem #ChiSquare name="Chi-squared distribution of standardised sum of squares"}
-Let $X_1, X_2, \dots, X_n$ be a random sample from $N(\mu, \sigma^2)$.
-Then
-$$
-  \sum_{i = 1}^n \left(\frac{X_i - \mu}{\sigma}\right)^2
-  \sim \chi^2_n.
-$$
+par(mfrow = c(1, 2))
 
-::::{.proof}
-Setting $Z_i = (X_i - \mu)/\sigma$ gives iid $N(0,1)$ variables, and the result follows immediately from Theorem\ \@ref(thm:SumSquaredNormals).
-::::
-:::
+# Plot histogram vs true chi^2(n-1) density
+hist(scaled_S2_a, 
+     freq = FALSE,
+     main = "Scaled sample standard\ndeviation n = 5",
+     xlab = "Value")
 
+curve(dchisq(x, df = n_a - 1), 
+      add = TRUE, 
+      lwd = 2)
 
-The sample variance is given by
-\begin{equation}
-   S^2 = \frac{1}{n - 1}\sum_{i = 1}^n (X_i - \overline{X})^2.
-   (\#eq:SampleVarDist)
-\end{equation}
-Since\ $S^2$ is a statistic, it has a sampling distribution.
-Theorem\ \@ref(thm:ChiSquare) almost applies, but $\overline{X}$ appears in place of the known constant\ $\mu$---a difference that
-costs one degree of freedom. ??????????
+hist(scaled_S2_b, 
+     freq = FALSE,
+     main = "Scaled sample standard\ndeviation n = 20",
+     xlab = "Value")
 
+curve(dchisq(x, df = n_b - 1), 
+      add = TRUE, 
+      lwd = 2)
 
-:::{.theorem #SampleVarDist name="Sampling distribution of the sample variance"}
-Let $X_1, X_2, \dots, X_n$ be a random sample from $N(\mu, \sigma^2)$. 
-Then
-$$
-   \frac{(n - 1)S^2}{\sigma^2} \sim \chi^2_{n - 1}.
-$$
-
-::::{.proof}
-Only a *partial proof* is provided.
-From Eq.\ \@ref(eq:SampleVarDist),
-$$
-   \frac{(n - 1)S^2}{\sigma^2}
-   = \sum_{i = 1}^n \left(\frac{X_i - \overline{X}}{\sigma}\right)^2.
-$$
-This resembles Theorem\ \@ref(thm:ChiSquare), except that the known constant\ $\mu$ is replaced by the random variable\ $\overline{X}$.
-Writing $X_i - \overline{X} = (X_i - \mu) - (\overline{X} - \mu)$ and expanding gives
-\begin{align*}
-  \sum_{i = 1}^n \left(\frac{X_i - \overline{X}}{\sigma}\right)^2
-    &= \sum_{i = 1}^n \left(\frac{X_i - \mu}{\sigma}\right)^2
-       - n\frac{(\overline{X} - \mu)^2}{\sigma^2}.
-\end{align*}
-(Check!)
-Define $W = \sum_{i=1}^n\bigl((X_i-\mu)/\sigma\bigr)^2$, $U = n(\overline{X}-\mu)^2/\sigma^2$, and $V = (n-1)S^2/\sigma^2$, so that $W = U + V$.
-Then:
-
-* $W \sim \chi^2_n$ by Theorem\ \@ref(thm:ChiSquare), with MGF   $M_W(t) = (1 - 2t)^{-n/2}$.
-* $U \sim \chi^2_1$ because $\overline{X}\sim N(\mu, \sigma^2/n)$, so $(\overline{X}-\mu)/(\sigma/\sqrt{n})$ is standard normal and   $U$ is its square; thus $M_U(t) = (1 - 2t)^{-1/2}$.
-
-Provided\ $U$ and\ $V$ are independent (not proved here), the MGF of\ $V$ is
-$$
-   M_V(t) = \frac{M_W(t)}{M_U(t)} = (1 - 2t)^{-(n-1)/2},
-$$
-which is the MGF of $\chi^2_{n-1}$.
-::::
-:::
-
-
-:::{.example #ChisqProb name="Chi-squared quantile"}
-The variable\ $X$ has a chi-squared distribution with $12$\ df.
-Determine the value of\ $X$ below which lies 90% of the distribution.
-
-We seek\ $c$ such that $\Pr(X \le c) = 0.90$ where $X\sim\chi^2(12)$. 
-In **R**:
-
-```{r}
-qchisq(0.9, df = 12)
 ```
 
-About 90% of the distribution lies below
-`r round(qchisq(0.9, df = 12), 3)`.
-:::
+```{r ChiS2R, echo=FALSE, fig.align="center", fig.cap="The sampling distribution of the scaled standard deviation.", fig.width=8, fig.height=3.25, out.width='90%'}
+# Plot histogram vs true chi^2(n-1) density
+par(mfrow = c(1, 2))
+
+hist(scaled_S2_a, 
+     freq = FALSE,
+     ylim = c(0, 0.18),
+     axes = FALSE,
+     main = "Scaled sample standard\ndeviation: n = 5",
+     ylab = "",
+     xlab = "Sample standard deviation")
+axis(side = 1)
+
+curve(dchisq(x, df = n_a - 1), 
+      add = TRUE, 
+      lwd = 2)
+
+###
+
+hist(scaled_S2_b, 
+     freq = FALSE,
+     axes = FALSE,
+     ylab = "",
+     main = "Scaled sample standard\ndeviation: n = 20",
+     xlab = "Sample standard deviation")
+axis(side = 1)
+
+curve(dchisq(x, df = n_b - 1), 
+      add = TRUE, 
+      lwd = 2)
 
 
-:::{.example #SampleVar name="Distribution of sample variance"}
-A random sample of size $n = 10$ is selected from the $N(20, 5)$ distribution.
-What is the probability that the sample variance exceeds\ $10$?
-
-By Theorem\ \@ref(thm:SampleVarDist),
-$$
-   \frac{9 S^2}{5} \sim \chi^2_9,
-$$
-so
-$$
-   \Pr(S^2 > 10)
-   = \Pr\!\left(\frac{9S^2}{5} > 18\right)
-   = \Pr(\chi^2_9 > 18).
-$$
-In **R**:
-
-```{r, echo=TRUE}
-pchisq(18, df = 9, lower.tail = FALSE)
 ```
 
-Hence $\Pr(S^2 > 10) \approx 0.035$.
+
+
+
+
+
+:::{.example #Chi2Eng name="Sample standard deviation"}
+Quality control engineers routinely need to assess the variability of a production process. 
+A process may be centred correctly yet still produce defective items if the spread is too large.
+
+Suppose a manufacturer produces steel rods whose diameter (in mm) should follow a $N(\mu, \sigma^2)$ distribution. The target standard deviation is $\sigma = 0.05\mms$; large variances are outside tolerance.
+
+The production line is monitored by a quality engineer by drawing a random sample of $n = 25$ rods each hour and computing the sample variance $S^2$.
+In one sample of $n = 25$, the engineer finds $s^2 = 0.0031\mms^2$.
+Find the probability that $S^2 > 0.0031$ when $\sigma^2 = 0.0025$.
+
+Using the chi-squared result, 
+$$
+  \frac{n-1}{\sigma^2} S^2 
+  \sim  \chi^2(n-1) 
+  \quad
+  \text{so that}
+  \quad  
+  \frac{24}{0.0025} S^2 
+  =
+  9600\, S^2 
+  \sim  \chi^2(24) 
+$$
+
+Thus, 
+$$
+  \Pr(S^2 > 0.0031)
+  =
+  \Pr\left(9600\,S^2 > \frac{24\times 0.0031}{0.0025}\right)
+$$
+In\ **R**:
+
+```{r ChiExample}
+1 - pchisq(29.76, 
+           df = 24)
+```
+There is an approximate $19$% probability of observing a sample variance this large or larger purely by chance, if the true variance is $\sigma^2 = 0.0025$.
 :::
 
 
@@ -1887,7 +1814,8 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(The~italic(t)*"-"*distribution~with~2~df)))
+      main = expression( bold(atop(The~italic(t)*"-"*distribution,
+                                   with~2~df))) )
 axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
@@ -1903,7 +1831,8 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(The~italic(t)*"-"*distribution~with~7~df)))
+      main = expression( bold(atop(The~italic(t)*"-"*distribution,
+                                   with~7~df))))
 axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
@@ -1919,7 +1848,8 @@ plot( x = xx,
       xlab = expression(italic(x)),
       ylab = "Density",
       las = 1,
-      main = expression( bold(The~italic(t)*"-"*distribution~with~30~df)))
+      main = expression( bold(atop(The~italic(t)*"-"*distribution,
+                                   with~30~df))))
 axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
@@ -2147,7 +2077,7 @@ qf(0.99, df1 = 2, df2 = 10)
 ## The normal approximation to the binomial {#NormalApproxBinomialCLT}
 
 \index{Binomial distribution!normal approximation}
-The normal approximation to the binomial distribution (Sect.\ \@ref(NormalApproxBinomial) can be seen as an application of the [Central Limit Theorem](#thm:CLT).\index{Central Limit Theorem}
+The normal approximation to the binomial distribution (Sect.\ \@ref(NormalApproxBinomial)) can be seen as an application of the [Central Limit Theorem](#thm:CLT).\index{Central Limit Theorem}
 The essential observation is that a sample proportion is a sample mean. 
 Consider a sequence of independent [Bernoulli trials](#def:BernoulliTrials) resulting in the random sample $X_1, X_2, \dots, X_n$ where
 $$
@@ -2449,5 +2379,44 @@ is an unbiased estimator of the population variance\ $\sigma^2$.
 
 :::{.exercise #SumMean}
 Prove Theorem\ \@ref(thm:SumMean).
+:::
+
+
+:::{.exercise #DistZ2}
+Consider a random variable $X\sim N(0, 1)$.
+Show that the distribution of $Z = X^2$ is a $\text{Gamma}(\alpha = 1/2. \beta = 2)$ distribution.
+:::
+
+
+:::{.exercise #SumZ2}
+Consider $Z_i \overset{\text{iid}}{\sim}\sim \text{Gamma}(\alpha=1/2. \beta2)$ for $i = 1, 2, \dots, n$.
+
+Use the MGF method (Sect.\ \@ref(TransformationMoments)) to show that the distribution of $\sum_{i=1}^n Z_i^2$ is a $\text{Gamma}(\alpha = n/2, \beta = 2)$ distribution.
+:::
+
+
+:::{.exercise #MeanSdIndependent}
+In this exercise, the relationship between teh samnple meand and sample variance is explored (Sect.\ \@ref(ChiSquaredDistribution)).
+
+Using **R**, generate\ $1000$ simulations of data\ $X_i \sim N(1, 3)$ for $i = 1, 2, dots n$ for $n = 50$.
+For each of the $1000$\ simulations, compute the sample mean and standard deviation.
+
+1. Plot the sample means against the sample variances.
+   Comment.
+2. Compute the correlation between the sample means against the sample variances.
+   Comment.
+3. Show that the covariance between the sample mean $\bar{X}$ and the deviations of the observations from the sample means $\bar{X} - X_i$ is zero.
+:::
+
+
+:::{.exercise #ChisqProb}
+The variable\ $X$ has a chi-squared distribution with $12$\ df.
+Determine the value of\ $X$ below which lies 90% of the distribution.
+:::
+
+
+:::{.exercise #ChisqProb2}
+A random sample of size $n = 10$ is selected from the $N(20, 5)$ distribution.
+What is the probability that the sample variance exceeds\ $10$?
 :::
 
