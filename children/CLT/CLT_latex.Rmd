@@ -1,9 +1,9 @@
-As an example of the CLT in practice, see Fig.\ \@ref(fig:CLTDemoLatex), where samples of various sizes are taken from $\text{Gamma}(2, 1)$ distributions.
-The sampling distribution of the sample mean appears more like an approximate normal as the sample size gets larger, and the approximation is reasoably good even for $n = 10$.
+As an example of the CLT in practice, see Fig.\ \@ref(fig:CLTDemoLatex), where samples of various sizes are taken from a $\text{Gamma}(2, 1)$ distribution, which is very right-skewed.
+The sampling distribution of the sample mean appears more like an approximate normal as the sample size gets larger, and the approximation is reasonably good even for $n = 10$.
 
 
 
-```{r, CLTDemoLatex, fig.align="center", echo=FALSE, fig.cap="Exact sampling distribution of the mean (solid lines) overlaid with the CLT normal approximation (dashed lines). The samples are drawn from a Gamma$(2, 1)$ distribution.", out.width='100%', fig.width=7}
+```{r, CLTDemoLatex, fig.align="center", echo=FALSE, fig.cap="Exact sampling distribution of the mean (solid lines) overlaid with the asymptotic CLT normal approximation (dashed lines). The samples are drawn from a Gamma$(2, 1)$ distribution.", out.width='100%', fig.width=7}
 # Gamma(alpha=2, rate=1): Xbar ~ Gamma(n*alpha, rate=n)
 # mu = 2, sigma = sqrt(2)
 
@@ -13,7 +13,8 @@ beta  <- 1
 mu    <- alpha / beta
 sg    <- sqrt(alpha) / beta
 
-ns <- c(1, 2, 5, 25, 50, 100)
+
+ns <- c(1, 2, 10, 25, 50, 100)
 
 ###  Build x grid and densities for each n  ###
 traces <- lapply(ns, function(n) {
@@ -34,102 +35,25 @@ traces <- lapply(ns, function(n) {
 })
 
 ###  Build figure  ###
-par(mfrow = c(2, 3))
+par(mfrow = c(2, 3),
+    mar = c(5.1, 3.1, 4.1, 1.1) ) # DEFAULT: 5.1 4.1 4.1 2.1
 
-plot(x = traces[[1]]$x, 
-     y = traces[[1]]$yex,
-     type = "l",
-     xlab = expression(bar(italic(X))),
-     ylab = "",
-     axes = FALSE,
-     main = expression(Sample~size*":"~italic(n)==1),
-     lwd = 2)
-axis(side = 1)
-lines(x = traces[[1]]$x, 
-      y = traces[[1]]$yclt,
-      lty = 2,
-      lwd = 2)
-
-
-
-plot(x = traces[[2]]$x, 
-     y = traces[[2]]$yex,
-     type = "l",
-     xlab = expression(bar(italic(X))),
-     ylab = "",
-     axes = FALSE,
-     main = expression(Sample~size*":"~italic(n)==2),
-     lwd = 2)
-axis(side = 1)
-lines(x = traces[[2]]$x, 
-      y = traces[[2]]$yclt,
-      lty = 2,
-      lwd = 2)
-
-
-
-
-plot(x = traces[[3]]$x, 
-     y = traces[[3]]$yex,
-     type = "l",
-     xlab = expression(bar(italic(X))),
-     ylab = "",
-     axes = FALSE,
-     main = expression(Sample~size*":"~italic(n)==5),
-     lwd = 2)
-axis(side = 1)
-lines(x = traces[[3]]$x, 
-      y = traces[[3]]$yclt,
-      lty = 2,
-      lwd = 2)
-
-
-
-plot(x = traces[[4]]$x, 
-     y = traces[[4]]$yex,
-     type = "l",
-     xlab = expression(bar(italic(X))),
-     ylab = "",
-     axes = FALSE,
-     main = expression(Sample~size*":"~italic(n)==25),
-     lwd = 2)
-axis(side = 1)
-lines(x = traces[[4]]$x, 
-      y = traces[[4]]$yclt,
-      lty = 2,
-      lwd = 2)
-
-
-
-plot(x = traces[[5]]$x, 
-     y = traces[[5]]$yex,
-     type = "l",
-     xlab = expression(bar(italic(X))),
-     ylab = "",
-     axes = FALSE,
-     main = expression(Sample~size*":"~italic(n)==50),
-     lwd = 2)
-axis(side = 1)
-lines(x = traces[[5]]$x, 
-      y = traces[[5]]$yclt,
-      lty = 2,
-      lwd = 2)
-
-
-
-plot(x = traces[[6]]$x, 
-     y = traces[[6]]$yex,
-     type = "l",
-     xlab = expression(bar(italic(X))),
-     ylab = "",
-     axes = FALSE,
-     main = expression(Sample~size*":"~italic(n)==100),
-     lwd = 2)
-axis(side = 1)
-lines(x = traces[[6]]$x, 
-      y = traces[[6]]$yclt,
-      lty = 2,
-      lwd = 2)
+for (i in (1:length(ns))){
+  plot(x = traces[[i]]$x, 
+       y = traces[[i]]$yex,
+       type = "l",
+       xlab = expression(bar(italic(X))),
+       ylab = "",
+       axes = FALSE,
+       main = expression(bold(Sampling~distribution)),
+       sub = bquote("(" * Sample~size~italic(n) == .(ns[i]) * ")"),
+       lwd = 2)
+  axis(side = 1)
+  lines(x = traces[[i]]$x, 
+        y = traces[[i]]$yclt,
+        lty = 2,
+        lwd = 2)
+}
 ```
 
 
