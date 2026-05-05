@@ -20,7 +20,7 @@ library("tweedie")
 
 
 # example R options set globally
-options(width = 50)
+options(width = 65)
 
 # example chunk options set globally
 knitr::opts_chunk$set(
