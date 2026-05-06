@@ -208,6 +208,7 @@ The larger sample size produces a better estimate, in general, and the value of 
 
 For larger populations, enumerating every possible is sample implausible or impossible, and obtaining the selected elements is usually impractical or impossible.
 Nonetheless, the idea of a sampling distribution of a statistic can be *simulated* using\ **R**.
+These sampling distributions, generated from simulated data, are called *empirical distributions*;\index{Empirical distributions} that is, they are based on sample data not theoretical ideals.
 
 
 :::{.example}
@@ -311,7 +312,7 @@ $$
   \overline{X} = \frac{1}{n}\sum_{i = 1}^n X_i.
 $$
 
-We can use\ **R** to simulate the selection of many samples of size $n = 5$, and many sample of size $n = 100$, and compute the sample mean for each sample, using the same samples created above (Fig.\ \@ref(fig:SDmeanPlots)):
+We can use\ **R** to simulate the selection of many samples of size $n = 5$, and many sample of size $n = 100$, and compute the empirical mean\index{Empirical mean} for each sample, using the same samples created above (Fig.\ \@ref(fig:SDmeanPlots)):
 
 ```{r SDmean, fig.show='hide'}
 # Mean: n = 5
@@ -497,7 +498,7 @@ See Exercise\ \@ref(exr:UnbiasedVarianceMu)
 :::
 
 
-Again, using the samples found earlier, the estimates\ $S^2_\mu$ can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SampleVarMu)), where $\mu = 173$:
+Again, using the samples found earlier, the empirical estimates\ $S^2_\mu$\index{Empirical variances} can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SampleVarMu)), where $\mu = 173$:
 
 
 ```{r, fig.show='hide'}
@@ -515,7 +516,7 @@ hist(Xvar_2)
 mean(Xvar_2)
 ```
 
-```{r SampleVarMu, echo=FALSE, out.width='90%', fig.width=8, fig.height=3.5, fig.cap="Sampling distributions for the sample variance for sample of size $n = 5$ (left) and $n = 100$ (right), using the unbiased estimator $S^2_\\mu$. The solid dots represent the population variance."}
+```{r SampleVarMu, echo=FALSE, out.width='100%', fig.width=8, fig.height=3.5, fig.cap="Sampling distributions for the sample variance for sample of size $n = 5$ (left) and $n = 100$ (right), using the unbiased estimator $S^2_\\mu$. The solid dots represent the population variance."}
 par( mfrow = c(1, 2))
 
 hist(Xvar,
@@ -593,7 +594,7 @@ This shows that $\operatorname{E}[S^2_n] \ne\sigma^2$, and so the estimator is a
 Again, the estimator is asymptotically unbiased,\index{Unbiased estimator!asymptotically} as $\operatorname{E}[S^2_n] \to\sigma^2$as $n\to\infty$.
 Since\ $\overline{X}$ estimates\ $\mu$ imprecisely (from just one of the many possible samples), an extra source of variation is introduced into the estimation of\ $\sigma^2$.
 
-Using the sample found earlier, the estimates\ $S^2_n$ can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SDvarPlots), top panels).
+Using the sample found earlier, the empirical estimates\ $S^2_n$\index{Empirical variances} can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SDvarPlots), top panels).
 The values of $\operatorname{E}[S^2_n]$ for $n = 5$ and $n = 100$ are
 $$
   \operatorname{E}[S^2_n] = \frac{5 - 1}{5}\times 3^2 = 7.2
@@ -718,16 +719,16 @@ Easily shown by adapting the proof for $S^2_n$ above; see Exercise\ \@ref(exr:Un
 :::
 
 
-Using the sample found earlier, the estimates\ $S^2$ can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SDvarPlots), bottom panels).
+Using the sample found earlier, the empirical estimates\ $S^2$\index{Empirical variances} can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SDvarPlots), bottom panels).
 
 
 ## The distribution of the sample mean {#SamplingDistributionsMean}
 
 ### Introduction {#SamplingDistributionsMeanIntro}
 
-In previous sections, estimators were introduced and studied, specifically unbiased estimators.
-All estimators are random variables, and so they have distributions. 
-Previously, we used simulations to display sampling distributions of various statistics.
+In previous sections, estimators were introduced and studied, specifically unbiased estimators for\ $mu$ and\ $\sigma^2$.
+All estimators are random variables, and so they all have distributions. 
+Previously, we used simulations to display the empirical sampling distribution\index{Sampling distributions!empirical}\index{Empirical distributions} of various statistics.
 
 However, theoretical sampling distributions of various estimators can be found, which leads to numerous very powerful and practical results.
 
@@ -744,23 +745,18 @@ The following theorem quantifies this idea.
 If $X_1, X_2, \dots, X_n$ is a *random sample* of size\ $n$ from a population with mean\ $\operatorname{E}[X] = \mu$ and variance\ $\operatorname{var}[X] = \sigma^2$, then the sample mean\ $\overline{X}$ has a sampling distribution with mean $\mu$ and variance $\sigma^2 / n$.
 
 ::::{.proof}
-Using the properties of expectation, the expected value of $\bar{X}$ is:
+To show that $\operatorname{E}[\overline{X}] = \mu$, apply Theorem\ \@ref(thm:SampleMeanUnbiased).
+
+Similarly, using the properties of the variance, the variance of $\overline{X}$ is:
 \begin{align*}
-    \operatorname{E}[\bar{X}]
-  &= \operatorname{E}[(X_1 + X_2 + \cdots X_n)/n]\\
-  &= \frac{1}{n} \operatorname{E}[X_1 + X_2 + \cdots X_n]\\
-  &= \frac{1}{n} \times n\mu
-   = \mu.
-\end{align*}
-Using the properties of the variance, the variance of $\bar{X}$ is:
-\begin{align*}
-    \operatorname{var}[\bar{X}]
+    \operatorname{var}[\overline{X}]
   &= \operatorname{var}[(X_1 + X_2 + \cdots X_n)/n]\\
   &= \frac{1}{n^2} \operatorname{var}[X_1 + X_2 + \cdots X_n]\\
   &= \frac{1}{n^2} \times n\sigma^
   = \frac{\sigma^2}{n}.
 \end{align*}
 Equivalently, $\operatorname{sd}[X] = \sigma/\sqrt{n}$. 
+We sometimes write $\operatorname{var}[\overline{X}] = \sigma^2_{\bar{X}}$ and $\operatorname{sd}[\overline{X}] = \sigma_{\bar{X}}$. 
 ::::
 :::
 
@@ -768,18 +764,18 @@ Equivalently, $\operatorname{sd}[X] = \sigma/\sqrt{n}$.
 Theorem\ \@ref(thm:SamplingDistMean) applies to a random sample as defined in Sect.\ \@ref(RandomSamples), because taking a random sample\index{Sample!random} means that the observations are independent.
 Theorem\ \@ref(thm:SamplingDistMean) describes the *mean* and *variance* of the sampling distribution of the mean, but not the *shape* of the sampling distribution.
 
-Theorem\ \@ref(thm:SamplingDistMean) shows that the expected value of\ $\bar{X}$ does not depend on the size of the sample, but the variance decreases as the sample size grows: larger samples trend to produce more precise estimates.
-This makes sense intuitively; after all, one reason for preferring larger samples is that they produce more precise estimates.
+Theorem\ \@ref(thm:SamplingDistMean) shows that the expected value of\ $\bar{X}$ does not depend on the size of the sample, but the variance *decreases* as the sample size *increases*: larger samples trend to produce more precise estimates.
+This makes sense intuitively; after all, one reason for preferring larger samples over smaller samples is that they produce more precise estimates.
 
-Theorem\ \@ref(thm:SamplingDistMean) has two important features.
+Theorem\ \@ref(thm:SamplingDistMean) contains two important pices of information.
 The first is that it shows *how* variance decreases as\ $n$ gets larger: inversely proportional to\ $n$.
 This means that a sample size twice as large reduces the variance by half.
-The impact on the standard deviation is probably more intuitive, as the standard deviation is measured in the same units as the data (and the sample mean): a sample size twice as large reduces the standard deviation by a factor of\ $\sqrt{n}$.
+The impact on the standard deviation is probably more intuitive, as the standard deviation is measured in the same units as the data (and the sample mean): a sample size twice as large reduces the standard deviation by a factor of\ $\sqrt{2}$.
 In practice this means that to double the precision of\ $\bar{X}$ (i.e., to halve the size of the standard deviation), the sample size needs to be increase four-fold. 
 
-The second important (and remarkable feature) of Theorem\ \@ref(thm:SamplingDistMean) is that the distribution of the population\ $X$ is not important to the result.
-The result applies for random samples drawn from *any* distribution.
-In Sect.\ \@ref(SamplingDistributionsNormal), we consider the shape of the sampling distribution when the population has a normal distribution; then in Sect.\ \@ref(CentralLimitTheorem) we consider the shape of the sampling distribution when the population has *any* distribution
+The second important (and remarkable) feature of Theorem\ \@ref(thm:SamplingDistMean) is that the results do not rely on knowing the distribution of the population\ $X$.
+The result applies for random samples drawn from *any* distribution, provided the $X_i$ are iid.
+In Sect.\ \@ref(SamplingDistributionsNormal), we consider the shape of the sampling distribution when the population specifically has a normal distribution; then in Sect.\ \@ref(CentralLimitTheorem) we consider the shape of the sampling distribution when the population has *any* distribution
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -787,15 +783,25 @@ In Theorem\ \@ref(thm:SamplingDistMean), the distribution of the population from
 :::
 
 
+:::{.example #SamlimgMnVarExp name="Sampling mean and variance from an exponential distribution"}
+Suppose samples of $n = 5$ are drawn iid from an exponential distribution with $\lambda = 2$.
+This means that $\operatorname{E}[X] = 1/2 = 0.5$, and $\operatorname{var}[X] = 1/\lambda^2 = 0.25$, so we would expect $\operatorname{E}[\overline{X}] = \lambda = 0.5$, and $\operatorname{var}[\overline{X}] = 0.25/n = 0.05$.
+
+The empirical distribution of the means of the samples is shown in Fig.\ \@ref(fig:ExpSD) (left panel).
+The empirical estimate (shown on the figure) are very close to the theoretical values.
+The centre and right panel show sampling distributions for $n = 15$ and $n = 100$.
+:::
+
+
 ```{r, fig.show='hide'}
 set.seed(123)
 
 ns <- c(5, 15, 100)
-lambda <- 4
-B <- 10000  # number of simulations
+lambda <- 2
+num_Sims <- 10000  # number of simulations
 
 sim_means <- lapply(ns, function(n) {
-  replicate(B, 
+  replicate(num_Sims, 
             mean(rexp(n, rate = lambda)))
 })
 
@@ -810,13 +816,14 @@ var(sim_means[[1]]) / var(sim_means[[3]])
 
 
 
-```{r ExpSD, echo=FALSE, fig.align="center", fig.cap="Sampling distributions, for samples drawn from an exponential distribution with $\\lambda = 4$, for various sample sizes. The solid dots represent the population mean $1/\\lambda$.", out.width='100%', fig.width=7.5, fig.height=3}
+```{r ExpSD, echo=FALSE, fig.align="center", fig.cap="Sampling distributions, for samples drawn from an exponential distribution with $\\lambda = 2$, for various sample sizes. The solid dots represent the population mean $1/\\lambda$.", out.width='100%', fig.width=7.5, fig.height=2.5}
 par(mfrow = c(1, 3))
 
 hist(sim_means[[1]], 
      axes = FALSE,
-     xlim = c(0, 0.8),
+     xlim = c(0, 2),
      main = "Sample means:\nn = 5", 
+     sub = bquote("(mean;" ~ .(round(mean(sim_means[[1]]), 3)) ~ "and var:" ~ .(round(var(sim_means[[1]]), 4))),
      ylab = "",
      xlab = "Sample means")
 axis(side = 1)
@@ -826,8 +833,9 @@ points(x = 1/lambda,
 
 hist(sim_means[[2]], 
      axes = FALSE,
-     xlim = c(0, 0.8),
+     xlim = c(0, 2),
      main = "Sample means:\nn = 15", 
+     sub = bquote("(mean;" ~ .(round(mean(sim_means[[2]]), 3)) ~ "and var:" ~ .(round(var(sim_means[[2]]), 4))),
      ylab = "",
      xlab = "Sample mean")
 axis(side = 1)
@@ -837,9 +845,10 @@ points(x = 1/lambda,
 
 hist(sim_means[[3]], 
      axes = FALSE,
-     xlim = c(0, 0.8),
+     xlim = c(0, 2),
      breaks = 5,
      main = "Sample means:\nn = 100", 
+     sub = bquote("(mean;" ~ .(round(mean(sim_means[[3]]), 3)) ~ "and var:" ~ .(round(var(sim_means[[3]]), 4))),
      ylab = "",
      xlab = "Sample mean")
 axis(side = 1)
@@ -851,10 +860,10 @@ points(x = 1/lambda,
 ```
 
 
-### Sampling distribution of $\overline{X}$: when $X_i$ have a normal distribution {#SamplingDistributionsNormal}
+### Sampling distribution of $\overline{X}$: when $X$ has a normal distribution {#SamplingDistributionsNormal}
 
 The normal distribution is used to model many naturally occurring phenomena (Sect.\ \@ref(Normal)). 
-Consequently, we begin by studying the sampling distributions of statistics of random samples that come from normal populations.
+Consequently, we begin by studying the sampling distributions of statistics based on data drawn from normal populations.
 
 The following result proves useful.
 
@@ -928,7 +937,27 @@ mean(Y); var(Y)
 
 ```
 
-```{r HistLinearComb, echo=FALSE, out.width='60%', fig.width=7, fig.height=3, fig.align="center", fig.cap="The distribution of a linear combination of normal random variates in a normal distribution. The solid dot represents the theoretical mean of $Y$. The solid curve is the theoretical distribution of\\ $Y$."}
+```{r HistLinearComb, echo=FALSE, out.width='100%', fig.width=8, fig.height=2.5, fig.align="center", fig.cap="Left: The normal distribution of $X_1$. Centre: the normal distribution of $X_2$. Right: the empirical distribution of a linear combination of the two normal random variates in a normal distribution. The solid dot represents the theoretical mean of $Y$, and the solid curve is the theoretical distribution of\\ $Y$."}
+par(mfrow = c(1, 3))
+
+curve( dnorm(x, mean=2, sd = sqrt(5)),
+       from = -4, to = 9,
+       lwd = 2,
+       ylab = "",
+       xlab = expression(italic(x)),
+       main = expression(The~distribution~of~italic(X)[1]),
+       axes = FALSE)
+axis(side = 1)
+
+curve( dnorm(x, mean=25, sd = sqrt(1)),
+       from = 22, to = 28,
+       lwd = 2,
+       ylab = "",
+       xlab = expression(italic(x)),
+       main = expression(The~distribution~of~italic(X)[2]),
+       axes = FALSE)
+axis(side = 1)
+
 hist(Y,
      axes = FALSE,
      freq = FALSE,
@@ -973,114 +1002,127 @@ Theorem\ \@ref(thm:SumMean) relies only on the population from which the sample 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 For any size sample drawn from a normal distribution, the sample means have a normal distribution.
-This is the basis for inference about the population mean of a normal distribution with known variance.
 :::
 
 
-:::{.example #CLTEnvelopes name="Sums of rvs"}
-Suppose envelopes are collected into packs of\ $25$ by weighing them.
-The weight of an envelope is distributed normally with mean\ $3\gs$ and standard deviation\ $0.6\gs$. 
-Any weighed pack of envelopes is declared as containing\ $25$ if it weighs between $70\gs$ and $80\gs$.
-What is the probability that a pile of\ $25$ will *not* be counted as such?
+:::{.example #CLTSugarSachets name="Sums of rvs"}
+Sugar sachets (for sweetening hot drinks) typical are manufactured so that the weights of sugar in grams\ $W$ in each sachet are normally distributed with a mean of $4\gs$ and standard deviation $0.1\gs$.
+For catering purposes, sachets are sold in boxes of\ $1000$.
+What is the probability that a box contains more than\ $4020\gs$ of sugar? 
 
-Let random variable\ $X_i$ be the weight of the $i$th\ envelope; then $X_i \sim N(3, 0.36)$. 
-Let $Y = X_1 + X_2 + \dots + X_{25}$; then $Y \sim N(75, 9)$. 
-We require $1 - \Pr(70 < Y < 80)$; see Fig.\ \@ref(fig:EnvelopeDist).
-Since the normal distribution is symmetric, proceed:
-\begin{align*}
-   1 - \Pr(70 < Y < 80)
-   &= 2\times \Pr\left( Z < \frac{70 - 75}{\sqrt{9}} \right)\\
-   &= 2\times \Phi(-1.667) \\
-   &= 0.10.
-\end{align*}
+Since the weights\ $W$ follow a normal distribution, then the weight of the sugar in each box is 
+$$
+   B = W_1 + W_2 + \cdots + W_{1000} \sim N(1000\times 4, \sigma^2=1000 \times 0.1^2).
+$$
+or $N(4000, 10)$.
+Then, we seek $\Pr(B > 4020)$:
+$$
+  \Pr(B > 4020)
+  = 
+  \Pr(Z > (4020 - 4000) / 10) 
+  = 
+  \Pr(Z > 2)
+  =
+  1 - \phi(2)
+$$
 In **R**:
 
 ```{r}
-2 * ( pnorm( -1.667 ) )
+1 - pnorm(2)
 ```
+
+The probability is about $2.3$\%.
 :::
 
 
-```{r EnvelopeDist, echo=FALSE, out.width='90%', fig.width=8, fig.height=4, fig.align="center", fig.cap="The envelope example. Left panel: The distribution of the weight of individual envelopes; right panel: The distribution of the weight of packs of $25$\\ envelopes."}
-par( mfrow = c(1, 2))
-
-x <- seq(3 - 4 * 0.6,
-         3 + 4 * 0.6,
-         length = 200)
-y <- dnorm(x,
-           mean = 3,
-           sd = 0.6)
-plot( y ~ x,
-      type = "l",
-      lwd = 2,
-      las = 1,
-      axes = FALSE,
-      main = "Weight of\nindividual envelopes",
-      xlab = "Envelope weight (in g)",
-      ylab = "Density")
-axis(side = 1)
-box()
-
-
-x <- seq(75 - 4 * 3,
-         75 + 4 * 3,
-         length = 200)
-y <- dnorm(x,
-           mean = 75,
-           sd = 3)
-plot( y ~ x,
-      type = "l",
-      lwd = 2,
-      las = 1,
-      axes = FALSE,
-      main = "Weight of packs of\n25 envelopes",
-      xlab = "Pack weight (in g)",
-      ylab = "Density")
-axis(side = 1)
-box()
-shadeNormal(x, y,
-            col = "grey",
-            lo = 70,
-            hi = 80)
-```
-
-
-
 :::{.example #CLTweights name="CLT"}
-The IQs for a large population of $10$\ year-old boys is assumed to be normally distributed, and were determined and found to have a mean of\ $110$ and a variance of\ $144$. 
-How large a sample would have to be taken in order to have a probability of\ $0.9$ that the *mean* IQ of the sample would not differ from the expected value\ $110$ by more than\ $5$?
+The IQs for a large population of $10$\ year-old boys is assumed to be normally distributed, with a mean of\ $110$ and a variance of\ $144$. 
+How large a sample is needed to have a probability of\ $0.9$ that the *mean* IQ of the sample would not differ from the expected value\ $110$ by more than\ $5$?
 
 Let\ $X_i$ be the IQ of the $i$th\ boy; then $X_i \sim N(110, 144)$.
 Consider a sample of size\ $n$ and let $\overline{X} = \sum^n_{i = 1}X_i/n$; then $\overline{X}\sim N(110, 144/n)$.
-Then
+The question asks to find the values of\ $n$ such that
 $$
    \Pr(|\overline{X} - 110|\leq 5) = 0.90.
 $$
-That is
+That is,
 $$
-   \Pr\left(\frac{|\overline{X} - 110|\sqrt{n}}{12} \leq \frac{5\sqrt{n}}{12}\right) = 0.90
+   \Pr\left(\frac{|\overline{X} - 110|}{12/\sqrt{n}} \leq \frac{5}{12/\sqrt{n}}\right) = 0.90
 $$
 hence
 $$
    \Pr(Z \leq 5\sqrt{n} /12) = 0.90. 
 $$
-Using **R**:
-```{r ech0=TRUE}
-z <- qnorm(0.95)
-z
-
-n <- (z * 12 / 5) ^ 2
-n
+Using **R** and being careful (see Fig.\ \@ref(fig:IQFindZ)):
+```{r echo=TRUE}
+z <- qnorm(0.95); z
 ```
+
+Thus,
+$$
+  5\sqrt{n}/12 = 1.644854 \implies n = (12\times 1.644854/5)^2 = 15.58.
+$$
+
+
 The *smallest* size sample, then, would be a sample of $n = 16$.
 :::
 
 
-:::{.example #CLTPlunger name="Two random variable"}
-A certain product involves a plunger fitting into a cylindrical tube.
+```{r IQFindZ, echo=FALSE, fig.align="center", out.width='90%', fig.width=8, fig.height=3, fig.cap="Left: the situation in terms of $Z$. Right: finding the required value of $Z$ =."}
+par(mfrow = c(1, 2))
+
+xstar <- 1.6
+
+out <- plotNormal(mu = 0,
+                  sd = 1,
+                  showX = c(-3, -xstar, 0, xstar, 3),
+                  showXlabels = c(-3, expression(-italic(z)), 0, expression(italic(z)), 3))
+shadeNormal(x = out$x,
+            y = out$y,
+            lo = -xstar, 
+            hi =  xstar,
+            col = "grey")
+text(x = 2.5,
+     y = 0.3,
+     pos = 3,
+     expression(Area*":"~0.90))
+arrows(x0 = 2.5,
+       y0 = 0.3,
+       x1 = 0.75,
+       y1 = 0.1,
+       lwd = 2,
+       angle = 15,
+       length = 0.1)
+
+## 
+
+out <- plotNormal(mu = 0,
+                  sd = 1,
+                  showX = c(-3, -2, -1, 0, xstar, 3),
+                  showXlabels = c(-3, -2, -1, 0, expression(italic(z)), 3))
+shadeNormal(x = out$x,
+            y = out$y,
+            lo = -Inf, 
+            hi =  xstar,
+            col = "grey")
+text(x = 2.5,
+     y = 0.3,
+     pos = 3,
+     expression(Area*":"~0.95))
+arrows(x0 = 2.5,
+       y0 = 0.3,
+       x1 = 0.75,
+       y1 = 0.1,
+       lwd = 2,
+       angle = 15,
+       length = 0.1)
+```
+
+:::{.example #CLTPlunger name="Two random variables"}
+A design involves a plunger fitting into a cylindrical tube.
 The diameter of the plunger can be considered a normal random variable with mean $2.1\cms$ and standard deviation $0.1\cms$.
 The inside diameter of the cylindrical tube is a normal random variable with mean $2.3\cms$ and standard deviation $0.05\cms$. 
-For a plunger and tube chosen randomly from a day's production run, find the probability that the plunger will not fit into the cylinder.
+For a plunger and tube chosen randomly from a day's production run, find the probability that the plunger will *not* fit into the cylinder.
 
 Let\ $X$ and\ $Y$ be the diameter of the plunger and cylinder respectively.
 Then $X\sim N\big(2.1, (0.1)^2\big)$ and $Y\sim N\big( 2.3, (0.05)^2\big)$, and we seek $\Pr(Y < X)$.
@@ -1098,16 +1140,15 @@ pnorm( -1.78 )
 :::
 
 
-Theorem\ \@ref(thm:SumMean) applies when the population is normally distributed.
-Remarkably, when the population is *not* normally distributed, the sampling distribution has an approximate normal distribution for large sample sizes (Sect.\ \@ref(CentralLimitTheorem)).
-
-
 ### The Central Limit Theorem {#CentralLimitTheorem}
 
 Sampling distributions for various statistics of interest are well-developed when sampling is from a *normal* distribution (Sect.\ \@ref(SamplingDistributions)).
+Theorem\ \@ref(thm:SumMean) applies when the population is normally distributed.
 Although these results are important, what if we do not know the distribution of the population from which the random sample is drawn (as is usually the case)?
 
-In Sect.\ \@ref(SamplingDistributionMean) general results are given describing the *mean* and *variance* of the sample mean which hold for any population distribution, but do not say anything about the *distribution* of the sample means.
+Remarkably, when the population is *not* normally distributed, the sampling distribution has an approximate normal distribution for large sample sizes (Sect.\ \@ref(CentralLimitTheorem)).
+
+In Sect.\ \@ref(SamplingDistributionMean) general results are given describing the *mean* and *variance* of the sample mean which holds for any population distribution, but do not say anything about the *distribution* of the sample means.
 The *Central Limit Theorem* (or *CLT*) describes the distribution of the sample means.
 
 
@@ -1121,68 +1162,7 @@ $$
 converges in distribution to a standard normal variable as $n\to\infty$.
 
 ::::{.proof}
-Without loss of generality, centre the $X_i$ by letting $Y_i = (X_i - \mu)/\sigma$,
-so that $\operatorname{E}[Y_i] = 0$, $\operatorname{var}[Y_i] = 1$, and
-$$
-  Z_n = \frac{1}{\sqrt{n}} \sum_{i=1}^n Y_i.
-$$
-Let $\varphi(t) = \operatorname{E}[\exp(itY)]$ denote the common characteristic function (CF) of the\ $Y_i$.
-Since the\ $Y_i$ are independent, the CF of\ $Z_n$ is
-\begin{align*}
-  \varphi_{Z_n}(t)
-  &= \operatorname{E}[\exp(itZ_n)]\\
-  &= \operatorname{E}\left[\exp\left(\frac{it}{\sqrt{n}}\sum_{i=1}^n Y_i\right)\right]\\
-  &= \prod_{i=1}^n \operatorname{E}\left[\exp(it Y_i/\sqrt{n})\right]\\
-  &= \left[\varphi\!\left(\frac{t}{\sqrt{n}}\right)\right]^n.
-\end{align*}
-
-Since $\operatorname{E}[Y^2] = 1 < \infty$, the CF $\varphi(t)$ is twice differentiable at $t = 0$, with
-$$
-  \varphi'(t)\big|_{t=0} = i\operatorname{E}[Y] = 0
-  \qquad\text{and}\qquad
-  \varphi''(t)\big|_{t=0} = i^2 \operatorname{E}[Y^2] = -1.
-$$
-The Taylor expansion of $\varphi$ about $t = 0$ is therefore
-\begin{align*}
-  \varphi(t)
-  &= 1 + \varphi'(0)\,t + \frac{1}{2}\varphi''(0)\,t^2 + o(t^2)\\
-  &= 1 - \frac{1}{2}t^2 + o(t^2)
-  \quad \text{as $t \to 0$},
-\end{align*}
-where $o(t^2)$ means $o(t^2)/t^2 \to 0$ as $t\to 0$.
-
-Substituting $t/\sqrt{n}$ gives
-$$
-  \varphi\!\left(\frac{t}{\sqrt{n}}\right) 
-  = 1 - \frac{t^2}{2n} + o\!\left(\frac{t^2}{n}\right).
-$$
-
-Taking logs (which is valid for large enough\ $n$ since $\varphi(t/\sqrt{n}) \to 1$) and using
-$\log(1 + u) = u + o(u)$ as $u \to 0$:
-$$
-  \log \varphi\!\left(\frac{t}{\sqrt{n}}\right) 
-  = -\frac{t^2}{2n} + o\!\left(\frac{t^2}{n}\right).
-$$
-Therefore
-\begin{align*}
-  \log \varphi_{Z_n}(t)
-  &= n \log \varphi\!\left(\frac{t}{\sqrt{n}}\right)\\
-  &= n\left[-\frac{t^2}{2n} + o\!\left(\frac{t^2}{n}\right)\right]\\
-  &= -\frac{t^2}{2} + n\cdot o\left(\frac{t^2}{n}\right)
-  \to\, -\frac{t^2}{2}
-\end{align*}
-as $n \to \infty$, for each fixed $t \in \mathbb{R}$. 
-Taking exponents,
-$$
-  \varphi_{Z_n}(t) \to \exp(-t^2/2) \quad \text{for all $t \in \mathbb{R}$}.
-$$
-
-The function $\exp(-t^2/2)$ is the CF of the $N(0, 1)$ distribution.
-Since $\varphi_{Z_n}(t) \to \varphi(t)$ pointwise for all\ $t$, and the limit $\varphi(t)$ is continuous at $t = 0$, then $Z_n \overset{d}{\to} Z$, where\ $Z$ has characteristic function $\varphi(t)$, and $\overset{d}{\to}$ means 'converges in distribution'.
-Since $\exp(-t^2/2)$ is continuous everywhere and is the CF of $N(0, 1)$, conclude that
-$$
-  Z_n \overset{d}{\to} N(0, 1).
-$$
+The proof is long, so is deferred to Appendix\ \@ref(CLTProof).
 ::::
 :::
 
@@ -1196,7 +1176,7 @@ However, the arguments used in the proof are powerful and worth understanding.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The *Central Limit Theorem* is one of the most important theorems in statistics.
+The *Central Limit Theorem* (Theorem\ \@ref(thm:CLT)) is one of the most important theorems in statistics.
 :::
 
 
@@ -1234,7 +1214,7 @@ The variance of the sample means for the larger sample size is smaller than that
 :::
 
 
-```{r PoissonCLT, echo=FALSE, fig.cap="The Central Limit Theorem. Left: the distribution of the individual observations that follow a Poisson distribution. Centre: the sampling distribution of the sample mean for samples of size $n = 10$. Right: the sampling distribution of the sample mean for samples of size $n = 100$. The solid lines represent the theoretical asymptotic normal distribution.", fig.align="center", fig.width=7, out.width='100%', fig.height=3}
+```{r PoissonCLT, echo=FALSE, fig.cap="The Central Limit Theorem. Left: the distribution of the individual observations that follow a Poisson distribution. Centre: the empirical sampling distribution of the sample mean for samples of size $n = 10$. Right: the empirical sampling distribution of the sample mean for samples of size $n = 100$. The thick dashed lines represent the theoretical asymptotic normal distribution.", fig.align="center", fig.width=7, out.width='100%', fig.height=3}
 # The distribution of individuals has a uniform distribution:
 set.seed(40516) # For reproducibility
 sample_Size_1 <- 10
@@ -1280,6 +1260,7 @@ hist( sample_Means_1,
                                "for"~italic(n)==10) ) ) )
 curve(dnorm(x, mean=2, sd = sqrt(2) / sqrt(sample_Size_1) ),
       lwd = 2,
+      lty = 2,
       add = TRUE)
 axis(side = 1)
 
@@ -1293,6 +1274,7 @@ hist( sample_Means_2,
                                "for"~italic(n)==100) ) ) )
 curve(dnorm(x, mean=2, sd = sqrt(2) / sqrt(sample_Size_2) ),
       lwd = 2,
+      lty = 2,
       add = TRUE)
 axis(side = 1)
 ```
@@ -1301,24 +1283,24 @@ axis(side = 1)
 :::{.example #SoftDrinkVending name="CLT"}
 When a coffee machine makes a single espresso-style shot, the volume of water in millimetres\ $W$ that is dispensed has a mean of $30\mLs$ with a standard deviation of $2.2\mLs$.
 
-Find the probability that the *average* volume of water is a random sample of size\ $35$ shots is at least $31\mLs$.
+Find the probability that the *average* volume of water is a random sample of size\ $35$ shots is less than $31\mLs$.
 
 The distribution of\ $W$ is not given, but the mean and standard deviation of\ $W$ are given.
 The distribution of the sample mean\ $\overline{W}$ can be approximated by the normal distribution with mean of $\mu = 30$ and standard error of $\sigma_{\overline{W}} = \sigma/\sqrt{n} = 2.2/\sqrt{36} = 0.3718\mLs$, according to the CLT.
 That is, $\overline{W} \sim N(30, 0.3718^2)$.
 Now
 $$
-   \Pr(\overline{W} \ge 31) 
-   \approx \Pr\left(Z \ge \frac{31 - 30}{0.3718}\right)
-   = \Pr(Z \ge 2.69).
+   \Pr(\overline{W} < 31) 
+   \approx \Pr\left(Z < \frac{31 - 30}{0.3718}\right)
+   = \Pr(Z < 2.69).
 $$
 In **R**:
 
 ```{r}
-1 - pnorm(2.69)
+pnorm(2.69)
 ```
 
-Hence, $\Pr(\overline{W}\ge 31) \approx 0.0036$, or approximately\ $0.4$%.
+Hence, $\Pr(\overline{W} < 31) \approx 0.0036$, or approximately\ $99.6$%.
 :::
 
 
@@ -1332,14 +1314,15 @@ Then define $Y = X_1 + \dots + X_{12}$, so that we seek $\Pr(Y\geq 52)$.
 To use Theorem\ \@ref(thm:CLT), see that '$Y\geq 52$' is equivalent to '$\overline{X}\geq 52/12$', where $\overline{X} = Y/12$ is the mean number showing from the $12$\ tosses.
 
 Since the distribution of each\ $X_i$ is rectangular with $\Pr(X_i = x) = 1/6$ (for $x = 1, 2, \dots, 6$), then $\operatorname{E}[X_i] = 7/2$ and $\operatorname{var}[X_i] = 35/12$ (Sect.\ \@ref(DiscreteUniformProperties)).
-Hence, $\operatorname{E}[\overline{X}] = 7/2$ and $\operatorname{var}[\overline{X}] = 35/(12^2)$. 
-Then from Theorem\ \@ref(thm:CLT),
+Hence, $\operatorname{E}[\overline{X}] = 7/2$ and $\operatorname{var}[\overline{X}] = 35/(12^2)$, and so 
+$\overline{X} \sim N(7/2, sigma^2 = 35/(12^2))$. 
+
+Then, from Theorem\ \@ref(thm:CLT),
 \begin{align*}
   \Pr(Y\geq 52) 
     & \simeq \Pr(\overline{X}\geq 52/12)\\
     &= \Pr_N \left(Z\geq \frac{52/12 - 7/2}{\sqrt{35/144}}\right)\\
-    &= 1 - \Phi(1.690)\\
-    &= 0.0455
+    &= 1 - \Phi(1.690) = 0.0455
 \end{align*}
 The probability is approximately\ $4.5$%.
 :::
@@ -1365,6 +1348,8 @@ Not given.
 Theorem\ \@ref(thm:ConvergeToN) makes no assumptions about the distribution of\ $X_i$.
 If the\ $X_i$ are *normally* distributed, then $Y = \sum_{i = 1}^n a_i X_i$ will have a normal distribution for any\ $n$, large or small.
 
+
+SALT SACHERS:
 
 :::{.example #NoiseVoltages name="CLT (Voltages)"}
 Suppose we have a number of independent noise voltages\ $V_i$ (for $i = 1, 2, \dots, n$). 
@@ -1405,17 +1390,17 @@ We are seeking the distribution of $S^2$.
 ### The $\chi^2$-distribution {#ChiSquaredDistribution}
 
 \index{Chi-squared distribution|(}
-The formula for the estimator\ $S^2$ in Eq.\ \@ref(eq:S2) involves an\ $X_i^2$ term, where each $X_i$ has a normal distribution.
+The formula for the estimator\ $S^2$ in Eq.\ \@ref(eq:S2) involves an\ $\sum X_i^2$ term, where each $X_i$ has a normal distribution.
 Hence, to find the distribution of\ $S^2$, we start with the distribution of a squared normal variate; specifically, consider
 $$
   Z = \frac{X - \mu}{\sigma} \sim N(0,1)
 $$
 and the distribution of $Y = Z^2$.
-This is simply finding the distribution of a transformation of a random variable (Chap.\  \@ref(ChapterTransformations)), and yields
+The distribution of\ $Y$ is easy to determine using the techniques in Chap.\ \@ref(ChapterTransformations)), and yields
 $$
   f_Y(y) = \frac{y^{-1/2}\exp(-y/2)}{\sqrt{2\pi}} \quad\text{for $y > 0$}.
 $$
-The proof is Exercise\ \@ref(exr:DistZ2)).
+The proof is Exercise\ \@ref(exr:DistZ2).
 Note that $Y \sim \text{Gamma}(\alpha = 1/2, \beta = 2)$.
 
 Now consider $Z_1, Z_2, \dots Z_n\overset{\text{iid}}{\sim} N(0, 1)$, and the summation $\sum_{i = 1}^n Z_i^2$.
@@ -1424,9 +1409,10 @@ $$
   \sum_{i = 1}^n Z_i \sim \text{Gamma}(\alpha = n/2, \beta = 2).
 $$
 This distribution occurs so often in practice that is has its own name: a $\chi^2$-distribution.
-That is,
+That is, a $\text{Gamma}(\alpha = n/2, \beta = 2)$ is defined as a $\chi^2_n$-distribution.
+Thus:
 \begin{equation}
-  \sum_{i = 1}^n Z_i \sim \chi^2(n),
+  \sum_{i = 1}^n Z_i \sim \chi^2_n,
   (\#eq:SumZ2)
 \end{equation}
 where\ $n$ here is the *degrees of freedom*.\index{Degrees of freedom}
@@ -1440,7 +1426,7 @@ A continuous random variable\ $X$ with probability density function\index{Chi-sq
    \quad\text{for $x > 0$}
 \end{equation}
 is said to have a *chi-squared distribution* with parameter $\nu > 0$, called the *degrees of freedom*.
-We write $X \sim \chi^2(\nu)$.
+We write $X \sim \chi^2_\nu$.
 :::
 
 
@@ -1453,7 +1439,7 @@ This means that properties of the chi-squared distribution can be obtained direc
 :::
 
 
-```{r ChisqPlots, echo=FALSE, out.width='100%', fig.height=2.75, fig.width=6.5, fig.cap="Some $\\chi^2$-distribution probability density functions."}
+```{r ChisqPlots, echo=FALSE, out.width='100%', fig.height=2.75, fig.width=6.5, fig.cap="Some $\\chi^2\\!$-distribution probability density functions."}
 par( mfrow = c(1, 3))
 
 xx <- seq(0.01, 4, length = 100)
@@ -1489,7 +1475,7 @@ plot( x = xx,
 
 
 :::{.theorem #ChisqProperties name="Properties of the chi-squared distribution"}
-If $X\sim\chi^2(\nu)$ then
+If $X\sim\chi^2_\nu$ then
 
 * $\operatorname{E}(X) = \nu$.
 * $\operatorname{var}(X) = 2\nu$.
@@ -1526,28 +1512,28 @@ Dividing this expression by\ $\sigma^2$ then gives
   \sum_{i=1}^n \left( \frac{X_i - \mu}{\sigma}\right)^2 - 
   \frac{n(\bar{X} - \mu)^2}{\sigma^2}.
 \end{align*}
-The term on the left side has a $\chi^2(n)$ distribution (Eq~\@ref(\#eq:SumZ2)).
+The term on the left side has a $\chi^2_n$ distribution (Eq~\@ref(\#eq:SumZ2)).
 The final term has the form $Z^2$, where $Z = (\bar{X} - \mu)/(\sigma/\sqrt{n})$; thus the third term has a $\chi^2(1)$ distribution.
 
 Now, *if those two terms are independent*, we can use the MGF method to show that
 $$
-  \sum_{i=1}^n \frac{(X_i - \bar{X})^2}{\sigma^2} \sim \chi^2(n-1)
+  \sum_{i=1}^n \frac{(X_i - \bar{X})^2}{\sigma^2} \sim \chi^2_{n-1}
 $$
 Showing that the two terms are independent is not straightforward, but it is equivalent to showing that\ $S^2$ and $\bar{X}$ are independent since the\ $X_i$ are normally distributed (Exercise\ \@ref(exr:MeanSdIndependent)).
 Assuming the independence holds, this means that
 $$
-  \frac{1}{\sigma^2} \sum_{i=1}^n (X_i - \bar{X})^2 \sim \chi^2(n-1)
+  \frac{1}{\sigma^2} \sum_{i=1}^n (X_i - \bar{X})^2 \sim \chi^2_{n-1}
 $$
 and hence
 $$
-  \frac{(n - 1)S^2}{\sigma^2} \sim \chi^2(n-1)
+  \frac{(n - 1)S^2}{\sigma^2} \sim \chi^2_{n-1}
 $$
 after substituting Eq.\ \@ref(eq:S2) and rearranging.
-This means that $S^2$ follows a scaled $\chi^2(n-1)$ distribution.
+This means that $S^2$ follows a scaled $\chi^2_{n-1}$ distribution.
 
 
 :::{.theorem #SamplingDistMean name="Sampling distribution of the mean"}
-If $X_1, X_2, \dots, X_n$ is an *iid sample* of size\ $n$ from a population with a $N(\mu, \sigma^2)$ distribution, then the sample variance\ $S^2$ has a sampling distribution distributed as  $\chi^2(n-1)$.
+If $X_1, X_2, \dots, X_n$ is an *iid sample* of size\ $n$ from a population with a $N(\mu, \sigma^2)$ distribution, then the sample variance\ $S^2$ has a sampling distribution distributed as  $\chi^2_{n-1}$.
 
 ::::{.proof}
 The proof has been outlined in the above discussion.
@@ -1556,7 +1542,7 @@ The proof has been outlined in the above discussion.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the $\chi^2$-distribution have the form `[dpqr]chisq(., df)`, where `df`${} = \nu$ is the degrees of freedom (see Appendix\ \@ref(UseRDistributions)):
+The four **R** functions for working with the $\chi_\nu^2$-distribution have the form `[dpqr]chisq(., df)`, where `df`${} = \nu$ is the degrees of freedom (see Appendix\ \@ref(UseRDistributions)):
 
 * `dchisq(x, df)` computes the PDF at $X = {}$`x`;
 * `pchisq(q, df)` computes the CDF at $X = {}$`q`;
@@ -1569,7 +1555,7 @@ The four **R** functions for working with the $\chi^2$-distribution have the for
 Consider taking samples of size $n = 5$ and $n = 20$ from a $N(5, \sigma^2 = 4)$ distribution.
 The sampling distribution of
 $$
-  \frac{n - 1}{4} S^2 \sim \chi^2(n - 1).
+  \frac{n - 1}{4} S^2 \sim \chi^2_{n - 1}.
 $$
 Figure\ \@ref(fig:ChiS2R) shows the sampling distribution for the scaled sample standard deviation for both sample sizes.
 :::
@@ -1651,10 +1637,6 @@ curve(dchisq(x, df = n_b - 1),
 ```
 
 
-
-
-
-
 :::{.example #Chi2Eng name="Sample standard deviation"}
 Quality control engineers routinely need to assess the variability of a production process. 
 A process may be centred correctly yet still produce defective items if the spread is too large.
@@ -1668,14 +1650,14 @@ Find the probability that $S^2 > 0.0031$ when $\sigma^2 = 0.0025$.
 Using the chi-squared result, 
 $$
   \frac{n-1}{\sigma^2} S^2 
-  \sim  \chi^2(n-1) 
+  \sim  \chi^2_{n-1} 
   \quad
   \text{so that}
   \quad  
   \frac{24}{0.0025} S^2 
   =
   9600\, S^2 
-  \sim  \chi^2(24) 
+  \sim  \chi^2_{24} 
 $$
 
 Thus, 
@@ -2100,6 +2082,74 @@ and
 $$
    Y = n\widehat{p}
    \sim N(np, np(1 - p))\text{ approximately}.
+$$
+
+
+
+## Appendix: Proof of the CLT {#CLTProof}
+
+This Appendix outlines the proof of the Central Limit Theorem (Theorem\ \@ref(thm:CLT)).
+
+Without loss of generality, centre the $X_i$ by letting $Y_i = (X_i - \mu)/\sigma$,
+so that $\operatorname{E}[Y_i] = 0$, $\operatorname{var}[Y_i] = 1$, and
+$$
+  Z_n = \frac{1}{\sqrt{n}} \sum_{i=1}^n Y_i.
+$$
+Let $\varphi(t) = \operatorname{E}[\exp(itY)]$ denote the common characteristic function (CF) of the\ $Y_i$.
+Since the\ $Y_i$ are independent, the CF of\ $Z_n$ is
+\begin{align*}
+  \varphi_{Z_n}(t)
+  &= \operatorname{E}[\exp(itZ_n)]\\
+  &= \operatorname{E}\left[\exp\left(\frac{it}{\sqrt{n}}\sum_{i=1}^n Y_i\right)\right]\\
+  &= \prod_{i=1}^n \operatorname{E}\left[\exp(it Y_i/\sqrt{n})\right]\\
+  &= \left[\varphi\!\left(t/\sqrt{n}\right)\right]^n.
+\end{align*}
+
+Since $\operatorname{E}[Y^2] = 1 < \infty$, the CF $\varphi(t)$ is twice differentiable at $t = 0$, with
+$$
+  \varphi'(t)\big|_{t=0} = i\operatorname{E}[Y] = 0
+  \qquad\text{and}\qquad
+  \varphi''(t)\big|_{t=0} = i^2 \operatorname{E}[Y^2] = -1.
+$$
+The Taylor expansion of $\varphi$ about $t = 0$ is therefore
+\begin{align*}
+  \varphi(t)
+  &= 1 + \varphi'(0)\,t + \frac{1}{2}\varphi''(0)\,t^2 + o(t^2)\\
+  &= 1 - \frac{1}{2}t^2 + o(t^2)
+  \quad \text{as $t \to 0$},
+\end{align*}
+where $o(t^2)$ means $o(t^2)/t^2 \to 0$ as $t\to 0$.
+Substituting to write as a function of $t/\sqrt{n}$ gives
+$$
+  \varphi\!\left(\frac{t}{\sqrt{n}}\right) 
+  = 1 - \frac{t^2}{2n} + o\!\left(\frac{t^2}{n}\right).
+$$
+
+Taking logs (which is valid for large enough\ $n$ since $\varphi(t/\sqrt{n}\,) \to 1$) and using
+$\log(1 + u) = u + o(u)$ as $u \to 0$:
+$$
+  \log \varphi\!\left(\frac{t}{\sqrt{n}}\right) 
+  = -\frac{t^2}{2n} + o\!\left(\frac{t^2}{n}\right).
+$$
+Therefore
+\begin{align*}
+  \log \varphi_{Z_n}(t)
+  &= n \log \varphi\!\left(\frac{t}{\sqrt{n}}\right)\\
+  &= n\left[-\frac{t^2}{2n} + o\!\left(\frac{t^2}{n}\right)\right]\\
+  &= -\frac{t^2}{2} + n\cdot o\left(\frac{t^2}{n}\right)
+  \to\, -\frac{t^2}{2}
+\end{align*}
+as $n \to \infty$, for each fixed $t \in \mathbb{R}$. 
+Taking exponents,
+$$
+  \varphi_{Z_n}(t) \to \exp(-t^2/2) \quad \text{for all $t \in \mathbb{R}$}.
+$$
+
+The function $\exp(-t^2/2)$ is the CF of the $N(0, 1)$ distribution.
+Since $\varphi_{Z_n}(t) \to \varphi(t)$ pointwise for all\ $t$, and the limit $\varphi(t)$ is continuous at $t = 0$, then $Z_n \overset{d}{\to} Z$, where\ $Z$ has characteristic function $\varphi(t)$, and $\overset{d}{\to}$ means 'converges in distribution'.
+Since $\exp(-t^2/2)$ is continuous everywhere and is the CF of $N(0, 1)$, conclude that
+$$
+  Z_n \overset{d}{\to} N(0, 1).
 $$
 
 
