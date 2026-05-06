@@ -1,4 +1,8 @@
-
+# This fike contains two functions:
+#
+# - out <- plotNormal() plots a normal distribution.
+# - shadeNormal(out$xx, out$yy) shades given regions of that normal distribution 
+#
 plotNormal <- function(mu, 
                        sd,
                        showX = seq(-3, 3, by = 1) * sd + mu, # The tick marks
