@@ -35,7 +35,7 @@ knitr::opts_chunk$set(
 # Redefine  MASS::truehist  to the default colours used
 truehist <- function(x, ...) {
   MASS::truehist(x, 
-                 col = plotColour1, 
+                 col = ColourOpaque, 
                  ...)
 }
 
