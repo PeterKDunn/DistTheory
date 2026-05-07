@@ -1557,7 +1557,7 @@ The sampling distribution of
 $$
   \frac{n - 1}{4} S^2 \sim \chi^2_{n - 1}.
 $$
-Figure\ \@ref(fig:ChiS2R) shows the sampling distribution for the scaled sample standard deviation for both sample sizes.
+Figure\ \@ref(fig:ChiS2R) shows the empirical sampling distribution for the scaled sample standard deviation for both sample sizes.
 :::
 
 ```{r fig.show='hide'}
@@ -1676,15 +1676,28 @@ There is an approximate $19$% probability of observing a sample variance this la
 :::
 
 
-## Distributions related to the normal distribution {#DistributionsRelatedToNormal}
-
-### The $t$-distribution {#TDistribution}
+## The $T$-distribution {#TDistribution}
 
 \index{t-distribution@$t$-distribution}
+Many other useful distributions exist that are related to the normal distribution.
+Because of the Central Limit Theorem (Sect.\ \@ref(CentralLimitTheorem)), these distribution prove useful in many practical situations.
+
+In practice, a common task is to evaluate a claim or belief about population mean\ $\mu$, based on the mean of a sample\ $\bar{X}$.
+In these cases, provided the sample size is large so that the Central Limit Theorem applies, the statistic $(\bar{X} - \mu)/(\sigma/\sqrt{n})$ has an approximate normal distribution, whatever the distribution of\ $X$, provided the value of\ $\sigma^2$ is known.
+
+But the value of\ $\sigma^2$ is almost never known, and the estimate\ $S^2$ instead is used.
+However, the statistic $(\overline{X} - \mu)(S/\sqrt{n})$ does not have a normal distribution.
+
+
+
+
+PLACE EARLIER?????
 The basis of the independence assumed in the proof of Theorem\ \@ref(thm:SampleVarDist) is the (perhaps surprising) result that the mean and variance of a random sample from a normal population are independent random variables.
 
 
 :::{.theorem #MeanVarInd name="Sample mean and variance: Independent"}
+PLACE EARLIER?????
+
 Let $X_1, X_2,\dots, X_n$ be a random sample of size\ $n$ from $N(\mu, \sigma^2)$.
 Then the sample mean
 $$
@@ -1704,8 +1717,33 @@ This proof is not given.
 ::::
 :::
 
+MOVE THAT STUFF ABOVE??
 
-Another distribution that derives from sampling a normal population is the $t$-distribution.
+Consider, then, the statistic $(\overline{X} - \mu)/(s/\sqrt{n}\,)$ and re-expressing:
+\begin{align*}
+  T = \frac{\overline{X} - \mu}{s/\sqrt{n}}
+  &=
+  \frac{\overline{X} - \mu}{\sigma/\sqrt{n}} \times \frac{\sigma\sqrt{n-1}}{s\sqrt{n-1}} \\
+  &=
+  \frac{\overline{X} - \mu}{\sigma/\sqrt{n}} 
+    \times 
+  \sqrt{ \frac{\sigma^2}{s^2(n-1)} }
+     \times 
+  \sqrt{n-1}
+\end{align*}
+This re-writing may appear strange, but the ratio now comprises two expression whose distribution is known:
+\begin{align*}
+  \frac{\overline{X} - \mu}{\sigma/\sqrt{n}} 
+  &\sim N(0, 1), \quad\text{and}\\
+  \frac{\sigma^2}{s^2(n-1)}
+  &\sim \chi^2_{n-1}.
+\end{align*}
+So we can write
+$$
+  T = \frac{Z}{\sqrt{V/(n - 1)}}.
+$$
+This ratio occurs so often in statistical inference, and in practice, that it has its own name.
+This defines a $T$-distribution.
 
 
 :::{.definition #TDistribution name="T-distribution"}
@@ -1718,7 +1756,7 @@ Then
 is defined as a $T$-distribution with $n$\ degrees of freedom.
 :::
 
-:::{.definition #TDistributionPDF name="T-distribution"}
+:::{.theorem #TDistributionPDF name="T-distribution"}
 A continuous random variable\ $X$ with probability density function
 \begin{equation}
    f_X(x)
@@ -1881,7 +1919,7 @@ pt(-0.645, df = 4)
 :::
 
 
-### The $F$-distribution {#FDistribution}
+## The $F$-distribution {#FDistribution}
 
 \index{F-distribution@$F$-distribution}
 The $F$-distribution arises naturally when comparing the variability of two independent normal populations, and is also used in *analysis of variance*, a common technique for testing the equality of several means.
