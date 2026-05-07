@@ -2,6 +2,12 @@
 
 # Describing samples {#ChapDescribingSamples}
 
+
+```{r setup, include=FALSE}
+source("R/SetColours.R")
+```
+
+
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
 
 * use appropriate techniques to determine the sampling distributions of\ $t$, $F$, and\ $\chi^2$\ distributions.
@@ -9,7 +15,6 @@
 * apply the concepts of the Central Limit Theorem in appropriate circumstances.
 * use the Central Limit Theorem to approximate binomial probabilities by normal probabilities in appropriate circumstances.
 :::
-
 
 ## Populations and samples {#PopulationsSamples}
 
@@ -69,7 +74,7 @@ The task of the *inferential statistics*\index{Inferential statistics}\index{Sta
 Inferential statistics requires an understanding of how samples behave.
 
 
-:::{.definition #RandomSample name="Sample"}
+:::{.definition #Sample name="Sample"}
 A subset of observations from the population is called a sample.\index{Sample}
 :::
 
@@ -777,7 +782,7 @@ Similarly, using the properties of the variance, the variance of $\overline{X}$ 
     \operatorname{var}[\overline{X}]
   &= \operatorname{var}[(X_1 + X_2 + \cdots X_n)/n]\\
   &= \frac{1}{n^2} \operatorname{var}[X_1 + X_2 + \cdots X_n]\\
-  &= \frac{1}{n^2} \times n\sigma^
+  &= \frac{1}{n^2} \times n\sigma^2
   = \frac{\sigma^2}{n}.
 \end{align*}
 Equivalently, $\operatorname{sd}[X] = \sigma/\sqrt{n}$. 
@@ -808,9 +813,9 @@ In Theorem\ \@ref(thm:SamplingDistMean), the distribution of the population from
 :::
 
 
-:::{.example #SamlimgMnVarExp name="Sampling mean and variance from an exponential distribution"}
+:::{.example #SamplimgMnVarExp name="Sampling mean and variance from an exponential distribution"}
 Suppose samples of $n = 5$ are drawn iid from an exponential distribution with $\lambda = 2$.
-This means that $\operatorname{E}[X] = 1/2 = 0.5$, and $\operatorname{var}[X] = 1/\lambda^2 = 0.25$, so we would expect $\operatorname{E}[\overline{X}] = \lambda = 0.5$, and $\operatorname{var}[\overline{X}] = 0.25/n = 0.05$.
+This means that $\operatorname{E}[X] = 1/2 = 0.5$, and $\operatorname{var}[X] = 1/\lambda^2 = 0.25$, so we would expect $\operatorname{E}[\overline{X}] = 1/\lambda = 0.5$, and $\operatorname{var}[\overline{X}] = 0.25/n = 0.05$.
 
 The empirical distribution of the means of the samples is shown in Fig.\ \@ref(fig:ExpSD) (left panel).
 The empirical estimate (shown on the figure) are very close to the theoretical values.
@@ -1305,10 +1310,10 @@ axis(side = 1)
 ```
 
 
-:::{.example #SoftDrinkVending name="CLT"}
+:::{.example #CoffeeVending name="CLT"}
 When a coffee machine makes a single espresso-style shot, the volume of water in millimetres\ $W$ that is dispensed has a mean of $30\mLs$ with a standard deviation of $2.2\mLs$.
 
-Find the probability that the *average* volume of water is a random sample of size\ $35$ shots is less than $31\mLs$.
+Find the probability that the *average* volume of water is a random sample of size\ $36$ shots is less than $31\mLs$.
 
 The distribution of\ $W$ is not given, but the mean and standard deviation of\ $W$ are given.
 The distribution of the sample mean\ $\overline{W}$ can be approximated by the normal distribution with mean of $\mu = 30$ and standard error of $\sigma_{\overline{W}} = \sigma/\sqrt{n} = 2.2/\sqrt{36} = 0.3718\mLs$, according to the CLT.
@@ -1340,7 +1345,7 @@ To use Theorem\ \@ref(thm:CLT), see that '$Y\geq 52$' is equivalent to '$\overli
 
 Since the distribution of each\ $X_i$ is rectangular with $\Pr(X_i = x) = 1/6$ (for $x = 1, 2, \dots, 6$), then $\operatorname{E}[X_i] = 7/2$ and $\operatorname{var}[X_i] = 35/12$ (Sect.\ \@ref(DiscreteUniformProperties)).
 Hence, $\operatorname{E}[\overline{X}] = 7/2$ and $\operatorname{var}[\overline{X}] = 35/(12^2)$, and so 
-$\overline{X} \sim N(7/2, sigma^2 = 35/(12^2))$. 
+$\overline{X} \sim N(7/2, \sigma^2 = 35/(12^2))$. 
 
 Then, from Theorem\ \@ref(thm:CLT),
 \begin{align*}
@@ -1398,6 +1403,63 @@ The probability is approximately\ $35$%.
 
 
 
+### The normal approximation to the binomial {#NormalApproxBinomialCLT}
+
+\index{Binomial distribution!normal approximation}
+The normal approximation to the binomial distribution (Sect.\ \@ref(NormalApproxBinomial)) can be seen as an application of the [Central Limit Theorem](#thm:CLT).\index{Central Limit Theorem}
+The essential observation is that a sample proportion is a sample mean. 
+Consider a sequence of independent [Bernoulli trials](#def:BernoulliTrials) resulting in the random sample $X_1, X_2, \dots, X_n$ where
+$$
+  X_i
+  =
+  \begin{cases}
+     0  &  \text{if failure}\\
+     1  &  \text{if success}
+  \end{cases}
+$$
+denotes whether or not the $i$th\ trial is a success.
+Then the sum
+$$
+   Y = \sum_{i = 1}^n X_i
+$$
+represents the number of successes in the $n$\ trials and
+$$
+   \overline{X}
+   = 
+   \frac{1}{n}\sum_{i = 1}^n X_i
+   = 
+   \frac{Y}{n}
+$$
+is a sample mean representing the proportion or fraction of trials which are successful. 
+In this context, $\overline{X}$ is usually denoted by the sample proportion\ $\widehat{p}$.
+
+Note that $\operatorname{E}[X_i] = p$ and $\operatorname{var}[X_i] = p(1 - p)$.
+Therefore
+$$
+   \operatorname{E}[Y] = np
+   \quad\text{and}\quad
+   \operatorname{var}[Y] = np(1 - p)
+$$
+and
+$$
+   \operatorname{E}[\overline{X}] = p
+   \quad\text{and}\quad
+   \operatorname{var}[\overline{X}] = \frac{p(1 - p)}{n}.
+$$
+Theorems\ \@ref(thm:CLT) and\ \@ref(thm:ConvergeToN) are applicable to\ $\overline{X}$ and\ $Y$ respectively. 
+Hence
+$$
+   \overline{X} = \widehat{p}
+   \sim N\left(p, \frac{p(1 - p)}{n}\right)\text{ approximately}
+$$
+and
+$$
+   Y = n\widehat{p}
+   \sim N(np, np(1 - p))\text{ approximately}.
+$$
+
+
+
 ## The $\chi^2$-distribution {#ChiSquaredDistribution}
 
 The two most important and used descriptions of a sample are the sample mean and the sample variance.
@@ -1426,15 +1488,15 @@ The proof is Exercise\ \@ref(exr:DistZ2).
 Note that $Y \sim \text{Gamma}(\alpha = 1/2, \beta = 2)$.
 
 Now consider $Z_1, Z_2, \dots Z_n\overset{\text{iid}}{\sim} N(0, 1)$, and the summation $\sum_{i = 1}^n Z_i^2$.
-Since each\ $Z_i$ has the same gamma distribution, the distribution of the summation can be found (Exercise\ \@ref(exr:SumZ2)) as
+Since each\ $Z_i^2$ has the same gamma distribution, the distribution of the summation can be found (Exercise\ \@ref(exr:SumZ2)) as
 $$
-  \sum_{i = 1}^n Z_i \sim \text{Gamma}(\alpha = n/2, \beta = 2).
+  \sum_{i = 1}^n Z_i^2 \sim \text{Gamma}(\alpha = n/2, \beta = 2).
 $$
-This distribution occurs so often in practice that is has its own name: a $\chi^2$-distribution.
+This distribution occurs so often in practice that it has its own name: a $\chi^2$-distribution.
 That is, a $\text{Gamma}(\alpha = n/2, \beta = 2)$ is defined as a $\chi^2_n$-distribution.
 Thus:
 \begin{equation}
-  \sum_{i = 1}^n Z_i \sim \chi^2_n,
+  \sum_{i = 1}^n Z_i^2 \sim \chi^2_n,
   (\#eq:SumZ2)
 \end{equation}
 where\ $n$ here is the *degrees of freedom*.\index{Degrees of freedom}
@@ -1507,11 +1569,6 @@ If $X\sim\chi^2_\nu$ then
 See Theorem\ \@ref(thm:GammaProperties).
 ::::
 :::
-
-
-:::{.example}
-Some example.
-:::
 \index{Chi-squared distribution|)}
 
 
@@ -1521,7 +1578,7 @@ $$
   \sum_{i=1}^n (X_i - \overline{X})^2
   = 
   \sum_{i=1}^n (X_i - \mu)^2 - 
-  \sum_{i=1}^n (\bar{X} - \mu)^2
+  n (\bar{X} - \mu)^2
 $$
 (see Exercise\ \@ref(Exercise3)).
 Dividing this expression by\ $\sigma^2$ then gives
@@ -1529,13 +1586,13 @@ Dividing this expression by\ $\sigma^2$ then gives
   \sum_{i=1}^n \frac{(X_i - \overline{X})^2}{\sigma^2}
   &= 
   \sum_{i=1}^n \frac{(X_i - \mu)^2}{\sigma^2} - 
-  \sum_{i=1}^n \frac{(\bar{X} - \mu)^2}{\sigma^2}\\
+  \frac{n (\bar{X} - \mu)^2}{\sigma^2}\\
   &= 
   \sum_{i=1}^n \left( \frac{X_i - \mu}{\sigma}\right)^2 - 
   \frac{n(\bar{X} - \mu)^2}{\sigma^2}.
 \end{align*}
-The term on the left side has a $\chi^2_n$ distribution (Eq~\@ref(\#eq:SumZ2)).
-The final term has the form $Z^2$, where $Z = (\bar{X} - \mu)/(\sigma/\sqrt{n})$; thus the third term has a $\chi^2(1)$ distribution.
+The first term on the right side has a $\chi^2_n$ distribution (Eq\ \@ref(\#eq:SumZ2)).
+The final term has the form $Z^2$, where $Z = (\bar{X} - \mu)/(\sigma/\sqrt{n}\,)$; thus the second term on the right side has a $\chi^2(1)$ distribution.
 
 Now, *if those two terms are independent*, we can use the MGF method to show that
 $$
@@ -1554,8 +1611,11 @@ after substituting Eq.\ \@ref(eq:S2) and rearranging.
 This means that $S^2$ follows a scaled $\chi^2_{n-1}$ distribution.
 
 
-:::{.theorem #SamplingDistMean name="Sampling distribution of the mean"}
-If $X_1, X_2, \dots, X_n$ is an *iid sample* of size\ $n$ from a population with a $N(\mu, \sigma^2)$ distribution, then the sample variance\ $S^2$ has a sampling distribution distributed as  $\chi^2_{n-1}$.
+:::{.theorem #SamplingDistVariance name="Sampling distribution of the variance"}
+If $X_1, X_2, \dots, X_n$ is an *iid sample* of size\ $n$ from a $N(\mu, \sigma^2)$ distribution, then 
+$$
+  \frac{(n - 1)S^2}{\sigma^2} \sim \chi^2_{n - 1}.
+$$
 
 ::::{.proof}
 The proof has been outlined in the above discussion.
@@ -1698,58 +1758,73 @@ There is an approximate $19$% probability of observing a sample variance this la
 :::
 
 
-## The $T$-distribution {#TDistribution}
+## The $t$-distribution {#TDistribution}
 
 \index{t-distribution@$t$-distribution}
 Many other useful distributions exist that are related to the normal distribution.
-Because of the Central Limit Theorem (Sect.\ \@ref(CentralLimitTheorem)), these distribution prove useful in many practical situations.
+Because of the Central Limit Theorem (Sect.\ \@ref(CentralLimitTheorem)), these distributions prove useful in many practical situations.
 
-In practice, a common task is to evaluate a claim or belief about population mean\ $\mu$, based on the mean of a sample\ $\bar{X}$.
-For example [@lin2021sleep], is the average over-night sleep time for a sample of children equal to the recommendation of $10\hs$?
+In practice, a common task is to evaluate a claim or belief about population mean\ $\mu$, based on the mean of a sample\ $\overline{X}$.
+For example, @lin2021sleep studied whether the average overnight sleep time for pre-school children was equal to the to the recommended $10\hs$.
 
-In these cases, provided the sample size is large so that the Central Limit Theorem applies, the statistic $(\bar{X} - \mu)/(\sigma/\sqrt{n})$ has an approximate normal distribution, whatever the distribution of\ $X$, provided the value of\ $\sigma^2$ is known.
+Provided the sample size is sufficiently large so that the Central Limit Theorem applies, the statistic 
+$$
+  Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}
+$$
+has an approximate standard normal distribution, whatever the distribution of\ $X$, provided the value of\ $\sigma^2$ is known.
 
-But the value of\ $\sigma^2$ is almost never known, and the estimate\ $S^2$ instead is used.
-However, the statistic $T = (\overline{X} - \mu)(S/\sqrt{n}\,)$ no longer has a normal distribution.
+In practice, however, the value of\ $\sigma^2$ is almost never known, and the sample variance\ $S^2$ is used instead.
+This leads to the statistic 
+$$
+  T = \frac{\overline{X} - \mu}{S/\sqrt{n}},
+$$
+which no longer has a normal distribution.
 
-Consider, then, the statistic\ $T$ and re-express:
+Now suppose that the population distribution of\ $X$ is normal.
+Then,
 \begin{align*}
-  T = \frac{\overline{X} - \mu}{s/\sqrt{n}}
-  &=
-  \frac{\overline{X} - \mu}{\sigma/\sqrt{n}} \times \frac{\sigma\sqrt{n-1}}{s\sqrt{n-1}} \\
-  &=
-  \frac{\overline{X} - \mu}{\sigma/\sqrt{n}} 
-    \times 
-  \sqrt{ \frac{\sigma^2}{s^2(n-1)} }
-     \times 
-  \sqrt{n-1}.
+  Z &= \frac{\overline{X} - \mu}{\sigma/\sqrt{n}} \sim N(0, 1) \quad\text{and}\\
+  V &= \frac{(n - 1) S^2}{\sigma^2}\sim \chi^2_{n-1}.
 \end{align*}
-This re-writing may appear strange, but the ratio now comprises two expression whose distribution is known:
-\begin{align*}
-  Z = \frac{\overline{X} - \mu}{\sigma/\sqrt{n}} 
-  &\sim N(0, 1), \quad\text{and}\\
-  V = \frac{s^2 (n-1)}{\sigma^2}
-  &\sim \chi^2_{n-1}.
-\end{align*}
+In addition, $Z$\ and $V$ are independent.
+Hence
+$$
+  T
+  =
+  \frac{\overline{X} - \mu}{S/\sqrt{n}}
+  =
+  \frac{
+  \frac{\overline{X}-\mu}{\sigma/\sqrt{n}}
+  }{
+  \sqrt{\frac{(n-1)S^2}{(n-1)\sigma^2}}
+  }
+  =
+  \frac{Z}{\sqrt{V/(n-1)}}.
+$$
+This re-writing is useful because it decomposes\ $T$ into two quantities whose distributions are known.
 So we can write
 $$
   T = \frac{Z}{\sqrt{V/(n - 1)}}.
 $$
 This ratio occurs so often in statistical inference, and in practice, that it has its own name.
-This defines a $T$-distribution.
+This defines a $t$-distribution.
 
 
-:::{.definition #TDistribution name="$T$-distribution"}
+:::{.definition #TDistribution name="$t$-distribution"}
 Suppose $Z \sim N(0, 1)$ (i.e., a standard normal distribution) and $V \sim \chi^2_n$ (i.e., a chi-squared distribution with $n$\ degrees of freedom).
 Then
 \begin{equation}
   T = \frac{Z}{\sqrt{V/n}}
   (\#eq:Tdist)
 \end{equation}
-is defined as a $T$-distribution with $n$\ degrees of freedom.
+is said to have a $t$-distribution with $n$\ degrees of freedom.
 :::
 
-:::{.theorem #TDistributionPDF name="$T$-distribution PDF"}
+
+If the sample size is sufficiently large, then the distribution of $T$ is often well approximated by a $t$-distribution, even when the population distribution is not exactly normal.
+
+
+:::{.theorem #TDistributionPDF name="$t$-distribution PDF"}
 A continuous random variable\ $X$ with probability density function
 \begin{equation}
    f_X(x)
@@ -1767,13 +1842,13 @@ This proof is not given.
 :::
 
 
-The probability density function of the $T$-distribution is very similar to the standard normal distribution (Fig.\ \@ref(fig:TPlots)): bell-shaped and symmetric about zero. 
-However, the variance is greater than one (Theorem\ \@ref(thm:TDistProperties)) and so is larger than the variance of the standard normal distribution, and is dependent on\ $\nu$.
+The probability density function of the $t$-distribution is very similar to the standard normal distribution (Fig.\ \@ref(fig:TPlots)): bell-shaped and symmetric about zero. 
+However, the distribution has heavier tails than the standard normal distribution, reflecting its larger variance (Theorem\ \@ref(thm:TDistProperties)).
 
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the $t$\ distribution have the form `[dpqr]t(., df)`:
+The four **R** functions for working with the $t$-distribution have the form `[dpqr]t(., df)`:
 
 * `dt(x, df)` computes the PDF at $X = {}$`x`;
 * `pt(q, df)` computes the CDF at $X = {}$`q`;
@@ -1784,7 +1859,7 @@ where `df` is the degrees of freedom (see Appendix\ \@ref(UseRDistributions)).
 :::
 
 
-```{r TPlots, echo=FALSE, out.width='100%', fig.height=2.75, fig.width=6.5, fig.cap="Some $t$-distributions (with normal distributions in dashed lines), with mean\\ $0$ and variance\\ $1$."}
+```{r TPlots, echo=FALSE, out.width='100%', fig.height=2.75, fig.width=6.5, fig.cap="Some $t$-distributions (with normal distributions in lighter-coloured lines), with mean\\ $0$ and variance\\ $1$."}
 par( mfrow = c(1, 3))
 
 xx <- seq(-4, 4,
@@ -1793,7 +1868,7 @@ xx <- seq(-4, 4,
 plot( x = xx,
       y = dt(xx, df = 2),
       ylim = c(0, 0.4),
-      lwd = 2,
+      lwd = 4,
       type = "l",
       axes = FALSE,
       xlab = expression(italic(x)),
@@ -1805,12 +1880,11 @@ axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
        lwd = 2,
-       lty = 2,
-       col = ColourOpaque)
+       col = ColourLight) 
 
 plot( x = xx,
       y = dt(xx, df = 7),
-      lwd = 2,
+      lwd = 4,
       type = "l",
       axes = FALSE,
       xlab = expression(italic(x)),
@@ -1822,12 +1896,11 @@ axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
        lwd = 2,
-       lty = 2,
-       col = ColourOpaque)
+       col = ColourLight)
 
 plot( x = xx,
       y = dt(xx, df = 30),
-      lwd = 2,
+      lwd = 4,
       type = "l",
       axes = FALSE,
       xlab = expression(italic(x)),
@@ -1839,17 +1912,17 @@ axis(side = 1)
 lines( x = xx,
        y = dnorm(x = xx),
        lwd = 2,
-       lty = 2,
-       col = ColourOpaque)
+       col = ColourLight)
 ```
 
 
-:::{.theorem #TDistProperties name="Properties of the $T$-distribution"}
+:::{.theorem #TDistProperties name="Properties of the $t$-distribution"}
 If $X\sim t_\nu$ then
 
 * For $\nu > 1$, $\operatorname{E}[X] = 0$.
 * For $\nu > 2$, $\operatorname{var}[X] = \displaystyle{\frac{\nu}{\nu - 2}}$.
-* The MGF does not exist because only the first $\nu - 1$ moments exist. 
+* The MGF does not exist. 
+  Only moments of order less than\ $\nu$ exist; that is, $\operatorname{E}[|X|^k]$ is finite if and only if $k < \nu$.
 
 ::::{.proof}
 This proof is not given.
@@ -1857,38 +1930,11 @@ This proof is not given.
 :::
 
 
-Although we won't prove it, as $\nu\to\infty$ the $t$\ distribution converges to the standard normal (which can be seen in Fig.\ \@ref(fig:TPlots)).
+Although we won't prove it, as $\nu\to\infty$ the $t$-distribution converges to the standard normal (which can be seen in Fig.\ \@ref(fig:TPlots)).
 In addition, from Theorem\ \@ref(thm:TDistProperties), we see that as $\nu \to \infty$, $\operatorname{var}[X] \to 1$ as for the normal distribution.
 
-The usefulness of the $t$-distribution derives from the following important result.
-
-
-:::{.theorem #Tscores name="$T$-scores"}
-Let $X_1, X_2, \dots, X_n$ be a random sample of size\ $n$ from $N(\mu, \sigma^2)$.
-Then the random variable
-$$
-   T = \frac{\overline{X} - \mu}{S/\sqrt{n}}
-$$
-follows a $t_{n - 1}$-distribution where\ $\overline{X}$ is the sample mean and\ $S^2$ is the sample variance as defined in\ Eq.\ \@ref(eq:SampleVarDist).
-
-::::{.proof}
-**We give a partial proof only.**
-The statistic\ $T$ can be written as
-\begin{align*}
-  T
-    &= \frac{\overline{X} - \mu}{S/\sqrt{n}}\\
-    &= \left(\frac{\overline{X} - \mu}{\sigma/\sqrt{n}}\right)   \frac{1}{\sqrt{\frac{(n - 1)S^2}{\sigma^2}/(n - 1)}}\\
-    &= \frac{Z}{Y/(n - 1)},
-\end{align*}
-where $Z$ is a $N(0, 1)$ variable and $Y$ is a chi-squared variable with $(n - 1)$ df.
-Using Def.\ \@ref(def:TDistribution) then, $T$ has a $T$-distribution.
-::::
-:::
-
-
-
 Notice that\ $T$ represents a *standardised* version of the sample mean.
-Because of this, the $T$\ statistic is important in statistical inference.
+Because of this, the $T$-statistic is important in statistical inference.
 You may have used a $t$-test in hypothesis testing, for example.
 
 
@@ -1900,7 +1946,7 @@ A random sample $21, 18, 16, 24, 16$ is drawn from a normal population with mean
 
 From the sample: $\overline{x} = 19.0$ and $s^2 = 12.0$. 
 Therefore $t = \frac{19.0 - 20}{\sqrt{12.0/5}} = -0.645$.
-(Notice lower-case symbols are used for specific values of statistics, and upper-case symbols for the random variables.)
+(Again, lower-case symbols are used for specific values of statistics, and upper-case symbols for the random variables.)
 
 Interest here is in $\Pr(T < -0.645)$ where $T\sim t_4$. 
 From **R**, the answer is\ $0.277$:
@@ -1911,10 +1957,61 @@ pt(-0.645, df = 4)
 :::
 
 
+:::{.example #Tsleeptime name="$T$-statistic"}
+The recommendation for Taiwanese pre-school children is to have at least\ $10\hs$ of sleep per night.
+@lin2021sleep sampled\ $39$ girls and found the sample mean was =\ $8.64\hs$ with a sample standard deviation of $s = 0.37\hs$.
+Determine the probability that the sample would would be less than\ $8.64\hs$ if the mean in the population was\ $10\hs$, as recommended.
+
+Define the overnight sleep time for each girls as\ $X$.
+Since the sample size is moderately large ($n=39$), the Central Limit Theorem implies that the sample mean\ $\overline{X}$ is approximately normally distributed.
+
+Because the population standard deviation\ $\sigma$ is unknown, the estimate (the sample standard deviation\ $s$) is used.
+Then
+$$
+  T = \frac{\bar{X} - \mu}{S/\sqrt{n}}
+$$
+has an approximate $t$-distribution, with $\nu = n - 1 = 38$ degrees of freedom.
+
+Using $\mu = 10$, $s = 0.37$ and $\overline{X} = 8.64$, compute
+$$
+  t = \frac{8.64 - 10}{0.37/\sqrt{39}} \approx -22.97.
+$$
+Hence $\Pr(\overline{X} < 8.64) = \Pr(T < -22.97)$; using\ **R**:
+
+```{r}
+pt(-22.97, df = 38)
+```
+
+If the population mean is\ $10\hs$ (as per the recommendation), it is *extremely* unlikely that the sample mean from a sample of\ $39$ girls would be lower than $8.64\hs$. 
+:::
+
+
+
 ## The $F$-distribution {#FDistribution}
 
 \index{F-distribution@$F$-distribution}
-The $F$-distribution arises naturally when comparing the variability of two independent normal populations, and is also used in *analysis of variance*, a common technique for testing the equality of several means.
+Another distribution that arises naturally and often in practice is the $F$-distribution.
+It arises when comparing the variability of two independent normal populations, and is also used in *analysis of variance*, a common statistical inference\index{Statistical inference} technique for testing the equality of several means.
+
+Suppose we have two random samples from two normally distributed populations: one of size\ $n_1$ drawn from $N(\mu_1, \sigma_1^2)$ and the other of size\ $n_2$ drawn from $N(\mu_2, \sigma_2^2)$.
+Then, from Theorem\ \@ref(SamplingDistVariance),
+$$
+ U_1 =  \frac{(n_1 - 1)s_1^2}{\sigma_1^2} \sim \chi^2_{n_1 - 1}
+  \quad\text{and}\quad
+  U_2 = \frac{(n_2 - 1)s_2^2}{\sigma_2^2} \sim \chi^2_{n_2 - 1}.
+$$
+The two sample variances can be compared using
+$$
+  \frac{
+          \displaystyle \frac{(n_1 - 1)s_1^2}{\sigma_1^2}
+        }
+        {
+          \displaystyle \frac{(n_2 - 1)s_2^2}{\sigma_2^2}
+        }
+  =
+  \frac{U_1/(n_1 - 1)}{U_2/(n_2 - 1)}.
+$$
+This ratio occurs so often in practice that is has its own name: an $F$-distribution.
 
 
 :::{.definition #FDistribution name="$F$-distribution"}
@@ -1926,7 +2023,7 @@ A continuous random variable\ $X$ with probability density function
    {\Gamma(\nu_1/2)\Gamma(\nu_2/2)(\nu_1 x + \nu_2)^{(\nu_1 + \nu_2)/2}}
   \quad\text{for $x > 0$}
 \end{equation}
-is said to have an *$F$-distribution* with parameters $\nu_1 > 0$ and $\nu_2 > 0$, known respectively as the numerator and denominator degrees of freedom.
+is said to have an *$F$-distribution* with parameters $\nu_1 > 0$ and $\nu_2 > 0$, known respectively as the numerator and denominator degrees of freedom.\index{Degrees of freedom}
 We write $X \sim F_{\nu_1, \nu_2}$.
 :::
 
@@ -1951,7 +2048,7 @@ Not covered.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the $F$-distribution have the form `[dpqr]f(df1, df2)`, where `df1`${} = \nu_1$ and
+The four **R** functions for working with the $F$-distribution have the form `[dpqr]f(., df1, df2)`, where `df1`${} = \nu_1$ and
 `df2`${} = \nu_2$ are the degrees of freedom (see Appendix\ \@ref(UseRDistributions)):
 
 * `df(x, df1, df2)` computes the PDF at $X = {}$`x`;
@@ -2057,63 +2154,6 @@ pf(1,    df1 = 2, df2 = 10)
 qf(0.99, df1 = 2, df2 = 10)
 ```
 :::
-
-
-## The normal approximation to the binomial {#NormalApproxBinomialCLT}
-
-\index{Binomial distribution!normal approximation}
-The normal approximation to the binomial distribution (Sect.\ \@ref(NormalApproxBinomial)) can be seen as an application of the [Central Limit Theorem](#thm:CLT).\index{Central Limit Theorem}
-The essential observation is that a sample proportion is a sample mean. 
-Consider a sequence of independent [Bernoulli trials](#def:BernoulliTrials) resulting in the random sample $X_1, X_2, \dots, X_n$ where
-$$
-  X_i
-  =
-  \begin{cases}
-     0  &  \text{if failure}\\
-     1  &  \text{if success}
-  \end{cases}
-$$
-denotes whether or not the $i$th\ trial is a success.
-Then the sum
-$$
-   Y = \sum_{i = 1}^n X_i
-$$
-represents the number of successes in the $n$\ trials and
-$$
-   \overline{X}
-   = 
-   \frac{1}{n}\sum_{i = 1}^n X_i
-   = 
-   \frac{Y}{n}
-$$
-is a sample mean representing the proportion or fraction of trials which are successful. 
-In this context, $\overline{X}$ is usually denoted by the sample proportion\ $\widehat{p}$.
-
-Note that $\operatorname{E}[X_i] = p$ and $\operatorname{var}[X_i] = p(1 - p)$.
-Therefore
-$$
-   \operatorname{E}[Y] = np
-   \quad\text{and}\quad
-   \operatorname{var}[Y] = np(1 - p)
-$$
-and
-$$
-   \operatorname{E}[\overline{X}] = p
-   \quad\text{and}\quad
-   \operatorname{var}[\overline{X}] = \frac{p(1 - p)}{n}.
-$$
-Theorems\ \@ref(thm:CLT) and\ \@ref(thm:ConvergeToN) are applicable to\ $\overline{X}$ and\ $Y$ respectively. 
-Hence
-$$
-   \overline{X} = \widehat{p}
-   \sim N\left(p, \frac{p(1 - p)}{n}\right)\text{ approximately}
-$$
-and
-$$
-   Y = n\widehat{p}
-   \sim N(np, np(1 - p))\text{ approximately}.
-$$
-
 
 
 ## Appendix: Proof of the CLT {#CLTProof}
@@ -2473,3 +2513,226 @@ A random sample of size $n = 10$ is selected from the $N(20, 5)$ distribution.
 What is the probability that the sample variance exceeds\ $10$?
 :::
 
+
+---
+
+:::{.exercise #ExSamplingDist}
+**Sampling distributions (conceptual)**
+
+A population consists of the five values $\{1, 3, 5, 7, 9\}$.
+
+1. Compute the population mean $\mu$ and population variance $\sigma^2$.
+2. List all possible samples of size $n = 2$ (without replacement) and compute the sample mean $\overline{X}$ for each.
+3. Find the mean and variance of the sampling distribution of $\overline{X}$.
+4. Verify that $\operatorname{E}[\overline{X}] = \mu$.
+5. How does the variance of $\overline{X}$ relate to $\sigma^2$ and $n$?
+:::
+
+---
+
+:::{.exercise #ExUnbiasedMean}
+**Unbiasedness of the sample mean**
+
+Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Poisson}(\lambda = 3)$.
+
+1. State $\operatorname{E}[X_i]$ and $\operatorname{var}[X_i]$.
+2. Show algebraically that $\overline{X}$ is an unbiased estimator of $\lambda$.
+3. Using **R**, simulate $10{,}000$ samples of size $n = 20$ from a $\operatorname{Poisson}(3)$ distribution. Compute the sample mean for each and verify empirically that the average of the sample means is close to $3$.
+4. Plot a histogram of the sample means. Comment on the shape.
+:::
+
+---
+
+:::{.exercise #ExBiasedVariance}
+**Biased vs unbiased variance estimators**
+
+Using **R**, simulate $10{,}000$ samples of size $n = 5$ from a $N(\mu = 10, \sigma^2 = 4)$ distribution.
+
+1. For each sample, compute both the biased estimator
+   $$S^2_n = \frac{1}{n}\sum_{i=1}^n (X_i - \overline{X})^2$$
+   and the unbiased estimator
+   $$S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \overline{X})^2.$$
+2. Compute the average value of $S^2_n$ and $S^2$ across all simulations.
+3. Compare both averages to the true population variance $\sigma^2 = 4$. Which estimator is unbiased?
+4. Repeat for $n = 50$. Comment on how bias changes with sample size.
+:::
+
+---
+
+:::{.exercise #ExSampMeanVar}
+**Mean and variance of $\overline{X}$**
+
+Suppose $X \sim \operatorname{Exponential}(\lambda = 0.5)$, so that $\operatorname{E}[X] = 2$ and $\operatorname{var}[X] = 4$.
+
+1. State the theoretical mean and variance of $\overline{X}$ for samples of size $n = 16$.
+2. Using **R**, simulate $10{,}000$ sample means from samples of size $n = 16$ drawn from $\operatorname{Exponential}(0.5)$.
+3. Compute the empirical mean and variance of these sample means and compare to the theoretical values.
+4. Repeat for $n = 64$. Comment on how sample size affects the variance of $\overline{X}$.
+:::
+
+---
+
+:::{.exercise #ExCLTShape}
+**Shape of the sampling distribution: Central Limit Theorem**
+
+Let $X \sim \operatorname{Uniform}(0, 1)$, so that $\operatorname{E}[X] = 0.5$ and $\operatorname{var}[X] = 1/12$.
+
+1. For sample sizes $n \in \{1, 5, 30, 100\}$, simulate $10{,}000$ sample means using **R**.
+2. Plot histograms of the sample means for each sample size, in a $2 \times 2$ panel.
+3. Overlay each histogram with the theoretical normal distribution $N(0.5,\; 1/(12n))$.
+4. Comment on how quickly the sampling distribution approaches normality as $n$ increases.
+:::
+
+---
+
+:::{.exercise #ExCLTPoisson}
+**CLT for a discrete distribution**
+
+The number of customers arriving at a service desk per hour follows a $\operatorname{Poisson}(\lambda = 4)$ distribution.
+
+1. State the mean and variance of the total number of customers over $n = 50$ hours.
+2. Using the CLT, find the approximate probability that the total number of customers over $50$ hours exceeds $215$.
+3. Verify your answer in **R** using `ppois()` for the exact probability and compare.
+:::
+
+---
+
+:::{.exercise #ExNormalSampMean}
+**Sampling from a normal population**
+
+Weights of a particular product are normally distributed with mean $500\,\text{g}$ and standard deviation $8\,\text{g}$.
+
+1. Find the probability that a single item weighs less than $490\,\text{g}$.
+2. Find the probability that the mean weight of a random sample of $n = 25$ items is less than $490\,\text{g}$.
+3. Find the probability that the mean weight of a random sample of $n = 64$ items is less than $490\,\text{g}$.
+4. Explain why the probabilities in parts 1–3 decrease as the sample size increases.
+:::
+
+---
+
+:::{.exercise #ExLinearComb}
+**Linear combinations of normal random variables**
+
+Let $X_1 \sim N(5, 9)$ and $X_2 \sim N(2, 4)$ be independent.
+Define $Y = 3X_1 - 2X_2$.
+
+1. Find $\operatorname{E}[Y]$ and $\operatorname{var}[Y]$.
+2. State the distribution of $Y$.
+3. Find $\Pr(Y > 20)$.
+4. Verify using **R** simulation: generate $50{,}000$ realisations of $Y$ and estimate $\Pr(Y > 20)$.
+:::
+
+---
+
+:::{.exercise #ExChiSq}
+**The chi-squared distribution**
+
+Let $X \sim \chi^2_{10}$.
+
+1. State the mean and variance of $X$.
+2. Find $\Pr(X < 15.99)$ using **R**.
+3. Find the value $x$ such that $\Pr(X > x) = 0.05$ using **R**.
+4. Simulate $10{,}000$ values from $\chi^2_{10}$ and plot a histogram. Overlay the theoretical density curve.
+:::
+
+---
+
+:::{.exercise #ExChiSqFromNormals}
+**Chi-squared as a sum of squared normals**
+
+1. Show by simulation that if $Z_1, Z_2, \ldots, Z_5 \overset{\text{iid}}{\sim} N(0,1)$, then $\sum_{i=1}^5 Z_i^2 \sim \chi^2_5$.
+   Use $10{,}000$ simulations, plot the histogram, and overlay the $\chi^2_5$ density.
+2. Compute the empirical mean and variance of $\sum Z_i^2$ and compare to the theoretical values.
+:::
+
+---
+
+:::{.exercise #ExSampVarChi}
+**Sampling distribution of the sample variance**
+
+Suppose $X_1, \ldots, X_{15} \overset{\text{iid}}{\sim} N(\mu = 20, \sigma^2 = 9)$.
+
+1. State the distribution of $(n-1)S^2/\sigma^2$.
+2. Find the probability that $S^2 > 14$ using **R**.
+3. Find the value $s^2$ such that $\Pr(S^2 > s^2) = 0.10$.
+4. Verify part 2 by simulation: generate $10{,}000$ samples of size $15$ and compute the proportion with $S^2 > 14$.
+:::
+
+---
+
+:::{.exercise #ExTDist}
+**The $t$-distribution**
+
+Let $T \sim t_8$.
+
+1. State the mean and variance of $T$.
+2. Find $\Pr(T < 1.86)$ using **R**.
+3. Find the value $t$ such that $\Pr(|T| > t) = 0.05$ using **R**.
+4. Show by simulation that $T = Z / \sqrt{V/8}$ has a $t_8$ distribution, where $Z \sim N(0,1)$ and $V \sim \chi^2_8$ independently. Use $20{,}000$ simulations, plot the histogram, and overlay the $t_8$ density.
+:::
+
+---
+
+:::{.exercise #ExTStatistic}
+**Computing and interpreting a $T$-statistic**
+
+A sample of $n = 10$ observations is drawn from a normal population with unknown mean and variance.
+The sample values are:
+$$14.2,\ 15.8,\ 13.5,\ 16.1,\ 14.9,\ 15.3,\ 13.8,\ 16.4,\ 14.6,\ 15.0.$$
+
+1. Compute $\overline{x}$ and $s^2$ from the data in **R**.
+2. Compute the $T$-statistic assuming the population mean is $\mu_0 = 15$.
+3. Find the probability of observing a $T$-statistic as extreme or more extreme than this value (two-sided) under $t_9$.
+4. Comment on whether the data are consistent with $\mu = 15$.
+:::
+
+---
+
+:::{.exercise #ExFDist}
+**The $F$-distribution**
+
+Let $X \sim F_{4, 20}$.
+
+1. State the mean and variance of $X$.
+2. Find $\Pr(X < 2.87)$ using **R**.
+3. Find the value $x$ such that $\Pr(X > x) = 0.01$.
+4. Show by simulation that the ratio $\frac{U_1/4}{U_2/20}$, where $U_1 \sim \chi^2_4$ and $U_2 \sim \chi^2_{20}$ independently, follows an $F_{4,20}$ distribution. Use $20{,}000$ simulations.
+:::
+
+---
+
+:::{.exercise #ExTSquaredF}
+**Relationship between the $t$- and $F$-distributions**
+
+1. State the result connecting $T \sim t_n$ to the $F$-distribution.
+2. Let $T \sim t_{12}$. Find $\Pr(T^2 > 3)$ using the $t$-distribution in **R**.
+3. Verify this answer by instead computing the equivalent probability using the $F$-distribution in **R**.
+4. Confirm the equivalence by simulation: generate $50{,}000$ values of $T \sim t_{12}$ and $50{,}000$ values of $W \sim F_{1,12}$ and compare histograms of $T^2$ and $W$.
+:::
+
+---
+
+:::{.exercise #ExNormalApproxBinom}
+**Normal approximation to the binomial**
+
+In a large population, $35\%$ of people have a particular characteristic.
+A random sample of $n = 120$ people is taken.
+
+1. Let $Y$ be the number of people in the sample with the characteristic. State the exact distribution of $Y$.
+2. Using the CLT, state the approximate distribution of $Y$.
+3. Use the normal approximation to find $\Pr(Y \geq 50)$.
+4. Compute the exact probability using **R** and compare to the approximation.
+:::
+
+---
+
+:::{.exercise #ExMeanVarIndep}
+**Independence of sample mean and variance**
+
+Using **R**, simulate $5{,}000$ samples of size $n = 30$ from $N(0, 1)$.
+For each sample, record the sample mean $\overline{X}$ and sample variance $S^2$.
+
+1. Produce a scatterplot of $\overline{X}$ against $S^2$.
+2. Compute the correlation between $\overline{X}$ and $S^2$.
+3. Comment on what the plot and correlation suggest about the relationship between the sample mean and sample variance when sampling from a normal distribution.
+:::
