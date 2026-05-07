@@ -722,6 +722,31 @@ Easily shown by adapting the proof for $S^2_n$ above; see Exercise\ \@ref(exr:Un
 Using the sample found earlier, the empirical estimates\ $S^2$\index{Empirical variances} can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SDvarPlots), bottom panels).
 
 
+### Independence of the sample mean and sample= varance {#IndependenceMeanVar}
+
+A result that is useful later is the perhaps-surprising result that the sample mean and the sample variance are independent.
+
+:::{.theorem #MeanVarInd name="Sample mean and variance: Independent"}
+Let $X_1, X_2,\dots, X_n$ be a random sample of size\ $n$ from $N(\mu, \sigma^2)$.
+Then the sample mean
+$$
+   \overline{X}
+   = 
+   \frac1n\sum_{i=1}^n X_i
+$$
+and sample variance
+$$
+   S^2
+   = \frac{1}{n - 1}\sum_{i=1}^n (X_i - \overline{X})^2
+$$
+are independent.
+
+::::{.proof}
+This proof is not given.
+::::
+:::
+
+
 ## The distribution of the sample mean {#SamplingDistributionsMean}
 
 ### Introduction {#SamplingDistributionsMeanIntro}
@@ -1349,7 +1374,7 @@ Theorem\ \@ref(thm:ConvergeToN) makes no assumptions about the distribution of\ 
 If the\ $X_i$ are *normally* distributed, then $Y = \sum_{i = 1}^n a_i X_i$ will have a normal distribution for any\ $n$, large or small.
 
 
-SALT SACHERS:
+SALT SACHETS:
 
 :::{.example #NoiseVoltages name="CLT (Voltages)"}
 Suppose we have a number of independent noise voltages\ $V_i$ (for $i = 1, 2, \dots, n$). 
@@ -1373,9 +1398,7 @@ The probability is approximately\ $35$%.
 
 
 
-## The distribution of the sample variance {#SamplingDistributionsVariance}
-
-### Introduction {#SamplingDistributionsVarianceIntro}
+## The $\chi^2$-distribution {#ChiSquaredDistribution}
 
 The two most important and used descriptions of a sample are the sample mean and the sample variance.
 Having already discussed the sampling distribution of the sample mean, we now turn to the sampling distribution of the sample variance
@@ -1387,7 +1410,6 @@ for a sample $X_1, \dots, X_n \overset{\text{iid}}{\sim} N(\mu, \sigma^2)$ (i.e.
 We are seeking the distribution of $S^2$.
 
 
-### The $\chi^2$-distribution {#ChiSquaredDistribution}
 
 \index{Chi-squared distribution|(}
 The formula for the estimator\ $S^2$ in Eq.\ \@ref(eq:S2) involves an\ $\sum X_i^2$ term, where each $X_i$ has a normal distribution.
@@ -1683,43 +1705,14 @@ Many other useful distributions exist that are related to the normal distributio
 Because of the Central Limit Theorem (Sect.\ \@ref(CentralLimitTheorem)), these distribution prove useful in many practical situations.
 
 In practice, a common task is to evaluate a claim or belief about population mean\ $\mu$, based on the mean of a sample\ $\bar{X}$.
+For example [@lin2021sleep], is the average over-night sleep time for a sample of children equal to the recommendation of $10\hs$?
+
 In these cases, provided the sample size is large so that the Central Limit Theorem applies, the statistic $(\bar{X} - \mu)/(\sigma/\sqrt{n})$ has an approximate normal distribution, whatever the distribution of\ $X$, provided the value of\ $\sigma^2$ is known.
 
 But the value of\ $\sigma^2$ is almost never known, and the estimate\ $S^2$ instead is used.
-However, the statistic $(\overline{X} - \mu)(S/\sqrt{n})$ does not have a normal distribution.
+However, the statistic $T = (\overline{X} - \mu)(S/\sqrt{n}\,)$ no longer has a normal distribution.
 
-
-
-
-PLACE EARLIER?????
-The basis of the independence assumed in the proof of Theorem\ \@ref(thm:SampleVarDist) is the (perhaps surprising) result that the mean and variance of a random sample from a normal population are independent random variables.
-
-
-:::{.theorem #MeanVarInd name="Sample mean and variance: Independent"}
-PLACE EARLIER?????
-
-Let $X_1, X_2,\dots, X_n$ be a random sample of size\ $n$ from $N(\mu, \sigma^2)$.
-Then the sample mean
-$$
-   \overline{X}
-   = 
-   \frac1n\sum_{i=1}^n X_i
-$$
-and sample variance
-$$
-   S^2
-   = \frac{1}{n - 1}\sum_{i=1}^n (X_i - \overline{X})^2
-$$
-are independent.
-
-::::{.proof}
-This proof is not given.
-::::
-:::
-
-MOVE THAT STUFF ABOVE??
-
-Consider, then, the statistic $(\overline{X} - \mu)/(s/\sqrt{n}\,)$ and re-expressing:
+Consider, then, the statistic\ $T$ and re-express:
 \begin{align*}
   T = \frac{\overline{X} - \mu}{s/\sqrt{n}}
   &=
@@ -1729,13 +1722,13 @@ Consider, then, the statistic $(\overline{X} - \mu)/(s/\sqrt{n}\,)$ and re-expre
     \times 
   \sqrt{ \frac{\sigma^2}{s^2(n-1)} }
      \times 
-  \sqrt{n-1}
+  \sqrt{n-1}.
 \end{align*}
 This re-writing may appear strange, but the ratio now comprises two expression whose distribution is known:
 \begin{align*}
-  \frac{\overline{X} - \mu}{\sigma/\sqrt{n}} 
+  Z = \frac{\overline{X} - \mu}{\sigma/\sqrt{n}} 
   &\sim N(0, 1), \quad\text{and}\\
-  \frac{\sigma^2}{s^2(n-1)}
+  V = \frac{s^2 (n-1)}{\sigma^2}
   &\sim \chi^2_{n-1}.
 \end{align*}
 So we can write
@@ -1746,7 +1739,7 @@ This ratio occurs so often in statistical inference, and in practice, that it ha
 This defines a $T$-distribution.
 
 
-:::{.definition #TDistribution name="T-distribution"}
+:::{.definition #TDistribution name="$T$-distribution"}
 Suppose $Z \sim N(0, 1)$ (i.e., a standard normal distribution) and $V \sim \chi^2_n$ (i.e., a chi-squared distribution with $n$\ degrees of freedom).
 Then
 \begin{equation}
@@ -1756,13 +1749,13 @@ Then
 is defined as a $T$-distribution with $n$\ degrees of freedom.
 :::
 
-:::{.theorem #TDistributionPDF name="T-distribution"}
+:::{.theorem #TDistributionPDF name="$T$-distribution PDF"}
 A continuous random variable\ $X$ with probability density function
 \begin{equation}
    f_X(x)
    = \frac{\Gamma\left((\nu + 1)/2\right)}{\sqrt{\pi \nu}\,\Gamma(\nu/2)}
      \left(1 + \frac{x^2}{\nu}\right)^{-(\nu + 1)/2}
-     \quad\text{for all $x$}
+     \quad\text{for $x\in\mathbb{R}$}
 \end{equation}
 is said to have a *$t$-distribution* with parameter $\nu > 0$.
 The parameter\ $\nu$ is called the *degrees of freedom*. 
@@ -1774,14 +1767,13 @@ This proof is not given.
 :::
 
 
-The probability denisty function of the $T$-distribution is very similar to the standard normal distribution (Fig.\ \@ref(fig:TPlots)): bell-shaped and symmetric about zero. 
-
+The probability density function of the $T$-distribution is very similar to the standard normal distribution (Fig.\ \@ref(fig:TPlots)): bell-shaped and symmetric about zero. 
 However, the variance is greater than one (Theorem\ \@ref(thm:TDistProperties)) and so is larger than the variance of the standard normal distribution, and is dependent on\ $\nu$.
 
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the $t$\ distribution have the form `[dpqr]t(df)`:
+The four **R** functions for working with the $t$\ distribution have the form `[dpqr]t(., df)`:
 
 * `dt(x, df)` computes the PDF at $X = {}$`x`;
 * `pt(q, df)` computes the CDF at $X = {}$`q`;
