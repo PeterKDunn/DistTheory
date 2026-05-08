@@ -583,6 +583,8 @@ Parameters are typically unknown and fixed.\index{Parameter}
 :::
 
 
+When a PMF depends on one or more parameters\ $theta$,\index{Parameter} this is made explicit by writing $p_X(x; \theta)$ for one parameter or $p_X(x; \theta_1, \theta_2, \dots)$ for multiple parameters, where the semicolon separates the variable\ $x$ from the parameters.
+For example, a PMF for a random variable\ $X$ depending on parameters\ $\alpha$ and\ $\beta$ would be written $p_X(x; \alpha, \beta)$.
 
 The following properties of the probability function are implied by the definition and the rules of probability.
 
@@ -680,6 +682,29 @@ if( knitr::is_html_output() ) {
 ```{r child="children/PlotCode/LargerTwoNumbers.Rmd"}
 ```
 
+
+::: {.example #PMFParameter name="Parameters in a PMF"}
+Define a random variable\ $X$, with probability mass function
+$$
+  p_X(x; a)
+  =
+  \begin{cases}
+    ax      & \text{for $x = 1, 2$};\\
+    1 - 3a  & \text{for $x = 3$}
+  \end{cases}
+$$
+for $0 < a < (1/3)$.
+The PMF has a parameter\ $a$.\index{Parameter}
+For example, if $a = 0.1$, then
+$$
+  p_X(x; a = 0.1)
+  =
+  \begin{cases}
+    0.1x  & \text{for $x = 1, 2$};\\
+    0.7   & \text{for $x = 3$}
+  \end{cases}
+$$
+:::
 
 
  
@@ -782,9 +807,7 @@ $$
 :::
 
 
-
-
-
+As with PMFs, when a PDF depends on one or more parameters\ $theta$,\index{Parameter} this is made explicit by writing $f_X(x; \theta)$ for one parameter or $f_X(x; \theta_1, \theta_2, \dots)$ for multiple parameters, where the semicolon separates the variable\ $x$ from the parameters.
 
 We are usually only concerned with $(a, b)\in \mathcal{R}_X$, but it makes sense to think of the PDF as defined for all\ $x$, insisting that $f_X(x) = 0$ for $x\notin \mathcal{R}_X$.
 This definition implies that *areas under the graph of the PDF represent probabilities* and leads to the following properties:
@@ -897,7 +920,46 @@ abline(v  = 1,
 
 
 
+:::{.example #PDFParameters}
+A random variable\ $T$ has the probability density function
+$$
+  f_T(t; \alpha)
+  =
+  \begin{cases}
+    t/\alpha^2                & \text{for $0 < t \le \alpha$};\\
+    (2\alpha - t)/\alpha^2    & \text{for $\alpha < t < 2\alpha$}
+  \end{cases}
+$$
+for $\alpha > 0$ (Fig.\ \@ref(fig:PDFParameter)).
+Here, $\alpha$ is a parameter.
+Note that $\int_0^{2\alpha} f_T(t)\,dt = 1$ for all values of\ $\alpha$.
+:::
 
+```{r PDFParameter, echo=FALSE, fig.align="center", fig.cap="The PDF for the rv\\ $T$ with parameter\\ $\\alpha$.", out.width='80%', fig.width=7, fig.height=3.5}
+alpha <- 1
+
+plot(x = c(0, alpha, 2 * alpha),
+     y = c(0, 1/alpha, 0),
+     type = "l",
+     axes = FALSE,
+     lwd = 2,
+     main = expression(bold(The~PDF~"for"~italic(X))),
+     xlab = expression(italic(t)),
+     ylab = "PDF")
+axis(side = 2,
+     las = 1,
+     at = c(0, 1/alpha),
+     labels = c(0, expression(1/alpha)))
+axis(side = 1,
+     at = c(0, alpha, 2 * alpha),
+     labels = c(0,
+                expression(alpha),
+                expression(2*alpha) ) )
+box()
+polygon(x = c(0, alpha, 2 * alpha),
+     y = c(0, 1/alpha, 0),
+     col = ColourLight)
+```
 
 
 ### Mixed random variables {#ProbabilityFunctionsMixed}
@@ -921,6 +983,9 @@ $$
 $$
 :::
 
+
+Again, if the mass function or the density function depends on one or more parameters,\index{Parameter} this is made explicit by writing $p_X(x; \theta, \dots)$ or $f_X(x; \theta, \dots)$ as appropriate, where the semicolon separates the variable\ $x$ from the parameters.
+
 The probability that\ $X$ falls within a region\ $A$ is:
 $$
   \Pr(X \in A) = \sum_{x_i \in A \cap \mathcal{R}_X^d} p_X(x_i) + \int_{A \cap \mathcal{R}_X^c} f_X(x)\,dx.
@@ -934,7 +999,7 @@ In other words, when $\mathcal{R}_X^d = \{0\}$ and $\mathcal{R}_X^c = (0, \infty
 In a factory producing diodes, a proportion\ $p$ of the diodes fail immediately.
 The distribution of the lifetime (in hundreds of days), say\ $Y$, of the diodes is given by a discrete component at $y = 0$ for which $\Pr(Y = 0) = p$, and a continuous part for $y > 0$ with density
 $$
-   f_Y(y) = (1 - p) \exp(-y) \quad \text{if $y > 0$.}
+   f_Y(y; p) = (1 - p) \exp(-y) \quad \text{if $y > 0$.}
 $$
 Here, $f_Y(y)$ is not itself a PDF over\ $\mathbb{R}$, as it doesn't integrate to one; however the total probability is
 $$
@@ -1002,9 +1067,9 @@ The DF gives the probability that a random variable\ $X$ is less than *or equal 
 
 
 ::: {.definition #DistributionFunction name="Distribution function"}
-For any random variable\ $X$ the *distribution function*, $F_X(x)$, is
+For any random variable\ $X$ the *distribution function*, $F_X(x; \theta_1, \dots)$ with parameters $\theta_1, \dots$, is
 $$
-     F_X(x) = \Pr(X \leq x) \quad \text{for $x\in\mathbb{R}$}.
+     F_X(x; \theta_1, \dots) = \Pr(X \leq x) \quad \text{for $x\in\mathbb{R}$}.
 $$
 :::
 
@@ -1200,7 +1265,7 @@ Example\ \@ref(exm:MixedRandomVariable) discussed the mixed random variable\ $Y$
 A proportion of the diodes\ $p = 0.4$ fail immediately (i.e., $\Pr(Y = 0) = 0.4$).
 For other diodes, the distribution function of\ $Y$ is described by
 \begin{align*}
-  F_Y(y) 
+  F_Y(y; p) 
   &= \Pr(Y\le y)\\
   &= p + \int_0^y f_Y(t)\, dt \\
   &= p + (1 - p)  \int_0^y\exp(-t)\, dt \\
@@ -1210,7 +1275,7 @@ For other diodes, the distribution function of\ $Y$ is described by
 for $y > 0$.
 The probability distribution is displayed in Fig.\ \@ref(fig:DiodeDF) where a solid dot is included to show the discrete part.
 
-The complete distribution function is:
+The complete distribution function, when $p = 0.4$, is:
 $$
    F_Y(y) = \begin{cases}
                0 & \text{if $y < 0$}\\
@@ -1439,12 +1504,13 @@ This is akin to observing the probability that the quantity 'survives' beyond a 
 
 The *survival function*, denoted $S_X(x)$ and sometimes called the *reliability function*, is defined as the probability that the random variable\ $X$ *exceeds* a value\ $x$:
 \begin{equation}
-  S_X(x) = \Pr(X > x).
+  S_X(x; \theta_1, \dots) = \Pr(X > x)
   (\#eq:SurvivalFunction)
 \end{equation}
+for parameters $\theta_1, \dots$.
 Since $F_X(x) = \Pr(X \le x)$, the survival function is simply the complement of the distribution function:
 $$
-  S_X(x) = 1 - F_X(x).
+  S_X(x; \theta_1, \dots) = 1 - F_X(x; \theta_1, \dots).
 $$
 
 Properties of the survival function include:
@@ -1606,15 +1672,15 @@ The median is the $0.5$-quantile---half the distribution (i.e., $50$%) is on eac
 
 More formally,
 \begin{equation}
-  Q_X(p) = \inf\{x \in \mathbb{R} \mid F_X(x) \ge p\}\quad\text{for $0 < p < 1$}
+  Q_X(p; \theta_1, \dots) = \inf\{x \in \mathbb{R} \mid F_X(x; \theta_1, \dots) \ge p\}\quad\text{for $0 < p < 1$}
   (\#eq:QuantileFunction)
 \end{equation}
-where 'inf' is the 'infimum', the greatest lower bound of the set. 
+where 'inf' is the 'infimum', the greatest lower bound of the set, and $\theta_1, \dots$ are the parameters. 
 In practice this refers to the leftmost value\ $x$ where the distribution function $F_X(x)$ reaches or exceeds a target probability\ $p$.
 
 When\ $X$ is a *continuous* random variable and $F_X(x)$ is a strictly increasing function, the quantile function is the inverse of the distribution function, and we can write
 $$
-   Q_X(p) = F_X^{-1}(p).
+   Q_X(p; \theta_1, \dots) = F_X^{-1}(p; \theta_1, \dots).
 $$
 
 
@@ -3046,7 +3112,7 @@ For 'Yellow' patients, the service time of doctors are modelled using a triangul
 
 
 :::{.exercise #Exceedance}
-In meteorology and climatology, rainfall is often graphed using rainfall survival functions [@dunn2001bootstrap] $S_X(x)  = $1 - F_X(x)$, where\ $X$ represents the rainfall.
+In meteorology and climatology, rainfall is often graphed using rainfall survival functions [@dunn2001bootstrap] $S_X(x)  = 1 - F_X(x)$, where\ $X$ represents the rainfall.
 
 1. Explain what is measured by $1 - F_X(x)$ in this context, and explain why it may be more useful than just $F_X(x)$ when studying rainfall.
 1. The data in Table\ \@ref(tab:RainArray) shows the total monthly rainfall at Charleville, Queensland, from 1942 until 2022 for the months of June and December. 
