@@ -14,7 +14,9 @@
 ## Populations and samples {#PopulationsSamples}
 
 This chapter introduces the application of distribution theory to the discipline of statistics.
-Distribution theory is about describing random variables in theoretical populations using probability, while statistics is about data collection and extracting information from observed data (Chap.\ \@ref(ChapterIntroduction)). 
+Distribution theory is about describing random variables in theoretical populations using probability.
+Statistics is about collecting data and extracting information from subsets of the population (i.e., samples) to learn about populations.
+This chapter explains how to describe those subsets.
 
 
 ### From populations to observations {#Sampling}
@@ -32,14 +34,14 @@ We may decide to model this population of heights theoretically using some speci
 Using this model, the mean height of Australian adult females is modelled as (Def.\ 
 \@ref(def:Expectation))
 $$
-  \mu = \operatorname{E}[X] = \int_{-\infty}^\infty x\cdot f_X(x)\,dx.
+  \mu = \operatorname{E}[X] = \int_{-\infty}^\infty x\, f_X(x)\,dx.
 $$
 
 If we model their heights using the normal distribution $N(\mu = 173, \sigma^2 = 9)$, the mean is modelled as\ $173\cms$ and the variance as $9\cms^2$.
 :::
 
 
-While height is a continuous random variable, and heights can be modelled using a continuous probability distribution, In practice height measurements of individual Australian females are *not* made with infinite precision; measured heights must be rounded as hence recorded as discrete values.
+While height is a continuous random variable, and heights can be modelled using a continuous probability distribution, in practice height measurements of individual Australian females are *not* made with infinite precision; measured heights must be rounded and hence are recorded as discrete values.
 Any tool to measure actual heights must record a *rounded* version of the heights, to some minimum unit\ $\delta$.
 Heights, for example, may be rounded to the nearest centimetre (i.e., $\delta = 1\cms$) or the nearest millimetre (i.e., $\delta = 0.1\cms$).
 So even if it was possible to measure the height of every Australian adult female, we would in practice have a list of discrete values $\{x_1, x_2, \dots , x_N\}$, where\ $N$ is the size of the population.
@@ -56,16 +58,16 @@ $$
   =
   \lim_{\substack{\delta \to 0 \\ N \to \infty}} \frac{1}{N} \sum_{i = 1}^N x_i 
   = 
-  \int_{-\infty}^\infty x\cdot f_X(x)\,dx.
+  \int_{-\infty}^\infty x\, f_X(x)\,dx.
 $$
 
 
 ### Random sampling and statistics {#RandomSamples}
 
-In practice, entire populations are very rarely studied: for example, the population are usually too large (and so studying the whole population is prohibitively expensive and time consuming), and some members of population may be inaccessible.
+In practice, entire populations are very rarely studied: for example, the population is usually too large (and so studying the whole population is prohibitively expensive and time consuming), and some members of population may be inaccessible.
 So rather than studying entire populations, a *sample* of observations from that population is almost always studied.
 
-The task of the *inferential statistics*\index{Inferential statistics}\index{Statistic} is to attempt to understand the entire population, based on what is learnt from studying a small subset of that population: the *sample*. \index{Sample}
+The task of the *inferential statistics*\index{Inferential statistics}\index{Statistic} is to learn about the entire population, based on what is learnt from studying a small subset of that population: the *sample*. \index{Sample}
 Inferential statistics requires an understanding of how samples behave.
 
 
@@ -79,8 +81,7 @@ Importantly, *how* the sample is drawn determines its statistical properties; th
 
 
 :::{.definition #RandomSample name="Random sample"}
-The set of random variables $X_1, X_2, \dots, X_n$ from a (usually unspecified) distribution\ $D$ is a collection of random variables $X_1, X_2, \dots, X_n$ that are independently and identically distributed (iid)\index{iid} with distribution function $F_X(x)$.
-
+The random variables $X_1, X_2, \dots, X_n$ are a *random sample* from distribution\ $D$ is they are independently and identically distributed (iid)\index{iid} with distribution function $F_X(x)$.
 We write $X_1, X_2, \dots, X_n \overset{\text{iid}}{\sim} D$, where 'iid'\index{iid} means 'independently and identically distributed'.
 :::
 
@@ -88,54 +89,68 @@ We write $X_1, X_2, \dots, X_n \overset{\text{iid}}{\sim} D$, where 'iid'\index{
 The definition uses the distribution function and so applies to discrete, continuous and mixed random variables.
 Because the elements of the random sample are assumed to be independent,\index{Independence} the results in previous chapters that are based on independence therefore apply.
 
-Once the sample is obtained, the data can be used to compute the value of some *statistic*.
+Once the sample is obtained, the sample data can be used to compute the value of some *statistic*.
 A *statistic*\index{Statistic} is simply a numerical value that is computed from a sample.
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Since the individuals chosen to be in the sample can vary from saple to sampple, the *value* of a statistic can vary from sample to sample.
+:::{.definition #Statistic name="Statistic"}
+A *statistic* is any function $T = g(X_1, X_2, \ldots, X_n)$ that is computable from the sample alone; that is, it does not depend on any unknown population parameters.\index{Statistic}
 :::
 
 
-:::{.definition #Statistic name="Statistic"}
-Let $X_1, X_2, \ldots, X_n$ be a random sample of size\ $n$.
-A *statistic* is any function $T = g(X_1, X_2, \ldots, X_n)$ of the sample.\index{Statistic}
+Recall that a *parameter*\index{Parameter} is a numerical characteristic of a population or its distribution. 
+In statistical inference, parameters are typically unknown, and it is the goal of estimation to infer their values from sample data.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Since the individuals chosen to be in the sample can vary from sample to sample, the *value* of a statistic can vary from sample to sample.
 :::
 
 
 :::{.example #StatisticdsExample name="Statistic"}
-For a random sample $X_1, X_2, \dots, X_n$, we could define a statistic\ $R$ such that
+For a random sample $X_1, X_2, \dots, X_n$, the statistic\ $R$ can be defined such that
 $$
-  R = \max\{X_1, X_2, \dots, X_n\} - \min\{X_1, X_2, \dots, X_n\}.
+  R = \max(X_1, X_2, \dots, X_n) - \min(X_1, X_2, \dots, X_n).
 $$
 :::
 
 
-An *estimator*\index{Estimator} is a *statistic* with a specific purpose: to estimate the unknown value of a population parameter.
-As a statistic, an estimator is a random variable.
-An *estimate*\index{Estimate} is the actual numerical value of the estimator that is computed after observing data.
-We often say that an estimate is a *realisation* of an estimator.
-
-The study of the properties of estimators---and what properties of estimators are desirable---is a branch of statistics called *statistical inference*.
+A special type of statistic is an *estimator*.
 
 
-:::{.example #StatisticsExampleMin name="The sample median is a statistic"}
+:::{.definition #Estimator name="Estimator"}
+An estimator $\hat{\theta} = g(X_1, X_2, \dots, X_n)$ is a statistic used to estimate an unknown population parameter\ $\theta$.
+As a function of random variables, an estimator is itself a random variable.\index{Estimator}
+:::
+
+
+:::{.definition #Estimate name="Estimate"}
+An estimate $\hat{\theta}(x_1, x_2, \dots, x_n)$ is the numerical value taken by an estimator upon observing a realisation $x_1, x_2, \dots, x_n$ of the sample.\index{Estimate} 
+:::
+
+
+The study of estimators and their properties---including point estimation, interval estimation, and hypothesis testing---is called *statistical inference*.\index{Statistical inference}
+
+
+:::{.example #StatisticsExampleMin name="The sample median"}
 Suppose we take a sample of $n = 12$ Australian adult females, and measure their heights to the nearest centimetre.
-
 We could define the *statistic*\index{Statistic}
 $$
-  M = \text{median}(X_1, X_2, \dots, X_N).
+  M = \text{median}(X_1, X_2, \dots, X_{12}).
 $$
-This statistic computes the median value of the sample.
-If the purpose of computing the sample median is to estimate the median value in the population, then $M$ is an *estimator* of the population median.
-While\ $M$ has been proposed as an estimator of the population median, we have not studied whether it is a 'good' estimator of the population median (i.e., has useful properties).
+$M$ is a *statistic*, as it only depends on the sample data.
+Since\ $M$ is likely to be different when computed from another sample of $12$\ Australian adult females, $M$ is a random variable. 
 
-Since\ $M$ is likely to be different when computed from another sample of $12$\ Australian adult females, it is a random variable. 
+If the purpose of computing the sample median is to estimate the unknown median value in the population, then\ $M$ is an *estimator* of the population median.
+While\ $M$ has been proposed as an estimator of the population median, we have not studied whether it is a 'good' estimator of the population median (i.e., has desirable properties).
+
 If the median height in the sample is $169\cms$, then
 $$
   m = 169
 $$
 is an *estimate* of the unknown population median.
+
+Notice that a capital\ $M$ is used for the estimator, and a lowercase\ $m$ for the realised value.
 :::
 \index{Sample|)}
 
@@ -145,8 +160,8 @@ is an *estimate* of the unknown population median.
 ### Sampling distributions: a small example {#SamplingDistributionsSmallExample}
 
 \index{Sampling distribution|(}
-Since a statistic is a function of the random variables $X_1, X_2, \ldots, X_n$, *sample statistics are random variables*, and so the value of a sample statistic changes from sample to sample. 
-This means that *sample statistics have a distribution* that describes *how* they vary.
+Since a statistic is a function of the random variables $X_1, X_2, \ldots, X_n$, *statistics are random variables*, and so the value of a statistic changes from sample to sample. 
+This means that *statistics have a distribution* that describes *how* they vary.
 
 
 :::{.definition #SamplingDistributionStatistic name="Sampling distribution of a statistic"}
@@ -162,7 +177,8 @@ $$
 We can define the sample median as a statistic, and then the median value in the population is\ $27$.
 This value is called a *parameter*\index{Parameter} since it is a number that describes the population.
 
-The median value of any sample of size $n < 5$ drawn from the population can be found: the sample median is a *statistic*, as it is computed from the sample.
+For each possible sample of size $n < 5$, we can compute the sample median.
+The sample median is a *statistic*, as it is computed from the sample data only.
 Since the population is (artificially) small in this scenario, the sampling distribution can be determined by enumerating every possible sample of any given size\ $n$.
 
 Using **R**:
@@ -201,7 +217,7 @@ table(median_S_2)
 ```
 
 The population median is\ $27$, so the sample median when $n = 4$ is often a very good estimate of the population median.
-The larger sample size produces a better estimate, in general, and the value of the sample statistic varies less from sample to sample.
+The larger sample size produces a better estimate, in general, and the value of the statistic varies less from sample to sample.
 
 
 ### Larger populations {#SamplingDistributionsLargerPopulations}
@@ -294,7 +310,7 @@ axis(side = 1)
 ```
 
 These histograms display the sampling distributions of the sample median for samples of size $n = 5$ and $n = 100$.
-The value of the sample statistic varies less from sample to sample again for the larger sample size.
+The value of the statistic varies less from sample to sample again for the larger sample size.
 
 
 ## Estimating population parameters
@@ -365,7 +381,7 @@ points(x = x_Mn,
 
 The sample estimates of the mean appear, on average, to be good estimates of the population mean.
 While some sample means are smaller than\ $\mu$, and some are larger than\ $\mu$, the estimate vary about\ $\mu$.
-The larger sample produces better estimates of the population mean in general, and less variation in the values of the sample statistic.
+The larger sample produces better estimates of the population mean in general, and less variation in the values of the statistic.
 
 
 ### Unbiased estimators {#UnbiasedEstimators}
