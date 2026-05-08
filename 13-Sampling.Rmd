@@ -57,14 +57,6 @@ $$
   = \operatorname{E}[X]
   = \frac{1}{N} \sum_{i = 1}^N x_i.
 $$
-As $N \to \infty$ and as $\delta \to 0$, this discrete sum converges to the Riemann integral:
-$$
-  \mu
-  =
-  \lim_{\substack{\delta \to 0 \\ N \to \infty}} \frac{1}{N} \sum_{i = 1}^N x_i 
-  = 
-  \int_{-\infty}^\infty x\, f_X(x)\,dx.
-$$
 
 
 ### Random sampling and statistics {#RandomSamples}
@@ -86,16 +78,16 @@ Importantly, *how* the sample is drawn determines its statistical properties; th
 
 
 :::{.definition #RandomSample name="Random sample"}
-The random variables $X_1, X_2, \dots, X_n$ are a *random sample* from distribution\ $D$ is they are independently and identically distributed (iid)\index{iid} with distribution function $F_X(x)$.
-We write $X_1, X_2, \dots, X_n \overset{\text{iid}}{\sim} D$, where 'iid'\index{iid} means 'independently and identically distributed'.
+The random variables $X_1, X_2, \dots, X_n$ are a *random sample* from distribution\ $D$ if and only if they are independently and identically distributed (iid)\index{iid} with distribution function $F_X(x)$.
+We write $X_1, X_2, \dots, X_n \overset{\text{iid}}{\sim} D$..
 :::
 
 
 The definition uses the distribution function and so applies to discrete, continuous and mixed random variables.
-Because the elements of the random sample are assumed to be independent,\index{Independence} the results in previous chapters that are based on independence therefore apply.
+Because the elements of the random sample are assumed to be independent,\index{Independence} results from previous chapters concerning independent random variables therefore apply directly.
 
 Once the sample is obtained, the sample data can be used to compute the value of some *statistic*.
-A *statistic*\index{Statistic} is simply a numerical value that is computed from a sample.
+A *statistic*\index{Statistic} is a function of the sample values.
 
 
 :::{.definition #Statistic name="Statistic"}
@@ -112,7 +104,7 @@ Since the individuals chosen to be in the sample can vary from sample to sample,
 :::
 
 
-:::{.example #StatisticdsExample name="Statistic"}
+:::{.example #StatisticsExample name="Statistic"}
 For a random sample $X_1, X_2, \dots, X_n$, the statistic\ $R$ can be defined such that
 $$
   R = \max(X_1, X_2, \dots, X_n) - \min(X_1, X_2, \dots, X_n).
@@ -230,8 +222,8 @@ Nonetheless, the idea of a sampling distribution of a statistic can be *simulate
 These sampling distributions, generated from simulated data, are called *empirical distributions*;\index{Empirical distributions} that is, they are based on sample data not theoretical ideals.
 
 
-:::{.example}
-Consider taking a random sample of $n = 5$ observations from a $N(\mu = 173, \sigma^2 = 9)$ distribution, and computing the median value in the sample:
+:::{.example #SampleEstimating name="Emoirical sampling distributions"}
+Consider taking a single random sample of $n = 5$ observations from a $N(\mu = 173, \sigma^2 = 9)$ distribution, and computing the median value in the sample:
 
 ```{r echo=FALSE}
 set.seed(1592875)
@@ -244,24 +236,21 @@ x1 <- rnorm(sample_Size,      # Take a sample of this size...
 median(x1)                    # Compute the sample median for this sample
 ```
 
-We can use\ **R** to simulate selecting many samples of size $n=5$, and compute the median for each (Fig.\ \@ref(fig:SDmedianPlots), left panel):
+This process can be repeated numerous times in **R** to simulate selecting many samples of size $n=5$, and computing the median for each (Fig.\ \@ref(fig:SDmedianPlots), left panel):
 
 ```{r SDmedian1, fig.show='hide'}
 num_Sims <- 100000           # Number of simulations
 
-# Generate random values
-Xsample_5 <- rnorm(num_Sims * sample_Size,
-               mean = x_Mn, sd = x_Sd)
+# Generate random values, and place in a suitably-sized array
+Xsample_5 <- array(
+  rnorm(num_Sims * sample_Size, mean = x_Mn, sd = x_Sd),
+  dim = c(sample_Size, num_Sims)
+)
 
-# Place these into an array, with each sample as a column 
-Xsample_5 <- array(Xsample_5,
-               dim = c(sample_Size, num_Sims) )
-
-# Find the median of each sample (i.e., column)
-Xmedian_5   <- apply(Xsample_5, 
-                MARGIN = 2, 
-                FUN = median) 
-hist(Xmedian_5)          # Create the histogram of sample medians
+Xmedian_5 <- apply(Xsample_5,     # For this data...
+                   MARGIN = 2,    # ... and for each column...
+                   FUN = median)  # ... compute the median
+hist(Xmedian_5)                   # Plot the histogram of sample medians
 ```
 
 Suppose we take larger samples, and find the sampling distribution again (Fig.\ \@ref(fig:SDmedianPlots), right panel):
@@ -269,24 +258,21 @@ Suppose we take larger samples, and find the sampling distribution again (Fig.\ 
 ```{r SDmin2, fig.show='hide'}
 sample_Size2 <- 100
 
-# Generate random values
-Xsample_100 <- rnorm(num_Sims * sample_Size2,
-                 mean = x_Mn, sd = x_Sd)
-
-# Place these into an array, with each sample as a column 
-Xsample_100 <- array(Xsample_100,
-                 dim = c(sample_Size2, num_Sims) )
+# Generate random values, and place in a suitably-sized array
+Xsample_100 <- array(
+  rnorm(num_Sims * sample_Size2, mean = x_Mn, sd = x_Sd),
+  dim = c(sample_Size2, num_Sims) 
+)
 
 # Find the minimum of each sample (i.e., column)
-Xmedian_5ian_100   <- apply(Xsample_100, 
-                  MARGIN = 2,       # MARGIN = 2 means the columns
-                  FUN = median)     # Find the median of each column
-hist(Xmedian_5ian_100)                          # Create the histogram of sample medians
+Xmedian_100 <- apply(Xsample_100,   # For this data...
+                  MARGIN = 2,       # ... and for each column...
+                  FUN = median)     # ... compute the median
+hist(Xmedian_100)                   # Plot the histogram of sample medians
 ```
-
 :::
 
-```{r SDmedianPlots, echo=FALSE, out.width='90%', fig.width=8.5, fig.height = 3.5, fig.align="center", fig.cap="Sampling distributions for the sample medians, for samples of size\ $5$ (left) and size\ $100$ (right)."}
+```{r SDmedianPlots, echo=FALSE, out.width='90%', fig.width=8, fig.height = 3.25, fig.align="center", fig.cap="Sampling distributions for the sample medians, for samples of size\ $5$ (left) and size\ $100$ (right)."}
 par( mfrow = c(1, 2))
 
 set.seed(1592875)
@@ -302,7 +288,7 @@ axis(side = 1)
 
 #####
 
-hist(Xmedian_5ian_100, 
+hist(Xmedian_100, 
      xlim = c(165, 185),
      xlab = "Sample median",
      ylab = "",
@@ -313,25 +299,21 @@ axis(side = 1)
 ```
 
 These histograms display the sampling distributions of the sample median for samples of size $n = 5$ and $n = 100$.
-The value of the statistic varies less from sample to sample again for the larger sample size.
+Again, the value of the statistic varies less from sample to sample for the larger sample size.
 
 
 ## Estimating population parameters
 
 ### Estimating the population mean {#SampligDistributionMean}
 
-The most common parameter estimated from a sample is the population mean\ $\mu$.
-For a population of\ $N$ discretely-measured observed values $X_1, X_2, \dots, X_n$, the population mean is
-$$
-  \mu = \operatorname{E}[X] = \frac{1}{N}\sum_{i = 1}^N x_i
-$$
-as noted earlier.
-The obvious suggestion for computing a sample mean from a sample of size\ $n$ (i.e., $x_1, x_2, \dots, x_n$) is *sample mean* $\overline{X}$, an *estimator*,\index{Estimator} defined as
+One of the most common reasons for taking a sample is to estimate the population mean\ $\mu$.
+For a population of\ $N$ values $X_1, X_2, \dots, X_N$, the population mean is $\mu = \operatorname{E}[X] = \frac{1}{N}\sum_i X_i$, as noted earlier.
+The natural estimator of\ $\mu$ is the *sample mean* $\overline{X}$, an *estimator*,\index{Estimator} defined as
 $$
   \overline{X} = \frac{1}{n}\sum_{i = 1}^n X_i.
 $$
 
-We can use\ **R** to simulate the selection of many samples of size $n = 5$, and many sample of size $n = 100$, and compute the empirical mean\index{Empirical mean} for each sample, using the same samples created above (Fig.\ \@ref(fig:SDmeanPlots)):
+We can use\ **R** to simulate the selection of many samples of size $n = 5$, and many sample of size $n = 100$, and compute the empirical mean\index{Empirical mean} for each sample, using the same samples created in Sect.\ \@ref(SamplingDistributionsLargerPopulations) (Fig.\ \@ref(fig:SDmeanPlots)):
 
 ```{r SDmean, fig.show='hide'}
 # Mean: n = 5
@@ -353,11 +335,11 @@ par( mfrow = c(1, 2))
 
 hist(Xmean, 
      xlim = c(165, 180),
-     xlab = "Sample mean",
+     xlab = expression(Sample~mean~bar(italic(x))),
      ylab = "",
      breaks = seq(150, 180, by = 1),
      main = "Sampling mean:\nsamples of size 5",
-     sub = paste0("(Average value: ", round(mean(Xmean), 1), ")"),
+     sub = paste0("(Average sample estimate: ", round(mean(Xmean), 1), ")"),
      axes = FALSE)
 axis(side = 1)
 points(x = x_Mn, 
@@ -368,11 +350,11 @@ points(x = x_Mn,
 
 hist(Xmean_2, 
      xlim = c(165, 180),
-     xlab = "Sample mean",
+     xlab = expression(Sample~mean~bar(italic(x))),
      ylab = "",
      breaks = seq(150, 180, by = 0.5),
      main = "Sampling mean:\nsamples of size 100",
-     sub = paste0("(Average value: ", round(mean(Xmean_2), 1), ")"),
+     sub = paste0("(Average sample estimate: ", round(mean(Xmean_2), 1), ")"),
      axes = FALSE)
 axis(side = 1)
 points(x = x_Mn, 
@@ -382,17 +364,15 @@ points(x = x_Mn,
 
 ```
 
-The sample estimates of the mean appear, on average, to be good estimates of the population mean.
-While some sample means are smaller than\ $\mu$, and some are larger than\ $\mu$, the estimate vary about\ $\mu$.
-The larger sample produces better estimates of the population mean in general, and less variation in the values of the statistic.
+
+The sample means vary around the true population mean\ $\mu$ (some are smaller; some are larger), but are centred on\ $\mu$, suggesting that\ $\overline{X}$ is an unbiased estimator. 
+Larger samples produce estimates that are more tightly concentrated around\ $\mu$, reflecting the smaller variance of\ $\overline{X}$ for larger values of\ $n$.
 
 
 ### Unbiased estimators {#UnbiasedEstimators}
 
-On average, the values of the sample means are centred around\ $\mu$.
-It seems useful to use an estimator where, on average, the sample estimate would produce the population value.
-Sometimes the sample estimate may be a little smaller than the population value, and sometimes a bit larger, but on average the value of the sample estimate is the same value of the population parameter.
-Any estimator with this property is called an *unbiased estimator*.
+The sample means are centred on\ $\mu$ (some estimates fall below the true value, some above), but on average the estimator is equal to the parameter it estimates. 
+An estimator with this property is called *unbiased*.\index{Estimator!unbiased}
 
 
 :::{.definition #Unbiased name="Unbiased estimator"}
@@ -403,11 +383,7 @@ $$
 :::
 
 
-This means that an unbiased estimator from a random sample produces estimates that, *on average*, have the same value as the population value being estimated.
-This seems a sensible property for a estimator.
-(There are other desirable properties of estimators too, we but do not explore these here.)\index{Inferential statistics}
-When we say that\ $\overline{X}$ is an unbiased estimator of\ $\mu$ then, we mean that $\operatorname{E}[\overline{X}] = \mu$,
-
+When we say that\ $\overline{X}$ is an unbiased estimator of\ $\mu$, we mean that $\operatorname{E}[\overline{X}] = \mu$,
 
 
 :::{.theorem #SampleMeanUnbiased name="An unbiased estimator for $\mu$"}
@@ -426,35 +402,35 @@ Using the definition of an unbiased estimator and the properties of expectations
   &= \frac{1}{n} \left( \operatorname{E}[ X_1 ] + \operatorname{E}[X_2] + \cdots \operatorname{E}[X_n] \right) \\
   &= \frac{1}{n} (n\times \mu) = \mu.
 \end{align*}
-That is, the expected value of\ $\overline{X}$ is equal to\ $\mu$.
-The estimator\ $\overline{X}$ is an *unbiased estimator* of\ $\mu$.
+That is, $\operatorname{E}[\overline{X}] = \mu$, and so\ $\overline{X}$ is an *unbiased estimator* of\ $\mu$.
 ::::
 :::
 
 
 :::{.example #UnbiasedPoisson name="A unbiased estimate"}
-Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Poisson}(\lambda)$, and consider the estimate $\bar{X}$.
+Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Poisson}(\lambda)$, and consider the estimate $\overline{X}$.
 Because the expectation is a linear operator, and because $\operatorname{E}[X_i] = \lambda$, 
 $$
-  \operatorname{E}[\bar{X}] 
+  \operatorname{E}[\overline{X}] 
   = 
   \operatorname{E}\!\left[\frac{1}{n}\sum_{i=1}^n X_i\right] = \frac{1}{n}\sum_{i=1}^n \operatorname{E}[X_i] = \frac{1}{n} \cdot n\lambda = \lambda.
 $$
-Hence $\bar{X}$ is an unbiased estimator of\ $\lambda$ for a Poisson distribution.
+Hence $\overline{X}$ is an unbiased estimator of\ $\lambda$ for a Poisson distribution.
 :::
 
-Not all estimators\index{Estimator} are unbiased estimators; even estimators that appear to be 'obvious' estimators may not be unbiased estimators.\index{Estimator!unbiased}
+Not all estimators\index{Estimator} are unbiased estimators; even estimators that appear to be natural estimators may not be unbiased estimators.\index{Estimator!unbiased}
 
 
 :::{.example #BiasedEstimate name="A biased estimate"}
-Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Exponential}(\lambda)$, where $\lambda > 0$ is the rate parameter, so that $\operatorname{E}[X_i] = 1/\lambda$.
-Consider the natural estimator of $\lambda$: that is, $1/\bar{X}$. 
+Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Exponential}(\lambda)$, where $\lambda > 0$ is the *rate* parameter, so that $\operatorname{E}[X_i] = 1/\lambda$ (Sect.\ \@ref(ExponentialProperties)).
+Consider the natural estimator of $\lambda$: that is, $1/\overline{X}$.
 
-Since $X_i \sim \operatorname{Exponential}(\lambda)$, we have $\overline{X} = \frac{1}{n}\sum_{i=1}^n X_i$, and it is known that
+Since $X_i \sim \operatorname{Exponential}(\lambda)$, then $\overline{X} = \frac{1}{n}\sum_{i=1}^n X_i$ (see Example\ \@ref(exm:GammaExp)).
+Since
 $$
-  \overline{X} \sim \operatorname{Gamma}(\alpha = n,\, \beta = 1/(n\lambda) ),
+  \overline{X} \sim \operatorname{Gamma}(\alpha = n,\, 1/(n\lambda) ),
 $$
-where we use the shape--scale parameterisation, so $\operatorname{E}[\overline{X}] = 1/\lambda$ and $\operatorname{Var}(\overline{X}) = 1/(n\lambda^2)$.
+where we use the shape--rate parameterisation, so $\operatorname{E}[\overline{X}] = 1/\lambda$ and $\operatorname{Var}(\overline{X}) = 1/(n\lambda^2)$.
 
 $\operatorname{E}[1/\overline{X}]$ can be computed directly:
 $$
@@ -464,7 +440,7 @@ $$
   = \frac{(n\lambda)^n}{\Gamma(n)}
     \int_0^\infty x^{n-2} \exp(-n\lambda x)\,dx.
 $$
-The integral is related to the probability density function of a gamma distribution (Def.\ \@ref(def:GammaDistribution)) with shape $n - 1$ and scale $1/(n\lambda)$, and so
+The integral is related to the probability density function of a gamma distribution (Def.\ \@ref(def:GammaDistribution)) with shape $n - 1$ and rate $1/(n\lambda)$, and so
 $$
   \int_0^\infty x^{n - 2} \exp(-n\lambda x)\,dx
   = 
@@ -486,21 +462,71 @@ $$
   = \frac{n}{n - 1}\,\lambda
   = \lambda + \frac{\lambda}{n - 1},
 $$
-and so the bias is $\lambda/(n - 1) > 0$: the estimator $1/\bar{X}$ systematically *overestimates* the value of $\lambda$.
+and so the bias is $\lambda/(n - 1) > 0$: the estimator $1/\overline{X}$ systematically *overestimates* the value of $\lambda$.
 
 Thus, $1/\overline{X}$ is a *biased* estimator of $\lambda$.
-Note also that the bias $\lambda/(n - 1) \to 0$ as $n \to \infty$, so $1/\bar{X}$ is *asymptotically unbiased*.\index{Unbiased estimator!asymptotically}
+Note also that the bias $\lambda/(n - 1) \to 0$ as $n \to \infty$, so $1/\overline{X}$ is *asymptotically unbiased*.\index{Unbiased estimator!asymptotically}
+
+A simulation (Fig.\ \@ref(fig:BiasExponential)) using $\lambda = 2$ shows that, in a sample of size $n = 3$, the mean value of $1/\overline{x}$ is $2.88$, a poor estimate of $\lambda  = 2$. 
+The theoretical expected value is
+$$
+  \frac{n\lambda}{n - 1} = \frac{3\times 2}{2 - 1} = 3,
+$$
+which is close to the  value in the simulation.
 :::
+
+
+```{r BiasExponential, echo=FALSE, fig.align="center", fig.cap="The sampling distribution of $1/\\overline{X}$ shows that this is a biased estimator of\\ $\\lambda$.", out.width='80%', fig.width=7, fig.height = 3.75}
+set.seed(139796)
+
+sample_Size <- 3
+num_Sims <- 2000
+lambda <- 2
+
+X <- array(
+  rexp(sample_Size * num_Sims, rate = lambda),
+  dim = c(sample_Size, num_Sims)
+)
+
+Xest <- apply(X,
+              MARGIN = 2,
+              FUN = function(x){ 1/mean(x)} )
+
+
+h <- hist(Xest,
+          plot = FALSE)
+ylim_max <- max(h$density) * 1.2  # 10% space for the label
+
+hist(Xest,
+     col = ColourLight,
+     axes = FALSE,
+     ylim = c(0, ylim_max),
+     freq = FALSE,
+     main = expression(Estimates~of~lambda~using~1/bar(italic(X))),
+     ylab = "",
+     xlab = expression(1/bar(italic(x))))
+axis(side = 1)
+abline(v = lambda,
+       lty = 2,
+       lwd = 2)
+text(x = lambda, 
+     y = ylim_max * 0.95,
+     pos = 4,
+     expression(lambda))
+
+mean(Xest)
+lambda
+
+```
 
 
 ### Estimating the population variance {#EstimatePopVariance}
 
 \index{Variance!estimation}
-In the same way that a population mean can be computed from discrete, observed values, the population variance for a population of\ $N$ discretely-measured observed values $X_1, X_2, \dots, X_n$ is
+In the same way that a population mean can be defined, the population variance for a population of\ $N$ values $X_1, X_2, \dots, X_N$ is
 $$
   \operatorname{var}[X] = \sigma^2 = \frac{1}{N}\sum_{i = 1}^N (x_i - \mu)^2.
 $$
-This suggests the following estimate of the population variance.
 
 
 :::{.theorem #SampleVarianceUnbiased name="An unbiased estimator for $\sigma^2$"}
@@ -517,28 +543,28 @@ See Exercise\ \@ref(exr:UnbiasedVarianceMu)
 :::
 
 
-Again, using the samples found earlier, the empirical estimates\ $S^2_\mu$\index{Empirical variances} can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SampleVarMu)), where $\mu = 173$:
+Using the samples found earlier (Sect.\ \@ref(SamplingDistributionsLargerPopulations)), the empirical estimates\ $S^2_\mu$\index{Empirical variances} can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SampleVarMu)), where $\mu = 173$:
 
 
 ```{r, fig.show='hide'}
 s2mu <- function(x) { (sum(x - x_Mn)^2) / length(x) }  # Function to find sS2_mu
-Xvar   <- apply(Xsample_5,                                 # Apply fn to each col
+Xvar_5 <- apply(Xsample_5,                             # Apply fn to each col
                 MARGIN = 2,
                 FUN = s2mu)
-hist(Xvar) 
-mean(Xvar)
+hist(Xvar_5) 
+mean(Xvar_5)
 
-Xvar_2   <- apply(Xsample_100,
+Xvar_100 <- apply(Xsample_100,
                   MARGIN = 2,
                   FUN = s2mu)
-hist(Xvar_2) 
-mean(Xvar_2)
+hist(Xvar_100) 
+mean(Xvar_100)
 ```
 
 ```{r SampleVarMu, echo=FALSE, out.width='100%', fig.width=8, fig.height=3.5, fig.cap="Sampling distributions for the sample variance for sample of size $n = 5$ (left) and $n = 100$ (right), using the unbiased estimator $S^2_\\mu$. The solid dots represent the population variance."}
 par( mfrow = c(1, 2))
 
-hist(Xvar,
+hist(Xvar_5,
      xlab = expression(italic(x)),
      main = "Variance estimates\nn = 5",
      ylab = "",
@@ -549,7 +575,7 @@ points(x = x_Sd^2,
        y = 0,
        pch = 19)
 
-hist(Xvar_2,
+hist(Xvar_100,
      xlab = expression(italic(x)),
      main = "Variance estimates\nn = 100",
      ylab = "",
@@ -561,20 +587,16 @@ points(x = x_Sd^2,
 ```
 
 
-Again the larger sample size produces estimated with less variation compared to the estimates from the smaller sample size.
-The average value of the estiamted, fromn the simulations, appear close to\ $\sigma^2 = 9$.
+The average value of the estimates, from the simulations, appear close to\ $\sigma^2 = 9$.
+Again the larger sample size produces estimates with less variation compared to the estimates from the smaller sample size.
 
-While $S^2_\mu$ is an unbiased estimator of\ $\sigma^2$, Eq.\ \@ref(eq:S2WithPopMean) has a practical difficulty: its computation relies on *knowing* the value of the population mean\ $\mu$.
-Knowing the value of\ $\mu$ but having to estimate the population variance is highly unlikely.
-If the information is available to compute the value of\ $\mu$, then\ $\sigma^2$ could also be computed (and would not need to be estimated). 
-Almost always, only the estimate\ $\overline{X}$ of the population mean\ $\mu$ would be known.
-
+While $S^2_\mu$ is an unbiased estimator of\ $\sigma^2$, Eq.\ \@ref(eq:S2WithPopMean) has a practical difficulty: its computation requires the population mean\ $\mu$, which is unknown in practice.
 This suggests using the estimator
 $$
   S^2_n = \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2.
 $$
 to estimate the population variance.
-To determine if this is an unbiased estimator, proceed as usual:
+To determine if this is an unbiased estimator, find $\operatorname{E}[S^2_n]$:
 \begin{align*}
     \operatorname{E}[S^2_n] 
   &= \operatorname{E}\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2 \right]\\
@@ -594,7 +616,7 @@ $$
   = \operatorname{E}[\overline{X}^2] - \operatorname{E}[\overline{X}]^2 
   = \operatorname{E}[\overline{X}^2] - \mu^2, 
 $$
-and so $\operatorname{E}[\overline{X}^2] = \operatorname{var}(\overline{X}) + \mu^2 = \sigma^2/n + \mu^2$.
+and so $\operatorname{E}[\overline{X}^2] = \operatorname{var}[\overline{X}] + \mu^2 = \sigma^2/n + \mu^2$.
 Also, 
 $$
   \operatorname{var}[X] 
@@ -610,8 +632,8 @@ Hence,
   &= \frac{n - 1}{n} \sigma^2.
 \end{align*}
 This shows that $\operatorname{E}[S^2_n] \ne\sigma^2$, and so the estimator is a *biased estimator* of\ $\sigma^2$.
-Again, the estimator is asymptotically unbiased,\index{Unbiased estimator!asymptotically} as $\operatorname{E}[S^2_n] \to\sigma^2$as $n\to\infty$.
-Since\ $\overline{X}$ estimates\ $\mu$ imprecisely (from just one of the many possible samples), an extra source of variation is introduced into the estimation of\ $\sigma^2$.
+Again, the estimator is asymptotically unbiased,\index{Unbiased estimator!asymptotically} as $\operatorname{E}[S^2_n] \to\sigma^2$ as $n\to\infty$.
+Replacing the unknown\ $\mu$ with the estimate\ $\overline{X}$ introduces additional variation, causing $S^2_n$ to systematically underestimate the value of] $\sigma^2$.
 
 Using the sample found earlier, the empirical estimates\ $S^2_n$\index{Empirical variances} can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SDvarPlots), top panels).
 The values of $\operatorname{E}[S^2_n]$ for $n = 5$ and $n = 100$ are
@@ -741,48 +763,36 @@ Easily shown by adapting the proof for $S^2_n$ above; see Exercise\ \@ref(exr:Un
 Using the sample found earlier, the empirical estimates\ $S^2$\index{Empirical variances} can be found for samples of size $n = 5$ and $n = 100$ (Fig.\ \@ref(fig:SDvarPlots), bottom panels).
 
 
-### Independence of the sample mean and sample= varance {#IndependenceMeanVar}
-
 A result that is useful later is the perhaps-surprising result that the sample mean and the sample variance are independent.
 
 :::{.theorem #MeanVarInd name="Sample mean and variance: Independent"}
 Let $X_1, X_2,\dots, X_n$ be a random sample of size\ $n$ from $N(\mu, \sigma^2)$.
-Then the sample mean
-$$
-   \overline{X}
-   = 
-   \frac1n\sum_{i=1}^n X_i
-$$
-and sample variance
-$$
-   S^2
-   = \frac{1}{n - 1}\sum_{i=1}^n (X_i - \overline{X})^2
-$$
-are independent.
+Then the sample mean $\overline{X}$ and the sample variance\ $S^2$ are independent.
 
 ::::{.proof}
 This proof is not given.
 ::::
 :::
 
+This result relies on normality; for non-normal distributions, $\overline{X}$ and $S^2$ are generally dependent.
+
 
 ## The distribution of the sample mean {#SamplingDistributionsMean}
 
 ### Introduction {#SamplingDistributionsMeanIntro}
 
-In previous sections, estimators were introduced and studied, specifically unbiased estimators for\ $mu$ and\ $\sigma^2$.
-All estimators are random variables, and so they all have distributions. 
+In previous sections, unbiased estimators for\ $\mu$ and\ $\sigma^2$ were introduced and their properties studied.
+All estimators are random variables, and so have distributions. 
 Previously, we used simulations to display the empirical sampling distribution\index{Sampling distributions!empirical}\index{Empirical distributions} of various statistics.
 
-However, theoretical sampling distributions of various estimators can be found, which leads to numerous very powerful and practical results.
+In this section, theoretical sampling distributions are derived (beginning with the distribution of the sample mean\ $\overline{X}$) which form the foundation for statistical inference.
 
 
 ### The mean and variance of $\overline{X}$ {#SamplingDistributionMean}
 
 Usually the sample mean\ $\overline{X}$ is of greatest interest when sampling.
-Section\ \@ref(SamplingDistributionsSmallExample) shows that the sample mean, like all estimators, varies from sample to sample.
 Figure\ \@ref(fig:SDmeanPlots) suggests that larger sample sizes produce sampling distributions with smaller variances.
-The following theorem quantifies this idea.
+The following theorem  quantifies how the variance of\ $\overline{X}$ decreases with sample size.
 
 
 :::{.theorem #SamplingDistMean name="Sampling distribution of the mean"}
@@ -790,57 +800,55 @@ If $X_1, X_2, \dots, X_n$ is a *random sample* of size\ $n$ from a population wi
 
 ::::{.proof}
 To show that $\operatorname{E}[\overline{X}] = \mu$, apply Theorem\ \@ref(thm:SampleMeanUnbiased).
-
 Similarly, using the properties of the variance, the variance of $\overline{X}$ is:
 \begin{align*}
     \operatorname{var}[\overline{X}]
-  &= \operatorname{var}[(X_1 + X_2 + \cdots X_n)/n]\\
+  &= \operatorname{var}[(X_1 + X_2 + \cdots + X_n)/n]\\
   &= \frac{1}{n^2} \operatorname{var}[X_1 + X_2 + \cdots X_n]\\
-  &= \frac{1}{n^2} \times n\sigma^2
-  = \frac{\sigma^2}{n}.
+  &= \frac{1}{n^2} \times n\sigma^2\quad\text{(since the $X_i$ are iid)}\\
+  &= \frac{\sigma^2}{n}.
 \end{align*}
-Equivalently, $\operatorname{sd}[X] = \sigma/\sqrt{n}$. 
-We sometimes write $\operatorname{var}[\overline{X}] = \sigma^2_{\bar{X}}$ and $\operatorname{sd}[\overline{X}] = \sigma_{\bar{X}}$. 
+We sometimes write $\sigma^2_{\overline{X}} = \operatorname{var}[\overline{X}]$.
+
+The quantity $\sigma_{\overline{X}} = \operatorname{sd}[\overline{X}]$ is called the *standard error of the mean*.\index{Standard error of the mean} 
+
 ::::
 :::
 
 
-Theorem\ \@ref(thm:SamplingDistMean) applies to a random sample as defined in Sect.\ \@ref(RandomSamples), because taking a random sample\index{Sample!random} means that the observations are independent.
-Theorem\ \@ref(thm:SamplingDistMean) describes the *mean* and *variance* of the sampling distribution of the mean, but not the *shape* of the sampling distribution.
+Theorem\ \@ref(thm:SamplingDistMean) applies to random samples as defined in Sect.\ \@ref(RandomSamples), since independence and identical distributions are guaranteed by definition.
 
-Theorem\ \@ref(thm:SamplingDistMean) shows that the expected value of\ $\bar{X}$ does not depend on the size of the sample, but the variance *decreases* as the sample size *increases*: larger samples trend to produce more precise estimates.
+Theorem\ \@ref(thm:SamplingDistMean) shows that the expected value of\ $\overline{X}$ does not depend on the size of the sample, but the variance of\ $\overline{X}$ *decreases* as the sample size *increases*: larger samples tend to produce more precise estimates of\ $\mu$.
 This makes sense intuitively; after all, one reason for preferring larger samples over smaller samples is that they produce more precise estimates.
 
-Theorem\ \@ref(thm:SamplingDistMean) contains two important pices of information.
-The first is that it shows *how* variance decreases as\ $n$ gets larger: inversely proportional to\ $n$.
-This means that a sample size twice as large reduces the variance by half.
-The impact on the standard deviation is probably more intuitive, as the standard deviation is measured in the same units as the data (and the sample mean): a sample size twice as large reduces the standard deviation by a factor of\ $\sqrt{2}$.
-In practice this means that to double the precision of\ $\bar{X}$ (i.e., to halve the size of the standard deviation), the sample size needs to be increase four-fold. 
+Importantly, Theorem\ \@ref(thm:SamplingDistMean) shows *how* the variance of\ $\overline{X}$ decreases as\ $n$ gets larger: inversely proportional to\ $n$.
+A sample size twice as large reduces the variance by half or, more intuitively, reduces the standard deviation by a factor of\ $\sqrt{2}$.
+In practice this means that to double the precision of\ $\overline{X}$ (i.e., to halve the size of the standard deviation), the sample size needs to be increased four-fold. 
 
-The second important (and remarkable) feature of Theorem\ \@ref(thm:SamplingDistMean) is that the results do not rely on knowing the distribution of the population\ $X$.
+Another important feature of Theorem\ \@ref(thm:SamplingDistMean) is that the results do not rely on knowing the distribution of the population\ $X$.
 The result applies for random samples drawn from *any* distribution, provided the $X_i$ are iid.
 In Sect.\ \@ref(SamplingDistributionsNormal), we consider the shape of the sampling distribution when the population specifically has a normal distribution; then in Sect.\ \@ref(CentralLimitTheorem) we consider the shape of the sampling distribution when the population has *any* distribution
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-In Theorem\ \@ref(thm:SamplingDistMean), the distribution of the population from which the sample is drawn is irrelevant.
+In Theorem\ \@ref(thm:SamplingDistMean), the mean and variance of\ $\overline{X}$ depend only on\ $\mu$ and\ $\sigma^2$, not on the shape of the population distribution.
 :::
 
 
-:::{.example #SamplimgMnVarExp name="Sampling mean and variance from an exponential distribution"}
-Suppose samples of $n = 5$ are drawn iid from an exponential distribution with $\lambda = 2$.
-This means that $\operatorname{E}[X] = 1/2 = 0.5$, and $\operatorname{var}[X] = 1/\lambda^2 = 0.25$, so we would expect $\operatorname{E}[\overline{X}] = 1/\lambda = 0.5$, and $\operatorname{var}[\overline{X}] = 0.25/n = 0.05$.
+:::{.example #SamplingMnVarExp name="Sampling mean and variance from an exponential distribution"}
+Suppose $X_1, \dots, X_n \overset{\text{iid}}{\sim}\text{Exponential}(\lambda = 2)$.
 
-The empirical distribution of the means of the samples is shown in Fig.\ \@ref(fig:ExpSD) (left panel).
-The empirical estimate (shown on the figure) are very close to the theoretical values.
-The centre and right panel show sampling distributions for $n = 15$ and $n = 100$.
+Hence, $\operatorname{E}[X_i] = 1/2 = 0.5$, and $\operatorname{var}[X_i] = 1/\lambda^2 = 0.25$, so $\operatorname{E}[\overline{X}] = 0.5$, and $\operatorname{var}[\overline{X}] = 0.25/n$.
+
+The empirical distribution of the means of the samples is shown in Fig.\ \@ref(fig:ExpSD), for samples of size $n = 5$, $n = 20$ and $n = 100$.
+The empirical estimates of\ $\operatorname{E}[\overline{X}]$ and\ $\operatorname{var}[\overline{X}]$ (shown on the figure) are very close to the theoretical values.
 :::
 
 
 ```{r, fig.show='hide'}
 set.seed(123)
 
-ns <- c(5, 15, 100)
+ns <- c(5, 20, 100)
 lambda <- 2
 num_Sims <- 10000  # number of simulations
 
@@ -860,7 +868,7 @@ var(sim_means[[1]]) / var(sim_means[[3]])
 
 
 
-```{r ExpSD, echo=FALSE, fig.align="center", fig.cap="Sampling distributions, for samples drawn from an exponential distribution with $\\lambda = 2$, for various sample sizes. The solid dots represent the population mean $1/\\lambda$.", out.width='100%', fig.width=7.5, fig.height=2.5}
+```{r ExpSD, echo=FALSE, fig.align="center", fig.cap="Sampling distributions, for samples drawn from an exponential distribution with $\\lambda = 2$, for various sample sizes. The solid dots represent the population mean $1/\\lambda = 0.5$.", out.width='100%', fig.width=7.5, fig.height=2.5}
 par(mfrow = c(1, 3))
 
 hist(sim_means[[1]], 
@@ -909,16 +917,16 @@ points(x = 1/lambda,
 The normal distribution is used to model many naturally occurring phenomena (Sect.\ \@ref(Normal)). 
 Consequently, we begin by studying the sampling distributions of statistics based on data drawn from normal populations.
 
-The following result proves useful.
+The following result proves establishes that any linear combination of independent normal random variables is itself normally distributed.
 
 
 :::{.theorem #LinearComb name="Linear combinations"}
-Let $X_1, X_2, \dots, X_n$ be a set of independent random variables where $X_i\sim N(\mu_i,\sigma^2_i)$. 
+Let $X_i\sim N(\mu_i,\sigma^2_i)$ where $i = 1, 2, \dots n$. 
 Define the linear combination\ $Y$ as
 $$
    Y = a_1 X_1 + a_2 X_2 + \dots + a_nX_n.
 $$
-Then $Y \sim N(\Sigma a_i\mu_i, \Sigma a^2_i\sigma^2_i)$.
+Then $Y \sim N(\sum_i a_i\mu_i, \sum_i a^2_i\sigma^2_i)$.
 
 ::::{.proof}
 From Theorem\ \@ref(thm:NormalProperties), the MGF of the random variable\ $X_i$ is
@@ -926,7 +934,7 @@ $$
    M_{X_i} (t)
    = \exp\left\{\mu_i t + \frac{1}{2} \sigma^2_i t^2\right\}\quad\text{for $i = 1, 2, \dots, n$}.
 $$
-So, for a constant\ $a_i$ (using Theorem\ \@ref(thm:ExpectationLinear) with $\beta = 0$, $\alpha = a_i$):
+So, for a constant\ $a_i$ (using Theorem\ \@ref(thm:ExpectationLinearINCORRRECT!) with $\beta = 0$, $\alpha = a_i$):
 \begin{align*}
    M_{a_i X_i}(t)
    &= M_{X_i}(a_it)\\
@@ -943,7 +951,7 @@ This is the MGF of a normal random variable with mean $\operatorname{E}[Y] = \Si
 :::
 
 
-:::{.example}
+:::{.example #LinearCombExample name="Linear combinations"}
 Define
 $$
   X_1 \sim N(2, \sigma^2 = 5)
@@ -952,13 +960,12 @@ $$
 $$
 and $a_1 = -8$ and $a_2 = 10$.
 Then, by Theorem\ \@ref(thm:LinearComb), $Y = a_1 X_1  + a_2 X_2$ has a normal distribution, with
-\begin{align}
-  \operatorname{E}[Y]    &= a_1\mu_1       + a_2\mu_2      = (-8\times 2) + (10\times 25) = 234;
-  \text{and}\\
-  \operatorname{var}[Y] &= a^2_1\sigma^2_1 + a_2\sigma^2_2 = ((-8)^2\times 5) + (10^2\times 1) = 420.
-\end{align}
-This can be demonstrated in **R**, as shown below.
-The simulated distribution of\ $Y$ is shown in Fig.\ \@ref(fig:HistLinearComb).
+\begin{align*}
+  \operatorname{E}[Y]    &= a_1\mu_1       + a_2\mu_2         = (-8\times 2) + (10\times 25) = 234;\\
+  \text{and}\quad
+  \operatorname{var}[Y]  &= a^2_1\sigma^2_1 + a_2^2\sigma^2_2 = ((-8)^2\times 5) + (10^2\times 1) = 420.
+\end{align*}
+This can be demonstrated in **R** (below); the simulated distribution of\ $Y$ is in Fig.\ \@ref(fig:HistLinearComb).
 :::
 
 ```{r, fig.show='hide'}
@@ -967,21 +974,19 @@ set.seed(8979704) # For reproducibility
 a_1 <- -8; a_2 <- 10
 num_Sims <- 10000
 
-X_1 <- rnorm(num_Sims,
-             mean = 2, 
-             sd = sqrt(5) )
+X_1 <- rnorm(num_Sims,                 # This many simulations from a Normal...
+             mean = 2, sd = sqrt(5) )  # ... with these parameters
 X_2 <- rnorm(num_Sims,
-             mean = 25, 
-             sd = sqrt(1) )
+             mean = 25, sd = sqrt(1) )
 
-Y <- a_1 * X_1 + a_2 * X_2
-hist(Y)
+Y <- a_1 * X_1 + a_2 * X_2             # The linear combinations
+hist(Y)                                # Produce the histogram
 
 mean(Y); var(Y)
 
 ```
 
-```{r HistLinearComb, echo=FALSE, out.width='100%', fig.width=8, fig.height=2.5, fig.align="center", fig.cap="Left: The normal distribution of $X_1$. Centre: the normal distribution of $X_2$. Right: the empirical distribution of a linear combination of the two normal random variates in a normal distribution. The solid dot represents the theoretical mean of $Y$, and the solid curve is the theoretical distribution of\\ $Y$."}
+```{r HistLinearComb, echo=FALSE, out.width='100%', fig.width=8, fig.height=2.5, fig.align="center", fig.cap="Left: The normal distribution of $X_1$. Centre: the normal distribution of $X_2$. Right: the empirical distribution of a linear combination of the two normal random variates is a normal distribution. The solid dot represents the theoretical mean of $Y$, and the solid curve is the theoretical distribution of\\ $Y$."}
 par(mfrow = c(1, 3))
 
 curve( dnorm(x, mean=2, sd = sqrt(5)),
@@ -1021,14 +1026,15 @@ curve(dnorm(x, mean = 234, sd = sqrt(420)),
       to = 350)
 ```
 
+
 The sampling distribution of the sum and mean of a random sample from a normal population follows directly from Theorem\ \@ref(thm:LinearComb).
 
 
 :::{.theorem #SumMean name="Sum and mean of a random sample"}
-Let $X_1, X_2, \dots, X_n$ be a random sample of size $n$ from $N(\mu,\sigma^2)$. 
-Define the sum\ $S$ and mean\ $\overline{X}$ respectively as
+Let $X_1, X_2, \dots, X_n \overset{\text{iid}}{\sim} N(\mu,\sigma^2)$. 
+Define the sum\ $T_n$ and mean\ $\overline{X}$ respectively as
 \begin{align*}
-   S
+   T_n
    &= X_1 + X_2 + \dots + X_n\\
    \overline{X}
    &= (X_1+X_2 + \dots + X_n)/n.
@@ -1041,7 +1047,8 @@ See Exercise\ \@ref(exr:SumMean).
 :::
 
 
-Theorem\ \@ref(thm:SumMean) relies only on the population from which the sample is drawn having a normal distribution, and on the properties of expectation; it does not depend on the sample size\ $n$.
+Theorem\ \@ref(thm:SumMean) holds for any sample size\ $n$, provided the population has a normal distribution.
+
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -1050,18 +1057,19 @@ For any size sample drawn from a normal distribution, the sample means have a no
 
 
 :::{.example #CLTSugarSachets name="Sums of rvs"}
-Sugar sachets (for sweetening hot drinks) typical are manufactured so that the weights of sugar in grams\ $W$ in each sachet are normally distributed with a mean of $4\gs$ and standard deviation $0.1\gs$.
-For catering purposes, sachets are sold in boxes of\ $1000$.
-What is the probability that a box contains more than\ $4020\gs$ of sugar? 
+Sugar sachets (for sweetening hot drinks) typical are manufactured so that the weights of sugar (in grams) in each sachet\ $W$ are iid with a normal distribution having a mean of $4\gs$ and standard deviation of\ $0.1\gs$.
 
-Since the weights\ $W$ follow a normal distribution, then the weight of the sugar in each box is 
+For catering purposes, sachets are sold in cartons of\ $1000$.
+What is the probability that a carton contains more than\ $4020\gs$ of sugar? 
+
+Since the weights\ $W$ follow a normal distribution, then the weight of the sugar in each carton is 
 $$
-   B = W_1 + W_2 + \cdots + W_{1000} \sim N(1000\times 4, \sigma^2=1000 \times 0.1^2).
+   T = W_1 + W_2 + \cdots + W_{1000} \sim N(1000\times 4, \sigma^2=1000 \times 0.1^2).
 $$
 or $N(4000, 10)$.
-Then, we seek $\Pr(B > 4020)$:
+Then, we seek $\Pr(T > 4020)$:
 $$
-  \Pr(B > 4020)
+  \Pr(T > 4020)
   = 
   \Pr(Z > (4020 - 4000) / 10) 
   = 
@@ -1112,7 +1120,7 @@ The *smallest* size sample, then, would be a sample of $n = 16$.
 :::
 
 
-```{r IQFindZ, echo=FALSE, fig.align="center", out.width='90%', fig.width=8, fig.height=3, fig.cap="Left: the situation in terms of $Z$. Right: finding the required value of $Z$ =."}
+```{r IQFindZ, echo=FALSE, fig.align="center", out.width='90%', fig.width=8, fig.height=3, fig.cap="Left: the situation in terms of $Z$. Right: finding the required value of $Z$."}
 par(mfrow = c(1, 2))
 
 xstar <- 1.6
@@ -1479,7 +1487,7 @@ $$
 The two most important and used descriptions of a sample are the sample mean and the sample variance.
 Having already discussed the sampling distribution of the sample mean, we now turn to the sampling distribution of the sample variance
 \begin{equation}
-  S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2.
+  S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \overline{X})^2.
   (\#eq:S2)
 \end{equation}
 for a sample $X_1, \dots, X_n \overset{\text{iid}}{\sim} N(\mu, \sigma^2)$ (i.e., independently and identically\index{iid} distributed from a normal distribution) (Theorem\ \@ref(thm:SampleVarianceUnbiasedXbar)).
@@ -1592,7 +1600,7 @@ $$
   \sum_{i=1}^n (X_i - \overline{X})^2
   = 
   \sum_{i=1}^n (X_i - \mu)^2 - 
-  n (\bar{X} - \mu)^2
+  n (\overline{X} - \mu)^2
 $$
 (see Exercise\ \@ref(Exercise3)).
 Dividing this expression by\ $\sigma^2$ then gives
@@ -1600,22 +1608,22 @@ Dividing this expression by\ $\sigma^2$ then gives
   \sum_{i=1}^n \frac{(X_i - \overline{X})^2}{\sigma^2}
   &= 
   \sum_{i=1}^n \frac{(X_i - \mu)^2}{\sigma^2} - 
-  \frac{n (\bar{X} - \mu)^2}{\sigma^2}\\
+  \frac{n (\overline{X} - \mu)^2}{\sigma^2}\\
   &= 
   \sum_{i=1}^n \left( \frac{X_i - \mu}{\sigma}\right)^2 - 
-  \frac{n(\bar{X} - \mu)^2}{\sigma^2}.
+  \frac{n(\overline{X} - \mu)^2}{\sigma^2}.
 \end{align*}
 The first term on the right side has a $\chi^2_n$ distribution (Eq\ \@ref(\#eq:SumZ2)).
-The final term has the form $Z^2$, where $Z = (\bar{X} - \mu)/(\sigma/\sqrt{n}\,)$; thus the second term on the right side has a $\chi^2(1)$ distribution.
+The final term has the form $Z^2$, where $Z = (\overline{X} - \mu)/(\sigma/\sqrt{n}\,)$; thus the second term on the right side has a $\chi^2(1)$ distribution.
 
 Now, *if those two terms are independent*, we can use the MGF method to show that
 $$
-  \sum_{i=1}^n \frac{(X_i - \bar{X})^2}{\sigma^2} \sim \chi^2_{n-1}
+  \sum_{i=1}^n \frac{(X_i - \overline{X})^2}{\sigma^2} \sim \chi^2_{n-1}
 $$
-Showing that the two terms are independent is not straightforward, but it is equivalent to showing that\ $S^2$ and $\bar{X}$ are independent since the\ $X_i$ are normally distributed (Exercise\ \@ref(exr:MeanSdIndependent)).
+Showing that the two terms are independent is not straightforward, but it is equivalent to showing that\ $S^2$ and $\overline{X}$ are independent since the\ $X_i$ are normally distributed (Exercise\ \@ref(exr:MeanSdIndependent)).
 Assuming the independence holds, this means that
 $$
-  \frac{1}{\sigma^2} \sum_{i=1}^n (X_i - \bar{X})^2 \sim \chi^2_{n-1}
+  \frac{1}{\sigma^2} \sum_{i=1}^n (X_i - \overline{X})^2 \sim \chi^2_{n-1}
 $$
 and hence
 $$
@@ -1783,7 +1791,7 @@ For example, @lin2021sleep studied whether the average overnight sleep time for 
 
 Provided the sample size is sufficiently large so that the Central Limit Theorem applies, the statistic 
 $$
-  Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}
+  Z = \frac{\overline{X} - \mu}{\sigma/\sqrt{n}}
 $$
 has an approximate standard normal distribution, whatever the distribution of\ $X$, provided the value of\ $\sigma^2$ is known.
 
@@ -1982,7 +1990,7 @@ Since the sample size is moderately large ($n=39$), the Central Limit Theorem im
 Because the population standard deviation\ $\sigma$ is unknown, the estimate (the sample standard deviation\ $s$) is used.
 Then
 $$
-  T = \frac{\bar{X} - \mu}{S/\sqrt{n}}
+  T = \frac{\overline{X} - \mu}{S/\sqrt{n}}
 $$
 has an approximate $t$-distribution, with $\nu = n - 1 = 38$ degrees of freedom.
 
@@ -2449,7 +2457,7 @@ Consider a compound Poisson--gamma distributions\index{Compound Poisson--gamma d
 :::{.exercise #Unbiased1}
 Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Exponential}(\lambda)$, where\ $\lambda$ is the rate parameter so that $\operatorname{E}[X_i] = 1/\lambda$
 
-1. Show that $\bar{X}$ is an unbiased estimator of $1/\lambda$.
+1. Show that $\overline{X}$ is an unbiased estimator of $1/\lambda$.
 2. Find an unbiased estimator of\ $\lambda$.
 :::
 
@@ -2457,7 +2465,7 @@ Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Exponential}(\lam
 :::{.exercise #Unbiased2}
 Let $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \operatorname{Uniform}(0, \theta)$. 
 
-1. Show that $2\bar{X}$ is an unbiased estimator of\ $\theta$.
+1. Show that $2\overline{X}$ is an unbiased estimator of\ $\theta$.
 2. Let $M = \max(X_1, \ldots, X_n)$. 
    Derive the distribution of $M$ and show that\ $M$ is not unbiased for $\theta$.
 3. Find a function of\ $M$ that is unbiased for\ $\theta$.
@@ -2512,7 +2520,7 @@ For each of the $1000$\ simulations, compute the sample mean and standard deviat
    Comment.
 2. Compute the correlation between the sample means against the sample variances.
    Comment.
-3. Show that the covariance between the sample mean $\bar{X}$ and the deviations of the observations from the sample means $\bar{X} - X_i$ is zero.
+3. Show that the covariance between the sample mean $\overline{X}$ and the deviations of the observations from the sample means $\overline{X} - X_i$ is zero.
 :::
 
 
