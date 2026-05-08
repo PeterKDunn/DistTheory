@@ -103,7 +103,7 @@ A *statistic* is any function $T = g(X_1, X_2, \ldots, X_n)$ that is computable 
 :::
 
 
-Recall that a *parameter*\index{Parameter} is a numerical characteristic of a population or its distribution. 
+Recall that a *parameter*\index{Parameter} is a numerical characteristic of a population or its distribution (Def.\ \@ref(def:Parameter)). 
 In statistical inference, parameters are typically unknown, and it is the goal of estimation to infer their values from sample data.
 
 
@@ -170,7 +170,7 @@ This means that *statistics have a distribution* that describes *how* they vary.
 
 
 :::{.definition #SamplingDistributionStatistic name="Sampling distribution of a statistic"}
-The *sampling distribution of a statistic* is the theoretical probability distribution of the statistic associated with *all* possible samples of a particular size drawn from a particular population.
+The *sampling distribution of a statistic* is the theoretical probability distribution of the values taken by the statistic across all possible samples of a particular size drawn from a particular population.
 :::
 
 
@@ -179,49 +179,47 @@ However, for demonstration purposes, suppose the population contains only $N = 5
 $$
    22\qquad 23\qquad 27\qquad 28\qquad 38.
 $$
-We can define the sample median as a statistic, and then the median value in the population is\ $27$.
-This value is called a *parameter*\index{Parameter} since it is a number that describes the population.
+The median value in the population (a *parameter*)\index{Parameter} is\ $27$.
+The sample median is an *estimator*\index{Estimator} of this parameter.
 
-For each possible sample of size $n < 5$, we can compute the sample median.
-The sample median is a *statistic*, as it is computed from the sample data only.
-Since the population is (artificially) small in this scenario, the sampling distribution can be determined by enumerating every possible sample of any given size\ $n$.
+For each possible sample of size $n < 5$ (chosen without replacement), we can compute the sample median.
+Since the population is (artificially) small in this scenario, the exact sampling distribution can be determined by enumerating every possible sample of any given size\ $n$.
 
 Using **R**:
 
 ```{r}
-Population <- c(22, 23, 27, 28, 38)
-median_P <- median(Population)
-median_P
+Population <- c(22, 23, 27, 28, 38)      # ALL values in the population
+median(Population)                       # Find the median of the population
 ```
 
 Suppose we consider samples of size $n = 2$; there are $\binom{5}{2} = 10$ such samples:
 
 ```{r}
-combn(Population, 2)
+combn(Population, 2)                     # List all samples
 ```
 
 The median of each sample is easily computed also:
 
 ```{r}
-median_S <- combn(Population, 2, FUN = median)
-median_S
+median_2 <- combn(Population, 2, FUN = median)  # Medians of every sample
+median_2
 ```
 
-The *sampling distribution* is just the distribution of these sample medians (which are the sample medians from all possible samples), which can be displayed a table (or graph):
+The *sampling distribution* is the distribution of these sample medians, which can be displayed a table (or graph):
 
 ```{r}
-table(median_S)
+table(median_2)                          # Tabulate the sample medians
 ```
 
-Since the population median is\ $27$, the sample medians are often a poor estimate of the population median.
+Since the population median is\ $27$, the sample medians are often a poor estimate of the population median (they range from\ $22.5$ to\ $33$).
 Suppose we looked at larger sample size; say, samples of size $n = 4$:
 
 ```{r}
-median_S_2 <- combn(Population, 4, FUN = median)
-table(median_S_2)
+median_S_4 <- combn(Population, 4, FUN = median)
+table(median_S_4)
 ```
 
-The population median is\ $27$, so the sample median when $n = 4$ is often a very good estimate of the population median.
+So the sample median when $n = 4$ is often a very good estimate of the population median (they range from\ $25$ to\ $27.5$).
 The larger sample size produces a better estimate, in general, and the value of the statistic varies less from sample to sample.
 
 
@@ -252,18 +250,18 @@ We can use\ **R** to simulate selecting many samples of size $n=5$, and compute 
 num_Sims <- 100000           # Number of simulations
 
 # Generate random values
-Xvals <- rnorm(num_Sims * sample_Size,
+Xsample_5 <- rnorm(num_Sims * sample_Size,
                mean = x_Mn, sd = x_Sd)
 
 # Place these into an array, with each sample as a column 
-Xvals <- array(Xvals,
+Xsample_5 <- array(Xsample_5,
                dim = c(sample_Size, num_Sims) )
 
 # Find the median of each sample (i.e., column)
-Xmed   <- apply(Xvals, 
+Xmedian_5   <- apply(Xsample_5, 
                 MARGIN = 2, 
                 FUN = median) 
-hist(Xmed)          # Create the histogram of sample medians
+hist(Xmedian_5)          # Create the histogram of sample medians
 ```
 
 Suppose we take larger samples, and find the sampling distribution again (Fig.\ \@ref(fig:SDmedianPlots), right panel):
@@ -272,18 +270,18 @@ Suppose we take larger samples, and find the sampling distribution again (Fig.\ 
 sample_Size2 <- 100
 
 # Generate random values
-Xvals_2 <- rnorm(num_Sims * sample_Size2,
+Xsample_100 <- rnorm(num_Sims * sample_Size2,
                  mean = x_Mn, sd = x_Sd)
 
 # Place these into an array, with each sample as a column 
-Xvals_2 <- array(Xvals_2,
+Xsample_100 <- array(Xsample_100,
                  dim = c(sample_Size2, num_Sims) )
 
 # Find the minimum of each sample (i.e., column)
-Xmed_2   <- apply(Xvals_2, 
+Xmedian_5ian_100   <- apply(Xsample_100, 
                   MARGIN = 2,       # MARGIN = 2 means the columns
                   FUN = median)     # Find the median of each column
-hist(Xmed_2)                          # Create the histogram of sample medians
+hist(Xmedian_5ian_100)                          # Create the histogram of sample medians
 ```
 
 :::
@@ -293,7 +291,7 @@ par( mfrow = c(1, 2))
 
 set.seed(1592875)
 
-hist(Xmed, 
+hist(Xmedian_5, 
      xlim = c(165, 185),
      xlab = "Sample median",
      ylab = "",
@@ -304,7 +302,7 @@ axis(side = 1)
 
 #####
 
-hist(Xmed_2, 
+hist(Xmedian_5ian_100, 
      xlim = c(165, 185),
      xlab = "Sample median",
      ylab = "",
@@ -337,13 +335,13 @@ We can use\ **R** to simulate the selection of many samples of size $n = 5$, and
 
 ```{r SDmean, fig.show='hide'}
 # Mean: n = 5
-Xmean   <- apply(Xvals, 
+Xmean   <- apply(Xsample_5, 
                  MARGIN = 2, 
                  FUN = mean) 
 hist(Xmean)          # Create the histogram of sample minimums
 
 # Mean: n = 100
-Xmean_2   <- apply(Xvals_2, 
+Xmean_2   <- apply(Xsample_100, 
                    MARGIN = 2, 
                    FUN = mean) 
 hist(Xmean_2)          # Create the histogram of sample minimums
@@ -524,13 +522,13 @@ Again, using the samples found earlier, the empirical estimates\ $S^2_\mu$\index
 
 ```{r, fig.show='hide'}
 s2mu <- function(x) { (sum(x - x_Mn)^2) / length(x) }  # Function to find sS2_mu
-Xvar   <- apply(Xvals,                                 # Apply fn to each col
+Xvar   <- apply(Xsample_5,                                 # Apply fn to each col
                 MARGIN = 2,
                 FUN = s2mu)
 hist(Xvar) 
 mean(Xvar)
 
-Xvar_2   <- apply(Xvals_2,
+Xvar_2   <- apply(Xsample_100,
                   MARGIN = 2,
                   FUN = s2mu)
 hist(Xvar_2) 
@@ -630,18 +628,18 @@ These both suggest that the estimator is unbiased.
 
 s2n <- function(x) { (sum( (x - mean(x))^2) ) / length(x)}
 
-Xvarn   <- apply(Xvals, 
+Xvarn   <- apply(Xsample_5, 
                 MARGIN = 2, 
                 FUN = s2n) 
-Xvarn_2   <- apply(Xvals_2, 
+Xvarn_2   <- apply(Xsample_100, 
                    MARGIN = 2, 
                    FUN = s2n) 
 
 
-Xvar   <- apply(Xvals, 
+Xvar   <- apply(Xsample_5, 
                 MARGIN = 2, 
                 FUN = var) 
-Xvar_2   <- apply(Xvals_2, 
+Xvar_2   <- apply(Xsample_100, 
                   MARGIN = 2, 
                   FUN = var) 
 
