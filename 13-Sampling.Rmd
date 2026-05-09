@@ -223,7 +223,7 @@ These sampling distributions, generated from simulated data, are called *empiric
 
 
 :::{.example #SampleEstimating name="Emoirical sampling distributions"}
-Consider taking a single random sample of $n = 5$ observations from a $N(\mu = 173, \sigma^2 = 9)$ distribution, and computing the median value in the sample:
+Consider taking a single random sample (with replacement) of $n = 5$ observations from a $N(\mu = 173, \sigma^2 = 9)$ distribution, and computing the median value in the sample:
 
 ```{r echo=FALSE}
 set.seed(1592875)
@@ -1602,7 +1602,7 @@ $$
   \sum_{i=1}^n (X_i - \mu)^2 - 
   n (\overline{X} - \mu)^2
 $$
-(see Exercise\ \@ref(Exercise3)).
+(see Exercise\ \@ref(exr:VarianceDecomposition)).
 Dividing this expression by\ $\sigma^2$ then gives
 \begin{align*}
   \sum_{i=1}^n \frac{(X_i - \overline{X})^2}{\sigma^2}
@@ -1613,7 +1613,7 @@ Dividing this expression by\ $\sigma^2$ then gives
   \sum_{i=1}^n \left( \frac{X_i - \mu}{\sigma}\right)^2 - 
   \frac{n(\overline{X} - \mu)^2}{\sigma^2}.
 \end{align*}
-The first term on the right side has a $\chi^2_n$ distribution (Eq\ \@ref(\#eq:SumZ2)).
+The first term on the right side has a $\chi^2_n$ distribution (Eq.\ \@ref(eq:SumZ2)).
 The final term has the form $Z^2$, where $Z = (\overline{X} - \mu)/(\sigma/\sqrt{n}\,)$; thus the second term on the right side has a $\chi^2(1)$ distribution.
 
 Now, *if those two terms are independent*, we can use the MGF method to show that
@@ -2016,7 +2016,7 @@ Another distribution that arises naturally and often in practice is the $F$-dist
 It arises when comparing the variability of two independent normal populations, and is also used in *analysis of variance*, a common statistical inference\index{Statistical inference} technique for testing the equality of several means.
 
 Suppose we have two random samples from two normally distributed populations: one of size\ $n_1$ drawn from $N(\mu_1, \sigma_1^2)$ and the other of size\ $n_2$ drawn from $N(\mu_2, \sigma_2^2)$.
-Then, from Theorem\ \@ref(SamplingDistVariance),
+Then, from Theorem\ \@ref(thm:SamplingDistVariance),
 $$
  U_1 =  \frac{(n_1 - 1)s_1^2}{\sigma_1^2} \sim \chi^2_{n_1 - 1}
   \quad\text{and}\quad
@@ -2131,7 +2131,7 @@ follows an $F_{n_1 - 1,\, n_2 - 1}$-distribution.
 
 ::::{.proof}
 **A partial proof only is given.**
-By Theorem\ \@ref(thm:SampleVarDist),
+By Theorem\ \@ref(thm:SamplingDistVariance),
 $$
    U_1 = \frac{(n_1 - 1)S_1^2}{\sigma_1^2} \sim \chi^2_{n_1 - 1}
    \qquad\text{and}\qquad
@@ -2157,7 +2157,7 @@ Then
 $$
   T^2 = \frac{Z^2/1}{V/n}.
 $$
-Since $Z^2 \sim \chi^2_1$ (Theorem\ \@ref(thm:SumSquaredNormals)), this is a ratio of the form $\chi^2_1/1$ over $\chi^2_n/n$, which by Def.\ \@ref(def:FDistribution) has an $F_{1,n}$-distribution.
+Since $Z^2 \sim \chi^2_1$ (Sect.\ \@ref(ChiSquaredDistribution)), this is a ratio of the form $\chi^2_1/1$ over $\chi^2_n/n$, which by Def.\ \@ref(def:FDistribution) has an $F_{1,n}$-distribution.
 ::::
 :::
 
@@ -2251,11 +2251,17 @@ $$
 Selected answers appear in Sect.\ \@ref(AnswersChapSampling).
 
 :::{.exercise #FPCF}
-Consider the FPCF (Def.\ \@ref(def:FPC)).
+When sampling *without* replacement from a finite population of size\ $N$, observations are no longer independent: once one element is sampled, there is slightly less variability in the remaining population.
+For this reason, in this scenario the standard error gets multiplied by the *finite population correction factor*
+$$
+  \sqrt{\frac{N - n}{N - 1}}
+$$
+where\ $n$ is the sample size.
 
 1. What happens if the sample size is the same as the population size?
    Explain why this is a sensible result.
-2. Show that, for large\ $n$, the FPCF is approximately $\sqrt{ 1 - n/N}$.
+2. Show that, for large\ $N$, the FPCF is approximately $\sqrt{ 1 - n/N}$.
+3. For what ratio $n/N$ (the *sampling fraction*)\index{Sampling fraction} do you think that using the FPCF is unnecessary in practice? 
 :::
 
 
@@ -2511,9 +2517,10 @@ Use the MGF method (Sect.\ \@ref(TransformationMoments)) to show that the distri
 
 
 :::{.exercise #MeanSdIndependent}
-In this exercise, the relationship between teh samnple meand and sample variance is explored (Sect.\ \@ref(ChiSquaredDistribution)).
+Let $X_1, X_2,\dots, X_n$ be a random sample of size\ $n$ from $N(\mu, \sigma^2)$.
+By Theorem\ \@ref(thm:\@ref(thm:MeanVarInd)), the sample mean $\overline{X}$ and the sample variance\ $S^2$ are independent.
 
-Using **R**, generate\ $1000$ simulations of data\ $X_i \sim N(1, 3)$ for $i = 1, 2, dots n$ for $n = 50$.
+To demonstrate using **R**, generate\ $1000$ simulations of data\ $X_i \sim N(1, 3)$ for $i = 1, 2, dots n$ for $n = 50$.
 For each of the $1000$\ simulations, compute the sample mean and standard deviation.
 
 1. Plot the sample means against the sample variances.
@@ -2757,4 +2764,23 @@ For each sample, record the sample mean $\overline{X}$ and sample variance $S^2$
 1. Produce a scatterplot of $\overline{X}$ against $S^2$.
 2. Compute the correlation between $\overline{X}$ and $S^2$.
 3. Comment on what the plot and correlation suggest about the relationship between the sample mean and sample variance when sampling from a normal distribution.
+:::
+
+
+:::{.exercise #VarianceDecomposition}
+Show that
+$$
+  \sum_{i=1}^n (X_i - \overline{X})^2
+  =
+  \sum_{i=1}^n (X_i - \mu)^2
+  -
+  n(\overline{X}-\mu)^2.
+$$
+Start by writing
+$$
+  X_i - \overline{X}
+  =
+  (X_i - \mu) - (\overline{X} - \mu),
+$$
+then expand the square and simplify the resulting sums.
 :::
