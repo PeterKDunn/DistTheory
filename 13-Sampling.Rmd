@@ -1194,14 +1194,11 @@ pnorm( -1.78 )
 
 ### The Central Limit Theorem {#CentralLimitTheorem}
 
-Sampling distributions for various statistics of interest are well-developed when sampling is from a *normal* distribution (Sect.\ \@ref(SamplingDistributions)).
-Theorem\ \@ref(thm:SumMean) applies when the population is normally distributed.
-Although these results are important, what if we do not know the distribution of the population from which the random sample is drawn (as is usually the case)?
+In Sect.\ \@ref(SamplingDistributionMean), general results are given describing the *mean* and *variance* of the sample mean which holds for any population distribution, but do not say anything about the *distribution* of the sample means.
+Theorem\ \@ref(thm:SumMean) states that the distribution is normal when the population is normally distributed.
 
-Remarkably, when the population is *not* normally distributed, the sampling distribution has an approximate normal distribution for large sample sizes (Sect.\ \@ref(CentralLimitTheorem)).
-
-In Sect.\ \@ref(SamplingDistributionMean) general results are given describing the *mean* and *variance* of the sample mean which holds for any population distribution, but do not say anything about the *distribution* of the sample means.
-The *Central Limit Theorem* (or *CLT*) describes the distribution of the sample means.
+Although these results are important, usually the distribution of the population from which the random sample is drawn is unknown.
+Remarkably, even when the population is *not* normally distributed, the sampling distribution still has an approximate normal distribution for large sample sizes.
 
 
 :::{.theorem #CLT name="Central Limit Theorem (CLT)"}
@@ -1212,6 +1209,7 @@ $$
    = \frac{\overline{X} - \mu}{\sigma / \sqrt{n}}
 $$
 converges in distribution to a standard normal variable as $n\to\infty$.
+'Convergence in distribution' means that the distribution of $Z_n$ converges to a standard normal as $n\to \infty$. 
 
 ::::{.proof}
 The proof is long, so is deferred to Appendix\ \@ref(CLTProof).
@@ -1219,36 +1217,32 @@ The proof is long, so is deferred to Appendix\ \@ref(CLTProof).
 :::
 
 
-'Convergence in distribution' means that the distribution of $Z_n$ converges to a standard normal as $n\to \infty$. 
-So when\ $n$ is 'large', $Z_n$ is expected to approximate a standard normal distribution. 
-Transforming $Z_n$ back to the sample mean, $\overline{X}$ can be expected to approximate a $N(\mu, \sigma^2/n)$ distribution.
-
-This is a partial proof since the concept of convergence in distribution has not been formally defined. 
-However, the arguments used in the proof are powerful and worth understanding.
-
-
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The *Central Limit Theorem* (Theorem\ \@ref(thm:CLT)) is one of the most important theorems in statistics.
 :::
 
 
+The Central Theorem states that when\ $n$ is 'large', $Z_n$ is expected to approximate a standard normal distribution. 
+Transforming $Z_n$ back to the sample mean, $\overline{X}$ can be expected to approximate a $N(\mu, \sigma^2/n)$ distribution.
 
 In practice, the distribution of\ $\overline{X}$ is sufficiently close to that of a normal distribution when\ $n$ is larger than about\ $25$ in most situations.
-However, if the population distribution is severely skewed, larger samples sizes may be necessary for the approximate to be adequate in practice.
+However, if the population distribution is severely skewed, larger samples sizes may be necessary for the approximation to be adequate in practice.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-In simple terms, the *Central Limit Theorem* states that, for *any* random variable\ $X$ (continuous, discrete or mixed), the distribution of the *sample means* will have an:\index{Central Limit Theorem}
+In simple terms, the *Central Limit Theorem* states that, for a random variable\ $X$, whatever its distribution, the distribution of the *sample mean* $\overline{X}$ becomes approximately normal as the sample size \(n\) increases.\index{Central Limit Theorem}
 
-* approximate normal distribution,
-* with mean\ $\mu = \operatorname{E}[X]$, and
-* with a variance of $\sigma^2/n$, where\ $\sigma^2 = \operatorname{var}[X]$.
+In particular, for large\ $n$,
 
-The approximation improves as the sample size\ $n$ gets larger.
+* the distribution of $\overline{X}$ is approximately normal,
+* with mean $\operatorname{E}[\overline{X}] = \mu$ where $\mu = \operatorname{E}[X]$, and
+* with variance $\operatorname{var}[\overline{X}] = \sigma^2/n$, where $\sigma^2 = \operatorname{var}[X]$.
 
-This applies for *any* random variable\ $X$, *whatever its distribution*.
-For many distributions that are not highly skewed, the approximation is reasonable for sample sizes larger than about\ $20$ to\ $30$.
-If the data comes from a normal distribution, the distribution of the sample mean *always* has a normal distribution for any\ $n$ (Sect.\ \@ref(SamplingDistributionsNormal)).
+The approximation generally improves as the sample size\ $n$ increases.
+
+For many distributions that are not highly skewed, the approximation is reasonably good for sample sizes larger than about\ $20$ to $30$.
+
+If the data come from a normal distribution, then the distribution of the sample mean is exactly normal for every sample size $n$ (Sect.\ \@ref(SamplingDistributionsNormal)).
 :::
 
 
@@ -1266,7 +1260,7 @@ The variance of the sample means for the larger sample size is smaller than that
 :::
 
 
-```{r PoissonCLT, echo=FALSE, fig.cap="The Central Limit Theorem. Left: the distribution of the individual observations that follow a Poisson distribution. Centre: the empirical sampling distribution of the sample mean for samples of size $n = 10$. Right: the empirical sampling distribution of the sample mean for samples of size $n = 100$. The thick dashed lines represent the theoretical asymptotic normal distribution.", fig.align="center", fig.width=7, out.width='100%', fig.height=3}
+```{r PoissonCLT, echo=FALSE, fig.cap="The Central Limit Theorem. Left: the distribution of the individual observations that follow a Poisson distribution. Centre: the empirical sampling distribution of the sample mean for samples of size $n = 10$. Right: the empirical sampling distribution of the sample mean for samples of size $n = 100$. The thick dashed lines represent the theoretical asymptotic normal distribution. Note that the scale on the horizontal axis is different for each plot.", fig.align="center", fig.width=7, out.width='100%', fig.height=2.75}
 # The distribution of individuals has a uniform distribution:
 set.seed(40516) # For reproducibility
 sample_Size_1 <- 10
@@ -1339,7 +1333,7 @@ Find the probability that the *average* volume of water is a random sample of si
 
 The distribution of\ $W$ is not given, but the mean and standard deviation of\ $W$ are given.
 The distribution of the sample mean\ $\overline{W}$ can be approximated by the normal distribution with mean of $\mu = 30$ and standard error of $\sigma_{\overline{W}} = \sigma/\sqrt{n} = 2.2/\sqrt{36} = 0.3718\mLs$, according to the CLT.
-That is, $\overline{W} \sim N(30, 0.3718^2)$.
+That is, approximately $\overline{W} \sim N(30, 0.3718^2)$.
 Now
 $$
    \Pr(\overline{W} < 31) 
@@ -1363,9 +1357,9 @@ For $n = 12$ rolls, find the probability that the sum of the faces is at least\ 
 Let the random variable\ $X_i$ be the number showing on the $i$th\ throw.
 Then define $Y = X_1 + \dots + X_{12}$, so that we seek $\Pr(Y\geq 52)$.
 
-To use Theorem\ \@ref(thm:CLT), see that '$Y\geq 52$' is equivalent to '$\overline{X}\geq 52/12$', where $\overline{X} = Y/12$ is the mean number showing from the $12$\ tosses.
+To use Theorem\ \@ref(thm:CLT), see that '$Y\geq 52$' is equivalent to '$\overline{X}\geq 52/12$', where $\overline{X} = Y/12$ is the mean number showing from the $n = 12$\ tosses.
 
-Since the distribution of each\ $X_i$ is rectangular with $\Pr(X_i = x) = 1/6$ (for $x = 1, 2, \dots, 6$), then $\operatorname{E}[X_i] = 7/2$ and $\operatorname{var}[X_i] = 35/12$ (Sect.\ \@ref(DiscreteUniformProperties)).
+Since the distribution of each\ $X_i$ is a continuous uniform distribution with $\Pr(X_i = x) = 1/6$ (for $x = 1, 2, \dots, 6$), then $\operatorname{E}[X_i] = 7/2$ and $\operatorname{var}[X_i] = 35/12$ (Sect.\ \@ref(DiscreteUniformProperties)).
 Hence, $\operatorname{E}[\overline{X}] = 7/2$ and $\operatorname{var}[\overline{X}] = 35/(12^2)$, and so 
 $\overline{X} \sim N(7/2, \sigma^2 = 35/(12^2))$. 
 
@@ -1376,39 +1370,47 @@ Then, from Theorem\ \@ref(thm:CLT),
     &= \Pr_N \left(Z\geq \frac{52/12 - 7/2}{\sqrt{35/144}}\right)\\
     &= 1 - \Phi(1.690) = 0.0455
 \end{align*}
-The probability is approximately\ $4.5$%.
+The probability is approximately\ $4.6$%.
 :::
 
 
-Example\ \@ref(exm:FairDiceSum) can also be solved using a generalisation of the Central Limit Theorem.
-This generalisation indicates why the normal distribution plays such an important role in statistical theory. 
-It states that a large class of random variables converge in distribution to the standardized normal.
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The Central Limit Theorem also applies to the *sum*
+$$
+  Y = \sum_{i=1}^n X_i,
+$$
+not just the sample mean.
+If $X_1,\ldots,X_n$ are iid random variables with
+$$
+  \operatorname{E}[X_i] = \mu
+  \qquad
+  \text{and}
+  \qquad
+  \operatorname{var}[X_i] = \sigma^2,
+$$
+then for large\ $n$,
+$$
+  Y
+  =
+  \sum_{i=1}^n X_i
+  \approx
+  N(n\mu, n\sigma^2).
+$$
+That is, the sum is approximately normally distributed with
 
+* mean $\operatorname{E}[Y] = n\mu$, and
+* variance $\operatorname{var}[Y] = n\sigma^2$.
 
-:::{.theorem #ConvergeToN name="Convergence to standard normal distribution"}
-Let $X_1, X_2, \dots, X_n$ be a sequence of independent random variables with $\operatorname{E}[X_i] = \mu_i$, $\operatorname{var}[X_i] = \sigma^2_i$.
-Define $Y = a_1X_1 + a_2X_2 + \dots + a_nX_n$.
-
-Then under certain general conditions, including\ $n$ large, $Y$\ is distributed approximately as $N(\sum_i a_i\mu_i, \sum_i a^2_i\sigma^2_i)$.
-
-::::{.proof}
-Not given.
-::::
+This result is often useful when modelling totals, such as total sales, total demand, total rainfall, or total waiting time.
 :::
 
-
-Theorem\ \@ref(thm:ConvergeToN) makes no assumptions about the distribution of\ $X_i$.
-If the\ $X_i$ are *normally* distributed, then $Y = \sum_{i = 1}^n a_i X_i$ will have a normal distribution for any\ $n$, large or small.
-
-
-SALT SACHETS:
 
 :::{.example #NoiseVoltages name="CLT (Voltages)"}
 Suppose we have a number of independent noise voltages\ $V_i$ (for $i = 1, 2, \dots, n$). 
 Let\ $V$ be the sum of the voltages, and suppose each\ $V_i$ is distributed $U(0, 10)$.
 For $n = 20$, find $\Pr(V > 105)$.
 
-This is an example of Theorem\ \@ref(thm:ConvergeToN) with each $a_i = 1$. 
+This is an example of the CLT written as a sum. 
 To find $\Pr(V > 105)$, the distribution of\ $V$ must be known.
 
 Since $\operatorname{E}[V_i] = 5$ and $\operatorname{var}[V_i] = 100/12$, from Theorem\ \@ref(thm:ConvergeToN) $V$ has an approximate normal distribution with mean $20\times 5 = 100$ and variance $20\times 100/12$.
@@ -1468,55 +1470,49 @@ $$
    \quad\text{and}\quad
    \operatorname{var}[\overline{X}] = \frac{p(1 - p)}{n}.
 $$
-Theorems\ \@ref(thm:CLT) and\ \@ref(thm:ConvergeToN) are applicable to\ $\overline{X}$ and\ $Y$ respectively. 
+Theorem\ \@ref(thm:CLT) is applicable to\ $\overline{X}$ and\ $Y$ respectively. 
 Hence
-$$
-   \overline{X} = \widehat{p}
-   \sim N\left(p, \frac{p(1 - p)}{n}\right)\text{ approximately}
-$$
-and
-$$
-   Y = n\widehat{p}
+\begin{align*}
+   \overline{X} &= \widehat{p}
+   \sim N\left(p, \frac{p(1 - p)}{n}\right)\text{ approximately}\\
+\text{and}\quad
+   Y &= n\widehat{p}
    \sim N(np, np(1 - p))\text{ approximately}.
-$$
-
+\end{align*}
 
 
 ## The $\chi^2$-distribution {#ChiSquaredDistribution}
 
-The two most important and used descriptions of a sample are the sample mean and the sample variance.
-Having already discussed the sampling distribution of the sample mean, we now turn to the sampling distribution of the sample variance
+Having discussed the sampling distribution of the sample mean, we now turn to the sampling distribution of the sample variance
 \begin{equation}
-  S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \overline{X})^2.
+  S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \overline{X})^2
   (\#eq:S2)
 \end{equation}
-for a sample $X_1, \dots, X_n \overset{\text{iid}}{\sim} N(\mu, \sigma^2)$ (i.e., independently and identically\index{iid} distributed from a normal distribution) (Theorem\ \@ref(thm:SampleVarianceUnbiasedXbar)).
-We are seeking the distribution of $S^2$.
-
+for a sample $X_1, \dots, X_n$ drawn iid from $N(\mu, \sigma^2)$ (Theorem\ \@ref(thm:SampleVarianceUnbiasedXbar)).
+We seek the distribution of $S^2$.
 
 
 \index{Chi-squared distribution|(}
-The formula for the estimator\ $S^2$ in Eq.\ \@ref(eq:S2) involves an\ $\sum X_i^2$ term, where each $X_i$ has a normal distribution.
-Hence, to find the distribution of\ $S^2$, we start with the distribution of a squared normal variate; specifically, consider
+The formula for the estimator\ $S^2$ in Eq.\ \@ref(eq:S2) involves an\ $\sum X_i^2$ term.
+Hence, to find the distribution of\ $S^2$, we start with the distribution of a squared normal variate.
+Specifically, consider
 $$
   Z = \frac{X - \mu}{\sigma} \sim N(0,1)
 $$
 and the distribution of $Y = Z^2$.
-The distribution of\ $Y$ is easy to determine using the techniques in Chap.\ \@ref(ChapterTransformations)), and yields
+The distribution of\ $Y$ is easy to determine using the techniques in Chap.\ \@ref(ChapterTransformations) (see Exercise\ \@ref(exr:DistZ2)), and yields
 $$
   f_Y(y) = \frac{y^{-1/2}\exp(-y/2)}{\sqrt{2\pi}} \quad\text{for $y > 0$}.
 $$
-The proof is Exercise\ \@ref(exr:DistZ2).
 Note that $Y \sim \text{Gamma}(\alpha = 1/2, \beta = 2)$.
 
 Now consider $Z_1, Z_2, \dots Z_n\overset{\text{iid}}{\sim} N(0, 1)$, and the summation $\sum_{i = 1}^n Z_i^2$.
-Since each\ $Z_i^2$ has the same gamma distribution, the distribution of the summation can be found (Exercise\ \@ref(exr:SumZ2)) as
+Since each\ $Z_i^2$ has the same gamma distribution, the distribution of the summation can be found, using MGFs (Exercise\ \@ref(exr:SumZ2)), as
 $$
   \sum_{i = 1}^n Z_i^2 \sim \text{Gamma}(\alpha = n/2, \beta = 2).
 $$
-This distribution occurs so often in practice that it has its own name: a $\chi^2$-distribution.
-That is, a $\text{Gamma}(\alpha = n/2, \beta = 2)$ is defined as a $\chi^2_n$-distribution.
-Thus:
+This distribution occurs so often in practice that it has its own name.
+A $\text{Gamma}(\alpha = n/2, \beta = 2)$ distribution is defined as a $\chi^2_n$-distribution, and so
 \begin{equation}
   \sum_{i = 1}^n Z_i^2 \sim \chi^2_n,
   (\#eq:SumZ2)
@@ -1540,12 +1536,11 @@ Some plots of $\chi^2$-distributions are shown in Fig.\ \@ref(fig:ChisqPlots).
 
 
 ::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
-The chi-squared distribution is a special case of the gamma distribution, with $\alpha = \nu/2$ and $\beta = 2$ (Exercise\ \@ref(exr:ChiSquaredGamma)).
-This means that properties of the chi-squared distribution can be obtained directly from those for the gamma distribution (Sect.\ \@ref(GammaDistribution)).
+The chi-squared distribution is a special case of the gamma distribution, with $\alpha = \nu/2$ and $\beta = 2$.
 :::
 
 
-```{r ChisqPlots, echo=FALSE, out.width='100%', fig.height=2.75, fig.width=6.5, fig.cap="Some $\\chi^2\\!$-distribution probability density functions."}
+```{r ChisqPlots, echo=FALSE, out.width='100%', fig.height=2.5, fig.width=6.5, fig.cap="Some $\\chi^2\\!$-distribution probability density functions."}
 par( mfrow = c(1, 3))
 
 xx <- seq(0.01, 4, length = 100)
@@ -1588,13 +1583,13 @@ If $X\sim\chi^2_\nu$ then
 * $M_X(t) = (1 - 2t)^{-\nu/2}$ for $t < 1/2$.
 
 ::::{.proof}
-See Theorem\ \@ref(thm:GammaProperties).
+Since the chi-squared distribution is a special case of the gamma distribution, these properties can be obtained directly from those for the gamma distribution (see Theorem\ \@ref(thm:GammaProperties)).
 ::::
 :::
 \index{Chi-squared distribution|)}
 
 
-Having found the distribution of the sum of\ $n$ random variables, we can return to the original task: finding the sampling distribution of the sample variance\ $S^2$ (in Eq.\ \@ref(eq:S2)).
+Having found the distribution of the sum of\ $n$ random variables, we can return to the original task: finding the sampling distribution of the sample variance\ $S^2$ in Eq.\ \@ref(eq:S2).
 First, write
 $$
   \sum_{i=1}^n (X_i - \overline{X})^2
@@ -1605,23 +1600,53 @@ $$
 (see Exercise\ \@ref(exr:VarianceDecomposition)).
 Dividing this expression by\ $\sigma^2$ then gives
 \begin{align*}
-  \sum_{i=1}^n \frac{(X_i - \overline{X})^2}{\sigma^2}
-  &= 
-  \sum_{i=1}^n \frac{(X_i - \mu)^2}{\sigma^2} - 
-  \frac{n (\overline{X} - \mu)^2}{\sigma^2}\\
-  &= 
-  \sum_{i=1}^n \left( \frac{X_i - \mu}{\sigma}\right)^2 - 
+  W
+  &=
+  \sum_{i=1}^n \frac{(X_i - \overline{X})^2}{\sigma^2} \\
+  &=
+  \sum_{i=1}^n \left( \frac{X_i - \mu}{\sigma}\right)^2
+  -
   \frac{n(\overline{X} - \mu)^2}{\sigma^2}.
 \end{align*}
-The first term on the right side has a $\chi^2_n$ distribution (Eq.\ \@ref(eq:SumZ2)).
-The final term has the form $Z^2$, where $Z = (\overline{X} - \mu)/(\sigma/\sqrt{n}\,)$; thus the second term on the right side has a $\chi^2(1)$ distribution.
-
-Now, *if those two terms are independent*, we can use the MGF method to show that
+Now, write $W = U - V$, where
+\begin{align*}
+  U
+  &=
+  \sum_{i=1}^n \frac{(X_i - \mu)^2}{\sigma^2}
+  \sim \chi^2_n\\
+  \text{and}\quad
+  V
+  &=
+  \frac{n(\overline{X} - \mu)^2}{\sigma^2}
+  \sim \chi^2_1.
+\end{align*}
+Using the fact that\ $U$ and\ $V$ are independent (a consequence of the independence of sample mean and sample variance under normality), we proceed via MGFs.
+Since $U = W + V$ and\ $W$ and\ $V$ are independent, the MGF of\ $U$ factorises as
 $$
-  \sum_{i=1}^n \frac{(X_i - \overline{X})^2}{\sigma^2} \sim \chi^2_{n-1}
+  M_U(t)
+  =
+  M_W(t)\cdot M_V(t).
 $$
-Showing that the two terms are independent is not straightforward, but it is equivalent to showing that\ $S^2$ and $\overline{X}$ are independent since the\ $X_i$ are normally distributed (Exercise\ \@ref(exr:MeanSdIndependent)).
-Assuming the independence holds, this means that
+The MGF of a \(\chi^2_k\) distribution is $M(t) = (1- 2 t)^{-k/2}$.
+Hence
+$$
+  (1-2t)^{-n/2}
+  =
+  M_W(t)\cdot (1-2t)^{-1/2},
+$$
+which implies
+$$
+  M_W(t)
+  =
+  (1 - 2t)^{-(n-1)/2}.
+$$
+This is the MGF of a $\chi^2_{n-1}$ distribution, and hence
+$$
+  W
+  \sim
+  \chi^2_{n-1}.
+$$
+This means that
 $$
   \frac{1}{\sigma^2} \sum_{i=1}^n (X_i - \overline{X})^2 \sim \chi^2_{n-1}
 $$
@@ -1630,7 +1655,7 @@ $$
   \frac{(n - 1)S^2}{\sigma^2} \sim \chi^2_{n-1}
 $$
 after substituting Eq.\ \@ref(eq:S2) and rearranging.
-This means that $S^2$ follows a scaled $\chi^2_{n-1}$ distribution.
+Thus, \(S^2\) has a scaled \(\chi^2_{n-1}\) distribution.
 
 
 :::{.theorem #SamplingDistVariance name="Sampling distribution of the variance"}
@@ -1655,13 +1680,14 @@ The four **R** functions for working with the $\chi_\nu^2$-distribution have the
 :::
 
 
-:::{.example}
+:::{.example #SamplingDistVariance name="Sampling distribution of the variance"}
 Consider taking samples of size $n = 5$ and $n = 20$ from a $N(5, \sigma^2 = 4)$ distribution.
 The sampling distribution of
 $$
   \frac{n - 1}{4} S^2 \sim \chi^2_{n - 1}.
 $$
 Figure\ \@ref(fig:ChiS2R) shows the empirical sampling distribution for the scaled sample standard deviation for both sample sizes.
+Again the larger sample size produces a sampling distribution with a smaller variance.
 :::
 
 ```{r fig.show='hide'}
@@ -1683,30 +1709,19 @@ scaled_S2_b <- replicate(num_Sims, {
   (n_b - 1) * var(x) / sigma2
 })
 
-par(mfrow = c(1, 2))
-
 # Plot histogram vs true chi^2(n-1) density
-hist(scaled_S2_a, 
-     freq = FALSE,
-     main = "Scaled sample standard\ndeviation n = 5",
-     xlab = "Value")
+hist(scaled_S2_a, freq = FALSE)
 
-curve(dchisq(x, df = n_a - 1), 
-      add = TRUE, 
-      lwd = 2)
+curve(dchisq(x, df = n_a - 1), add = TRUE, lwd = 2)
 
-hist(scaled_S2_b, 
-     freq = FALSE,
-     main = "Scaled sample standard\ndeviation n = 20",
-     xlab = "Value")
+hist(scaled_S2_b, freq = FALSE)
 
-curve(dchisq(x, df = n_b - 1), 
-      add = TRUE, 
-      lwd = 2)
+curve(dchisq(x, df = n_b - 1), add = TRUE, lwd = 2)
 
 ```
 
-```{r ChiS2R, echo=FALSE, fig.align="center", fig.cap="The sampling distribution of the scaled standard deviation.", fig.width=8, fig.height=3.25, out.width='90%'}
+
+```{r ChiS2R, echo=FALSE, fig.align="center", fig.cap="The sampling distribution of the scaled standard deviation. The scale on the horizontal axis is different for the two plots.", fig.width=8, fig.height=3.25, out.width='90%'}
 # Plot histogram vs true chi^2(n-1) density
 par(mfrow = c(1, 2))
 
@@ -1743,12 +1758,12 @@ curve(dchisq(x, df = n_b - 1),
 
 :::{.example #Chi2Eng name="Sample standard deviation"}
 Quality control engineers routinely need to assess the variability of a production process. 
-A process may be centred correctly yet still produce defective items if the spread is too large.
+A process may be centred correctly, yet still produce defective items if the spread is too large.
 
-Suppose a manufacturer produces steel rods whose diameter (in mm) should follow a $N(\mu, \sigma^2)$ distribution. The target standard deviation is $\sigma = 0.05\mms$; large variances are outside tolerance.
+Suppose a manufacturer produces steel rods whose diameter (in mm) should follow a specified $N(\mu, \sigma^2)$ distribution. The target standard deviation is $\sigma = 0.05\mms$; large variances are outside tolerance.
 
 The production line is monitored by a quality engineer by drawing a random sample of $n = 25$ rods each hour and computing the sample variance $S^2$.
-In one sample of $n = 25$, the engineer finds $s^2 = 0.0031\mms^2$.
+In one sample of $n = 25$ rods, the engineer finds $s^2 = 0.0031\mms^2$.
 Find the probability that $S^2 > 0.0031$ when $\sigma^2 = 0.0025$.
 
 Using the chi-squared result, 
@@ -1761,14 +1776,14 @@ $$
   \frac{24}{0.0025} S^2 
   =
   9600\, S^2 
-  \sim  \chi^2_{24} 
+  \sim  \chi^2_{24}.
 $$
 
 Thus, 
 $$
   \Pr(S^2 > 0.0031)
   =
-  \Pr\left(9600\,S^2 > \frac{24\times 0.0031}{0.0025}\right)
+  \Pr\left(9600\,S^2 > \frac{24\times 0.0031}{0.0025}\right).
 $$
 In\ **R**:
 
@@ -1783,26 +1798,25 @@ There is an approximate $19$% probability of observing a sample variance this la
 ## The $t$-distribution {#TDistribution}
 
 \index{t-distribution@$t$-distribution}
-Many other useful distributions exist that are related to the normal distribution.
-Because of the Central Limit Theorem (Sect.\ \@ref(CentralLimitTheorem)), these distributions prove useful in many practical situations.
+In statistical inference, a common goal is to make statements about a population mean\ $\mu$ using the sample mean\ $\overline{X}$.
+For example, Lin et al.\ (@lin2021sleep) studied whether the average overnight sleep time for pre-school children equals the recommended $10\hs$.
 
-In practice, a common task is to evaluate a claim or belief about population mean\ $\mu$, based on the mean of a sample\ $\overline{X}$.
-For example, @lin2021sleep studied whether the average overnight sleep time for pre-school children was equal to the to the recommended $10\hs$.
-
-Provided the sample size is sufficiently large so that the Central Limit Theorem applies, the statistic 
+If the population variance\ $\sigma^2$ was known, then the Central Limit Theorem implies that
 $$
   Z = \frac{\overline{X} - \mu}{\sigma/\sqrt{n}}
 $$
-has an approximate standard normal distribution, whatever the distribution of\ $X$, provided the value of\ $\sigma^2$ is known.
+is approximately standard normal for large\ $n$, regardless of the distribution of\ $X$.
 
-In practice, however, the value of\ $\sigma^2$ is almost never known, and the sample variance\ $S^2$ is used instead.
-This leads to the statistic 
+In practice, however, the population variance\ $\sigma^2$ is almost never known. 
+Instead, it is estimated using the sample variance\ $S^2$, leading to the statistic
 $$
-  T = \frac{\overline{X} - \mu}{S/\sqrt{n}},
+  T = \frac{\overline{X} - \mu}{S/\sqrt{n}}.
 $$
-which no longer has a normal distribution.
+Unlike\ $Z$, this statistic does not have a normal distribution. 
+Its exact distribution is the *Student's $t$-distribution*, which accounts for the additional uncertainty introduced by estimating\ $\sigma$.
+This extra uncertainty is especially important for small samples.
 
-Now suppose that the population distribution of\ $X$ is normal.
+Suppose that the population distribution of\ $X$ is normal.
 Then,
 \begin{align*}
   Z &= \frac{\overline{X} - \mu}{\sigma/\sqrt{n}} \sim N(0, 1) \quad\text{and}\\
@@ -1811,39 +1825,26 @@ Then,
 In addition, $Z$\ and $V$ are independent.
 Hence
 $$
-  T
-  =
-  \frac{\overline{X} - \mu}{S/\sqrt{n}}
-  =
-  \frac{
-  \frac{\overline{X}-\mu}{\sigma/\sqrt{n}}
-  }{
-  \sqrt{\frac{(n-1)S^2}{(n-1)\sigma^2}}
-  }
-  =
-  \frac{Z}{\sqrt{V/(n-1)}}.
-$$
-This re-writing is useful because it decomposes\ $T$ into two quantities whose distributions are known.
-So we can write
-$$
-  T = \frac{Z}{\sqrt{V/(n - 1)}}.
+  T = \frac{Z}{\sqrt{V/(n-1)}}
 $$
 This ratio occurs so often in statistical inference, and in practice, that it has its own name.
-This defines a $t$-distribution.
+We say that\ $T$ has a $t$-distribution (or, a *Student's $t$-distribution*)\index{Student's $t$ distribution} with\ $\nu$ degrees of freedom, written $T \sim t_\nu$.
+More generally, if \(V \sim \chi^2_\nu\), then the following construction defines the \(t\)-distribution.
 
 
 :::{.definition #TDistribution name="$t$-distribution"}
-Suppose $Z \sim N(0, 1)$ (i.e., a standard normal distribution) and $V \sim \chi^2_n$ (i.e., a chi-squared distribution with $n$\ degrees of freedom).
-Then
+Suppose \(Z \sim N(0,1)\) and \(V \sim \chi^2_\nu\). 
+Then the random variable
 \begin{equation}
-  T = \frac{Z}{\sqrt{V/n}}
+  T = \frac{Z}{\sqrt{V/\nu}}
   (\#eq:Tdist)
 \end{equation}
-is said to have a $t$-distribution with $n$\ degrees of freedom.
+has a $t$-distribution with\ $\nu$ degrees of freedom.
 :::
 
 
-If the sample size is sufficiently large, then the distribution of $T$ is often well approximated by a $t$-distribution, even when the population distribution is not exactly normal.
+For non-normal populations, the statistic\ $T$ is not exactly $t$-distributed. 
+However, for large samples, its distribution is often well approximated by a $t$-distribution due to the Central Limit Theorem and the fact that\ $S^2$ converges to\ $\sigma^2$ for large samples
 
 
 :::{.theorem #TDistributionPDF name="$t$-distribution PDF"}
@@ -1953,25 +1954,21 @@ This proof is not given.
 
 
 Although we won't prove it, as $\nu\to\infty$ the $t$-distribution converges to the standard normal (which can be seen in Fig.\ \@ref(fig:TPlots)).
-In addition, from Theorem\ \@ref(thm:TDistProperties), we see that as $\nu \to \infty$, $\operatorname{var}[X] \to 1$ as for the normal distribution.
-
+In addition, from Theorem\ \@ref(thm:TDistProperties), $\operatorname{var}[X] \to 1$ as $\nu \to \infty$.
 Notice that\ $T$ represents a *standardised* version of the sample mean.
-Because of this, the $T$-statistic is important in statistical inference.
-You may have used a $t$-test in hypothesis testing, for example.
 
 
 :::{.example #CalcaltingT name="Calculating $T$"}
-A random sample $21, 18, 16, 24, 16$ is drawn from a normal population with mean of\ $20$.
+A random sample $\{21, 18, 16, 24, 16\}$ is drawn from a normal population with mean of\ $20$.
 
-1. What is the value of\ $T$ for this sample?
-2. In random samples from this population, what is the probability that\ $T$ is less than the value found above?
-
-From the sample: $\overline{x} = 19.0$ and $s^2 = 12.0$. 
+To find the value of\ $T$ for this sample, firdst find (from the sample): $\overline{x} = 19.0$ and $s^2 = 12.0$. 
 Therefore $t = \frac{19.0 - 20}{\sqrt{12.0/5}} = -0.645$.
 (Again, lower-case symbols are used for specific values of statistics, and upper-case symbols for the random variables.)
 
+We can then ask: In random samples from this population, what is the probability that\ $T$ is less than the value found above?
+
 Interest here is in $\Pr(T < -0.645)$ where $T\sim t_4$. 
-From **R**, the answer is\ $0.277$:
+From **R**, the answer is approximately\ $0.277$:
 
 ```{r echo=TRUE}
 pt(-0.645, df = 4)
@@ -1987,7 +1984,7 @@ Determine the probability that the sample would would be less than\ $8.64\hs$ if
 Define the overnight sleep time for each girls as\ $X$.
 Since the sample size is moderately large ($n=39$), the Central Limit Theorem implies that the sample mean\ $\overline{X}$ is approximately normally distributed.
 
-Because the population standard deviation\ $\sigma$ is unknown, the estimate (the sample standard deviation\ $s$) is used.
+Because the population standard deviation\ $\sigma$ is unknown, we use\ $s$.
 Then
 $$
   T = \frac{\overline{X} - \mu}{S/\sqrt{n}}
@@ -2012,44 +2009,33 @@ If the population mean is\ $10\hs$ (as per the recommendation), it is *extremely
 ## The $F$-distribution {#FDistribution}
 
 \index{F-distribution@$F$-distribution}
-Another distribution that arises naturally and often in practice is the $F$-distribution.
-It arises when comparing the variability of two independent normal populations, and is also used in *analysis of variance*, a common statistical inference\index{Statistical inference} technique for testing the equality of several means.
+Another distribution that arises naturally in statistical inference is the $F$-distribution.
+It appears as the distribution of a ratio of two independent chi-squared random variables, and is used for comparing variances and in analysis of variance (ANOVA)\index{ANOVA}\index{Analysis of variance}, a standard method for comparing multiple population means.
 
-Suppose we have two random samples from two normally distributed populations: one of size\ $n_1$ drawn from $N(\mu_1, \sigma_1^2)$ and the other of size\ $n_2$ drawn from $N(\mu_2, \sigma_2^2)$.
+Suppose we have two independent random samples from normal populations with variances\ $\sigma_1^2$ and\ $\sigma_2^2$, of sizes\ $n_1$ and\ $n_2$, respectively.
 Then, from Theorem\ \@ref(thm:SamplingDistVariance),
 $$
- U_1 =  \frac{(n_1 - 1)s_1^2}{\sigma_1^2} \sim \chi^2_{n_1 - 1}
+ U_1 =  \frac{(n_1 - 1)S_1^2}{\sigma_1^2} \sim \chi^2_{n_1 - 1}
   \quad\text{and}\quad
-  U_2 = \frac{(n_2 - 1)s_2^2}{\sigma_2^2} \sim \chi^2_{n_2 - 1}.
+  U_2 = \frac{(n_2 - 1)S_2^2}{\sigma_2^2} \sim \chi^2_{n_2 - 1}.
 $$
 The two sample variances can be compared using
 $$
-  \frac{
-          \displaystyle \frac{(n_1 - 1)s_1^2}{\sigma_1^2}
-        }
-        {
-          \displaystyle \frac{(n_2 - 1)s_2^2}{\sigma_2^2}
-        }
-  =
-  \frac{U_1/(n_1 - 1)}{U_2/(n_2 - 1)}.
+  \frac{U_1/(n_1-1)}{U_2/(n_2-1)}.
 $$
 This ratio occurs so often in practice that is has its own name: an $F$-distribution.
 
 
 :::{.definition #FDistribution name="$F$-distribution"}
-A continuous random variable\ $X$ with probability density function
-\begin{equation}
-  f_X(x)
-  = \frac{\Gamma\big( (\nu_1 + \nu_2)/2 \big)
-    \nu_1^{\nu_1/2} \nu_2^{\nu_2/2} x^{(\nu_1/2) - 1}}
-   {\Gamma(\nu_1/2)\Gamma(\nu_2/2)(\nu_1 x + \nu_2)^{(\nu_1 + \nu_2)/2}}
-  \quad\text{for $x > 0$}
-\end{equation}
-is said to have an *$F$-distribution* with parameters $\nu_1 > 0$ and $\nu_2 > 0$, known respectively as the numerator and denominator degrees of freedom.\index{Degrees of freedom}
+A random variable \(F\) has an $F$-distribution with degrees of freedom\ $\nu_1$ and\ $\nu_2$, written $F \sim F_{\nu_1,\nu_2}$, if it can be expressed as
+$$
+  F = \frac{U_1/\nu_1}{U_2/\nu_2},
+$$
+where $U_1 \sim \chi^2_{\nu_1}$, $U_2 \sim \chi^2_{\nu_2}$, and\ $U_1$ and\ $U_2$ are independent.
 We write $X \sim F_{\nu_1, \nu_2}$.
 :::
 
-
+This structure makes the $F$-distribution central to inference on variances and mean comparisons.
 Some $F$-distributions are shown in Fig.\ \@ref(fig:FPlots).
 
 
@@ -2243,6 +2229,9 @@ Since $\exp(-t^2/2)$ is continuous everywhere and is the CF of $N(0, 1)$, conclu
 $$
   Z_n \overset{d}{\to} N(0, 1).
 $$
+
+This is a partial proof since the concept of convergence in distribution has not been formally defined. 
+However, the arguments used in the proof are powerful and worth understanding.
 
 
 
