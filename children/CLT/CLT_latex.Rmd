@@ -1,10 +1,32 @@
-As an example of the CLT in practice, see Fig.\ \@ref(fig:CLTDemoLatex), where samples of various sizes are taken from a $\text{Gamma}(\alpha=2, \beta=1)$ distribution, which is very right-skewed.
-The sampling distribution of the sample mean (EXACT!) appears more like an approximate normal as the sample size gets larger, and the approximation is reasonably good even for $n = 10$.
+:::{.example #CLTExponential name="CLT and the gamma distribution"}
+Consider taking iid samples $X_1,\ldots,X_n$ from a $\text{Gamma}(\alpha=2,\beta=1)$ distribution.
+Then the MGF of each\ $X_i$ is
+$$
+  M_X(t) = (1-t)^{-2},
+  \qquad t<1.
+$$
+Hence the MGF of the sample mean $\overline{X}$ is
+$$
+  M_{\overline{X}}(t) =
+  \operatorname{E}\!\left[e^{t\overline{X}}\right]
+  =
+  \prod_{i=1}^n M_X\!\left(\frac{t}{n}\right)
+  =
+  \left(1-\frac{t}{n}\right)^{-2n}.
+$$
+This is the MGF of a $\text{Gamma}\!\left(\alpha = 2n,\ \beta = 1/n\right)$ distribution, so
+$$
+  \overline{X}
+  \sim
+  \text{Gamma}(2n,1/n).
+$$
+The sampling distribution (Fig.\ \@ref(fig:CLTDemoLatex)) becomes increasingly similar to a normal distribution as the sample size increases, and the approximation is reasonably good even for $n=10$.
+:::
 
 
 
-```{r, CLTDemoLatex, fig.align="center", echo=FALSE, fig.cap="Exact sampling distribution of the mean (solid lines) overlaid with the asymptotic CLT normal approximation (dashed lines). The samples are drawn from a Gamma$(\\alpha = 2, \\beta = 1)$ distribution.", out.width='100%', fig.width=7}
-# Gamma(alpha=2, rate=1): Xbar ~ Gamma(n*alpha, rate=n)
+```{r, CLTDemoLatex, fig.align="center", echo=FALSE, fig.cap="Exact sampling distribution of the mean (solid lines) overlaid with the asymptotic CLT normal approximation (dashed lines). The samples are drawn from a Gamma$(\\alpha = 2, \\beta = 1)$ distribution. Note that the scale on the horizontal axis is different for the top three and bottom three plots.", out.width='100%', fig.width=7}
+# Gamma(shape=2, scale=1): Xbar ~ Gamma(shape=n*alpha, scale=beta/n)
 # mu = 2, sigma = sqrt(2)
 
 ###  Set up  ###
@@ -25,7 +47,7 @@ traces <- lapply(ns, function(n) {
   x    <- x
   yex  <- dgamma(x, 
                  shape = n * alpha, 
-                 scale = 1 / (n * beta) )
+                 scale = beta/n)
   yclt <- dnorm(x,  
                 mean  = mu,        
                 sd   = se)
@@ -43,8 +65,8 @@ par(mfrow = c(2, 3),
 
 plot(x = x, 
      y = dgamma(x, 
-                scale = alpha, 
-                shape = 1/beta),
+                shape = alpha, 
+                scale = beta),
      type = "l",
      xlab = expression(italic(x)),
      ylab = "",
@@ -61,6 +83,7 @@ for (i in (1:length(ns))){
        xlab = expression(bar(italic(x))),
        ylab = "",
        axes = FALSE,
+       xlim = if(i > 2) {c(0, 4)} else {c(0, max(x))},
        main = expression(bold(Sampling~distribution)),
        sub = bquote("(" * Sample~size~italic(n) == .(ns[i]) * ")"),
        lwd = 2)
