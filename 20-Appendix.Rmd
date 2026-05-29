@@ -885,21 +885,237 @@ Common parameters:
 
 Most distributions have other parameters also; check the help (e.g., `?punif`).
 
-Distribution       | Prob. fn             | Distribution fn       | Quantile fn       | Random numbers
-----------------|-------------------------|-----------------------|-------------------|-----------------
-Discrete uniform   |                      |                       |                   | `sample()`
-Binomial           | `dbinom()`           | `pbinom()`            | `qbinom()`        | `rbinom(n, )`
-Poisson            | `dpois()`            | `ppois()`             | `qpois()`         | `rpois(n, )`
-Geometric          | `dgeom()`            | `pgeom()`             | `qgeom()`         | `rgeom(n, )`
-Negative binomial  | `dnbinom()`          | `pnbinom()`           | `qnbinom()`       | `rnbinom(n, )`
-Continuous uniform | `dunif()`            | `punif()`             | `qunif()`         | `runif(n, )`
-Normal             | `dunif()`            | `punif()`             | `qunif()`         | `runif(n, )`
-Exponential        | `dexp()`             | `pexp()`              | `qexp()`          | `rexp(n, )`
-Gamma              | `dgamma()`           | `pgammma()`           | `qgamma()`        | `rgamma(n, )`
-Log-normal         | `dlnorm()`           | `plnorm()`            | `qlnorm()`        | `rlnorm(n, )`
-$t$                | `dt()`               | `pt()`                | `qt()`            | `rt(n, )`
-$\chi$-squared     | `dchisq()`           | `pchisq()`            | `qchisq()`        | `rchisq(n, )`
-$F$                | `df()`               | `pf()`                | `qf()`            | `rf(n, )`
+```{r RDistributionsFunctions, echo=FALSE}
+#library(knitr)
+#library(kableExtra)
+
+# Function to put R function in tt mode
+code_fn <- function(x) {
+  if (knitr::is_html_output()) {
+    sprintf("<code>%s</code>", x)
+  } else {
+    sprintf("\\texttt{%s}", x)
+  }
+}
+
+
+
+
+# Merge some celss in some rows: For parameters
+span_cols <- function(df, row, start_col = 2, num_cols = 5, 
+                      text, align = "center", bold = TRUE) {
+  # 1. Detect the current knitr output format
+  # Defaults to HTML if run interactively in the console
+  fmt <- knitr::opts_current$get("rmarkdown.pandoc.to")
+  if (is.null(fmt)) fmt <- "html" 
+  
+  # 2. Format the text (apply bold if requested)
+  formatted_text <- text
+  
+  # 3. Generate format-specific syntax
+  if (grepl("html", fmt)) {
+    style <- paste0("text-align:", align, ";")
+    if (bold) style <- paste0(style, " font-weight:bold;")
+    
+    df[row, start_col] <- paste0("<td colspan='", num_cols, "' style='", style, "'>", formatted_text, "</td>")
+    
+  } else if (grepl("latex|pdf", fmt)) {
+    lat_align <- switch(align, "left" = "l", "right" = "r", "c")
+    if (bold) formatted_text <- paste0("\\textbf{", formatted_text, "}")
+    
+    df[row, start_col] <- paste0("\\multicolumn{", num_cols, "}{", lat_align, "}{", formatted_text, "}")
+  }
+  
+  # 4. Clear out the subsequent columns so they don't break table alignment
+  end_col <- start_col + num_cols - 1
+  if (num_cols > 1) {
+    df[row, (start_col + 1):end_col] <- ""
+  }
+  
+  return(df)
+}
+
+# 
+# 
+# 
+# library(flextable)
+# 
+# # 1. Your original data frame
+# my_data <- data.frame(
+#   A = c("R1C1", "R2C1", "R3C1"),
+#   B = c("R1C2", "R2C2", "R3C2"),
+#   C = c("R1C3", "R2C3", "R3C3"),
+#   D = c("R1C4", "R2C4", "R3C4"),
+#   stringsAsFactors = FALSE
+# )
+# 
+# # 2. Assign text to the main cell
+# my_data[2, "B"] <- "This spans 3 columns!"
+# 
+# # 3. Build and merge using flextable
+# ft <- flextable(my_data) %>%
+#   # Merge row 2, from column 2 (B) to column 4 (D)
+#   merge_at(i = 2, j = 2:4, part = "body") %>%
+#   # Apply text formatting properties
+#   align(i = 2, j = 2, align = "center", part = "body") %>%
+#   bold(i = 2, j = 2, part = "body") %>%
+#   # Match the kable styling look
+#   theme_booktabs() %>%
+#   autofit()
+# 
+# # 4. Print table (flextable automatically renders to HTML or PDF based on output)
+# ft
+# 
+# 
+# 
+
+
+# Parameters: $n$ (`size`) and so on
+
+###
+
+
+dist_table <- data.frame(
+  Distribution = c(
+    "Discrete uniform",
+    "Binomial",
+    "Poisson",
+    "Geometric",
+    "Negative binomial",
+    "Continuous uniform",
+    "Normal",
+    "Exponential",
+    "Gamma",
+    "Log-normal",
+    "$t$",
+    "$\\chi$-squared",
+    "$F$"
+  ),
+  Prob = c(
+    "",
+    code_fn("dbinom()"),
+    code_fn("dpois()"),
+    code_fn("dgeom()"),
+    code_fn("dnbinom()"),
+    code_fn("dunif()"),
+    code_fn("dnorm()"),
+    code_fn("dexp()"),
+    code_fn("dgamma()"),
+    code_fn("dlnorm()"),
+    code_fn("dt()"),
+    code_fn("dchisq()"),
+    code_fn("df()")
+  ),
+  Dist = c(
+    "",
+    code_fn("pbinom()"),
+    code_fn("ppois()"),
+    code_fn("pgeom()"),
+    code_fn("pnbinom()"),
+    code_fn("punif()"),
+    code_fn("pnorm()"),
+    code_fn("pexp()"),
+    code_fn("pgamma()"),
+    code_fn("plnorm()"),
+    code_fn("pt()"),
+    code_fn("pchisq()"),
+    code_fn("pf()")
+  ),
+  Quant = c(
+    "",
+    code_fn("qbinom()"),
+    code_fn("qpois()"),
+    code_fn("qgeom()"),
+    code_fn("qnbinom()"),
+    code_fn("qunif()"),
+    code_fn("qnorm()"),
+    code_fn("qexp()"),
+    code_fn("qgamma()"),
+    code_fn("qlnorm()"),
+    code_fn("qt()"),
+    code_fn("qchisq()"),
+    code_fn("qf()")
+  ),
+  Random = c(
+    code_fn("sample()"),
+    code_fn("rbinom(n, )"),
+    code_fn("rpois(n, )"),
+    code_fn("rgeom(n, )"),
+    code_fn("rnbinom(n, )"),
+    code_fn("runif(n, )"),
+    code_fn("rnorm(n, )"),
+    code_fn("rexp(n, )"),
+    code_fn("rgamma(n, )"),
+    code_fn("rlnorm(n, )"),
+    code_fn("rt(n, )"),
+    code_fn("rchisq(n, )"),
+    code_fn("rf(n, )")
+  ),
+  check.names = FALSE
+)
+
+
+
+if (knitr::is_html_output()) {
+
+  kable(
+    dist_table,
+    format = "html",
+    escape = FALSE,
+    booktabs = TRUE,
+    col.names = c(
+      "Distribution",
+      "function",
+      "function",
+      "function",
+      "numbers"
+    ),
+    align = c("l", "c", "c", "c", "c")
+  ) |>
+    add_header_above(
+      c(
+        " " = 1,
+        "Probability" = 1,
+        "Distribution" = 1,
+        "Quantile" = 1,
+        "Random" = 1
+      ),
+      bold = TRUE,
+      line = FALSE
+    ) |>
+    kable_styling(full_width = FALSE) |>
+    row_spec(0, bold = TRUE)
+
+} else {
+
+  kable(
+    dist_table,
+    format = "latex",
+    escape = FALSE,
+    booktabs = TRUE,
+    col.names = c(
+      "Distribution",
+      "function",
+      "function",
+      "function",
+      "numbers"
+    ),
+    align = c("l", "c", "c", "c", "c")
+  ) |>
+    add_header_above(
+      c(
+        " " = 1,
+        "Probability" = 1,
+        "Distribution" = 1,
+        "Quantile" = 1,
+        "Random" = 1
+      ),
+      bold = TRUE,
+      line = FALSE
+    ) |>
+    row_spec(0, bold = TRUE)
+}
+```
 
 \index{dbinom()@\texttt{dbinom()}}\index{pbinom()@\texttt{pbinom()}}\index{qbinom()@\texttt{qbinom()}}\index{rbinom()@\texttt{rbinom()}}
 \index{dpois()@\texttt{dpois()}}\index{ppois()@\texttt{ppois()}}\index{qpois()@\texttt{qpois()}}\index{rpois()@\texttt{rpois()}}
@@ -915,17 +1131,20 @@ $F$                | `df()`               | `pf()`                | `qf()`      
 \index{df()@\texttt{df()}}\index{pf()@\texttt{pf()}}\index{qf()@\texttt{qf()}}\index{rf()@\texttt{rf()}}
 
 
+
+
+
 ## Multivariate distributions 
 
 The **multinomial** distribution: 
 
-* `rmultinom()`
-* `dmultinom()`
+* Probability function: `dmultinom()`
+* Random number generation: `rmultinom()`
 
 The **multivariate normal** distribution:
   
-* `dmnorm()`
-* `pmnorm()`
-* `rmnorm()`
+* Probability function: `dmnorm()`
+* Distribution function: `pmnorm()`
+* Random number generation: `rmnorm()`
 
 
