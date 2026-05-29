@@ -1234,7 +1234,7 @@ To find the proportion of time intervals longer than $1$\ second:
 \begin{align*}
    \Pr(X > 1)
    &=  \int_1^\infty \frac{1}{0.2186}\exp(-x/0.2186)\, dx \\
-   &= -\exp(-x/0.2186)\Big|_1^\infty \\
+   &= \left[-\exp(-x/0.2186)\right]_1^\infty \\
    &=  0.01031.
 \end{align*}
 There is about a $1$%\ chance of a nerve pulse exceeding one second.
@@ -1396,7 +1396,7 @@ Sometimes we write $X \sim \text{Gamma}(\text{shape} = \alpha, \text{scale} = \b
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 In **R**, the gamma function $\Gamma(x)$ is evaluated using `gamma(x)`.
 
-The four **R** functions for working with the gamma distribution can be specified using either the rate or the scale parameterisation  (see App.\ \@ref(UseRDistributions)).
+The four **R** functions for working with the gamma distribution can be specified using either the rate or the scale parameterisation (see App.\ \@ref(UseRDistributions)).
 The functions for the *rate* paramaterisation have the form `[dpqr]gamma(., shape, rate)`:\index{dgamma()@\texttt{dgamma()}}\index{Gamma distribution!rate parameterisation}
 
 * `dgamma(x, shape, rate)` computes the PDF at $X = {}$`x`;
@@ -1581,15 +1581,15 @@ The required probability is therefore
 \begin{align*}
    \Pr(T > 3)
    &= \int_3^\infty \frac{1}{1^2 \Gamma(2)}t^{2 - 1} \exp(-t/1)\,dt \\
-   &= \int_3^\infty t \exp(-t)\,dt \\
+   &= \int_3^\infty t \exp(-t)\,dt
 \end{align*}
 since $\Gamma(2) = 1! = 1$.
 This expression can be integrated using integration by parts:
 \begin{align*}
    \Pr(T > 3)
    &= \int_3^\infty t \exp(-t)\,dt \\
-   &= \left\{ -t \exp(-t)\right\}\Big|_3^\infty - \int_3^\infty -\exp(-t)\, dt \\
-   &= [ (0) - \{-3\exp(-3)\}] - \left\{ \exp(-t)\Big|_3^\infty\right\} \\
+   &= \left[ -t \exp(-t)\right]_3^\infty - \int_3^\infty -\exp(-t)\, dt \\
+   &= [ (0) - \{-3\exp(-3)\}] - \left[ \exp(-t)\right]_3^\infty \\
    &= 3\exp(-3) + \exp(-3)\\
    &= 0.1991
 \end{align*}
@@ -1673,7 +1673,7 @@ The parameters\ $\mu$ and\ $\sigma^2$ are the mean and variance of the *logarith
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-In **R**, the four functions for working with the log-normal distribution have the form `[dpqr]lnorm(., meanlog, sdlog)`:
+In **R**, the four functions for working with the log-normal distribution have the form `[dpqr]lnorm(., meanlog, sdlog)` (see App.\ \@ref(UseRDistributions)):
 \index{dlnorm()@\texttt{dlnorm()}}
 
 * `dlnorm(x, meanlog, sdlog)` computes the PDF at $X = {}$`x`;
@@ -1681,7 +1681,7 @@ In **R**, the four functions for working with the log-normal distribution have t
 * `qlnorm(p, meanlog, sdlog)` computes the quantile for cumulative probability `p`; and
 * `rlnorm(n, meanlog, sdlog)` generates `n` random numbers,
 
-where `meanlog`\ ${}= \mu$ and `sdlog`\ ${}= \sigma$ (note: the standard deviation, not the variance)
+where `meanlog`\ ${}= \mu$ and `sdlog`\ ${}= \sigma$ (note: the standard deviation, not the variance).
 For example, `dlnorm(x, meanlog = 0, sdlog = 1)` gives the PDF of the standard log-normal distribution.
 :::
 
@@ -1691,13 +1691,13 @@ x <- seq(0.001, 6, length.out = 500)
 
 params <- list(
   list(mu = 0,    sigma = 0.5,  lty = 1,  
-       lab = expression(mu==0 ~ ", " ~ sigma==0.5)),
+       lab = expression(mu==0 ~ ", "~ phantom( 0 ) ~ sigma==0.5)),
   list(mu = 0,    sigma = 1.0,  lty = 2,  
-       lab = expression(mu==0 ~ ", " ~ sigma==1.0)),
+       lab = expression(mu==0 ~ ", " ~ phantom( 0 ) ~ sigma==1.0)),
   list(mu = 0.5,  sigma = 0.5,  lty = 3,  
        lab = expression(mu==0.5 ~ ", " ~ sigma==0.5)),
   list(mu = 1.0,  sigma = 0.5,  lty = 4,  
-       lab = expression(mu==1.0 ~ ", " ~ sigma==0.5))
+       lab = expression(mu==1.0 ~ ", " ~ phantom( 0 ) ~ sigma==0.5))
 )
 
 par(mfrow = c(1, 2))
@@ -1771,14 +1771,14 @@ Let $Y = \log X \sim N(\mu, \sigma^2)$.
 For the expected value, write $X = \exp Y$ and use the MGF of the normal distribution, $M_Y(t) = \operatorname{E}[\exp(tY)] = \exp(\mu t + \sigma^2 t^2 / 2)$:
 $$
      \operatorname{E}[X]
-   = \operatorname{E}[e^Y]
+   = \operatorname{E}\left[\exp(Y)\right]
    = M_Y(1)
    = \exp\!\left(\mu + \tfrac{1}{2}\sigma^2\right).
 $$
 Similarly,
 $$
      \operatorname{E}[X^2]
-   = \operatorname{E}[e^{2Y}]
+   = \operatorname{E}[\exp(2Y)]
    = M_Y(2)
    = \exp(2\mu + 2\sigma^2),
 $$
