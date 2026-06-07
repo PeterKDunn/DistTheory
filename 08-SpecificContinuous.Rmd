@@ -403,13 +403,13 @@ For the variance, first see that $\operatorname{var}[Z] = \operatorname{E}[Z^2] 
 So:
 $$
    \operatorname{var}[X] = \operatorname{E}[Z^2]
-   = \frac {1}{\sqrt{2\pi}}\int^\infty_{-\infty}z^2e^{-\frac{1}{2}z^2}\,dz.
+   = \frac {1}{\sqrt{2\pi}}\int^\infty_{-\infty}z^2\, \exp\left(-\frac{1}{2}z^2\right)\,dz.
 $$
 To integrate by parts (i.e., $\int u\,dv = uv - \int v\, du$), set $u = z$ (so that $du = 1$)\index{Integration by parts} and set
 $$
-   dv = ze^{-\frac{1}{2}z^2}
+   dv = z\exp\left(-\frac{1}{2}z^2\right)
    \quad\text{so that}\quad
-   v = -e^{-\frac{1}{2}z^2}.
+   v = -\exp\left(-\frac{1}{2}z^2\right).
 $$
 Hence,
 \begin{align*}
@@ -460,7 +460,9 @@ $$
 because $\operatorname{var}[Z] = 1$.
 Finally
 $$
-   M_X(t) = \operatorname{E}[e^{tX}] = \operatorname{E}\big[\exp\{t(\mu + \sigma Z)\}\big] = \exp(\mu t)\operatorname{E}\big[\exp(t\sigma Z)\big].
+   M_X(t) 
+   = \operatorname{E}[\exp(tX)] 
+   = \operatorname{E}\big[\exp\{t(\mu + \sigma Z)\}\big] = \exp(\mu t)\operatorname{E}\big[\exp(t\sigma Z)\big].
 $$
 However, $\operatorname{E}\big[\exp(t\sigma Z)\big] = M_Z(t\sigma) = \exp\left\{\frac{1}{2}(\sigma t)^2\right\}$ so
 $$
@@ -1107,7 +1109,7 @@ Hence the exponential distribution is used to describe the interval between cons
 Consider a Poisson process at rate\ $\lambda$ and suppose observation starts at an arbitrary time point. 
 Then the time\ $T$ to the first event has an exponential distribution with mean $\operatorname{E}[T] = 1/\lambda$; i.e.,
 $$
-   f_T(t) = \lambda e^{-\lambda t},\quad t > 0.
+   f_T(t) = \lambda \exp(-\lambda t),\quad t > 0.
 $$
 :::
 
@@ -1420,8 +1422,8 @@ The **R** functions are used in the same way, but explicitly specifying the `sca
 Notice that
 \begin{align}
    \int_0^\infty f_X(x)\,dx
-   &= \int_0^\infty\frac{e^{-x/\beta}x^{\alpha - 1}}{\beta^\alpha\Gamma(\alpha)}\,dx\nonumber\\
-   &= \frac{1}{\Gamma(\alpha)} \int_0^\infty e^{-y} y^{\alpha-1}\,dy  \quad \text{(on putting $y = x/\beta$)}\nonumber \\
+   &= \int_0^\infty\frac{\exp(-x/\beta)\,x^{\alpha - 1}}{\beta^\alpha\Gamma(\alpha)}\,dx\nonumber\\
+   &= \frac{1}{\Gamma(\alpha)} \int_0^\infty \exp(-y)\, y^{\alpha-1}\,dy  \quad \text{(on putting $y = x/\beta$)}\nonumber \\
    &= 1,
    (\#eq:GammaStd)
 \end{align}
@@ -1469,7 +1471,7 @@ $$
 Also:
 \begin{align*}
    M_X(t)
-    = \operatorname{E}[e^{Xt}]
+    = \operatorname{E}[\exp(Xt)]
    &= \int_0^{\infty}\exp(tx) \frac{\exp(-x/\beta) x^{\alpha - 1}}{\beta^{\alpha} \Gamma(\alpha)} \, dx\\
    &= \int_0^{\infty} \frac{\exp\{-x(1 - \beta t)/\beta\}x^{\alpha - 1}}{\beta^{\alpha}\Gamma(\alpha)} \, dx\\
    &= \int_0^{\infty} \frac{\exp(-z) z^{\alpha - 1}}{\Gamma(\alpha)(1 - \beta t)^{\alpha - 1}} \, \frac{dz} {1 - \beta t}, 

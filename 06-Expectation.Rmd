@@ -413,7 +413,7 @@ Taking expectations of both sides,
 
 
 
-Common *convex* functions to which Jensen's inequality applies include $g(x) = x^2$, $g(x) = e^x$, $g(x) = -\log x$ ($x > 0$), and $g(x) = 1/x$ ($x > 0$). 
+Common *convex* functions to which Jensen's inequality applies include $g(x) = x^2$, $g(x) = \exp x$, $g(x) = -\log x$ ($x > 0$), and $g(x) = 1/x$ ($x > 0$). 
 
 For *concave* $g(\cdot)$ the inequality reverses: $\operatorname{E}[g(X)] \leq g(\operatorname{E}[X])$; a common example is $g(x) = \log x$.
 
@@ -1281,7 +1281,7 @@ The MGF of\ $X$ is
 \begin{align*}
    M_X(t)
    &= \operatorname{E}[\exp(tX)] = \sum_{x = 1}^6 \exp(tx)\, p_X(x)\\
-   &= \frac{1}{6}\left(e^t + e^{2t} + e^{3t} + e^{4t} + e^{5t} + e^{6t}\right),
+   &= \frac{1}{6}\left( \exp t + \exp(2t) + \exp(3t) + \exp(4t) + \exp(5t) + \exp(6t)\right),
 \end{align*}
 which exists for all values of\ $t$.
 :::
@@ -1296,7 +1296,7 @@ defined over $x\in\mathbb{R}$.
 The moment generating function is
 $$
   \operatorname{E}[\exp(tX)]
-  = \int_{-\infty}^{\infty} e^{tx}\frac{1}{\pi(1 + x^2)}\,dx.
+  = \int_{-\infty}^{\infty} \exp(tx)\frac{1}{\pi(1 + x^2)}\,dx.
 $$
 This integrand does not converge unless $t = 0$. 
 
@@ -1360,13 +1360,13 @@ Replacing $\exp(xt)$ by its series expansion (App.\ \@ref(UsefulSeries)) in the 
 Then,  the $r$th moment of a distribution about the origin is seen to be the coefficient of $t^r/r!$ in the series expansion of $M_X(t)$:
 \begin{align*}
      \frac{d M_X(t)}{dt} 
-     & = \sum_x x\,e^{xt} p_X(x)\\
+     & = \sum_x x\,\exp(xt) p_X(x)\\
      \frac{d^2 M_X(t)}{dt^2} 
-     & = \sum_x x^2\,e^{xt} p_X(x),
+     & = \sum_x x^2\,\exp(xt) p_X(x),
 \end{align*}
 and, in general, for each positive integer\ $r$:
 $$
-   \frac{d^r M_X(t)}{dt^r} = \sum_x x^re^{xt} p_X(x). 
+   \frac{d^r M_X(t)}{dt^r} = \sum_x x^r \exp(xt)\, p_X(x). 
 $$
 On setting $t = 0$,
 \begin{align*}
@@ -1489,7 +1489,7 @@ For a *discrete* random variable\ $X$, the MGF is defined as
 \begin{equation}
    M_X(t)
    = \operatorname{E}[\exp(tX)] 
-   = \sum_X e^{tx} p_X(x)
+   = \sum_X \exp(tx) p_X(x)
    (\#eq:MGFtoPDFdiscrete)
 \end{equation}
 for\ $X$ discrete with PMF $p_X(x)$.
@@ -1634,13 +1634,13 @@ The MGF is
   M_X(t) 
   &= \sum_{x = 0}^\infty \exp(t x) \frac{\exp(-\lambda)\lambda^x}{x!}\\
   &= \exp(-\lambda) \sum_{x = 0}^\infty \frac{\left(\exp(t)\lambda\right)^x}{x!}\\
-  &= \exp(-\lambda) \exp(\lambda e^t)\\
-  &= \exp(\lambda(e^t - 1))
+  &= \exp(-\lambda) \exp(\lambda \exp t)\\
+  &= \exp(\lambda(\exp t - 1))
 \end{align*}
 where Eq.~\@ref(eq:Exponential) has been used.
 Thus,
 $$
-  K_X(t) = \log M_X(t) = \lambda(e^t - 1).
+  K_X(t) = \log M_X(t) = \lambda(\exp t - 1).
 $$
 Differentiating $r$ times and evaluating at $t = 0$ gives $\kappa_r = \lambda$ for all $r \geq 1$.
 All cumulants of the distribution are\ $\lambda$.
@@ -1693,9 +1693,9 @@ When the MGF does not exist (heavy-tailed distributions), the characteristic fun
 Consider the random variable\ $X$ in Example\ \@ref(exm:PoissonCumulants).
 The characteristic function is
 $$
-  \varphi_X(t) = \exp\!\left[\lambda(e^{it} - 1)\right].
+  \varphi_X(t) = \exp\!\left[\lambda(\exp(it) - 1)\right].
 $$
-Compare with the MGF $M_X(t) = \exp[\lambda(e^t - 1)]$: the substitution $t \to it$ is all that is needed.
+Compare with the MGF $M_X(t) = \exp[\lambda(\exp t - 1)]$: the substitution $t \to it$ is all that is needed.
 :::
 
 
@@ -3185,7 +3185,7 @@ Deduce the PMF for the absolute difference between the two numbers that appear u
 :::{.exercise #ExpectedPoisson}
 The random variable\ $Y$ has the PMF
 $$
-   p_Y(y) = \frac{e^{-\lambda}\lambda^y}{y!}\quad\text{for $y = 0, 1, 2, \dots$},
+   p_Y(y) = \frac{\exp(-\lambda)\lambda^y}{y!}\quad\text{for $y = 0, 1, 2, \dots$},
 $$
 where $\lambda > 0$.
 Find the MGF of\ $Y$, and hence show that $\operatorname{E}[Y] = \operatorname{var}[Y]$.
@@ -3212,7 +3212,7 @@ In this question, we just consider the exponential distribution as a simple exam
 :::{.exercise #ExpectedXeX}
 The density function for the random variable\ $X$ is given as
 $$
-   f(x) =  x e^{-x} \quad\text{for $x > 0$}.
+   f(x) =  x \exp(-x) \quad\text{for $x > 0$}.
 $$
 
 1. Determine the moment generating function (MGF) of\ $X$.
@@ -3380,7 +3380,7 @@ $$
 A probability density function can be determined from its MGF as shown in Eq.\ \@ref(eq:MGFtoPDFcontinuous).
 Show that the PDF can also be determined using the characteristic function, using
 $$
-  f(x) = \frac{1}{2\pi} \int_{-\infty}^{\infty} e^{-itx} \varphi_X(t)\, dt.
+  f(x) = \frac{1}{2\pi} \int_{-\infty}^{\infty} \exp(-itx) \varphi_X(t)\, dt.
 $$
 
 :::
@@ -3433,7 +3433,7 @@ If successful, $F = 0$.
 :::{.exercise #IdentifyDistMGF}
 The MGF of a random variable\ $X$ is
 $$
-  M_X(t) = \left(\frac{0.4}{1 - 0.6e^t}\right)^3.
+  M_X(t) = \left(\frac{0.4}{1 - 0.6\exp t}\right)^3.
 $$
 1. Find $\operatorname{E}[X]$ and $\operatorname{var}[X]$.
 1. Find $\Pr(X = 5)$.
@@ -3505,7 +3505,7 @@ The CGF of a random variable\ $X$ is $K_X(t) = \mu t + \frac{1}{2}\sigma^2 t^2$.
 
 
 :::{.exercise #MomentsFromCGF2}
-The CGF of a random variable\ $X$ is $K_X(t) = \lambda(e^t - 1)$.
+The CGF of a random variable\ $X$ is $K_X(t) = \lambda(\exp t - 1)$.
 
 1. Find the first four cumulants $\kappa_1$, $\kappa_2$, $\kappa_3$ and\ $\kappa_4$.
 2. Hence find the skewness and excess kurtosis of\ $X$.
@@ -3531,7 +3531,7 @@ $$
 :::{.exercise #Jensen2}
 Let\ $X$ be a random variable with mean\ $\mu$ and let $M_X(t) = \operatorname{E}[\exp(tX)]$ be its moment generating function, which is assumed to exist.
 
-1. Show using Jensen's inequality that $M_X(t) \geq e^{t\mu}$ for all $t$, with equality if and only if\ $X$ is degenerate.
+1. Show using Jensen's inequality that $M_X(t) \geq \exp(t\mu)$ for all $t$, with equality if and only if\ $X$ is degenerate.
 2. Hence show that $\log M_X(t) \geq t\mu$.
 3. The *cumulant generating function* is defined as $K_X(t) = \log M_X(t)$.
    Show that $K_X'(0) = \mu$, and interpret the result of Part\ 2 as a statement about $K_X(t)$.
