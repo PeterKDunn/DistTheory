@@ -712,8 +712,8 @@ plot(RelError ~ n,
 
 Write $y = \Pr(\text{answers `yes'})$.
 
-1. TBA.
-2. Then, from a tree diagram (Step 1: Used drugs/did not use drugs; Step 2: Card says "Used drugs"/Card says "Did not use drugs"):
+1. See Fig.\ \@ref(fig:TreeDrugUse)).
+2. From Fig.\ \@ref(fig:TreeDrugUse)):
 \begin{align*}
    y
    &= \Pr(\text{Never takes drugs and say so}) + \Pr(\text{Takes drugs and says so})\\
@@ -728,6 +728,131 @@ $$
    When $m = N/2$, $\Pr(Y) = 0.5$; we have learnt nothing: The probability is 50--50.
 4. $\displaystyle d = \frac{yN - N + m}{2m - N}$, so plugging in $N = 100$, $m = 25$ and $\Pr(Y) = 175/400 = 0.4375$ gives $d = 0.625$.
 :::
+
+```{r TreeDrugUse, echo=FALSE, fig.align="center", fig.cap="The tree diagram"}
+par(mar = c(1, 0.25, 1, 0.25))
+
+plot(0, 0,
+     type = "n",
+     xlim = c(0, 1),
+     ylim = c(0, 1),
+     axes = FALSE,
+     xlab = "",
+     ylab = "")
+
+# Coordinates
+x0 <- 0.025
+x1 <- 0.3
+x2 <- 0.725
+x3 <- 0.875
+
+y0 <- 0.50
+
+y_used    <- 0.75
+y_notused <- 0.25
+
+y_yes1 <- 0.85
+y_no1  <- 0.65
+
+y_yes2 <- 0.35
+y_no2  <- 0.15
+
+# Root branches
+segments(x0, y0, x1, y_used)
+segments(x0, y0, x1, y_notused)
+
+# Second stage
+segments(x1, y_used,    x2, y_yes1)
+segments(x1, y_used,    x2, y_no1)
+
+segments(x1, y_notused, x2, y_yes2)
+segments(x1, y_notused, x2, y_no2)
+
+# Labels: stage 1
+text(x1 - 0.02, 
+     y_used + 0.03,
+     "Used drugs", adj = 1)
+
+text(x1 - 0.02, 
+     y_notused - 0.03,
+     "Not used drugs", adj = 1)
+
+# Probabilities on stage-1 branches
+text((x0 + x1)/2, 
+     (y0 + y_used)/2 + 0.05,
+     expression(italic(p)) )
+     
+     
+#     expression(P(U)==italic(m)/italic(N)) ) 
+
+text((x0 + x1)/2, 
+     (y0 + y_notused)/2 - 0.05,
+     expression(1-italic(p))) 
+     
+#          expression(P(U^c)==(italic(N)-italic(m))/italic(N)) ) 
+
+# Labels: stage 2
+text(x2 + 0.06, 
+     y_yes1 + 0.02,
+     "Card:\nUsed drugs",
+     adj = 1)
+
+text(x2 + 0.06, 
+     y_no1 - 0.02,
+     "Card: Did\nnot use drugs",
+     adj = 1)
+
+text(x2 + 0.06, 
+     y_yes2 + 0.02,
+     "Card:\nUsed drugs",
+     adj = 1)
+
+text(x2 + 0.06, 
+     y_no2 - 0.02,
+     "Card: Did\nnot use drugs",
+     adj = 1)
+
+# Conditional probabilities
+text((x1 + x2)/2, 
+     (y_used + y_yes1)/2 + 0.02,
+     expression(italic(m)/italic(N)) ) 
+
+text((x1 + x2)/2,
+     (y_used + y_no1)/2 - 0.02,
+     expression((italic(N)-italic(m))/italic(N)) ) 
+
+text((x1 + x2)/2, 
+     (y_notused + y_yes2)/2 + 0.02,
+     expression(italic(m)/italic(N)) ) 
+
+text((x1 + x2)/2,
+     (y_notused + y_no2)/2 - 0.02,
+     expression((italic(N)-italic(m))/italic(N)) ) 
+
+# Final outcomes
+text(x3 + 0.01, y_yes1, "YES")
+text(x3 + 0.01, y_no1,  "NO")
+text(x3 + 0.01, y_yes2, "NO")
+text(x3 + 0.01, y_no2,  "YES")
+
+# Final probabilities
+#text(x3 + 0.03, y_yes1,
+#     expression(P(U) * P(C[U]~"|"~U)),
+#     adj = 0)
+
+#text(x3 + 0.03, y_no1,
+#     expression(P(U) * P(C[N]~"|"~U)),
+#     adj = 0)
+
+#text(x3 + 0.03, y_yes2,
+#     expression(P(U^c) * P(C[U]~"|"~U^c)),
+#     adj = 0)
+
+#text(x3 + 0.03, y_no2,
+#     expression(P(U^c) * P(C[N]~"|"~U^c)),
+#     adj = 0)
+```
+
 
 
 :::{.answer data-latex=""}
