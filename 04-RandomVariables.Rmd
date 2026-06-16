@@ -38,17 +38,17 @@ In probability theory, a random variable is a function from the sample space to 
 
 
 :::{.definition #RandomVariable name="Random variable"}
-A *random variable*\index{Random variables} is a function that assigns a real number to each outcome\ $s$ in the sample space\ $S$.
-A random variable\ $X$ maps $S\to\mathbb{R}$, and the value assigned to an outcome $s\in S$ is written\ $X(s)$.
+A *random variable*\index{Random variables} is a function $X: S \rightarrow \mathbb{R}$ that maps each outcome in the sample space\ $S$\index{Sample space} to a real number, written\ $X(s)$.
 :::
 
 
-```{r RVmapping, echo=FALSE, out.width='90%', fig.width=6.5, fig.align="center", fig.cap="A random variable\\ $X$ is a function that maps each outcome in the sample space\\ $S$ to a real number."}
+```{r RVmapping, echo=FALSE, out.width='85%', fig.width=6.5, fig.align="center", fig.cap="A random variable\\ $X$ is a function that maps each outcome in the sample space\\ $S$ to a real number."}
 par(mar = c(2, 1, 3, 1), 
     bg = "white")
 plot.new()
+
 plot.window(xlim = c(0, 10), 
-            ylim = c(1, 10))
+            ylim = c(1, 9))
 
 theta <- seq(0, 2 * pi, 
              length.out = 300)
@@ -67,7 +67,7 @@ ry <- 1.5
 
 polygon(cx + rx*cos(theta), 
         cy + ry*sin(theta),
-        col = "#EEF4FB", 
+        col = ColourLightOpaque, 
         border = col_s, 
         lwd = 2)
 text(cx - rx - 0.4, 
@@ -180,7 +180,6 @@ mtext(expression("A random variable assigns a real number to each outcome" ~
       line = 0, 
       cex = 0.76, 
       col = "#333333")
-
 ```
 
 
@@ -208,19 +207,17 @@ In contrast, a random variable represents a quantity whose value depends on the 
 :::
 
 
-:::{.definition #DomainRange name="Domain and range"}
-The *domain*\index{Domain} of a random variable is the sample space\ $S$, and the *range*\index{Range} (or *support*,\index{Support} or *value set*)\index{Value set} is the set of real numbers taken by a function.
+:::{.definition #DomainRange name="Domain, range and support"}
+The *domain*\index{Domain} of\ $X$ is the sample space\ $S$, and the *range*\index{Range} (or *value set*)\index{Value set} is the set of real values taken by\ $X$, denoted $\mathcal{R}_X = \{X(s) \mid s \in S\}$, where $\mathcal{R}_X \subseteq \mathbb{R}$.
 
-The *range* for a random variable\ $X$ is often denoted\ $\mathcal{R}_X$, where $\mathcal{R}_X\subseteq\mathbb{R}$.
-The domain of\ $X$ is the set\ $S$, and the range is the set $\{X(s)\mid s\in S\}$.
+The *support*\index{Support} of\ $X$ is the subset of $\mathcal{R}_X$ consisting of values assigned non-zero probability or density.
 :::
 
 
-Since $X$ is a function, each $s\in S$ is assigned to exactly one value $X(s)$; however, multiple values of $s\in S$ may be assigned to the same value of $X(s)$.
+Since\ $X$ is a function, each $s\in S$ is assigned to exactly one value $X(s)$; however, multiple values of $s\in S$ may be assigned to the same value of $X(s)$.
 The variable is *random* since its value depends upon the outcome of the random process.
 
-
-A capital letter (such as $X$ or $Y$) is usually used to denote the *description* of the random variable, while lower-case letters (such as $x$ or $y$) are used to represent a realised value.
+A capital letter (such as\ $X$ or\ $Y$) is usually used to denote the *description* of the random variable, while lower-case letters (such as\ $x$ or\ $y$) are used to represent a realised value.
 For example, consider rolling two dice and observing the sum of the two rolls. 
 Writing $X = 3$ means:
 
@@ -230,6 +227,7 @@ Writing $X = 3$ means:
 Sometimes, $X$ is written for both the function and its value; the meaning is usually clear from context.
 
 
+
 :::{.example #TossDieTwiceProduct name="Rolling a die twice"}
 Consider rolling a fair die twice.
 The sample space\ $S$ contains $36$\ elements shown in Table\ \@ref(tab:TwoDice):
@@ -237,7 +235,7 @@ $$
   S = \{ (1, 1), (1, 2), (1, 3), \dots (6, 5), (6, 6)\}.
 $$
 However, we may be interested in the random variable\ $X$, the *product* of the two numbers rolled.
-Each element\ $s_i$ of\ $S$ can be assigned to exactly one real number (in this case, to exactly one *integer*):
+Each element\ $s$ of\ $S$ can be assigned to exactly one real number (in this case, to exactly one *integer*):
 \begin{align*}
   (1, 1) &\mapsto X = 1;\\
   (1, 2) &\mapsto X = 2;\\
@@ -255,6 +253,16 @@ However, multiple elements of the sample space can be mapped to the same value o
  (2, 6) &\mapsto X = 12.
 \end{align*}
 Writing $X = 12$ means 'the product of the numbers on the two rolls is\ $12$'.
+
+The *domain* of\ $X$ is the sample space\ $S$, consisting of all\ $36$ ordered pairs. 
+
+The *range* of\ $X$ is the set of distinct products obtainable: 
+$$
+  \mathcal{R}_X = \{1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 25, 30, 36\}.
+$$
+$\mathcal{R}_X$ only $18$\ elements, fewer than $|S| = 36$, since several pairs give the same product (as shown above for $X = 12$).
+
+Since every pair in\ $S$ occurs with positive probability ($1/36$ each), every value in the range also has positive probability, so the *support* and the *range* are identical here.
 :::
 
 
@@ -464,7 +472,33 @@ Examples of continuous random variables include:
 * The amount of rainfall recorded each year.
 * The time taken to perform a psychological test.
 * The percentage cloud cover.
+
+
+
+:::{.example #ContinuousRVDomain name="Continuous rv"}
+Let\ $X$ have the density function
+$$
+  f_X(x) = 
+  \begin{cases}
+    \lambda \exp(-\lambda x)  & \text{for $x\ge 0$}\\
+    0                         & \text{for $x < 0$}
+  \end{cases}
+$$
+for some $\lambda > 0$.
+Suppose the sample space is defined as $S = \mathbb{R}$ (i.e., $X$ is, in principle, a real-valued measurement that could take any real value).
+
+Here, the *domain*\index{Domain} is $S = \mathbb{R}$ and the *range*\index{range} is $\mathcal{R}_X = \mathbb{R}$, since $X(s) = s$ for every $s\in S$.
+The *support* is $[0, \infty)$, since $f_X(x) = 0$ for all $x < 0$.
+
+The density can also be written in terms of the support:
+$$
+  f_X(x) = 
+  \lambda \exp(-\lambda x)  \qquad \text{for $x\ge 0$}.
+$$
+
+:::
 \index{Random variables!continuous|(}
+
 
 
 ### Mixed random variables {#RVsMixed}
@@ -800,7 +834,7 @@ $$
 :::
 
 
-As with PMFs, when a PDF depends on one or more parameters\ $theta$,\index{Parameter} this is made explicit by writing $f_X(x; \theta)$ for one parameter or $f_X(x; \theta_1, \theta_2, \dots)$ for multiple parameters, where the semicolon separates the variable\ $x$ from the parameters.
+As with PMFs, when a PDF depends on one or more parameters\ $\theta$,\index{Parameter} this is made explicit by writing $f_X(x; \theta)$ for one parameter or $f_X(x; \theta_1, \theta_2, \dots)$ for multiple parameters, where the semicolon separates the variable\ $x$ from the parameters.
 
 We are usually only concerned with $(a, b)\in \mathcal{R}_X$, but it makes sense to think of the PDF as defined for all\ $x$, insisting that $f_X(x) = 0$ for $x\notin \mathcal{R}_X$.
 This definition implies that *areas under the graph of the PDF represent probabilities* and leads to the following properties:
@@ -953,7 +987,6 @@ polygon(x = c(0, alpha, 2 * alpha),
      y = c(0, 1/alpha, 0),
      col = ColourLight)
 ```
-
 
 ### Mixed random variables {#ProbabilityFunctionsMixed}
 
