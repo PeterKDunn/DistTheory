@@ -24,7 +24,8 @@ Upon completion of this chapter, you should be able to:
 Chapter\ \@ref(ChapterProbability)\index{Random variables|(} introduced the language and tools of probability to describe uncertainty.
 The concept of the [*sample space*](#def:SampleSpace) was introduced, which describes the possible outcomes of a [*random process*](#def:RandomProcess).
 Often, however, the individual elements of the sample space are not directly of interest, especially if the sample space is large or infinite.
-Subsets of these sample space elements are usually of greater interest and more convenient to work with.
+Often, the individual outcomes in the sample space are not directly of interest. 
+Instead, a numerical characteristic of the outcome (such as the number of heads observed, the sum of two dice, or the lifetime of a component) is of interest.
 
 For example, the sample space\index{Sample space} for observing the rolls of two dice (Example\ \@ref(exm:TwoDice)) contains\ $36$ elements.
 We may be interested in the *sum* of the two rolls, rather than which elements in the sample space produce a given sum.
@@ -42,7 +43,19 @@ A *random variable*\index{Random variables} is a function $X: S \rightarrow \mat
 :::
 
 
-```{r RVmapping, echo=FALSE, out.width='85%', fig.width=6.5, fig.align="center", fig.cap="A random variable\\ $X$ is a function that maps each outcome in the sample space\\ $S$ to a real number."}
+A capital letter (such as\ $X$ or\ $Y$) is usually used to denote the *description* of the random variable, while lower-case letters (such as\ $x$ or\ $y$) are used to represent a realised value.
+For example, consider rolling two dice and observing the sum of the two rolls. 
+Writing $X = 3$ means:
+
+* 'The random variable\ $X$' (e.g., the description 'the sum of the roll of two dice')...
+* '... was observed to take the value\ $3$ in some outcome of the random process'.
+
+Sometimes, $X$ is written for both the function and its value; the meaning is usually clear from context.
+
+
+
+
+```{r RVmapping, echo=FALSE, out.width='85%', fig.width=6.5, fig.height=3.5, fig.align="center", fig.cap="A random variable\\ $X$ is a function that maps each outcome in the sample space\\ $S$ to a real number."}
 par(mar = c(2, 1, 3, 1), 
     bg = "white")
 plot.new()
@@ -52,8 +65,12 @@ plot.window(xlim = c(0, 10),
 
 theta <- seq(0, 2 * pi, 
              length.out = 300)
-col_s    <- ifelse(knitr::is_html_output(), "#2C6FAC", "black")
-col_arr  <- ifelse(knitr::is_html_output(), "#C0392B", "black")
+col_s    <- ifelse(knitr::is_html_output(), 
+                   "#2C6FAC",
+                   "black")
+col_arr  <- ifelse(knitr::is_html_output(), 
+                   "#C0392B", 
+                   "black")
 col_line <- "black"
 
 # =================================================================
@@ -81,7 +98,7 @@ text(cx - rx - 0.4,
 sp <- data.frame(
   x   = c(2.0, 3.2, 4.4, 5.0, 5.8, 7.0, 8.0),
   y   = c(7.5, 8.0, 7.2, 7.8, 7.3, 8.0, 7.5),
-  lab = c("s[1]","s[2]","s[3]","s[4]","s[5]","s[6]","s[7]")
+  lab = c("italic(s)[1]","italic(s)[2]","italic(s)[3]","italic(s)[4]","italic(s)[5]","italic(s)[6]","italic(s)[7]")
 )
 points(sp$x, 
        sp$y, 
@@ -163,15 +180,15 @@ for (i in seq_len(nrow(sp)))
          col = col_arr)
 
 # X label
-text(9.5, 
-     5.5, 
+text(x = 9.5, 
+     y = 5, 
      expression(italic(X) : italic(S) %->% bold(R)),
      cex = 0.95, 
      col = col_arr, 
      adj = 1)
 
 title("Random Variables", 
-      cex.main = 1.2, 
+      cex.main = 1.1, 
       font.main = 2, 
       col.main = "#1a1a2e")
 mtext(expression("A random variable assigns a real number to each outcome" ~
@@ -210,57 +227,46 @@ In contrast, a random variable represents a quantity whose value depends on the 
 :::{.definition #DomainRange name="Domain, range and support"}
 The *domain*\index{Domain} of\ $X$ is the sample space\ $S$, and the *range*\index{Range} (or *value set*)\index{Value set} is the set of real values taken by\ $X$, denoted $\mathcal{R}_X = \{X(s) \mid s \in S\}$, where $\mathcal{R}_X \subseteq \mathbb{R}$.
 
-The *support*\index{Support} of\ $X$ is the subset of $\mathcal{R}_X$ consisting of values assigned non-zero probability or density.
+The *support*\index{Support} of\ $X$ is the set of values that can occur with non-zero probability.
 :::
 
 
 Since\ $X$ is a function, each $s\in S$ is assigned to exactly one value $X(s)$; however, multiple values of $s\in S$ may be assigned to the same value of $X(s)$.
 The variable is *random* since its value depends upon the outcome of the random process.
 
-A capital letter (such as\ $X$ or\ $Y$) is usually used to denote the *description* of the random variable, while lower-case letters (such as\ $x$ or\ $y$) are used to represent a realised value.
-For example, consider rolling two dice and observing the sum of the two rolls. 
-Writing $X = 3$ means:
-
-* 'The random variable\ $X$' (e.g., the description 'the sum of the roll of two dice')...
-* '... was observed to take the value\ $3$ in some outcome of the random process'.
-
-Sometimes, $X$ is written for both the function and its value; the meaning is usually clear from context.
-
-
 
 :::{.example #TossDieTwiceProduct name="Rolling a die twice"}
 Consider rolling a fair die twice.
-The sample space\ $S$ contains $36$\ elements shown in Table\ \@ref(tab:TwoDice):
+The sample space\ $S$ (i.e., the domain of\ $X$) contains the $36$\ elements shown in Table\ \@ref(tab:TwoDice):
 $$
-  S = \{ (1, 1), (1, 2), (1, 3), \dots (6, 5), (6, 6)\}.
+  S = \{ (1, 1), (1, 2), (1, 3), \dots, (6, 5), (6, 6)\}.
 $$
 However, we may be interested in the random variable\ $X$, the *product* of the two numbers rolled.
-Each element\ $s$ of\ $S$ can be assigned to exactly one real number (in this case, to exactly one *integer*):
+The random variable\ $X$ assigns each element\ $s$ of\ $S$ to exactly one real number (in this case, to exactly one *integer*):
 \begin{align*}
-  (1, 1) &\mapsto X = 1;\\
-  (1, 2) &\mapsto X = 2;\\
-  (1, 3) &\mapsto X = 3;\\
+  (1, 1) &\mapsto 1;\\
+  (1, 2) &\mapsto 2;\\
+  (1, 3) &\mapsto 3;\\
   \vdots &\qquad   \vdots\\
-  (6, 5) &\mapsto X = 30;\\
-  (6, 6) &\mapsto X = 36.
+  (6, 5) &\mapsto 30;\\
+  (6, 6) &\mapsto 36.
 \end{align*}
 Each element of the sample space is mapped to exactly one value of\ $X$.
 However, multiple elements of the sample space can be mapped to the same value of\ $X$:
 \begin{align*}
- (3, 4) &\mapsto X = 12; \quad\text{and}\\
- (4, 3) &\mapsto X = 12; \quad\text{and}\\
- (6, 2) &\mapsto X = 12; \quad\text{and}\\
- (2, 6) &\mapsto X = 12.
+ (3, 4) &\mapsto 12; \quad\text{and}\\
+ (4, 3) &\mapsto 12; \quad\text{and}\\
+ (6, 2) &\mapsto 12; \quad\text{and}\\
+ (2, 6) &\mapsto 12.
 \end{align*}
 Writing $X = 12$ means 'the product of the numbers on the two rolls is\ $12$'.
 
 The *domain* of\ $X$ is the sample space\ $S$, consisting of all\ $36$ ordered pairs. 
-
 The *range* of\ $X$ is the set of distinct products obtainable: 
 $$
   \mathcal{R}_X = \{1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 25, 30, 36\}.
 $$
-$\mathcal{R}_X$ only $18$\ elements, fewer than $|S| = 36$, since several pairs give the same product (as shown above for $X = 12$).
+$\mathcal{R}_X$ contains only $18$\ elements, fewer than $|S| = 36$, since several pairs give the same product (as shown above for $X = 12$).
 
 Since every pair in\ $S$ occurs with positive probability ($1/36$ each), every value in the range also has positive probability, so the *support* and the *range* are identical here.
 :::
@@ -272,11 +278,11 @@ Random variables provide a convenient way to express events numerically; rather 
 
 
 :::{.example #TossDieTwiceProductRange name="Rolling a die twice: range"}
-In Example\ \@ref(exm:TossDieTwiceProduct), the range of the random variable\ $X$ is
+In Example\ \@ref(exm:TossDieTwiceProduct), the *range* of the random variable\ $X$ is
 $$
    \mathcal{R}_X = \{1,  2,  3,  4,  5,  6,  8,  9, 10, 12, 15, 16, 18, 20, 24, 25, 30, 36\}.
 $$
-The domain is the sample space, the set of all ordered pairs
+The *domain* is the sample space, the set of all ordered pairs
 \begin{align*}
   S
   &= \{ (1, 1), (1, 2), (1, 3), \dots (3, 2), (3, 3), (3, 4),\dots (6, 5), (6, 6)\}\\
@@ -287,26 +293,32 @@ The domain is the sample space, the set of all ordered pairs
 
 :::{.example #TossDieTwiceProductEvents name="Rolling a die twice: events"}
 The random variable\ $X$ in Example\ \@ref(exm:TossDieTwiceProduct) can be used to define different events.
-For example, we could define Event\ $A_1$ as
+For example, Event\ $A_1$ could be defined as
 $$
   \{s \in S \mid  X(s) > 10\},
 $$
 usually written more succinctly as $X > 10$.
-Other events can be defined also:
+The *values* of the random variable corresponding to this event are
+$$
+  X = 11, 12.
+$$
+Other events can be defined also; for example:
 \begin{align*}
-   A_2 &= \{\text{$4 \le X < 10$}\} = \{ 4,  5,  6, 8,  9 \};\\
-   A_3 &= \{\text{$X < 0$ }\} = \varnothing;\\
-   A_4 &= \{\text{$X$ is prime}\} = \{2, 3, 5 \};\\
-   A_5 &= \{\text{$X$ is evenly divisible by\ $8$}\} = \{ 8, 16, 24\}.
+  A_2 &= \{ s \in S \mid 4 \le X(s) < 10 \}
+  \quad\text{corresponding to}\quad X = 4, 5, 6, 7, 8, 9;\\
+  A_3 &= \{s \in S\mid X(s) < 0\} = \varnothing
+  \quad\text{so there are no corresponding values of $X$};\\
+  A_4 &= \{s\in S\mid X(s) \text{ is prime}\}
+  \quad\text{corresponding to}\quad X = 2, 3, 5.
 \end{align*}
 :::
 
 
 :::{.example #TwoDiceRV name="Sum of two die rolls"}
 Consider observing the rolls of two dice.
-The sample space contains\ $36$ elements (Example\ \@ref(exm:TwoDice)), and can be denoted using the ordered pairs $(r_1, r_2)$, where $r_1$ and $r_2$ are the results of die\ $1$ and\ $2$ respectively. 
-The sample space is listed in Table\ \@ref(tab:TwoDice).
-For example, we could define $s_1$ as the sample point $(1, 1)$.
+The sample space contains\ $36$ elements (Example\ \@ref(exm:TwoDice)), and can be denoted using the ordered pairs $(r_1, r_2)$, where\ $r_1$ and\ $r_2$ are the results of die\ $1$ and\ $2$ respectively. 
+The sample space (the domain of\ $X$) is listed in Table\ \@ref(tab:TwoDice).
+For example, $s_1$ could be defined as the sample point $(1, 1)$.
 
 The random variable\ $Y$ can be defined on this sample space as:
 $$
@@ -324,10 +336,7 @@ $\vdots$                  | $\vdots$
 (6, 6)                    | 12
 
 
-For example, the elements of\ $S$ assigned to $Y = 4$ are
-$$
-   (1, 3), (2, 2)\quad\text{and}\quad (3, 1).
-$$
+For example, the elements of\ $S$ assigned to $Y = 4$ are $(1, 3)$, $(2, 2)$ and $(3, 1)$.
 Notice that many elements of the sample space can be assigned to the same value of the random variable (which is typical for random variables).
 
 The *domain* of\ $Y$ is the sample space\ $S$; the *range* is
@@ -344,14 +353,13 @@ The sample space is
 $$
    \Omega = \{H, TH, TTH, TTTH, \dots \}.
 $$
-We could then define the random variable $N$ as 'the number of tosses until the first head is observed'.
+The random variable\ $N$ could be defined as 'the number of tosses until the first head is observed'.
 $\Omega$ is countably infinite.
-Then each element of the sample space is assigned to a positive integer:
+Each element of the sample space is assigned to a positive integer:
 \begin{align*}
    H\quad    &\text{is assigned to $N = 1$};\\
    TH\quad   &\text{is assigned to $N = 2$};\\
-   TTH\quad  &\text{is assigned to $N = 3$};\\
-   \vdots\quad &\qquad \vdots
+   TTH\quad  &\text{is assigned to $N = 3$}
 \end{align*}
 and so on.
 Writing $N = 2$ means 'the number of tosses to observe the first head is two'.
@@ -372,21 +380,17 @@ Many random variables could be defined on this sample space; for example:
    D&: \text{The number of black cards drawn,}\\
     &\qquad \text{minus the number of red cards drawn}.
 \end{align*}
-All of these assign a real number to each element of\ $\Omega$.
-The random variable\ $D$, for instance, is defined as:
+These all assign a real number to each element of\ $\Omega$; consider random variable\ $D$, for instance:
 
 
-**Sample space elements** | **Value of $D$**
+*Sample space elements*   | *Value of $D$*
 --------------------------|-----------------
 $BR$ and $RB$             | $D = 0$
 $BB$                      | $D = 2$
 $RR$                      | $D = -2$
 
 
-The domain is $\Omega$, and the range is
-$$
-   \mathcal{R}_D = \{ D(s) \mid s\in \Omega\} = \{-2, 0, 2\}.
-$$
+The domain is $\Omega$, and the range is $\mathcal{R}_D = \{ D(s) \mid s\in \Omega\} = \{-2, 0, 2\}$.
 :::
 
 
@@ -487,7 +491,7 @@ $$
 for some $\lambda > 0$.
 Suppose the sample space is defined as $S = \mathbb{R}$ (i.e., $X$ is, in principle, a real-valued measurement that could take any real value).
 
-Here, the *domain*\index{Domain} is $S = \mathbb{R}$ and the *range*\index{range} is $\mathcal{R}_X = \mathbb{R}$, since $X(s) = s$ for every $s\in S$.
+Here, the *domain*\index{Domain!of a rv} is $S = \mathbb{R}$ and the *range*\index{range} is $\mathcal{R}_X = \mathbb{R}$, since $X(s) = s$ for every $s\in S$.
 The *support* is $[0, \infty)$, since $f_X(x) = 0$ for all $x < 0$.
 
 The density can also be written in terms of the support:
@@ -597,6 +601,7 @@ For a discrete random variable, the probability function is often called the *pr
 :::{.definition #ProbabilityDistribution name="Discrete probability mass function"}
 Let\ $X$ be a discrete random variable with range $\mathcal{R}_X$.\index{Probability mass function}
 The *probability mass function* (or PMF), denoted $p_X(x)$, assigns a probability to each outcome\ $x_i$ such that $p_X(x_i) = \Pr(X = x_i)$.
+The domain\index{Domain!of a probability function} of the probability function $p_X(x)$ is the set of values that\ $X$ can take.
 
 This function must satisfy:
 \begin{align}
@@ -732,7 +737,7 @@ $$
   =
   \begin{cases}
     0.1x  & \text{for $x = 1, 2$};\\
-    0.7   & \text{for $x = 3$}
+    0.7   & \text{for $x = 3$}.
   \end{cases}
 $$
 :::
@@ -753,7 +758,7 @@ $$
 More succinctly,
 \begin{align*}
    p_H(h) &= \Pr(H = h) \\
-          &= (0.5)0.5^{|h - 1|} \qquad \text{for $h = 0$, $1$ or $2$}.
+          &= (0.5)\,0.5^{|h - 1|} \qquad \text{for $h = 0$, $1$ or $2$}.
 \end{align*}
 This information can also be presented as a table (Table\ \@ref(tab:TwoDieRV)) or graph (Fig.\ \@ref(fig:ProbDistributionCoin)).
 Note that $\sum_{t \in \{0, 1, 2\}} p_H(t) = 1$ and $p_H(h)\ge0$ for all\ $h$, as required of a probability function.
@@ -826,6 +831,8 @@ The *probability density function* (or PDF)\index{Probability density function} 
 $$
   \int_{\mathcal{R}_X} f_X(x) \, dx = 1.
 $$
+
+The domain\index{Domain!of a probability function} of the probability function $f_X(x)$ is the set of values that\ $X$ can take.
 
 The probability that\ $X$ falls within a specific region\ $A$ is the area under the curve:
 $$
@@ -962,7 +969,7 @@ Here, $\alpha$ is a parameter.
 Note that $\int_0^{2\alpha} f_T(t)\,dt = 1$ for all values of\ $\alpha$.
 :::
 
-```{r PDFParameter, echo=FALSE, fig.align="center", fig.cap="The PDF for the rv\\ $T$ with parameter\\ $\\alpha$.", out.width='80%', fig.width=7, fig.height=3.5}
+```{r PDFParameter, echo=FALSE, fig.align="center", fig.cap="The PDF for the random variable\\ $T$ with parameter\\ $\\alpha$.", out.width='80%', fig.width=7, fig.height=3.5}
 alpha <- 1
 
 plot(x = c(0, alpha, 2 * alpha),
@@ -1913,8 +1920,7 @@ For example, three quarters of the probability occurs before
 $$
    Q(3/4) = -\frac{1}{2}\log\big(1 - (3/4)\big) = \frac{\log 4}{2} = 0.6931\dots
 $$
-In other words, $75$% of the probability occurs at or below $x = 0.6931...$.
-See Fig.\ \@ref(fig:QuantileFnContinuous).
+In other words, $75$% of the probability occurs at or below $x \approx 0.6931$; see Fig.\ \@ref(fig:QuantileFnContinuous).
 :::
 
 
@@ -2293,20 +2299,20 @@ By repeating this process with many different random values of $p^*$, we natural
 
 
 
-```{r, RNos, echo=FALSE, fig.align="center", fig.cap="Selecting a random number from a distribution, using the distribution function (left) or quantile function (right).", out.width='60%', fig.width=5, fig.height=3.75}
-# CDF:        F(x) = (x-1)^3 / 27  for 1 < x < 4
-# Quantile:   Q(p) = 1 + (27p)^(1/3)
+```{r, RNos, echo=FALSE, fig.align="center", fig.cap="Selecting a random number from some distribution, using the quantile function.", out.width='60%', fig.width=5, fig.height=3.75}
+# CDF:        F(x) = (x)^3 / 27  for 0 < x < 3
+# Quantile:   Q(p) = (27p)^(1/3)
 
 #par(mfrow = c(1, 2), 
 #    mar = c(4, 4, 3, 2))
 
-x_seq <- seq(1, 4, 
-             length.out = 500)
-F_x   <- (x_seq - 1)^3 / 27
+#x_seq <- seq(0.0001, 4, 
+#             length.out = 500)
+#F_x   <- (x_seq - 1)^3 / 27
 
 # --- Choose a single illustrative p* and x* ---
 p_star <- 0.6
-x_star <- 1 + (27 * p_star)^(1/3)   # About 3.24
+x_star <- (27 * p_star)^(1/3)   # About 2.53
 
 ###  LEFT: Distribution Function  ###
 # plot(x_seq, 
@@ -2383,14 +2389,14 @@ x_star <- 1 + (27 * p_star)^(1/3)   # About 3.24
 # ---- RIGHT: Quantile Function ----
 p_seq <- seq(0, 1, 
              length.out = 500)
-Q_p   <- 1 + (27 * p_seq)^(1/3)
+Q_p   <- (27 * p_seq)^(1/3)
 
 plot(p_seq, 
      Q_p, 
      type = "l", 
      lwd = 2.5,
      xlim = c(0, 1), 
-     ylim = c(1, 4),
+     ylim = c(-0.25, 3),
      axes = FALSE,
      xlab = expression(italic(p)), 
      ylab = expression(italic(Q)(italic(p))),
@@ -2399,8 +2405,8 @@ plot(p_seq,
      bty = "l")
 axis(side = 2,
      las = 1,
-     at = seq(1, 4, by = 0.5),
-     labels = c(1, 1.5, 2, 2.5, 3, expression(italic(x)*"*") , 4))
+     at = c(0, 1, 2, x_star, 3),
+     labels = c(0, 1, 2, expression(italic(x)*"*") , 3))
 axis(side = 1,
      at = c(0, 0.2, 0.4, 0.6, 0.8, 1),
      labels = c(0, 0.2, 0.4, expression(italic(p)*"*"), 0.8, 1) )
@@ -2408,34 +2414,37 @@ axis(side = 1,
 
 # Arrowheads: two-headed on vertical, one across to y-axis
 arrows(p_star, 
-       1.1,      
+       0.0,      
        p_star, 
        x_star, 
        length = 0.1, 
-       col = "steelblue", 
+       col = ColourLight, 
        lwd = 2)
 arrows(p_star, 
        x_star, 
        0,      
        x_star, 
        length = 0.1, 
-       col = "steelblue", 
+       col = ColourLight, 
        lwd = 2)
 
 # Dot on curve
-points(p_star, x_star, pch = 19, cex = 1.1)
+points(p_star, 
+       x_star, 
+       pch = 19, 
+       cex = 1.1)
 
 # Random text
 text(x = 0.5,
-     y = 1,
+     y = -0.2,
      label = "Pick a random number")
-points(y = 1.15,
+points(y = 0,
        x = p_star,
        pch = 19,
        col = "grey")
-# Up-down at random arrow
-arrows(y0 = 1.15,
-       y1 = 1.15, 
+# Left-to-right at random arrow
+arrows(y0 = 0,
+       y1 = 0, 
        x0 = 0, 
        x1 = 1,
        lwd = 2,
@@ -2443,11 +2452,7 @@ arrows(y0 = 1.15,
        angle = 15,
        length = 0.1,
        col = "grey")
-# Dot on curve
-points(p_star, 
-       x_star, 
-       pch = 19, 
-       cex = 1.1)
+
 box()
 ```
 
@@ -2464,12 +2469,11 @@ runif(10) # '10' here means to generate 10 random numbers between 0 and 1
 
 
 ::: {.example #RandomContinuous name="Random numbers from a continuous distribution"}
-Suppose we want to generate random numbers from the distribution
+Random numbers from the distribution
 $$
-  f_X(x) =2 \exp(-2x)
+  f_X(x) = 2 \exp(-2x)\quad\text{for $x > 0$},
 $$
-as in Example\ \@ref(exm:QuantileFnContinuous).
-Random numbers from the distribution can be generated using\ **R** using the idea shown in Fig.\ \@ref(fig:RNos)).:
+as in Example\ \@ref(exm:QuantileFnContinuous), can be generated using\ **R** using this idea:
 
 ```{r fig.show='hide'}
 # Create an R function for the quantile function
@@ -2495,13 +2499,13 @@ In Example\ \@ref(exm:DistributionFnReverseDiscrete), the random variable\ $X$ w
 $$
    f_X(x) = 
    \begin{cases}
-      0.1   & \text{for $x = 10$}\\
-      0.3   & \text{for $x = 11$}\\
-      0.5   & \text{for $x = 15$}\\
-      0.1   & \text{for $x = 17$}
-   \end{cases}.
+      0.1   & \text{for $x = 10$};\\
+      0.3   & \text{for $x = 11$};\\
+      0.5   & \text{for $x = 15$};\\
+      0.1   & \text{for $x = 17$}.
+   \end{cases}
 $$
-In **R**, we define the values of\ $X$ where probabilities are non-zero:\index{c()@\texttt{c()}}
+In **R**, define the values of\ $X$ where probabilities are non-zero:\index{c()@\texttt{c()}}
 
 ```{r}
 x <- c( 10,  11,  15,  17)
@@ -2538,31 +2542,30 @@ $$
    f_W(w) = 
       2w \qquad \text{for $0 < w < 1$}.\\
 $$
-The PDF can be expressed in **R** as a function.
-The `integrate()` function in\ **R**, which we use below, assumes the random variable is denoted by\ `x`, so the PDF is defined as a function of\ `x` rather than\ `w`:\index{function()@\texttt{function()}}
+The PDF can be expressed in **R** as a function (note that the `integrate()` function in\ **R**, used below, always denotes the random variable by\ `x`):\index{function()@\texttt{function()}}
 
 
 ```{r}
-fX <- function(x) {2 * x}
+fW <- function(x) {2 * x}
 ```
 
 Then, the PDF can be plotted (Fig.\ \@ref(fig:RDistributions), left panel) using:\index{curve()@\texttt{curve()}}
 
 ```{r Curvefx, eval=FALSE}
-curve(fX, 
+curve(fW, 
       main = "Density function",  # Main title
       xlab = "w",      # Horizontal-axis label
       ylab = "PDF",    # Vertical-axis label
       from = 0,        # Lower x-value of plot
       to = 1,          # Upper x-value of plot
       las = 1,         # Horizontal axis labels
-      lwd = 2)         # Lines a little thicker
+      lwd = 3)         # Lines a little thicker
 ```
 
 As required, the total area under the curve is\ $1$:\index{integrate()@\texttt{integrate()}}
 
 ```{r}
-integrate(fX,
+integrate(fW,
           lower = 0,         # Lower limit of integration
           upper = 1)$value   # Upper limit of integration
 ```
@@ -2570,15 +2573,15 @@ integrate(fX,
 Probabilities can be found similarly; for example, to find $\Pr(0.2 < X < 0.6)$:
 
 ```{r plot=FALSE}
-integrate(fX, 
+integrate(fW, 
           lower = 0.2, 
           upper = 0.6)$value
 ```
 
-The DF can also be defined (using `Vectorize()` is an **R** construct to avoids writing loops):\index{Vectorize()@\texttt{Vectorize()}}
+The DF can also be defined (`Vectorize()` is an **R** construct to avoids writing loops):\index{Vectorize()@\texttt{Vectorize()}}
 ```{r}
-FX <- Vectorize(function(x) {
-        integrate(fX,                  # Integrate f(x)... 
+FW <- Vectorize(function(x) {
+        integrate(fW,                  # Integrate f(x)... 
                   lower = 0,           # ... from 0 to x
                   upper = x)$value})   # Return the *value*
 ```
@@ -2586,14 +2589,14 @@ FX <- Vectorize(function(x) {
 The DF can be plotted also (Fig.\ \@ref(fig:RDistributions), right panel):
 
 ```{r CurveFx, eval=FALSE}
-curve(FX, 
+curve(FW, 
       main = "Distribution function",  # Main title
       xlab = "w",       # Horizontal-axis label
       ylab = "DF",     # Vertical-axis label
       from = 0,         # Lower x-value of plot
       to = 1,           # Upper x-value of plot
       las = 1,          # Axis labels horizontal
-      lwd = 2)          # Lines a little thicker
+      lwd = 3)          # Lines a little thicker
 ```
 
 
@@ -2606,10 +2609,8 @@ par( mfrow = c(1, 2) )
 Then, $\Pr(0.2 < W < 0.6)$ can be found using the distribution function:
 
 ```{r}
-FX(0.6) - FX(0.2)
+FW(0.6) - FW(0.2)
 ```
-
-
 
 
 ### Empirical probability functions {#EmpiricalProbFunctions}
@@ -2636,9 +2637,9 @@ To generate and display $n = 50$ random numbers in **R**:\index{hist()@\texttt{h
 
 ```{r eval = FALSE}
 rnos <- runif(20)
-x <- quantileFn(x)   # Function as defined previously
+x <- quantileFn(x)      # Function as defined previously
 hist(x,
-     freq   = FALSE)
+     freq   = FALSE)    # Ensures a scaled histogram
 ```
 
 The empirical probability density function for increasing values of\ $n$ are show in Fig.\ \@ref(fig:EmpiricalPDFexp).
@@ -2663,6 +2664,7 @@ for (n in ns) {
        las    = 1,
        xlim   = c(0, max(breaks)),
        ylim   = c(0, 1.75),
+       col    = ColourLightOpaque,
        main   = paste0("n = ", n),
        xlab   = expression(italic(x)),
        ylab   = "Empirical density")
@@ -2686,15 +2688,16 @@ $$
 $$
 so the quantile function is found by solving
 $$
-  1 - 0.4^{x + 1} \ge p.
+  1 - 0.4^{x + 1} \ge p,
 $$
-So the quantile function is
+giving 
 $$
   Q_X(p) =  \left\lceil
             \frac{\log(1 - p)}{\log 0.4} - 1
             \right\rceil
+            \quad\text{for $0 \le p \le 1$},
 $$
-where $\lceil x \rceil$ is the *ceiling* function: the smallest integer not less than\ $x$ (e.g., $\lceil\pi\rceil = 4$).
+where $\lceil x \rceil$ is the *ceiling* function: the smallest integer not less than\ $x$ (e.g., $\lceil\pi\rceil = 4$ and $\lceil-\pi\rceil = -3$).
 
 
 To generate and display $n = 50$ random numbers in **R**:\index{barplot()@\texttt{barplot()}}\index{table()@\texttt{table()}}\index{ceiling()@\texttt{ceiling()}}
@@ -2727,14 +2730,14 @@ for (n in ns) {
                  las    = 1,
                  xlim   = c(0, 9.5),
                  ylim   = c(0, 0.7),
+                 col    = ColourLightOpaque,
                  main   = paste0("n = ", n),
                  xlab   = expression(italic(x)),
                  ylab   = "Empirical mass")
   points(x = out,
          y = dgeom(0 : (length(out) - 1), 
                    p = 0.6),
-         pch = 19, 
-         lwd = 2)
+         pch = 19)
 }
 par(mfrow = c(1, 1))
 ```
