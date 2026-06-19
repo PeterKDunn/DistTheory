@@ -1451,8 +1451,7 @@ $\displaystyle F_X(x) =
       0.3 & \text{for $10 \le x < 15$};\\
       0.5 & \text{for $15 \le x < 20$};\\
       1   & \text{for $x \ge 20$}.
-    \end{cases}
-$
+    \end{cases}$
 4. Fig.\ \@ref(fig:DFdiscretePlot), bottom left panel: 
 $\displaystyle F_X(x) = 
    \begin{cases}
@@ -1460,8 +1459,7 @@ $\displaystyle F_X(x) =
       0.7 & \text{for $10 \le x < 15$};\\
       0.5 & \text{for $15 \le x < 20$};\\
       1   & \text{for $x \ge 20$}.
-    \end{cases}
-$ 
+    \end{cases}$ 
 5. $\Pr(X > 13) = 1 - F_X(13) = 0.7$.
 6. $\Pr(X \le 10 \mid X\le 15) = \Pr(X \le 10) / \Pr(X \le 15) = F_X(10)/F_X(15) = 0.3/0.5 = 0.6$.
 7. Fig.\ \@ref(fig:DFdiscretePlot), bottom right panel:
@@ -1471,7 +1469,7 @@ $\displaystyle F_X(x) =
       10    & \text{for $0 < p \le 0.3$};\\
       15    & \text{for $0.3 < x \le 0.5$};\\
       20    & \text{for $0.5 < x \le 1$}.
-    \end{cases}
+    \end{cases}$
 :::
 
 
@@ -1693,14 +1691,84 @@ plot( Q1(p) ~ p,
 ```
 
 
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:DFcontinuousHarder).**
+
+1. Fig.\ \@ref(fig:DFYcontinuousHarder), top left.
+1. Fig.\ \@ref(fig:DFYcontinuousHarder), top right: $F_Y(y) = 0$ for $y < 0$; $F_Y(y) = \sqrt{y+1} - 1$ for $0\le y < 3$; $F_Y(y) = 1$ for $y\ge 3$.
+1. Fig.\ \@ref(fig:DFYcontinuousHarder), bottom left: $S_Y(y) = 1 - F_Y(y) = 2 - \sqrt{y + 1}$ for $0\le y < 3$.
+1. ????
+1. Fig.\ \@ref(fig:DFYcontinuousHarder), bottom right: $Q_Y(p) = (1 + p)^2 - 1$ for $0 < p < 1$.
+1. ????
+:::
+
+
+```{r DFYcontinuousHarder, echo=FALSE, fig.align="center", fig.cap="The PDF and DF for $Y$"}
+f1 <- function(y){
+   f <- 1/( 2 * sqrt(y + 1 ) )
+  f[ x < 0] <- 0
+  f[ x > 3] <- 0
+  f
+}
+F1 <- function(y){
+  F <- sqrt(y + 1) - 1
+  F[ x < 0] <- 0
+  F[ x > 3] <- 1
+  F
+}
+S1 <- function(x){
+  1 - F1(x)
+}
+Q1 <- function(p){
+  (1 + p)^2 - 1
+}
+
+
+par(mfrow = c(2, 2))
+x <- seq(-0.1, 3.1, 
+         length = 200)
+plot( f1(x) ~ x,
+      las = 1,
+      type = "l",
+      xlab = expression(italic(y)),
+      ylab = "Prob. fn.",
+      lwd = 2)
+
+plot( F1(x) ~ x,
+      las = 1,
+      type = "l",
+      xlab = expression(italic(y)),
+      ylab = "Dist. fn.",
+      lwd = 2)
+
+plot( S1(x) ~ x,
+      las = 1,
+      type = "l",
+      xlab = expression(italic(y)),
+      ylab = "Survival fn.",
+      lwd = 2)
+
+p <- seq(0, 1, length = 100)
+plot( vapply(p, Q1, numeric(1)) ~ p,
+      las = 1,
+      type = "l",
+      xlab = expression(italic(p)),
+      ylab = "Quantile fn.",
+      lwd = 2)
+
+par(mfrow = c(1, 2))
+```
+
+
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:DFcontinuousHarder2).**
 
-1. See Fig.\ \@ref(fig:DFZcontinuous2) (top left panel).
+1. See Fig.\ \@ref(fig:DFZcontinuousHarder2) (top left panel).
 2. $F_X(x) = 0$ for $x \le -2$; $F_x(x) = (x^3 +48x + 104)/153$ for $-2 < x < 1$; $F_X(x) = 1$ for $x \ge 1$.
-   See Fig.\ \@ref(fig:DFZcontinuous2) (top right panel).
+   See Fig.\ \@ref(fig:DFZcontinuousHarder2) (top right panel).
 3. $S_X(x) = 1 - F_X(x)0$.
-   See Fig.\ \@ref(fig:DFZcontinuous2) (top right panel).
+   See Fig.\ \@ref(fig:DFZcontinuousHarder2) (top right panel).
 4. $F_x(3) = 28/63 = 4/9 \approx 0.4444$.
 5. $Q_X(p)$ is the unique root of $x^3 + 48x + (104 - 153p) = 0$.
    $Q_X(0)$: need to solve $x^3 + 48x + 104 = 0$; trying $x = -2$ shows thi sis a root: correct.
@@ -1709,7 +1777,7 @@ plot( Q1(p) ~ p,
 :::
 
 
-```{r DFZcontinuous2, echo=FALSE, fig.align="center", fig.cap="The PDF and DF for $X$"}
+```{r DFZcontinuousHarder2, echo=FALSE, fig.align="center", fig.cap="The PDF and DF for $X$"}
 f2 <- function(x){
   f <- array( dim = length(x))
   f[ x < -2] <- 0
@@ -1719,7 +1787,7 @@ f2 <- function(x){
   f
 }
 F2 <- function(x){
-  F <- (x > 1) & (x < 4)
+  F <- (48*x + x^3 + 104)/153
   F[ x < -2] <- 0
   F[ x > 1] <- 1
   F
@@ -1728,12 +1796,14 @@ S2 <- function(x){
   1 - F2(x)
 }
 Q2 <- function(p){
-  
+   uniroot(function(x, p = p){ x^3 + 48*x + 104 - 153*p},
+           p = p,
+           interval = c(-2, 1))$root
 }
 
 
 par(mfrow = c(2, 2))
-x <- seq(0, 5, 
+x <- seq(-2.1, 1.1, 
          length = 200)
 plot( f2(x) ~ x,
       las = 1,
@@ -1756,16 +1826,39 @@ plot( S2(x) ~ x,
       ylab = "Survival fn.",
       lwd = 2)
 
-plot( Q2(x) ~ x,
+p <- seq(0, 1, length = 100)
+plot( vapply(p, Q2, numeric(1)) ~ p,
       las = 1,
       type = "l",
-      xlab = expression(italic(x)),
+      xlab = expression(italic(p)),
       ylab = "Quantile fn.",
       lwd = 2)
 
 par(mfrow = c(1, 2))
 ```
 
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:DFcontinuousHarderTwoParts).**
+
+1. $f_T(t) = t + 1\text{\ for $-1 <\le t < 0$}; 1 - t\text{\ for $0\le t \le 1$}$.
+2. $F_T(t) = 0\text{\ for $t < -1$}; (t + 1)^2/2 \text{\ for $-1\le t < 0$}; 
+(1 _ 2t - t^2)/2\text{\ for $0 <\le t < 1$}; 1\text{\ for $t \ge 1$}$.
+3. $S_T(t) = 1 - F_T(t)$.
+4. $Q(p) = 2\sqrt{p} - 1\text{\ for $0 \le p < 1$}; 1 - \sqrt{2 - 2p}\text{\ for $0.5\le p \le 1$}$.
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:DFcontinuousHarderTwoParts2).**
+
+1. $a = 2/3$ so $f_Z(z) = 2(1 - z)/3\text{\ for $0 <\le z < 1$}; (z - 2)/3\text{\ for $2\le z \le 4$}$.
+2. $F_Z(z) = 0\text{\ for $z < 0$}; 1/3\text{\ for $1<z<2$}; (2z - z^2)/3 \text{\ for $2\le z < 4$}; 1\text{\ for $t \ge 4$}$.
+3. $S_T(t) = 1 - F_T(t)$.
+4. $Q(p) = 1 - \sqrt{1 - 3p}\text{\ for $0 \le p < 1/3$}; 1/3\text{\ for $1\le p \le 2$}; 2 + \sqrt{6p - 2}\text{\ for $1/3\le p \le 1$}$.
+:::
 
 
 :::{.answer data-latex=""}
