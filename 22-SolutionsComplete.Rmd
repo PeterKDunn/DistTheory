@@ -1473,7 +1473,7 @@ $\displaystyle F_X(x) =
 :::
 
 
-```{r, DFdiscretePlot, echo=FALSE, fig.cap="PMF and DF", fig.align="center", out.width='100%', fig.width=6, fig.height=5.25}
+```{r, DFdiscretePlot, echo=FALSE, fig.cap="PMF and DF", fig.align="center", out.width='100%', fig.width=7.75, fig.height=5}
 par(mfrow = c(2, 2))
 plotDiscrete(x = c(10, 15, 20),
              px = c(0.3, 0.2, 0.5),
@@ -1525,7 +1525,7 @@ $
    See Fig.\ \@ref(fig:DFdiscrete2Plot), bottom right panel.
 :::
 
-```{r, DFdiscrete2Plot, echo=FALSE, fig.cap="PMF and DF", fig.align="center", out.width='100%', fig.width=6, fig.height=4.25}
+```{r, DFdiscrete2Plot, echo=FALSE, fig.cap="PMF and DF", fig.align="center", out.width='100%', fig.width=7.75, fig.height=5}
 par(mfrow = c(2, 2))
 x <- 1:7
 px <- 2^(-x) 
@@ -1553,7 +1553,7 @@ par(mfrow = c(1, 1))
 1. Fig.\ \@ref(fig:DFZcontinuous), bottom right: $Q(p) = (-1 + \sqrt{16p + 9})/2$.
 :::
 
-```{r DFZcontinuous, echo=FALSE, fig.align="center", fig.cap="The DF for $X$"}
+```{r DFZcontinuous, echo=FALSE, fig.align="center", fig.cap="The DF for $X$", out.width='100%', fig.width=7.75, fig.height=5}
 f1 <- function(x){
   f <- (2*x + 1)/ 4
   f[ x < 1] <- 0
@@ -1577,35 +1577,18 @@ x <- seq(1, 2,
          length = 200)
 par(mfrow = c(2, 2))
 
-plot( f1(x) ~ x,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(x)),
-      ylab = "Prob. fn.",
-      lwd = 2)
-
-
-plot( F1(x) ~ x,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(x)),
-      ylab = "Dist. fn.",
-      lwd = 2)
-
-plot( S1(x) ~ x,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(x)),
-      ylab = "Survival fn.",
-      lwd = 2)
-
-p <- seq(0, 1, length = 100)
-plot( Q1(p) ~ p,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(x)),
-      ylab = "Quantile fn.",
-      lwd = 2)
+plotContinuous(pdf_fn = f1,
+               type = "PDF",
+               xlim = c(0.85, 2.15) )
+plotContinuous(df_fn = F1,
+               type = "DF",
+               xlim = c(0.85, 2.15) )
+plotContinuous(df_fn = F1,
+               type = "SF",
+               xlim = c(0.85, 2.15) )
+plotContinuous(q_fn = Q1,
+               type = "QF",
+               xlim = c(0, 1) )
 ```
 
 
@@ -1633,26 +1616,16 @@ $\displaystyle S_Z(z) =
 $\displaystyle Q_Z(z) = (6 - \sqrt{64 - 60p})/2$ for $0\le p\le 1$.
 :::
 
-```{r DFZcontinuous2, echo=FALSE, fig.align="center", fig.cap="The DF for $Z$"}
+
+
+
+```{r DFZcontinuous2, echo=FALSE, fig.align="center", fig.cap="The DF for $Z$", out.width='100%', fig.width=7.75, fig.height=5}
 f1 <- function(x){
   f <- (2/15) * (3 - x)
   f[ x < -1] <- 0
   f[ x > 2] <- 0
   f
 }
-
-
-z <- seq(-2, 3, 
-         length = 200)
-par(mfrow = c(2, 2))
-
-plot( f1(z) ~ z,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(x)),
-      ylab = "Prob. fn.",
-      lwd = 2)
-
 F1 <- function(x){
   F <- array( dim = length(x))
   F[ x < -1] <- 0
@@ -1661,34 +1634,28 @@ F1 <- function(x){
   F[ Interesting ] <- 6*x[Interesting]/15 - (x[Interesting]^2)/15 + 7/15
   F
 }
-plot( F1(z) ~ z,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(x)),
-      ylab = "Dist. fn.",
-      lwd = 2)
-
-S1 <- function(x){
-  1 - F1(x)
-}
-plot( S1(z) ~ z,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(x)),
-      ylab = "Survival fn.",
-      lwd = 2)
-
 Q1 <- function(p){
   (6 - sqrt(64 - 60*p))/2
 }
-p <- seq(0, 1, length = 100)
-plot( Q1(p) ~ p,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(x)),
-      ylab = "Quantile fn.",
-      lwd = 2)
+
+
+par(mfrow = c(2, 2))
+
+plotContinuous(pdf_fn = f1,
+               type = "PDF",
+               xlim = c(-1.25, 2.25) )
+plotContinuous(df_fn = F1,
+               type = "DF",
+               xlim = c(-1.25, 2.25) )
+plotContinuous(df_fn = F1,
+               type = "SF",
+               xlim = c(-1.25, 2.25) )
+plotContinuous(q_fn = Q1,
+               type = "QF",
+               xlim = c(0, 1) )
 ```
+
+
 
 
 
@@ -1704,17 +1671,19 @@ plot( Q1(p) ~ p,
 :::
 
 
-```{r DFYcontinuousHarder, echo=FALSE, fig.align="center", fig.cap="The PDF and DF for $Y$"}
+```{r DFYcontinuousHarder, echo=FALSE, fig.align="center", fig.cap="The PDF and DF for $Y$", out.width='100%', fig.width=7.75, fig.height=5}
 f1 <- function(y){
-   f <- 1/( 2 * sqrt(y + 1 ) )
-  f[ x < 0] <- 0
-  f[ x > 3] <- 0
+  f <- numeric(length(y))
+  f[y > 0] <- 1/( 2 * sqrt(y[y > 0] + 1 ) )
+  f[ y < 0] <- 0
+  f[ y > 3] <- 0
   f
 }
 F1 <- function(y){
-  F <- sqrt(y + 1) - 1
-  F[ x < 0] <- 0
-  F[ x > 3] <- 1
+  F <- numeric(length(y))
+  F[y > 0] <- sqrt(y[y > 0] + 1) - 1
+  F[ y < 0] <- 0
+  F[ y > 3] <- 1
   F
 }
 S1 <- function(x){
@@ -1726,38 +1695,19 @@ Q1 <- function(p){
 
 
 par(mfrow = c(2, 2))
-x <- seq(-0.1, 3.1, 
-         length = 200)
-plot( f1(x) ~ x,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(y)),
-      ylab = "Prob. fn.",
-      lwd = 2)
 
-plot( F1(x) ~ x,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(y)),
-      ylab = "Dist. fn.",
-      lwd = 2)
-
-plot( S1(x) ~ x,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(y)),
-      ylab = "Survival fn.",
-      lwd = 2)
-
-p <- seq(0, 1, length = 100)
-plot( vapply(p, Q1, numeric(1)) ~ p,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(p)),
-      ylab = "Quantile fn.",
-      lwd = 2)
-
-par(mfrow = c(1, 2))
+plotContinuous(pdf_fn = f1,
+               type = "PDF",
+               xlim = c(-0.15, 3.15) )
+plotContinuous(df_fn = F1,
+               type = "DF",
+               xlim = c(-0.15, 3.15) )
+plotContinuous(df_fn = F1,
+               type = "SF",
+               xlim = c(-0.15, 3.15) )
+plotContinuous(q_fn = Q1,
+               type = "QF",
+               xlim = c(0, 1) )
 ```
 
 
@@ -1768,16 +1718,19 @@ par(mfrow = c(1, 2))
 2. $F_X(x) = 0$ for $x \le -2$; $F_x(x) = (x^3 +48x + 104)/153$ for $-2 < x < 1$; $F_X(x) = 1$ for $x \ge 1$.
    See Fig.\ \@ref(fig:DFZcontinuousHarder2) (top right panel).
 3. $S_X(x) = 1 - F_X(x)0$.
-   See Fig.\ \@ref(fig:DFZcontinuousHarder2) (top right panel).
+   See Fig.\ \@ref(fig:DFZcontinuousHarder2) (bottom left panel).
 4. $F_x(3) = 28/63 = 4/9 \approx 0.4444$.
-5. $Q_X(p)$ is the unique root of $x^3 + 48x + (104 - 153p) = 0$.
+5. See Fig.\ \@ref(fig:DFZcontinuousHarder2) (bottom left panel):
+   $Q_X(p)$ is the unique root of $x^3 + 48x + (104 - 153p) = 0$.
    $Q_X(0)$: need to solve $x^3 + 48x + 104 = 0$; trying $x = -2$ shows thi sis a root: correct.
    $Q_X(1)$: need to solve $x^3 + 48x - 49 = 0$; trying $x = 1$ shows this is a root: correct.
 6. Solve $Q_X(0.5)$: $x \approx -0.57$ solving numerically.
 :::
 
 
-```{r DFZcontinuousHarder2, echo=FALSE, fig.align="center", fig.cap="The PDF and DF for $X$"}
+
+
+```{r DFZcontinuousHarder2, echo=FALSE, fig.align="center", fig.cap="The PDF and DF for $X$", out.width='100%', fig.width=7.75, fig.height=5}
 f2 <- function(x){
   f <- array( dim = length(x))
   f[ x < -2] <- 0
@@ -1800,41 +1753,22 @@ Q2 <- function(p){
            p = p,
            interval = c(-2, 1))$root
 }
-
+Q2 <- Vectorize(Q2)
 
 par(mfrow = c(2, 2))
-x <- seq(-2.1, 1.1, 
-         length = 200)
-plot( f2(x) ~ x,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(x)),
-      ylab = "Prob. fn.",
-      lwd = 2)
 
-plot( F2(x) ~ x,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(x)),
-      ylab = "Dist. fn.",
-      lwd = 2)
-
-plot( S2(x) ~ x,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(x)),
-      ylab = "Survival fn.",
-      lwd = 2)
-
-p <- seq(0, 1, length = 100)
-plot( vapply(p, Q2, numeric(1)) ~ p,
-      las = 1,
-      type = "l",
-      xlab = expression(italic(p)),
-      ylab = "Quantile fn.",
-      lwd = 2)
-
-par(mfrow = c(1, 2))
+plotContinuous(pdf_fn = f2,
+               type = "PDF",
+               xlim = c(-2.15, 1.15) )
+plotContinuous(df_fn = F2,
+               type = "DF",
+               xlim = c(-2.15, 1.15) )
+plotContinuous(df_fn = F2,
+               type = "SF",
+               xlim = c(-2.15, 1.15) )
+plotContinuous(q_fn = Q2,
+               type = "QF",
+               xlim = c(0, 1) )
 ```
 
 
@@ -1870,6 +1804,55 @@ par(mfrow = c(1, 2))
 1. $1/8$.
 :::
 
+
+
+```{r, echo=FALSE, fig.align="center", fig.cap="The random variable $Y$.", out.width='100%', fig.width=7.75, fig.height=5}
+f1 <- function(y){
+  f1 <- numeric(length(y))
+  f1[y==0] <- 0.5
+  f1[(y > 0) & (y < 1 )] <- 1 - y[(y > 0) & (y <1)]
+  f1
+}
+F1 <- function(y){
+  F1 <- numeric(length(y))
+  F1[y < 0] <- 0
+  F1[y == 0] <- 0.5
+  F1[(y > 0) & (y < 1 )]  <- (1 - y[(y > 0) & (y < 1 )]^2 + 2*y[(y > 0) & (y < 1 )])/2
+  F1[y >= 1] <- 1
+  F1
+}
+S1 <- function(y){
+  1 - F1(y)
+}
+Q1 <- function(p){
+  qq <- numeric(length(p))
+  qq[p <= 0.5] <- 0
+  qq[p > 0.5] <- 1 - sqrt(2 - 2*p[p > 0.5])
+  qq
+  }
+
+
+
+par(mfrow = c(2, 2))
+
+plotMixed(pdf_fn = f1,
+          p0 = 0.5,
+          type = "PDF",fill="grey",
+          xlim = c(-0.25, 1.25) )
+plotMixed(df_fn = F1,
+          p0 = 0.5,
+          type = "DF",fill="grey",
+          xlim = c(-0.25, 1.25) )
+plotMixed(df_fn = F1,
+          p0 = 0.5,
+          type = "SF",fill="grey",
+          xlim = c(-0.25, 1.25) )
+plotMixed(df_fn = F1, 
+          q_fn = Q1,
+          p0 = 0.5,
+          type = "QF", fill="grey",
+          xlim = c(0, 1) )
+```
 
 
 :::{.answer data-latex=""}
@@ -1941,14 +1924,13 @@ fy <- function(y){
                   0)
   PDFy
 }
-y <- seq(-1, 2,
-         length = 500)
-plot(fy(y) ~ y,
-     lwd = 2,
-     type = "l",
-     xlab = expression(italic(y)),
-     ylab = "PDF",
-     las = 1)
+
+
+
+plotContinuous(pdf_fn = fy,
+               type = "PDF",
+               xlim = c(-0.25, 1.25) )
+
 ```
 
 
@@ -2250,26 +2232,24 @@ or $f_Y(y) = (4 - y)/10$ for $y\in\{0, 1, 2, 3\}$.
 :::
 
 
-
-
-
-
 :::{.answer data-latex=""}
 **Answer for Exercise\ \@ref(exr:Continuous1).**
 
-1. $a\int_0^1 (1 - y)^2\,dy = \left. (1 - y)^3/3\right|_0^1 = 1/3$.
+1. $a\int_0^1 (1 - y)^2\,dy = \left[ (1 - y)^3/3\right]_0^1 = 1/3$.
 1. $\Pr(|Y - 1/2| > 1/4) = \Pr(Y > 3/4) + \Pr(Y < 1/4) = 1 - \Pr(1/4 < Y < 3/4) = 13/32$.
 1. See Fig.\ \@ref(fig:PDFy).
 
 ```{r PDFy, echo=FALSE, fig.cap="The PDF of $y$", fig.align="center"}
-y <- seq(0, 1, length = 500)
-fy <- ( (1 - y)^2 ) * 3
+fy <- function(y){
+  f <- 3 * ((1 - y)^2 )
+  f[y < 0] <- 0
+  f[y > 1] <- 0
+  f
+}
 
-plot(fy ~ y,
-     lwd = 2,
-     xlab = "y",
-     ylab = "PDF",
-     type = "l")
+plotContinuous(pdf_fn = fy,
+               type = "PDF",
+               xlim = c(-0.15, 1.15) )
 ```
 
 :::
@@ -2384,13 +2364,10 @@ See the PMF in Fig.\ \@ref(fig:CardDistance).
 pd0 <- c( 1 - sum(pd), pd)
 d0 <- 0:8
 
+plotDiscrete(x = d0,
+             px = pd0,
+             type = "MF")
 
-plot(pd0 ~ d0,
-     type = "p",
-     las = 1,
-     pch = 19,
-     xlab = expression(italic(d)),
-     ylab = "PMF")
 ```
 
 
@@ -2432,32 +2409,13 @@ d <- 1:9
 
 par(mfrow = c(1, 2))
 
-plot( fd(d) ~ d,
-      type = "p",
-      pch = 19,
-      las = 1,
-      main = "Prob. fn",
-      xlab = expression(italic(d)),
-      ylab = "Prob. fn.")
-points( fd(d) ~ d,
-        type = "h",
-        lty = 2,
-        col = "grey",
-        lwd = 2)
 
-plot( Fd(d) ~ d,
-      type = "p",
-      pch = 19,
-      las = 1,
-      main = "Distribution fn",
-      ylim = c(0, 1),
-      xlab = expression(italic(d)),
-      ylab = "Prob. fn.")
-points( Fd(d) ~ d,
-        type = "h",
-        lty = 2,
-        col = "grey",
-        lwd = 2)
+plotDiscrete(x = d,
+             px = fd(d),
+             type = "MF")
+plotDiscrete(x = d,
+             px = fd(d),
+             type = "DF")
 ```
 
 
@@ -2474,33 +2432,31 @@ $\Pr(X > 0.25) = 2/3$.
 :::
 
 ```{r, ArcsinePlots, echo=FALSE, fig.align="center", fig.cap="A PDF and DF", warning=FALSE}
-y <- seq(-0.5, 1.5,
-         length = 100)
-fy <- ifelse( (y > 0) & (y < 1),
-              1/( pi * sqrt( y * (1 - y))),
-              0)
-
-Fy <- array( 0,
-             dim = length(y))
-Fy[ y < 0 ] <- 0
-Fy[ y > 1 ] <- 1
-Fy[ (y > 0) & (y < 1) ] <- 1/pi * asin(2*y[(y > 0) & (y < 1)] - 1) + 0.5
+fy <- function(y){
+  f <- numeric(length(y))
+  f[ (y > 0) & (y < 1) ] <- 1/( pi * sqrt( y[(y>=0) & (y <= 1)] * (1 - y[(y>=0) & (y <= 1)])))
+  f
+}
+Fy <- function(y){
+  F1 <- numeric(length(y))
+  F1[y < 0] <- 0
+  F1[(y>=0) & (y <= 1)] <- (1/2) + ( asin(2*y[(y>=0) & (y <= 1)] - 1) )/pi 
+  F1[y > 1] <- 1
+  F1
+}
 
 par(mfrow = c(1, 2))
 
-plot( fy ~ y,
-      type = "l",
-      lwd = 2,
-      xlab = expression(italic(x)),
-      ylab = "Prob. fn",
-      las = 1)
-plot( Fy ~ y,
-      type = "l",
-      lwd = 2,
-      ylim = c(0, 1),
-      xlab = expression(italic(x)),
-      ylab = "Dist. fn",
-      las = 1)
+plotContinuous(pdf_fn = fy,
+               type = "PDF",
+               xlim = c(-0.15, 1.15) )
+
+plotContinuous(df_fn = Fy,
+               type = "DF",
+               xlim = c(-0.15, 1.15) )
+
+
+
 ```
 
 
@@ -2522,42 +2478,24 @@ See Fig.\ \@ref(fig:PlotDFExpInverse).
 par( mfrow = c(1, 2))
 
 f1 <- function(x){
-  fy <- array(0, dim = length(x))
-  fy <- ifelse(x > 0,
-               exp(-1/x) / x^2,
-               0)
-  fy
+  fx <- numeric(length(x))
+  fx[x>0] <- exp(-1/x[x>0]) / x[x>0]^2
+  fx
 }
-
-x <- seq(-0.5, 5, length = 100)
-
-plot( f1(x) ~ x,
-      type = "l",
-      lwd = 2,
-      xlab = expression(italic(x)),
-      ylab = expression(italic(f)(italic(x))),
-      las = 1)
-
-
 
 F1 <- function(x){
-  fy <- array(0, dim = length(x))
-  fy <- ifelse(x > 0,
-               exp(-1/x),
-               0)
-  fy
+  Fx <- numeric(length(x))
+  Fx[x>0] <- exp(-1/x[x>0])
+  Fx
 }
 
-x <- seq(-0.5, 8, length = 100)
 
-plot( F1(x) ~ x,
-      type = "l",
-      lwd = 2,
-      ylim = c(0, 1),
-      xlab = expression(italic(x)),
-      ylab = expression(italic(F)(italic(x))),
-      las = 1)
-
+plotContinuous(pdf_fn = f1,
+               type = "PDF",
+               support = c(-0.15, 8) )
+plotContinuous(df_fn = F1,
+               type = "DF",
+               support = c(-0.15, 8) )
 
 ```
 
