@@ -3,13 +3,17 @@ plotContinuous <- function(pdf_fn,   # density function
                            q_fn,     # quantile function
                            type = "DF",
                            support = c(-4, 4),
-                           n = 1000,
+                           n = 2000,
                            fill = NA,
                            ...) {
   
   if (!(type %in% c("DF", "PDF", "SF", "QF"))) {
     stop('type must be one of "DF", "PDF", "SF", "QF"')
   }
+  
+  if (type == "PDF" && is.null(pdf_fn)) stop('type = "PDF" requires pdf_fn')
+  if (type %in% c("DF", "SF") && is.null(df_fn)) stop('type = "DF"/"SF" requires df_fn')
+  if (type == "QF" && is.null(q_fn)) stop('type = "QF" requires q_fn')
   
   plot_only_params <- c("axes", "asp", "main", "sub", "xlab", "ylab",
                         "xlim", "ylim", "log", "las", "frame.plot",
@@ -87,7 +91,7 @@ plotContinuous <- function(pdf_fn,   # density function
     
   } else if (type == "DF") {
     
-    yy <- df_fn(xx)
+    yy <- df_fn(xx) # df_fn is already the full mixed CDF
     
     do.call(plot,
             c(list(x = xx,
