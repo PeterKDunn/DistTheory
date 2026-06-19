@@ -33,11 +33,11 @@ knitr::opts_chunk$set(
 
 ###
 # Redefine  MASS::truehist  to the default colours used
-truehist <- function(x, ...) {
-  MASS::truehist(x, 
-                 col = ColourOpaque, 
-                 ...)
-}
+#truehist <- function(x, ...) {
+#  MASS::truehist(x, 
+#                 col = ColourOpaque, 
+#                 ...)
+#}
 
 ###
 source("R/triangular.R")
@@ -49,5 +49,7 @@ source("R/kurtosis.R")
 source("R/myDeparse.R")
 source("R/showHTMLCode.R")
 
-source("R/plotDiscrete.R") # Load fn to plot discrete DF and SF
+source("R/plotDiscrete.R") # Load fn to plot discrete DF, etc.
+source("R/plotContinuous.R") # Load fn to plot continuous DF, etc.
+source("R/plotMixed.R") # Load fn to plot mixed DF, etc.
 

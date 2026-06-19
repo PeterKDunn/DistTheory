@@ -1,4 +1,8 @@
-plotDiscrete <- function(x, px, type = "DF", pchIN = 19, pchOUT = 1, ...) {
+plotDiscrete <- function(x, 
+                         px, 
+                         type = "DF", 
+                         pchIN = 19, 
+                         pchOUT = 1, ...) {
   # Compute CDF and Survival:
   # "DF": distribution fn
   # "SF": survival function
