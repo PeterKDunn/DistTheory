@@ -1,0 +1,2483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>4 Random variables and their distributions | The Theory of Statistical Distributions</title>
+<meta name="author" content="Peter K. Dunn and Taryn Axelsen">
+<meta name="description" content="Upon completion of this chapter, you should be able to: distinguish between discrete, continuous and mixed random variables. determine the probability function of random variables defined for a...">
+<meta name="generator" content="bookdown 0.46 with bs4_book()">
+<meta property="og:title" content="4 Random variables and their distributions | The Theory of Statistical Distributions">
+<meta property="og:type" content="book">
+<meta property="og:description" content="Upon completion of this chapter, you should be able to: distinguish between discrete, continuous and mixed random variables. determine the probability function of random variables defined for a...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="4 Random variables and their distributions | The Theory of Statistical Distributions">
+<meta name="twitter:description" content="Upon completion of this chapter, you should be able to: distinguish between discrete, continuous and mixed random variables. determine the probability function of random variables defined for a...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.10.0/transition.js"></script><script src="libs/bs3compat-0.10.0/tabs.js"></script><script src="libs/bs3compat-0.10.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><script src="libs/plotly-binding-4.11.0/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="libs/crosstalk-1.2.2/js/crosstalk.min.js"></script><link href="libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/plotly-main-2.11.1/plotly-latest.min.js"></script><script src="libs/rglWebGL-binding-1.3.31/rglWebGL.js"></script><link href="libs/rglwidgetClass-1.3.31/rgl.css" rel="stylesheet">
+<script src="libs/rglwidgetClass-1.3.31/rglClass.src.js"></script><script src="libs/rglwidgetClass-1.3.31/utils.src.js"></script><script src="libs/rglwidgetClass-1.3.31/buffer.src.js"></script><script src="libs/rglwidgetClass-1.3.31/subscenes.src.js"></script><script src="libs/rglwidgetClass-1.3.31/shaders.src.js"></script><script src="libs/rglwidgetClass-1.3.31/shadersrc.src.js"></script><script src="libs/rglwidgetClass-1.3.31/textures.src.js"></script><script src="libs/rglwidgetClass-1.3.31/projection.src.js"></script><script src="libs/rglwidgetClass-1.3.31/mouse.src.js"></script><script src="libs/rglwidgetClass-1.3.31/init.src.js"></script><script src="libs/rglwidgetClass-1.3.31/pieces.src.js"></script><script src="libs/rglwidgetClass-1.3.31/draw.src.js"></script><script src="libs/rglwidgetClass-1.3.31/controls.src.js"></script><script src="libs/rglwidgetClass-1.3.31/selection.src.js"></script><script src="libs/rglwidgetClass-1.3.31/rglTimer.src.js"></script><script src="libs/rglwidgetClass-1.3.31/pretty.src.js"></script><script src="libs/rglwidgetClass-1.3.31/axes.src.js"></script><script src="libs/rglwidgetClass-1.3.31/animation.src.js"></script><script src="libs/CanvasMatrix4-1.3.31/CanvasMatrix.src.js"></script><link href="libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<link rel="shortcut icon" href="icons/iconmonstr-chart-1-240.png">
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Find all R code blocks that should be toggleable.
+      // Our Lua filter adds the 'r-code-box' class to the code block.
+      var codeBlocks = document.querySelectorAll('.r-code-box');
+
+      codeBlocks.forEach(function(codeBlock) {
+        // Create the button element
+        var button = document.createElement('button');
+        button.textContent = 'Show R Code'; // Initial text for the button
+        button.className = 'code-toggle-button'; // Assign CSS class
+
+        // Insert the button directly before the code block.
+        // The codeBlock's parentNode is the div.figure-with-code container.
+        // We insert the button as a sibling of the codeBlock within that container.
+        codeBlock.parentNode.insertBefore(button, codeBlock);
+
+        // Hide the code block initially by default.
+        codeBlock.style.display = 'none';
+
+        // Add a click event listener to the button
+        button.addEventListener('click', function() {
+          if (codeBlock.style.display === 'none') {
+            codeBlock.style.display = 'block'; // Show the code block
+            button.textContent = 'Hide R Code'; // Change button text
+          } else {
+            codeBlock.style.display = 'none'; // Hide the code block
+            button.textContent = 'Show R Code'; // Change button text back
+          }
+        });
+      });
+    });
+    </script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+<link rel="stylesheet" href="bs4_style.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/columns.css">
+<link rel="stylesheet" href="html/largerDie.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">The Theory of Statistical Distributions</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Preface</a></li>
+<li><a class="" href="ChapterIntroduction.html"><span class="header-section-number">1</span> Introduction</a></li>
+<li class="book-part">Theoretical foundations</li>
+<li><a class="" href="ChapterSetTheory.html"><span class="header-section-number">2</span> Essentials of set theory</a></li>
+<li><a class="" href="ChapterProbability.html"><span class="header-section-number">3</span> Probability</a></li>
+<li><a class="active" href="DistributionRandomVariables.html"><span class="header-section-number">4</span> Random variables and their distributions</a></li>
+<li><a class="" href="ChapExpectation.html"><span class="header-section-number">5</span> Mathematical expectation</a></li>
+<li class="book-part">Standard univariate probability distributions</li>
+<li><a class="" href="DiscreteDistributions.html"><span class="header-section-number">6</span> Standard discrete distributions</a></li>
+<li><a class="" href="ContinuousDistributions.html"><span class="header-section-number">7</span> Standard continuous distributions</a></li>
+<li><a class="" href="ChapterMixedDistributions.html"><span class="header-section-number">8</span> Mixed distributions</a></li>
+<li><a class="" href="ChapterTransformations.html"><span class="header-section-number">9</span> Transformations of random variables</a></li>
+<li class="book-part">Bivariate random variables and distributions*</li>
+<li><a class="" href="ChapBivariate.html"><span class="header-section-number">10</span> Bivariate distributions</a></li>
+<li><a class="" href="ExpectationsBivariate.html"><span class="header-section-number">11</span> Mathematical expectation for bivariate distributions</a></li>
+<li><a class="" href="ChapterTransformationsBivariate.html"><span class="header-section-number">12</span> Transformations of bivariate random variables</a></li>
+<li class="book-part">Multivariate random variables and distributions*</li>
+<li><a class="" href="ChapMultivariate.html"><span class="header-section-number">13</span> Multivariate distributions*</a></li>
+<li><a class="" href="ChapMultivariateExpectation.html"><span class="header-section-number">14</span> Expectations for multivariate distributions*</a></li>
+<li class="book-part">Sampling distributions</li>
+<li><a class="" href="ChapDescribingSamples.html"><span class="header-section-number">15</span> Describing samples</a></li>
+<li><a class="" href="OrderStatisticsChapter.html"><span class="header-section-number">16</span> Order statistics</a></li>
+<li><a class="" href="BayesianIntro.html"><span class="header-section-number">17</span> Introduction to Bayesian statistics</a></li>
+<li class="book-part">Appendices</li>
+<li><a class="" href="SymbolsUsed.html"><span class="header-section-number">A</span> Symbols used</a></li>
+<li><a class="" href="UsefulSeries.html"><span class="header-section-number">B</span> Some useful series</a></li>
+<li><a class="" href="UsefulIntegrals.html"><span class="header-section-number">C</span> Some useful integrals</a></li>
+<li><a class="" href="ShortRIntro.html"><span class="header-section-number">D</span> Short R introduction</a></li>
+<li><a class="" href="UseRDistributions.html"><span class="header-section-number">E</span> Using R with distributions</a></li>
+<li><a class="" href="selected-solutions.html"><span class="header-section-number">F</span> Selected solutions</a></li>
+<li><a class="" href="references.html"><span class="header-section-number">G</span> References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/PeterKDunn/DistTheory">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="DistributionRandomVariables" class="section level1" number="4">
+<h1>
+<span class="header-section-number">4</span> Random variables and their distributions<a class="anchor" aria-label="anchor" href="#DistributionRandomVariables"><i class="fas fa-link"></i></a>
+</h1>
+<div class="objectivesBox objectives">
+<p>Upon completion of this chapter, you should be able to:</p>
+<ul>
+<li>distinguish between discrete, continuous and mixed random variables.</li>
+<li>determine the probability function of random variables defined for a random process.</li>
+<li>determine the distribution function of a random variable from its probability function.</li>
+<li>apply probability functions and distribution functions to compute probabilities for defined events.</li>
+<li>determine and use quantile function.</li>
+<li>use random numbers over <span class="math inline">\((0, 1)\)</span> to generate random numbers from an arbitrary distribution.</li>
+<li>plot the probability function and distribution function of a random variable.</li>
+</ul>
+</div>
+<div id="RandomVariables" class="section level2" number="4.1">
+<h2>
+<span class="header-section-number">4.1</span> Random variables<a class="anchor" aria-label="anchor" href="#RandomVariables"><i class="fas fa-link"></i></a>
+</h2>
+<p>Chapter <a href="ChapterProbability.html#ChapterProbability">3</a> introduced the language and tools of probability to describe uncertainty.
+The concept of the <a href="ChapterProbability.html#def:SampleSpace"><em>sample space</em></a> was introduced, which describes the possible outcomes of a <a href="ChapterProbability.html#def:RandomProcess"><em>random process</em></a>.
+Often, however, the individual elements of the sample space are not directly of interest, especially if the sample space is large or infinite.
+Often, the individual outcomes in the sample space are not directly of interest.
+Instead, a numerical characteristic of the outcome (such as the number of heads observed, the sum of two dice, or the lifetime of a component) is of interest.</p>
+<p>For example, the sample space for observing the rolls of two dice (Example <a href="ChapterProbability.html#exm:TwoDice">3.14</a>) contains <span class="math inline">\(36\)</span> elements.
+We may be interested in the <em>sum</em> of the two rolls, rather than which elements in the sample space produce a given sum.
+That is, we may be more interested in <em>whether</em> we roll a sum of <span class="math inline">\(5\)</span> than <em>which</em> elements of the sample space give rise to a sum of <span class="math inline">\(5\)</span>.
+Outcomes that share a common numerical property are often grouped together.</p>
+<p>Rather than working directly with outcomes, we often map outcomes to numbers that represent quantities of interest.
+This leads to the idea of a <em>random variable</em>.
+<em>Random variable</em> is sometimes abbreviated to <em>rv</em> or <em>RV</em>.
+In probability theory, a random variable is a function from the sample space to the real numbers that encodes outcomes numerically (Fig. <a href="DistributionRandomVariables.html#fig:RVmapping">4.1</a>).</p>
+<div class="definition">
+<p><span id="def:RandomVariable" class="definition"><strong>Definition 4.1  (Random variable) </strong></span>A <em>random variable</em> is a function <span class="math inline">\(X: S \rightarrow \mathbb{R}\)</span> that maps each outcome in the sample space <span class="math inline">\(S\)</span> to a real number, written <span class="math inline">\(X(s)\)</span>.</p>
+</div>
+<p>A capital letter (such as <span class="math inline">\(X\)</span> or <span class="math inline">\(Y\)</span>) is usually used to denote the <em>description</em> of the random variable, while lower-case letters (such as <span class="math inline">\(x\)</span> or <span class="math inline">\(y\)</span>) are used to represent a realised value.
+For example, consider rolling two dice and observing the sum of the two rolls.
+Writing <span class="math inline">\(X = 3\)</span> means:</p>
+<ul>
+<li>‘The random variable <span class="math inline">\(X\)</span>’ (e.g., the description ‘the sum of the roll of two dice’)…</li>
+<li>‘… was observed to take the value <span class="math inline">\(3\)</span> in some outcome of the random process’.</li>
+</ul>
+<p>Sometimes, <span class="math inline">\(X\)</span> is written for both the function and its value; the meaning is usually clear from context.</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:RVmapping"></span>
+<img src="04-RandomVariables_files/figure-html/RVmapping-1.png" alt="A random variable\ $X$ is a function that maps each outcome in the sample space\ $S$ to a real number." width="85%"><p class="caption">
+FIGURE 4.1: A random variable <span class="math inline">\(X\)</span> is a function that maps each outcome in the sample space <span class="math inline">\(S\)</span> to a real number.
+</p>
+</div>
+<p>A random variable is a deterministic function evaluated at a random outcome.
+The function <span class="math inline">\(X\)</span> is deterministic; the randomness arises from the random outcome <span class="math inline">\(s\)</span> to which it is applied.</p>
+<div class="importantBox important">
+<p>Formally, a random variable is a <em>measurable</em> function.
+This condition ensures that probabilities such as <span class="math inline">\(\Pr(X\le x)\)</span> are well-defined.
+In this book, all random variables considered satisfy this condition.</p>
+</div>
+<p>Many random variables take only integer values, such as the number of heads in three coin tosses; these are called <em>discrete</em> random variables.
+Many random variables take values in an interval, such as the height of a randomly chosen person; these are <em>continuous</em> random variables.
+<em>Mixed</em> random variables have both discrete probability mass and a continuous density component.
+In all cases, <span class="math inline">\(X(s)\)</span> is a real number, but the set of possible values of <span class="math inline">\(X\)</span> may be a finite set, a countable set (like the integers), or an interval in <span class="math inline">\(\mathbb{R}\)</span>.</p>
+<div class="importantBox important">
+<p><em>Random variables</em> are different from <em>variables</em> used in algebra.
+In algebra, a variable typically represents an unknown but fixed quantity.
+In contrast, a random variable represents a quantity whose value depends on the outcome of a random process.</p>
+</div>
+<div class="definition">
+<p><span id="def:DomainRange" class="definition"><strong>Definition 4.2  (Domain, range and support) </strong></span>The <em>domain</em> of <span class="math inline">\(X\)</span> is the sample space <span class="math inline">\(S\)</span>, and the <em>range</em> (or <em>value set</em>) is the set of real values taken by <span class="math inline">\(X\)</span>, denoted <span class="math inline">\(\mathcal{R}_X = \{X(s) \mid s \in S\}\)</span>, where <span class="math inline">\(\mathcal{R}_X \subseteq \mathbb{R}\)</span>.</p>
+<p>The <em>support</em> of <span class="math inline">\(X\)</span> is the set of values that can occur with non-zero probability.</p>
+</div>
+<p>Since <span class="math inline">\(X\)</span> is a function, each <span class="math inline">\(s\in S\)</span> is assigned to exactly one value <span class="math inline">\(X(s)\)</span>; however, multiple values of <span class="math inline">\(s\in S\)</span> may be assigned to the same value of <span class="math inline">\(X(s)\)</span>.
+The variable is <em>random</em> since its value depends upon the outcome of the random process.</p>
+<div class="example">
+<p><span id="exm:TossDieTwiceProduct" class="example"><strong>Example 4.1  (Rolling a die twice) </strong></span>Consider rolling a fair die twice.
+The sample space <span class="math inline">\(S\)</span> (i.e., the domain of <span class="math inline">\(X\)</span>) contains the <span class="math inline">\(36\)</span> elements shown in Table <a href="ChapterProbability.html#tab:TwoDice">3.3</a>:
+<span class="math display">\[
+  S = \{ (1, 1), (1, 2), (1, 3), \dots, (6, 5), (6, 6)\}.
+\]</span>
+However, we may be interested in the random variable <span class="math inline">\(X\)</span>, the <em>product</em> of the two numbers rolled.
+The random variable <span class="math inline">\(X\)</span> assigns each element <span class="math inline">\(s\)</span> of <span class="math inline">\(S\)</span> to exactly one real number (in this case, to exactly one <em>integer</em>):
+<span class="math display">\[\begin{align*}
+  (1, 1) &amp;\mapsto 1;\\
+  (1, 2) &amp;\mapsto 2;\\
+  (1, 3) &amp;\mapsto 3;\\
+  \vdots &amp;\qquad   \vdots\\
+  (6, 5) &amp;\mapsto 30;\\
+  (6, 6) &amp;\mapsto 36.
+\end{align*}\]</span>
+Each element of the sample space is mapped to exactly one value of <span class="math inline">\(X\)</span>.
+However, multiple elements of the sample space can be mapped to the same value of <span class="math inline">\(X\)</span>:
+<span class="math display">\[\begin{align*}
+(3, 4) &amp;\mapsto 12; \quad\text{and}\\
+(4, 3) &amp;\mapsto 12; \quad\text{and}\\
+(6, 2) &amp;\mapsto 12; \quad\text{and}\\
+(2, 6) &amp;\mapsto 12.
+\end{align*}\]</span>
+Writing <span class="math inline">\(X = 12\)</span> means ‘the product of the numbers on the two rolls is <span class="math inline">\(12\)</span>’.</p>
+<p>The <em>domain</em> of <span class="math inline">\(X\)</span> is the sample space <span class="math inline">\(S\)</span>, consisting of all <span class="math inline">\(36\)</span> ordered pairs.
+The <em>range</em> of <span class="math inline">\(X\)</span> is the set of distinct products obtainable:
+<span class="math display">\[
+  \mathcal{R}_X = \{1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 25, 30, 36\}.
+\]</span>
+<span class="math inline">\(\mathcal{R}_X\)</span> contains only <span class="math inline">\(18\)</span> elements, fewer than <span class="math inline">\(|S| = 36\)</span>, since several pairs give the same product (as shown above for <span class="math inline">\(X = 12\)</span>).</p>
+<p>Since every pair in <span class="math inline">\(S\)</span> occurs with positive probability (<span class="math inline">\(1/36\)</span> each), every value in the range also has positive probability, so the <em>support</em> and the <em>range</em> are identical here.</p>
+</div>
+<p>Once a random variable has been defined, events can be defined in terms of the values of the random variable.
+Random variables provide a convenient way to express events numerically; rather than listing specific <em>outcomes</em>, events can be described using inequalities or equations involving the random variable.</p>
+<div class="example">
+<p><span id="exm:TossDieTwiceProductRange" class="example"><strong>Example 4.2  (Rolling a die twice: range) </strong></span>In Example <a href="DistributionRandomVariables.html#exm:TossDieTwiceProduct">4.1</a>, the <em>range</em> of the random variable <span class="math inline">\(X\)</span> is
+<span class="math display">\[
+   \mathcal{R}_X = \{1,  2,  3,  4,  5,  6,  8,  9, 10, 12, 15, 16, 18, 20, 24, 25, 30, 36\}.
+\]</span>
+The <em>domain</em> is the sample space, the set of all ordered pairs
+<span class="math display">\[\begin{align*}
+  S
+  &amp;= \{ (1, 1), (1, 2), (1, 3), \dots (3, 2), (3, 3), (3, 4),\dots (6, 5), (6, 6)\}\\
+  &amp;= \{(r_1, r_2): r_1, r_2\in\{1, \dots, 6\}\}.
+\end{align*}\]</span></p>
+</div>
+<div class="example">
+<p><span id="exm:TossDieTwiceProductEvents" class="example"><strong>Example 4.3  (Rolling a die twice: events) </strong></span>The random variable <span class="math inline">\(X\)</span> in Example <a href="DistributionRandomVariables.html#exm:TossDieTwiceProduct">4.1</a> can be used to define different events.
+For example, Event <span class="math inline">\(A_1\)</span> could be defined as
+<span class="math display">\[
+  \{s \in S \mid  X(s) &gt; 10\},
+\]</span>
+usually written more succinctly as <span class="math inline">\(X &gt; 10\)</span>.
+The <em>values</em> of the random variable corresponding to this event are
+<span class="math display">\[
+  X = 11, 12.
+\]</span>
+Other events can be defined also; for example:
+<span class="math display">\[\begin{align*}
+  A_2 &amp;= \{ s \in S \mid 4 \le X(s) &lt; 10 \}
+  \quad\text{corresponding to}\quad X = 4, 5, 6, 7, 8, 9;\\
+  A_3 &amp;= \{s \in S\mid X(s) &lt; 0\} = \varnothing
+  \quad\text{so there are no corresponding values of $X$};\\
+  A_4 &amp;= \{s\in S\mid X(s) \text{ is prime}\}
+  \quad\text{corresponding to}\quad X = 2, 3, 5.
+\end{align*}\]</span></p>
+</div>
+<div class="example">
+<p><span id="exm:TwoDiceRV" class="example"><strong>Example 4.4  (Sum of two die rolls) </strong></span>Consider observing the rolls of two dice.
+The sample space contains <span class="math inline">\(36\)</span> elements (Example <a href="ChapterProbability.html#exm:TwoDice">3.14</a>), and can be denoted using the ordered pairs <span class="math inline">\((r_1, r_2)\)</span>, where <span class="math inline">\(r_1\)</span> and <span class="math inline">\(r_2\)</span> are the results of die <span class="math inline">\(1\)</span> and <span class="math inline">\(2\)</span> respectively.
+The sample space (the domain of <span class="math inline">\(X\)</span>) is listed in Table <a href="ChapterProbability.html#tab:TwoDice">3.3</a>.
+For example, <span class="math inline">\(s_1\)</span> could be defined as the sample point <span class="math inline">\((1, 1)\)</span>.</p>
+<p>The random variable <span class="math inline">\(Y\)</span> can be defined on this sample space as:
+<span class="math display">\[
+   Y(s)  = \text{the sum of the two rolls in $s$} = r_1 + r_2.
+\]</span>
+This definition assigns a real number to each outcome in the sample space:</p>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr class="header">
+<th><strong>Sample space elements</strong></th>
+<th align="center"><strong>Value of random variable <span class="math inline">\(Y\)</span></strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>(1, 1)</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td>(1, 2), (2, 1)</td>
+<td align="center">3</td>
+</tr>
+<tr class="odd">
+<td>(1, 3), (2, 2), (3, 1)</td>
+<td align="center">4</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\vdots\)</span></td>
+<td align="center"><span class="math inline">\(\vdots\)</span></td>
+</tr>
+<tr class="odd">
+<td>(6, 6)</td>
+<td align="center">12</td>
+</tr>
+</tbody>
+</table></div>
+<p>For example, the elements of <span class="math inline">\(S\)</span> assigned to <span class="math inline">\(Y = 4\)</span> are <span class="math inline">\((1, 3)\)</span>, <span class="math inline">\((2, 2)\)</span> and <span class="math inline">\((3, 1)\)</span>.
+Notice that many elements of the sample space can be assigned to the same value of the random variable (which is typical for random variables).</p>
+<p>The <em>domain</em> of <span class="math inline">\(Y\)</span> is the sample space <span class="math inline">\(S\)</span>; the <em>range</em> is
+<span class="math display">\[
+   \mathcal{R}_Y = \{ Y(s) \mid s\in S\} = \{2, 3, \dots, 12\}.
+\]</span></p>
+</div>
+<div class="example">
+<p><span id="exm:TossCoinTillHead" class="example"><strong>Example 4.5  (Tossing a coin till a head appears) </strong></span>Consider the random process ‘tossing a coin until a Head is observed’.
+The sample space is
+<span class="math display">\[
+   \Omega = \{H, TH, TTH, TTTH, \dots \}.
+\]</span>
+The random variable <span class="math inline">\(N\)</span> could be defined as ‘the number of tosses until the first head is observed’.
+<span class="math inline">\(\Omega\)</span> is countably infinite.
+Each element of the sample space is assigned to a positive integer:
+<span class="math display">\[\begin{align*}
+   H\quad    &amp;\text{is assigned to $N = 1$};\\
+   TH\quad   &amp;\text{is assigned to $N = 2$};\\
+   TTH\quad  &amp;\text{is assigned to $N = 3$}
+\end{align*}\]</span>
+and so on.
+Writing <span class="math inline">\(N = 2\)</span> means ‘the number of tosses to observe the first head is two’.</p>
+</div>
+<div class="example">
+<p><span id="exm:DrawTwoCards" class="example"><strong>Example 4.6  (Drawing two cards) </strong></span>Consider drawing two cards from a standard, well-shuffled pack of cards, and observing the colour of the card (B: Black; R: Red).
+The sample space <span class="math inline">\(\Omega\)</span> is:
+<span class="math display">\[
+   \Omega = \{ BB, BR, RR, RB\},
+\]</span>
+where the order represents the order in which the cards are drawn.
+Many random variables could be defined on this sample space; for example:
+<span class="math display">\[\begin{align*}
+   T&amp;: \text{The number of black cards drawn};\\
+   M&amp;: \text{The number of red cards drawn};\\
+   D&amp;: \text{The number of black cards drawn,}\\
+    &amp;\qquad \text{minus the number of red cards drawn}.
+\end{align*}\]</span>
+These all assign a real number to each element of <span class="math inline">\(\Omega\)</span>; consider random variable <span class="math inline">\(D\)</span>, for instance:</p>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr class="header">
+<th><em>Sample space elements</em></th>
+<th><em>Value of <span class="math inline">\(D\)</span></em></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>
+<span class="math inline">\(BR\)</span> and <span class="math inline">\(RB\)</span>
+</td>
+<td><span class="math inline">\(D = 0\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(BB\)</span></td>
+<td><span class="math inline">\(D = 2\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(RR\)</span></td>
+<td><span class="math inline">\(D = -2\)</span></td>
+</tr>
+</tbody>
+</table></div>
+<p>The domain is <span class="math inline">\(\Omega\)</span>, and the range is <span class="math inline">\(\mathcal{R}_D = \{ D(s) \mid s\in \Omega\} = \{-2, 0, 2\}\)</span>.</p>
+</div>
+</div>
+<div id="DiscreteContMixed" class="section level2" number="4.2">
+<h2>
+<span class="header-section-number">4.2</span> Discrete, continuous and mixed random variables<a class="anchor" aria-label="anchor" href="#DiscreteContMixed"><i class="fas fa-link"></i></a>
+</h2>
+<p>As observed earlier, random variables can be discrete, continuous, or mixed.
+Each are discussed in the sections that follow.</p>
+<div id="RVsDiscrete" class="section level3" number="4.2.1">
+<h3>
+<span class="header-section-number">4.2.1</span> Discrete random variables<a class="anchor" aria-label="anchor" href="#RVsDiscrete"><i class="fas fa-link"></i></a>
+</h3>
+<p></p>
+<p>The examples used so far in this chapter has been examples of discrete random variables.</p>
+<div class="definition">
+<p><span id="def:DiscreteRV" class="definition"><strong>Definition 4.3  (Discrete random variable) </strong></span>A <strong>discrete random variable</strong> takes values in a finite or countable infinite set.
+Its distribution is described using a probability mass function.</p>
+</div>
+<div class="example">
+<p><span id="exm:DiscreteRVs" class="example"><strong>Example 4.7  (Discrete rvs) </strong></span>In Example <a href="DistributionRandomVariables.html#exm:TossDieTwiceProduct">4.1</a>, the range of <span class="math inline">\(X\)</span> contains exactly <span class="math inline">\(18\)</span> values.</p>
+<p>In Example <a href="DistributionRandomVariables.html#exm:TwoDiceRV">4.4</a>, exactly <span class="math inline">\(11\)</span> values of the random variable <span class="math inline">\(Y\)</span> are possible: <span class="math inline">\(2, 3, \dots 12\)</span>.</p>
+<p>In Example <a href="DistributionRandomVariables.html#exm:TossCoinTillHead">4.5</a>, the random variable <span class="math inline">\(N\)</span> takes a <em>countably infinite</em> number of possible values: <span class="math inline">\(1, 2, 3, \dots\)</span></p>
+<p>In Example <a href="DistributionRandomVariables.html#exm:DrawTwoCards">4.6</a>, the random variable <span class="math inline">\(D\)</span> can take one of three possible values: <span class="math inline">\(-2\)</span>, <span class="math inline">\(0\)</span> or <span class="math inline">\(2\)</span>.</p>
+<p>These are all <em>discrete</em> random variables.</p>
+</div>
+<p>The definition refers to the values of random variable, not to the <a href="ChapterProbability.html#def:SampleSpace">sample space</a>.
+Examples of discrete random variables include:</p>
+<ul>
+<li>The number of children aged under <span class="math inline">\(18\)</span> living in a household.</li>
+<li>The number of errors per month.</li>
+<li>The number of incidents of lung cancer at a hospital in the last <span class="math inline">\(28\)</span> days.</li>
+<li>The number of cyclones per season.</li>
+<li>The number of wins by a football team.</li>
+<li>The number of kangaroos observed in a five-hectare transect.
+</li>
+</ul>
+</div>
+<div id="RVsContinuous" class="section level3" number="4.2.2">
+<h3>
+<span class="header-section-number">4.2.2</span> Continuous random variables<a class="anchor" aria-label="anchor" href="#RVsContinuous"><i class="fas fa-link"></i></a>
+</h3>
+<p></p>
+<p>For a continuous sample space, the random variable is usually the <em>identity function</em> <span class="math inline">\(Y(s) = s\)</span>.
+For example, in Example <a href="ChapterSetTheory.html#exm:CricketBallDefine">2.19</a> the sample space that describes how far a cricket ball can be thrown is already defined on the positive reals.
+Hence, we can define the random variable as <span class="math inline">\(T(s) = s\)</span>, where <span class="math inline">\(s\)</span> is the distance specified in the sample space.</p>
+<div class="definition">
+<p><span id="def:ContinuousRF" class="definition"><strong>Definition 4.4  (Continuous random variable) </strong></span>A <strong>continuous random variable</strong> can take values in a continuum (an uncountable set of values), and <span class="math inline">\(\Pr(X = x) = 0\)</span> for all <span class="math inline">\(x\)</span>.
+Its distribution is described using a probability density function.</p>
+</div>
+<p>A continuous random variable is one that can take values on a continuous scale (such as all real numbers in an interval), rather than only distinct separate values.
+The value of a continuous random variable can never, in principle, be measured exactly, so in practice needs to be rounded.</p>
+<div class="example">
+<p><span id="exm:ContinuousRVHeight" class="example"><strong>Example 4.8  (Heights) </strong></span>Height <span class="math inline">\(H\)</span> is often recorded to the nearest centimetre (e.g., <span class="math inline">\(179\,\text{cm}\)</span>) for convenience and practicality.
+Better measuring instruments may be able to record height to one or more decimal places of a centimetre.
+The range is <span class="math inline">\(\mathcal{R}_H =(0, \infty)\)</span>, or <span class="math inline">\(\mathcal{R}_H = \{ h\in \mathbb{R}\mid h &gt; 0\}\)</span>.</p>
+</div>
+<div class="importantBox important">
+<p>Even though <em>your</em> height may not change, the notion of a <em>random variable</em> means that height varies from one realisation of the random process to another; that is, from one <em>person</em> to the next.</p>
+</div>
+<p>Examples of continuous random variables include:</p>
+<ul>
+<li>The volume of waste water treated at a sewage plant per day.</li>
+<li>The weight of hearts in rats.</li>
+<li>The lengths of the wings of butterflies.</li>
+<li>The yield of barley from a large paddock.</li>
+<li>The amount of rainfall recorded each year.</li>
+<li>The time taken to perform a psychological test.</li>
+<li>The percentage cloud cover.</li>
+</ul>
+<div class="example">
+<p><span id="exm:ContinuousRVDomain" class="example"><strong>Example 4.9  (Continuous rv) </strong></span>Let <span class="math inline">\(X\)</span> have the density function
+<span class="math display">\[
+  f_X(x) =
+  \begin{cases}
+    \lambda \exp(-\lambda x)  &amp; \text{for $x\ge 0$}\\
+    0                         &amp; \text{for $x &lt; 0$}
+  \end{cases}
+\]</span>
+for some <span class="math inline">\(\lambda &gt; 0\)</span>.
+Suppose the sample space is defined as <span class="math inline">\(S = \mathbb{R}\)</span> (i.e., <span class="math inline">\(X\)</span> is, in principle, a real-valued measurement that could take any real value).</p>
+<p>Here, the <em>domain</em> is <span class="math inline">\(S = \mathbb{R}\)</span> and the <em>range</em> is <span class="math inline">\(\mathcal{R}_X = \mathbb{R}\)</span>, since <span class="math inline">\(X(s) = s\)</span> for every <span class="math inline">\(s\in S\)</span>.
+The <em>support</em> is <span class="math inline">\([0, \infty)\)</span>, since <span class="math inline">\(f_X(x) = 0\)</span> for all <span class="math inline">\(x &lt; 0\)</span>.</p>
+<p>The density can also be written in terms of the support:
+<span class="math display">\[
+  f_X(x) =
+  \lambda \exp(-\lambda x)  \qquad \text{for $x\ge 0$}.
+\]</span></p>
+</div>
+<p></p>
+</div>
+<div id="RVsMixed" class="section level3" number="4.2.3">
+<h3>
+<span class="header-section-number">4.2.3</span> Mixed random variables<a class="anchor" aria-label="anchor" href="#RVsMixed"><i class="fas fa-link"></i></a>
+</h3>
+<p></p>
+<p>Some random variables are not completely discrete or continuous; these are called <em>mixed random variables</em>.
+A common example in applications is a random variable that is continuous on the positive real numbers, with a discrete probability mass at zero.</p>
+<div class="definition">
+<p><span id="def:MixedRV" class="definition"><strong>Definition 4.5  (Mixed random variable) </strong></span>A <strong>mixed random variable</strong> has a distribution with both discrete probability mass and a continuous density component.</p>
+</div>
+<p>A mixed random variable has some values with positive probability and also a continuous range of possible values described by a density function.
+In this book, we only consider mixed random variables with a point mass at <span class="math inline">\(X = 0\)</span> and a continuous component on <span class="math inline">\(\mathbb{R}_{+}\)</span>, although more general mixtures are possible.</p>
+<div class="example">
+<p><span id="exm:MixedVehicleWait" class="example"><strong>Example 4.10  (Vehicle wait times) </strong></span>Consider the time spent by vehicles waiting at a set of traffic lights before proceeding through the intersection.</p>
+<p>If the light is green on arrival, the wait time is zero: the vehicle proceeds immediately.
+Thus, there is a positive probability that the waiting time is exactly zero.
+If the light is red on arrival, the vehicle waits a continuously varying amount of time until the light turns green.</p>
+<p>The waiting time is therefore a <em>mixed random variable</em>, with a discrete probability mass at zero and a continuous distribution for positive waiting times.</p>
+</div>
+<p>Examples of mixed random variables include:</p>
+<ul>
+<li>The amount of rainfall that falls in a month (zero, or a continuous amount).</li>
+<li>The weight of fruit produced per tree (zero if no fruit is produced, or a continuous amount).</li>
+<li>The mass of fish-catch per trawl (zero if no fish are caught, or a continuous amount).</li>
+<li>Insurance claim size (zero if no claim, or a continuous positive amount otherwise)</li>
+<li>Purchase amount in a store (zero if no purchase, positive continuous amount otherwise)
+</li>
+</ul>
+</div>
+</div>
+<div id="UnivariateProbabilityFunctions" class="section level2" number="4.3">
+<h2>
+<span class="header-section-number">4.3</span> Probability functions<a class="anchor" aria-label="anchor" href="#UnivariateProbabilityFunctions"><i class="fas fa-link"></i></a>
+</h2>
+<p></p>
+<p>The previous section introduced <em>random variables</em>: real values assigned to outcomes in the sample space.
+Often, many elements of the sample space were assigned to the same value of the random variable.
+Therefore, <em>probabilities</em> can be assigned to various values of the random variable, to develop a <em>probability model</em> for the random variable.</p>
+<p>A <em>model</em> describes theoretical patterns over infinite trials.
+On any single roll of a die, a <img src="Dice/die4.png" alt="" width="10"> may or may not occur, but theoretically (and for infinite rolls) we expect a <img src="Dice/die4.png" alt="" width="10"> to appear <span class="math inline">\(1/6\)</span> of the time.
+A <em>probability model</em> describes the probability that various values of the random variable might appear on any one realisation in theory.</p>
+<p>This probability model is called the <em>probability function</em>.</p>
+<div class="example">
+<p><span id="exm:TossingCoinOutcomes" class="example"><strong>Example 4.11  (Tossing coin outcomes) </strong></span>Consider tossing a coin twice and observing the outcome of the two tosses.
+Since a random variable is a <em>real-valued function</em>, simply observing the outcome as <span class="math inline">\(HT\)</span>, for example, does not define a random variable.</p>
+<p>We could define the random variable of interest, say <span class="math inline">\(H\)</span>, as the <em>number</em> of heads on the two tosses of the coin.
+The <em>sample space</em> for the experiment is
+<span class="math display">\[
+   S = \{ TT, TH, HT, HH\}.
+\]</span>
+The connection between the sample space and <span class="math inline">\(H\)</span> is shown in the table below.
+In this case, the range of <span class="math inline">\(H\)</span> is <span class="math inline">\(\mathcal{R}_H = \{0, 1, 2\}\)</span>.
+The probability of observing each value of <span class="math inline">\(H\)</span> can be computed using classical probability:</p>
+<div class="inline-table"><table class="table table-sm">
+<colgroup>
+<col width="18%">
+<col width="41%">
+<col width="19%">
+<col width="20%">
+</colgroup>
+<thead><tr class="header">
+<th align="center"><em>Element of <span class="math inline">\(S\)</span></em></th>
+<th align="center"><em>Function <span class="math inline">\(H(s)\)</span></em></th>
+<th align="center"><em>Value of <span class="math inline">\(H\)</span></em></th>
+<th align="center"><em><span class="math inline">\(\Pr(s_i)\)</span></em></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center"><span class="math inline">\(s_1 = TT\)</span></td>
+<td align="center">
+<span class="math inline">\(H(s_1)\)</span>: Number of heads in <span class="math inline">\(s_1\)</span>
+</td>
+<td align="center">0</td>
+<td align="center"><span class="math inline">\(1/4\)</span></td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(s_2 = TH\)</span></td>
+<td align="center">
+<span class="math inline">\(H(s_2)\)</span>: Number of heads in <span class="math inline">\(s_2\)</span>
+</td>
+<td align="center">1</td>
+<td align="center"><span class="math inline">\(1/4\)</span></td>
+</tr>
+<tr class="odd">
+<td align="center"><span class="math inline">\(s_3 = HT\)</span></td>
+<td align="center">
+<span class="math inline">\(H(s_3)\)</span>: Number of heads in <span class="math inline">\(s_3\)</span>
+</td>
+<td align="center">1</td>
+<td align="center"><span class="math inline">\(1/4\)</span></td>
+</tr>
+<tr class="even">
+<td align="center"><span class="math inline">\(s_4 = HH\)</span></td>
+<td align="center">
+<span class="math inline">\(H(s_4)\)</span>: Number of heads in <span class="math inline">\(s_4\)</span>
+</td>
+<td align="center">2</td>
+<td align="center"><span class="math inline">\(1/4\)</span></td>
+</tr>
+</tbody>
+</table></div>
+<p>The <em>probability function</em> could be defined as
+<span class="math display">\[\begin{align*}
+      \Pr(H = 0):&amp;\quad 1/4\\
+      \Pr(H = 1):&amp;\quad 1/2\\
+      \Pr(H = 2):&amp;\quad 1/4\\
+      \Pr(H = h):&amp;\quad 0\quad \text{for all other values of $h$}.
+\end{align*}\]</span></p>
+</div>
+<p>Probability functions are written and interpreted differently, depending on whether the random variable is a discrete, continuous or mixed random variable.</p>
+<div id="ProbabilityFunctionsDiscrete" class="section level3" number="4.3.1">
+<h3>
+<span class="header-section-number">4.3.1</span> Discrete random variables: probability mass functions<a class="anchor" aria-label="anchor" href="#ProbabilityFunctionsDiscrete"><i class="fas fa-link"></i></a>
+</h3>
+<p>For a discrete random variable, the probability function indicates how probabilities are assigned to the values of the discrete random variable.
+For a discrete random variable, the probability function is often called the <em>probability mass function</em> (or PMF).</p>
+<div class="definition">
+<p><span id="def:ProbabilityDistribution" class="definition"><strong>Definition 4.6  (Discrete probability mass function) </strong></span>Let <span class="math inline">\(X\)</span> be a discrete random variable with range <span class="math inline">\(\mathcal{R}_X\)</span>.
+The <em>probability mass function</em> (or PMF), denoted <span class="math inline">\(p_X(x)\)</span>, assigns a probability to each outcome <span class="math inline">\(x_i\)</span> such that <span class="math inline">\(p_X(x_i) = \Pr(X = x_i)\)</span>.
+The domain of the probability function <span class="math inline">\(p_X(x)\)</span> is the set of values that <span class="math inline">\(X\)</span> can take.</p>
+<p>This function must satisfy:
+<span class="math display">\[\begin{align}
+  p_X(x) &amp;\geq 0 \quad \text{for all } x \in \mathcal{R}_X \notag\\
+  \sum_{x_i \in \mathcal{R}_X} p_X(x_i) &amp;= 1.
+\end{align}\]</span>
+The collection of all pairs <span class="math inline">\(\{(x_i, p_X(x_i))\}\)</span> for all <span class="math inline">\(i\)</span> constitutes the <em>probability distribution</em> of <span class="math inline">\(X\)</span>.</p>
+</div>
+<p>Probability functions usually depend on values that determine the shape, location, scale, or some other feature of the function.
+These values are called <em>parameters</em>.</p>
+<div class="definition">
+<p><span id="def:Parameter" class="definition"><strong>Definition 4.7  (Parameter) </strong></span>A <em>parameter</em> is a fixed numerical characteristic of a probability distribution.
+Parameters are typically unknown and fixed.</p>
+</div>
+<p>When a PMF depends on one or more parameters <span class="math inline">\(theta\)</span>, this is made explicit by writing <span class="math inline">\(p_X(x; \theta)\)</span> for one parameter or <span class="math inline">\(p_X(x; \theta_1, \theta_2, \dots)\)</span> for multiple parameters, where the semicolon separates the variable <span class="math inline">\(x\)</span> from the parameters.
+For example, a PMF for a random variable <span class="math inline">\(X\)</span> depending on parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> would be written <span class="math inline">\(p_X(x; \alpha, \beta)\)</span>.</p>
+<p>The following properties of the probability function are implied by the definition and the rules of probability.</p>
+<ol style="list-style-type: decimal">
+<li>
+<span class="math inline">\(p_X(t) \ge 0\)</span> for all values of <span class="math inline">\(t\)</span>; that is, probabilities are never negative.</li>
+<li>
+<span class="math inline">\(\displaystyle \sum_{t \in \mathcal{R}_X}  p_X(t) = 1\)</span> where <span class="math inline">\(\mathcal{R}_X\)</span> is the range of <span class="math inline">\(X\)</span>; that is, the probability function covers the probability over all possible sample points in the sample space.</li>
+<li>
+<span class="math inline">\(p_X(t) = 0\)</span> if <span class="math inline">\(t \notin \mathcal{R}_X\)</span>.</li>
+<li>For an event <span class="math inline">\(A\subseteq\mathcal{R}_X\)</span> defined on a sample space <span class="math inline">\(S\)</span>, the probability of event <span class="math inline">\(A\)</span> is
+<span class="math display">\[
+   \Pr(A) = \sum_{t\in A} p_X(t).
+\]</span>
+</li>
+</ol>
+<p>The probability distribution of a discrete random variable <span class="math inline">\(X\)</span> can be represented by listing each outcome with its probability; giving a formula; using a table; or using a graph which displays the probabilities <span class="math inline">\(p(x)\)</span> corresponding to each <span class="math inline">\(x\in \mathcal{R}_X\)</span>.</p>
+<p>Sometimes the probability function is denoted <span class="math inline">\(p(x)\)</span> rather than <span class="math inline">\(p_X(x)\)</span>.
+Using the subscript avoids confusion in situations where many random variables are considered at once.
+The subscript is used throughout this book.</p>
+<p>The probability distribution of a random variable is a description of the range of the variable and the associated assignment of probabilities.</p>
+<div class="example">
+<p><span id="exm:LargerOfTwoDraw" class="example"><strong>Example 4.12  (The larger of two numbers) </strong></span>Five balls numbered <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span>, <span class="math inline">\(3\)</span>, <span class="math inline">\(4\)</span> and <span class="math inline">\(5\)</span> are in an urn.
+Two balls are selected at random <em>without</em> replacement.
+Consider finding the probability distribution of the <em>larger</em> of the two numbers.
+When finding the larger of two numbers, the order is not important, so combinations are appropriate, and the number of possible outcomes is therefore
+<span class="math display">\[
+  \binom{5}{2} = 10.
+\]</span>
+These are easily listed: the sample space is:
+<span class="math display">\[
+    S =\{ (1, 2), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5), (4, 5)\},
+\]</span>
+where all <span class="math inline">\(10\)</span> elements are equally likely.
+Then, let <span class="math inline">\(X\)</span> be the random variable ‘the <em>larger</em> of the two numbers chosen’, so that <span class="math inline">\(\mathcal{R}_X = \{2, 3, 4, 5\}\)</span>.
+Listing the probabilities:
+<span class="math display">\[\begin{alignat*}{3}
+    \Pr(X = 2) &amp;= \Pr\big((1, 2)\big)                                                         &amp;\quad &amp;= 1/10;\\
+    \Pr(X = 3) &amp;= \Pr\big((1, 3) \text{ or } (2, 3)\big)                                      &amp;\quad &amp;= 2/10;\\
+    \Pr(X = 4) &amp;= \Pr\big((1, 4) \text{ or } (2, 4) \text{ or } (3, 4)\big)                   &amp;\quad &amp;= 3/10;\\
+    \Pr(X = 5) &amp;= \Pr\big((1, 5) \text{ or } (2, 5) \text{ or } (3, 5)\text{ or } (4, 5)\big) &amp;\quad &amp;= 4/10;\\
+    \Pr(\text{other values of } X) &amp; \text{ }                                                 &amp;\quad &amp;= 0.
+\end{alignat*}\]</span>
+This is the probability distribution of <span class="math inline">\(X\)</span>, which could also be given in a table (Table <a href="DistributionRandomVariables.html#tab:LargestDie">4.1</a>), a graph (Fig. <a href="DistributionRandomVariables.html#fig:ProbDist1">4.2</a>), or as a formula:
+<span class="math display">\[
+   \Pr(X = x) =
+    (x - 1)/10\qquad\text{for $x = 2, 3, 4, 5$}.
+\]</span>
+The probability is zero for all values not in <span class="math inline">\(\mathcal{R}_X\)</span>.</p>
+</div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:LargestDie">TABLE 4.1: </span>A table showing the distribution of <span class="math inline">\(X\)</span>, the largest number in two draws from an urn.
+</caption>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+<span class="math inline">\(x\)</span>
+</td>
+<td style="text-align:right;font-weight: bold;">
+2
+</td>
+<td style="text-align:right;font-weight: bold;">
+3
+</td>
+<td style="text-align:right;font-weight: bold;">
+4
+</td>
+<td style="text-align:right;font-weight: bold;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Probability
+</td>
+<td style="text-align:right;">
+0.1
+</td>
+<td style="text-align:right;">
+0.2
+</td>
+<td style="text-align:right;">
+0.3
+</td>
+<td style="text-align:right;">
+0.4
+</td>
+</tr>
+</tbody>
+</table></div>
+<!-- SHOW CODE AND PLOT --><!-- ******************* LATEX: image + code display together ******************* --><!-- Read in the code --><!-- ******************* HTML: image, then code display ******************* --><div class="figure">
+<span style="display:block;" id="fig:ProbDist1"></span>
+<img src="04-RandomVariables_files/figure-html/ProbDist1-1.png" alt="The probability function for the larger of two numbers drawn." width="100%"><p class="caption">
+FIGURE 4.2: The probability function for the larger of two numbers drawn.
+</p>
+</div>
+<details><summary>
+Show R code
+</summary><pre><code class="r">
+
+plot( x = 1:6,                           # The values for which PMF &gt; 0
+      y = c(0, 0.1, 0.2, 0.3, 0.4, 0),   # The values of f(y)
+      xlim = c(0.5, 6.6), ylim = c(0, 0.45),
+      type = "h",             # type = "h": vertical lines
+      lty = 3,                # lty = 3: Dotted lines 
+      las = 1,                # las = 1: Axis labels horizontal 
+      col = "grey",           # Use the colour grey
+      main = "The probability distribution of X",
+      xlab = "x",             # Label for horizontal axis
+      ylab = "PMF"            # Label for vertical axis
+)
+points( x = 1:6,  ### Adds the points on top of the vertical lines
+        y = c(0, 0.1, 0.2, 0.3, 0.4, 0),
+        pch = 19)
+
+</code></pre>
+</details><div class="example">
+<p><span id="exm:PMFParameter" class="example"><strong>Example 4.13  (Parameters in a PMF) </strong></span>Define a random variable <span class="math inline">\(X\)</span>, with probability mass function
+<span class="math display">\[
+  p_X(x; a)
+  =
+  \begin{cases}
+    ax      &amp; \text{for $x = 1, 2$};\\
+    1 - 3a  &amp; \text{for $x = 3$}
+  \end{cases}
+\]</span>
+for <span class="math inline">\(0 &lt; a &lt; (1/3)\)</span>.
+The PMF has a parameter <span class="math inline">\(a\)</span>.
+For example, if <span class="math inline">\(a = 0.1\)</span>, then
+<span class="math display">\[
+  p_X(x; a = 0.1)
+  =
+  \begin{cases}
+    0.1x  &amp; \text{for $x = 1, 2$};\\
+    0.7   &amp; \text{for $x = 3$}.
+  \end{cases}
+\]</span></p>
+</div>
+<div class="example">
+<p><span id="exm:TossingHeads" class="example"><strong>Example 4.14  (Tossing heads) </strong></span>Suppose a fair coin is tossed twice and the uppermost face is noted, as in Example <a href="DistributionRandomVariables.html#exm:TossingCoinOutcomes">4.11</a>.
+The probability function is
+<span class="math display">\[
+   p_H(h) = \Pr(H = h)
+          = \begin{cases}
+               0.25 &amp; \text{if $h = 0$};\\
+               0.5 &amp; \text{if $h = 1$};\\
+               0.25 &amp; \text{if $h = 2$}.
+              \end{cases}
+\]</span>
+More succinctly,
+<span class="math display">\[\begin{align*}
+   p_H(h) &amp;= \Pr(H = h) \\
+          &amp;= (0.5)\,0.5^{|h - 1|} \qquad \text{for $h = 0$, $1$ or $2$}.
+\end{align*}\]</span>
+This information can also be presented as a table (Table <a href="DistributionRandomVariables.html#tab:TwoDieRV">4.2</a>) or graph (Fig. <a href="DistributionRandomVariables.html#fig:ProbDistributionCoin">4.3</a>).
+Note that <span class="math inline">\(\sum_{t \in \{0, 1, 2\}} p_H(t) = 1\)</span> and <span class="math inline">\(p_H(h)\ge0\)</span> for all <span class="math inline">\(h\)</span>, as required of a probability function.</p>
+</div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:TwoDieRV">TABLE 4.2: </span>A table showing the distribution of <span class="math inline">\(H\)</span>, the number of heads in two tosses of a coin.
+</caption>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+<span class="math inline">\(h\)</span>
+</td>
+<td style="text-align:right;font-weight: bold;">
+0
+</td>
+<td style="text-align:right;font-weight: bold;">
+1
+</td>
+<td style="text-align:right;font-weight: bold;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span class="math inline">\(\Pr(H = h)\)</span>
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+0.5
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+</tr>
+</tbody>
+</table></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:ProbDistributionCoin"></span>
+<img src="04-RandomVariables_files/figure-html/ProbDistributionCoin-1.png" alt="The probability function for\ $H$, the number of heads on two tosses of a coin." width="60%"><p class="caption">
+FIGURE 4.3: The probability function for <span class="math inline">\(H\)</span>, the number of heads on two tosses of a coin.
+</p>
+</div>
+</div>
+<div id="ProbabilityFunctionsContinuous" class="section level3" number="4.3.2">
+<h3>
+<span class="header-section-number">4.3.2</span> Continuous random variables: probability density functions<a class="anchor" aria-label="anchor" href="#ProbabilityFunctionsContinuous"><i class="fas fa-link"></i></a>
+</h3>
+<p>In the discrete case, probability can be distributed over distinct points (possibly a countably infinite number) where each point has non-zero mass.
+However, in the continuous case, mass cannot be thought of as an attribute of a <em>point</em> but rather of a <em>region</em> surrounding a point.
+The ideas from Sect. <a href="ChapterProbability.html#AssignProbContinuous">3.7</a> are relevant here.</p>
+<div class="definition">
+<p><span id="def:ProbabilityDensityFunction" class="definition"><strong>Definition 4.8  (Continuous probability density function) </strong></span>The <em>probability density function</em> (or PDF) of a continuous random variable <span class="math inline">\(X\)</span> is a function <span class="math inline">\(f_X(x)\)</span> such that:</p>
+<ul>
+<li>
+<span class="math inline">\(f_X(x) \geq 0\)</span> for all <span class="math inline">\(x \in \mathcal{R}_X\)</span>; and</li>
+<li>The total area under the curve is <span class="math inline">\(1\)</span>:
+<span class="math display">\[
+\int_{\mathcal{R}_X} f_X(x) \, dx = 1.
+\]</span>
+</li>
+</ul>
+<p>The domain of the probability function <span class="math inline">\(f_X(x)\)</span> is the set of values that <span class="math inline">\(X\)</span> can take.</p>
+<p>The probability that <span class="math inline">\(X\)</span> falls within a specific region <span class="math inline">\(A\)</span> is the area under the curve:
+<span class="math display">\[
+  \Pr(X \in A) = \int_A f_X(x) \, dx.
+\]</span></p>
+</div>
+<p>As with PMFs, when a PDF depends on one or more parameters <span class="math inline">\(\theta\)</span>, this is made explicit by writing <span class="math inline">\(f_X(x; \theta)\)</span> for one parameter or <span class="math inline">\(f_X(x; \theta_1, \theta_2, \dots)\)</span> for multiple parameters, where the semicolon separates the variable <span class="math inline">\(x\)</span> from the parameters.</p>
+<p>We are usually only concerned with <span class="math inline">\((a, b)\in \mathcal{R}_X\)</span>, but it makes sense to think of the PDF as defined for all <span class="math inline">\(x\)</span>, insisting that <span class="math inline">\(f_X(x) = 0\)</span> for <span class="math inline">\(x\notin \mathcal{R}_X\)</span>.
+This definition implies that <em>areas under the graph of the PDF represent probabilities</em> and leads to the following properties:</p>
+<ol style="list-style-type: decimal">
+<li>
+<span class="math inline">\(f_X(x) \ge 0\)</span> for all <span class="math inline">\(-\infty &lt; x &lt; \infty\)</span>:
+the density function is never negative.</li>
+<li>
+<span class="math inline">\(\displaystyle \int_{-\infty}^\infty f_X(x)\,dx = 1\)</span>: the total probability is one.</li>
+<li>For an event <span class="math inline">\(A\subseteq \mathcal{R}_X\)</span> defined on a sample space <span class="math inline">\(S\)</span>, the probability of event <span class="math inline">\(A\)</span> is
+<span class="math display">\[
+   \Pr(A) = \int_{A} f_X(x)\, dx.
+\]</span>
+</li>
+<li>Since exact values are not possible:
+<span class="math display">\[\begin{align*}
+         &amp; \Pr(a &lt; X \le b) = \Pr(a &lt; X &lt; b)\\
+   {}={} &amp; \Pr(a \le X &lt; b) = \Pr(a \le X \le b) = \int_a^b f_X(x)\,dx
+\end{align*}\]</span>
+<!-- 5. From the *Mean Value Theorem* in calculus, for small $\Delta x$: -->
+</li>
+</ol>
+<!--    \[  --><!--       \Pr(x < X < x + \Delta x) = \int ^{x + \Delta x}_x f(t)\, dt = \Delta xf(\xi ), \quad x < \xi < x + \Delta x. --><!--    \] --><!-- 6. For $\Delta x$ small, --><!--    \begin{equation} --><!--      \Pr(x < X < x +\Delta x)\simeq f(x)\Delta x. --><!--    \end{equation} --><p>Properties 1 and 2 are sufficient to prove that a function is a probability density function
+That is, to show that some function <span class="math inline">\(g(x)\)</span> is a PDF, showing that <span class="math inline">\(g(x) \ge 0\)</span> for all <span class="math inline">\(-\infty &lt; x &lt; \infty\)</span> and that <span class="math inline">\(\int_{-\infty}^\infty g(x)\,dx = 1\)</span> is sufficient.</p>
+<p>Property 4 results from noting that if <span class="math inline">\(X\)</span> is a continuous random variable, <span class="math inline">\(\Pr(X = a) = 0\)</span> for any and every value <span class="math inline">\(a\)</span> for the same reason that a point has mass zero.</p>
+<div class="importantBox important">
+<p>The value of a probability density function at some point <span class="math inline">\(x\)</span> does not represent a probability, but rather a <em>probability density</em>.
+Hence, the probability density function can have any non-negative value of arbitrary size at a specific value of <span class="math inline">\(X\)</span>.</p>
+</div>
+<div class="example">
+<p><span id="exm:ProbabilityDensityFunction" class="example"><strong>Example 4.15  (Probability density function) </strong></span>Consider the continuous random variable <span class="math inline">\(W\)</span> with the probability density function
+<span class="math display">\[
+   f_W(w) =
+      2w\qquad\text{for $0 &lt; w &lt; 1$}
+\]</span>
+where <span class="math inline">\(\mathcal{R}_X = (0, 1)\)</span>.
+The probability is zero for values of  <span class="math inline">\(x\)</span> outside <span class="math inline">\(\mathcal{R}_X\)</span>.</p>
+<p>The probability <span class="math inline">\(\Pr(0 &lt; W &lt; 0.5)\)</span> can be computed in one of two ways.
+One is to use calculus:
+<span class="math display">\[
+   \Pr(0 &lt; W &lt; 0.5) = \left[w^2\right]_0^{0.5} = 0.25.
+\]</span>
+Alternately, the probability can be computed <em>geometrically</em> from the graph of the PDF (Fig. <a href="DistributionRandomVariables.html#fig:ContinuousPDF">4.4</a>).
+The region corresponding to <span class="math inline">\(\Pr(0 &lt; W &lt; 0.5)\)</span> is triangular; integration simply finds the area of this triangle.
+Thus, the area can be found using the area of a triangle directly: the length of the base of the triangle, times the height of the rectangle, divided by two:
+<span class="math display">\[
+   0.5 \times 1 /2 = 0.25,
+\]</span>
+and the answer is the same as before.</p>
+<p>Note that <span class="math inline">\(f_W(w)\)</span> is greater than one for some values of <span class="math inline">\(w\)</span>.
+Since <span class="math inline">\(f_W(w)\)</span> does not represent probabilities at each point (as <span class="math inline">\(W\)</span> is continuous), this is not problematic.
+However, <span class="math inline">\(\int_{\mathbb{R}} f_W(w) \, dw = 1\)</span> as required of a probability density.</p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:ContinuousPDF"></span>
+<img src="04-RandomVariables_files/figure-html/ContinuousPDF-1.png" alt="The probability function for\ $W$. The shaded area represents $0 &lt; W &lt; 0.5$." width="55%"><p class="caption">
+FIGURE 4.4: The probability function for <span class="math inline">\(W\)</span>. The shaded area represents <span class="math inline">\(0 &lt; W &lt; 0.5\)</span>.
+</p>
+</div>
+<div class="example">
+<p><span id="exm:PDFParameters" class="example"><strong>Example 4.16  (Probability density function) </strong></span>A random variable <span class="math inline">\(T\)</span> has the probability density function
+<span class="math display">\[
+  f_T(t; \alpha)
+  =
+  \begin{cases}
+    t/\alpha^2                &amp; \text{for $0 &lt; t \le \alpha$};\\
+    (2\alpha - t)/\alpha^2    &amp; \text{for $\alpha &lt; t &lt; 2\alpha$}
+  \end{cases}
+\]</span>
+for <span class="math inline">\(\alpha &gt; 0\)</span> (Fig. <a href="DistributionRandomVariables.html#fig:PDFParameter">4.5</a>).
+Here, <span class="math inline">\(\alpha\)</span> is a parameter.
+Note that <span class="math inline">\(\int_0^{2\alpha} f_T(t)\,dt = 1\)</span> for all values of <span class="math inline">\(\alpha\)</span>.</p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:PDFParameter"></span>
+<img src="04-RandomVariables_files/figure-html/PDFParameter-1.png" alt="The PDF for the random variable\ $T$ with parameter\ $\alpha$." width="80%"><p class="caption">
+FIGURE 4.5: The PDF for the random variable <span class="math inline">\(T\)</span> with parameter <span class="math inline">\(\alpha\)</span>.
+</p>
+</div>
+</div>
+<div id="ProbabilityFunctionsMixed" class="section level3" number="4.3.3">
+<h3>
+<span class="header-section-number">4.3.3</span> Mixed random variables<a class="anchor" aria-label="anchor" href="#ProbabilityFunctionsMixed"><i class="fas fa-link"></i></a>
+</h3>
+<p>Some random variables are not entirely continuous nor entirely discrete, but have components of both.
+These random variables are called <em>mixed random variables</em>.</p>
+<div class="definition">
+<p><span id="def:UnivariateMixedPF" class="definition"><strong>Definition 4.9  (Mixed probability function) </strong></span>The <em>probability function</em> of a mixed random variable <span class="math inline">\(X\)</span> is characterized by:</p>
+<ul>
+<li>A probability mass function <span class="math inline">\(p_X(x)\)</span> at each discrete mass point <span class="math inline">\(x_i \in \mathcal{R}_X^d\)</span>, where <span class="math inline">\(\mathcal{R}_X^d \subseteq \mathcal{R}_X\)</span> is the discrete part of the range, and</li>
+<li>A probability density function <span class="math inline">\(f_X(x)\)</span> over the continuous part <span class="math inline">\(\mathcal{R}_X^c \subseteq \mathcal{R}_X\)</span>.</li>
+</ul>
+<p>These must satisfy:</p>
+<ul>
+<li>
+<span class="math inline">\(p_X(x_i) \geq 0\)</span> for all <span class="math inline">\(x_i \in \mathcal{R}_X^d\)</span> and <span class="math inline">\(f_X(x) \geq 0\)</span> for all <span class="math inline">\(x \in \mathcal{R}_X^c\)</span>, and</li>
+<li>The total probability is <span class="math inline">\(1\)</span>:
+<span class="math display">\[
+\sum_{x_i \in \mathcal{R}_X^d} p_X(x_i) + \int_{\mathcal{R}_X^c} f_X(x)\,dx = 1.
+\]</span>
+</li>
+</ul>
+</div>
+<p>Again, if the mass function or the density function depends on one or more parameters, this is made explicit by writing <span class="math inline">\(p_X(x; \theta, \dots)\)</span> or <span class="math inline">\(f_X(x; \theta, \dots)\)</span> as appropriate, where the semicolon separates the variable <span class="math inline">\(x\)</span> from the parameters.</p>
+<p>The probability that <span class="math inline">\(X\)</span> falls within a region <span class="math inline">\(A\)</span> is:
+<span class="math display">\[
+  \Pr(X \in A) = \sum_{x_i \in A \cap \mathcal{R}_X^d} p_X(x_i) + \int_{A \cap \mathcal{R}_X^c} f_X(x)\,dx.
+\]</span></p>
+<p>The most common example of a mixed random variable is when an exact probability exists when the value of the random variable is zero (discrete), and the random variable is then continuous for positive values.
+In other words, when <span class="math inline">\(\mathcal{R}_X^d = \{0\}\)</span> and <span class="math inline">\(\mathcal{R}_X^c = (0, \infty)\)</span>.</p>
+<div class="example">
+<p><span id="exm:MixedRandomVariable" class="example"><strong>Example 4.17  (Mixed random variable) </strong></span>In a factory producing diodes, a proportion <span class="math inline">\(p\)</span> of the diodes fail immediately.
+The distribution of the lifetime (in hundreds of days), say <span class="math inline">\(Y\)</span>, of the diodes is given by a discrete component at <span class="math inline">\(y = 0\)</span> for which <span class="math inline">\(\Pr(Y = 0) = p\)</span>, and a continuous part for <span class="math inline">\(y &gt; 0\)</span> with density
+<span class="math display">\[
+   f_Y(y; p) = (1 - p) \exp(-y) \quad \text{if $y &gt; 0$.}
+\]</span>
+Here, <span class="math inline">\(f_Y(y)\)</span> is not itself a PDF over <span class="math inline">\(\mathbb{R}\)</span>, as it doesn’t integrate to one; however the total probability is
+<span class="math display">\[
+   p + \int_0^\infty (1 - p)\exp(-y) \, dy = p + (1 - p) = 1
+\]</span>
+as required.</p>
+<p>Consider a diode for which <span class="math inline">\(p = 0.4\)</span>.
+The distribution is displayed in Fig. <a href="DistributionRandomVariables.html#fig:Diode">4.6</a> where a solid dot is included to show the discrete mass at <span class="math inline">\(Y = 0\)</span>.</p>
+</div>
+<p>Representing the probability distribution in this mixed case is difficult, because of the need to combine a probability density function and a probability mass function.
+These difficulties are overcome by using the distribution function (Sect. <a href="DistributionRandomVariables.html#DistributionFunction">4.4</a>).
+</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:Diode"></span>
+<img src="04-RandomVariables_files/figure-html/Diode-1.png" alt="The probability function for the diodes example." width="432"><p class="caption">
+FIGURE 4.6: The probability function for the diodes example.
+</p>
+</div>
+</div>
+</div>
+<div id="DistributionFunction" class="section level2" number="4.4">
+<h2>
+<span class="header-section-number">4.4</span> Distribution functions<a class="anchor" aria-label="anchor" href="#DistributionFunction"><i class="fas fa-link"></i></a>
+</h2>
+<p></p>
+<div id="DFGeneralIdeas" class="section level3" number="4.4.1">
+<h3>
+<span class="header-section-number">4.4.1</span> General ideas<a class="anchor" aria-label="anchor" href="#DFGeneralIdeas"><i class="fas fa-link"></i></a>
+</h3>
+<p>Another way of describing random variables is using a <em>distribution function</em> (DF), also called a <em>cumulative distribution function</em> (CDF).
+The DF gives the probability that a random variable <span class="math inline">\(X\)</span> is less than <em>or equal to</em> a given value of <span class="math inline">\(x\)</span>.</p>
+<div class="definition">
+<p><span id="def:DistributionFunction" class="definition"><strong>Definition 4.10  (Distribution function) </strong></span>For any random variable <span class="math inline">\(X\)</span> the <em>distribution function</em>, <span class="math inline">\(F_X(x; \theta_1, \dots)\)</span> with parameters <span class="math inline">\(\theta_1, \dots\)</span>, is
+<span class="math display">\[
+     F_X(x; \theta_1, \dots) = \Pr(X \leq x) \quad \text{for $x\in\mathbb{R}$}.
+\]</span></p>
+</div>
+<p>The distribution function applies to discrete, continuous or mixed random variables.
+Importantly, the distribution functions is defined for <em>all</em> real numbers.</p>
+<p>If <span class="math inline">\(X\)</span> is a discrete random variable with range <span class="math inline">\(\mathcal{R}_X\)</span>, then the DF is
+<span class="math display">\[\begin{align*}
+     F_X(x)
+     &amp;= \Pr(X \leq x)\\
+     &amp;= \sum_{x_i \leq x} \Pr(X = x_i)\text{ for }x_i\in \mathcal{R}_X,\text{ and }-\infty &lt; x &lt; \infty.
+\end{align*}\]</span>
+If <span class="math inline">\(X\)</span> is a continuous random variable, the DF is
+<span class="math display">\[\begin{align*}
+     F_X(x)
+     &amp;= \Pr(X \leq x)\\
+     &amp;= \int^x_{-\infty} f(t)\,dt \text{ for } -\infty &lt; x &lt; \infty.
+\end{align*}\]</span></p>
+<p>Properties of the distribution function include:</p>
+<ol style="list-style-type: decimal">
+<li>
+<span class="math inline">\(0\leq F_X(x)\leq 1\)</span> because <span class="math inline">\(F_X(x)\)</span> is a probability.</li>
+<li>
+<span class="math inline">\(F_X(x)\)</span> is a non-decreasing function of <span class="math inline">\(x\)</span>.
+That is, if <span class="math inline">\(x_1 &lt; x_2\)</span> then <span class="math inline">\(F_X(x_1) \leq F_X(x_2)\)</span>.</li>
+<li>
+<span class="math inline">\(\displaystyle{\lim_{x\to \infty} F_X(x)} = 1\)</span> and <span class="math inline">\(\displaystyle{\lim_{x\to -\infty} F_X(x)} = 0\)</span>.</li>
+<li>
+<span class="math inline">\(\Pr(a &lt; X \leq b) = F_X(b) - F_X(a)\)</span>.</li>
+<li>If <span class="math inline">\(X\)</span> is discrete, then <span class="math inline">\(F_X(x)\)</span> is a step-function.
+If <span class="math inline">\(X\)</span> is continuous, then <span class="math inline">\(F_X\)</span> will be a continuous function for all <span class="math inline">\(x\)</span>.</li>
+</ol>
+</div>
+<div id="discrete-random-variables" class="section level3" number="4.4.2">
+<h3>
+<span class="header-section-number">4.4.2</span> Discrete random variables<a class="anchor" aria-label="anchor" href="#discrete-random-variables"><i class="fas fa-link"></i></a>
+</h3>
+<p>The above ideas can be applied in the discrete case, but care is needed at the values of the random variable where the probability is non-zero.</p>
+<div class="example">
+<p><span id="exm:TossingHeads2" class="example"><strong>Example 4.18  (Tossing heads) </strong></span>Consider the simple example in Example <a href="DistributionRandomVariables.html#exm:TossingHeads">4.14</a> where a coin is tossed once.
+The probability function for <span class="math inline">\(H\)</span> is given in that example in numerous forms.
+To determine the distribution function, first note that when <span class="math inline">\(h &lt; 0\)</span>, the accumulated probability is zero; hence, <span class="math inline">\(F_H(h) = 0\)</span> when <span class="math inline">\(h &lt; 0\)</span>.
+At <span class="math inline">\(h = 0\)</span>, the probability of <span class="math inline">\(0.25\)</span> is accumulated all at once, and no more probability is accumulated until <span class="math inline">\(h = 1\)</span>.
+Thus, <span class="math inline">\(F_H(h) = 0.25\)</span> for <span class="math inline">\(0 \le h &lt; 1\)</span>.
+Continuing, the distribution function is
+<span class="math display">\[
+   F_H(h) = \begin{cases}
+               0 &amp; \text{for $h &lt; 0$};\\
+               0.25 &amp; \text{for $0\le h &lt; 1$};\\
+               0.75 &amp; \text{for $1\le h &lt; 2$};\\
+               1 &amp; \text{for $h\ge 2$}.
+            \end{cases}
+\]</span>
+The distribution function can be displayed graphically, being careful to clarify what happens at <span class="math inline">\(H = 1\)</span>, <span class="math inline">\(H = 2\)</span> and <span class="math inline">\(H = 3\)</span> using open or filled circles (Fig. <a href="DistributionRandomVariables.html#fig:HeadsDF">4.7</a>).</p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:HeadsDF"></span>
+<img src="04-RandomVariables_files/figure-html/HeadsDF-1.png" alt="A graphical representation of the distribution function for the tossing-heads example. The filled circles contain the given point, while the empty circles omit the given point." width="50%"><p class="caption">
+FIGURE 4.7: A graphical representation of the distribution function for the tossing-heads example. The filled circles contain the given point, while the empty circles omit the given point.
+</p>
+</div>
+</div>
+<div id="continuous-random-variables" class="section level3" number="4.4.3">
+<h3>
+<span class="header-section-number">4.4.3</span> Continuous random variables<a class="anchor" aria-label="anchor" href="#continuous-random-variables"><i class="fas fa-link"></i></a>
+</h3>
+<p>The same ideas apply for continuous random variables, but probabilities are accumulated using integrations rather than summations.</p>
+<div class="example">
+<p><span id="exm:DistributionFunction" class="example"><strong>Example 4.19  (Distribution function) </strong></span>Consider a continuous random variable <span class="math inline">\(V\)</span> with PDF
+<span class="math display">\[
+   f_V(v) = v/2\qquad\text{for $0 &lt; v &lt; 2$}.
+\]</span>
+The distribution function is zero whenever <span class="math inline">\(v\le 0\)</span>.
+For <span class="math inline">\(0 &lt; v &lt; 2\)</span>,
+<span class="math display">\[
+   F_V(v) = \int_0^v t/2\,dt = v^2/4.
+\]</span>
+Whenever <span class="math inline">\(v\ge 2\)</span>, the DF is one.
+So the DF is
+<span class="math display">\[
+   F_V(v) = \begin{cases}
+               0 &amp; \text{if $v\le 0$};\\
+               v^2/4 &amp; \text{if $0 &lt; v &lt; 2$};\\
+               1 &amp; \text{if $v\ge 2$.}
+             \end{cases}
+\]</span>
+A picture of the distribution function is shown in Fig. <a href="DistributionRandomVariables.html#fig:DFCont">4.8</a>.</p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:DFCont"></span>
+<img src="04-RandomVariables_files/figure-html/DFCont-1.png" alt="The distribution function for\ $V$." width="60%"><p class="caption">
+FIGURE 4.8: The distribution function for <span class="math inline">\(V\)</span>.
+</p>
+</div>
+<div class="importantBox important">
+<p>For the integral, <em>do not write</em>
+<span class="math display">\[
+   \int_0^v v/2\,dv.
+\]</span>
+Having the <em>variable</em> of integration as a limit on the integral and also in the function to be integrated makes no sense.
+Either write the integral as given in the example, or write <span class="math inline">\(\int_0^t v/2\,dv = t^2/4\)</span> and then change the variable from <span class="math inline">\(t\)</span> to <span class="math inline">\(v\)</span>.</p>
+</div>
+</div>
+<div id="mixed-random-variables" class="section level3" number="4.4.4">
+<h3>
+<span class="header-section-number">4.4.4</span> Mixed random variables<a class="anchor" aria-label="anchor" href="#mixed-random-variables"><i class="fas fa-link"></i></a>
+</h3>
+<p>The distribution function for mixed random variables follow the same ideas as above, using summations and integrations as appropriate.</p>
+<div class="example">
+<p><span id="exm:MixedRandomVariableDF" class="example"><strong>Example 4.20  (Mixed random variable) </strong></span>Example <a href="DistributionRandomVariables.html#exm:MixedRandomVariable">4.17</a> discussed the mixed random variable <span class="math inline">\(Y\)</span>, the lifetimes of diodes (in hundreds of days).
+A proportion of the diodes <span class="math inline">\(p = 0.4\)</span> fail immediately (i.e., <span class="math inline">\(\Pr(Y = 0) = 0.4\)</span>).
+For other diodes, the distribution function of <span class="math inline">\(Y\)</span> is described by
+<span class="math display">\[\begin{align*}
+  F_Y(y; p)
+  &amp;= \Pr(Y\le y)\\
+  &amp;= p + \int_0^y f_Y(t)\, dt \\
+  &amp;= p + (1 - p)  \int_0^y\exp(-t)\, dt \\
+  &amp;= p + (1 - p) [1 - \exp(-y)]\\
+  &amp;= 0.4 + 0.6 [1 - \exp(-y)]
+\end{align*}\]</span>
+for <span class="math inline">\(y &gt; 0\)</span>.
+The probability distribution is displayed in Fig. <a href="DistributionRandomVariables.html#fig:DiodeDF">4.9</a> where a solid dot is included to show the discrete part.</p>
+<p>The complete distribution function, when <span class="math inline">\(p = 0.4\)</span>, is:
+<span class="math display">\[
+   F_Y(y) = \begin{cases}
+               0 &amp; \text{if $y &lt; 0$}\\
+               0.4 &amp; \text{if $y = 0$}\\
+               0.4 + 0.6(1 - \exp(-y)) &amp; \text{if $y &gt; 0$}.
+            \end{cases}
+\]</span>
+The total probability is
+<span class="math display">\[
+   0.4 + 0.6\int_0^\infty \exp(-y) \, dy = 1
+\]</span>
+as required.
+In addition, as required,
+<span class="math display">\[
+  \lim_{y \to\infty} F_Y(y) = 0.4 + 0.6 = 1.
+\]</span></p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:DiodeDF"></span>
+<img src="04-RandomVariables_files/figure-html/DiodeDF-1.png" alt="The distribution function for the diodes example." width="60%"><p class="caption">
+FIGURE 4.9: The distribution function for the diodes example.
+</p>
+</div>
+</div>
+<div id="PFfromDF" class="section level3" number="4.4.5">
+<h3>
+<span class="header-section-number">4.4.5</span> Recovering the probability function from the DF<a class="anchor" aria-label="anchor" href="#PFfromDF"><i class="fas fa-link"></i></a>
+</h3>
+<p>We have seen how to find <span class="math inline">\(F_X(x)\)</span> given <span class="math inline">\(\Pr(X = x)\)</span>, or to find <span class="math inline">\(F_X(x)\)</span> given <span class="math inline">\(f_X(x)\)</span>.
+But can we proceed in the other direction too?
+That is, given <span class="math inline">\(F_X(x)\)</span>, how do we find the corresponding probability function?</p>
+<p>As seen from the graph of the distribution in Example <a href="DistributionRandomVariables.html#exm:TossingHeads2">4.18</a>, the values of <span class="math inline">\(x\)</span> where a ‘jump’ in <span class="math inline">\(F_X(x)\)</span> occurs are the points in the range with positive probabilities, and the probability associated with a particular point in <span class="math inline">\(\mathcal{R}_X\)</span> is the ‘height’ of the corresponding jump.
+This implies
+<span class="math display" id="eq:DFtoPDFdiscrete">\[\begin{equation}
+      p_X(x_j) = \Pr(X = x_j) = F_X(x_j) - F_X(x_{j - 1}).
+   \tag{4.1}
+\end{equation}\]</span></p>
+<div class="example">
+<p><span id="exm:DistributionFnReverseDiscrete" class="example"><strong>Example 4.21  (Mass function from distribution function) </strong></span>Consider the DF for a discrete random variable <span class="math inline">\(X\)</span>:
+<span class="math display">\[
+   F_X(x) =
+   \begin{cases}
+      0     &amp; \text{for $x &lt; 10$;}\\
+      0.1   &amp; \text{for $10 \le x &lt; 11$;}\\
+      0.4   &amp; \text{for $11 \le x &lt; 15$;}\\
+      0.9   &amp; \text{for $15 \le x &lt; 17$;}\\
+      1     &amp; \text{for $x \ge 17$.}
+   \end{cases}
+\]</span>
+To find the PMF, use Eq. <a href="DistributionRandomVariables.html#eq:DFtoPDFdiscrete">(4.1)</a>:
+<span class="math display">\[
+   f_X(x) =
+   \begin{cases}
+      0.1   &amp; \text{for $x = 10$}\\
+      0.3   &amp; \text{for $x = 11$}\\
+      0.5   &amp; \text{for $x = 15$}\\
+      0.1   &amp; \text{for $x = 17$}
+   \end{cases}
+\]</span>
+As shown in Fig. <a href="DistributionRandomVariables.html#fig:DFtoPDFdiscrete">4.10</a>, the discrete jumps in the DF correspond to the value of the PMF at those values of <span class="math inline">\(X\)</span>.</p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:DFtoPDFdiscrete"></span>
+<img src="04-RandomVariables_files/figure-html/DFtoPDFdiscrete-1.png" alt="Left: the distribution function of $X$. Right: the probability mass function of $X$." width="100%"><p class="caption">
+FIGURE 4.10: Left: the distribution function of <span class="math inline">\(X\)</span>. Right: the probability mass function of <span class="math inline">\(X\)</span>.
+</p>
+</div>
+<p>When <span class="math inline">\(X\)</span> is continuous, from the <em>Fundamental Theorem of Calculus</em>,
+<span class="math display" id="eq:DFtoPDFcontinuous">\[\begin{equation}
+   f_X(x) = \frac{d}{dx} F_X(x) \quad \text{where the derivative exists.}
+   \tag{4.2}
+\end{equation}\]</span></p>
+<div class="example">
+<p><span id="exm:DistributionFnReverseContinuous" class="example"><strong>Example 4.22  (Density function from distribution function) </strong></span>Consider the DF for a continuous random variable <span class="math inline">\(X\)</span>:
+<span class="math display">\[
+   F_X(x) =
+   \begin{cases}
+      0        &amp; \text{for $x &lt; 0 $;}\\
+      x(2 - x) &amp; \text{for $0 \le x \le 1$;}\\
+      1        &amp; \text{for $x &gt; 1$.}
+   \end{cases}
+\]</span>
+To find the PDF, use Eq. <a href="DistributionRandomVariables.html#eq:DFtoPDFcontinuous">(4.2)</a>:
+<span class="math display">\[\begin{align*}
+   f_X(x) &amp;=
+   \begin{cases}
+      \displaystyle\frac{d}{dx} 0        &amp; \text{for $x &lt; 0 $;}\\[6pt]
+      \displaystyle\frac{d}{dx} x(2 - x) &amp; \text{for $0 \le x \le 1$;}\\[6pt]
+      \displaystyle\frac{d}{dx} 1        &amp; \text{for $x &gt; 1$}
+   \end{cases} \\
+   &amp;=
+      \begin{cases}
+      0        &amp; \text{for $x &lt; 0 $;}\\
+      2(1 - x) &amp; \text{for $0 \le x \le 1$;}\\
+      0        &amp; \text{for $x &gt; 1$}
+   \end{cases}
+\end{align*}\]</span>
+which is usually written as <span class="math inline">\(f_X(x) = 2(1 - x)\)</span> for <span class="math inline">\(0 &lt; x &lt; 1\)</span>.</p>
+</div>
+<p></p>
+</div>
+</div>
+<div id="SurvivalFunction" class="section level2" number="4.5">
+<h2>
+<span class="header-section-number">4.5</span> Survival functions<a class="anchor" aria-label="anchor" href="#SurvivalFunction"><i class="fas fa-link"></i></a>
+</h2>
+<p></p>
+<p>In many applications (suc as medical research, climatology, engineering, and insurance), the probability remaining beyond a certain values is of more interest than the probability that an event has already occurred (i.e., the distribution function).
+This is akin to observing the probability that the quantity ‘survives’ beyond a given value.</p>
+<p>The <em>survival function</em>, denoted <span class="math inline">\(S_X(x)\)</span> and sometimes called the <em>reliability function</em>, is defined as the probability that the random variable <span class="math inline">\(X\)</span> <em>exceeds</em> a value <span class="math inline">\(x\)</span>:
+<span class="math display" id="eq:SurvivalFunction">\[\begin{equation}
+  S_X(x; \theta_1, \dots) = \Pr(X &gt; x)
+  \tag{4.3}
+\end{equation}\]</span>
+for parameters <span class="math inline">\(\theta_1, \dots\)</span>.
+Since <span class="math inline">\(F_X(x) = \Pr(X \le x)\)</span>, the survival function is simply the complement of the distribution function:
+<span class="math display">\[
+  S_X(x; \theta_1, \dots) = 1 - F_X(x; \theta_1, \dots).
+\]</span></p>
+<p>Properties of the survival function include:</p>
+<ol style="list-style-type: decimal">
+<li>
+<span class="math inline">\(0\leq S_X(x)\leq 1\)</span> because <span class="math inline">\(S_X(x)\)</span> is a probability.</li>
+<li>
+<span class="math inline">\(S_X(x)\)</span> is a non-increasing function of <span class="math inline">\(x\)</span>.
+That is, if <span class="math inline">\(x_1 &lt; x_2\)</span> then <span class="math inline">\(S_X(x_1) \geq S_X(x_2)\)</span>.</li>
+<li>
+<span class="math inline">\(\displaystyle{\lim_{x\to \infty} S_X(x)} = 0\)</span> and <span class="math inline">\(\displaystyle{\lim_{x\to -\infty} S_X(x)} = 1\)</span>.</li>
+<li>
+<span class="math inline">\(\Pr(a &lt; X \leq b) = S_X(a) - S_X(b)\)</span>.</li>
+<li>If <span class="math inline">\(X\)</span> is discrete, then <span class="math inline">\(S_X(x)\)</span> is a step-function.
+If <span class="math inline">\(X\)</span> is continuous, then <span class="math inline">\(S_X\)</span> will be a continuous function for all <span class="math inline">\(x\)</span>.</li>
+<li>The point where <span class="math inline">\(F_X(x) = S_X(x) = 0.5\)</span> is the median of the distribution.</li>
+</ol>
+<p>For continuous variables, <span class="math inline">\(\Pr(X &gt; x) = \Pr(X \ge x)\)</span>.
+For discrete variables, <span class="math inline">\(S_X(x)\)</span> is the probability of the event occurring at any step strictly greater than <span class="math inline">\(x\)</span>.</p>
+<div class="example">
+<p><span id="exm:SurvivalVsDistributionCont" class="example"><strong>Example 4.23  (Survival function) </strong></span>Suppose the time <span class="math inline">\(X\)</span> (in years) until a specific LED bulb fails has a probability density function
+<span class="math display">\[
+  f_X(x) - \exp(-x/2) \quad\text{for $x &gt; 0$}.
+\]</span>
+The distribution function is <span class="math inline">\(F_X(x) = 1 - \exp(-x/2)\)</span>, so the survival function is (Fig. <a href="DistributionRandomVariables.html#fig:SurvivalVsDistributionContPlot">4.11</a>)
+<span class="math display">\[
+  S_X(x) = 1 - \left[1 - \exp(-x/2)\right] = \exp(-x/2).
+\]</span>
+At <span class="math inline">\(x = 0\)</span>, the bulb has just been turned on, and <span class="math inline">\(F_X(0) = 0\)</span> (probability of failing instantly is zero) and <span class="math inline">\(S_X(0) = 1\)</span> (<span class="math inline">\(100\)</span>% chance the bulb has survived to the start).
+As <span class="math inline">\(x \to \infty\)</span>, <span class="math inline">\(F_X(x)\)</span> approaches <span class="math inline">\(1\)</span>, while <span class="math inline">\(S_X(x)\)</span> approaches <span class="math inline">\(0\)</span>: eventually, every bulb ‘dies’.</p>
+</div>
+<div class="figure">
+<span style="display:block;" id="fig:SurvivalVsDistributionContPlot"></span>
+<img src="04-RandomVariables_files/figure-html/SurvivalVsDistributionContPlot-1.png" alt="Relationship between distribution and survival functions" width="90%"><p class="caption">
+FIGURE 4.11: Relationship between distribution and survival functions
+</p>
+</div>
+<p>In the discrete case, the definition of the survival function requires precision regarding the boundaries.</p>
+<div class="example">
+<p><span id="exm:SurvivalVsDistributionDiscrete" class="example"><strong>Example 4.24  (Survivor function) </strong></span>Suppose a fair six-sided die is rolled.
+Let <span class="math inline">\(X\)</span> be the number of rolls until the first <img src="Dice/die6.png" alt="" width="10">.
+The probability mass function is
+<span class="math display">\[
+  p_X(x) = (1/6)^x\quad\text{for x = $1, 2, 3, 4, \dots$}.
+\]</span>
+The distribution function gives the probability of taking fewer than or equal to <span class="math inline">\(x\)</span> rolls to obtain a <img src="Dice/die6.png" alt="" width="10">.
+The survival function <span class="math inline">\(S_X(x)\)</span> gives the probability that it takes more than <span class="math inline">\(x\)</span> rolls to roll a <img src="Dice/die6.png" alt="" width="10">.</p>
+<p>The DF is defined such that <span class="math inline">\(F_X(x) = \Pr(X \le x)\)</span>, and so includes the probability that <span class="math inline">\(X\)</span> is exactly <span class="math inline">\(x\)</span>.
+However, the survival function, defined as <span class="math inline">\(S_X(x) = \Pr(X &gt; x)\)</span>, <em>excludes</em> the probability that <span class="math inline">\(X\)</span> is exactly the value <span class="math inline">\(x\)</span>.
+Since <span class="math inline">\(S_X(x)\)</span> excludes the point <span class="math inline">\(x\)</span>, at the ‘jump’ points (like <span class="math inline">\(x = 1\)</span> rolls), the survival probability <span class="math inline">\(S_X(1)\)</span> is the probability that <span class="math inline">\(2\)</span> <em>or more</em> rolls are needed.
+The distribution and survival functions are compared in Fig. <a href="DistributionRandomVariables.html#fig:SurvivalVsDistributionDiscretePlot">4.12</a>.</p>
+</div>
+<p></p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:SurvivalVsDistributionDiscretePlot"></span>
+<img src="04-RandomVariables_files/figure-html/SurvivalVsDistributionDiscretePlot-4.png" alt="Relationship between distribution and survival functions" width="80%"><p class="caption">
+FIGURE 4.12: Relationship between distribution and survival functions
+</p>
+</div>
+</div>
+<div id="QuantileFunction" class="section level2" number="4.6">
+<h2>
+<span class="header-section-number">4.6</span> Quantile functions<a class="anchor" aria-label="anchor" href="#QuantileFunction"><i class="fas fa-link"></i></a>
+</h2>
+<p></p>
+<p>For a random variable <span class="math inline">\(X\)</span>, the distribution function <span class="math inline">\(F_X(x)\)</span> computes the probability that <span class="math inline">\(X &lt; x\)</span> for some given value of <span class="math inline">\(x\)</span>.
+The value of <span class="math inline">\(F_X(x)\)</span> is a probability, so is a value between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>.</p>
+<p>The <em>quantile function</em> <span class="math inline">\(Q_X(p)\)</span> is the inverse of the distribution function; it takes a value between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> (denoted <span class="math inline">\(p\)</span>), and returns the <em>smallest</em> value <span class="math inline">\(x\)</span> such that <span class="math inline">\(F_X(x) \ge p\)</span> for given values of <span class="math inline">\(p\)</span>.
+The <span class="math inline">\(p\)</span>-quantile of a distribution is a value <span class="math inline">\(x\)</span> such that a fraction <span class="math inline">\(p\)</span> of the distribution lies at or below <span class="math inline">\(x\)</span>.
+For example, the <span class="math inline">\(0.9\)</span>-quantile (or the <span class="math inline">\(90\)</span>% quantile) is the smallest value with (at least) <span class="math inline">\(90\)</span>% of the distribution below or at the value.
+The median is the <span class="math inline">\(0.5\)</span>-quantile—half the distribution (i.e., <span class="math inline">\(50\)</span>%) is on each side of the median.</p>
+<p>More formally,
+<span class="math display" id="eq:QuantileFunction">\[\begin{equation}
+  Q_X(p; \theta_1, \dots) = \inf\{x \in \mathbb{R} \mid F_X(x; \theta_1, \dots) \ge p\}\quad\text{for $0 &lt; p &lt; 1$}
+  \tag{4.4}
+\end{equation}\]</span>
+where ‘inf’ is the ‘infimum’, the greatest lower bound of the set, and <span class="math inline">\(\theta_1, \dots\)</span> are the parameters.
+In practice this refers to the leftmost value <span class="math inline">\(x\)</span> where the distribution function <span class="math inline">\(F_X(x)\)</span> reaches or exceeds a target probability <span class="math inline">\(p\)</span>.</p>
+<p>When <span class="math inline">\(X\)</span> is a <em>continuous</em> random variable and <span class="math inline">\(F_X(x)\)</span> is a strictly increasing function, the quantile function is the inverse of the distribution function, and we can write
+<span class="math display">\[
+   Q_X(p; \theta_1, \dots) = F_X^{-1}(p; \theta_1, \dots).
+\]</span></p>
+<!-- 
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+For built-in distributions (see Chaps.\ \@ref(DiscreteDistributions) and\ \@ref(ContinuousDistributions)), **R** allows the values `p = 0` and `p = 1`.
+If the distribution is *unbounded*, **R** returns $-\infty$ or $+\infty$ as appropriate.
+If the distribution is *bounded*, **R** returns the actual minimum and maximum of the support.
+:::
+-->
+<p>At the endpoints (<span class="math inline">\(p = 0\)</span> and <span class="math inline">\(p = 1\)</span>), some ambiguity exists.
+Some authors set <span class="math inline">\(Q_X(0) = \min\{x \mid F_X(x) &gt; 0\}\)</span>, which is the smallest support point with a positive mass.
+Other authors define <span class="math inline">\(Q_X(0) = \lim_{p\downarrow 0} Q_X(p)\)</span>, which for some distributions may lead to <span class="math inline">\(Q_X(0) \to -\infty\)</span>.</p>
+<p>Similarly, some authors leave <span class="math inline">\(Q_X(1)\)</span> undefined.
+Others define it as the smallest value <span class="math inline">\(x\)</span> where the distribution function first reaches 1, i.e., <span class="math inline">\(Q_X(1) = \inf\{x \mid F_X(x) = 1\}\)</span>.
+This corresponds to the largest point in the distribution’s support.</p>
+<div class="example">
+<p><span id="exm:QuantileFnContinuous1" class="example"><strong>Example 4.25  (Quantile function: continuous rv) </strong></span>Consider the continuous random variable <span class="math inline">\(X\)</span> with the probability density function (shown in Fig. <a href="DistributionRandomVariables.html#fig:QuantileFnContinuous1">4.13</a>, left panel)
+<span class="math display">\[
+  f_X(x)
+  =
+    (x - 1)^2/9   \qquad\text{for $1 \le x \le 4$}.
+\]</span>
+The distribution function (shown in Fig. <a href="DistributionRandomVariables.html#fig:QuantileFnContinuous1">4.13</a>, centre panel) is
+<span class="math display">\[
+  F_X(x)
+  =
+  \begin{cases}
+    0             &amp; \text{for $x &lt; 1$}\\
+    (x - 1)^3/27  &amp; \text{for $1 \le x \le 4$}\\
+    1             &amp; \text{for $x &gt; 4$}.
+  \end{cases}
+\]</span>
+For <span class="math inline">\(0 &lt; p &lt; 1\)</span>, the quantile function <span class="math inline">\(Q_X(p)\)</span> is given by solving <span class="math inline">\(F_X(x) = p\)</span> (i.e., solving <span class="math inline">\(p = (x - 1)^3/27\)</span>).
+This means the quantile function (shown in Fig. <a href="DistributionRandomVariables.html#fig:QuantileFnContinuous1">4.13</a>, right panel) is
+<span class="math display">\[
+  Q_X(p)
+  = 1 + 3p^{1/3} \qquad\text{for $0 &lt; p &lt; 1$.}
+\]</span></p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:QuantileFnContinuous1"></span>
+<img src="04-RandomVariables_files/figure-html/QuantileFnContinuous1-1.png" alt="Left: the probability function of $X$. Centre: the distribution function. Right: the quantile function for $X$." width="100%"><p class="caption">
+FIGURE 4.13: Left: the probability function of <span class="math inline">\(X\)</span>. Centre: the distribution function. Right: the quantile function for <span class="math inline">\(X\)</span>.
+</p>
+</div>
+<div class="example">
+<p><span id="exm:QuantileFnContinuous" class="example"><strong>Example 4.26  (Quantile function: continuous rv) </strong></span>Consider the probability density function for a continuous random variable <span class="math inline">\(X\)</span> such that
+<span class="math display">\[
+   f_X(x) =
+      2\exp(-2x)   \qquad \text{for $x &gt; 0$}
+\]</span>
+so that the distribution function is:
+<span class="math display">\[
+   F_X(x) =
+   \begin{cases}
+      0                    &amp; \text{for $x &lt; 0$}\\
+      1 - \exp(-2x)        &amp; \text{for $x \ge 0 $}.
+   \end{cases}
+\]</span>
+For <span class="math inline">\(0 &lt; p &lt; 1\)</span>, the quantile function <span class="math inline">\(Q(p)\)</span> is found by solving <span class="math inline">\(F_X(x) = p\)</span>; i.e., the solution to <span class="math inline">\(p = 1 - \exp(-2x)\)</span>.
+This yields
+<span class="math display">\[
+   Q_X(p) =
+   F_X^{-1}(p) =
+      -\frac{1}{2}\log(1 - p)
+\]</span>
+for <span class="math inline">\(0 \le p \le 1\)</span>.
+For example, three quarters of the probability occurs before
+<span class="math display">\[
+   Q(3/4) = -\frac{1}{2}\log\big(1 - (3/4)\big) = \frac{\log 4}{2} = 0.6931\dots
+\]</span>
+In other words, <span class="math inline">\(75\)</span>% of the probability occurs at or below <span class="math inline">\(x \approx 0.6931\)</span>; see Fig. <a href="DistributionRandomVariables.html#fig:QuantileFnContinuous">4.14</a>.</p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:QuantileFnContinuous"></span>
+<img src="04-RandomVariables_files/figure-html/QuantileFnContinuous-1.png" alt="Left: the distribution function of $X$. Right: the quantile function for $X$." width="100%"><p class="caption">
+FIGURE 4.14: Left: the distribution function of <span class="math inline">\(X\)</span>. Right: the quantile function for <span class="math inline">\(X\)</span>.
+</p>
+</div>
+<p>When <span class="math inline">\(X\)</span> is a <em>discrete</em> random variable, and so the distribution function is discontinuous, great care is needed when applying Eq. <a href="DistributionRandomVariables.html#eq:QuantileFunction">(4.4)</a>.</p>
+<div class="example">
+<p><span id="exm:QuantileFnDiscrete" class="example"><strong>Example 4.27  (Quantile function: discrete rv) </strong></span>Consider the discrete random variable in Example <a href="DistributionRandomVariables.html#exm:DistributionFnReverseDiscrete">4.21</a>, for which
+<span class="math display">\[
+   F_X(x) =
+   \begin{cases}
+      0     &amp; \text{for $x &lt; 10$;}\\
+      0.1   &amp; \text{for $10 \le x &lt; 11$;}\\
+      0.4   &amp; \text{for $11 \le x &lt; 15$;}\\
+      0.8   &amp; \text{for $15 \le x &lt; 17$;}\\
+      1     &amp; \text{for $x \ge 17$,}
+   \end{cases}
+\]</span>
+as shown in Fig. <a href="DistributionRandomVariables.html#fig:QuantileFnDiscrete">4.15</a> (left panel).</p>
+<p>The quantile function is found by solving <span class="math inline">\(F_X(x) \ge p\)</span> for <span class="math inline">\(0 &lt; p \le 1\)</span>.
+This gives:
+<span class="math display">\[
+  Q_X(p) =
+  \begin{cases}
+    10 &amp; \text{for $0 &lt; p \le 0.1$;}\\
+    11 &amp; \text{for $0.1 &lt; p \le 0.4$;}\\
+    15 &amp; \text{for $0.4 &lt; p \le 0.8$;}\\
+    17 &amp; \text{for $0.8 &lt; p \le 1$.}
+  \end{cases}
+\]</span>
+as shown in Fig. <a href="DistributionRandomVariables.html#fig:QuantileFnDiscrete">4.15</a>.
+For example, <span class="math inline">\(Q_X(0.02) = 10\)</span> and <span class="math inline">\(Q_X(0.3) = 11\)</span>.</p>
+<p>In addition, <span class="math inline">\(Q_X(0.4) = 11\)</span>, because <span class="math inline">\(11\)</span> is the <em>smallest</em> value such that <span class="math inline">\(F_X(x) \ge 0.4\)</span>.
+Also, while <span class="math inline">\(F_X(15) = 0.9\)</span>, <span class="math inline">\(11\)</span> is the infimum.
+Similarly, <span class="math inline">\(Q_X(1) = 17\)</span>.</p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:QuantileFnDiscrete"></span>
+<img src="04-RandomVariables_files/figure-html/QuantileFnDiscrete-1.png" alt="Left: the distribution function of $X$. Right: the quantile function of $X$." width="100%"><p class="caption">
+FIGURE 4.15: Left: the distribution function of <span class="math inline">\(X\)</span>. Right: the quantile function of <span class="math inline">\(X\)</span>.
+</p>
+</div>
+<div class="importantBox important">
+<p>For the discrete variable <span class="math inline">\(X\)</span> above, <span class="math inline">\(Q_X(1) = 17\)</span> because <span class="math inline">\(17\)</span> is the smallest value such that <span class="math inline">\(F_X(x)\)</span> reaches <span class="math inline">\(1\)</span>.
+For <span class="math inline">\(Q_X(0)\)</span>, we observe that while <span class="math inline">\(F_X(x) = 0\)</span> for all <span class="math inline">\(x &lt; 10\)</span>, the ‘first’ point to provide any probability is <span class="math inline">\(x = 10\)</span>, making it the most common choice for <span class="math inline">\(Q_X(0)\)</span>.</p>
+</div>
+<p>If the distribution has a clear end (like the random variable <span class="math inline">\(X\)</span> in Example <a href="DistributionRandomVariables.html#exm:QuantileFnDiscrete">4.27</a>, where no furtehr probability is added after <span class="math inline">\(X = 17\)</span>), <span class="math inline">\(Q(1)\)</span> is just that end point.
+If the distribution has a tail that goes on forever (like the random variable <span class="math inline">\(X\)</span> in Example <a href="DistributionRandomVariables.html#exm:QuantileFnContinuous">4.26</a>), <span class="math inline">\(Q(1)\)</span> is infinity.</p>
+<div class="inline-table"><table class="table" style="font-size: 10px; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">
+<span id="tab:unnamed-chunk-2">TABLE 4.3: </span>The limits of the quantile function <span class="math inline">\(Q_X(x)\)</span> as <span class="math inline">\(p\to 0\)</span> and <span class="math inline">\(p\to 1\)</span>.
+</caption>
+<thead><tr>
+<th style="text-align:left;font-weight: bold;">
+</th>
+<th style="text-align:center;font-weight: bold;">
+Continuous example
+</th>
+<th style="text-align:center;font-weight: bold;">
+Discrete example
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Support
+</td>
+<td style="text-align:center;">
+<span class="math inline">\([0, \infty)\)</span> (unbounded)
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(\{10, 11, 15, 17\}\)</span> (bounded)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span class="math inline">\(Q(0)\)</span> calculation
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(\inf\{ x\mid 1 - \exp(-2x)\ge 0\} = 0\)</span>
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(\min\{10, 11, 15, 17\} = 10\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span class="math inline">\(Q(1)\)</span> calculation
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(\inf\{ x\mid 1 - \exp(-2x) = 1\} = \infty\)</span>
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(\inf\{x \mid F_X(x) = 1\} = 17\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Limit <span class="math inline">\(p\to 1\)</span>
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(Q(p)\to \infty\)</span>
+</td>
+<td style="text-align:center;">
+<span class="math inline">\(Q(p) = 17\)</span> for all <span class="math inline">\(p &amp;gt; 0.9\)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Visually
+</td>
+<td style="text-align:center;">
+Smooth curve that
+</td>
+<td style="text-align:center;">
+A series of steps that
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+never quite reaches <span class="math inline">\(1\)</span>
+</td>
+<td style="text-align:center;">
+ends at a top landing
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>A mixed random variable has a distribution function <span class="math inline">\(F_X(x)\)</span> that contains both continuous slopes and discrete jumps.
+The quantile function <span class="math inline">\(Q_X(p)\)</span> still follows the definition in Eq. <a href="DistributionRandomVariables.html#eq:QuantileFunction">(4.4)</a>.</p>
+<div class="example">
+<p><span id="exm:QuantileFnMixed" class="example"><strong>Example 4.28  (Quantile function: mixed rv) </strong></span>Consider a random variable <span class="math inline">\(X\)</span> that represents a censored waiting time.
+There is a <span class="math inline">\(50\)</span>% chance the event happens instantly (so that <span class="math inline">\(x = 0\)</span>), and a <span class="math inline">\(50\)</span>% chance it follows the continuous distribution
+<span class="math display">\[
+  f_X(x) =
+    \exp(-x)  \qquad\text{for $x \ge 0$}.
+\]</span>
+The distribution function (Fig. <a href="DistributionRandomVariables.html#fig:XMixedPlots">4.16</a>, left panel) is:
+<span class="math display">\[
+  F_X(x) =
+  \begin{cases}
+    0                                   &amp; \text{for $x &lt; 0$} \\
+    0.5 + 0.5\left(1 - \exp(-x)\right)  &amp; \text{for $x \ge 0$}.
+\end{cases}
+\]</span>
+At <span class="math inline">\(x = 0\)</span>, the DF jumps from <span class="math inline">\(F_X(x) = 0\)</span> to <span class="math inline">\(F_X(x) = 0.5\)</span>.</p>
+<p>To find the quantile function, we look for the smallest value of <span class="math inline">\(x\)</span> such that <span class="math inline">\(F_X(x) \ge p\)</span>:</p>
+<ul>
+<li>For <span class="math inline">\(0 &lt; p \le 0.5\)</span>:
+The smallest <span class="math inline">\(x\)</span> that satisfies <span class="math inline">\(F_X(x) \ge p\)</span> is exactly <span class="math inline">\(x = 0\)</span>, because <span class="math inline">\(F_X(0) = 0.5\)</span>, which is <span class="math inline">\(\ge p\)</span> for all these values.</li>
+<li>For <span class="math inline">\(0.5 &lt; p &lt; 1\)</span>:
+Solving <span class="math inline">\(0.5 + 0.5\left(1 - \exp(-x)\right) = p\)</span> gives <span class="math inline">\(x = -\log\left(2(1 - p)\right)\)</span>.</li>
+</ul>
+<p>The resulting quantile function (Fig. <a href="DistributionRandomVariables.html#fig:XMixedPlots">4.16</a>, right panel) is:
+<span class="math display">\[
+  Q_X(p) =
+  \begin{cases}
+    0                           &amp; \text{for $0 &lt; p \le 0.5$} \\
+    -\log\left(2(1 -p)\right)   &amp; \text{for $0.5 &lt; p &lt; 1$}.
+\end{cases}
+\]</span></p>
+</div>
+<p></p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:XMixedPlots"></span>
+<img src="04-RandomVariables_files/figure-html/XMixedPlots-1.png" alt="The distribution function (left) and quantile function (right) for the random variable $X$." width="80%"><p class="caption">
+FIGURE 4.16: The distribution function (left) and quantile function (right) for the random variable <span class="math inline">\(X\)</span>.
+</p>
+</div>
+</div>
+<div id="RandomNumbers" class="section level2" number="4.7">
+<h2>
+<span class="header-section-number">4.7</span> Generating random numbers<a class="anchor" aria-label="anchor" href="#RandomNumbers"><i class="fas fa-link"></i></a>
+</h2>
+<p></p>
+<p>Generating random numbers from a specified distribution is fundamental to simulations of real-world scenarios.
+However, computers often will only have the capacity to generatie (pseudo-)random numbers between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>, even though random numbers from other distributions are often more useful in computer modelling and simulation (for example, Sects. <a href="DiscreteDistributions.html#SimulationDiscrete">6.10</a> and <a href="ContinuousDistributions.html#SimulationContinuous">7.9</a>).
+For instance, generating heights of people at random may require the heights to have bell-shaped distribution, with an average value of (say) <span class="math inline">\(180\,\text{cm}\)</span>, with most heights between about <span class="math inline">\(175\,\text{cm}\)</span> and <span class="math inline">\(185\,\text{cm}\)</span>, but a few smaller than <span class="math inline">\(175\,\text{cm}\)</span> and a few larger than <span class="math inline">\(185\,\text{cm}\)</span>.</p>
+<p>Computer software can generally provide random numbers between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>, which correspond to the range of <span class="math inline">\(F_X(x)\)</span>, or equivalently the domain of <span class="math inline">\(Q_X(p)\)</span>, for any random variable <span class="math inline">\(X\)</span>.
+Suppose a random number <span class="math inline">\(p^*\)</span> is chosen between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>; then, the quantile function is used to find the corresponding value <span class="math inline">\(x^*\)</span>:
+<span class="math display">\[
+   x^* = Q_X(p^*)
+\]</span>
+(see Fig. <a href="DistributionRandomVariables.html#fig:RNos">4.17</a>).
+By repeating this process with many different random values of <span class="math inline">\(p^*\)</span>, we naturally generate more <span class="math inline">\(x\)</span> values in regions where the distribution function is steep (high density) and fewer <span class="math inline">\(x\)</span> values where the distribution function is flat (low density).</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:RNos"></span>
+<img src="04-RandomVariables_files/figure-html/RNos-1.png" alt="Selecting a random number from some distribution, using the quantile function." width="60%"><p class="caption">
+FIGURE 4.17: Selecting a random number from some distribution, using the quantile function.
+</p>
+</div>
+<p>In <strong>R</strong>, random numbers between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> are found using the function <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code>:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="co"># '10' here means to generate 10 random numbers between 0 and 1</span></span>
+<span><span class="co">#&gt;  [1] 0.2516103 0.5757754 0.0141046 0.8898474 0.5825408 0.4986948</span></span>
+<span><span class="co">#&gt;  [7] 0.8753130 0.3948804 0.3206488 0.2908654</span></span></code></pre></div>
+<div class="example">
+<p><span id="exm:RandomContinuous" class="example"><strong>Example 4.29  (Random numbers from a continuous distribution) </strong></span>Random numbers from the distribution
+<span class="math display">\[
+  f_X(x) = 2 \exp(-2x)\quad\text{for $x &gt; 0$},
+\]</span>
+as in Example <a href="DistributionRandomVariables.html#exm:QuantileFnContinuous">4.26</a>, can be generated using <strong>R</strong> using this idea:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create an R function for the quantile function</span></span>
+<span><span class="va">quantileFn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">{</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Create 20 random numbers between 0 and 1</span></span>
+<span><span class="va">rnos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Random numbers from the specified distribution</span></span>
+<span><span class="va">rSpecified</span> <span class="op">&lt;-</span> <span class="fu">quantileFn</span><span class="op">(</span><span class="va">rnos</span><span class="op">)</span></span>
+<span><span class="va">rSpecified</span></span>
+<span><span class="co">#&gt;  [1] 2.171700641 0.473694652 0.029182963 0.331987237 0.300095204</span></span>
+<span><span class="co">#&gt;  [6] 0.017917478 0.005156677 0.322064849 0.287240059 0.145286330</span></span>
+<span><span class="co">#&gt; [11] 0.504798971 0.224026252 0.108944868 0.370482873 0.043328258</span></span>
+<span><span class="co">#&gt; [16] 0.979405812 1.083842484 0.545094388 0.386174984 0.044326855</span></span></code></pre></div>
+</div>
+<p></p>
+</div>
+<div id="RVsStatisticalComputing" class="section level2" number="4.8">
+<h2>
+<span class="header-section-number">4.8</span> Statistical computing with probability functions<a class="anchor" aria-label="anchor" href="#RVsStatisticalComputing"><i class="fas fa-link"></i></a>
+</h2>
+<div id="discrete-random-variables-1" class="section level3" number="4.8.1">
+<h3>
+<span class="header-section-number">4.8.1</span> Discrete random variables<a class="anchor" aria-label="anchor" href="#discrete-random-variables-1"><i class="fas fa-link"></i></a>
+</h3>
+<p></p>
+<p>In Example <a href="DistributionRandomVariables.html#exm:DistributionFnReverseDiscrete">4.21</a>, the random variable <span class="math inline">\(X\)</span> was stated to have the PMF
+<span class="math display">\[
+   f_X(x) =
+   \begin{cases}
+      0.1   &amp; \text{for $x = 10$};\\
+      0.3   &amp; \text{for $x = 11$};\\
+      0.5   &amp; \text{for $x = 15$};\\
+      0.1   &amp; \text{for $x = 17$}.
+   \end{cases}
+\]</span>
+In <strong>R</strong>, define the values of <span class="math inline">\(X\)</span> where probabilities are non-zero:</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="fl">10</span>,  <span class="fl">11</span>,  <span class="fl">15</span>,  <span class="fl">17</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">)</span> </span></code></pre></div>
+<p>Then the probability mass function is</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">p</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    x   p</span></span>
+<span><span class="co">#&gt; 1 10 0.1</span></span>
+<span><span class="co">#&gt; 2 11 0.3</span></span>
+<span><span class="co">#&gt; 3 15 0.5</span></span>
+<span><span class="co">#&gt; 4 17 0.1</span></span></code></pre></div>
+<p>This is a valid PMF, as the probabilities sum to one:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<p>The DF can be found using the function <code><a href="https://rdrr.io/r/base/cumsum.html">cumsum()</a></code>, the <strong>cum</strong>ulative <strong>sum</strong>mation:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="cn">F</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">x</span>, <span class="cn">F</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    x   F</span></span>
+<span><span class="co">#&gt; 1 10 0.1</span></span>
+<span><span class="co">#&gt; 2 11 0.4</span></span>
+<span><span class="co">#&gt; 3 15 0.9</span></span>
+<span><span class="co">#&gt; 4 17 1.0</span></span></code></pre></div>
+<p>This agrees with the DF given earlier in Example <a href="DistributionRandomVariables.html#exm:DistributionFnReverseDiscrete">4.21</a>.
+</p>
+</div>
+<div id="continuous-random-variables-1" class="section level3" number="4.8.2">
+<h3>
+<span class="header-section-number">4.8.2</span> Continuous random variables<a class="anchor" aria-label="anchor" href="#continuous-random-variables-1"><i class="fas fa-link"></i></a>
+</h3>
+<p></p>
+<p>In Example <a href="DistributionRandomVariables.html#exm:ProbabilityDensityFunction">4.15</a>, the continuous random variable <span class="math inline">\(W\)</span> was given with the PDF
+<span class="math display">\[
+   f_W(w) =
+      2w \qquad \text{for $0 &lt; w &lt; 1$}.\\
+\]</span>
+The PDF can be expressed in <strong>R</strong> as a function (note that the <code><a href="https://rdrr.io/r/stats/integrate.html">integrate()</a></code> function in <strong>R</strong>, used below, always denotes the random variable by <code>x</code>):</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fW</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fl">2</span> <span class="op">*</span> <span class="va">x</span><span class="op">}</span></span></code></pre></div>
+<p>Then, the PDF can be plotted (Fig. <a href="DistributionRandomVariables.html#fig:RDistributions">4.18</a>, left panel) using:</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="va">fW</span>, </span>
+<span>      main <span class="op">=</span> <span class="st">"Density function"</span>,  <span class="co"># Main title</span></span>
+<span>      xlab <span class="op">=</span> <span class="st">"w"</span>,      <span class="co"># Horizontal-axis label</span></span>
+<span>      ylab <span class="op">=</span> <span class="st">"PDF"</span>,    <span class="co"># Vertical-axis label</span></span>
+<span>      from <span class="op">=</span> <span class="fl">0</span>,        <span class="co"># Lower x-value of plot</span></span>
+<span>      to <span class="op">=</span> <span class="fl">1</span>,          <span class="co"># Upper x-value of plot</span></span>
+<span>      las <span class="op">=</span> <span class="fl">1</span>,         <span class="co"># Horizontal axis labels</span></span>
+<span>      lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>         <span class="co"># Lines a little thicker</span></span></code></pre></div>
+<p>As required, the total area under the curve is <span class="math inline">\(1\)</span>:</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/integrate.html">integrate</a></span><span class="op">(</span><span class="va">fW</span>,</span>
+<span>          lower <span class="op">=</span> <span class="fl">0</span>,         <span class="co"># Lower limit of integration</span></span>
+<span>          upper <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">$</span><span class="va">value</span>   <span class="co"># Upper limit of integration</span></span>
+<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<p>Probabilities can be found similarly; for example, to find <span class="math inline">\(\Pr(0.2 &lt; X &lt; 0.6)\)</span>:</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/integrate.html">integrate</a></span><span class="op">(</span><span class="va">fW</span>, </span>
+<span>          lower <span class="op">=</span> <span class="fl">0.2</span>, </span>
+<span>          upper <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span><span class="op">$</span><span class="va">value</span></span>
+<span><span class="co">#&gt; [1] 0.32</span></span></code></pre></div>
+<p>The DF can also be defined (<code><a href="https://rdrr.io/r/base/Vectorize.html">Vectorize()</a></code> is an <strong>R</strong> construct to avoids writing loops):</p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">FW</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Vectorize.html">Vectorize</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/stats/integrate.html">integrate</a></span><span class="op">(</span><span class="va">fW</span>,                  <span class="co"># Integrate f(x)... </span></span>
+<span>                  lower <span class="op">=</span> <span class="fl">0</span>,           <span class="co"># ... from 0 to x</span></span>
+<span>                  upper <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">value</span><span class="op">}</span><span class="op">)</span>   <span class="co"># Return the *value*</span></span></code></pre></div>
+<p>The DF can be plotted also (Fig. <a href="DistributionRandomVariables.html#fig:RDistributions">4.18</a>, right panel):</p>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="va">FW</span>, </span>
+<span>      main <span class="op">=</span> <span class="st">"Distribution function"</span>,  <span class="co"># Main title</span></span>
+<span>      xlab <span class="op">=</span> <span class="st">"w"</span>,       <span class="co"># Horizontal-axis label</span></span>
+<span>      ylab <span class="op">=</span> <span class="st">"DF"</span>,     <span class="co"># Vertical-axis label</span></span>
+<span>      from <span class="op">=</span> <span class="fl">0</span>,         <span class="co"># Lower x-value of plot</span></span>
+<span>      to <span class="op">=</span> <span class="fl">1</span>,           <span class="co"># Upper x-value of plot</span></span>
+<span>      las <span class="op">=</span> <span class="fl">1</span>,          <span class="co"># Axis labels horizontal</span></span>
+<span>      lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>          <span class="co"># Lines a little thicker</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:RDistributions"></span>
+<img src="04-RandomVariables_files/figure-html/RDistributions-1.png" alt="The density function and distribution function for\ $W$, produced by R." width="80%"><p class="caption">
+FIGURE 4.18: The density function and distribution function for <span class="math inline">\(W\)</span>, produced by R.
+</p>
+</div>
+<p>Then, <span class="math inline">\(\Pr(0.2 &lt; W &lt; 0.6)\)</span> can be found using the distribution function:</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">FW</span><span class="op">(</span><span class="fl">0.6</span><span class="op">)</span> <span class="op">-</span> <span class="fu">FW</span><span class="op">(</span><span class="fl">0.2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.32</span></span></code></pre></div>
+</div>
+<div id="EmpiricalProbFunctions" class="section level3" number="4.8.3">
+<h3>
+<span class="header-section-number">4.8.3</span> Empirical probability functions<a class="anchor" aria-label="anchor" href="#EmpiricalProbFunctions"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+When random numbers are generated from a probability distribution, the resulting numbers are called a <em>sample</em>, and can be used as an <em>estimate</em> of the the probability function of the distribution.
+The estimated probability function is called an <em>empirical probability function</em>.</p>
+<p>For a continuous distribution, a histogram of the simulated values estimates the probability density function.
+The histogram divides the range of the data into bins and counts the number of values in each bin; when scaled so that the total area equals <span class="math inline">\(1\)</span>, the histogram approximates the PDF.
+In <strong>R</strong>, <code>hist(x, freq = FALSE)</code> produces this scaled histogram.
+The larger the number of simulated values, the closer the empirical probability function is to the true theoretical probability function.</p>
+<p>For a discrete distribution, a bar chart of the relative frequencies of the simulated values estimates the PMF.
+In <strong>R</strong>, <code>table(x) / length(x)</code> computes the relative frequencies, and <code><a href="https://rdrr.io/r/graphics/barplot.html">barplot()</a></code> displays them.</p>
+<p>For a mixed distribution, the empirical probability function combines both: a solid dot at <span class="math inline">\(x = 0\)</span> shows the simulated proportion of zeros (estimating the probability mass <span class="math inline">\(\Pr(X = 0)\)</span>), and a histogram of the positive values estimates the continuous component of the density.</p>
+<div class="example">
+<p><span id="exm:RandomContinuousEH" class="example"><strong>Example 4.30  (Empirical probability density) </strong></span>In Example <a href="DistributionRandomVariables.html#exm:RandomContinuous">4.29</a>, <span class="math inline">\(20\)</span> random numbers were generated from the continuous probability density function
+<span class="math inline">\(f_X(x) = 2 \exp(-2x)\)</span> for <span class="math inline">\(x &gt; 0\)</span>.
+To generate and display <span class="math inline">\(n = 50\)</span> random numbers in <strong>R</strong>:</p>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rnos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">quantileFn</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>      <span class="co"># Function as defined previously</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">x</span>,</span>
+<span>     freq   <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>    <span class="co"># Ensures a scaled histogram</span></span></code></pre></div>
+<p>The empirical probability density function for increasing values of <span class="math inline">\(n\)</span> are show in Fig. <a href="DistributionRandomVariables.html#fig:EmpiricalPDFexp">4.19</a>.
+The empirical probability function is closer to the actual probability density function as <span class="math inline">\(n\)</span> increases.</p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:EmpiricalPDFexp"></span>
+<img src="04-RandomVariables_files/figure-html/EmpiricalPDFexp-1.png" alt="Empirical probability density functions based on samples of size $n = 50$, $500$, and $5000$. As $n$ increases, the empirical probability density function converges to the theoretical PDF (shown as solid lines)." width="100%"><p class="caption">
+FIGURE 4.19: Empirical probability density functions based on samples of size <span class="math inline">\(n = 50\)</span>, <span class="math inline">\(500\)</span>, and <span class="math inline">\(5000\)</span>. As <span class="math inline">\(n\)</span> increases, the empirical probability density function converges to the theoretical PDF (shown as solid lines).
+</p>
+</div>
+<div class="example">
+<p><span id="exm:RandomContinuousEH2" class="example"><strong>Example 4.31  (Empirical probability density) </strong></span>Consider generating random numbers from the discrete probability mass function
+<span class="math display">\[
+  p_X(x) = 0.6\cdot 0.4^x\quad\text{for $x = 0, 1, 2, \dots$}
+\]</span>
+The distribution function is
+<span class="math display">\[
+  F_X(x) = 1 - 0.4^{x + 1},
+\]</span>
+so the quantile function is found by solving
+<span class="math display">\[
+  1 - 0.4^{x + 1} \ge p,
+\]</span>
+giving
+<span class="math display">\[
+  Q_X(p) =  \left\lceil
+            \frac{\log(1 - p)}{\log 0.4} - 1
+            \right\rceil
+            \quad\text{for $0 \le p \le 1$},
+\]</span>
+where <span class="math inline">\(\lceil x \rceil\)</span> is the <em>ceiling</em> function: the smallest integer not less than <span class="math inline">\(x\)</span> (e.g., <span class="math inline">\(\lceil\pi\rceil = 4\)</span> and <span class="math inline">\(\lceil-\pi\rceil = -3\)</span>).</p>
+<p>To generate and display <span class="math inline">\(n = 50\)</span> random numbers in <strong>R</strong>:</p>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rnos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span></span>
+<span><span class="va">quanFn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">ceiling</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">p</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">0.4</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">)</span> </span>
+<span>  <span class="op">}</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">quanFn</span><span class="op">(</span><span class="va">rnos</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The empirical probability mass function for increasing values of <span class="math inline">\(n\)</span> are show in Fig. <a href="DistributionRandomVariables.html#fig:EmpiricalPMFgeom">4.20</a>.
+The empirical probability function is closer to the actual probability mass function as <span class="math inline">\(n\)</span> increases.</p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:EmpiricalPMFgeom"></span>
+<img src="04-RandomVariables_files/figure-html/EmpiricalPMFgeom-1.png" alt="Empirical probability mass functions based on samples of size $n = 50$, $500$, and $5000$. As $n$ increases, the empirical probability mass function converges to the theoretical PMF (shown as the solid dots)." width="100%"><p class="caption">
+FIGURE 4.20: Empirical probability mass functions based on samples of size <span class="math inline">\(n = 50\)</span>, <span class="math inline">\(500\)</span>, and <span class="math inline">\(5000\)</span>. As <span class="math inline">\(n\)</span> increases, the empirical probability mass function converges to the theoretical PMF (shown as the solid dots).
+</p>
+</div>
+<p></p>
+</div>
+</div>
+<div id="RVExercises" class="section level2" number="4.9">
+<h2>
+<span class="header-section-number">4.9</span> Exercises<a class="anchor" aria-label="anchor" href="#RVExercises"><i class="fas fa-link"></i></a>
+</h2>
+<p>Selected answers appear in Sect. <a href="selected-solutions.html#AnswersChapRandomVariables">F.3</a>.</p>
+<div class="exercise">
+<p><span id="exr:SSpaceRV" class="exercise"><strong>Exercise 4.1  </strong></span>For the following random processes, determine the range <span class="math inline">\(\mathcal{R}_X\)</span> and define the random variable of interest.
+Determine whether the random variable is discrete, continuous or mixed.
+Justify your answer.</p>
+<ol style="list-style-type: decimal">
+<li>The number of heads in two throws of a fair coin.</li>
+<li>The number of throws of a fair coin until a head is observed.</li>
+<li>The time taken to download a webpage.</li>
+<li>The time it takes to walk to work.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:SSpaceRV2" class="exercise"><strong>Exercise 4.2  </strong></span>For the following random processes, determine the range <span class="math inline">\(\mathcal{R}_X\)</span> and define the random variable of interest.
+Determine whether the random variable is discrete, continuous or mixed.
+Justify your answer.</p>
+<ol style="list-style-type: decimal">
+<li>The number of cars that pass through an intersection during a day.</li>
+<li>The number of X-rays taken at a hospital per day.</li>
+<li>The barometric pressure in a given city at <span class="math inline">\(5\)</span>pm each afternoon.</li>
+<li>The length of a phone call connection.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:PDFtrickier" class="exercise"><strong>Exercise 4.3  </strong></span>Consider the random variable <span class="math inline">\(Y\)</span> with the probability density function shown in Fig. <a href="DistributionRandomVariables.html#fig:TwoDensities">4.21</a> (left panel).
+Find the value(s) of <span class="math inline">\(a\)</span> so that this represents a valid probability function.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:PDFtrickier2" class="exercise"><strong>Exercise 4.4  </strong></span>Consider the random variable <span class="math inline">\(T\)</span> with the probability density function shown in Fig. <a href="DistributionRandomVariables.html#fig:TwoDensities">4.21</a> (right panel).
+Find the value(s) of <span class="math inline">\(a\)</span> so that this represents a valid probability function.</p>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:TwoDensities"></span>
+<img src="04-RandomVariables_files/figure-html/TwoDensities-1.png" alt="Two probability density functions" width="100%"><p class="caption">
+FIGURE 4.21: Two probability density functions
+</p>
+</div>
+<div class="exercise">
+<p><span id="exr:DFdiscrete" class="exercise"><strong>Exercise 4.5  </strong></span>The random variable <span class="math inline">\(X\)</span> has the probability function
+<span class="math display">\[
+   p_X(x) = \begin{cases}
+               0.3 &amp; \text{for $x = 10$};\\
+               0.2 &amp; \text{for $x = 15$};\\
+               0.5 &amp; \text{for $x = 20$}.
+            \end{cases}
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Show that <span class="math inline">\(p_X(x)\)</span> is a valid probability distribution.</li>
+<li>Plot the probability function of <span class="math inline">\(X\)</span>.</li>
+<li>Find and plot the distribution function for <span class="math inline">\(X\)</span>.</li>
+<li>Find and plot the survival function for <span class="math inline">\(X\)</span>.</li>
+<li>Compute <span class="math inline">\(\Pr(X &gt; 13)\)</span>.</li>
+<li>Compute <span class="math inline">\(\Pr(X \le 10 \mid  X\le 15)\)</span>.</li>
+<li>Find and plot the quantile function.
+Show that your quantile function gives the correct values for <span class="math inline">\(Q_X(0)\)</span> and <span class="math inline">\(Q_X(1)\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:DFdiscrete2" class="exercise"><strong>Exercise 4.6  </strong></span>The random variable <span class="math inline">\(X\)</span> has the probability mass function
+<span class="math display">\[
+   p_X(x) = 2^{-x} \qquad \text{for $x = 1, 2, 3, \dots$}.
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Show that <span class="math inline">\(p_X(x)\)</span> is a valid probability distribution.</li>
+<li>Plot the probability function of <span class="math inline">\(X\)</span>.</li>
+<li>Find and plot the distribution function for <span class="math inline">\(X\)</span>.</li>
+<li>Find and plot the survival function for <span class="math inline">\(X\)</span>.</li>
+<li>Compute <span class="math inline">\(\Pr(X &lt; 4)\)</span>.</li>
+<li>Compute <span class="math inline">\(\Pr(X \le 2 \mid  X\le 5)\)</span>.</li>
+<li>Find and plot the quantile function.
+Show that your quantile function gives the correct values for <span class="math inline">\(Q_X(0)\)</span> and <span class="math inline">\(Q_X(1)\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:DFcontinuous" class="exercise"><strong>Exercise 4.7  </strong></span>Consider the continuous random variable <span class="math inline">\(X\)</span> with probability function
+<span class="math display">\[
+   f_Z(z) = (2z + 1)/4 \qquad \text{for $1 &lt; z &lt; 2$}.
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Plot the probability function of <span class="math inline">\(Z\)</span>.</li>
+<li>Find and plot the distribution function of <span class="math inline">\(Z\)</span>.</li>
+<li>Find and plot the survival function of <span class="math inline">\(Z\)</span>.</li>
+<li>Find <span class="math inline">\(\Pr(Z &lt; 0)\)</span>.</li>
+<li>Find and plot the quantile function.
+Show that your quantile function gives the correct values for <span class="math inline">\(Q_Z(0)\)</span> and <span class="math inline">\(Q_Z(1)\)</span>.</li>
+<li>Determine <span class="math inline">\(Q_Z(0.25)\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:DFcontinuous2" class="exercise"><strong>Exercise 4.8  </strong></span>Consider the continuous random variable <span class="math inline">\(Z\)</span> with probability function
+<span class="math display">\[
+   f_Z(z) = \alpha (3 - z) \qquad \text{for $-1 &lt; z &lt; 2$}.
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Find the value of <span class="math inline">\(\alpha\)</span>.</li>
+<li>Plot the probability function of <span class="math inline">\(Z\)</span>.</li>
+<li>Find and plot the distribution function of <span class="math inline">\(Z\)</span>.</li>
+<li>Find and plot the survival function of <span class="math inline">\(Z\)</span>.</li>
+<li>Find <span class="math inline">\(\Pr(Z &lt; 0)\)</span>.</li>
+<li>Find and plot the quantile function.
+Show that your quantile function gives the correct values for <span class="math inline">\(Q_Z(0)\)</span> and <span class="math inline">\(Q_Z(1)\)</span>.</li>
+<li>Determine <span class="math inline">\(Q_Z(0.25)\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:DFcontinuousHarder" class="exercise"><strong>Exercise 4.9  </strong></span>Consider the continuous random variable <span class="math inline">\(Y\)</span> with probability density function
+<span class="math display">\[
+  f_Y(y) = \frac{1}{2\sqrt{y + 1}} \quad \text{for $0 &lt; y &lt; 3$}.
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Plot the probability function of <span class="math inline">\(Y\)</span>.</li>
+<li>Find and plot the distribution function of <span class="math inline">\(Y\)</span>.</li>
+<li>Find and plot the survival function of <span class="math inline">\(Y\)</span>.</li>
+<li>Find <span class="math inline">\(\Pr( |Y - 1| &lt; 1)\)</span>.</li>
+<li>Find and plot the quantile function.
+Show that your quantile function gives the correct values for <span class="math inline">\(Q_Y(0)\)</span> and <span class="math inline">\(Q_Y(1)\)</span>.</li>
+<li>Determine <span class="math inline">\(Q_Y(0.5)\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:DFcontinuousHarder2" class="exercise"><strong>Exercise 4.10  </strong></span>Consider the continuous random variable <span class="math inline">\(X\)</span> with probability density function
+<span class="math display">\[
+  f_X(x) = \frac{16 + x^2}{51} \quad \text{for $-2 &lt; x &lt; 1$}.
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Plot the probability function of <span class="math inline">\(X\)</span>.</li>
+<li>Find and plot the distribution function of <span class="math inline">\(X\)</span>.</li>
+<li>Find and plot the survival function of <span class="math inline">\(X\)</span>.</li>
+<li>Find <span class="math inline">\(\Pr(X &lt; 3)\)</span>.</li>
+<li>Find and plot the quantile function.
+Show that your quantile function gives the correct values for <span class="math inline">\(Q_X(0)\)</span> and <span class="math inline">\(Q_X(1)\)</span>.</li>
+<li>Determine <span class="math inline">\(Q_X(0.5)\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:DFcontinuousHarderTwoParts" class="exercise"><strong>Exercise 4.11  </strong></span>The random variable <span class="math inline">\(T\)</span> is defined as shown in Fig. <a href="DistributionRandomVariables.html#fig:TwoParts">4.22</a> (left panel).</p>
+<ol style="list-style-type: decimal">
+<li>Determine the formula for the PDF for <span class="math inline">\(T\)</span>.</li>
+<li>Determine and plot the DF for <span class="math inline">\(T\)</span>.</li>
+<li>Determine and plot the survival function for <span class="math inline">\(T\)</span>.</li>
+<li>Determine and plot the quantile function for <span class="math inline">\(T\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:DFcontinuousHarderTwoParts2" class="exercise"><strong>Exercise 4.12  </strong></span>The random variable <span class="math inline">\(Z\)</span> is defined as shown in Fig. <a href="DistributionRandomVariables.html#fig:TwoParts">4.22</a> (right panel).</p>
+<ol style="list-style-type: decimal">
+<li>Determine the formula for the PDF for <span class="math inline">\(Z\)</span>.</li>
+<li>Determine and plot the DF for <span class="math inline">\(Z\)</span>.</li>
+<li>Determine and plot the survival function for <span class="math inline">\(Z\)</span>.</li>
+<li>Determine and plot the quantile function for <span class="math inline">\(Z\)</span>.</li>
+</ol>
+</div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:TwoParts"></span>
+<img src="04-RandomVariables_files/figure-html/TwoParts-1.png" alt="The PDF for $T$ (left) and $Z$ (right)." width="100%"><p class="caption">
+FIGURE 4.22: The PDF for <span class="math inline">\(T\)</span> (left) and <span class="math inline">\(Z\)</span> (right).
+</p>
+</div>
+<div class="exercise">
+<p><span id="exr:DFmixed" class="exercise"><strong>Exercise 4.13  </strong></span>Consider the mixed random variable <span class="math inline">\(Y\)</span> with probability function
+<span class="math display">\[
+   f_Y(y) = \begin{cases}
+               p     &amp; \text{for $y = 0$};\\
+               1 - y &amp; \text{for $0 &lt; y &lt; 1$}.
+            \end{cases}
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Find the value of <span class="math inline">\(p\)</span>.</li>
+<li>Carefully plot the probability function of <span class="math inline">\(Y\)</span>.</li>
+<li>Find and carefully plot the distribution function of <span class="math inline">\(Y\)</span>.</li>
+<li>Find and carefully plot the survival function of <span class="math inline">\(Y\)</span>.</li>
+<li>Find <span class="math inline">\(\Pr(Y &lt; 0.5)\)</span>.</li>
+<li>Find and carefully plot the quantile function of <span class="math inline">\(Y\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:DFmixed2" class="exercise"><strong>Exercise 4.14  </strong></span>Consider the mixed random variable <span class="math inline">\(X\)</span> with probability function
+<span class="math display">\[
+   f_X(x) = \begin{cases}
+               c   &amp; \text{for $x = 0$};\\
+               x/2 &amp; \text{for $0 &lt; x &lt; 1$};\\
+               (3 - x)/4 &amp; \text{for $1 &lt; x &lt; 3$}.
+            \end{cases}
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Find the value of <span class="math inline">\(c\)</span>.</li>
+<li>Carefully plot the probability function of <span class="math inline">\(X\)</span>.</li>
+<li>Find and plot the distribution function of <span class="math inline">\(X\)</span>.</li>
+<li>Find and carefully plot the survival function of <span class="math inline">\(X\)</span>.</li>
+<li>Find <span class="math inline">\(\Pr(X &gt; 1)\)</span>.</li>
+<li>Find and carefully plot the quantile function of <span class="math inline">\(X\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:PMFtrickier" class="exercise"><strong>Exercise 4.15  </strong></span>Consider the random variable <span class="math inline">\(Y\)</span> with the probability mass function
+<span class="math display">\[
+  f_Y(y)
+  =
+  y^\alpha \qquad \text{for $y = 2, 4$}.
+\]</span>
+Find the value(s) of <span class="math inline">\(\alpha\)</span> so that <span class="math inline">\(f_Y(y)\)</span> is a valid probability function.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:PMFtrickier2" class="exercise"><strong>Exercise 4.16  </strong></span>Consider the random variable <span class="math inline">\(X\)</span> with the probability mass function
+<span class="math display">\[
+  f_X(x)
+  =
+  x + 1 \qquad \text{for $x = b, b + 1, b + 2$}.
+\]</span>
+Find the value(s) of <span class="math inline">\(b\)</span> so that <span class="math inline">\(f_X(x)\)</span> is a valid probability function.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:DFdiscreteBackwards" class="exercise"><strong>Exercise 4.17  </strong></span>Consider the discrete random variable <span class="math inline">\(W\)</span> with DF
+<span class="math display">\[
+   F_W(w) = \begin{cases}
+               0   &amp; \text{for $w &lt; 10$};\\
+               0.3 &amp; \text{for $10 \le w &lt; 20$};\\
+               0.7 &amp; \text{for $20 \le w &lt; 30$};\\
+               0.9 &amp; \text{for $30 \le w &lt; 40$};\\
+               1 &amp; \text{for $w \ge 40$}.
+            \end{cases}
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Find and plot the PMF of <span class="math inline">\(W\)</span>.</li>
+<li>Compute <span class="math inline">\(\Pr(W &lt; 25)\)</span> using the PMF, and using the DF.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:DFcontinuousBackwards" class="exercise"><strong>Exercise 4.18  </strong></span>Consider the continuous random variable <span class="math inline">\(Y\)</span> with DF
+<span class="math display">\[
+   F_Y(y) = \begin{cases}
+               0 &amp; \text{for $y \le 0$};\\
+               y(4 - y^2)/3 &amp; \text{for $0 &lt; y &lt; 1$};\\
+               1 &amp; \text{for $y \ge 1$}.
+            \end{cases}
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Find and plot the PDF of <span class="math inline">\(Y\)</span>.</li>
+<li>Compute <span class="math inline">\(\Pr(Y &lt; 0.5)\)</span> using the PDF and using the DF.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:Chlorine" class="exercise"><strong>Exercise 4.19  </strong></span>A study of the service life of concrete in various conditions <span class="citation">(<a href="references.html#ref-liu2012stochastic">Liu and Shi 2012</a>)</span> used the following distribution for the chlorine threshold of concrete<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;The density function quoted in the article has an error.&lt;/p&gt;"><sup>1</sup></a>:
+<span class="math display">\[
+   f(x; a, b, c) =
+   \begin{cases}
+      \displaystyle \frac{2(x - a)}{(b - a)(c - a)} &amp; \text{for $a\le x\le c$}\\[6pt]
+      \displaystyle \frac{2(b - x)}{(b - a)(b - c)} &amp; \text{for $c\le x\le b$}
+   \end{cases}
+\]</span>
+where <span class="math inline">\(c\)</span> is the mode, and <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> are the lower and upper limits.</p>
+<ol style="list-style-type: decimal">
+<li>Show that the distribution is a valid PDF.
+(This is easier geometrically than using integration.)</li>
+<li>Previous studies, cited in the article, suggest the values <span class="math inline">\(a = 0.6\)</span> and <span class="math inline">\(c = 5\)</span>, and that the distribution is symmetric.
+Write down the PDF for this case.</li>
+<li>Determine the DF using the values above.</li>
+<li>Plot the PDF and DF.</li>
+<li>Determine <span class="math inline">\(\Pr(X &gt; 3)\)</span>.</li>
+<li>Determine <span class="math inline">\(\Pr(X &gt; 3 \mid X &gt; 1)\)</span>.</li>
+<li>Explain the difference in <em>meaning</em> for the last two answers.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:TriangularHospital" class="exercise"><strong>Exercise 4.20  </strong></span>In a study modelling waiting times at a hospital <span class="citation">(<a href="references.html#ref-khadem2008evaluating">Khadem et al. 2008</a>)</span>, patients are classified into one of three categories: Red (critically ill or injured patients), Yellow (moderately ill or injured patients), or Green (injured or uninjured patients).</p>
+<p>For ‘Yellow’ patients, the service time of doctors are modelled using a triangular distribution, with a minimum at <span class="math inline">\(3.5\,\text{mins}\)</span>, a maximum at <span class="math inline">\(30.5\,\text{mins}\)</span> and a mode at <span class="math inline">\(5\,\text{mins}\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>Plot the PDF and DF.</li>
+<li>If <span class="math inline">\(S\)</span> is the service time, compute <span class="math inline">\(\Pr(S &gt; 20 \mid S &gt; 10)\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:Exceedance" class="exercise"><strong>Exercise 4.21  </strong></span>In meteorology and climatology, rainfall is often graphed using rainfall survival functions <span class="citation">(<a href="references.html#ref-dunn2001bootstrap">Dunn 2001</a>)</span> <span class="math inline">\(S_X(x)  = 1 - F_X(x)\)</span>, where <span class="math inline">\(X\)</span> represents the rainfall.</p>
+<ol style="list-style-type: decimal">
+<li>Explain what is measured by <span class="math inline">\(1 - F_X(x)\)</span> in this context, and explain why it may be more useful than just <span class="math inline">\(F_X(x)\)</span> when studying rainfall.</li>
+<li>The data in Table <a href="DistributionRandomVariables.html#tab:RainArray">4.4</a> shows the total monthly rainfall at Charleville, Queensland, from 1942 until 2022 for the months of June and December.
+(Data supplied by the Bureau of Meteorology.)
+Plot <span class="math inline">\(1 - F_X(x)\)</span> for this rainfall data for each month on the same graph.</li>
+<li>Suppose a producer requires at least <span class="math inline">\(50\,\text{mm}\)</span> of rain in June to plant a crop.
+Find the probability of this occurring from the plot above.</li>
+<li>Determine the median monthly rainfall in Charleville in June and December.</li>
+<li>Decide if the mean or the median is an appropriate measure of central tendency, giving reasons for your answer.</li>
+<li>Compare the probabilities of obtaining <span class="math inline">\(30\,\text{mm}\)</span>, <span class="math inline">\(50\,\text{mm}\)</span>, <span class="math inline">\(100\,\text{mm}\)</span> and <span class="math inline">\(150\,\text{mm}\)</span> of rain in the months of June and December.</li>
+<li>Write a one-or two-paragraph explanation of how to use diagrams like that presented here.
+The explanation should be aimed at producers (that is, experts in farming, but not in statistics) and should be able to demonstrate the usefulness of such graphs in decision making.
+Your explanation should be clear and without jargon.
+Use diagrams if necessary.</li>
+</ol>
+</div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:RainArray">TABLE 4.4: </span>The monthly rainfall in Charleville, in mm, from 1942 to 2022: The number of months with the indicated rainfall
+</caption>
+<thead><tr>
+<th style="text-align:left;font-weight: bold;">
+</th>
+<th style="text-align:right;font-weight: bold;">
+June
+</th>
+<th style="text-align:right;font-weight: bold;">
+December
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Zero rainfall
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Over 0 to under 20
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+17
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+20 to under 40
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+17
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+40 to under 60
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+21
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+60 to under 80
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+80 to under 100
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+100 to under 120
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+120 to under 140
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+140 to under 160
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+160 to under 180
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+180 to under 200
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+200 to under 220
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table></div>
+<div class="exercise">
+<p><span id="exr:YouFriendInLine" class="exercise"><strong>Exercise 4.22  </strong></span>Five people, including you and a friend, line up at random.
+The random variable <span class="math inline">\(X\)</span> denotes the number of people between yourself and your friend.
+Determine the probability function of <span class="math inline">\(X\)</span>.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:Cards4" class="exercise"><strong>Exercise 4.23  </strong></span>Suppose a dealer deals four cards from a standard <span class="math inline">\(52\)</span>-card pack.
+Define <span class="math inline">\(Y\)</span> as the number of suits in the four cards.
+Deduce the distribution of <span class="math inline">\(Y\)</span>.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:Continuous1" class="exercise"><strong>Exercise 4.24  </strong></span>Let <span class="math inline">\(Y\)</span> be a continuous random variable with PDF
+<span class="math display">\[
+   f_Y(y) = a(1 - y)^2,\quad \text{for $0\le y\le 1$}.
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Show that <span class="math inline">\(a = 3\)</span>.</li>
+<li>Find <span class="math inline">\(\Pr\left(| Y - \frac{1}{2}| &gt; \frac{1}{4} \right)\)</span>.</li>
+<li>Use <strong>R</strong> to draw a graph of <span class="math inline">\(f_Y(y)\)</span> and show the area described above.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:ContTwoParts" class="exercise"><strong>Exercise 4.25  </strong></span>Suppose the random variable <span class="math inline">\(Y\)</span> has the PDF
+<span class="math display">\[
+  f_Y(y) =
+  \begin{cases}
+    \frac{2}{3}(y - 1) &amp; \text{for $1 &lt; y &lt; 2$};\\[3pt]
+    \frac{2}{3} &amp; \text{for $2 \le y &lt; 3$}.
+  \end{cases}
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Plot the PDF.</li>
+<li>Determine the DF.</li>
+<li>Confirms that the DF is a valid DF.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:PooledTest" class="exercise"><strong>Exercise 4.26  </strong></span>To detect disease in a population through a blood test, usually every individual is tested.
+If the disease is uncommon, however, an alternative method is often more efficient.</p>
+<p>In the alternative method (called a <em>pooled test</em>), blood from <span class="math inline">\(n\)</span> individuals is combined, and one test is conducted.
+If the test returns a negative result, then none of the <span class="math inline">\(n\)</span> people have the disease; if the test returns a positive result, all <span class="math inline">\(n\)</span> individuals are then tested individually to identify which individual(s) have the disease.</p>
+<p>Suppose a disease occurs in an unknown proportion of people <span class="math inline">\(p\)</span> of people.
+Let <span class="math inline">\(X\)</span> be the number of tests to be performed for a group of <span class="math inline">\(n\)</span> individuals using the <em>pooled test</em> approach.</p>
+<ol style="list-style-type: decimal">
+<li>Determine the sample space for <span class="math inline">\(X\)</span>.</li>
+<li>Deduce the probability distribution of the random variable <span class="math inline">\(X\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:CardDistance" class="exercise"><strong>Exercise 4.27  </strong></span>In a deck of cards, consider an <strong>Ace</strong> as high, and all picture cards (i.e., <strong>Jacks</strong>, <strong>Queens</strong>, <strong>Kings</strong>, <strong>Aces</strong>) as worth ten points.
+All other cards are worth their face value (i.e., an <strong>8</strong> is worth eight points.)</p>
+<p>Deduce the probability distribution of the absolute difference between the value of two cards drawn at random from a well-shuffled deck of <span class="math inline">\(52\)</span> cards.</p>
+</div>
+<div class="exercise">
+<p><span id="exr:BenfordsLaw" class="exercise"><strong>Exercise 4.28  </strong></span>The leading digits of natural data that span many orders of magnitude (e.g., lengths of rivers; populations of countries) often follow <em>Benford’s law</em>.
+Numbers are said to satisfy <em>Benford’s law</em> if the <em>leading digit</em>, say <span class="math inline">\(d\)</span> (for <span class="math inline">\(d\in \{1, \dots, 9\}\)</span>) has the probability mass function
+<span class="math display">\[
+   p_D(d) = \log_{10}\left( \frac{d + 1}{d} \right).
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Plot the probability mass function of <span class="math inline">\(D\)</span>.</li>
+<li>Compute and plot the distribution function of <span class="math inline">\(D\)</span>.</li>
+</ol>
+</div>
+<!-- arcsine distribution -->
+<div class="exercise">
+<p><span id="exr:Arcsine" class="exercise"><strong>Exercise 4.29  </strong></span>Consider the random variable <span class="math inline">\(X\)</span> with PDF
+<span class="math display">\[
+   f_X(x) =
+      \displaystyle \frac{k}{\sqrt{x(1 - x)}} \qquad \text{for $0 &lt; x &lt; 1$}
+\]</span>
+for some constant <span class="math inline">\(k\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>Plot the density function.</li>
+<li>Determine, and then plot, the distribution function.</li>
+<li>Compute <span class="math inline">\(\Pr(X &gt; 0.25)\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:DFExpInverse" class="exercise"><strong>Exercise 4.30  </strong></span>Consider the distribution function
+<span class="math display">\[
+   F_X(x) =
+   \begin{cases}
+        0          &amp; \text{for $x &lt; 0$};\\
+        \exp(-1/x) &amp; \text{$x \ge 0$}.
+   \end{cases}
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Show that this is a valid DF.</li>
+<li>Compute the PDF.</li>
+<li>Plot the DF and PDF.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:Mixed" class="exercise"><strong>Exercise 4.31  </strong></span>Consider the random variable <span class="math inline">\(T\)</span> with the probability function
+<span class="math display">\[
+  f_T(t) =
+  \begin{cases}
+    a &amp; \text{for $t = 0$}; \\
+    \frac{2}{3} - (t - 1)^2 &amp; \text{for $0 &lt; t &lt; 2$}.
+  \end{cases}
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Determine the value of <span class="math inline">\(a\)</span>.</li>
+<li>Plot the probability function.</li>
+<li>Determine the distribution function.</li>
+<li>Plot the distribution function.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:TotalFour" class="exercise"><strong>Exercise 4.32  </strong></span>Consider rolling a fair, six-sided die.</p>
+<ol style="list-style-type: decimal">
+<li>Find the probability mass function for the number of rolls required to roll a total of <em>at least</em> four.</li>
+<li>Find the probability mass function for the number of rolls required to roll a total of <em>exactly</em> four.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:Densityab" class="exercise"><strong>Exercise 4.33  </strong></span>Consider the PDF <span class="math inline">\(f_X(x) = (a + bx)^2\)</span> defined over <span class="math inline">\(-1 &lt; x &lt; 1\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>Find the relationship between <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> that is required for <span class="math inline">\(f_X(x)\)</span> to be. a valid PDF.</li>
+<li>Find the PDF if <span class="math inline">\(f_X(x) = 4\)</span>.</li>
+<li>Find the distribution function of <span class="math inline">\(X\)</span>.</li>
+<li>Determine the quantile function.
+Confirm this is correct for <span class="math inline">\(Q_X(0)\)</span> and <span class="math inline">\(Q_X(1)\)</span>.</li>
+<li>Plot the PDF, DF and quaniel function for <span class="math inline">\(X\)</span>.</li>
+</ol>
+</div>
+<!-- 
+
+
+:::{.exercise #Qmanual}
+Using the discrete random variable\ $X$ from Example\ \@ref(exm:DistributionFnReverseDiscrete):
+
+1. Calculate $Q(0.05)$ manually.
+2. Calculate $Q(0.4)$ manually.
+3. Calculate $Q(0.41)$ manually.
+4. Then, use the `quantile()` function in\ **R** to verify.
+5. Why does $Q(0.4)$ and $Q(0.41)$ give different results? 
+:::
+
+:::{.exercise #Qrandom}
+Consider the mixed variable $Y$ where $\Pr(Y = 0) = 0.2$.
+
+1. If you were to generate $1\,000$ random observations from this distribution using the `QY_mixed(runif(1000))` method, approximately how many of those observations would be exactly $0$?
+2. Run the simulation in\ **R** and use `sum(sim_data == 0)` to see how close you get to your prediction.
+:::
+
+
+:::{.exercise}
+Consider the PDF $f_X(x) = 2x$ for $0 < x < 1$.
+
+1. Predict whether $Q(0.5)$ will be greater than, less than, or equal to $0.5$.
+2. Look at the PDF plot. 
+   Is there more 'area' (probability) on the left side or the right side of the midpoint $x = 0.5$?
+3. Use your `uniroot()` function or the mathematical inverse $Q(p) = \sqrt{p}$ to find the exact value.
+:::
+
+
+--->
+
+</div>
+</div>
+
+<hr>
+<div class="footer"><span style="color: gray; font-size:0.7em">Peter K. Dunn, Taryn Axelsen 2026: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></span></div>
+  <div class="chapter-nav">
+<div class="prev"><a href="ChapterProbability.html"><span class="header-section-number">3</span> Probability</a></div>
+<div class="next"><a href="ChapExpectation.html"><span class="header-section-number">5</span> Mathematical expectation</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#DistributionRandomVariables"><span class="header-section-number">4</span> Random variables and their distributions</a></li>
+<li><a class="nav-link" href="#RandomVariables"><span class="header-section-number">4.1</span> Random variables</a></li>
+<li>
+<a class="nav-link" href="#DiscreteContMixed"><span class="header-section-number">4.2</span> Discrete, continuous and mixed random variables</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#RVsDiscrete"><span class="header-section-number">4.2.1</span> Discrete random variables</a></li>
+<li><a class="nav-link" href="#RVsContinuous"><span class="header-section-number">4.2.2</span> Continuous random variables</a></li>
+<li><a class="nav-link" href="#RVsMixed"><span class="header-section-number">4.2.3</span> Mixed random variables</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#UnivariateProbabilityFunctions"><span class="header-section-number">4.3</span> Probability functions</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#ProbabilityFunctionsDiscrete"><span class="header-section-number">4.3.1</span> Discrete random variables: probability mass functions</a></li>
+<li><a class="nav-link" href="#ProbabilityFunctionsContinuous"><span class="header-section-number">4.3.2</span> Continuous random variables: probability density functions</a></li>
+<li><a class="nav-link" href="#ProbabilityFunctionsMixed"><span class="header-section-number">4.3.3</span> Mixed random variables</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#DistributionFunction"><span class="header-section-number">4.4</span> Distribution functions</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#DFGeneralIdeas"><span class="header-section-number">4.4.1</span> General ideas</a></li>
+<li><a class="nav-link" href="#discrete-random-variables"><span class="header-section-number">4.4.2</span> Discrete random variables</a></li>
+<li><a class="nav-link" href="#continuous-random-variables"><span class="header-section-number">4.4.3</span> Continuous random variables</a></li>
+<li><a class="nav-link" href="#mixed-random-variables"><span class="header-section-number">4.4.4</span> Mixed random variables</a></li>
+<li><a class="nav-link" href="#PFfromDF"><span class="header-section-number">4.4.5</span> Recovering the probability function from the DF</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#SurvivalFunction"><span class="header-section-number">4.5</span> Survival functions</a></li>
+<li><a class="nav-link" href="#QuantileFunction"><span class="header-section-number">4.6</span> Quantile functions</a></li>
+<li><a class="nav-link" href="#RandomNumbers"><span class="header-section-number">4.7</span> Generating random numbers</a></li>
+<li>
+<a class="nav-link" href="#RVsStatisticalComputing"><span class="header-section-number">4.8</span> Statistical computing with probability functions</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#discrete-random-variables-1"><span class="header-section-number">4.8.1</span> Discrete random variables</a></li>
+<li><a class="nav-link" href="#continuous-random-variables-1"><span class="header-section-number">4.8.2</span> Continuous random variables</a></li>
+<li><a class="nav-link" href="#EmpiricalProbFunctions"><span class="header-section-number">4.8.3</span> Empirical probability functions</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#RVExercises"><span class="header-section-number">4.9</span> Exercises</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/PeterKDunn/DistTheory/blob/main/04-RandomVariables.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/PeterKDunn/DistTheory/edit/main/04-RandomVariables.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn and Taryn Axelsen. It was last built on Last updated: 2026-06-22.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
