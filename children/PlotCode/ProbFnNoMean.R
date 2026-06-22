@@ -6,13 +6,11 @@ z <- seq(1, 6, length.out = 100)
 plot(x = z, y = z^(-2),
      type = "l", lwd = 2, las = 1,
      xlim = c(0, 6), ylim = c(-0.025, 1),
-     xlab = "z",
-     ylab = "Density",
-     main = "Probability~function for Z")
+     xlab = "z", ylab = "Density",
+     main = "Probability function for Z")
 
 # Line for x = 0 to x = 1
-lines( x = c(-1, 1),
-       y = c(0, 0),
+lines( x = c(-1, 1), y = c(0, 0),
        lwd = 2) ### lwd = 2: Thicker line width
 
 # Dotted vertical line
