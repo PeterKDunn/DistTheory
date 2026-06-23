@@ -1349,67 +1349,48 @@ $$
 $$
 This integrand does not converge unless $t = 0$. 
 
-For example, consider $t > 0$: as $x\to\infty$, we see $\exp(tx)\to\infty$, while $1/(1 + x^2)\to 0$ quite slowly; the integrand diverges (see Fig.\ \@ref(fig:MGFdiverges) (left panel) for an example when $t = 1/2$). 
+For example, consider $t > 0$: as $x\to\infty$, we see $\exp(tx)\to\infty$, while $1/(1 + x^2)\to 0$ quite slowly; the integrand diverges (see Fig.\ \@ref(fig:MGFdiverges) (left panel) for an example when $t = 1$). 
 
-Now consider $t < 0$: as $x\to-\infty$, we see $\exp(tx)\to\infty$, while $1/(1 + x^2)\to 0$ quite slowly; the integrand again diverges (see Fig.\ \@ref(fig:MGFdiverges) (right panel) for an example when $t = -1/2$). 
+Now consider $t < 0$: as $x\to-\infty$, we see $\exp(tx)\to\infty$, while $1/(1 + x^2)\to 0$ quite slowly; the integrand again diverges (see Fig.\ \@ref(fig:MGFdiverges) (right panel) for an example when $t = -1$). 
 
-The integral only converges for $t = 0$ (Fig.\ \@ref(fig:MGFdiverges), centre panel).
+The integral only converges for $t = 0$.
 The definition for the MGF states that the MGF exists 'provided the expectation exists for values of\ $t$ in some interval that includes $t = 0$'.
 This is not the case: the integral exists *only* for $t = 0$.
 The MGF does not exist for the Cauchy distribution.
 :::
 
 
-```{r echo=FALSE, MGFdiverges, fig.width=6.5, fig.height=3, out.width="100%", fig.align="center", fig.cap="The MGF cannot be computed, as the integrand diverges for $t > 0$ (left panel) and for $t < 0$ (right panel), but converges only when $t = 0$ (center panel)."}
-par( mfrow = c(1, 3))
+```{r echo=FALSE, MGFdiverges, fig.width=8, fig.height=4, out.width="100%", fig.align="center", fig.cap="The MGF cannot be computed, as the integrand diverges for $t > 0$ (left panel) and for $t < 0$ (right panel)."}
+par( mfrow = c(1, 2))
 
-x_Pos <- seq(-6, 6, 
+x_Pos <- seq(-3, 5, 
              length = 100)
-x_Neg <- x_Pos
-x_Zero <- x_Pos
+x_Neg <- -x_Pos
 
 igrand <- function(x, t){ exp(t * x)/(pi * (1 + x^2) )}
 
 # t positive
-ig1 <- igrand(x_Pos, t = 0.5)
 plot(x = x_Pos,
-     y = ig1, 
+     y = igrand(x_Pos, t = 1), 
      las = 1,
      lwd = 2,
-     ylim = c(0, max(ig1)),
      col = ColourSolid,
      xlab = expression(italic(x)),
      ylab = "Integrand",
-     main = expression(bold(Integrand~with~italic(t)==-0.5)),
-     type = "l")
-abline(h = 0,
-       col = "grey")
-# t negative
-ig0 <- igrand(x_Zero, t = 0)
-plot(x = x_Zero,
-     y = ig0, 
-     las = 1,
-     lwd = 2,
-     ylim = c(0, max(ig0)),
-     col = ColourSolid,
-     xlab = expression(italic(x)),
-     ylab = "Integrand",
-     main = expression(bold(Integrand~with~italic(t)==0)),
+     main = expression(bold(The~integrand~with~italic(t)==1)),
      type = "l")
 abline(h = 0,
        col = "grey")
 
 # t negative
-ig2 <- igrand(x_Neg, t = -0.5)
 plot(x = x_Neg,
-     y = ig2, 
+     y = igrand(x_Neg, t = -1), 
      las = 1,
      lwd = 2,
-     ylim = c(0, max(ig2)),
      col = ColourSolid,
      xlab = expression(italic(x)),
      ylab = "Integrand",
-     main = expression(bold(Integrand~with~italic(t)==-0.5)),
+     main = expression(bold(The~integrand~with~italic(t)==-1)),
      type = "l")
 abline(h = 0,
        col = "grey")
@@ -1480,7 +1461,7 @@ $$
 
 
 
-### Useful results {#UsefulMFGResults}
+### Some useful results
 
 The moment generating function can be used to derive the distribution of a function of a random variable (see Sect.\ \@ref(TransformationMoments)).
 The following theorems are valuable for this task.
@@ -1631,7 +1612,7 @@ or, in general,
 $$
    p_x(x) = \frac{1}{3}\left( \frac{2}{3}\right)^{x - 1}\quad\text{for $x = 1, 2, 3, \dots$}.
 $$
-(Later, this will be identified as a geometric distribution (Sect.\ \@ref(GeometricDistribution)).)\index{Geometric distribution}
+(Later, this will be identified as a [geometric distribution](#GeometricDistribution).)\index{Geometric distribution}
 :::
 
 
@@ -1647,7 +1628,7 @@ Two closely related transforms are the *cumulant generating function*\index{Cumu
 Each has properties that make it preferable to the MGF in certain situations.
 
 
-### Cumulant generating function {#CumulantGeneratingFunction}
+### Cumulant generating function* {#CumulantGeneratingFunction}
 
 \index{Cumulant generating function|(}
 The *cumulant generating function*\index{Cumulant generating function} is closely related to the MGF.
@@ -1705,7 +1686,7 @@ The MGF is
   &= \exp(-\lambda) \exp(\lambda \exp t)\\
   &= \exp(\lambda(\exp t - 1))
 \end{align*}
-where Eq.\ \@ref(eq:Exponential) has been used.
+where Eq.~\@ref(eq:Exponential) has been used.
 Thus,
 $$
   K_X(t) = \log M_X(t) = \lambda(\exp t - 1).
@@ -1716,7 +1697,7 @@ All cumulants of the distribution are\ $\lambda$.
 \index{Cumulant generating function|)}
 
 
-### Characteristic function {#CharacteristicFunction}
+### Characteristic function* {#CharacteristicFunction}
 
 \index{Characteristic function|(}
 The CGF inherits the main limitation of the MGF: it may not exist.
@@ -2212,12 +2193,9 @@ for some real value\ $a$.
 :::{.exercise #TriangularHospitalExp}
 (This exercise follows from Exercise\ \@ref(exr:TriangularHospital).)
 In a study modelling waiting times at a hospital [@khadem2008evaluating], patients are classified into one of three categories:
+Red (critically ill or injured patients), Yellow (moderately ill or injured patients), or Green (injured or uninjured patients).
 
-* Red: Critically ill or injured patients.
-* Yellow: Moderately ill or injured patients.
-* Green: Minimally injured or uninjured patients.
-
-For 'Yellow' patients, the service time of doctors are modelled using a triangular distribution, with a minimum at $3.5\mins$, a maximum at $30.5\mins$ and a mode at $5\mins$.
+For Yellow patients, the service time of doctors are modelled using a triangular distribution, with a minimum at $3.5\mins$, a maximum at $30.5\mins$ and a mode at $5\mins$.
 
 1. Compute the mean of the service times.
 1. Compute the variance of the service times.
@@ -2758,7 +2736,7 @@ $$
 :::{.exercise #Jensen2}
 Let\ $X$ be a random variable with mean\ $\mu$ and let $M_X(t) = \operatorname{E}[\exp(tX)]$ be its moment generating function, which is assumed to exist.
 
-1. Show using Jensen's inequality that $M_X(t) \geq \exp(t\mu)$ for all $t$, with equality if and only if\ $X$ is degenerate.
+1. Show, using Jensen's inequality, that $M_X(t) \geq \exp(t\mu)$ for all $t$, with equality if and only if\ $X$ is degenerate.
 2. Hence show that $\log M_X(t) \geq t\mu$.
 3. The *cumulant generating function* is defined as $K_X(t) = \log M_X(t)$.
    Show that $K_X'(0) = \mu$, and interpret the result of Part\ 2 as a statement about $K_X(t)$.
