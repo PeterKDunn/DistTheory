@@ -5292,6 +5292,112 @@ $f_X(x) = \lambda \exp(-\lambda x)$ for $x > 0$ and $\lambda > 0$; hence $f'_X(x
 
 
 :::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MixedIntroMedicalCosts1).**
+
+1. $\mu = 4\,200$; $\phi \approx 483$; $\xi = 4/3$.
+2. Mean: \$$4\,200$; stand deviation: $\sqrt{33\,600\,000} = \$5,797$. 
+3. $\Pr(T=0) = \exp(-\lambda) \approx 0.4966$.
+
+See Fig.\ \@ref(fig:MedicalCosts1).
+
+```{r}
+cost_mu <- 4200
+cost_phi <- 483 
+cost_xi <- 4/3
+tweedie_plot(seq(0.01, 30000, length=100), 
+             type = "pdf",
+             xi=cost_xi, phi=cost_phi, mu=cost_mu)
+tweedie_plot(seq(0.01, 30000, length=100), 
+             type = "cdf",
+             plot_args = list(ylim = c(0, 1)),
+             xi=cost_xi, phi=cost_phi, mu=cost_mu)
+1 - ptweedie(5000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
+ptweedie(20000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
+ptweedie(15000, xi=cost_xi, phi=cost_phi, mu=cost_mu) - ptweedie(10000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
+qtweedie(0.3, xi=cost_xi, phi=cost_phi, mu=cost_mu)
+```
+:::
+
+
+```{r MedicalCosts1, echo=FALSE, fig.width=8, fig.height=3.5, fig.align="center", fig.cap="The total monthly cost for a rare procedure.", out.width='100%' }
+par( mfrow = c(1, 2))
+tweedie_plot(seq(0.01, 30000, length=100), 
+             type = "pdf",
+             xi=cost_xi, phi=cost_phi, mu=cost_mu,
+             plot_args = list( xlab = expression(Total~monthly~cost~italic(t)), 
+                               ylab = "Prob. function",
+                               main = "Monthy cost: probability function",
+                               las = 1),
+             line_args = list(lwd = 3))
+tweedie_plot(seq(0.001, 30000, length=100), 
+             type = "cdf",
+             xi=cost_xi, phi=cost_phi, mu=cost_mu,
+             plot_args = list( xlab = expression(Total~monthly~cost~italic(t)), 
+                               ylab = "Prob. function",
+                               main = "Monthy cost: distribution function",
+                               ylim = c(0, 1),
+                               las = 1),
+             line_args = list(lwd = 3))
+```
+
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MixedIntroMedicalCosts2).**
+
+1. $\mu = 160\,000$; $\phi \approx 0.95$; $\xi = 1.25$.
+2. Mean: \$$160\,000$; stand deviation: \$$20,000$. 
+4. Approximate normal distribution.
+
+See Fig.\ \@ref(fig:MedicalCosts2).
+
+
+```{r}
+cost_mu <- 160000
+cost_phi <- 0.95 
+cost_xi <- 1.25
+tweedie_plot(seq(150000, 170000, length=100), 
+             type = "pdf",
+             xi=cost_xi, phi=cost_phi, mu=cost_mu)
+tweedie_plot(seq(150000, 170000, length=100), 
+             type = "pdf",
+             xi=cost_xi, phi=cost_phi, mu=cost_mu)
+1 - ptweedie(155000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
+ptweedie(165000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
+ptweedie(160000, xi=cost_xi, phi=cost_phi, mu=cost_mu) - ptweedie(158000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
+qtweedie(0.6, xi=cost_xi, phi=cost_phi, mu=cost_mu)
+#
+cost_sd <- sqrt( cost_phi * cost_mu^cost_xi)
+1 - pnorm(155000, mean=cost_mu, sd = cost_sd )
+pnorm(165000, mean=cost_mu, sd = cost_sd )
+pnorm(160000, mean=cost_mu, sd = cost_sd ) - pnorm(158000, mean=cost_mu, sd = cost_sd )
+qnorm(0.6, mean=cost_mu, sd = cost_sd )
+```
+:::
+
+
+```{r MedicalCosts2, echo=FALSE, fig.width=8, fig.height=3.5, fig.align="center", fig.cap="The total monthly cost for a new test procedure.", out.width='100%' }
+par( mfrow = c(1, 2))
+tweedie_plot(seq(150000, 170000, length=100), 
+             type = "pdf",
+             xi=cost_xi, phi=cost_phi, mu=cost_mu,
+             plot_args = list( xlab = expression(Total~monthly~cost~italic(t)), 
+                               ylab = "Prob. function",
+                               main = "Monthy cost: probability function",
+                               las = 1),
+             line_args = list(lwd = 3))
+tweedie_plot(seq(150000, 170000, length=100), 
+             type = "cdf",
+             xi=cost_xi, phi=cost_phi, mu=cost_mu,
+             plot_args = list( xlab = expression(Total~monthly~cost~italic(t)), 
+                               ylab = "Prob. function",
+                               main = "Monthy cost: distribution function",
+                               las = 1),
+             line_args = list(lwd = 3))
+```
+
+:::{.answer data-latex=""}
 **Exercise\ \@ref(exr:MixedIdentifiability).**
 
 1. Three free parameters.
