@@ -1,4 +1,4 @@
-# Mixed distributions {#ChapterMixedDistributions}
+# Mixed distributions* {#ChapterMixedDistributions}
 
 
 ```{r setup, include=FALSE}
@@ -143,9 +143,9 @@ The probability function and distribution function are shown in Fig.\ \@ref(fig:
 
 ```{r ZeroModifiedPic, echo=FALSE, fig.align="center", fig.cap="Zero-modified distributions, showing an exponential distribution for the continuous component.", fig.width=8, fig.height=4, out.width="90%"}
 p <- 0.3
-x.rate = 2
+x.rate <- 1/2
 
-x <- seq(0, 3,
+x <- seq(0, 8,
          length = 100)
 y <-  (1 - p) * dexp(x, 
                      rate = x.rate)
@@ -167,6 +167,7 @@ abline(h = 0,
 axis(side = 1)
 axis(side = 2,
      at = c(0, 
+            (1 - p) * x.rate,
             p),
      las = 2)
 box()
@@ -322,7 +323,7 @@ plot(y ~ x,
               max( c(y, p) ) ),
      xlab = expression(italic(x)),
      ylab = expression(Prob.~"function"),
-     main = expression(bold(atop("Zero-modified"~distribution,
+     main = expression(bold(atop("Zero-modified"~distribution*":",
                                  probability~"function"))),
      lwd = 2)
 abline(h = 0,
@@ -355,7 +356,7 @@ plot(Fy ~ x,
      xlim = c(-1, max(x)),
      xlab = expression(italic(x)),
      ylab = expression(Distribution.~"function"),
-     main = expression(bold(atop("Zero-modified"~distribution,
+     main = expression(bold(atop("Zero-modified"~distribution*":",
                                  distribution~"function"))),
      lwd = 2)
 abline(h = 0,
@@ -451,8 +452,6 @@ The support is $\{0\}\cup (0, \infty)$.
 
 ```{r, child = if (knitr::is_latex_output()) './children/MixedDist/CPG_latex.Rmd'}
 ```
-
-
 
 
 :::{.example #CPGRain name="Rainfall modelling"}
@@ -581,11 +580,12 @@ The following are the basic properties of compound Poisson--gamma distributions.
 :::{.theorem #CPGProperties name="Compound Poisson--gamma distribution properties"}
 If $X\sim\text{CPG}(\lambda, \alpha, \beta)$ then:
 
-1. The expected value: $\operatorname{E}[X] = \lambda\alpha\beta$.
+1. The expected value: $\operatorname{E}[X] = \mu = \lambda\alpha\beta$.
 2. The variance: $\operatorname{var}[X] = \lambda\alpha(\alpha + 1)\beta^2$.
-3. The MGF is given in Def.\ \@ref(def:CPGDefinitionMGF).
-4. The conditional mean: $\operatorname{E}[X\mid X > 0] = \lambda\alpha\beta/(1 - \exp(-\lambda))$.
-5. The reproductive property: If $X_1\sim \text{CPG}(\lambda_1, \alpha, \beta)$ and $X_2\sim\text{CPG}(\lambda_2, \alpha, \beta)$ independently, then $X_1 + X_2 \sim\text{CPG}(\lambda_1 + \lambda_2, \alpha, \beta)$.
+3. The probability of an exact zero: $\Pr(X = 0) = \exp(-\lambda)$.
+4. The MGF is given in Def.\ \@ref(def:CPGDefinitionMGF).
+5. The conditional mean: $\operatorname{E}[X\mid X > 0] = \lambda\alpha\beta/(1 - \exp(-\lambda))$.
+6. The reproductive property: If $X_1\sim \text{CPG}(\lambda_1, \alpha, \beta)$ and $X_2\sim\text{CPG}(\lambda_2, \alpha, \beta)$ independently, then $X_1 + X_2 \sim\text{CPG}(\lambda_1 + \lambda_2, \alpha, \beta)$.
 
 ::::{.proof}
 The proofs rely on the Laws of total expectation and variance (Sect.\ \@ref(TotalExpectation)). 
@@ -671,7 +671,6 @@ From the MGF we can deduce
 \end{align*}
 
 
-
 :::{.example #PoissonGammaExample name="Poisson--gamma distribution"}
 Suppose 
 $$
@@ -706,6 +705,63 @@ alpha = 20 => xi = 22/21
 -->
 
 
+### The mean--variance parameterisation {#CPGmeanvarxi}
+
+The compound Poisson--gamma probability function defined in Def.\ \@ref(def:CPGDefinitionMGF) has three parameters: $\lambda$ (from the underlying Poisson distribution) and $\alpha$ and $\beta$ (from the underlying gamma distribution).
+
+The probability function can also be written using the parameters $\mu$, $\phi$ and $\xi$, where
+$$
+  \xi = 1 + \frac{1}{\alpha + 1};
+  \qquad
+  \operatorname{E}[X] = \mu = \lambda\alpha\beta;
+  \qquad
+  \phi = \frac{\lambda\alpha(\alpha + 1)\beta^2}{\mu^\xi},
+$$
+when
+\begin{equation}
+  \operatorname{var}[X] = \mu^\xi.
+  (\#eq:TweedieMeanVar)
+\end{equation}
+Distributions with the mean--variance relationship shown in Eq.\ \@ref(eq:TweedieMeanVar) are defined for $\xi = (-\infty, 0] \cup [1,  \infty)$ and are called *Tweedie distributions*.\index{Tweedie distributions}
+The compound Poisson--gamma distributions are a special case of the Tweedie distributions, where $1 < \xi < 2$.
+The compound Poisson–gamma parameters ($\lambda$, $\alpha$, $\beta$) describe how the data are generated, while the Tweedie parameters ($\mu$, $\phi$, $\xi$) describe the relationship between the mean and variance of the same distribution.
+
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+Accurate evaluation and plotting of the compound Poisson--gamma distributions can be facilitated by installing, loading and using the `tweedie` package in **R** [@Dunntweediepackage], which uses the $(\mu, \phi, \xi)$ parameterisation.
+
+The four **R** functions for working with the compound Poisson--gamma distributions have the form `[dpqr]tweedie(., xi, mu, phi)` (see App.\ \@ref(UseRDistributions)):\index{dexp()@\texttt{dexp()}}
+
+* `dtweedie(x, xi, mu, phi)` computes the PDF at $X = {}$`x`;
+* `ptweedie(q, xi, mu, phi)` computes the CDF at $X = {}$`q`;
+* `qtweedie(p, xi, mu, phi)` computes the quantile for cumulative probability `p`; and
+* `rtweedie(n, xi, mu, phi)` generates `n` random numbers,
+
+where `mu`${} = \mu$, `phi`${} = \phi$, `xi`${} = \xi$. 
+:::
+
+
+:::{.example #TweediePlot name="Plotting compound Poisson--gamma distributions"}
+Plotting compound Poisson-gamma distribution is achieved using the `tweedie` package in **R**; the function `tweedie_plot()` makes this easy (Fig.\ \@ref(fig:TweediePlot)):
+
+```{r TweediePlotCode, eval = FALSE}
+mu <- 1
+phi <- 1
+xi <- 1.5
+x <- seq(0, 5,
+         length = 200)
+
+library(tweedie)
+tweedie_plot(x, xi = xi, mu = mu, phi = phi,
+             plot_args = list(las = 1),   # Horizontal axis labels
+             line_args = list(lwd = 3) )  # Thicker lines
+```
+:::
+
+```{r TweediePlot, echo=FALSE, fig.align="center", fig.cap="A compound Poisson--gamma distribution.", fig.width=6, fig.height = 3.25, out.width='70%'}
+<<TweediePlotCode>>
+```
 
 \index{Compound Poisson--gamma distribution|)}
 
@@ -1514,9 +1570,13 @@ $$
   \end{cases}
 $$
 
-1. What is the probability that the amount claimed on an insurance policy is greater than \$4\,000$?
-1. What is the probability that the amount claimed on an insurance policy is less than \2\,000$?
-1. What is the probability that the amount claimed on an insurance policy is between \$1\,000$ and \$5\,000$?
+1. Plot the probability function for\ $X$.
+1. Find and plot the distribution function for\ $X$.
+1. Find and plot the survival function for\ $X$.
+1. Find and plot the quantile function for\ $X$.
+1. What is the probability that the amount claimed on an insurance policy is greater than \$$4\,000$?
+1. What is the probability that the amount claimed on an insurance policy is less than \$$2\,000$?
+1. What is the probability that the amount claimed on an insurance policy is between \$$1\,000$ and \$$5\,000$?
 1. Forty percent of claims are less than what amount?
 :::
 
@@ -1532,6 +1592,10 @@ $$
   \end{cases}
 $$
 
+1. Plot the probability function for\ $R$.
+1. Find and plot the distribution function for\ $R$.
+1. Find and plot the survival function for\ $R$.
+1. Find and plot the quantile function for\ $R$.
 1. What is the probability that the annual rainfall is less than $60\mms$?
 1. What is the probability that the annual rainfall is greater than $50\mms$?
 1. What is the probability that the annual rainfall is between $20$ and $70\mms$?
@@ -1539,22 +1603,8 @@ $$
 :::
 
 
-
-
-
-Formally,
-
-P(X=0)=0.9,
-
-and for x>0,
-
-f(x)=0.1λe
-−λx
-.
-:::
-
 :::{.exercise #MixedIdentifiability}
-
+kkk
 :::
 
 
