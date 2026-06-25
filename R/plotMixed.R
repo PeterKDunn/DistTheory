@@ -1,7 +1,7 @@
-plotMixed <- function(pdf_fn = NULL,
-                      df_fn  = NULL,
+plotMixed <- function(pdf_fn = NULL,       # A function for the pdf (e.g., function(x) {}) when X>0; NOT THE CONDITIONAL DENSITY
+                      df_fn  = NULL,       # A function for the cdf (e.g., function(x) {}) when X>0; NOT THE CONDITIONAL DENSITY
                       q_fn   = NULL,
-                      p0,
+                      p0,                 # The prob P(X = 0)
                       type = "DF",
                       support = c(0, 4),
                       n = 2000,
@@ -30,7 +30,8 @@ plotMixed <- function(pdf_fn = NULL,
                   QF  = c(0, 1)
     ),
     ylim = switch(type,
-                  PDF = c(0, max(pdf_fn(xx[xx != 0]), na.rm = TRUE) * 1.05),
+                  PDF = c(0, 
+                          max(pdf_fn(xx[xx != 0]), p0, na.rm = TRUE) * 1.05),
                   DF  = c(0, 1.05),
                   SF  = c(0, 1.05),
                   QF  = range(q_fn(seq(0.001, 0.999, length.out = n)), na.rm = TRUE)
@@ -58,6 +59,8 @@ plotMixed <- function(pdf_fn = NULL,
             c(list(x = xx_cont, 
                    y = yy, 
                    type = "l"), plot_dots))
+
+    
     if (!is.na(fill)) {
       polygon(
         x = c(xx_cont, rev(xx_cont)),
@@ -69,13 +72,19 @@ plotMixed <- function(pdf_fn = NULL,
           yy, 
           col = plot_dots$col, 
           lwd = plot_dots$lwd)
-    points(0, 
+    # Included at exact zero
+    points(x = 0, 
            p0, 
            pch = 16, 
            col = plot_dots$col)
+    # Non-included at exact zero
+    points(x = 0, 
+           y = pdf_fn(0), 
+           pch = 1, 
+           col = plot_dots$col)
     
   } else if (type == "DF") {
-    yy <- df_fn(xx)
+    yy <- p0 + df_fn(xx) * (1 - p0)
     do.call(plot, 
             c(list(x = xx, 
                    y = yy, 
@@ -96,15 +105,16 @@ plotMixed <- function(pdf_fn = NULL,
           yy[xx >= 0], 
           col = plot_dots$col, 
           lwd = plot_dots$lwd)
-    y_left  <- df_fn(0) - p0
+    
+    y_left  <- df_fn(0) + p0
     y_right <- df_fn(0)
-    points(0, 
-           y_left,  
-           pch = 1,  
+    points(x = 0,
+           y = y_left,
+           pch = 19,
            col = plot_dots$col)
-    points(0, 
-           y_right, 
-           pch = 16, 
+    points(x = 0, 
+           y = y_right, 
+           pch = 1, 
            col = plot_dots$col)
     
   } else if (type == "SF") {
