@@ -5292,22 +5292,219 @@ $f_X(x) = \lambda \exp(-\lambda x)$ for $x > 0$ and $\lambda > 0$; hence $f'_X(x
 
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:MixedIntroInsuranceExp).**
-1. 
-:::
+2. $F_X(x) = 0$ for $x < 0$;  $F_X(x) = 0.4$ for $x = 0$; $F_X(x) = 0.6 + 0.4 \times (1 - exp(-x/3))$ for $x > 0$. 
+3. $S_X(x) = 1$ for $x < 0$;  $F_X(x) = 0.6$ for $x = 0$; $F_X(x) = exp(-x/3)$ for $x > 0$. 
+4. TBA
 
 ```{r}
+DF1 <- function(x) {
+  out <- numeric(length(x))
+  out[x == 0] <- 0.4
+  out[x > 0] <- 0.4 + 0.6 * (1 - exp(-x[x > 0]/3))
+  out
+}
+1 - DF1(1.5)
+DF1(2)
+DF1(5) - DF1(1)
+uniroot(function(x){DF1(x) - 0.95}, lower = 0, upper = 100)$root
+```
+
+:::
+
+```{r InsuranceExponential, echo=FALSE, out.width='90%', fig.width=8, fig.height=3.25, fig.align="center", fig.cap="Insurance: exponential."}
 par(mfrow = c(1, 2))
 
-plotMixed(pdf_fn = function(x){0.1 * (3 * exp(-3*x)) },
-          p0 = 0.9,
+plotMixed(pdf_fn = function(x){((1/3) * exp(-x/3)) },
+          p0 = 0.4,
           type = "PDF",
-          support = c(0, 2),
-          main = "FIX!!!")
-plotMixed(df_fn = function(x){1 - exp(-3*x)},
-          p0 = 0.9,
+          support = c(0, 12) )
+plotMixed(df_fn = function(x){1 - exp(-x/3)},
+          p0 = 0.4,
           type = "DF",
-          support = c(0, 2))
+          support = c(0, 12))
 
+```
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MixedIntroRainfallExp).**
+2. $F_X(x) = 0$ for $x < 0$;  $F_X(x) = 0.1$ for $x = 0$; $F_X(x) = 0.1 + 0.9 \times (1 - exp(-x/85))$ for $x > 0$. 
+3. $S_X(x) = 1$ for $x < 0$;  $F_X(x) = 0.9$ for $x = 0$; $F_X(x) = exp(-x/85)$ for $x > 0$. 
+4. TBA
+
+```{r}
+DF2 <- function(x) {
+  out <- numeric(length(x))
+  out[x == 0] <- 0.1
+  out[x > 0] <- 0.1 + 0.9 * (1 - exp(-x[x > 0]/85))
+  out
+}
+DF2(60)
+1 - DF2(50)
+DF2(70) - DF2(20)
+uniroot(function(x){DF2(x) - 0.25}, lower = 0, upper = 100)$root
+```
+
+:::
+
+```{r RainfallExponential, echo=FALSE, out.width='90%', fig.width=8, fig.height=3.25, fig.align="center", fig.cap="Rainfall; exponential."}
+par(mfrow = c(1, 2))
+
+plotMixed(pdf_fn = function(x){( (1/85) * exp(-x/85)) },
+          p0 = 0.1,
+          type = "PDF",
+          support = c(0, 300) )
+plotMixed(df_fn = function(x){1 - exp(-x/85)},
+          p0 = 0.1,
+          type = "DF",
+          support = c(0, 300))
+
+```
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MixedIntroInsuranceGamma).**
+2. $F_X(x) = 0$ for $x < 0$;  $F_X(x) = 0.4$ for $x = 0$; $F_X(x) = ???$ for $x > 0$. 
+3. $S_X(x) = 1$ for $x < 0$;  $F_X(x) = 0.6$ for $x = 0$; $F_X(x) = ???$ for $x > 0$. 
+4. TBA
+
+```{r}
+DF1 <- function(x) {
+  out <- numeric(length(x))
+  out[x == 0] <- 0.4
+  out[x > 0] <- 0.4 + 0.6 * pgamma(x[x > 0], shape = 0.75, scale = 2)
+  out
+}
+1 - DF1(1.5)
+DF1(2)
+DF1(5) - DF1(1)
+uniroot(function(x){DF1(x) - 0.95}, lower = 0, upper = 100)$root
+```
+
+:::
+
+```{r InsuranceGamma, echo=FALSE, out.width='90%', fig.width=8, fig.height=3.25, fig.align="center", fig.cap="Insurance; gamma."}
+par(mfrow = c(1, 2))
+
+plotMixed(pdf_fn = function(x){dgamma(x, shape = 0.75, scale = 2) },
+          p0 = 0.4,
+          type = "PDF",
+          support = c(0, 12) )
+plotMixed(df_fn = function(x){pgamma(x, shape = 0.75, scale = 2)},
+          p0 = 0.4,
+          type = "DF",
+          support = c(0, 12))
+
+```
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MixedIntroRainfallGamma).**
+2. $F_X(x) = 0$ for $x < 0$;  $F_X(x) = 0.1$ for $x = 0$; $F_X(x) = ???$ for $x > 0$. 
+3. $S_X(x) = 1$ for $x < 0$;  $F_X(x) = 0.9$ for $x = 0$; $F_X(x) = ???$ for $x > 0$. 
+4. TBA
+
+```{r}
+DF2 <- function(x) {
+  out <- numeric(length(x))
+  out[x == 0] <- 0.1
+  out[x > 0] <- 0.1 + 0.9 * pgamma(x, shape = 0.8, scale = 80)
+  out
+}
+DF2(60)
+1 - DF2(50)
+DF2(70) - DF2(20)
+uniroot(function(x){DF2(x) - 0.25}, lower = 0, upper = 100)$root
+```
+
+:::
+
+```{r RainfallGamma, echo=FALSE, out.width='90%', fig.width=8, fig.height=3.25, fig.align="center", fig.cap="Rainfall; gamma."}
+par(mfrow = c(1, 2))
+
+plotMixed(pdf_fn = function(x){dgamma(x, shape = 0.8, scale = 80)},
+          p0 = 0.1,
+          type = "PDF",
+          support = c(0, 300) )
+plotMixed(df_fn = function(x){pgamma(x, shape=0.8, scale = 80)},
+          p0 = 0.1,
+          type = "DF",
+          support = c(0, 300))
+
+```
+
+
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MixedIntroInsuranceLognormal).**
+2. $F_X(x) = 0$ for $x < 0$;  $F_X(x) = 0.4$ for $x = 0$; $F_X(x) = ???$ for $x > 0$. 
+3. $S_X(x) = 1$ for $x < 0$;  $F_X(x) = 0.6$ for $x = 0$; $F_X(x) = ???$ for $x > 0$. 
+4. TBA
+
+```{r}
+DF1 <- function(x) {
+  out <- numeric(length(x))
+  out[x == 0] <- 0.4
+  out[x > 0] <- 0.4 + 0.6 * plnorm(x[x > 0], meanlog = 0.75, sdlog = 0.7)
+  out
+}
+1 - DF1(1.5)
+DF1(2)
+DF1(5) - DF1(1)
+uniroot(function(x){DF1(x) - 0.95}, lower = 0, upper = 100)$root
+```
+
+:::
+
+```{r InsuranceLognormal, echo=FALSE, out.width='90%', fig.width=8, fig.height=3.25, fig.align="center", fig.cap="Insurance; log normal"}
+par(mfrow = c(1, 2))
+
+plotMixed(pdf_fn = function(x){dlnorm(x, meanlog = 0.75, sdlog = 0.7) },
+          p0 = 0.4,
+          type = "PDF",
+          support = c(0, 12) )
+plotMixed(df_fn = function(x){plnorm(x, meanlog = 0.75, sdlog = 0.7)},
+          p0 = 0.4,
+          type = "DF",
+          support = c(0, 12))
+
+```
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MixedIntroRainfallLognormal).**
+2. $F_X(x) = 0$ for $x < 0$;  $F_X(x) = 0.1$ for $x = 0$; $F_X(x) = ???$ for $x > 0$. 
+3. $S_X(x) = 1$ for $x < 0$;  $F_X(x) = 0.9$ for $x = 0$; $F_X(x) = ???$ for $x > 0$. 
+4. TBA
+
+```{r}
+DF2 <- function(x) {
+  out <- numeric(length(x))
+  out[x == 0] <- 0.1
+  out[x > 0] <- 0.1 + 0.9 * pgamma(x, shape = 0.8, scale = 80)
+  out
+}
+DF2(60)
+1 - DF2(50)
+DF2(70) - DF2(20)
+uniroot(function(x){DF2(x) - 0.25}, lower = 0, upper = 100)$root
+```
+
+:::
+
+```{r RainfallLognormal, echo=FALSE, out.width='90%', fig.width=8, fig.height=3.25, fig.align="center", fig.cap="Rainfall; log normal"}
+par(mfrow = c(1, 2))
+
+plotMixed(pdf_fn = function(x){dlnorm(x, meanlog = 4, sdlog = 0.7) },
+          p0 = 0.1,
+          type = "PDF",
+          support = c(0, 300) )
+plotMixed(df_fn = function(x){plnorm(x, meanlog = 4, sdlog = 0.7) },
+          p0 = 0.1,
+          type = "DF",
+          support = c(0, 300))
 
 ```
 
@@ -5321,7 +5518,7 @@ plotMixed(df_fn = function(x){1 - exp(-3*x)},
 
 See Fig.\ \@ref(fig:MedicalCosts1).
 
-```{r}
+```{r fig.show = 'hide'}
 cost_mu <- 4200
 cost_phi <- 483 
 cost_xi <- 4/3
@@ -5334,7 +5531,8 @@ tweedie_plot(seq(0.01, 30000, length=100),
              xi=cost_xi, phi=cost_phi, mu=cost_mu)
 1 - ptweedie(5000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
 ptweedie(20000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
-ptweedie(15000, xi=cost_xi, phi=cost_phi, mu=cost_mu) - ptweedie(10000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
+ptweedie(15000, xi=cost_xi, phi=cost_phi, mu=cost_mu) - 
+  ptweedie(10000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
 qtweedie(0.3, xi=cost_xi, phi=cost_phi, mu=cost_mu)
 ```
 :::
@@ -5374,7 +5572,7 @@ tweedie_plot(seq(0.001, 30000, length=100),
 See Fig.\ \@ref(fig:MedicalCosts2).
 
 
-```{r}
+```{r fig.show = 'hide'}
 cost_mu <- 160000
 cost_phi <- 0.95 
 cost_xi <- 1.25
@@ -5386,13 +5584,15 @@ tweedie_plot(seq(150000, 170000, length=100),
              xi=cost_xi, phi=cost_phi, mu=cost_mu)
 1 - ptweedie(155000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
 ptweedie(165000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
-ptweedie(160000, xi=cost_xi, phi=cost_phi, mu=cost_mu) - ptweedie(158000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
+ptweedie(160000, xi=cost_xi, phi=cost_phi, mu=cost_mu) - 
+  ptweedie(158000, xi=cost_xi, phi=cost_phi, mu=cost_mu)
 qtweedie(0.6, xi=cost_xi, phi=cost_phi, mu=cost_mu)
 #
 cost_sd <- sqrt( cost_phi * cost_mu^cost_xi)
 1 - pnorm(155000, mean=cost_mu, sd = cost_sd )
 pnorm(165000, mean=cost_mu, sd = cost_sd )
-pnorm(160000, mean=cost_mu, sd = cost_sd ) - pnorm(158000, mean=cost_mu, sd = cost_sd )
+pnorm(160000, mean=cost_mu, sd = cost_sd ) - 
+  pnorm(158000, mean=cost_mu, sd = cost_sd )
 qnorm(0.6, mean=cost_mu, sd = cost_sd )
 ```
 :::
@@ -5523,7 +5723,9 @@ cat("Proportion of zeros:", mean(X == 0), "\n")
 cat("Mean density (all plots):", mean(X), "\n")
 cat("Mean density (present only):", mean(X[X > 0]), "\n")
 
-hist(X[X > 0], breaks = 20, col = "steelblue", border = "white",
+hist(X[X > 0], 
+     breaks = 20,
+     col = ColourLightOpaque, 
      main = "Orchid density | orchid present", xlab = "Density", ylab = "Count")
 ```
 
@@ -5573,9 +5775,8 @@ cat("Pr(S = 0) simulated:  ", mean(S == 0), "\n")
 
 hist(S[S > 0], 
      breaks = 40, 
-     col = ColourOpaque, 
+     col = ColourLightOpaque, 
      las = 1,
-     border = "white",
      main = "Total claim amount S | S > 0", 
      xlab = "S ($)", 
      ylab = "Count")
