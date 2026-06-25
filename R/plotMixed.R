@@ -3,7 +3,7 @@ plotMixed <- function(pdf_fn = NULL,
                       q_fn   = NULL,
                       p0,
                       type = "DF",
-                      support = c(-4, 4),
+                      support = c(0, 4),
                       n = 2000,
                       fill = NA,
                       ...) {
@@ -15,7 +15,9 @@ plotMixed <- function(pdf_fn = NULL,
   if (type == "QF" && is.null(q_fn)) stop('type = "QF" requires q_fn')
   
   dots <- list(...)
-  xx <- seq(support[1], support[2], length.out = n)
+  xx <- seq(support[1], 
+            support[2], 
+            length.out = n)
   
   plot_defaults <- list(
     col = "black",
