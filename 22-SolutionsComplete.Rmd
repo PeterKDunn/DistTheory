@@ -5292,6 +5292,162 @@ $f_X(x) = \lambda \exp(-\lambda x)$ for $x > 0$ and $\lambda > 0$; hence $f'_X(x
 <!-- *********************************************************************************** -->
 ## Answers for Chap.\ \@ref(ChapterMixedDistributions) {#AnswersChapMixedDistributions}
 
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MixedRainGauges1).**
+
+1. Continuous: can take any positive real value.
+1. $S_X = (0, \infty)$.
+1. $Y = X$ when $x \le 50$; $Y = 50$ when $X > 50$.
+1. $S_Y = [0, 50]$.
+1. $Y$ is mixed random; a point mass at $y = 50$.
+1. See Fig.\ \@ref(fig:MixedRainGauges1) (left).
+1. $F_Y(y) = 0$ for $y < 0$; $F_Y(y) = 1 - \exp(-y/20)$ for $0 \le y < 50$;  $F_Y(y) = 1$ for $y \ge 50$.
+1. See Fig.\ \@ref(fig:MixedRainGauges1) (right).
+1. $\Pr(X > 50) \approx 0.0821$ using the exponential distribution.
+:::
+
+
+
+```{r, MixedRainGauges1, echo=FALSE, out.width='90%', fig.width=8, fig.height=3.25, fig.align="center", fig.cap="Monthly rainfall recording."}
+par(mfrow = c(1, 2))
+
+x <- seq(0, 55,
+         length = 200)
+x50 <- x[x < 50]
+pdf_x <- dexp(x50, rate = 1/20)
+cdf_x <- pexp(x50, rate = 1/20)
+p50 <- 1 - pexp(50, rate = 1/20)
+
+plot(pdf_x ~ x50, 
+     type = "l",
+     las = 1,
+     ylim = c(0, p50),
+     lwd = 3,
+     main = "Density of recorded rainfall",
+     xlab = expression(italic(y)),
+     ylab = "Prob. fn")
+points(x = 50,
+       y = min(pdf_x),
+       pch = 1)
+points(x = 50,
+       y = p50,
+       pch = 19)
+
+plot(cdf_x ~ x50, 
+     type = "l",
+     ylim = c(0, 1),
+     xlim = c(-10, 60),
+     las = 1,
+     lwd = 3,
+     main = "Dist. fn of recorded rainfall",
+     xlab = expression(italic(y)),
+     ylab = "Distn. fn")
+lines(x = c(-10, 0),
+      y = c(0, 0),
+      lwd = 3)
+points(x = 50,
+       y = max(cdf_x),
+       pch = 1)
+points(x = 50,
+       y = 1,
+       pch = 19)
+lines(x = c(50, 60),
+      y = c(1, 1),
+      lwd = 3)
+```
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MixedRainGauges2).**
+A rainfall gauge has a physical capacity of $70\mms$. 
+When $X > 70$, the gauge overflows, and is recorded as $R = 70$. 
+Rainfall less than $0.1$mm is too small to record, so is recorded as $R = 0$.
+Assume $X \sim \text{Exponential}(\text{rate} = 1/40)$, where\ $X$ is the daily rainfall at a given weather station.
+
+1. $X$ is continuous: can take any positive value.
+1. $S_x = (0, \infty)$.
+1. $R = 0$ if $X < 0.1$; $R = X$ if $0.1 \le X \le 70$; $r = 70$ if $X > 70$.
+1. $S_R = \{0\}\cup [0.1, 70]$.
+1. Mixed: point masses at $R=)$ and $R = 70$.
+1. See Fig.\ \@ref(fig:MixedRainGauges2) (left).
+1. $F_R(r) = 0$ for $r < 0$; $F_R(r) = 1 - \exp(-0.1/40)$ for $0 \le r < 0.1$; $F_R(r) = 1 - \exp(-r/40)$ for $0.1 < r < 70$; $F_R(r) = 1$ for $r\ge 0$.
+1. See Fig.\ \@ref(fig:MixedRainGauges2) (right).
+1. $\Pr(X > 70) \approx 0.174$.
+1. $\Pr(R = 0) = \Pr(X < 0.25) \approx 0.0062$.
+:::
+
+
+
+```{r, MixedRainGauges2, echo=FALSE, out.width='90%', fig.width=8, fig.height=3.25, fig.align="center", fig.cap="Monthly rainfall recording."}
+par(mfrow = c(1, 2))
+
+x <- seq(0, 85,
+         length = 200)
+x80 <- x[(x < 80) & (x > 0.1)]
+pdf_x <- dexp(x80, rate = 1/40)
+
+p80 <- 1 - pexp(80, rate = 1/40)
+p0  <- pexp(0.25, rate = 1/40)
+
+cdf_x <- p0 + pexp(x80, rate = 1/40)
+
+plot(pdf_x ~ x80, 
+     type = "l",
+     las = 1,
+     ylim = c(0, p80),
+     lwd = 3,
+     main = "Density of recorded rainfall",
+     xlab = expression(italic(r)),
+     ylab = "Prob. fn")
+points(x = 0,
+       y = p0,
+       pch = 19)
+points(x = 0,
+       y = max(pdf_x),
+       pch = 1)
+points(x = 80,
+       y = min(pdf_x),
+       pch = 1)
+points(x = 80,
+       y = p80,
+       pch = 19)
+
+plot(cdf_x ~ x80, 
+     type = "l",
+     ylim = c(0, 1),
+     xlim = c(-10, 90),
+     las = 1,
+     lwd = 3,
+     sub = expression("("*Discontinuity~at~italic(r)==0~hard~to~see*")"),
+     main = "Dist. fn of recorded rainfall",
+     xlab = expression(italic(r)),
+     ylab = "Distn. fn")
+lines(x = c(-10, 0),
+      y = c(0, 0),
+      lwd = 3)
+points(x = 0,
+       y = 0,
+       pch = 1)
+points(x = 0,
+       y = p0,
+       pch = 19)
+
+points(x = 80,
+       y = max(cdf_x),
+       pch = 1)
+points(x = 80,
+       y = 1,
+       pch = 19)
+lines(x = c(80, 90),
+      y = c(1, 1),
+      lwd = 3)
+```
+
+
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:MixedIntroInsuranceExp).**
 2. $F_X(x) = 0$ for $x < 0$;  $F_X(x) = 0.4$ for $x = 0$; $F_X(x) = 0.6 + 0.4 \times (1 - exp(-x/3))$ for $x > 0$. 
@@ -5701,35 +5857,27 @@ $$
 
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:MixedOrchids).**
-1. Probability that $X > 0$:
-$$
-  \Pr(X > 0) = 1 - \Pr(X = 0) = 1 - 0.75 = 0.25.
-$$
-2. Simulate:
+1. $\Pr(X > 0) = 1 - \Pr(X = 0) = 1 - 0.75 = 0.25$.
+2. For a gamma, $\mu_c = \alpha\beta$; $\operatorname{E}[X] = (1 - p)\mu_c = 0.75 \times (2\times 1) = 1.5$.
+3. For a gamma, $\sigma_c^2 = \alpha\beta^2$; $\operatorname{var}[X] = (1 - p)\sigma_c^2 + p(1 - p)\mu_c^2 =  4.6875$.
+4. $P(X>3)$  is $0.25$ times the gamma probability that $X>3$: `0.25 * (1 - pgamma(3, shape = 2, scale = 1))`, or about $0.0498$.
 :::
 
 
-```{r orchids}
-n <- 100
-is_present <- rbinom(n, 
-                     1, 
-                     prob = 0.25)          # 1 = orchid present
-density_given_present <- rgamma(n, 
-                                shape = 2, 
-                                rate = 1)
-X <- ifelse(is_present == 1, 
-            density_given_present, 
-            0)
 
-cat("Proportion of zeros:", mean(X == 0), "\n")
-cat("Mean density (all plots):", mean(X), "\n")
-cat("Mean density (present only):", mean(X[X > 0]), "\n")
 
-hist(X[X > 0], 
-     breaks = 20,
-     col = ColourLightOpaque, 
-     main = "Orchid density | orchid present", xlab = "Density", ylab = "Count")
-```
+::::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MixedBiomass).**
+
+Care: $p = \Pr(X = 0) = 0.4$.
+
+1. For a gamma, $\mu_c = \alpha\beta$; $\operatorname{E}[X] = (1 - p)\mu_c = 0.6 \times (3\times 2) = 3.6\kgs$.
+2. For a gamma, $\sigma_c^2 = \alpha\beta^2$; $\operatorname{var}[X] = (1 - p)\sigma_c^2 + p(1 - p)\mu_c^2 =  5.44\kgs^2$.
+3. $P(X>5)$  is $0.6$ times the gamma probability that $X>5$: `0.6 * (1 - pgamma(5, shape = 3, scale = 2))`, or about $0.326$.
+4.  `pgamma(0.2, shape = 3, scale = 2)`, or about $3.1\kgs$.
+:::
+
+
 
 
 
