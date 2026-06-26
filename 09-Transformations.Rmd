@@ -1598,9 +1598,9 @@ $$
   V = I \cdot R.
 $$
 Suppose the supply voltage is constant at $V = 240\vs$.
-The resistance varies between components and is modelled using a lognormal distribution 
+The resistance varies between components and is modelled using a log-normal distribution 
 $$
-  R \sim\text{Lognormal}(\mu = \log 10, \sigma^2 = 0.1),?????
+  R \sim\text{Log-normal}(\mu = \log 10, \sigma^2 = 0.1),
 $$
 so that the median resistance is $10$\ ohms.
 
@@ -1640,6 +1640,102 @@ The total load distribution\ $L$ was then modelled as $L = 0.24S + 0.76B$, refle
 1. Plot the distribution of\ $L$.
 1. Compute the mean and standard deviation of\ $L$.
 :::
+
+
+
+
+:::{.exercise #RunnerVelocity}
+The time taken to run a distance $D$ (in metres) by a professional athlete, say\ $T$ (in seconds), varies with the distribution shown in Fig.\ \@ref(fig:RunnerVelocityVoltage) (left panel).
+The average velocity of the runner, say\ $V$, is related to the time by $V = D/T$.
+
+1. Determine the probability density function for the runner's velocity.
+2. Suppose $D = 100$, $\mu = 12$ and $\Delta = 0.25$.
+   Plot the probability density function for\ $V$.
+:::
+
+
+```{r RunnerVelocityVoltage, echo=FALSE, out.width="90%", fig.width=8, fig.height=4, fig.align="center", fig.cap="The probability density function for the random variable\\ $T$, the time for the run."}
+f <- function(t, mu, a){
+  ifelse( ( t >= (mu - a) & (t <= mu)), 
+          (a - mu + t)/(a^2),
+          (a + mu - t)/(a^2))}
+          
+          
+g <- function(v, mu, a, D){
+  ifelse( ( v <= D/(mu - a) & (v >= D/mu)), 
+          (D * (v*a - v*mu + D ) )/(a^2 * v^3 ),
+          (D * (v*a + v*mu - D ) )/(a^2 * v^3 ) ) }
+          
+
+
+###
+par( mfrow = c(1, 2) )
+
+a <- 0.25
+mu <- 12
+D <- 100
+
+t <- seq(mu - a, mu + a,
+         length = 1000)
+plot( f(t, mu = mu, a = a) ~ t,
+      xlab = expression(Time~italic(t)),
+      ylab = "PDF",
+      main = "PDF of running time\n(in seconds)",
+      type = "l",
+      lwd = 3,
+      col = ColourOpaque,
+      axes = FALSE,
+      las = 1)
+axis(side = 1,
+     at = c(mu - a,
+            mu + a),
+     labels = c(expression(mu - Delta),
+                expression(mu + Delta) ) )
+axis(side = 2,
+     at = c(0, 1/a),
+     label = c("0",
+               expression(1/Delta)),
+     las = 1)
+box()
+
+
+###
+
+mu <- 0
+sigma <- 1
+
+voltage <- seq(mu -3.5 * sigma,
+               mu + 3.5 * sigma,
+               length = 1000)
+
+plot( dnorm(voltage, mean = mu, sd = sigma) ~ voltage,
+      xlab = expression(Voltage~italic(v)),
+      ylab = "PDF",
+      xlim = c(-3.25, 3.25),
+      main = "PDF of instantaneous voltage\n(in volts)",
+      type = "l",
+      lwd = 3,
+      col = ColourOpaque,
+      las = 1)
+
+box()
+
+```
+
+
+
+:::{.exercise #VoltagePower}
+Suppose the instantaneous voltage\ $V$ (in volts) in a circuit varies over time such that
+$$
+  f_V(v) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{ -\frac{x^2}{2\sigma^2}\right\}.
+$$
+as shown in Fig.\ \@ref(fig:RunnerVelocityVoltage) (right panel).\index{Normal distribution}
+
+1. Determine the probability density function of the instantaneous *power* in the circuit\ $P$, where $P = V^2/R$ for some circuit resistance\ $R$ (in ohms).
+2. Suppose $\sigma = 1$, and $R = 10$.
+   Plot the probability density function for\ $P$.
+:::
+
 
 
 :::{.exercise #LogNormal}
@@ -1788,100 +1884,6 @@ Suppose the random variable\ $X$ is defined as shown in Fig.\ \@ref(fig:TrickyX)
 
 
 
-:::{.exercise #RunnerVelocity}
-The time taken to run a distance $D$ (in metres) by a professional athlete, say\ $T$ (in seconds), varies with the distribution shown in Fig.\ \@ref(fig:RunnerVelocityVoltage) (left panel).
-The average velocity of the runner, say\ $V$, is related to the time by $V = D/T$.
-
-1. Determine the probability density function for the runner's velocity.
-2. Suppose $D = 100$, $\mu = 12$ and $\Delta = 0.25$.
-   Plot the probability density function for\ $V$.
-:::
-
-
-```{r RunnerVelocityVoltage, echo=FALSE, out.width="90%", fig.width=8, fig.height=4, fig.align="center", fig.cap="The probability density function for the random variable\\ $T$, the time for the run."}
-f <- function(t, mu, a){
-  ifelse( ( t >= (mu - a) & (t <= mu)), 
-          (a - mu + t)/(a^2),
-          (a + mu - t)/(a^2))}
-          
-          
-g <- function(v, mu, a, D){
-  ifelse( ( v <= D/(mu - a) & (v >= D/mu)), 
-          (D * (v*a - v*mu + D ) )/(a^2 * v^3 ),
-          (D * (v*a + v*mu - D ) )/(a^2 * v^3 ) ) }
-          
-
-
-###
-par( mfrow = c(1, 2) )
-
-a <- 0.25
-mu <- 12
-D <- 100
-
-t <- seq(mu - a, mu + a,
-         length = 1000)
-plot( f(t, mu = mu, a = a) ~ t,
-      xlab = expression(Time~italic(t)),
-      ylab = "PDF",
-      main = "PDF of running time\n(in seconds)",
-      type = "l",
-      lwd = 3,
-      col = ColourOpaque,
-      axes = FALSE,
-      las = 1)
-axis(side = 1,
-     at = c(mu - a,
-            mu + a),
-     labels = c(expression(mu - Delta),
-                expression(mu + Delta) ) )
-axis(side = 2,
-     at = c(0, 1/a),
-     label = c("0",
-               expression(1/Delta)),
-     las = 1)
-box()
-
-
-###
-
-mu <- 0
-sigma <- 1
-
-voltage <- seq(mu -3.5 * sigma,
-               mu + 3.5 * sigma,
-               length = 1000)
-
-plot( dnorm(voltage, mean = mu, sd = sigma) ~ voltage,
-      xlab = expression(Voltage~italic(v)),
-      ylab = "PDF",
-      xlim = c(-3.25, 3.25),
-      main = "PDF of instantaneous voltage\n(in volts)",
-      type = "l",
-      lwd = 3,
-      col = ColourOpaque,
-      las = 1)
-
-box()
-
-```
-
-
-
-:::{.exercise #VoltagePower}
-Suppose the instantaneous voltage\ $V$ (in volts) in a circuit varies over time such that
-$$
-  f_V(v) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{ -\frac{x^2}{2\sigma^2}\right\}.
-$$
-as shown in Fig.\ \@ref(fig:RunnerVelocityVoltage) (right panel).\index{Normal distribution}
-
-1. Determine the probability density function of the instantaneous *power* in the circuit\ $P$, where $P = V^2/R$ for some circuit resistance\ $R$ (in ohms).
-2. Suppose $\sigma = 1$, and $R = 10$.
-   Plot the probability density function for\ $P$.
-:::
-
-
-
 :::{.exercise #LogNormalProduct}
 Let $X_1, X_2, \ldots, X_n$ be independent positive random variables, and let
 $$
@@ -1890,7 +1892,7 @@ $$
 be their product.
 
 1. Show that $\log P = \sum_{i=1}^n \log X_i$, where $P = \prod_{i=1}^n X_i$.
-2. Hence show that $P \sim \text{LogNormal}\!\left(\sum_{i=1}^n \mu_i,\, \sum_{i=1}^n \sigma_i^2\right)$.
+2. Hence show that $P \sim \text{Log-normal}\!\left(\sum_{i=1}^n \mu_i,\, \sum_{i=1}^n \sigma_i^2\right)$.
 3. Suppose $X_1, X_2, \ldots, X_{10}$ are independent with $)\log X_i \sim N(0.2, 0.09)$ for each\ $i$.
    Find the distribution of $P = \prod_{i=1}^{10} X_i$ and hence find $\Pr(P > \exp 3)$.
 :::
