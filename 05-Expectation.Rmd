@@ -179,12 +179,21 @@ The *expected value* of some function $g(\cdot)$ of a random variable\ $X$ is wr
 
 For a *discrete* random variable\ $X$ with probability mass function $p_X(x)$, the expected value of $g(X)$ is
 $$
-   \operatorname{E}\big[g(X)\big)] = \sum_{x\in \mathcal{R}_X} g(x)\cdot p_X(x).
+   \operatorname{E}\big[g(X)\big] = \sum_{x\in \mathcal{R}_X} g(x)\cdot p_X(x).
 $$
 For a *continuous* random variable\ $X$ with probability density function $f_X(x)$, the expected value of $g(X)$ is
 $$
    \operatorname{E}\big[g(X)\big] = \int_{-\infty}^\infty g(x)\cdot f_X(x)\,dx.
 $$
+For a *mixed* random variable\ $X$ with probability mass function $p_X(x)$ and probability density function $f_X(x)$, the expected value of $g(X)$ is
+$$
+   \operatorname{E}\big[g(X)\big]
+   =
+   \sum_{x\in \mathcal{R}_X} g(x)\, p_X(x)
+   +
+   \int_{-\infty}^{\infty} g(x)\, f_X(x)\,dx,
+$$
+where $\mathcal{R}_X$ is the set of values having positive probability mass.
 
 ::::{.proof}
 The proof must be delayed until later (Example\ \@ref(exm:LOTUSProof)).
@@ -587,17 +596,10 @@ Both methods give the same answer, and both methods require initial computation 
 :::
 
 
-
-
-:::{.example #ExpectationMixedVarX name="Expectation for a function of a mixed variable"}
+:::{.example #ExpectationMixedVarX name="Variance for a mixed variable"}
 Consider the mixed random variable\ $W$ with probability density function shown in Example\ \@ref(exm:ExpectationMixedX).
 The expected value of\ $W$ is $\operatorname{E}[W] = 1/4$.
-The variance of\ $W$ is then
-\begin{align*}
-  \operatorname{var}(W)
-  &= E[W^2] - E[W]^2.
-\end{align*}
-Now
+The variance of\ $W$ is then $\operatorname{var}(W) = E[W^2] - E[W]^2$, and so
 \begin{align*}
    \operatorname{E}[W^2]
    &= \overbrace{\sum_{w = 0} w^2\,p_W(w)}^{\text{Discrete component}}
@@ -709,6 +711,34 @@ Putting $\sqrt{c} = k\sigma$, Eq.\ \@ref(eq:Tchebysheff) is obtained.
 With the probability function or PDF of a random variable\ $X$, then $\operatorname{E}[X]$ and $\operatorname{var}[X]$ can be found, but the converse is not true. 
 That is, from a knowledge of $\operatorname{E}[X]$ and $\operatorname{var}[X]$ we cannot reconstruct the probability distribution of\ $X$ and hence cannot compute probabilities such as $\Pr(|X - \mu| \geq k\sigma)$.
 Nonetheless, using Tchebysheff's inequality we can find a useful *bound* to either the probability outside or inside of $\mu \pm k\sigma$.
+
+
+:::{.example #Tchebysheffmarks name="Tchebysheff inequality"}
+Suppose students' exam marks\ $X$ have mean\ $70$ and standard deviation $10$.
+Tchebysheff's inequality can be used to bound the probability that a student's mark differs from the mean by *at least*\ $20$ marks.
+
+Since $|X - \mu| \ge 20$ and 
+$$
+  k = 20/10 = 2,
+$$
+Tchebysheff's inequality gives
+$$
+  \Pr( |X - \mu| \ge k\sigma) \le 1/k^2;
+$$
+hence
+$$
+  \Pr( |X - 70| \ge 20) \le 1/2^2 = 1/4.
+$$
+Therefore
+$$
+  \Pr(| X - 70 | \ge 20) \le 0.25,
+$$
+or, equivalently,
+$$
+  \Pr(50 < X < 90) \ge 0.75.
+$$
+Even if we know nothing about the distribution of marks, and only know the mean and standard deviation, we can still guarantee that at least $75$% of marks lie between\ $50$ and\ $90$.
+:::
 
 
 ## Higher moments {#HigherMoments}
@@ -1334,7 +1364,7 @@ Other uses of the moment generating function are seen later (see Sect.\ \@ref(Tr
 The *moment generating function* (or MGF)\index{Moment generating function!definition}
  $M_X(t)$ of the random variable\ $X$ defined over a range\ $\mathcal{R}_X$ is denoted $M_X(t)$, and defined as 
 $$
-   \operatorname{E}\big[\exp(tX)\big], 
+   M_X(t) = \operatorname{E}\big[\exp(tX)\big], 
 $$
 provided the expectation exists for values of\ $t$ in some interval that includes $t = 0$.
 
@@ -1346,6 +1376,17 @@ When\ $X$ is a continuous random variable,
 $$
   M_X(t)  = \operatorname{E}\big[\exp(tX)\big] = \int_{-\infty}^\infty \exp(tx)\, f_X(x)\, dx.
 $$
+When\ $X$ is a mixed random variable with probability mass function $p_X(x)$ and probability density function $f_X(x)$,
+$$
+  M_X(t)
+  =
+  \operatorname{E}\big[\exp(tX)\big]
+  =
+  \sum_{x\in \mathcal{R}_X} \exp(tx)\, p_X(x)
+  +
+  \int_{-\infty}^{\infty} \exp(tx)\, f_X(x)\, dx,
+$$
+where $\mathcal{R}_X$ is the set of values having positive probability mass.
 :::
 
 The MGF may not converge to a finite value for all values of\ $t$, so may not be defined everywhere.
@@ -2082,22 +2123,24 @@ for a constant\ $c$.
 
 
 :::{.exercise #ExpectedMixedBiomass}
+<!-- lambda = 1 -->
 An ecologist records fish biomass\ $X$ at sampling sites.
 Suppose $\Pr(X = 0) = 0.6$ and 
 $$
-  X\mid X > 0  \sim \text{Gamma}(\alpha = 3, \beta = 2),
+  f_X(x \mid X > 0) = exp(-x)\quad\text{for $x > 0$)}.
 $$
-where\ $\beta$ is the scale parameter.
 
 1. Find the expected biomass.
 2. Find the variance of the the biomass.
-3. ANOTHER TRANFORM: Suppose 
+3. Find the MGF of\ $X$.
+4. Compute the mean and variance of\ $X$ from the MGF.
 :::
 
 
 
 :::{.exercise #ExpectedMixedRainfall}
-Suppose the true daily rainfall\ $X$ follows an exponential distribution with rate\ $\lambda = 1/20$.
+<!-- labmda = 1/20 -->
+Suppose the true daily rainfall\ $X$ follows a distribution with probability function $f_X(x) = \exp( -x/20)/20$.
 A rainfall gauge records
 $$
   R =
@@ -2110,8 +2153,9 @@ $$
 
 1. Find the expected value of\ $R$.
 1. Find the variance of $R$.
-1. ANOTHER XFTORM
+3. Find the MGF of\ $X$, and write down the expression for evaluating the MGF of\ $R$.
 :::
+
 
 :::{.exercise #C3DiscreteB}
 The MGF of the discrete random variable\ $Z$ is
@@ -2744,10 +2788,6 @@ If successful, $F = 0$.
 :::
 
 
-
-
-
-
 :::{.exercise #IdentifyDistMGF}
 The MGF of a random variable\ $X$ is
 $$
@@ -2756,7 +2796,6 @@ $$
 1. Find $\operatorname{E}[X]$ and $\operatorname{var}[X]$.
 1. Find $\Pr(X = 5)$.
 :::
-
 
 
 :::{.exercise #IdentifyDistMGF2}
@@ -2786,8 +2825,6 @@ variance $\sigma^2 = 16$.
 1. Use Tchebysheff's inequality to find an upper bound for $\Pr(|X - 20| \geq 8)$.
 2. Use Tchebysheff's inequality to find a value\ $k$ such that $\Pr(|X - 20| \geq k) \leq 0.04$.
 :::
-
-
 
 
 :::{.exercise #MomentsFromCGF}
@@ -2830,4 +2867,4 @@ Let\ $X$ be a random variable with mean\ $\mu$ and let $M_X(t) = \operatorname{E
 3. The *cumulant generating function* is defined as $K_X(t) = \log M_X(t)$.
    Show that $K_X'(0) = \mu$, and interpret the result of Part\ 2 as a statement about $K_X(t)$.
 :::
-
+::::
