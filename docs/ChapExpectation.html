@@ -191,10 +191,7 @@ where <span class="math inline">\(D\)</span> is the set of discrete mass points
 </div>
 <div class="importantBox important">
 <p><span class="math inline">\(\operatorname{E}[X]\)</span> is well-defined only if <span class="math inline">\(\operatorname{E}[\,|X|\,] &lt; \infty\)</span>.
-If <span class="math inline">\(\int |x|f(x)\,dx = \infty\)</span>, the expectation does not exist (Example <a href="ChapExpectation.html#exm:MGFDoesNotExist">5.24</a>).</p>
-</div>
-<div class="importantBox important">
-<p>In the rest of this chapter, mixed random variable <span class="math inline">\(X\)</span> will not be explicitly discussed; however, the results remain a combination of the discrete case for the discrete points in <span class="math inline">\(\mathcal{R}_X\)</span> and the continuous case for the continuous component of <span class="math inline">\(\mathcal{R}_X\)</span>.</p>
+If <span class="math inline">\(\int |x|f(x)\,dx = \infty\)</span>, the expectation does not exist (Example <a href="ChapExpectation.html#exm:MGFDoesNotExist">5.28</a>).</p>
 </div>
 <p>Effectively <span class="math inline">\(\operatorname{E}[X]\)</span> is a weighted average of the points in <span class="math inline">\(\mathcal{R}_X\)</span>, the weights being the probabilities for each value of <span class="math inline">\(x\in \mathcal{R}_X\)</span> in the discrete case and probability densities in the continuous case.</p>
 <div class="example">
@@ -331,12 +328,21 @@ The concept of mathematical expectation applies more widely than just to a rando
 <p><span id="thm:ExpectationFunction" class="theorem"><strong>Theorem 5.1  (Expectation for a function of a random variable) </strong></span>The <em>expected value</em> of some function <span class="math inline">\(g(\cdot)\)</span> of a random variable <span class="math inline">\(X\)</span> is written <span class="math inline">\(\operatorname{E}[ g(X)]\)</span>.</p>
 <p>For a <em>discrete</em> random variable <span class="math inline">\(X\)</span> with probability mass function <span class="math inline">\(p_X(x)\)</span>, the expected value of <span class="math inline">\(g(X)\)</span> is
 <span class="math display">\[
-   \operatorname{E}\big[g(X)\big)] = \sum_{x\in \mathcal{R}_X} g(x)\cdot p_X(x).
+   \operatorname{E}\big[g(X)\big] = \sum_{x\in \mathcal{R}_X} g(x)\cdot p_X(x).
 \]</span>
 For a <em>continuous</em> random variable <span class="math inline">\(X\)</span> with probability density function <span class="math inline">\(f_X(x)\)</span>, the expected value of <span class="math inline">\(g(X)\)</span> is
 <span class="math display">\[
    \operatorname{E}\big[g(X)\big] = \int_{-\infty}^\infty g(x)\cdot f_X(x)\,dx.
-\]</span></p>
+\]</span>
+For a <em>mixed</em> random variable <span class="math inline">\(X\)</span> with probability mass function <span class="math inline">\(p_X(x)\)</span> and probability density function <span class="math inline">\(f_X(x)\)</span>, the expected value of <span class="math inline">\(g(X)\)</span> is
+<span class="math display">\[
+   \operatorname{E}\big[g(X)\big]
+   =
+   \sum_{x\in \mathcal{R}_X} g(x)\, p_X(x)
+   +
+   \int_{-\infty}^{\infty} g(x)\, f_X(x)\,dx,
+\]</span>
+where <span class="math inline">\(\mathcal{R}_X\)</span> is the set of values having positive probability mass.</p>
 <div class="proof">
 <p><span id="unlabeled-div-6" class="proof"><em>Proof</em>. </span>The proof must be delayed until later (Example <a href="ChapterTransformations.html#exm:LOTUSProof">9.13</a>).</p>
 </div>
@@ -373,6 +379,20 @@ The expected value of <span class="math inline">\(Y = \sqrt{X}\)</span>, where <
 \end{align*}\]</span>
 The expected value of <span class="math inline">\(Y = \sqrt{X}\)</span> is <span class="math inline">\(\operatorname{E}[Y] = (9\sqrt{3} - 1)/10\)</span>.</p>
 </div>
+<div class="example">
+<p><span id="exm:ExpectationMixedFnX" class="example"><strong>Example 5.8  (Expectation for a function of a mixed variable) </strong></span>Consider the mixed random variable <span class="math inline">\(W\)</span> with probability density function shown in Example <a href="ChapExpectation.html#exm:ExpectationMixedX">5.3</a>.
+The expected value of <span class="math inline">\(Z = 1 - W\)</span> is
+<span class="math display">\[\begin{align*}
+  \operatorname{E}(Z)
+  &amp;= \sum_{w=0} (1 - w)\cdot p_W(w)
+  \quad + \quad \int_{0}^\infty (1 - w)\cdot f_W(w) \, dw\\
+  &amp;= (1 - 0) \times\frac{1}{2}
+  \quad + \quad
+  \left[ \frac{1}{4}\exp(-2w) (2w - 1)\right]_0^\infty\\
+  &amp;= \frac{1}{2} + (0 + \frac{1}{4}) = \frac{3}{4}.
+\end{align*}\]</span>
+The expected value of <span class="math inline">\(Z = 1 - W\)</span> is <span class="math inline">\(3/4\)</span>.</p>
+</div>
 <p>Importantly, the expectation operator is a <em>linear operator</em>.</p>
 <div class="theorem">
 <p><span id="thm:ExpectationLinear" class="theorem"><strong>Theorem 5.2  (Expectation properties) </strong></span>For any random variable <span class="math inline">\(X\)</span> and constants <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>,
@@ -390,11 +410,25 @@ using that <span class="math inline">\(\sum_x p_X(x) = 1\)</span>.
 </div>
 </div>
 <div class="example">
-<p><span id="exm:ExpectationFunctionY" class="example"><strong>Example 5.8  (Expectation of a function of a random variable) </strong></span>Consider the random variable <span class="math inline">\(Z = 2X\)</span> where <span class="math inline">\(X\)</span> is defined in Example <a href="ChapExpectation.html#exm:ExpectationContinuousX">5.2</a>.
+<p><span id="exm:ExpectationFunctionY" class="example"><strong>Example 5.9  (Expectation of a function of a random variable) </strong></span>Consider the random variable <span class="math inline">\(Z = 2X\)</span> where <span class="math inline">\(X\)</span> is defined in Example <a href="ChapExpectation.html#exm:ExpectationContinuousX">5.2</a>.
 Using Theorem <a href="ChapExpectation.html#thm:ExpectationLinear">5.2</a> with <span class="math inline">\(a = 2\)</span> and <span class="math inline">\(b = 0\)</span>, the value of <span class="math inline">\(\operatorname{E}[Z]\)</span> is
 <span class="math display">\[
       \operatorname{E}[Z] = \operatorname{E}[2X] = 2\operatorname{E}[X] = 2 \times 13/6 = 13/3.
 \]</span></p>
+</div>
+<div class="example">
+<p><span id="exm:ExpectationMixedFnXLinear" class="example"><strong>Example 5.10  (Expectation for a function of a mixed variable) </strong></span>Consider the mixed random variable <span class="math inline">\(W\)</span> with probability density function shown in Example <a href="ChapExpectation.html#exm:ExpectationMixedX">5.3</a>.
+The expected value of <span class="math inline">\(Z = 1 - W\)</span>, which is a linear transformation, was shown in Example <a href="ChapExpectation.html#exm:ExpectationMixedFnX">5.8</a> to be <span class="math inline">\(3/4\)</span>.
+Since <span class="math inline">\(Z\)</span> is a linear transformation, we could also proceed:
+<span class="math display">\[
+  \operatorname{E}[Z]
+  = \operatorname{E}[1 - W]
+  = 1 - \operatorname{E}[W]
+  = 1 - \frac{1}{4}
+  = \frac{3}{4}
+\]</span>
+using <span class="math inline">\(\operatorname{E}[W] = 1/2\)</span> from Example <a href="ChapExpectation.html#exm:ExpectationMixedX">5.3</a>.
+The answer is, of course, the same answer found in Example <a href="ChapExpectation.html#exm:ExpectationMixedFnX">5.8</a>.</p>
 </div>
 <p>An important result that follows is <em>Jensen’s inequality</em>, which applies for convex and concave functions which we first define.</p>
 <div class="definition">
@@ -411,7 +445,7 @@ and <em>strictly convex</em> if <span class="math inline">\(g''(x) &gt; 0\)</spa
 and <em>strictly concave</em> if <span class="math inline">\(g''(x) &lt; 0\)</span> for all <span class="math inline">\(x \in I\)</span>.</p>
 </div>
 <div class="example">
-<p><span id="exm:ConcaveConvexFunction" class="example"><strong>Example 5.9  (Concave and convex functions) </strong></span>The function <span class="math inline">\(g(x) = x^2\)</span> is <em>strictly convex</em> over <span class="math inline">\(\mathbb{R}\)</span> (Fig. <a href="ChapExpectation.html#fig:ConvexConcave">5.2</a>, left panel), because
+<p><span id="exm:ConcaveConvexFunction" class="example"><strong>Example 5.11  (Concave and convex functions) </strong></span>The function <span class="math inline">\(g(x) = x^2\)</span> is <em>strictly convex</em> over <span class="math inline">\(\mathbb{R}\)</span> (Fig. <a href="ChapExpectation.html#fig:ConvexConcave">5.2</a>, left panel), because
 <span class="math display">\[
   g''(x) = 2 &gt; 0
 \]</span>
@@ -464,7 +498,7 @@ Taking expectations of both sides,
 <p>Common <em>convex</em> functions to which Jensen’s inequality applies include <span class="math inline">\(g(x) = x^2\)</span>, <span class="math inline">\(g(x) = \exp x\)</span>, <span class="math inline">\(g(x) = -\log x\)</span> (<span class="math inline">\(x &gt; 0\)</span>), and <span class="math inline">\(g(x) = 1/x\)</span> (<span class="math inline">\(x &gt; 0\)</span>).</p>
 <p>For <em>concave</em> <span class="math inline">\(g(\cdot)\)</span> the inequality reverses: <span class="math inline">\(\operatorname{E}[g(X)] \leq g(\operatorname{E}[X])\)</span>; a common example is <span class="math inline">\(g(x) = \log x\)</span>.</p>
 <div class="example">
-<p><span id="exm:JensensInequality" class="example"><strong>Example 5.10  (Jensen's inequality applied) </strong></span>Let <span class="math inline">\(X &gt; 0\)</span> be a non-degenerate random variable with <span class="math inline">\(\operatorname{E}[X] = \mu\)</span>.
+<p><span id="exm:JensensInequality" class="example"><strong>Example 5.12  (Jensen's inequality applied) </strong></span>Let <span class="math inline">\(X &gt; 0\)</span> be a non-degenerate random variable with <span class="math inline">\(\operatorname{E}[X] = \mu\)</span>.
 Since <span class="math inline">\(g(x) = 1/x\)</span> is strictly convex for <span class="math inline">\(x &gt; 0\)</span>, Jensen’s inequality gives
 <span class="math display">\[
   \operatorname{E}\!\left[\frac{1}{X}\right] &gt; \frac{1}{\operatorname{E}[X]} = \frac{1}{\mu}.
@@ -504,7 +538,7 @@ That is, if <span class="math inline">\(X\)</span> is measured in metres, the v
 <p>The variance is less popular than the standard deviation in practice to describe variability.
 In theoretical work, however, the variance is easier to work with than standard deviation (due to the square root), and the variance, rather than standard deviation, features in many results in theoretical statistics.</p>
 <div class="example">
-<p><span id="exm:VarianceDice" class="example"><strong>Example 5.11  (Variance for a die toss) </strong></span>Suppose a fair die is tossed, and <span class="math inline">\(X\)</span> denotes the number of points showing.
+<p><span id="exm:VarianceDice" class="example"><strong>Example 5.13  (Variance for a die toss) </strong></span>Suppose a fair die is tossed, and <span class="math inline">\(X\)</span> denotes the number of points showing.
 Then <span class="math inline">\(\Pr(X = x) =  1/6\)</span> for <span class="math inline">\(x = 1, 2, 3, 4, 5, 6\)</span> and
 <span class="math display">\[
    \mu = \operatorname{E}[X] = \sum_S x\cdot p_X(x) = (1 + 2 + 3 + 4 + 5 + 6 )/6 = 7/2.
@@ -539,7 +573,7 @@ The standard deviation is then <span class="math inline">\(\sigma = \sqrt{70/24}
 </div>
 <p>This formula is often easier to use to compute <span class="math inline">\(\operatorname{var}[X]\)</span> than using the definition directly.</p>
 <div class="example">
-<p><span id="exm:VarianceDice2" class="example"><strong>Example 5.12  (Variance for a die toss) </strong></span>Consider Example <a href="ChapExpectation.html#exm:VarianceDice">5.11</a> again.
+<p><span id="exm:VarianceDice2" class="example"><strong>Example 5.14  (Variance for a die toss) </strong></span>Consider Example <a href="ChapExpectation.html#exm:VarianceDice">5.13</a> again.
 Then
 <span class="math display">\[\begin{align*}
   \operatorname{E}[X^2] = \sum_S x^2 \cdot p_X(x)
@@ -549,7 +583,7 @@ Then
 and so <span class="math inline">\(\operatorname{var}[X] = 91/6 - (7/2)^2 = 70/24\)</span>, as before.</p>
 </div>
 <div class="example">
-<p><span id="exm:VarianceComputational" class="example"><strong>Example 5.13  (Variance using computational formula) </strong></span>Consider the continuous random variable <span class="math inline">\(X\)</span> with PDF
+<p><span id="exm:VarianceComputational" class="example"><strong>Example 5.15  (Variance using computational formula) </strong></span>Consider the continuous random variable <span class="math inline">\(X\)</span> with PDF
 <span class="math display">\[
    f_X(x) = 3x(2 - x)/4  \qquad \text{for $0 &lt; x &lt; 2$}.
 \]</span>
@@ -572,11 +606,30 @@ and so <span class="math inline">\(\operatorname{var}[X] = \operatorname{E}[X^2]
 \end{align*}\]</span>
 Both methods give the same answer, and both methods require initial computation of <span class="math inline">\(\operatorname{E}[X]\)</span>.</p>
 </div>
+<div class="example">
+<p><span id="exm:ExpectationMixedVarX" class="example"><strong>Example 5.16  (Variance for a mixed variable) </strong></span>Consider the mixed random variable <span class="math inline">\(W\)</span> with probability density function shown in Example <a href="ChapExpectation.html#exm:ExpectationMixedX">5.3</a>.
+The expected value of <span class="math inline">\(W\)</span> is <span class="math inline">\(\operatorname{E}[W] = 1/4\)</span>.
+The variance of <span class="math inline">\(W\)</span> is then <span class="math inline">\(\operatorname{var}(W) = E[W^2] - E[W]^2\)</span>, and so
+<span class="math display">\[\begin{align*}
+   \operatorname{E}[W^2]
+   &amp;= \overbrace{\sum_{w = 0} w^2\,p_W(w)}^{\text{Discrete component}}
+      \quad + \quad
+      \overbrace{\int_{-\infty}^\infty w^2\, f_W(w)\,dw}^{\text{Continuous component}}\\
+   &amp;= 0^2\times \frac12
+      \quad + \quad
+      \int_0^\infty w^2 e^{-2w}\,dw\\
+   &amp;= \frac{1}{4}.
+\end{align*}\]</span>
+Therefore
+<span class="math display">\[
+  \operatorname{var}(W) = \frac{1}{4}-\frac{1}{16} = \frac{3}{16}.
+\]</span></p>
+</div>
 <p>The variance represents the expected value of the squared distance of the values of the random variable from the mean.
 The variance is never negative, and is only zero when all the values of the random variable are identical (that is, there is <em>no</em> variation in the values of <span class="math inline">\(X\)</span>).</p>
 <p>If most of the probability lies near the mean, the dispersion will be small; if the probability is spread out over a considerable range the dispersion will be large.</p>
 <div class="example">
-<p><span id="exm:InfiniteVar" class="example"><strong>Example 5.14  (Variance undefined) </strong></span>In Example <a href="ChapExpectation.html#exm:InfiniteMean">5.5</a>, <span class="math inline">\(\operatorname{E}[X]\)</span> was not defined.
+<p><span id="exm:InfiniteVar" class="example"><strong>Example 5.17  (Variance undefined) </strong></span>In Example <a href="ChapExpectation.html#exm:InfiniteMean">5.5</a>, <span class="math inline">\(\operatorname{E}[X]\)</span> was not defined.
 For that reason, the variance is also undefined, since computing the variance relies on having a finite value for <span class="math inline">\(\operatorname{E}[X]\)</span>.</p>
 </div>
 <div class="theorem">
@@ -598,7 +651,7 @@ For that reason, the variance is also undefined, since computing the variance re
 <p>The special case <span class="math inline">\(a = 0\)</span> is instructive: <span class="math inline">\(\operatorname{var}[b] = 0\)</span> when <span class="math inline">\(b\)</span> is constant.
 In other words, a constant has <em>zero</em> variation, as expected.</p>
 <div class="example">
-<p><span id="exm:VarancenFunctionY" class="example"><strong>Example 5.15  (Variance of a function of a random variable) </strong></span>Consider the random variable <span class="math inline">\(Y = 4 - 2X\)</span> where <span class="math inline">\(\operatorname{E}[X] = 1\)</span> and <span class="math inline">\(\operatorname{var}[X] = 3\)</span>.
+<p><span id="exm:VarancenFunctionY" class="example"><strong>Example 5.18  (Variance of a function of a random variable) </strong></span>Consider the random variable <span class="math inline">\(Y = 4 - 2X\)</span> where <span class="math inline">\(\operatorname{E}[X] = 1\)</span> and <span class="math inline">\(\operatorname{var}[X] = 3\)</span>.
 Then:
 <span class="math display">\[\begin{align*}
   \operatorname{E}[Y]
@@ -653,6 +706,31 @@ Putting <span class="math inline">\(\sqrt{c} = k\sigma\)</span>, Eq. <a href="C
 <p>With the probability function or PDF of a random variable <span class="math inline">\(X\)</span>, then <span class="math inline">\(\operatorname{E}[X]\)</span> and <span class="math inline">\(\operatorname{var}[X]\)</span> can be found, but the converse is not true.
 That is, from a knowledge of <span class="math inline">\(\operatorname{E}[X]\)</span> and <span class="math inline">\(\operatorname{var}[X]\)</span> we cannot reconstruct the probability distribution of <span class="math inline">\(X\)</span> and hence cannot compute probabilities such as <span class="math inline">\(\Pr(|X - \mu| \geq k\sigma)\)</span>.
 Nonetheless, using Tchebysheff’s inequality we can find a useful <em>bound</em> to either the probability outside or inside of <span class="math inline">\(\mu \pm k\sigma\)</span>.</p>
+<div class="example">
+<p><span id="exm:Tchebysheffmarks" class="example"><strong>Example 5.19  (Tchebysheff inequality) </strong></span>Suppose students’ exam marks <span class="math inline">\(X\)</span> have mean <span class="math inline">\(70\)</span> and standard deviation <span class="math inline">\(10\)</span>.
+Tchebysheff’s inequality can be used to bound the probability that a student’s mark differs from the mean by <em>at least</em> <span class="math inline">\(20\)</span> marks.</p>
+<p>Since <span class="math inline">\(|X - \mu| \ge 20\)</span> and
+<span class="math display">\[
+  k = 20/10 = 2,
+\]</span>
+Tchebysheff’s inequality gives
+<span class="math display">\[
+  \Pr( |X - \mu| \ge k\sigma) \le 1/k^2;
+\]</span>
+hence
+<span class="math display">\[
+  \Pr( |X - 70| \ge 20) \le 1/2^2 = 1/4.
+\]</span>
+Therefore
+<span class="math display">\[
+  \Pr(| X - 70 | \ge 20) \le 0.25,
+\]</span>
+or, equivalently,
+<span class="math display">\[
+  \Pr(50 &lt; X &lt; 90) \ge 0.75.
+\]</span>
+Even if we know nothing about the distribution of marks, and only know the mean and standard deviation, we can still guarantee that at least <span class="math inline">\(75\)</span>% of marks lie between <span class="math inline">\(50\)</span> and <span class="math inline">\(90\)</span>.</p>
+</div>
 </div>
 <div id="HigherMoments" class="section level2" number="5.5">
 <h2>
@@ -711,7 +789,7 @@ The third central moment is related to <em>skewness</em>, a measure the asymmetr
 </ul>
 <p>where <span class="math inline">\(\mu = \operatorname{E}[X]\)</span> is the mean of <span class="math inline">\(X\)</span>.</p>
 </div>
-<p>For a symmetric distribution, the odd central moments are zero (Exercise <a href="ChapExpectation.html#exr:SkewDiscreteCentralMomentsZero">5.17</a>).
+<p>For a symmetric distribution, the odd central moments are zero (Exercise <a href="ChapExpectation.html#exr:SkewDiscreteCentralMomentsZero">5.19</a>).
 This suggests that the odd central moments (such as the third central moment) can be used to measure the <em>asymmetry</em> of a distribution.</p>
 <p>However, rather than using the third central moment explicitly, by applying Def. <a href="ChapExpectation.html#def:CentralMoments">5.6</a>, finding the appropriate expected value of a <em>normalised</em> version of the random variable (i.e., with mean zero and variance one) is preferred.
 That is, the definition of skewness finds the appropriate expected value of <span class="math inline">\((X - \mu)/\sigma\)</span> rather than of <span class="math inline">\(X\)</span> directly.
@@ -731,7 +809,7 @@ Similarly, if <span class="math inline">\(\gamma_1 &lt; 0\)</span> we say the di
 The distribution is symmetric if <span class="math inline">\(\gamma_1 = 0\)</span>.
 For a symmetric distribution, the mean is also a median of the distribution, as these results show.</p>
 <div class="example">
-<p><span id="exm:SkewnessPlots" class="example"><strong>Example 5.16  (Skewness) </strong></span>Figure <a href="ChapExpectation.html#fig:SkewnessPlots">5.3</a> shows examples of right-skewed (left panels), symmetric (centre panels) and left-skewed (right panels) distributions, for both a continuous random variable (top panels) and a discrete random variable (bottom panels).</p>
+<p><span id="exm:SkewnessPlots" class="example"><strong>Example 5.20  (Skewness) </strong></span>Figure <a href="ChapExpectation.html#fig:SkewnessPlots">5.3</a> shows examples of right-skewed (left panels), symmetric (centre panels) and left-skewed (right panels) distributions, for both a continuous random variable (top panels) and a discrete random variable (bottom panels).</p>
 <p>(The top distributions are all beta distributions; the bottom distributions are all binomial distributions.)</p>
 </div>
 <div class="figure" style="text-align: center">
@@ -741,7 +819,7 @@ FIGURE 5.3: Examples of right-skewed (left panels), symmetric (centre panels) an
 </p>
 </div>
 <div class="example">
-<p><span id="exm:SkewnessCont" class="example"><strong>Example 5.17  (Skewness) </strong></span>Consider the random variable <span class="math inline">\(X\)</span> in Example <a href="ChapExpectation.html#exm:VarianceComputational">5.13</a>, where <span class="math inline">\(f_X(x) = x(2 - x)\)</span> for <span class="math inline">\(0 &lt; x &lt; 2\)</span>.
+<p><span id="exm:SkewnessCont" class="example"><strong>Example 5.21  (Skewness) </strong></span>Consider the random variable <span class="math inline">\(X\)</span> in Example <a href="ChapExpectation.html#exm:VarianceComputational">5.15</a>, where <span class="math inline">\(f_X(x) = x(2 - x)\)</span> for <span class="math inline">\(0 &lt; x &lt; 2\)</span>.
 From that example, <span class="math inline">\(\operatorname{E}[X] = \mu'_1 = 1\)</span> and <span class="math inline">\(\operatorname{E}[X^2] = \mu'_2 = 6/5\)</span>.
 Then,
 <span class="math display">\[
@@ -757,7 +835,7 @@ FIGURE 5.4: The probability density function for <span class="math inline">\(X\
 </p>
 </div>
 <div class="example">
-<p><span id="exm:SkewnessDiscrete" class="example"><strong>Example 5.18  (Skewness) </strong></span>Consider the random variable <span class="math inline">\(Y\)</span> with PMF
+<p><span id="exm:SkewnessDiscrete" class="example"><strong>Example 5.22  (Skewness) </strong></span>Consider the random variable <span class="math inline">\(Y\)</span> with PMF
 <span class="math display">\[
    p_Y(y) =
    \begin{cases}
@@ -850,13 +928,13 @@ FIGURE 5.5: Kurtosis for three distributions plotted from <span class="math inli
 </p>
 </div>
 <div class="example">
-<p><span id="exm:SkewWind" class="example"><strong>Example 5.19  (Uses of skewness and kurtosis) </strong></span><span class="citation">Monypenny and Middleton (<a href="references.html#ref-monypenny1998analysiswinds">1998b</a>)</span> and <span class="citation">Monypenny and Middleton (<a href="references.html#ref-monypenny1998analysisgust">1998a</a>)</span> use the skewness and kurtosis to analyse wind gusts at Sydney airport.</p>
+<p><span id="exm:SkewWind" class="example"><strong>Example 5.23  (Uses of skewness and kurtosis) </strong></span><span class="citation">Monypenny and Middleton (<a href="references.html#ref-monypenny1998analysiswinds">1998b</a>)</span> and <span class="citation">Monypenny and Middleton (<a href="references.html#ref-monypenny1998analysisgust">1998a</a>)</span> use the skewness and kurtosis to analyse wind gusts at Sydney airport.</p>
 </div>
 <div class="example">
-<p><span id="exm:SkewPricing" class="example"><strong>Example 5.20  (Uses of skewness and kurtosis) </strong></span><span class="citation">Galagedera et al. (<a href="references.html#ref-galagedera2002conditional">2002</a>)</span> used higher moments in a capital analysis pricing model for Australian stock returns.</p>
+<p><span id="exm:SkewPricing" class="example"><strong>Example 5.24  (Uses of skewness and kurtosis) </strong></span><span class="citation">Galagedera et al. (<a href="references.html#ref-galagedera2002conditional">2002</a>)</span> used higher moments in a capital analysis pricing model for Australian stock returns.</p>
 </div>
 <div class="example">
-<p><span id="exm:SkewDiscrete" class="example"><strong>Example 5.21  (Skewness and kurtosis) </strong></span>Consider the discrete random variable <span class="math inline">\(U\)</span> from Example <a href="ChapExpectation.html#exm:ExpectationDiscrete">5.1</a>.
+<p><span id="exm:SkewDiscrete" class="example"><strong>Example 5.25  (Skewness and kurtosis) </strong></span>Consider the discrete random variable <span class="math inline">\(U\)</span> from Example <a href="ChapExpectation.html#exm:ExpectationDiscrete">5.1</a>.
 The raw moments are
 <span class="math display">\[\begin{align*}
    \mu'_r = \operatorname{E}[U^r]
@@ -934,7 +1012,7 @@ Other uses of the moment generating function are seen later (see Sect. <a href=
 <p><span id="def:MGF" class="definition"><strong>Definition 5.10  (Moment generating function (MGF)) </strong></span>The <em>moment generating function</em> (or MGF)
 <span class="math inline">\(M_X(t)\)</span> of the random variable <span class="math inline">\(X\)</span> defined over a range <span class="math inline">\(\mathcal{R}_X\)</span> is denoted <span class="math inline">\(M_X(t)\)</span>, and defined as
 <span class="math display">\[
-   \operatorname{E}\big[\exp(tX)\big],
+   M_X(t) = \operatorname{E}\big[\exp(tX)\big],
 \]</span>
 provided the expectation exists for values of <span class="math inline">\(t\)</span> in some interval that includes <span class="math inline">\(t = 0\)</span>.</p>
 <p>When <span class="math inline">\(X\)</span> is a discrete random variable,
@@ -944,7 +1022,18 @@ provided the expectation exists for values of <span class="math inline">\(t\)</
 When <span class="math inline">\(X\)</span> is a continuous random variable,
 <span class="math display">\[
   M_X(t)  = \operatorname{E}\big[\exp(tX)\big] = \int_{-\infty}^\infty \exp(tx)\, f_X(x)\, dx.
-\]</span></p>
+\]</span>
+When <span class="math inline">\(X\)</span> is a mixed random variable with probability mass function <span class="math inline">\(p_X(x)\)</span> and probability density function <span class="math inline">\(f_X(x)\)</span>,
+<span class="math display">\[
+  M_X(t)
+  =
+  \operatorname{E}\big[\exp(tX)\big]
+  =
+  \sum_{x\in \mathcal{R}_X} \exp(tx)\, p_X(x)
+  +
+  \int_{-\infty}^{\infty} \exp(tx)\, f_X(x)\, dx,
+\]</span>
+where <span class="math inline">\(\mathcal{R}_X\)</span> is the set of values having positive probability mass.</p>
 </div>
 <p>The MGF may not converge to a finite value for all values of <span class="math inline">\(t\)</span>, so may not be defined everywhere.
 Note that the MGF always exists for <span class="math inline">\(t = 0\)</span>; in fact <span class="math inline">\(M_X(0) = 1\)</span>.</p>
@@ -953,7 +1042,7 @@ Note that the MGF always exists for <span class="math inline">\(t = 0\)</span>; 
 <p>Moment generating functions are related to Laplace transformations.</p>
 </div>
 <div class="example">
-<p><span id="exm:MGF" class="example"><strong>Example 5.22  (Moment generating function) </strong></span>Consider the random variable <span class="math inline">\(X\)</span> with PDF
+<p><span id="exm:MGF" class="example"><strong>Example 5.26  (Moment generating function) </strong></span>Consider the random variable <span class="math inline">\(X\)</span> with PDF
 <span class="math display">\[
    f_X(x) = \exp(-x) \qquad \text{for $x &gt; 0$}.
 \]</span>
@@ -974,7 +1063,7 @@ For example, if <span class="math inline">\(t = 2\)</span>,
 which does not converge.</p>
 </div>
 <div class="example">
-<p><span id="exm:MGFDice" class="example"><strong>Example 5.23  (MGF for die rolls) </strong></span>Consider the PMF of <span class="math inline">\(X\)</span>, the outcome of tossing a fair die (Example <a href="ChapExpectation.html#exm:VarianceDice">5.11</a>).
+<p><span id="exm:MGFDice" class="example"><strong>Example 5.27  (MGF for die rolls) </strong></span>Consider the PMF of <span class="math inline">\(X\)</span>, the outcome of tossing a fair die (Example <a href="ChapExpectation.html#exm:VarianceDice">5.13</a>).
 The MGF of <span class="math inline">\(X\)</span> is
 <span class="math display">\[\begin{align*}
    M_X(t)
@@ -984,7 +1073,7 @@ The MGF of <span class="math inline">\(X\)</span> is
 which exists for all values of <span class="math inline">\(t\)</span>.</p>
 </div>
 <div class="example">
-<p><span id="exm:MGFDoesNotExist" class="example"><strong>Example 5.24  (MGF does not exist) </strong></span>Consider the Cauchy distribution with the PDF
+<p><span id="exm:MGFDoesNotExist" class="example"><strong>Example 5.28  (MGF does not exist) </strong></span>Consider the Cauchy distribution with the PDF
 <span class="math display">\[
    f_X(x) = \frac{1}{\pi(1 + x^2)},
 \]</span>
@@ -1051,7 +1140,7 @@ This result is summarised in the following theorem.</p>
 </ol>
 </div>
 <div class="example">
-<p><span id="exm:MeanVarMGF" class="example"><strong>Example 5.25  (Mean and variance from a MGF) </strong></span>Continuing Example <a href="ChapExpectation.html#exm:MGF">5.22</a>, the mean and variance of <span class="math inline">\(X\)</span> can be found from the MGF.
+<p><span id="exm:MeanVarMGF" class="example"><strong>Example 5.29  (Mean and variance from a MGF) </strong></span>Continuing Example <a href="ChapExpectation.html#exm:MGF">5.26</a>, the mean and variance of <span class="math inline">\(X\)</span> can be found from the MGF.
 To find the mean, first find
 <span class="math display">\[
    \frac{d}{dt}M_X(t) = (1 - t)^{-2}.
@@ -1095,7 +1184,7 @@ The following theorems are valuable for this task.</p>
    M_Y(t) = [M_{X_i}(t)]^n.
 \]</span></p>
 <div class="example">
-<p><span id="exm:MGFLinearCombinations" class="example"><strong>Example 5.26  (MGF of linear combinations) </strong></span>Consider the random variable <span class="math inline">\(X\)</span> with probability mass function
+<p><span id="exm:MGFLinearCombinations" class="example"><strong>Example 5.30  (MGF of linear combinations) </strong></span>Consider the random variable <span class="math inline">\(X\)</span> with probability mass function
 <span class="math display">\[
    p_X(x) = 2(1/3)^x \qquad \text{for $x = 1, 2, 3, \dots$}.
 \]</span>
@@ -1149,7 +1238,7 @@ This can be expressed as
 \]</span>
 and so the probability function <span class="math inline">\(p_X(x)\)</span> of <span class="math inline">\(X\)</span> can be deduced from the MGF.</p>
 <div class="example">
-<p><span id="exm:DistFromMGF" class="example"><strong>Example 5.27  (Distribution from the MGF) </strong></span>Suppose a discrete random variable <span class="math inline">\(D\)</span> has the MGF
+<p><span id="exm:DistFromMGF" class="example"><strong>Example 5.31  (Distribution from the MGF) </strong></span>Suppose a discrete random variable <span class="math inline">\(D\)</span> has the MGF
 <span class="math display">\[
    M_D(t) = \frac{1}{3} \exp(2t) + \frac{1}{6}\exp(3t) + \frac{1}{12}\exp(6t)
    + \frac{5}{12}\exp(7t).
@@ -1176,7 +1265,7 @@ So the PMF is
 </div>
 <p>Sometimes, using the results in App. <a href="UsefulSeries.html#UsefulSeries">B</a> can be helpful.</p>
 <div class="example">
-<p><span id="exm:DistFromMGF2" class="example"><strong>Example 5.28  (Distribution from the MGF) </strong></span>Consider the MGF
+<p><span id="exm:DistFromMGF2" class="example"><strong>Example 5.32  (Distribution from the MGF) </strong></span>Consider the MGF
 <span class="math display">\[
    M_X(t) = \frac{\exp(t)}{3 - 2\exp(t)}.
 \]</span>
@@ -1259,7 +1348,7 @@ If <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)<
 This follows from <span class="math inline">\(K_{X + Y}(t) = K_X(t) + K_Y(t)\)</span> (which itself follows from <span class="math inline">\(M_{X + Y}(t) = M_X(t)\cdot M_Y(t)\)</span> for independent random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>).</p>
 <p>This additivity is the reason cumulants are often more convenient than moments when working with sums of independent random variables; adding moments requires the binomial theorem and rapidly becomes algebraically messy, while adding cumulants is trivial.</p>
 <div class="example">
-<p><span id="exm:PoissonCumulants" class="example"><strong>Example 5.29  (Cumulants) </strong></span>Supose the random variable <span class="math inline">\(X\)</span> has the probability mass function
+<p><span id="exm:PoissonCumulants" class="example"><strong>Example 5.33  (Cumulants) </strong></span>Supose the random variable <span class="math inline">\(X\)</span> has the probability mass function
 <span class="math display">\[
   p_X(x) = \frac{\exp(-\lambda)\lambda^x}{x!}\quad\text{for $x = 0, 1, 2, \dots$}.
 \]</span>
@@ -1317,7 +1406,7 @@ The uniqueness property is the analogue of the uniqueness theorem for MGFs, but 
 That is, the characteristic function is the MGF evaluated on the imaginary axis.
 When the MGF does not exist (heavy-tailed distributions), the characteristic function still exists and carries all distributional information.</p>
 <div class="example">
-<p><span id="exm:PoissonCharFunction" class="example"><strong>Example 5.30  (Characteristic function) </strong></span>Consider the random variable <span class="math inline">\(X\)</span> in Example <a href="ChapExpectation.html#exm:PoissonCumulants">5.29</a>.
+<p><span id="exm:PoissonCharFunction" class="example"><strong>Example 5.34  (Characteristic function) </strong></span>Consider the random variable <span class="math inline">\(X\)</span> in Example <a href="ChapExpectation.html#exm:PoissonCumulants">5.33</a>.
 The characteristic function is
 <span class="math display">\[
   \varphi_X(t) = \exp\!\left[\lambda(\exp(it) - 1)\right].
@@ -1336,7 +1425,7 @@ Then the probability density function is (see <span class="citation">Abramowitz 
 where <span class="math inline">\(i = \sqrt{-1}\)</span>.
 While Eq. <a href="ChapExpectation.html#eq:MGFtoPDFcontinuous">(5.5)</a> recovers the probability density function in theory, often the integrals produced are difficult to evaluate.</p>
 <div class="example">
-<p><span id="exm:DistFromMGFContinuous" class="example"><strong>Example 5.31  (Distribution from the MGF) </strong></span>In Example <a href="ChapExpectation.html#exm:MGF">5.22</a>, an MGF was found for a distribution:
+<p><span id="exm:DistFromMGFContinuous" class="example"><strong>Example 5.35  (Distribution from the MGF) </strong></span>In Example <a href="ChapExpectation.html#exm:MGF">5.26</a>, an MGF was found for a distribution:
 <span class="math display">\[
   M_X(t) = \frac{1}{1 - t}.
 \]</span>
@@ -1361,7 +1450,7 @@ This is not an easy integral to complete without using complex analysis; using t
 <span class="math display">\[
   f_X(x) = \exp(-x),
 \]</span>
-the original density function in Example <a href="ChapExpectation.html#exm:MGF">5.22</a>.</p>
+the original density function in Example <a href="ChapExpectation.html#exm:MGF">5.26</a>.</p>
 </div>
 <p>In practice, using Eq. <a href="ChapExpectation.html#eq:MGFtoPDFcontinuous">(5.5)</a> can become tedious or intractable for producing a closed form expression for the PDF.
 However, Eq. <a href="ChapExpectation.html#eq:MGFtoPDFcontinuous">(5.5)</a> has been used in practice to compute numerical values of the probability density function.
@@ -1572,7 +1661,41 @@ for a constant <span class="math inline">\(c\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:C3DiscreteB" class="exercise"><strong>Exercise 5.7  </strong></span>The MGF of the discrete random variable <span class="math inline">\(Z\)</span> is
+<p><span id="exr:ExpectedMixedBiomass" class="exercise"><strong>Exercise 5.7  </strong></span></p>
+<!-- lambda = 1 -->
+<p>An ecologist records fish biomass <span class="math inline">\(X\)</span> at sampling sites.
+Suppose <span class="math inline">\(\Pr(X = 0) = 0.6\)</span> and
+<span class="math display">\[
+  f_X(x \mid X &gt; 0) = exp(-x)\quad\text{for $x &gt; 0$)}.
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Find the expected biomass.</li>
+<li>Find the variance of the the biomass.</li>
+<li>Find the MGF of <span class="math inline">\(X\)</span>.</li>
+<li>Compute the mean and variance of <span class="math inline">\(X\)</span> from the MGF.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:ExpectedMixedRainfall" class="exercise"><strong>Exercise 5.8  </strong></span></p>
+<!-- labmda = 1/20 -->
+<p>Suppose the true daily rainfall <span class="math inline">\(X\)</span> follows a distribution with probability function <span class="math inline">\(f_X(x) = \exp( -x/20)/20\)</span>.
+A rainfall gauge records
+<span class="math display">\[
+  R =
+  \begin{cases}
+    0  &amp; \text{for $X &lt; 0.1$}\\
+    X  &amp; \text{for $0.1 \le X\le 70$}\\
+    70 &amp; \text{for $X&gt;70$}.
+  \end{cases}
+\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Find the expected value of <span class="math inline">\(R\)</span>.</li>
+<li>Find the variance of <span class="math inline">\(R\)</span>.</li>
+<li>Find the MGF of <span class="math inline">\(X\)</span>, and write down the expression for evaluating the MGF of <span class="math inline">\(R\)</span>.</li>
+</ol>
+</div>
+<div class="exercise">
+<p><span id="exr:C3DiscreteB" class="exercise"><strong>Exercise 5.9  </strong></span>The MGF of the discrete random variable <span class="math inline">\(Z\)</span> is
 <span class="math display">\[
    M_Z(t) = [0.3\exp(t) + 0.7]^2.
 \]</span></p>
@@ -1582,7 +1705,7 @@ for a constant <span class="math inline">\(c\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:C3DiscreteB2" class="exercise"><strong>Exercise 5.8  </strong></span>The MGF of the discrete random variable <span class="math inline">\(W\)</span> is
+<p><span id="exr:C3DiscreteB2" class="exercise"><strong>Exercise 5.10  </strong></span>The MGF of the discrete random variable <span class="math inline">\(W\)</span> is
 <span class="math display">\[
    M_W(t) = \frac{p}{1 - (1 - p)\,\exp(w)}\quad\text{for $t &lt; -\log(1 - p)$}.
 \]</span></p>
@@ -1592,11 +1715,11 @@ for a constant <span class="math inline">\(c\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:C3MGFA" class="exercise"><strong>Exercise 5.9  </strong></span>The MGF of <span class="math inline">\(G\)</span> is <span class="math inline">\(M_G(t) = (1 - \beta t)^{-\alpha}\)</span> (where <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are constants).
+<p><span id="exr:C3MGFA" class="exercise"><strong>Exercise 5.11  </strong></span>The MGF of <span class="math inline">\(G\)</span> is <span class="math inline">\(M_G(t) = (1 - \beta t)^{-\alpha}\)</span> (where <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are constants).
 Find the mean and variance of <span class="math inline">\(G\)</span>.</p>
 </div>
 <div class="exercise">
-<p><span id="exr:C3Moments" class="exercise"><strong>Exercise 5.10  </strong></span>Suppose that the PDF of <span class="math inline">\(X\)</span> is
+<p><span id="exr:C3Moments" class="exercise"><strong>Exercise 5.12  </strong></span>Suppose that the PDF of <span class="math inline">\(X\)</span> is
 <span class="math display">\[
    f_X(x) = 2(1 - x) \qquad \text{for $0 &lt; x &lt; 1$}.
 \]</span></p>
@@ -1610,7 +1733,7 @@ Find the mean and variance of <span class="math inline">\(G\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:C3Moments2" class="exercise"><strong>Exercise 5.11  </strong></span>Suppose that the PDF of <span class="math inline">\(X\)</span> is
+<p><span id="exr:C3Moments2" class="exercise"><strong>Exercise 5.13  </strong></span>Suppose that the PDF of <span class="math inline">\(X\)</span> is
 <span class="math display">\[
    f_X(x) = 1/x^2 \qquad \text{for $1 &lt; x &lt; \infty$}.
 \]</span></p>
@@ -1624,19 +1747,19 @@ Find the mean and variance of <span class="math inline">\(G\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:MGFcont1" class="exercise"><strong>Exercise 5.12  </strong></span>Find the MGF for the continuous random variable <span class="math inline">\(Y\)</span> with probability density function
+<p><span id="exr:MGFcont1" class="exercise"><strong>Exercise 5.14  </strong></span>Find the MGF for the continuous random variable <span class="math inline">\(Y\)</span> with probability density function
 <span class="math display">\[
   f_X(x) = 1/2\quad\text{for $3 &lt; x &lt; 5$}.
 \]</span></p>
 </div>
 <div class="exercise">
-<p><span id="exr:MGFcont2" class="exercise"><strong>Exercise 5.13  </strong></span>Find the MGF for the continuous random variable <span class="math inline">\(R\)</span> with probability density function
+<p><span id="exr:MGFcont2" class="exercise"><strong>Exercise 5.15  </strong></span>Find the MGF for the continuous random variable <span class="math inline">\(R\)</span> with probability density function
 <span class="math display">\[
   f_R(r) = 6 r (1 - r) \quad\text{for $0 &lt; r &lt; 1$}.
 \]</span></p>
 </div>
 <div class="exercise">
-<p><span id="exr:C3NoMean" class="exercise"><strong>Exercise 5.14  </strong></span>Consider the PDF
+<p><span id="exr:C3NoMean" class="exercise"><strong>Exercise 5.16  </strong></span>Consider the PDF
 <span class="math display">\[
   f_Y(y) = \frac{2}{y^2}\qquad y\ge 2.
 \]</span></p>
@@ -1654,7 +1777,7 @@ The median is the second quartile.)</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:C3Cauchy" class="exercise"><strong>Exercise 5.15  </strong></span>The Cauchy distribution has the PDF
+<p><span id="exr:C3Cauchy" class="exercise"><strong>Exercise 5.17  </strong></span>The Cauchy distribution has the PDF
 <span class="math display" id="eq:CauchyPDF">\[\begin{equation}
    f_X(x) = \frac{1}{\pi(1 + x^2)}\quad\text{for $x\in\mathbb{R}$}.
    \tag{5.6}
@@ -1668,7 +1791,7 @@ Again, use <strong>R</strong> to draw the function.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:C3Exponential" class="exercise"><strong>Exercise 5.16  </strong></span>The exponential distribution has the PDF
+<p><span id="exr:C3Exponential" class="exercise"><strong>Exercise 5.18  </strong></span>The exponential distribution has the PDF
 <span class="math display">\[
    f_Y(y) = \frac{1}{\lambda}\exp( -y/\lambda)
 \]</span>
@@ -1679,7 +1802,7 @@ Again, use <strong>R</strong> to draw the function.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:SkewDiscreteCentralMomentsZero" class="exercise"><strong>Exercise 5.17  </strong></span>Prove that for a continuous random variable <span class="math inline">\(X\)</span> which has a distribution that is symmetric about <span class="math inline">\(0\)</span> then <span class="math inline">\(M_X(t) = M_{-X}(t)\)</span>.
+<p><span id="exr:SkewDiscreteCentralMomentsZero" class="exercise"><strong>Exercise 5.19  </strong></span>Prove that for a continuous random variable <span class="math inline">\(X\)</span> which has a distribution that is symmetric about <span class="math inline">\(0\)</span> then <span class="math inline">\(M_X(t) = M_{-X}(t)\)</span>.
 Hence prove that for such a random variable, all odd moments about the origin are zero.</p>
 </div>
 <!-- :::{.exercise} -->
@@ -1694,7 +1817,7 @@ Hence prove that for such a random variable, all odd moments about the origin ar
 <!--   * The expected value funcion of your payment (let's name it $X$): $E[X] = \infty$ -->
 <!-- ::: -->
 <div class="exercise">
-<p><span id="exr:Givena" class="exercise"><strong>Exercise 5.18  </strong></span>The continuous random variable <span class="math inline">\(X\)</span> is defined with the probability density function
+<p><span id="exr:Givena" class="exercise"><strong>Exercise 5.20  </strong></span>The continuous random variable <span class="math inline">\(X\)</span> is defined with the probability density function
 <span class="math display">\[
   f_X(x) = \frac{x + a + 1}{2(2 + a)}\quad \text{for $0 \le x \le 2$}
 \]</span>
@@ -1705,7 +1828,7 @@ for some real value <span class="math inline">\(a\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:GivenEandVara" class="exercise"><strong>Exercise 5.19  </strong></span>The continuous random variable <span class="math inline">\(X\)</span> is defined with the probability density function
+<p><span id="exr:GivenEandVara" class="exercise"><strong>Exercise 5.21  </strong></span>The continuous random variable <span class="math inline">\(X\)</span> is defined with the probability density function
 <span class="math display">\[
   f_X(x) = x^{2a} - x^a + 7/6\quad \text{for $0 \le x \le 1$}
 \]</span>
@@ -1716,7 +1839,7 @@ for some real value <span class="math inline">\(a\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:TriangularHospitalExp" class="exercise"><strong>Exercise 5.20  </strong></span>(This exercise follows from Exercise <a href="DistributionRandomVariables.html#exr:TriangularHospital">4.26</a>.)
+<p><span id="exr:TriangularHospitalExp" class="exercise"><strong>Exercise 5.22  </strong></span>(This exercise follows from Exercise <a href="DistributionRandomVariables.html#exr:TriangularHospital">4.26</a>.)
 In a study modelling waiting times at a hospital <span class="citation">(<a href="references.html#ref-khadem2008evaluating">Khadem et al. 2008</a>)</span>, patients are classified into one of three categories:
 Red (critically ill or injured patients), Yellow (moderately ill or injured patients), or Green (injured or uninjured patients).</p>
 <p>For Yellow patients, the service time of doctors are modelled using a triangular distribution, with a minimum at <span class="math inline">\(3.5\,\text{mins}\)</span>, a maximum at <span class="math inline">\(30.5\,\text{mins}\)</span> and a mode at <span class="math inline">\(5\,\text{mins}\)</span>.</p>
@@ -1726,14 +1849,14 @@ Red (critically ill or injured patients), Yellow (moderately ill or injured pati
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:YouFriendInLine2" class="exercise"><strong>Exercise 5.21  </strong></span>(This Exercise follows Ex. <a href="DistributionRandomVariables.html#exr:YouFriendInLine">4.28</a>.)
+<p><span id="exr:YouFriendInLine2" class="exercise"><strong>Exercise 5.23  </strong></span>(This Exercise follows Ex. <a href="DistributionRandomVariables.html#exr:YouFriendInLine">4.28</a>.)
 Five people, including you and a friend, line up at random.
 The random variable <span class="math inline">\(X\)</span> denotes the number of people between yourself and your friend.</p>
 <p>Use the probability function of <span class="math inline">\(X\)</span> found in Ex. <a href="DistributionRandomVariables.html#exr:YouFriendInLine">4.28</a>, and find the mean number of people between you and your friend.
 Simulate this in <strong>R</strong> to confirm your answer.</p>
 </div>
 <div class="exercise">
-<p><span id="exr:CharFunction" class="exercise"><strong>Exercise 5.22  </strong></span>The <em>characteristic function</em> of a random variable <span class="math inline">\(X\)</span>, denoted <span class="math inline">\(\varphi(t)\)</span>, is defined as <span class="math inline">\(\varphi_X(t) = \operatorname{E}[\exp(i t X)]\)</span>, where <span class="math inline">\(i = \sqrt{-1}\)</span>.
+<p><span id="exr:CharFunction" class="exercise"><strong>Exercise 5.24  </strong></span>The <em>characteristic function</em> of a random variable <span class="math inline">\(X\)</span>, denoted <span class="math inline">\(\varphi(t)\)</span>, is defined as <span class="math inline">\(\varphi_X(t) = \operatorname{E}[\exp(i t X)]\)</span>, where <span class="math inline">\(i = \sqrt{-1}\)</span>.
 Unlike the MGF, the characteristic function is <em>always</em> defined, so is sometimes preferred over the MGF.</p>
 <ol style="list-style-type: decimal">
 <li>Show that <span class="math inline">\(M_X(t) = \varphi_X(-it)\)</span>.</li>
@@ -1741,7 +1864,7 @@ Unlike the MGF, the characteristic function is <em>always</em> defined, so is so
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:GeometricGeneratingFn" class="exercise"><strong>Exercise 5.23  </strong></span>App. <a href="UsefulSeries.html#InfiniteSeriesLimits">B.2</a> will prove useful.</p>
+<p><span id="exr:GeometricGeneratingFn" class="exercise"><strong>Exercise 5.25  </strong></span>App. <a href="UsefulSeries.html#InfiniteSeriesLimits">B.2</a> will prove useful.</p>
 <ol style="list-style-type: decimal">
 <li>Write down the first three terms and general term of the expansion of <span class="math inline">\((1 - a)^{-1}\)</span>.</li>
 <li>Write down the first three terms and general term of the expansion of <span class="math inline">\(\operatorname{E}\left[(1 - tX)^{-1}\right]\)</span>.</li>
@@ -1754,7 +1877,7 @@ Your answer will involve a term <span class="math inline">\(\log(1 - t)\)</span>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:FindkGiveVar" class="exercise"><strong>Exercise 5.24  </strong></span>Suppose the random variable <span class="math inline">\(X\)</span> is defined as
+<p><span id="exr:FindkGiveVar" class="exercise"><strong>Exercise 5.26  </strong></span>Suppose the random variable <span class="math inline">\(X\)</span> is defined as
 <span class="math display">\[
    f_X(x) = k (3x^2 + 4)\quad\text{for $-c &lt; x &lt; c$}.
 \]</span>
@@ -1762,7 +1885,7 @@ Solve for <span class="math inline">\(c\)</span> and <span class="math inline"
 (Hint: Make sure you use the properties of the given probability distribution before embarking on complicated expressions!)</p>
 </div>
 <div class="exercise">
-<p><span id="exr:FindkGiveVar2" class="exercise"><strong>Exercise 5.25  </strong></span>Suppose the random variable <span class="math inline">\(Y\)</span> is defined as
+<p><span id="exr:FindkGiveVar2" class="exercise"><strong>Exercise 5.27  </strong></span>Suppose the random variable <span class="math inline">\(Y\)</span> is defined as
 <span class="math display">\[
    f_Y(y) =
    \begin{cases}
@@ -1777,7 +1900,7 @@ Solve for <span class="math inline">\(c\)</span> and <span class="math inline"
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:FindBits" class="exercise"><strong>Exercise 5.26  </strong></span>Suppose the random variable <span class="math inline">\(Y\)</span> is defined as
+<p><span id="exr:FindBits" class="exercise"><strong>Exercise 5.28  </strong></span>Suppose the random variable <span class="math inline">\(Y\)</span> is defined as
 <span class="math display">\[
    f_Y(y) = \exp(-y^2)  \qquad \text{for $0 &lt; y &lt; k$}.
 \]</span>
@@ -1785,7 +1908,7 @@ and <span class="math inline">\(\operatorname{E}[Y] = 1/2\)</span>.
 What is the value of <span class="math inline">\(k\)</span>?</p>
 </div>
 <div class="exercise">
-<p><span id="exr:FindBits2" class="exercise"><strong>Exercise 5.27  </strong></span>Suppose the random variable <span class="math inline">\(X\)</span> is defined as
+<p><span id="exr:FindBits2" class="exercise"><strong>Exercise 5.29  </strong></span>Suppose the random variable <span class="math inline">\(X\)</span> is defined as
 <span class="math display">\[
    f_X(x) = x^r   \qquad \text{for $0 &lt; x &lt; 5$}.
 \]</span>
@@ -1793,14 +1916,14 @@ and <span class="math inline">\(\operatorname{E}[X] = 625\)</span>.
 What is the value of <span class="math inline">\(r\)</span>?</p>
 </div>
 <div class="exercise">
-<p><span id="exr:BenfordsLawMean" class="exercise"><strong>Exercise 5.28  </strong></span>Benford’s law (also see Exercise <a href="DistributionRandomVariables.html#exr:BenfordsLaw">4.32</a>) describes the distribution of the leading digits of numbers that span many orders of magnitudes (e.g., lengths of rivers) as
+<p><span id="exr:BenfordsLawMean" class="exercise"><strong>Exercise 5.30  </strong></span>Benford’s law (also see Exercise <a href="DistributionRandomVariables.html#exr:BenfordsLaw">4.32</a>) describes the distribution of the leading digits of numbers that span many orders of magnitudes (e.g., lengths of rivers) as
 <span class="math display">\[
    p_D(d) = \log_{10}\left( \frac{d + 1}{d} \right) \quad\text{for $d\in\{1, 2, \dots 9\}$},
 \]</span>
 Find the mean of <span class="math inline">\(D\)</span> (i.e., the mean leading digit).</p>
 </div>
 <div class="exercise">
-<p><span id="exr:vonMises" class="exercise"><strong>Exercise 5.29  </strong></span>The <em>von Mises</em> distribution is used to model angular data.
+<p><span id="exr:vonMises" class="exercise"><strong>Exercise 5.31  </strong></span>The <em>von Mises</em> distribution is used to model angular data.
 The probability function is
 <span class="math display">\[
   p_Y(y) = k \exp\{ \lambda\cos(y - \mu) \}
@@ -1815,7 +1938,7 @@ Use <strong>R</strong> to plot the distribution function for <span class="math i
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:inverseGaussian" class="exercise"><strong>Exercise 5.30  </strong></span>The <em>inverse Gaussian</em> distribution has the PDF
+<p><span id="exr:inverseGaussian" class="exercise"><strong>Exercise 5.32  </strong></span>The <em>inverse Gaussian</em> distribution has the PDF
 <span class="math display">\[
    P_Y(y) = \frac{1}{\sqrt{2\pi y^3\phi}} \exp\left\{ -\frac{1}{2\phi} \frac{(y - \mu)^2}{y\mu^2}\right\}
 \]</span>
@@ -1830,7 +1953,7 @@ Use the MGF to deduce the mean and variance of the inverse Gaussian distribution
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:W3inverse" class="exercise"><strong>Exercise 5.31  </strong></span>Consider the random variable <span class="math inline">\(W\)</span> such that
+<p><span id="exr:W3inverse" class="exercise"><strong>Exercise 5.33  </strong></span>Consider the random variable <span class="math inline">\(W\)</span> such that
 <span class="math display">\[
    f_W(w) = \frac{c}{w^3}\quad\text{for $w &gt; c$.}
 \]</span></p>
@@ -1841,7 +1964,7 @@ Use the MGF to deduce the mean and variance of the inverse Gaussian distribution
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:Pareto" class="exercise"><strong>Exercise 5.32  </strong></span>The <em>Pareto</em> distribution has the distribution function
+<p><span id="exr:Pareto" class="exercise"><strong>Exercise 5.34  </strong></span>The <em>Pareto</em> distribution has the distribution function
 <span class="math display">\[
    F_X(x) =
    \begin{cases}
@@ -1863,7 +1986,7 @@ Find the value of <span class="math inline">\(\alpha\)</span> for which this ru
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:MixtureUniHts" class="exercise"><strong>Exercise 5.33  </strong></span>A <em>mixture distribution</em> is a mixture of two or more univariate distributions.
+<p><span id="exr:MixtureUniHts" class="exercise"><strong>Exercise 5.35  </strong></span>A <em>mixture distribution</em> is a mixture of two or more univariate distributions.
 For example, the heights of all adults may follow a mixture distribution: one normal distribution for adult females, and another for adult males.
 For a set of probability functions <span class="math inline">\(p^{(i)}_X(x)\)</span> for <span class="math inline">\(i = 1, 2, \dots n\)</span> and a set of weights <span class="math inline">\(w_i\)</span> such that <span class="math inline">\(\sum w_i = 1\)</span> and <span class="math inline">\(w_i \ge 0\)</span> for all <span class="math inline">\(i\)</span>, the mixture distribution <span class="math inline">\(f_X(x)\)</span> is
 <span class="math display">\[
@@ -1879,7 +2002,7 @@ Deduce and plot the probability density of heights of adult Australians.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:SolitonDist" class="exercise"><strong>Exercise 5.34  </strong></span>Consider the soliton distribution, such that
+<p><span id="exr:SolitonDist" class="exercise"><strong>Exercise 5.36  </strong></span>Consider the soliton distribution, such that
 <span class="math display">\[
    p_X(x) =
    \begin{cases}
@@ -1895,7 +2018,7 @@ for <span class="math inline">\(K &gt; 2\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:ExpectedGeometricShifted" class="exercise"><strong>Exercise 5.35  </strong></span>The random variable <span class="math inline">\(V\)</span> has the PMF
+<p><span id="exr:ExpectedGeometricShifted" class="exercise"><strong>Exercise 5.37  </strong></span>The random variable <span class="math inline">\(V\)</span> has the PMF
 <span class="math display">\[
    f_V(v) = (1 - p)^{v - 1} p\quad\text{for $v = 1, 2, \dots$}.
 \]</span></p>
@@ -1906,11 +2029,11 @@ for <span class="math inline">\(K &gt; 2\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:TwoDiceAreRolled" class="exercise"><strong>Exercise 5.36  </strong></span>Two dice are rolled.
+<p><span id="exr:TwoDiceAreRolled" class="exercise"><strong>Exercise 5.38  </strong></span>Two dice are rolled.
 Deduce the PMF for the absolute difference between the two numbers that appear uppermost.</p>
 </div>
 <div class="exercise">
-<p><span id="exr:ExpectedPoisson" class="exercise"><strong>Exercise 5.37  </strong></span>The random variable <span class="math inline">\(Y\)</span> has the PMF
+<p><span id="exr:ExpectedPoisson" class="exercise"><strong>Exercise 5.39  </strong></span>The random variable <span class="math inline">\(Y\)</span> has the PMF
 <span class="math display">\[
    p_Y(y) = \frac{\exp(-\lambda)\lambda^y}{y!}\quad\text{for $y = 0, 1, 2, \dots$},
 \]</span>
@@ -1918,7 +2041,7 @@ where <span class="math inline">\(\lambda &gt; 0\)</span>.
 Find the MGF of <span class="math inline">\(Y\)</span>, and hence show that <span class="math inline">\(\operatorname{E}[Y] = \operatorname{var}[Y]\)</span>.</p>
 </div>
 <div class="exercise">
-<p><span id="exr:InvertMGFcontinuous" class="exercise"><strong>Exercise 5.38  </strong></span>In practice, some distributions cannot be written in closed form, but can be given by writing their moment generating function.
+<p><span id="exr:InvertMGFcontinuous" class="exercise"><strong>Exercise 5.40  </strong></span>In practice, some distributions cannot be written in closed form, but can be given by writing their moment generating function.
 To evaluate the density then requires an infinite summation or an infinite integral.
 Given a moment generating function <span class="math inline">\(M(t)\)</span>, the probability density function can be reconstructed numerically from
 the integral using the <em>inversion formula</em> in Eq. <a href="ChapExpectation.html#eq:MGFtoPDFcontinuous">(5.5)</a>.</p>
@@ -1933,7 +2056,7 @@ Extract the real parts of this expression, and simplify the integrand.
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:ExpectedXeX" class="exercise"><strong>Exercise 5.39  </strong></span>The density function for the random variable <span class="math inline">\(X\)</span> is given as
+<p><span id="exr:ExpectedXeX" class="exercise"><strong>Exercise 5.41  </strong></span>The density function for the random variable <span class="math inline">\(X\)</span> is given as
 <span class="math display">\[
    f(x) =  x \exp(-x) \quad\text{for $x &gt; 0$}.
 \]</span></p>
@@ -1945,7 +2068,7 @@ Determine <span class="math inline">\(\operatorname{E}[Y]\)</span>.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:GumbelOslo" class="exercise"><strong>Exercise 5.40  </strong></span>The <em>Gumbel distribution</em> has the cumulative distribution function
+<p><span id="exr:GumbelOslo" class="exercise"><strong>Exercise 5.42  </strong></span>The <em>Gumbel distribution</em> has the cumulative distribution function
 <span class="math display" id="eq:Gumbel">\[\begin{equation}
    F(x; \mu, \beta) = \exp\left[ -\exp\left( -\frac{x - \mu}{\sigma}\right)\right]
    \tag{5.7}
@@ -1959,7 +2082,7 @@ Draw this distribution, and explain what it means.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:Continuous2" class="exercise"><strong>Exercise 5.41  </strong></span>The density function for the random variable <span class="math inline">\(X\)</span> is given as
+<p><span id="exr:Continuous2" class="exercise"><strong>Exercise 5.43  </strong></span>The density function for the random variable <span class="math inline">\(X\)</span> is given as
 <span class="math display">\[
    f(x) =  x \exp(-x) \quad\text{for $x &gt; 0$}.
 \]</span></p>
@@ -1969,7 +2092,7 @@ Draw this distribution, and explain what it means.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:PooledTest2" class="exercise"><strong>Exercise 5.42  </strong></span>(This exercise follows from Ex. <a href="DistributionRandomVariables.html#exr:PooledTest">4.30</a>.)
+<p><span id="exr:PooledTest2" class="exercise"><strong>Exercise 5.44  </strong></span>(This exercise follows from Ex. <a href="DistributionRandomVariables.html#exr:PooledTest">4.30</a>.)
 To detect disease in a population through a blood test, usually every individual is tested.
 If the disease is uncommon, however, an alternative method is often more efficient.</p>
 <p>In the alternative method (called a <em>pooled test</em>), blood from <span class="math inline">\(n\)</span> individuals is combined, and one test is conducted.
@@ -1989,7 +2112,7 @@ What is the expected cost-saving for using the pooled-testing method with <span 
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:RunningTotal" class="exercise"><strong>Exercise 5.43  </strong></span>Consider rolling a fair, six-sided die.
+<p><span id="exr:RunningTotal" class="exercise"><strong>Exercise 5.45  </strong></span>Consider rolling a fair, six-sided die.
 The ‘running total’ is the total of all the numbers rolled on the die.</p>
 <ol style="list-style-type: decimal">
 <li>Find the probability mass function for <span class="math inline">\(R\)</span>, the number of rolls needed to obtain a running total of <span class="math inline">\(3\)</span> or more.</li>
@@ -1997,15 +2120,15 @@ The ‘running total’ is the total of all the numbers rolled on the die.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:MeanAbsDev" class="exercise"><strong>Exercise 5.44  </strong></span>Besides the variance, an alternative measure of variation is the <em>mean absolute deviation</em> (MAD), defined as <span class="math inline">\(\operatorname{E}[\,|X - \mu|\,]\)</span>.</p>
-<p>Consider the fair die described in Example <a href="ChapExpectation.html#exm:VarianceDice">5.11</a>.</p>
+<p><span id="exr:MeanAbsDev" class="exercise"><strong>Exercise 5.46  </strong></span>Besides the variance, an alternative measure of variation is the <em>mean absolute deviation</em> (MAD), defined as <span class="math inline">\(\operatorname{E}[\,|X - \mu|\,]\)</span>.</p>
+<p>Consider the fair die described in Example <a href="ChapExpectation.html#exm:VarianceDice">5.13</a>.</p>
 <ol style="list-style-type: decimal">
 <li>Find <span class="math inline">\(\operatorname{E}[X]\)</span>.</li>
 <li>Find <span class="math inline">\(\operatorname{MAD}[X]\)</span> using the above definition.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:exp4" class="exercise"><strong>Exercise 5.45  </strong></span>Suppose a random variable <span class="math inline">\(W\)</span> has the probability density function
+<p><span id="exr:exp4" class="exercise"><strong>Exercise 5.47  </strong></span>Suppose a random variable <span class="math inline">\(W\)</span> has the probability density function
 <span class="math display">\[
   f_W(w) = K \, \exp(-w^4)\quad\text{for $w\in \mathbb{R}$,}
 \]</span>
@@ -2021,7 +2144,7 @@ for some normalising constant <span class="math inline">\(K\)</span>.</p>
 <!-- Beta prime distribution\index{Beta prime distribution}-->
 <!-- f\ $p$ has a beta distribution, the odds $p/(1 - p)$ has beta prime distribution)) -->
 <div class="exercise">
-<p><span id="exr:BetaPrime" class="exercise"><strong>Exercise 5.46  </strong></span>Suppose a random variable <span class="math inline">\(Y\)</span> has the probability density function
+<p><span id="exr:BetaPrime" class="exercise"><strong>Exercise 5.48  </strong></span>Suppose a random variable <span class="math inline">\(Y\)</span> has the probability density function
 <span class="math display">\[
   f_Y(y) = k\, y^{\alpha - 1} (1 + y)^{-\alpha-\beta}\quad\text{for $y &gt; 0$,}
 \]</span>
@@ -2042,7 +2165,7 @@ for some normalising constant <span class="math inline">\(k\)</span>, where <sp
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:KurtosisNegative" class="exercise"><strong>Exercise 5.47  </strong></span>Consider the random variable <span class="math inline">\(X\)</span> with the probability density function
+<p><span id="exr:KurtosisNegative" class="exercise"><strong>Exercise 5.49  </strong></span>Consider the random variable <span class="math inline">\(X\)</span> with the probability density function
 <span class="math display">\[
   f_X(x) = 3 x^2/2\quad\text{for $-1 &lt; x &lt; 1$}.
 \]</span></p>
@@ -2057,7 +2180,7 @@ Explain why this distribution has a negative kurtosis.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:KurtosisNegative2" class="exercise"><strong>Exercise 5.48  </strong></span>Consider the random variable <span class="math inline">\(X\)</span> with the probability density function
+<p><span id="exr:KurtosisNegative2" class="exercise"><strong>Exercise 5.50  </strong></span>Consider the random variable <span class="math inline">\(X\)</span> with the probability density function
 <span class="math display">\[
   f_X(x) = x/2 \quad\text{for $0 &lt; x &lt; 2$}.
 \]</span></p>
@@ -2070,7 +2193,7 @@ Explain why this distribution has a negative kurtosis.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:CauchyCharacteristic" class="exercise"><strong>Exercise 5.49  </strong></span>The Cauchy distribution has the density function
+<p><span id="exr:CauchyCharacteristic" class="exercise"><strong>Exercise 5.51  </strong></span>The Cauchy distribution has the density function
 <span class="math display">\[
   f_X(x) = \{\pi(1 + x^2)\}^{-1}\quad\text{for $x\in\mathbb{R}$.s}
 \]</span></p>
@@ -2081,27 +2204,27 @@ Explain why this distribution has a negative kurtosis.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:InvertCharacteristicFn" class="exercise"><strong>Exercise 5.50  </strong></span>A probability density function can be determined from its MGF as shown in Eq. <a href="ChapExpectation.html#eq:MGFtoPDFcontinuous">(5.5)</a>.
+<p><span id="exr:InvertCharacteristicFn" class="exercise"><strong>Exercise 5.52  </strong></span>A probability density function can be determined from its MGF as shown in Eq. <a href="ChapExpectation.html#eq:MGFtoPDFcontinuous">(5.5)</a>.
 Show that the PDF can also be determined using the characteristic function, using
 <span class="math display">\[
   f(x) = \frac{1}{2\pi} \int_{-\infty}^{\infty} \exp(-itx) \varphi_X(t)\, dt.
 \]</span></p>
 </div>
 <div class="exercise">
-<p><span id="exr:InvertIndependentCharacteristic" class="exercise"><strong>Exercise 5.51  </strong></span>If the random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent with characteristic functions <span class="math inline">\(\varphi_X(t)\)</span> and <span class="math inline">\(\varphi_Y(t)\)</span> respectively, show that
+<p><span id="exr:InvertIndependentCharacteristic" class="exercise"><strong>Exercise 5.53  </strong></span>If the random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent with characteristic functions <span class="math inline">\(\varphi_X(t)\)</span> and <span class="math inline">\(\varphi_Y(t)\)</span> respectively, show that
 <span class="math display">\[
   \varphi_{X+Y}(t) = \varphi_X(t)\cdot \varphi_Y(t).
 \]</span></p>
 </div>
 <div class="exercise">
-<p><span id="exr:CharacteristicMoments" class="exercise"><strong>Exercise 5.52  </strong></span>The random variable <span class="math inline">\(X\)</span> has the characteristic functions <span class="math inline">\(\varphi_X(t)\)</span>.
+<p><span id="exr:CharacteristicMoments" class="exercise"><strong>Exercise 5.54  </strong></span>The random variable <span class="math inline">\(X\)</span> has the characteristic functions <span class="math inline">\(\varphi_X(t)\)</span>.
 If <span class="math inline">\(E|X|^r &lt; \infty\)</span>, show that <span class="math inline">\(\varphi_X\)</span> is <span class="math inline">\(r\)</span> times differentiable and that
 <span class="math display">\[
   \operatorname{E}(X^r) = \frac{1}{i^r} \varphi_X^{(r)}(0).
 \]</span></p>
 </div>
 <div class="exercise">
-<p><span id="exr:ConditionalExpectationMixed" class="exercise"><strong>Exercise 5.53  </strong></span>A factory produces items that are defective with probability <span class="math inline">\(0.10\)</span>.
+<p><span id="exr:ConditionalExpectationMixed" class="exercise"><strong>Exercise 5.55  </strong></span>A factory produces items that are defective with probability <span class="math inline">\(0.10\)</span>.
 Each item is inspected: if defective, the repair cost <span class="math inline">\(C\)</span> has a mean $100 and standard deviation $70.71; if not defective, <span class="math inline">\(C = 0\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>Find <span class="math inline">\(\operatorname{E}[C]\)</span> using the law of total expectation.</li>
@@ -2109,7 +2232,7 @@ Each item is inspected: if defective, the repair cost <span class="math inline"
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:ConditionalExpectationMixed2" class="exercise"><strong>Exercise 5.54  </strong></span>A courier company delivers parcels.
+<p><span id="exr:ConditionalExpectationMixed2" class="exercise"><strong>Exercise 5.56  </strong></span>A courier company delivers parcels.
 On any given delivery attempt, the parcel is successfully delivered with probability <span class="math inline">\(0.85\)</span>.
 If unsuccessful, a redelivery fee <span class="math inline">\(F\)</span> is charged, where <span class="math inline">\(\operatorname{E}[F] = 8\)</span> and <span class="math inline">\(\operatorname{var}[F] = 25\)</span>.
 If successful, <span class="math inline">\(F = 0\)</span>.</p>
@@ -2119,7 +2242,7 @@ If successful, <span class="math inline">\(F = 0\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:IdentifyDistMGF" class="exercise"><strong>Exercise 5.55  </strong></span>The MGF of a random variable <span class="math inline">\(X\)</span> is
+<p><span id="exr:IdentifyDistMGF" class="exercise"><strong>Exercise 5.57  </strong></span>The MGF of a random variable <span class="math inline">\(X\)</span> is
 <span class="math display">\[
   M_X(t) = \left(\frac{0.4}{1 - 0.6\exp t}\right)^3.
 \]</span>
@@ -2127,7 +2250,7 @@ If successful, <span class="math inline">\(F = 0\)</span>.</p>
 1. Find <span class="math inline">\(\Pr(X = 5)\)</span>.</p>
 </div>
 <div class="exercise">
-<p><span id="exr:IdentifyDistMGF2" class="exercise"><strong>Exercise 5.56  </strong></span>The MGF of a random variable <span class="math inline">\(X\)</span> is
+<p><span id="exr:IdentifyDistMGF2" class="exercise"><strong>Exercise 5.58  </strong></span>The MGF of a random variable <span class="math inline">\(X\)</span> is
 <span class="math display">\[
   M_X(t) = \frac{1}{(1 - 2t)^5}\quad\text{for $t &lt; 1/2$}.
 \]</span></p>
@@ -2138,7 +2261,7 @@ If successful, <span class="math inline">\(F = 0\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:TchebysheffApplied" class="exercise"><strong>Exercise 5.57  </strong></span>A machine fills bags of rice.
+<p><span id="exr:TchebysheffApplied" class="exercise"><strong>Exercise 5.59  </strong></span>A machine fills bags of rice.
 The fill weight <span class="math inline">\(X\)</span> has mean <span class="math inline">\(\mu = 1000\,\text{g}\)</span> and standard deviation standard deviation <span class="math inline">\(\sigma = 10\,\text{g}\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>Use Tchebysheff’s inequality to find a lower bound for <span class="math inline">\(\Pr(970 &lt; X &lt; 1030)\)</span>.</li>
@@ -2147,7 +2270,7 @@ Use Tchebysheff to bound the proportion of rejected bags.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:TchebysheffApplied2" class="exercise"><strong>Exercise 5.58  </strong></span>The daily number of customer complaints <span class="math inline">\(X\)</span> at a call centre has mean <span class="math inline">\(\mu = 20\)</span> and
+<p><span id="exr:TchebysheffApplied2" class="exercise"><strong>Exercise 5.60  </strong></span>The daily number of customer complaints <span class="math inline">\(X\)</span> at a call centre has mean <span class="math inline">\(\mu = 20\)</span> and
 variance <span class="math inline">\(\sigma^2 = 16\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>Use Tchebysheff’s inequality to find an upper bound for <span class="math inline">\(\Pr(|X - 20| \geq 8)\)</span>.</li>
@@ -2155,14 +2278,14 @@ variance <span class="math inline">\(\sigma^2 = 16\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:MomentsFromCGF" class="exercise"><strong>Exercise 5.59  </strong></span>The CGF of a random variable <span class="math inline">\(X\)</span> is <span class="math inline">\(K_X(t) = \mu t + \frac{1}{2}\sigma^2 t^2\)</span>.</p>
+<p><span id="exr:MomentsFromCGF" class="exercise"><strong>Exercise 5.61  </strong></span>The CGF of a random variable <span class="math inline">\(X\)</span> is <span class="math inline">\(K_X(t) = \mu t + \frac{1}{2}\sigma^2 t^2\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>Find all four cumulants <span class="math inline">\(\kappa_1\)</span>, <span class="math inline">\(\kappa_2\)</span>, <span class="math inline">\(\kappa_3\)</span> and <span class="math inline">\(\kappa_4\)</span>.</li>
 <li>Hence find the skewness and excess kurtosis of <span class="math inline">\(X\)</span>.</li>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:MomentsFromCGF2" class="exercise"><strong>Exercise 5.60  </strong></span>The CGF of a random variable <span class="math inline">\(X\)</span> is <span class="math inline">\(K_X(t) = \lambda(\exp t - 1)\)</span>.</p>
+<p><span id="exr:MomentsFromCGF2" class="exercise"><strong>Exercise 5.62  </strong></span>The CGF of a random variable <span class="math inline">\(X\)</span> is <span class="math inline">\(K_X(t) = \lambda(\exp t - 1)\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>Find the first four cumulants <span class="math inline">\(\kappa_1\)</span>, <span class="math inline">\(\kappa_2\)</span>, <span class="math inline">\(\kappa_3\)</span> and <span class="math inline">\(\kappa_4\)</span>.</li>
 <li>Hence find the skewness and excess kurtosis of <span class="math inline">\(X\)</span>.</li>
@@ -2170,7 +2293,7 @@ variance <span class="math inline">\(\sigma^2 = 16\)</span>.</p>
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:Jensen1" class="exercise"><strong>Exercise 5.61  </strong></span>Let <span class="math inline">\(X\)</span> be a positive random variable with <span class="math inline">\(\operatorname{E}[X] = \mu\)</span>.</p>
+<p><span id="exr:Jensen1" class="exercise"><strong>Exercise 5.63  </strong></span>Let <span class="math inline">\(X\)</span> be a positive random variable with <span class="math inline">\(\operatorname{E}[X] = \mu\)</span>.</p>
 <ol style="list-style-type: decimal">
 <li>State whether <span class="math inline">\(g(x) = \log x\)</span> is convex or concave for <span class="math inline">\(x &gt; 0\)</span>, justifying your answer.</li>
 <li>Hence show that
@@ -2183,7 +2306,7 @@ Verify the inequality in Part 2 directly by computing <span class="math inline"
 </ol>
 </div>
 <div class="exercise">
-<p><span id="exr:Jensen2" class="exercise"><strong>Exercise 5.62  </strong></span>Let <span class="math inline">\(X\)</span> be a random variable with mean <span class="math inline">\(\mu\)</span> and let <span class="math inline">\(M_X(t) = \operatorname{E}[\exp(tX)]\)</span> be its moment generating function, which is assumed to exist.</p>
+<p><span id="exr:Jensen2" class="exercise"><strong>Exercise 5.64  </strong></span>Let <span class="math inline">\(X\)</span> be a random variable with mean <span class="math inline">\(\mu\)</span> and let <span class="math inline">\(M_X(t) = \operatorname{E}[\exp(tX)]\)</span> be its moment generating function, which is assumed to exist.</p>
 <ol style="list-style-type: decimal">
 <li>Show, using Jensen’s inequality, that <span class="math inline">\(M_X(t) \geq \exp(t\mu)\)</span> for all <span class="math inline">\(t\)</span>, with equality if and only if <span class="math inline">\(X\)</span> is degenerate.</li>
 <li>Hence show that <span class="math inline">\(\log M_X(t) \geq t\mu\)</span>.</li>
@@ -2252,7 +2375,7 @@ Show that <span class="math inline">\(K_X'(0) = \mu\)</span>, and interpret the 
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn and Taryn Axelsen. It was last built on Last updated: 2026-06-26.</p>
+    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn and Taryn Axelsen. It was last built on Last updated: 2026-06-29.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
