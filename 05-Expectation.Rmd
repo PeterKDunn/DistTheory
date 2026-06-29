@@ -61,11 +61,6 @@ If $\int |x|f(x)\,dx = \infty$, the expectation does not exist (Example\ \@ref(e
 :::
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-In the rest of this chapter, mixed random variable\ $X$ will not be explicitly discussed; however, the results remain a combination of the discrete case for the discrete points in\ $\mathcal{R}_X$ and the continuous case for the continuous component of\ $\mathcal{R}_X$.
-:::
-
-
 Effectively $\operatorname{E}[X]$ is a weighted average of the points in\ $\mathcal{R}_X$, the weights being the probabilities for each value of $x\in \mathcal{R}_X$ in the discrete case and probability densities in the continuous case.
 
 
@@ -171,6 +166,7 @@ The expected value of $\operatorname{E}[Z]$ is undefined.
 
 
 
+
 ## Expectation of a function of a random variable {#ExpectationFunction}
 
 \index{Expected value!of a function of a rv|(}
@@ -229,6 +225,32 @@ The expected value of $Y = \sqrt{X}$, where $g(X) = \sqrt{X}$, is
    &= \frac{9\sqrt{3} - 1}{10}\approx 1.458...
 \end{align*}
 The expected value of $Y = \sqrt{X}$ is $\operatorname{E}[Y] = (9\sqrt{3} - 1)/10$.
+:::
+
+
+:::{.example #ExpectationMixedFnX name="Expectation for a function of a mixed variable"}
+Consider the mixed random variable\ $X$ with probability density function shown in Example\ \@ref(exm:ExpectationMixedX).
+The expected value of\ $W$ is $\operatorname{E}[W] = 1/4$.
+The variance of\ $W$ is then
+\begin{align*}
+  \operatorname{var}(W)
+  &= E[W^2] - E[W]^2.
+\end{align*}
+Now
+\begin{align*}
+   \operatorname{E}[W^2]
+   &= \overbrace{\sum_{w = 0} w^2\,p_W(w)}^{\text{Discrete component}}
+      \quad + \quad
+      \overbrace{\int_{-\infty}^\infty w^2\, f_W(w)\,dw}^{\text{Continuous component}}\\
+   &= 0^2\times \frac12
+      \quad + \quad
+      \int_0^\infty w^2 e^{-2w}\,dw\\
+   &= \frac{1}{4}.
+\end{align*}
+Therefore
+$$
+  \operatorname{var}(W) = \frac{1}{4}-\frac{1}{16} = \frac{3}{16}.
+$$
 :::
 
 
@@ -431,8 +453,6 @@ $$
 \index{Expected value!of a function of a rv|)}
 
 
-
-
 ## The variance and standard deviation {#VarianceStdDev}
 
 \index{Variance|(}
@@ -487,6 +507,8 @@ The variance of\ $X$ is then
 \end{align*}
 The standard deviation is then $\sigma = \sqrt{70/24} \approx 1.71$.
 :::
+
+
 
 
 An important result is the  *computational formula for variance*, which is usually easier to use in practice than the formula given in Definition\ \@ref(def:Variance).
@@ -1912,7 +1934,6 @@ integrate(f_Expected,
 
 
 
-
 ## Exercises {#ExercisesChapExpectation}
 
 Selected answers appear in Sect.\ \@ref(AnswersChapExpectation).
@@ -2742,4 +2763,81 @@ Let\ $X$ be a random variable with mean\ $\mu$ and let $M_X(t) = \operatorname{E
 3. The *cumulant generating function* is defined as $K_X(t) = \log M_X(t)$.
    Show that $K_X'(0) = \mu$, and interpret the result of Part\ 2 as a statement about $K_X(t)$.
 :::
+
+
+---
+
+:::{.exercise #ExpectedMixedBiomass}
+An ecologist records fish biomass\ $X$ at sampling sites.
+Suppose
+$$
+  \Pr(X = 0) = 0.6,
+$$
+and
+$$
+  X\mid X>0  \sim \text{Gamma}(\alpha=3, \beta=2),
+$$
+where\ $\beta$ is the scale parameter.
+
+The expected biomass is
+$$
+  \operatorname{E}(X) = 0\times 0.6 + 0.4\times \operatorname{E}(X\mid X > 0).
+$$
+Since
+$$
+  \operatorname{E}(X\mid X>0) = \alpha\beta = 3\times 2 = 6,
+$$
+then
+$$
+  \operatorname{E}(X) = 0.4\times6 = 2.4.
+$$
+
+This illustrates a useful shortcut: if a mixed random variable consists of a point mass at zero and a continuous distribution otherwise, then
+$$
+  \operatorname{E}(X) = \Pr(X > 0) \times \operatorname{E}(X \mid X > 0).
+$$
 ::::
+
+:::{.example}
+Suppose the true daily rainfall\ $X$ follows an exponential distribution with rate\ $\lambda = 1/20$.
+A rainfall gauge records
+$$
+  R =
+  \begin{cases}
+    0  & \text{for $X < 0.1$}\\
+    X  & \text{for $0.1 \le X\le 70$}\\
+    70 & \text{for $X>70$}.
+  \end{cases}
+$$
+
+The recorded rainfall\ $R$ is a mixed random variable because:
+
+* a point mass exists at\ $R = 0$;
+* a continuous component exists on\ $(0.1, 70)$;
+* a point mass exists at\ $R=70$.
+
+The expected value is
+
+$$
+  E(R) =
+  0\times P(R=0)
+  +
+  \int_{0.1}^{70} r\, f_X(r)\, dr
+  +
+  70\times \Pr(R = 70).
+$$
+
+The first term contributes nothing because the recorded rainfall is zero.
+
+For a mixed random variable,
+
+$$
+  E(X) =
+  \text{(discrete contribution)}
+  +
+  \text{(continuous contribution)}.
+$$
+The calculation combines summation and integration in the same expression.
+:::
+
+
