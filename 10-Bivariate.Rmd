@@ -17,6 +17,7 @@ Upon completion of this chapter you should be able to:
 * describe and apply the joint density--mass function for mixed bivariate random variables.
 * find the marginal and conditional probability functions of random variables in both discrete and continuous cases.
 * apply the concept of independence of two random variables.
+* use the bivariate normal distribution.
 :::
 
 
@@ -1675,6 +1676,382 @@ $$
 We write $X_1, X_2, X_3 \overset{\text{iid}}{\sim} f_X(x)$.
 :::
 \index{Independent random variables|)}
+
+
+
+
+
+## The bivariate normal distribution {#BVNormalDistribution}
+
+\index{Bivariate normal distribution|(}
+A specific example of a *bivariate* distribution is the  *bivariate normal distribution*. 
+
+
+:::{.definition #BVNormalDistribution name="The bivariate normal distribution"}
+If a pair of random variables\ $X$ and\ $Y$ have the joint PDF
+\begin{equation}
+   f_{X, Y}(x, y; \mu_x, \mu_Y, \sigma^2_X, \sigma^2_Y, \rho) =
+   \frac{1}{2\pi\sigma_X\sigma_Y\sqrt{1 - \rho^2}}\exp(-Q/2)
+   (\#eq:bivarnormalPDF)
+\end{equation}
+where
+$$
+   Q = \frac{1}{1-\rho^2}\left[
+                      \left(\frac{x-\mu_X}{\sigma_X}\right)^2 -
+                2\rho\left( \frac{x-\mu_X}{\sigma_X}\right)\left(\frac{y-\mu_Y}{\sigma_Y}\right)
+                +     \left(\frac{y-\mu_Y}{\sigma_Y}\right)^2 \right],
+$$
+then\ $X$ and\ $Y$ have a *bivariate normal distribution*.
+We write
+$$
+   (X, Y) \sim N_2(\mu_X, \mu_Y, \sigma^2_X, \sigma^2_Y, \rho ).
+$$
+:::
+
+
+A typical graph of the bivariate normal surface above the $x$--$y$ plane is shown
+`r if( knitr::is_latex_output() ) {
+   'in Figs. \\@ref(fig:BivarNormalPDF).'
+} else {
+   'below.'
+}`
+Showing $\int^\infty_{-\infty}\!\int^\infty_{-\infty}f_{X,Y}(x,y)\,dx\,dy = 1$ is not straightforward and involves writing Eq.\ \@ref(eq:bivarnormalPDF) using polar coordinates.
+
+
+
+```{r BivarNormalPDF, echo=FALSE, fig.cap="A bivariate normal distribution with means of\\ $0$, variances of\\ $1$, and correlation coefficient of\\ $0.5$.", fig.align="center", out.width='100%'}
+mu <- c(0, 0)
+ 
+sigma <- matrix(c(1, 0.5, 
+                  0.5, 1.5), 
+                nrow = 2)
+
+f <- function(x, y, mn, sigma) {
+  mnormt::dmnorm(cbind(x, y), 
+                mean = mn, 
+                varcov = sigma)
+}
+
+if( knitr::is_latex_output() ) {
+
+  par( mfrow = c(1, 2))
+  
+zz <- seq(-4, 4, 
+          length = 50)
+x <- mu[1] + zz * sqrt(sigma[1, 1])
+y <- mu[2] + zz * sqrt(sigma[2, 2]) 
+
+z <- outer(x, y, f,
+           mn = mu,
+           sigma = sigma)
+ 
+ contour(x, y, z,
+         asp = 1,
+         las = 1,
+         #xlim = c(1550, 1900),
+         #ylim = c(1450, 1750),
+         xlab = "x",
+         ylab = "y",
+         levels = c( seq( 0, 0.14, by = 0.01), 0.001 )
+        # levels = c(0.0001, 
+        #            0.0005,
+        #            0.0002,
+        #            0.001,
+        #            0.005,
+        #            0.01,
+        #            0.05,
+        #            0.08,
+        #            0.01,
+        #            0.105)
+         )
+
+persp(x, y, z, 
+      theta = -30, 
+      phi = 35, 
+      shade = 0.75, 
+      col = ColourLightOpaque, 
+      expand = 0.5, 
+      r = 2, 
+      ltheta = 25, 
+      xlab = "x",
+      ylab = "y",
+      ticktype = "simple")
+}
+```
+
+```{r BivarNormalHTML, echo=FALSE, fig.cap="A bivariate normal distribution. Left: a contour plot; right: a mesh plot.", fig.align="center", out.width='80%'}
+mu <- c(0, 0)
+
+sigma <- matrix(c(1, 0.5, 
+                  0.5, 1.5), 
+                nrow = 2)
+
+f <- function(x, y, mn, sigma) {
+  mnormt::dmnorm(cbind(x, y), 
+                mean = mn, 
+                varcov = sigma)
+}
+
+if( knitr::is_html_output() ) {
+  zz <- seq(-4, 4, 
+            length = 40)
+  x <- mu[1] + zz * sqrt(sigma[1, 1])
+  y <- mu[2] + zz * sqrt(sigma[2, 2]) 
+
+  
+  # FIRST PLOT: CONTOUR
+  M <- plot3D::mesh(x = x,
+                   y = y,
+                   col = ColourSolid)
+  
+  
+  # SECOND PLOT: MESH
+  z <- outer(x, y, f,
+             mn = mu,
+             sigma = sigma)
+
+
+  rgl::persp3d(x = M$x, 
+              y = M$y, 
+              z = z,
+              xlim = range(x),
+              ylim = range(y),
+              zlim = c(0, max(z)),
+              col = ColourLightOpaque,
+              colkey = FALSE,
+              phi = 40,
+              xlab = "x",
+              ylab = "y",
+              theta = 30,
+              main = "Bivariate normal")
+}
+```
+
+
+Some important facts about the bivariate normal distribution are contained in the theorem below.
+
+
+:::{.theorem #BivarNormalProperties name="Bivariate normal distribution properties"}
+For $(X, Y)$ with PDF given in Eq.\ \@ref(eq:bivarnormalPDF):
+
+1. The marginal distributions of\ $X$ and of\ $Y$ are $N(\mu_X, \sigma^2_X)$ and $N(\mu_Y, \sigma^2_Y)$ respectively.
+2. The parameter\ $\rho$ appearing in Eq.\ \@ref(eq:bivarnormalPDF) is the correlation coefficient between\ $X$ and\ $Y$.
+3. the conditional distributions of\ $X$ given $Y = y$, and of\ $Y$ given $X = x$, are respectively
+  \begin{align*} 
+     &N\left( \mu_X + \rho \sigma_X(y - \mu_Y)/\sigma_Y, \sigma^2_X(1 - \rho^2)\right); \\
+     &N\left( \mu_Y + \rho \sigma_Y(x - \mu_X)/\sigma_X, \sigma^2_Y(1 - \rho^2)\right). 
+  \end{align*}
+
+::::{.proof}
+Recall that the marginal PDF of\ $X$ is $f_X(x) = \int^\infty_{-\infty} f_{X, Y}(x, y)\,dy$. 
+In the integral, put $u = (x - \mu_X)/\sigma_X, v = (y - \mu_Y)/\sigma_Y,\, dy = \sigma_Y\,dv$ and complete the square in the exponent on\ $v$:
+\begin{align*}
+     g(x) 
+     &= \frac{1}{2\pi\sigma_X\sqrt{1 - \rho^2}\sigma_Y}\int^\infty_{-\infty}\exp\left\{ -\frac{1}{2(1 - \rho^2)}\left[ u^2 - 2\rho uv + v^2\right]\right\} \sigma_Y\,dv\\[2mm]
+     &= \frac{1}{2\pi \sigma_X\sqrt{1 - \rho^2}}\int^\infty_{-\infty} \exp\left\{ -\frac{1}{2(1 - \rho^2)}\left[ (v - \rho u)^2 + u^2 - \rho^2u^2\right]\right\}\,dv\\[2mm]
+     &= \frac{\exp(-u^2/2)}{\sqrt{2\pi} \sigma_X} \ \underbrace{\int^\infty_{-\infty} \frac{1}{\sqrt{2\pi (1 - \rho^2)}} \exp\left\{ -\frac{1}{2(1 - \rho^2)}(v - \rho u)^2\right\}\,dv}_{=1}.
+\end{align*}
+Replacing\ $u$ by $(x - \mu_X )/\sigma_X$, we see from the PDF that $X \sim N(\mu_X, \sigma^2_X)$. 
+Similarly for the marginal PDF of\ $Y$; i.e., $f_Y(y)$.
+
+To show that\ $\rho$ in Eq.\ \@ref(eq:bivarnormalPDF) is the correlation coefficient of\ $X$ and\ $Y$, recall that
+\begin{align*}
+     \rho_{X,Y} 
+     &= \operatorname{Cov}(X,Y)/\sigma_X\sigma_Y=\operatorname{E}[(X-\mu_X)(Y - \mu_Y)]/\sigma_X\sigma_Y   \\[2mm]
+     & = \int^\infty_{-\infty}\!\int^\infty_{-\infty} \frac{(x - \mu_X)}{\sigma_X}\frac{(y - \mu_Y)}{\sigma_Y}f(x,y)\,dx\,dy\\[2mm]
+     &= \int^\infty_{-\infty}\!\int^\infty_{-\infty} uv\frac{1}{2\pi\sqrt{1 - \rho^2} \sigma_X\sigma_Y}\exp\left\{ -\frac {1}{2(1 - \rho^2)}[u^2 - 2\rho uv + v^2]\right\} \sigma_X\sigma_Y\,du\,dv.
+\end{align*}
+
+The exponent is
+$$
+   -\frac{[(u - \rho v)^2 + v^2 - \rho^2 v^2]}{2(1 - \rho^2)}
+   = - \frac{1}{2} \left\{\frac{(u - \rho v)^2}{(1 - \rho^2)} + v^2\right\}.
+$$
+Then:
+\begin{align*} 
+   \rho_{X, Y}
+   &=\int^\infty_{-\infty}\frac{v \exp(-v^2/2)}{\sqrt{2\pi}}\underbrace{\int^\infty_{-\infty} \frac{u}{\sqrt{2\pi
+  (1 - \rho^2)}}\exp\{ -(u - \rho v)^2/2(1 - \rho^2)\}\,du}_{\displaystyle{= \operatorname{E}[U]\text{ where } u \sim N(\rho
+  v, 1 - \rho^2) = \rho v}}\,dv \\[2mm]
+   &= \rho \int^\infty_{-\infty} \frac{v^2}{\sqrt{2\pi}}\,\exp(-v^2/2)\,dv\\[2mm]
+   &= \rho\quad \text{since the integral is $\operatorname{E}[V^2]$ where $V \sim N(0,1)$.}
+\end{align*}
+
+In finding the conditional PDF of\ $X$ given $Y = y$, use
+$$
+   f_{X \mid Y = y}(x) = f_{X, Y}(x, y)/f_Y(y). 
+$$
+Then in this ratio, the constant is
+$$
+  \frac{\sqrt{2\pi} \sigma_Y}{2\pi \sigma_X\sigma_Y \sqrt{1 - \rho^2}}
+  = \frac{1}{\sqrt{2\pi}\sigma_X\sqrt{1 - \rho^2}}.
+$$
+The exponent is
+\begin{align*}
+       & \frac{\exp\left\{ -\left[ \displaystyle{\frac{(x - \mu_X)^2}{\sigma^2_X}} -
+  \displaystyle{\frac{2\rho(x - \mu_X)(y - \mu_Y)}{\sigma_X\sigma_Y}} + 
+  \displaystyle{\frac{(y - \mu_Y)^2}{\sigma^2_Y}}\right] / 2(1 - \rho^2) \right\}  }{\exp\left[ -(y - \mu_Y)^2 / 2\sigma^2_Y\right]}\\[2mm]
+       &= \exp\left\{ - \frac{1}{2(1 - \rho^2)} \left[ \frac{(x - \mu_X)^2}{\sigma^2_X} - \frac{2\rho (x - \mu_X)(y - \mu_Y)}{\sigma_X\sigma_Y} +
+  \frac{(y - \mu_Y)^2}{\sigma^2_Y} (1 - 1 + \rho^2)\right] \right\}\\[2mm]
+       &= \exp\left\{ - \frac{1}{2\sigma^2_X(1 - \rho^2)} 
+       \left[ (x - \mu_X)^2 - 2\rho \frac{\sigma_X}{\sigma_Y} (x - \mu_X)(y - \mu_Y) + 
+       \frac{\rho^2 \sigma^2_X}{\sigma^2_Y}(y - \mu_Y)^2\right]\right\}\\[2mm]
+       &= \exp \left\{ - \frac{1}{2(1 - \rho^2)\sigma^2_X} \left[ x - \mu_X - \rho\frac{\sigma_X}{\sigma_Y}(y - \mu_Y)\right]^2\right\}.
+\end{align*}
+So the conditional distribution of\ $X$ given $Y = y$ is
+$$
+   N\left( \mu_X + \rho\frac{\sigma_X}{\sigma_Y}(y - \mu_Y), \sigma^2_X(1 - \rho^2)\right).
+$$
+Recall the interpretation of the conditional distribution of\ $X$ given $Y = y$ (Sect.\ \@ref(ConditionalDistributions)) and note the shape of this density
+`r if( knitr::is_latex_output() ) {
+   'in Figs. \\@ref(fig:BivarNormalPDF).'
+} else {
+   'below.'
+}`
+::::
+:::
+
+Comments about Theorem\ \@ref(thm:BivarNormalProperties):
+
+* From the first and third parts, $\operatorname{E}[X] = \mu_X$ and $\operatorname{E}[X \mid Y = y] = \mu_X + \rho \sigma_X (y - \mu_Y)/\sigma_Y$ (and similarly for\ $Y$). 
+  Notice that $\operatorname{E}[X \mid Y = y]$ is a linear function of\ $y$; i.e., if $(X, Y)$ is bivariate normal, the regression line of\ $Y$ on\ $X$ (and\ $X$ on\ $Y$) is linear.
+*  An important result follows from the second part. 
+   If\ $X$ and\ $Y$ are uncorrelated (i.e., if $\rho = 0$) then $f_{X, Y}(x, y) = f_X(x) f_Y(y)$ and thus\ $X$ and\ $Y$ are independent. 
+   That is, if two normally distributed random variables are uncorrelated, they are also independent.
+
+
+:::{.example #BivariateHeights name="Bivariate normal: Heights"}
+[@data:Marsh1988:ExploringData] gives data from $200$\ married men and their wives from the OPCS study of heights and weights of adults in Great Britain in 1980.
+Histograms of the husbands' and wives' heights are given in Fig.\ \@ref(fig:HtsPlots) (left and centre panels); the marginal distributions are approximately normal.
+
+From the histograms, there is reason to suspect that a bivariate normal distribution would be appropriate.
+Using\ $H$ to refer to heights (in mm) of husbands and\ $W$ to the heights (in mm) of wives, the sample statistics are shown below (and where the estimate of the correlation is\ $+0.364$):
+
+
+| Statistic               |  Husbands |  Wives
+|-------------------------|-----------|----------
+| Sample mean (in mm):    | 1732      | 1602
+| Sample std dev (in mm): | 68.8      | 62.4 
+
+Note that\ $\rho$ is positive; this implies taller men marry taller women on average.
+Using this sample information, the bivariate normal distribution can be described.
+A $3$-dimensional function can be difficult to plot on a two-dimensional page, but see 
+`r if( knitr::is_latex_output() ) {
+   'Figs.\\ \\@ref(fig:BivarNormalHts-1) and\\ \\@ref(fig:BivarNormalHts-2).'
+} else {
+   'below.'
+}`
+
+The PDF for the bivariate normal distribution for the heights of the husbands and wives could be written in the form of \@ref(eq:bivarnormalPDF) for the values of\ $\mu_H$, $\mu_W$, $\sigma^2_H$, $\sigma^2_W$ and\ $\rho$ above, but this is tedious.
+
+Given the information, what is the probability that a randomly chosen man in the UK in 1980 who is $173\cms$ tall had married a woman taller than himself?
+
+The information implies that $H = 1730$ is given (remembering the data are given in millimetres).
+So we need the *conditional distribution* of $W \mid H = 1730$.
+Using the results above, this conditional distribution will have mean
+\begin{align*}
+   b
+   &= \mu_W + \rho\frac{\sigma_W}{\sigma_H}(y_H - \mu_H) \\
+   &= 1602 + 0.364\frac{62.4}{68.8}(1730 - 1732) \\
+   &= 1601.34
+\end{align*}
+and variance
+$$
+   \sigma_2^2(1 - \rho^2) = 62.4^2(1 - 0.364^2) = 377.85.
+$$
+In summary, $W \mid  (H = 1730) \sim N(1601.34, 3377.85)$.
+Note that this conditional distribution has a univariate normal distribution, and so probabilities such as $W > 1730$ are easily determined.
+Then,
+\begin{align*}
+   \Pr(W > 1730 \mid H = 1730)
+   &= \Pr\left( Z > \frac{1730 - 1601.34}{\sqrt{3377.85}}\right) \\
+   &= \Pr( Z > 2.2137)\\
+   &= 0.013.
+\end{align*}
+Approximately $1.3$% of males $173\cms$ tall had married women taller than themselves in the UK in 1980.
+:::
+
+
+```{r BivarNormalHts, echo=FALSE, fig.cap="Bivariate normal distribution for heights.", fig.align="center", out.width='80%'}
+
+mu <- c(1732, 1602)
+
+sigma <- matrix(c(68.8^2, 0, 
+                  0, 62.4^2), 
+                nrow = 2)
+corr <- 0.364
+cov <- corr * sqrt(sigma[1, 1] * sigma[2, 2] )
+
+sigma[1, 2] <- sigma[2, 1] <- cov
+
+f <- function(x, y, mn, sigma) {
+  cat("INSIDE\n")
+  mnormt::dmnorm( matrix( cbind(x, y),
+                         byrow = FALSE,
+                         ncol = 2),
+                 mean = mn,
+                 varcov = sigma)
+}
+
+zz <- seq(-4, 4, 
+          length = 50)
+x <- mu[1] + zz * sqrt(sigma[1, 1])
+y <- mu[2] + zz * sqrt(sigma[2, 2]) 
+
+
+if( knitr::is_latex_output() ) {
+  
+  z <- outer(x, y, 
+             FUN = "f",
+             mn = mu,
+             sigma = sigma)
+  
+  contour(x, y, z,
+          asp = 1,
+          las = 1,
+          xlim = c(1550, 1900),
+          ylim = c(1450, 1750),
+          xlab = "Husband heights (in mm)",
+          ylab = "Wife heights (in mm)")
+  
+  persp(x, y, z, 
+        theta = -30, 
+        phi = 45, 
+        shade = 0.75, 
+        col = ColourLight, 
+        expand = 0.5, 
+        r = 2, 
+        ltheta = 25, 
+        xlab = "Husband heights (in mm)",
+        ylab = "Wife heights (in mm)",
+        ticktype = "simple")
+}
+if( knitr::is_html_output() ) {
+
+  M <- plot3D::mesh(x = x,
+                    y = y)
+  
+  z <- outer(x, y, f,
+             mn = mu,
+             sigma = sigma)
+  
+  
+  rgl::persp3d(x = M$x, 
+               y = M$y, 
+               z = z,
+               xlim = c(1450, 2050),
+               ylim = c(1350, 1900),
+               zlim = c(0, 4e-05),
+               col = ColourLight,
+               colkey = FALSE,
+               phi = 40,
+               xlab = "Husband heights (in mm)",
+               ylab = "Wife heights (in mm)",
+               theta = 30,
+               main = "Bivariate normal")
+}
+```
+\index{Bivariate normal distribution|)}
 
 
 
