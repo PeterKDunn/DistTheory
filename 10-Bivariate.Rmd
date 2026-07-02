@@ -1709,17 +1709,19 @@ $$
 :::
 
 
+Proving that $\int^\infty_{-\infty}\!\int^\infty_{-\infty}f_{X,Y}(x,y)\,dx\,dy = 1$ is not straightforward and involves writing Eq.\ \@ref(eq:bivarnormalPDF) using polar coordinates.
+
 A typical graph of the bivariate normal surface above the $x$--$y$ plane is shown
 `r if( knitr::is_latex_output() ) {
    'in Figs. \\@ref(fig:BivarNormalPDF).'
 } else {
    'below.'
 }`
-Showing $\int^\infty_{-\infty}\!\int^\infty_{-\infty}f_{X,Y}(x,y)\,dx\,dy = 1$ is not straightforward and involves writing Eq.\ \@ref(eq:bivarnormalPDF) using polar coordinates.
+The left plot shows the *contours*: where the height of the probability function are constant values.
+The right plot is a $3$-dimensional mesh plot.
 
 
-
-```{r BivarNormalPDF, echo=FALSE, fig.cap="A bivariate normal distribution with means of\\ $0$, variances of\\ $1$, and correlation coefficient of\\ $0.5$.", fig.align="center", out.width='100%'}
+```{r BivarNormalPDF, echo=FALSE, fig.cap="A bivariate normal distribution with means of\\ $0$, variances of\\ $1$, and correlation coefficient of\\ $0.5$. Left: a contour plot; right: a mesh plot.", fig.align="center", out.width='100%'}
 mu <- c(0, 0)
  
 sigma <- matrix(c(1, 0.5, 
@@ -1745,6 +1747,7 @@ z <- outer(x, y, f,
            mn = mu,
            sigma = sigma)
  
+# CONTOUR
  contour(x, y, z,
          asp = 1,
          las = 1,
@@ -1752,6 +1755,7 @@ z <- outer(x, y, f,
          #ylim = c(1450, 1750),
          xlab = "x",
          ylab = "y",
+         col = ColourSolid,
          levels = c( seq( 0, 0.14, by = 0.01), 0.001 )
         # levels = c(0.0001, 
         #            0.0005,
@@ -1765,6 +1769,17 @@ z <- outer(x, y, f,
         #            0.105)
          )
 
+# MESH
+  zz <- seq(-4, 4, 
+           length = 20)
+  x <- mu[1] + zz * sqrt(sigma[1, 1])
+  y <- mu[2] + zz * sqrt(sigma[2, 2]) 
+
+  z <- outer(x, y, f,
+             mn = mu,
+             sigma = sigma)
+  
+par(mar = c(1, 1, 2, 1) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1.
 persp(x, y, z, 
       theta = -30, 
       phi = 35, 
@@ -1810,7 +1825,7 @@ if( knitr::is_html_output() ) {
              mn = mu,
              sigma = sigma)
 
-
+  par(mar = c(1, 1, 2, 1) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1.
   rgl::persp3d(x = M$x, 
               y = M$y, 
               z = z,
@@ -1921,21 +1936,16 @@ Comments about Theorem\ \@ref(thm:BivarNormalProperties):
 
 
 :::{.example #BivariateHeights name="Bivariate normal: Heights"}
-[@data:Marsh1988:ExploringData] gives data from $200$\ married men and their wives from the OPCS study of heights and weights of adults in Great Britain in 1980.
-Histograms of the husbands' and wives' heights are given in Fig.\ \@ref(fig:HtsPlots) (left and centre panels); the marginal distributions are approximately normal.
+Heights of adults in large populations are often approximately normally distributed.
+Some studies suggest a small positive correlation between the heights of partners; for example, @data:Marsh1988:ExploringData shows a correlation of $+0.364$ between the heights of husbands and wives.
+Since $\rho > 0$, this implies taller men tended to marry taller women.
 
-From the histograms, there is reason to suspect that a bivariate normal distribution would be appropriate.
-Using\ $H$ to refer to heights (in mm) of husbands and\ $W$ to the heights (in mm) of wives, the sample statistics are shown below (and where the estimate of the correlation is\ $+0.364$):
+Using @data:Marsh1988:ExploringData as a guide, a model could be developed for the joint distribution for husbands and wives in Great Britain in 1980 (in millimetres), where $\rho = +0.364$:
 
+* Husbands: $\mu_H = 1732$ and $\sigma_H = 68.8$ and
+* Wives: $\mu_W = 1602$ and $\sigma_W = 62.4$.
 
-| Statistic               |  Husbands |  Wives
-|-------------------------|-----------|----------
-| Sample mean (in mm):    | 1732      | 1602
-| Sample std dev (in mm): | 68.8      | 62.4 
-
-Note that\ $\rho$ is positive; this implies taller men marry taller women on average.
-Using this sample information, the bivariate normal distribution can be described.
-A $3$-dimensional function can be difficult to plot on a two-dimensional page, but see 
+The $3$-dimensional joint probability function is difficult to plot in two-dimensions, but see 
 `r if( knitr::is_latex_output() ) {
    'Figs.\\ \\@ref(fig:BivarNormalHts-1) and\\ \\@ref(fig:BivarNormalHts-2).'
 } else {
@@ -1944,36 +1954,35 @@ A $3$-dimensional function can be difficult to plot on a two-dimensional page, b
 
 The PDF for the bivariate normal distribution for the heights of the husbands and wives could be written in the form of \@ref(eq:bivarnormalPDF) for the values of\ $\mu_H$, $\mu_W$, $\sigma^2_H$, $\sigma^2_W$ and\ $\rho$ above, but this is tedious.
 
-Given the information, what is the probability that a randomly chosen man in the UK in 1980 who is $173\cms$ tall had married a woman taller than himself?
+Given this model, what is the probability that a randomly chosen man in the UK in 1980 who is $1730\mms$ tall had married a woman taller than himself?
 
-The information implies that $H = 1730$ is given (remembering the data are given in millimetres).
-So we need the *conditional distribution* of $W \mid H = 1730$.
-Using the results above, this conditional distribution will have mean
+The *conditional distribution* of $W \mid H = 1730$ is needed.
+This conditional distribution has mean
 \begin{align*}
    b
    &= \mu_W + \rho\frac{\sigma_W}{\sigma_H}(y_H - \mu_H) \\
-   &= 1602 + 0.364\frac{62.4}{68.8}(1730 - 1732) \\
-   &= 1601.34
+   &= 1602 + 0.364\frac{62.4}{68.8}\times(1730 - 1732)
+    = 1601.34
 \end{align*}
 and variance
 $$
    \sigma_2^2(1 - \rho^2) = 62.4^2(1 - 0.364^2) = 377.85.
 $$
 In summary, $W \mid  (H = 1730) \sim N(1601.34, 3377.85)$.
-Note that this conditional distribution has a univariate normal distribution, and so probabilities such as $W > 1730$ are easily determined.
-Then,
+This conditional distribution has a univariate normal distribution, and so probabilities such as $W > 1730$ are easily determined:
 \begin{align*}
    \Pr(W > 1730 \mid H = 1730)
    &= \Pr\left( Z > \frac{1730 - 1601.34}{\sqrt{3377.85}}\right) \\
-   &= \Pr( Z > 2.2137)\\
-   &= 0.013.
+   &= \Pr( Z > 2.2137)
+    = 0.013.
 \end{align*}
-Approximately $1.3$% of males $173\cms$ tall had married women taller than themselves in the UK in 1980.
+Using this model, approximately $1.3$% of males $1730\mms$ tall had married women taller than themselves in the UK in 1980.
 :::
 
 
-```{r BivarNormalHts, echo=FALSE, fig.cap="Bivariate normal distribution for heights.", fig.align="center", out.width='80%'}
+```{r BivarNormalHts, echo=FALSE, fig.cap="The bivariate normal model for heights.", fig.align="center", out.width='100%'}
 
+par(mfrow = c(1, 2))
 mu <- c(1732, 1602)
 
 sigma <- matrix(c(68.8^2, 0, 
@@ -1985,7 +1994,6 @@ cov <- corr * sqrt(sigma[1, 1] * sigma[2, 2] )
 sigma[1, 2] <- sigma[2, 1] <- cov
 
 f <- function(x, y, mn, sigma) {
-  cat("INSIDE\n")
   mnormt::dmnorm( matrix( cbind(x, y),
                          byrow = FALSE,
                          ncol = 2),
@@ -1993,19 +2001,19 @@ f <- function(x, y, mn, sigma) {
                  varcov = sigma)
 }
 
-zz <- seq(-4, 4, 
-          length = 50)
-x <- mu[1] + zz * sqrt(sigma[1, 1])
-y <- mu[2] + zz * sqrt(sigma[2, 2]) 
-
-
 if( knitr::is_latex_output() ) {
   
+  zz <- seq(-4, 4, 
+            length = 50)
+  x <- mu[1] + zz * sqrt(sigma[1, 1])
+  y <- mu[2] + zz * sqrt(sigma[2, 2]) 
+
   z <- outer(x, y, 
              FUN = "f",
              mn = mu,
              sigma = sigma)
   
+  ## CONTOUR
   contour(x, y, z,
           asp = 1,
           las = 1,
@@ -2014,6 +2022,18 @@ if( knitr::is_latex_output() ) {
           xlab = "Husband heights (in mm)",
           ylab = "Wife heights (in mm)")
   
+  
+  # MESH
+  par(mar = c(1, 1, 2, 1) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1.
+  zz <- seq(-4, 4, 
+            length = 20)
+  x <- mu[1] + zz * sqrt(sigma[1, 1])
+  y <- mu[2] + zz * sqrt(sigma[2, 2]) 
+
+  z <- outer(x, y, 
+             FUN = "f",
+             mn = mu,
+             sigma = sigma)
   persp(x, y, z, 
         theta = -30, 
         phi = 45, 
@@ -2022,8 +2042,8 @@ if( knitr::is_latex_output() ) {
         expand = 0.5, 
         r = 2, 
         ltheta = 25, 
-        xlab = "Husband heights (in mm)",
-        ylab = "Wife heights (in mm)",
+        xlab = "Husband hts (in mm)",
+        ylab = "Wife hts (in mm)",
         ticktype = "simple")
 }
 if( knitr::is_html_output() ) {
@@ -2108,8 +2128,8 @@ y_vals <- c(10, 20)        # The values for the variable Y
 P <- matrix(c(0.1, 0.2,    # The matrix contains the probabilities
               0.3, 0.1,
               0.2, 0.1),
-            nrow = 3,      # The matrix have 3 rows
-            byrow = TRUE,  # Fill the matrix with the data by rows first
+            nrow = 3,      # The matrix has 3 rows
+            byrow = TRUE,  # Fill the matrix with the data across rows
             dimnames = list(x = x_vals,    # The names for the rows...
                             y = y_vals))   #... and the columns
 P
