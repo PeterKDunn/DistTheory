@@ -37,11 +37,18 @@ These ideas can be extended to more random variables; the case of *multivariate*
 To do this, using *random vectors* is convenient.\index{Random vector}
 A random vector is a column vector of $n$\ random variables:
 $$
-  \mathbf{X} = [X_1, X_2, \dots, X_n]^T,
+  \mathbf{X} 
+  = \begin{bmatrix}
+    X_1\\
+    X_2\\
+    \dots\\
+    X_n
+    \end{bmatrix}
+  = [X_1, X_2, \dots, X_n]^T,
 $$
 where the superscript\ $T$ means 'transpose'.
 Each\ $X_i$ is a random variable, and together they form an $n$-dimensional random vector.
-In the bivariate case, for example, we could write
+In the bivariate case, for example:
 $$
    \mathbf{X} 
    = \begin{bmatrix} 
@@ -83,7 +90,6 @@ $$
 :::
 
 
-
 ## Joint probability functions {#MultivariateProbFn}
 
 The *joint probability function* of $\mathbf{X}$ describes the probability distribution for all $n$\ random variables simultaneously.\index{Joint probability function}
@@ -99,7 +105,7 @@ $$
 $$
 The *joint probability mass function* is\index{Joint probability mass function}
 $$
-  p_{\mathbf{X}}mathbf{x}) 
+  p_{\mathbf{X}}(\mathbf{x}) 
   = \Pr(\mathbf{X} = \mathbf{x}) \quad \text{for $\mathbf{x} \in \mathcal{X}$},
 $$
 such that 
@@ -294,13 +300,13 @@ $$
 
 Marginal distributions are obtained by summing or integrating out unwanted variables. For example,
 $$
-  f_{X_1}(x_1) = \int_{\mathbb{R}^{n-1}} f(x_1, x_2, \dots, x_n)\, dx_2 \cdots dx_n.
+  f_{X_1}(x_1) = \int_{\mathbb{R}^{n-1}} f_{X_1, X_2, \dots, X_n}(x_1, x_2, \dots, x_n)\, dx_2 \cdots dx_n.
 $$
 
 Conditional distributions are defined in the natural way:
 $$
   f_{X_1 \mid X_2, \dots, X_n}(x_1 \mid x_2, \dots, x_n) =
-  \frac{f(x_1, x_2, \dots, x_n)}{f_{X_2,\dots,X_n}(x_2, \dots, x_n)}.
+  \frac{f_{X_1 , X_2, \dots, X_n}(x_1, x_2, \dots, x_n)}{f_{X_2,\dots,X_n}(x_2, \dots, x_n)}.
 $$
 
 EXAMPLES
@@ -382,6 +388,265 @@ $$
 For example, the probability that the values of all three variables are less than\ $0.5$ is
 $$
   F_{X_1, X_2, X_3}(0.5, 0.5, 0.5) = 0.5^3 = 0.125.
+$$
+:::
+
+
+## Expectation and covariance {#MultivariateExpectation}
+
+Each variable $X_i$ in a random vector has a mean $\operatorname{E}[X_i]$ and variance $\operatorname{var}[X_i]$.
+Consider a random vector of $n$\ random variables $X_i$; then the *mean vector* of $\mathbf{X} = [X_1, \dots, X_n]^T$ is
+$$
+  \boldsymbol{\mu} 
+  = \operatorname{E}[\mathbf{X}] 
+  =
+  \begin{bmatrix}
+    \operatorname{E}[X_1] \\
+    \vdots \\
+    \operatorname{E}[X_n]
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+    \mu_1 \\
+    \vdots \\
+    \mu_n
+  \end{bmatrix}.
+$$
+
+The variance of each variable $X_i$ can be found, so we can write
+$$
+  \boldsymbol{\sigma}^2 
+  = \operatorname{var}[\mathbf{X}] 
+  =
+  \begin{bmatrix}
+    \operatorname{var}[X_1] \\
+    \vdots \\
+    \operatorname{var}[X_n]
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+    \sigma_1^2 \\
+    \vdots \\
+    \sigma_n^2
+  \end{bmatrix}.
+$$
+
+The covariance between each *pair* of random variables can also be computed (Sect.\ \@ref(BivariateCovariance)).
+The variances and covariances are conveniently compiled into a $n\times n$ *covariance matrix*:\index{Covariance!matrix}
+\begin{align*}
+  \Sigma = \text{Cov}(\mathbf{X}) 
+  = \operatorname{E}\left[(\mathbf{X} - \boldsymbol{\mu})(\mathbf{X} - \boldsymbol{\mu})^T\right].
+  = 
+  \begin{bmatrix}
+    \sigma_1^2                    & \operatorname{Cov}(X_1, X_2)  & \dots   & \operatorname{Cov}(X_1, X_n)\\
+    \operatorname{Cov}(X_2, X_1)  & \sigma_2^2                    & \dots   & \operatorname{Cov}(X_2, X_n)\\
+    \vdots                        & \vdots                        & \ddots  & \vdots\\
+    \operatorname{Cov}(X_n, X_1)  & \operatorname{Cov}(X_n, X_2)  & \dots   & \sigma_n^2\\
+  \end{bmatrix}
+\end{align*}
+The entries are $\Sigma_{ij} = \text{Cov}(X_i, X_j)$. 
+The diagonal entries are the variances
+$$
+  \Sigma_{ii} = \text{Cov}(X_i, X_i) = \sigma_i^2,
+$$
+while the off-diagonal entries are covariances.
+Since $\operatorname{Cov}(X_i, X_j) = \operatorname{Cov}(X_j, X_i)$, $\mathbf{\Sigma}$ is symmetric. 
+
+The *correlation matrix*\index{Correlation!matrix} $\mathbf{\rho}$ is obtained by normalisation, with element $(i, j)$ found as
+$$
+  \rho_{ij} = \frac{\Sigma_{ij}}{\sqrt{\Sigma_{ii}\,\Sigma_{jj}}}.
+$$
+
+Results involving expectations naturally generalise from the bivariate to the multivariate case.
+Firstly, the expectation of a linear combination of random variables. 
+
+
+:::{.theorem #ExpLinear name="Expectation of linear combinations"}
+If $X_1, X_2,\dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any constants then
+$$
+   \operatorname{E}\left[\sum_{i = 1}^n a_i X_i \right]
+   = \sum_{i = 1}^n a_i \, \operatorname{E}[X_i]
+   = \sum_{i = 1}^n a_i \, \mu_i
+$$
+Using vector notation,
+\begin{equation}
+  \operatorname{E}[\mathbf{a}^T\mathbf{X}]
+   = [a_1, a_2]
+   \begin{bmatrix} 
+      \mu_1 \\ 
+      \mu_2 
+    \end{bmatrix} 
+   = \mathbf{a}^T\boldsymbol{\mu}
+\end{equation}
+
+
+::::{.proof}
+The proof follows directly from Theorem\ \@ref(thm:ExpTwoRV) by induction.
+::::
+:::
+
+
+The variance of a linear combination of random variables is given in the following theorem.
+
+
+:::{.theorem #LinearCombVariance name="Variance of a linear combination"}
+If $X_1, X_2, \dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any constants then
+$$
+   \operatorname{var}\left[\sum_{i = 1}^n a_i X_i \right]
+   =
+   \sum^n_{i = 1}a^2_i\operatorname{var}[X_i] + 2{\sum\sum}_{i<j}a_i a_j\operatorname{Cov}(X_i, X_j).
+$$
+Using vector notation,
+\begin{align}
+  \operatorname{var}[Y]
+  = \operatorname{var}[\mathbf{a}^T\mathbf{X}\mathbf{a}]
+  = [a_1, a_2]
+  \begin{bmatrix} 
+     \sigma^2_1 & \sigma_{12} \\
+     \sigma_{21}& \sigma^2_2 
+  \end{bmatrix}
+  \begin{bmatrix} 
+     a_1 \\ 
+     a_2
+  \end{bmatrix}
+  = \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}.
+\end{align}
+
+::::{.proof}
+For convenience, put $Y = \sum_{i = 1}^n a_iX_i$.
+Then by definition of variance
+\begin{align*}
+     \operatorname{var}[Y] 
+     &= \operatorname{E}\big[Y - \operatorname{E}(Y)\big]^2\\
+     &= \operatorname{E}[a_1 X_1 + \dots + a_n X_n - a_1\mu_1 - \dots a_n\mu_n]^2\\
+     &= \operatorname{E}[a_1(X_1 - \mu_1) + \dots + a_n(X_n - \mu_n)]^2\\
+     &= \operatorname{E}\left[ \sum_i a^2_i(X_i - \mu_i)^2 + 2\sum_{i < j}a_i a_j(X_i - \mu_i)X_j - \mu_j)\right]\\
+     &= \sum_i a^2_i\operatorname{E}[X_i - \mu_i]^2 + 2\sum_{i < j}a_i a_j\operatorname{E}[X_i - \mu_i] (X_j - \mu_j)\\
+        %\quad \text{using Theorem\ \@ref(thm:ExpLinear)}\\
+     &= \sum_i a^2_i\sigma^2_i + 2\sum_{i<j}a_i a_j\operatorname{Cov}(X_i, X_j).
+\end{align*}
+::::
+:::
+
+In statistical theory, an important special case of Theorem\ \@ref(thm:LinearCombVariance) occurs when the\ $X_i$ are independently and identically distributed (IID). 
+That is, each of $X_1, X_2, \dots, X_n$ has the same distribution and are independent of each other. 
+(We see the relevance of this in Chap.\ \@ref(SamplingDistributions).)
+Because of its importance this special case is called a corollary of Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance).
+
+:::{.corollary #IID name="IID rvs"}
+If $X_1, X_2, \dots, X_n$ are independently distributed (IID) random variables, each with mean\ $\mu$ and variance\ $\sigma^2$, and $a_1, a_2,\ldots a_n$ are any constants, then
+\begin{align*}
+   \operatorname{E}\left[\sum_{i = 1}^n a_i X_i \right]
+   &= \mu\sum_{i = 1}^n a_i;\\ 
+   \operatorname{var}\left[\sum_{i = 1}^n a_i X_i \right]
+   &= \sigma^2\sum^n_{i = 1}a^2_i.
+\end{align*}
+Using vector notation,
+\begin{align*}
+   \operatorname{E}\left[\mathbf{a}\mathbf{X}\right]
+   &= \mathbf{a}^T \mathbf{\mu};\\ 
+   \operatorname{var}\left[\mathbf{\sigma}^2 \right]
+   &= \mathbf{a}^T \mathbf{\sigma}^2 \mathbf{a}.
+\end{align*}
+
+::::{.proof}
+Exercise.
+::::
+:::
+
+
+The components $X_1, \dots, X_n$ are independent if and only if
+$$
+  f(x_1, \dots, x_n) = \prod_{i = 1}^n f_{X_i}(x_i);
+$$
+that is, if $\mathbf{\Sigma}$ is a diagonal matrix.
+
+
+Vector formulation allows statements to be made about any number of random variables simultaneouslh.
+In addition, the vector formulation allows easy implementation in vector-based computer programming used by packages such as **R**.
+
+One further result is presented (without proof) involving two linear combinations.
+
+
+:::{.theorem #LinearCombCovar name="Covariance of combinations"}
+If\ $\mathbf{X}$ is a random vector of length\ $n$ with mean\ $\boldsymbol{\mu}$ and variance\ $\mathbf{\Sigma}$, and\ $\mathbf{a}$ and\ $\mathbf{b}$ are any constant vectors, each of length\ $n$, then
+$$
+   \operatorname{Cov}(\mathbf{a}^T\mathbf{X},\mathbf{b}^T\mathbf{X}) 
+   = 
+   \mathbf{a}^T\mathbf{\Sigma}\mathbf{b}.
+$$
+:::
+
+
+
+:::{.example #VectorExp name="Expectations using vectors"}
+Suppose the random variables $X_1, X_2, X_3$ have respective means\ $1$, $2$, and\ $3$, respective variances\ $4$, $5$, and\ $6$, and covariances $\operatorname{Cov}(X_1, X_2) = -1$, $\operatorname{Cov}(X_1, X_3) = 1$ and $\operatorname{Cov}(X_2, X_3) = 0$.
+
+Consider the random variables $Y_1 = 3X_1 + 2X_2 - X_3$ and $Y_2 = X_3 - X_1$. 
+Determine $\operatorname{E}[Y_1]$, $\operatorname{E}[Y_2]$, $\operatorname{var}[Y_1]$, $\operatorname{var}[Y_2]$ and $\operatorname{Cov}(Y_1,Y_2)$.
+
+A vector formulation of this problem allows us to use Theorems\ \@ref(thm:MeanVarVector) and\ \@ref(thm:LinearCombCovar) directly. 
+Putting $\mathbf{a}^T = [3, 2, -1]$ and $\mathbf{b}^T = [-1, 0, 1]$:
+$$
+   Y_1 = \mathbf{a}^T\mathbf{X}
+   \quad\text{and}\quad 
+   Y_2 = \mathbf{b}^T\mathbf{X}
+$$
+where $\mathbf{X}^T = [X_1, X_2, X_3]$.
+Also define $\boldsymbol{\mu}^T = [1, 2, 3]$ and 
+$\mathbf{\Sigma} = 
+\begin{bmatrix} 
+  4 & -1 & 1\\
+ -1 & 5 & 0\\
+  1 & 0 & 6
+\end{bmatrix}$ 
+as the mean and variance--covariance matrix respectively of $\mathbf{X}$.
+Then
+$$
+   \operatorname{E}[Y_1]
+   = \mathbf{a}^T\boldsymbol{\mu}
+   = [3, 2, -1]
+   \begin{bmatrix} 
+      1\\
+      2\\
+      3
+      \end{bmatrix} 
+   = 4
+$$
+and
+$$
+   \operatorname{var}[Y_1]
+   = \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}
+   = [3, 2, -1]
+   \begin{bmatrix} 
+      4 & -1 & 1\\
+      -1 & 5 & 0\\
+       1 & 0 & 6
+    \end{bmatrix}
+    \begin{bmatrix} 
+      3\\
+      2\\
+      -1
+   \end{bmatrix}
+   = 44.
+$$
+Similarly $\operatorname{E}[Y_2] = 2$ and $\operatorname{var}[Y_2] = 8$.
+Finally:
+$$
+   \operatorname{Cov}(Y_1, Y_2)
+   = \mathbf{a}^T\mathbf{\Sigma}\mathbf{b}
+   = [3, 2, -1]^T
+   \begin{bmatrix} 
+      4 & -1 & 1\\
+      -1 & 5 & 0\\
+      1 & 0 & 6
+      \end{bmatrix}
+      \begin{bmatrix}
+        -1\\
+        0\\
+        1
+      \end{bmatrix}
+  = -12.
 $$
 :::
 
@@ -488,332 +753,6 @@ dmultinom(x = c(3, 3, 1, 1),
 \index{Multinomial distribution|)}
 
 
-## Multivariate expectation {#MultivariateExpectation}
-
-Results involving expectations naturally generalise from the bivariate to the multivariate case.
-Firstly, the expectation of a linear combination of random variables. 
-
-
-:::{.theorem #ExpLinear name="Expectation of linear combinations"}
-If $X_1, X_2,\dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any constants then
-$$
-   \operatorname{E}\left[\sum_{i = 1}^n a_i X_i \right]
-   =\sum_{i = 1}^n a_i \, \operatorname{E}[X_i]
-$$
-
-::::{.proof}
-The proof follows directly from Theorem\ \@ref(thm:ExpTwoRV) by induction.
-::::
-:::
-
-
-The variance of a linear combination of random variables is given in the following theorem.
-
-
-:::{.theorem #LinearCombVariance name="Variance of a linear combination"}
-If $X_1, X_2, \dots, X_n$ are random variables and $a_1, a_2,\ldots a_n$ are any constants then
-$$
-   \operatorname{var}\left[\sum_{i = 1}^n a_i X_i \right]
-   =
-   \sum^n_{i = 1}a^2_i\operatorname{var}[X_i] + 2{\sum\sum}_{i<j}a_i a_j\operatorname{Cov}(X_i, X_j).
-$$
-
-::::{.proof}
-For convenience, put $Y = \sum_{i = 1}^n a_iX_i$.
-Then by definition of variance
-\begin{align*}
-     \operatorname{var}[Y] 
-     &= \operatorname{E}\big[Y - \operatorname{E}(Y)\big]^2\\
-     &= \operatorname{E}[a_1 X_1 + \dots + a_n X_n - a_1\mu_1 - \dots a_n\mu_n]^2\\
-     &= \operatorname{E}[a_1(X_1 - \mu_1) + \dots + a_n(X_n - \mu_n)]^2\\
-     &= \operatorname{E}\left[ \sum_i a^2_i(X_i - \mu_i)^2 + 2\sum_{i < j}a_i a_j(X_i - \mu_i)X_j - \mu_j)\right]\\
-     &= \sum_i a^2_i\operatorname{E}[X_i - \mu_i]^2 + 2\sum_{i < j}a_i a_j\operatorname{E}[X_i - \mu_i] (X_j - \mu_j)\\
-        %\quad \text{using Theorem\ \@ref(thm:ExpLinear)}\\
-     &= \sum_i a^2_i\sigma^2_i + 2\sum_{i<j}a_i a_j\operatorname{Cov}(X_i, X_j).
-\end{align*}
-::::
-:::
-
-In statistical theory, an important special case of Theorem\ \@ref(thm:LinearCombVariance) occurs when the\ $X_i$ are independently and identically distributed (IID). 
-That is, each of $X_1, X_2, \dots, X_n$ has the same distribution and are independent of each other. 
-(We see the relevance of this in Chap.\ \@ref(SamplingDistributions).)
-Because of its importance this special case is called a corollary of Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance).
-
-:::{.corollary #IID name="IID rvs"}
-If $X_1, X_2, \dots, X_n$ are independently distributed (IID) random variables, each with mean\ $\mu$ and variance\ $\sigma^2$, and $a_1, a_2,\ldots a_n$ are any constants, then
-\begin{align*}
-   \operatorname{E}\left[\sum_{i = 1}^n a_i X_i \right]
-   &= \mu\sum_{i = 1}^n a_i;\\ 
-   \operatorname{var}\left[\sum_{i = 1}^n a_i X_i \right]
-   &= \sigma^2\sum^n_{i = 1}a^2_i.
-\end{align*}
-
-::::{.proof}
-Exercise.
-::::
-:::
-
-
-## Vector formulation {#Vectors}
-
-With the standard rules of matrix multiplication, Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance) applied to Eq.\ \@ref(eq:BivarCombination) then give respectively (check!)
-\begin{equation}
-   \operatorname{E}[Y]
-   = \operatorname{E}[\mathbf{a}^T\mathbf{X}]
-   = [a_1, a_2]
-   \begin{bmatrix} 
-      \mu_1 \\ 
-      \mu_2 
-    \end{bmatrix} 
-   = \mathbf{a}^T\boldsymbol{\mu}
-\end{equation}
-and
-\begin{align}
-  \operatorname{var}[Y]
-  &= \operatorname{var}[\mathbf{a}^T\mathbf{X}\mathbf{a}]\nonumber\\
-  &= [a_1, a_2]
-  \begin{bmatrix} 
-     \sigma^2_1 & \sigma_{12} \\
-     \sigma_{21}& \sigma^2_2 
-  \end{bmatrix}
-  \begin{bmatrix} 
-     a_1 \\ 
-     a_2
-  \end{bmatrix} \nonumber\\
-  &= \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}.
-\end{align}
-
-The vector formulation of these results apply directly in the multivariate case as described below.
-Write
-\begin{align*}
-  \mathbf{X} 
-  &= [X_1, X_2, \ldots, X_n]^T; \\
-     \operatorname{E}[\mathbf{X}] 
-  &= [\mu_1, \ldots, \mu_n]^T = \boldsymbol{\mu}^T; \\
-     \operatorname{var}[\mathbf{X}]
-  &= \mathbf{\Sigma}; \\
-     \mathbf{a}^T & = \left[a_1,a_2,\ldots, a_n \right].
-\end{align*}
-Now Theorems\ \@ref(thm:ExpLinear) and\ \@ref(thm:LinearCombVariance) can be expressed in vector form.
-
-
-:::{.theorem #MeanVarVector name="Bivariate mean and variance (vector form)"}
-If\ $\mathbf{X}$ is a random vector of length\ $n$ with mean\ $\boldsymbol{\mu}$ and variance\ $\mathbf{\Sigma}$, and\ $\mathbf{a}$ is any constant vector of length\ $n$, then
-\begin{align*}
-   \operatorname{E}[\mathbf{a}^T\mathbf{X}]
-   &= \mathbf{a}^T\boldsymbol{\mu}; \\
-   \operatorname{var}[\mathbf{a}^T\mathbf{X}] 
-   &= \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}.
-\end{align*}
-
-::::{.proof}
-Exercise.
-::::
-:::
-
-
-These elegant statements concerning linear combinations are a feature of vector formulations that extend to many statistical results in the theory of statistics.
-One obvious advantage of this formulation is the implementation in vector-based computer programming used by packages such as **R**.
-
-One further result is presented (without proof) involving two linear combinations.
-
-
-:::{.theorem #LinearCombCovar name="Covariance of combinations"}
-If\ $\mathbf{X}$ is a random vector of length\ $n$ with mean\ $\boldsymbol{\mu}$ and variance\ $\mathbf{\Sigma}$, and\ $\mathbf{a}$ and\ $\mathbf{b}$ are any constant vectors, each of length\ $n$, then
-$$
-   \operatorname{Cov}(\mathbf{a}^T\mathbf{X},\mathbf{b}^T\mathbf{X}) 
-   = 
-   \mathbf{a}^T\mathbf{\Sigma}\mathbf{b}.
-$$
-:::
-
-
-
-:::{.example #VectorExp name="Expectations using vectors"}
-Suppose the random variables $X_1, X_2, X_3$ have respective means\ $1$, $2$, and\ $3$, respective variances\ $4$, $5$, and\ $6$, and covariances $\operatorname{Cov}(X_1, X_2) = -1$, $\operatorname{Cov}(X_1, X_3) = 1$ and $\operatorname{Cov}(X_2, X_3) = 0$.
-
-Consider the random variables $Y_1 = 3X_1 + 2X_2 - X_3$ and $Y_2 = X_3 - X_1$. 
-Determine $\operatorname{E}[Y_1]$, $\operatorname{E}[Y_2]$, $\operatorname{var}[Y_1]$, $\operatorname{var}[Y_2]$ and $\operatorname{Cov}(Y_1,Y_2)$.
-
-A vector formulation of this problem allows us to use Theorems\ \@ref(thm:MeanVarVector) and\ \@ref(thm:LinearCombCovar) directly. 
-Putting $\mathbf{a}^T = [3, 2, -1]$ and $\mathbf{b}^T = [-1, 0, 1]$:
-$$
-   Y_1 = \mathbf{a}^T\mathbf{X}
-   \quad\text{and}\quad 
-   Y_2 = \mathbf{b}^T\mathbf{X}
-$$
-where $\mathbf{X}^T = [X_1, X_2, X_3]$.
-Also define $\boldsymbol{\mu}^T = [1, 2, 3]$ and 
-$\mathbf{\Sigma} = 
-\begin{bmatrix} 
-  4 & -1 & 1\\
- -1 & 5 & 0\\
-  1 & 0 & 6
-\end{bmatrix}$ 
-as the mean and variance--covariance matrix respectively of $\mathbf{X}$.
-Then
-$$
-   \operatorname{E}[Y_1]
-   = \mathbf{a}^T\boldsymbol{\mu}
-   = [3, 2, -1]
-   \begin{bmatrix} 
-      1\\
-      2\\
-      3
-      \end{bmatrix} 
-   = 4
-$$
-and
-$$
-   \operatorname{var}[Y_1]
-   = \mathbf{a}^T\mathbf{\Sigma}\mathbf{a}
-   = [3, 2, -1]
-   \begin{bmatrix} 
-      4 & -1 & 1\\
-      -1 & 5 & 0\\
-       1 & 0 & 6
-    \end{bmatrix}
-    \begin{bmatrix} 
-      3\\
-      2\\
-      -1
-   \end{bmatrix}
-   = 44.
-$$
-Similarly $\operatorname{E}[Y_2] = 2$ and $\operatorname{var}[Y_2] = 8$.
-Finally:
-$$
-   \operatorname{Cov}(Y_1, Y_2)
-   = \mathbf{a}^T\mathbf{\Sigma}\mathbf{b}
-   = [3, 2, -1]^T
-   \begin{bmatrix} 
-      4 & -1 & 1\\
-      -1 & 5 & 0\\
-      1 & 0 & 6
-      \end{bmatrix}
-      \begin{bmatrix}
-        -1\\
-        0\\
-        1
-      \end{bmatrix}
-  = -12.
-$$
-:::
-
-
-## Expectation and covariance
-
-Consider a random vector of $n$\ random variables
-$$
-  \mathbf{X} = [X_1, X_2, \dots, X_n]^T.
-$$
-The *mean vector* of $\mathbf{X}$ is
-$$
-  \boldsymbol{\mu} 
-  = E[\mathbf{X}] 
-  =
-  \begin{bmatrix}
-    E[X_1] \\
-    \vdots \\
-    E[X_n]
-  \end{bmatrix}.
-$$
-
-The *covariance matrix* is
-$$
-  \Sigma = \text{Cov}(\mathbf{X}) 
-  = E\!\left[(\mathbf{X} - \boldsymbol{\mu})(\mathbf{X} - \boldsymbol{\mu})^T\right].
-$$
-
-The entries are $\Sigma_{ij} = \text{Cov}(X_i, X_j)$. 
-The diagonal entries are variances, while the off-diagonal entries are covariances.  
-
-The *correlation matrix* is obtained by normalisation:
-$$
-  \rho_{ij} = \frac{\Sigma_{ij}}{\sqrt{\Sigma_{ii}\,\Sigma_{jj}}}.
-$$
-
-
-## Independence
-
-The components $X_1, \dots, X_n$ are independent if and only if
-$$
-  f(x_1, \dots, x_n) = \prod_{i = 1}^n f_{X_i}(x_i).
-$$
-
-Linear combinations of random variables are most elegantly dealt with using the methods and notation of vectors and matrices, especially as the dimension grows beyond the bivariate case.
-In the bivariate case we define
-\begin{align}
-   \mathbf{X} 
-   &= \begin{bmatrix} 
-       X_1 \\ 
-       X_2 
-      \end{bmatrix};
-  \label{EQN:matrix1} \\
-  \operatorname{E}[\mathbf{X}] 
-  & =
-   \operatorname{E} 
-   \left[
-   \begin{bmatrix} 
-      X_1 \\ 
-      X_2
-   \end{bmatrix} 
-   \right]
-   =
-   \begin{bmatrix} 
-      \operatorname{E}[X_1] \\ 
-      \operatorname{E}[X_2]
-   \end{bmatrix} 
-   =  
-   \begin{bmatrix} 
-     \mu_1 \\
-     \mu_2 
-   \end{bmatrix} =
-  \boldsymbol{\mu};\label{EQN:matrix2} \\
-  \operatorname{var}[\mathbf{X}] 
-  & = \operatorname{var}
-  \left[
-  \begin{bmatrix} 
-     X_1 \\ 
-     X_2
-  \end{bmatrix} 
-  \right]
-  = 
-  \begin{bmatrix} 
-     \sigma^2_1  & \sigma_{12} \\
-     \sigma_{21} & \sigma^2_2 
-  \end{bmatrix} 
-  = \mathbf{\Sigma}.\label{EQN:matrix3}
-\end{align}
-
-The vector\ $\boldsymbol{\mu}$ is the mean vector, and the matrix\ $\mathbf{\Sigma}$ is called the *variance--covariance* matrix, which is square and symmetric since $\sigma_{12} = \sigma_{21}$ (the covariance).
-
-The linear combination $Y = a_1 X_1 + a_2 X_2$ can be expressed as
-\begin{equation}
-   Y 
-   = a_1 X_1 + a_2 X_2 
-   = [a_1, a_2]
-   \begin{bmatrix} 
-      X_1 \\ 
-      X_2 
-   \end{bmatrix} 
-   = \mathbf{a}^T\mathbf{X}
-   (\#eq:BivarCombination)
-\end{equation}
-where the (column) vector $\mathbf{a} = \begin{bmatrix} a_1 \\ a_2 \end{bmatrix}$, and the superscript\ $T$ means 'transpose'.
-
-
-## Independent random variables {#IndependentRVs}
-
-Recall that events\ $A$ and\ $B$ are independent if, and only if,
-$$
-   something nmissing!
-$$
-
-
-
-
-
 ## Simulation {#SimulationBivariate}
 
 As with univariate distributions (Sects.\ \@ref(SimulationDiscrete) and\ \@ref(SimulationContinuous)), simulation can be used with bivariate distributions.
@@ -871,7 +810,7 @@ cat("Rainfall exceeding 900:",
     sum(MRain3 > 900) / 1000 * 100, "%\n")
 ```
 
-```{r echo=FALSE, RainfallSim, fig.width=6, fig.height = 3, out.width='100%', fig.align="center", fig.cap="Three simulations using the gamma distribution."}
+```{r echo=FALSE, RainfallSim, fig.width=6, fig.height = 2.5, out.width='100%', fig.align="center", fig.cap="Three simulations using the gamma distribution."}
 par( mfrow = c(1, 3))
 
 hist(MRain,
