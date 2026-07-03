@@ -2459,8 +2459,7 @@ $$
 $$
 The joint probability function of\ $Y_1$ and\ $Y_2$ can be found by noting where the $(x_1, x_2)$ pairs are mapped to in the $y_1, y_2$ space:
 
-
-$\Pr(x_1, x_2)$ | $(x_1, x_2)$ | $\mapsto$ | $(y_1,y_2)$
+$\Pr(x_1, x_2)$ | $(x_1, x_2)$ | $\mapsto$ | $(y_1, y_2)$
 :--------------:|:-----------:|:----------:|:----------------:
 $0.3$           | $(-1, 0)$   | $\mapsto$  | $(1, 1)$ 
 $0.1$           | $(-1, 1)$   | $\mapsto$  | $(0, 2)$
@@ -2469,7 +2468,7 @@ $0.2$           | $(1, 0)$    | $\mapsto$  | $(1, 1)$
 $0.2$           | $(1, 1)$    | $\mapsto$  | $(2, 2)$ 
 $0.1$           | $(1, 2)$    | $\mapsto$  | $(3, 3)$ 
 
-
+Note that $(-1, 0)$ and $(1, 0)$ both map to $(1, 1)$.
 The joint probability function can then be constructed as shown in Table\ \@ref(tab:Bivar5).
 :::
 
@@ -2568,17 +2567,9 @@ With two *continuous* random variables $(X_1, X_2)$ with a joint probability den
 $$
   f_{Y_1, Y_2}(y_1, y_2) = f_{X_1, X_2}(x_1, x_2) \cdot |\det J|
 $$
-where $|\det(J)|$ is the *absolute value* of the *Jacobian determinant*:\index{Jacobian!determinant}
+where 
 $$
-  J = 
-  \begin{bmatrix} 
-    {\partial x_1}/{\partial y_1} &  {\partial x_1}/{\partial y_2} \\[6pt]
-    {\partial x_2}/{\partial y_1} &  {\partial x_2}/{\partial y_2} 
-  \end{bmatrix},
-$$
-so that
-$$
-  \det(J)
+  |\det J|
   =
     \frac{\partial x_1}{\partial y_1}
     \frac{\partial x_2}{\partial y_2}
@@ -2586,93 +2577,128 @@ $$
     \frac{\partial x_1}{\partial y_2}
     \frac{\partial x_2}{\partial y_1}.
 $$
-The Jacobian plays an equivalent role to $\left|dx/dy\right|$ in the univariate case.
+This expression plays an equivalent role to $\left|dx/dy\right|$ in the univariate case.
 
 
-
-:::{.example #SquaredNormalDistribution name="Distribution of squared normal rv"}
-Let $X \sim N(0, 1)$ and $Y = X^2$. 
-Since $u(x) = x^2$ is not monotone on $\mathbb{R}$, the change of variable method requires partitioning; the distribution function method is simpler.
-
-First, see that the support for $X$ is over\ $\mathbb{R}$, but the support for $Y = X^2$ must be over the non-negative reals.
-Furthermore, since individual points have zero probability for continuous random variables, $X = 0$ is not technically possible, so the support is best given as $(0, \infty)$ or $[0, \infty)$ (see Fig.\ \@ref(fig:DFcontinuousUnivariate)).
-
-So, for $y > 0$:
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+For readers with knowledge of matrix algebra, $|\det J|$ is the *absolute value* of the determinant\index{Determinant} of the *Jacobian*:\index{Jacobian}
 $$
-  F_Y(y) = \Pr(X^2 \leq y) = \Pr(-\sqrt{y} \leq X \leq \sqrt{y})
-  = 
-  F_X(\sqrt{y}) - F_X(-\sqrt{y}) = 2F_X(\sqrt{y}) - 1.
+  J = 
+  \begin{bmatrix} 
+    {\partial x_1}/{\partial y_1} &  {\partial x_1}/{\partial y_2} \\[6pt]
+    {\partial x_2}/{\partial y_1} &  {\partial x_2}/{\partial y_2} 
+  \end{bmatrix}.
 $$
-
-Differentiating:
-$$
-  f_Y(y) = 2 f_X(\sqrt{y}\,) \cdot \frac{1}{2\sqrt{y}}
-  = \frac{1}{\sqrt{y}} \cdot \frac{1}{\sqrt{2\pi}} \exp(-y/2)
-  = \frac{y^{1/2 - 1} \exp(-y/2)}{2^{1/2}\,\Gamma(1/2)}, \quad y > 0.
-$$
-Notice that $Y > 0$; if $Y = 0$ the PMF is undefined.
-The final expressions identifies this as the $\chi^2(1)$ distribution\index{Chi-squared distribution} (i.e., $\text{Gamma}(1/2,\, 1/2)$).
 :::
 
 
-```{r DFcontinuousUnivariate, echo=FALSE, fig.align="center", out.width="100%", fig.width=8, fig.height=3.25, fig.cap="A normal distribution (left panel), the transformation (centre panel), and the resulting chi-squared distribution (right panel)."}
-x <- seq(-4, 4,
-         length = 100)
-fX <- dnorm(x)
 
-y <- seq(0, 16,
-         length = 100)
-fY <- dchisq(y, 
-            df = 1)
+:::{.example #BivariateContinuousXformCoV name="Change of variable: bivariate continuous rvs"}
+Consider the joint probability density function
+$$
+  f_{X_1, X_2}(x_1, x_2) = \frac{1}{2}x_1\, x_2 \quad\text{for $0 < x_1 < 1$ and $0 < x_2 < 2$}
+$$
+and the transformations
+$$
+  Y_1 = X_1 + X_2\quad\text{and}\quad Y_2 = X_1 - X_2.
+$$
+The inverse transformations are
+$$
+  X_1 = \frac{Y_1 + Y_2}{2} \quad\text{and}\quad X_2 = \frac{Y_1 - Y_2}{2},
+$$
+so that $\operatorname{det} J = -1/2$.
+Finding the support in the $(y_1, y_2)$-plane takes care; see Fig.\ \@ref(fig:BivariateContinuousXformCoVSupport).
 
-par( mfrow = c(1, 3))
+The joint distribution of $Y_1, Y_2$ is then
+\begin{align*}
+  f_{Y_1, Y_2}(y_1, y_2) 
+  &= \frac{1}{2} \cdot \frac{y_1 + y_2}{2}\cdot\frac{y_1 + y_2}{2} \cdot \left|-\frac{1}{2}\right|\\
+  &= \frac{(y_1 + y_2)(y_1 - y_2)}{16} \quad \text{for $0 < y_1 + y_2 < 2$ and $0 < y_1 - y_2 < 4$}.
+\end{align*}
+Even though the transformations are linear, the rectangular support in the $(x_2, x_2)$-plane is a parallelogram in the $(y_1, y_2)$-plane.
+:::
 
-plot( fX ~ x,
-      type = "l",
+
+```{r BivariateContinuousXformCoVSupport, echo=FALSE, fig.align="center", fig.cap="The orginal support in the $(x_1, x_2)$-plane (left), and the support for the transformed variables in the $(y_1, y_2)$-plane (right).", out.width='100%', fig.width=8, fig.height=3.5}
+par(mfrow = c(1, 2))
+
+plot( x = c(-0.25, 1.25),
+      y = c(-0.25, 2.25),
+      type = "n",
       las = 1,
-      lwd = 3,
-      main = expression(bold(PDF~of~italic(X))),
-      xlab = expression(italic(x)),
-      ylab = "PDF")
+      asp = 1,
+      main = expression( bold(The~(italic(x)[1]*", "*italic(x)[2])*"-"*plane)),
+      xlab = expression(italic(x)[1]),
+      ylab = expression(italic(x)[2]))
+abline(h = 0,
+       col = "grey")
+abline(v = 0,
+       col = "grey")
+polygon( x = c(0, 0, 1, 1),
+         y = c(0, 2, 2, 0),
+         col = ColourLight)
 
-X2 <- x ^2
-plot(X2 ~ x, 
-     type = "l", 
-     lwd = 3,
-     las = 1,
-     xlab = expression(italic(x)),
-     ylab = expression(italic(y)==italic(x)^2),
-     main = "The transformation")
-abline(h = 4,
-       lwd = 2, 
-       lty = 3)
-text(x = 0,
-     y = 4,
+###
+
+plot( x = c(-0.5, 3.5),
+      y = c(-2.5, 1.5),
+      type = "n",
+      las = 1,
+      asp = 1,
+      main = expression( bold(The~(italic(y)[1]*", "*italic(y)[2])*"-"*plane)),
+      xlab = expression(italic(y)[1]),
+      ylab = expression(italic(y)[2]))
+abline(h = 0,
+       col = "grey")
+abline(v = 0,
+       col = "grey")
+segments( x0 = -1,
+          y0 = -1,
+          x1 = 3,
+          y1 = 3,
+          col = "grey",
+          lty  = 2)
+text(x = -1,
+     y = -1,
+     expression(italic(y)[1] - italic(y)[2] == 0))
+
+segments( x0 = -1,
+          y0 = -5,
+          x1 = 5,
+          y1 = 1,
+          col = "grey",
+          lty  = 2)
+text(x = 4,
+     y = 0,
      pos = 3,
-     label = expression(sqrt(italic(y))))
-segments(x0 = 2,
-         x1 = 2,
-         y0 = 0,
-         y1 = 4,
-         lty = 3,
-         lwd = 2)
-segments(x0 = -2,
-         x1 = -2,
-         y0 = 0,
-         y1 = 4,
-         lty = 3,
-         lwd = 2)
+     expression(italic(y)[1] - italic(y)[2] == 4))
+
+segments( x0 = -2,
+          y0 = 2,
+          x1 = 3,
+          y1 = -3,
+          col = "grey",
+          lty  = 2)
+text(x = -1,
+     y = 1,
+     expression(italic(y)[1] + italic(y)[2] == 0))
+
+segments( x0 = -2,
+          y0 = 4,
+          x1 = 4,
+          y1 = -2,
+          col = "grey",
+          lty  = 2)
+text(x = 4,
+     y = -2,
+     expression(italic(y)[1] + italic(y)[2] == 2))
 
 
-plot( fY ~ y,
-      type = "l",
-      lwd = 3,
-      las = 1,
-      main = expression(bold(PDF~of~italic(Y)==italic(X)^2)),
-      xlab = expression(italic(y)),
-      ylab = "PDF")
+
+polygon( x = c(0, 1,  3, 2),
+         y = c(0, 1, -1, -2),
+         col = ColourLight)
 ```
-
 
 Sometimes, a joint probability function of two random variables is given, but only *one* new random variable is required.
 In this case, a second (dummy) transformation is used, usually a very simple transformation.
@@ -2864,10 +2890,6 @@ par(mfrow = c(1, 1))
 ```
 
 
-
-
-
-
 For two random *continuous* variables\ $X_1$ and\ $X_2$  with a joint probability density function $f_{X_1, X_2}(x_1, x_2)$ defined on the two-dimensional set of points\ $R^2_X$, the distribution of $Y = u(X_1, X_2)$ (a scalar function of\ $X_1$ and\ $X_2$), find
 $$
   F_Y(y) = \Pr(u(X_1, X_2) \leq y) 
@@ -2879,6 +2901,89 @@ The key step is characterising the region of integration $\{u(x_1,x_2) \leq y\}$
 This is often where the difficulty lies, and a sketch of the support is strongly recommended.
 
 
+
+:::{.example #SquaredNormalDistribution name="Distribution of squared normal rv"}
+Let $X \sim N(0, 1)$ and $Y = X^2$. 
+Since $u(x) = x^2$ is not monotone on $\mathbb{R}$, the change of variable method requires partitioning; the distribution function method is simpler.
+
+First, see that the support for $X$ is over\ $\mathbb{R}$, but the support for $Y = X^2$ must be over the non-negative reals.
+Furthermore, since individual points have zero probability for continuous random variables, $X = 0$ is not technically possible, so the support is best given as $(0, \infty)$ or $[0, \infty)$ (see Fig.\ \@ref(fig:DFcontinuousUnivariate)).
+
+So, for $y > 0$:
+$$
+  F_Y(y) = \Pr(X^2 \leq y) = \Pr(-\sqrt{y} \leq X \leq \sqrt{y})
+  = 
+  F_X(\sqrt{y}) - F_X(-\sqrt{y}) = 2F_X(\sqrt{y}) - 1.
+$$
+
+Differentiating:
+$$
+  f_Y(y) = 2 f_X(\sqrt{y}\,) \cdot \frac{1}{2\sqrt{y}}
+  = \frac{1}{\sqrt{y}} \cdot \frac{1}{\sqrt{2\pi}} \exp(-y/2)
+  = \frac{y^{1/2 - 1} \exp(-y/2)}{2^{1/2}\,\Gamma(1/2)}, \quad y > 0.
+$$
+Notice that $Y > 0$; if $Y = 0$ the PMF is undefined.
+The final expressions identifies this as the $\chi^2(1)$ distribution\index{Chi-squared distribution} (i.e., $\text{Gamma}(1/2,\, 1/2)$).
+:::
+
+
+```{r DFcontinuousUnivariate, echo=FALSE, fig.align="center", out.width="100%", fig.width=8, fig.height=3.25, fig.cap="A normal distribution (left panel), the transformation (centre panel), and the resulting chi-squared distribution (right panel)."}
+x <- seq(-4, 4,
+         length = 100)
+fX <- dnorm(x)
+
+y <- seq(0, 16,
+         length = 100)
+fY <- dchisq(y, 
+            df = 1)
+
+par( mfrow = c(1, 3))
+
+plot( fX ~ x,
+      type = "l",
+      las = 1,
+      lwd = 3,
+      main = expression(bold(PDF~of~italic(X))),
+      xlab = expression(italic(x)),
+      ylab = "PDF")
+
+X2 <- x ^2
+plot(X2 ~ x, 
+     type = "l", 
+     lwd = 3,
+     las = 1,
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y)==italic(x)^2),
+     main = "The transformation")
+abline(h = 4,
+       lwd = 2, 
+       lty = 3)
+text(x = 0,
+     y = 4,
+     pos = 3,
+     label = expression(sqrt(italic(y))))
+segments(x0 = 2,
+         x1 = 2,
+         y0 = 0,
+         y1 = 4,
+         lty = 3,
+         lwd = 2)
+segments(x0 = -2,
+         x1 = -2,
+         y0 = 0,
+         y1 = 4,
+         lty = 3,
+         lwd = 2)
+
+
+plot( fY ~ y,
+      type = "l",
+      lwd = 3,
+      las = 1,
+      main = expression(bold(PDF~of~italic(Y)==italic(X)^2)),
+      xlab = expression(italic(y)),
+      ylab = "PDF")
+```
 
 
 :::{.example #JointMaximumUniform name="Distribution of $M = \max(X_1, X_2)$ for independent uniforms distributions"}
