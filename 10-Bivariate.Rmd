@@ -2426,7 +2426,7 @@ $$
 ## Transformations of bivariate random variables {#BivariateTranformations}
 
 In the bivariate case, two methods are discussed.
-The change of variable method (Sect.\ \@ref(BivariateChangeOfVariable)) can be used for transforming two random variables $(X_1, X_2)$ into two new random variable $(Y_1, Y_2)$.
+The *change of variable method (Sect.\ \@ref(BivariateChangeOfVariable)) can be used for transforming two random variables $(X_1, X_2)$ into two new random variable $(Y_1, Y_2)$.
 The distribution function method (Sect.\ \@ref(BivariateDF)) is best used when two random variables $(X_1, X_2)$ are combined into one new random variable (for example, $Y = X_1 + X_2$).
 
 
@@ -2729,7 +2729,7 @@ Then, $|\operatorname{det} J| = 1$ and so
 $$
   f_{Y_1, Y_2}(y_1, y_2) = (y_1 + y_2) - y_2 + 1 = y_1 + 1\quad\text{for $-y_2 < y_1 < 1 - y_2$ and $0 < y_2 < 1$}
 $$
-This is a joint density function; the required probability density function for just $Y_1$ is
+This is a joint density function; the required probability density function for only $Y_1$ is
 \begin{align*}
   f_{Y_1}(y_1) 
   &= \int f_{Y_1, Y_2}(y_1, y_2), dy_2
@@ -2830,108 +2830,90 @@ The bivariate discrete CDF method is often the most natural approach when\ $u(\c
 
 :::{.example #TwoIndBinomials name="Maximum of two independent binomial distributions"}
 Let $X_1 \sim \text{Binomial}(n_1, p)$ and $X_2 \sim \text{Binomial}(n_2, p)$ independently. 
-Define $M = \max(X_1, X_2)$.
+Thus, $x_1\in \{0, 1, \dots, n_1\}$ and $x_2\in\{0, 1, \dots, n_2\}$.
 
-For $m \in \{0, 1, \ldots, \max(n_1, n_2)\}$:
-$$
-  F_M(m) = \Pr(X_1 \leq m,\, X_2 \leq m) = F_{X_1}(m) \cdot F_{X_2}(m)
-$$
-by independence (Fig.\ \@ref(fig:BivariateDiscreteBinomialMax), left panel). 
-The probability mass function (Fig.\ \@ref(fig:BivariateDiscreteBinomialMax), right panel) is then
-$$
-  p_M(m) = F_M(m) - F_M(m - 1)
-  = 
-  F_{X_1}(m)F_{X_2}(m) - F_{X_1}(m - 1)\cdot F_{X_2}(m - 1).
-$$
-This does not simplify to a standard named distribution in general; the distribution function method can yield the distribution even when it has no closed-form family name.
+Define $M = \max(X_1, X_2)$; then $m \in \{0, 1, \ldots, \max(n_1, n_2)\}$.
+
+The distribution function for\ $M$ is
+\begin{equation}
+  F_M(m) = \Pr(X_1 \leq m\text{\ and\ } X_2 \leq m) = F_{X_1}(m) \cdot F_{X_2}(m)
+   (\#eq:FM)
+\end{equation}
+since $X_1$ and $X_2$ are independent.
+
+The probability mass function for\ $M$ can be found from the distribution function as usual (see Equation\ \@ref(eq:DFtoPDFdiscrete)): $f_M(m) = F_M(m) - F_M(m - 1)$.
+Substituting Equation\ \@ref(eq:FM) twice into this expression gives
+\begin{alignat*}{2}
+  f_M(m) 
+  &= F_M(m)                      & {} - {} & F_M(m - 1)\\
+  &= F_{X_1}(m) \cdot F_{X_2}(m) & {} - {} & F_{X_1}(m - 1) \cdot F_{X_2}(m - 1).
+\end{alignat*}
+
+This expression does not simplify to a standard named distribution in general.
+Two examples of the probability mass function are shown in Fig.\ \@ref(fig:BivariateDiscreteBinomialMax). 
 :::
 
 
-```{r BivariateDiscreteBinomialMax, echo=FALSE, fig.lign="center", fig.cap="A bivariate transformation: the maximum of two independent binomial distributions. Left: The DF; right: the PMF.", fig.width = 9, fig.height = 4, out.width="100%"}
-n1 <- 10; n2 <- 8; p <- 0.4
+```{r BivariateDiscreteBinomialMax, echo=FALSE, fig.align="center", fig.cap="A bivariate transformation: the maximum of two independent binomial distributions: two examples.", fig.width = 9, fig.height = 4, out.width="100%"}
+
+par(mfrow = c(1, 2))
+
+# PLOT1
+n1 <- 9; p1 <- 0.6
+n2 <- 8;  p2 <- 0.5
+
 m_vals <- 0:max(n1, n2)
 
-# CDF of M via independence
-F_X1 <- pbinom(m_vals, n1, p)
-F_X2 <- pbinom(m_vals, n2, p)
-F_M  <- F_X1 * F_X2
+fm1 <- pbinom(m_vals, size = n1, prob = p1) * 
+          pbinom(m_vals, size = n2, prob = p2) -
+       pbinom(m_vals - 1, size = n1, prob = p1) * 
+          pbinom(m_vals - 1, size = n2, prob = p2)
 
-# PMF of M
-p_M  <- diff(c(0, F_M))
+barplot(fm1,
+        xlab = expression(italic(m)),
+        ylab = "Probability fn",
+        main = expression(
+          bold( 
+            atop( 
+              paste(italic(n)[1]==9*"; ", 
+                    italic(p)[1]==0.6),
+              paste(italic(n)[2]==8*"; ",
+                    italic(p)[2]==0.5)
+            )
+          )
+        ),
+        names.arg = m_vals,
+        las = 1)
 
-# Simulation to verify
-set.seed(7)
-N   <- 100000
-sim <- pmax(rbinom(N, n1, p), rbinom(N, n2, p))
-sim_pmf <- table(sim) / N
 
-par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+# PLOT2
+n1 <- 4; p1 <- 0.9
+n2 <- 6;  p2 <- 0.3
 
-# CDF plot
-plot(m_vals, F_M, 
-     type = "s", 
-     col = ColourSolid,
-     lwd = 2,
-     xlab = expression(italic(m)), 
-     ylab = "F(m)",
-     main = expression("CDF of M = max(X"[1]*", X"[2]*")"),
-     ylim = c(0, 1), 
-     las = 1)
-points(m_vals, 
-       F_M, 
-       pch = 16, 
-       col = ColourSolid)
-lines(m_vals, 
-      F_X1, 
-      lty = 2, 
-      col = ColourLight,  
-      lwd = 1.5)
-lines(m_vals, 
-      F_X2, 
-      lty = 3, 
-      col = ColourVeryLight,
-      lwd = 1.5)
-legend("topleft",
-       legend = c(expression("F"[M]*"(m)"),
-                  expression("F"[X[1]]*"(m)  Bin(10,0.4)"),
-                  expression("F"[X[2]]*"(m)  Bin(8,0.4)")),
-       col = c(ColourSolid, ColourLight, ColourVeryLight),
-       lty = c(1,2,3), 
-       lwd = 2, 
-       bty = "n", 
-       cex = 0.85)
-grid(col = "grey85", 
-     lty = 1)
+m_vals <- 0:max(n1, n2)
 
-# PMF: derived vs simulated
-plot(m_vals, 
-     p_M, 
-     type = "h", 
-     col = ColourLight, 
-     lwd = 4,
-     xlab = expression(italic(m)), 
-     ylab = "Probability",
-     main = expression("PMF of M = max(X"[1]*", X"[2]*")"),
-     ylim = c(0, max(p_M) * 1.15), 
-     las = 1)
-points(as.integer(names(sim_pmf)), 
-       as.numeric(sim_pmf),
-       pch = 4, 
-       col = ColourSolid, 
-       cex = 1.5, 
-       lwd = 2)
-legend("topleft",
-       legend = c("Derived pmf", "Simulated"),
-       col = c(ColourLight, ColourSolid),
-       lty = c(1, NA), 
-       pch = c(NA, 4),
-       lwd = c(4, 2), 
-       bty = "n")
-grid(col = "grey85", 
-     lty = 1)
+fm2 <- pbinom(m_vals, size = n1, prob = p1) * 
+         pbinom(m_vals, size = n2, prob = p2) -
+      pbinom(m_vals - 1, size = n1, prob = p1) * 
+         pbinom(m_vals - 1, size = n2, prob = p2)
 
-par(mfrow = c(1, 1))
+barplot(fm2,
+        xlab = expression(italic(m)),
+        ylab = "Probability fn",
+        main = expression(
+          bold( 
+            atop( 
+              paste(italic(n)[1]==4*"; ", 
+                    italic(p)[1]==0.9),
+              paste(italic(n)[2]==6*"; ",
+                    italic(p)[2]==0.3)
+            )
+          )
+        ),
+        names.arg = m_vals,
+        las = 1)
 ```
+
 
 
 For two random *continuous* variables\ $X_1$ and\ $X_2$  with a joint probability density function $f_{X_1, X_2}(x_1, x_2)$ defined on the two-dimensional set of points\ $R^2_X$, the distribution of $Y = u(X_1, X_2)$ (a scalar function of\ $X_1$ and\ $X_2$), find
