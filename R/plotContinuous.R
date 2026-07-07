@@ -2,7 +2,7 @@ plotContinuous <- function(pdf_fn,   # density function
                            df_fn,    # distribution function
                            q_fn,     # quantile function
                            type = "DF",
-                           support = c(-4, 4),
+                           showx = c(-4, 4),
                            n = 2000,
                            fill = NA,
                            ...) {
@@ -21,8 +21,8 @@ plotContinuous <- function(pdf_fn,   # density function
   
   dots <- list(...)
   
-  xx <- seq(support[1],
-            support[2],
+  xx <- seq(showx[1],
+            showx[2],
             length.out = n)
   
   plot_defaults <- list(
@@ -31,9 +31,9 @@ plotContinuous <- function(pdf_fn,   # density function
     las  = 1,
     
     xlim = switch(type,
-                  PDF = support,
-                  DF  = support,
-                  SF  = support,
+                  PDF = showx,
+                  DF  = showx,
+                  SF  = showx,
                   QF  = c(0, 1)),
     
     ylim = switch(type,
