@@ -1262,6 +1262,91 @@ Substitute $y = u(x)$ and $f_Y(y)\, dy = f_X(x)\, dx$:
 :::
 
 
+:::{.example #SquaredNormalDistribution name="Distribution of squared normal rv"}
+Let $X \sim N(0, 1)$ and $Y = X^2$. 
+Since $u(x) = x^2$ is not monotone on $\mathbb{R}$, the change of variable method requires partitioning; the distribution function method is simpler.
+
+First, see that the support for $X$ is over\ $\mathbb{R}$, but the support for $Y = X^2$ must be over the non-negative reals.
+Furthermore, since individual points have zero probability for continuous random variables, $X = 0$ is not technically possible, so the support is best given as $(0, \infty)$ or $[0, \infty)$ (see Fig.\ \@ref(fig:DFcontinuousUnivariate)).
+
+So, for $y > 0$:
+$$
+  F_Y(y) = \Pr(X^2 \leq y) = \Pr(-\sqrt{y} \leq X \leq \sqrt{y}\,)
+  = 
+  F_X(\sqrt{y}\,) - F_X(-\sqrt{y}\,) = 2F_X(\sqrt{y}\,) - 1.
+$$
+
+Differentiating:
+$$
+  f_Y(y) = 2 f_X(\sqrt{y}\,) \cdot \frac{1}{2\sqrt{y}}
+  = \frac{1}{\sqrt{y}} \cdot \frac{1}{\sqrt{2\pi}} \exp(-y/2)
+  = \frac{y^{1/2 - 1} \exp(-y/2)}{2^{1/2}\,\Gamma(1/2)}, \quad y > 0.
+$$
+Notice that $Y > 0$; if $Y = 0$ the PMF is undefined.
+The final expressions identifies this as the $\chi^2(1)$ distribution\index{Chi-squared distribution} (i.e., $\text{Gamma}(1/2,\, 1/2)$).
+:::
+
+
+
+```{r DFcontinuousUnivariate, echo=FALSE, fig.align="center", out.width="100%", fig.width=6, fig.height=2.75, fig.cap="A normal distribution (left panel), the transformation (centre panel), and the resulting chi-squared distribution (right panel)."}
+x <- seq(-4, 4,
+         length = 100)
+fX <- dnorm(x)
+
+y <- seq(0, 16,
+         length = 100)
+fY <- dchisq(y, 
+            df = 1)
+
+par( mfrow = c(1, 3))
+
+plot( fX ~ x,
+      type = "l",
+      las = 1,
+      lwd = 3,
+      main = expression(bold(PDF~of~italic(X))),
+      xlab = expression(italic(x)),
+      ylab = "PDF")
+
+X2 <- x ^2
+plot(X2 ~ x, 
+     type = "l", 
+     lwd = 3,
+     las = 1,
+     xlab = expression(italic(x)),
+     ylab = expression(italic(y)==italic(x)^2),
+     main = "The transformation")
+abline(h = 4,
+       lwd = 2, 
+       lty = 3)
+text(x = 0,
+     y = 4,
+     pos = 3,
+     label = expression(sqrt(italic(y))))
+segments(x0 = 2,
+         x1 = 2,
+         y0 = 0,
+         y1 = 4,
+         lty = 3,
+         lwd = 2)
+segments(x0 = -2,
+         x1 = -2,
+         y0 = 0,
+         y1 = 4,
+         lty = 3,
+         lwd = 2)
+
+
+plot( fY ~ y,
+      type = "l",
+      lwd = 3,
+      las = 1,
+      main = expression(bold(PDF~of~italic(Y)==italic(X)^2)),
+      xlab = expression(italic(y)),
+      ylab = "PDF")
+```
+
+
 ### Discrete univariate case
 
 Let\ $X$ be a discrete random variable with PMF $p_X(x)$ and CDF $F_X(x) = \Pr(X \leq x)$.
