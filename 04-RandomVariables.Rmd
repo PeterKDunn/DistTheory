@@ -911,10 +911,18 @@ However, $\int_{\mathbb{R}} f_W(w) \, dw = 1$ as required of a probability densi
 
 
 ```{r ContinuousPDF, echo=FALSE, fig.align="center", fig.cap="The probability function for\\ $W$. The shaded area represents $0 < W < 0.5$.", fig.height=3.5, fig.width=5, out.width='55%'}
-plot( x = c(-1, 2),
-      y = c(0, 2),
-      type = "n",
-      las = 1,
+
+Wpdf <- function(w){
+  fw <- numeric( length(w) )
+  fw[ (w>0) & (w<=1) ] <- 2 * w[ (w>0) & (w<=1) ]
+  fw
+}
+plotContinuous(pdf_fn = Wpdf,
+               type = "PDF",
+               fill = ColourLight,
+               showx = c(-0.75, 1.75),
+               lo = 0,
+               hi = 0.5,
       main = expression( bold(
         paste("The probability distribution of ", italic(W))
         )),
@@ -925,31 +933,6 @@ plot( x = c(-1, 2),
         paste("The probab. function ", italic(p)[italic(W)](italic(w)))
       )
 )
-
-polygon( x = c(0, 0.5, 0.5, 0),
-         y = c(0, 1, 0, 0),
-         col = ColourLight)
-lines( x = c(-0.5, 0, 1),
-       y = c(0, 0, 2),
-       lwd = 2)
-lines( x = c(-1, -0.5),
-       y = c(0, 0),
-       lwd = 2,
-       lty = 3)
-lines( x = c(1, 1.5),
-       y = c(0, 0),
-       lwd = 2)
-lines( x = c(1.5, 2),
-       y = c(0, 0),
-       lwd = 2,
-       lty = 3)
-abline(v  = 1, 
-       lty = 2, 
-       col = "grey")
-#points(1, 2, 
-#       pch = 1)
-#points(1, 0, 
-#       pch = 19)
 ```
 
 
@@ -969,17 +952,25 @@ Here, $\alpha$ is a parameter.
 Note that $\int_0^{2\alpha} f_T(t)\,dt = 1$ for all values of\ $\alpha$.
 :::
 
-```{r PDFParameter, echo=FALSE, fig.align="center", fig.cap="The PDF for the random variable\\ $T$ with parameter\\ $\\alpha$.", out.width='80%', fig.width=7, fig.height=3.5}
+```{r PDFParameter, echo=FALSE, warning=FALSE, fig.align="center", fig.cap="The PDF for the random variable\\ $T$ with parameter\\ $\\alpha$.", out.width='80%', fig.width=7, fig.height=3.5}
 alpha <- 1
-
-plot(x = c(0, alpha, 2 * alpha),
-     y = c(0, 1/alpha, 0),
-     type = "l",
-     axes = FALSE,
-     lwd = 2,
-     main = expression(bold(The~PDF~"for"~italic(X))),
-     xlab = expression(italic(t)),
-     ylab = "PDF")
+Xpdf <- function(x){
+  fx <- numeric( length(x) )
+  fx[ (x>0) & (x<=alpha) ] <- x[ (x>0) & (x<=1) ]/alpha^2
+  fx[ (x>alpha) & (x<=(2*alpha)) ] <- (2 * alpha - x[ (x>alpha) & (x<=(2*alpha)) ])
+  fx
+}
+plotContinuous(pdf_fn = Xpdf,
+               type = "PDF",
+               fill = ColourLight,
+               showx = c(-0.25, 2.25),
+               lo = 0,
+               hi = 2,
+               axes = FALSE,
+               main = expression(bold(The~PDF~"for"~italic(T))),
+               xlab = expression(italic(t)),
+               ylab = "PDF"
+)
 axis(side = 2,
      las = 1,
      at = c(0, 1/alpha),
@@ -990,9 +981,7 @@ axis(side = 1,
                 expression(alpha),
                 expression(2*alpha) ) )
 box()
-polygon(x = c(0, alpha, 2 * alpha),
-     y = c(0, 1/alpha, 0),
-     col = ColourLight)
+
 ```
 
 ### Mixed random variables {#ProbabilityFunctionsMixed}
@@ -1249,8 +1238,23 @@ A picture of the distribution function is shown in Fig.\ \@ref(fig:DFCont).
 ```{r DFCont, echo=FALSE, fig.align="center", fig.cap="The distribution function for\\ $V$.", fig.width=5, out.width='60%', fig.height=3.5}
 v <- seq(0, 2, 
          length = 100)
-Fv <- (v ^ 2 ) / 4
+Fv <-function(v){
+  Fv <- numeric( length(v)) 
+  Fv[ (v>0) &  (v<2)]  <- (v[ (v>0) &  (v<2)] ^ 2 ) / 4
+  Fv[v>=2] <- rep(1, length(v[v>=2]))
+  Fv  
+}
 
+plotContinuous(df_fn = Fv,
+               type = "DF",
+               fill = ColourLight,
+               showx = c(-0.75, 2.5),
+               xlab = expression(italic(v)),
+               ylab = expression(italic(F)[italic(V)](italic(v))),
+               main = expression(bold(Distribution~"function for"~italic(V))),
+)
+
+if (FALSE){
 plot(Fv ~ v,
      lwd = 2,
      type = "l",
@@ -1271,6 +1275,7 @@ lines(x = c(-1, 0),
 lines(x = c(2, 3),
       y = c(1, 1),
       lwd = 2)
+}
 
 ```
 
@@ -1759,74 +1764,48 @@ $$
 
 
 ```{r QuantileFnContinuous1, echo=FALSE, fig.align="center", fig.cap="Left: the probability function of $X$. Centre: the distribution function. Right: the quantile function for $X$.", fig.width=6.5, fig.height=3, out.width='100%'}
+pdfX <- function(x){
+  fx <- numeric( length(x))
+  xUse <- (x>=1)  & (x<=4)
+  fx[xUse] <- (x[xUse] - 1)^2 /9
+  fx
+} 
+dfX  <- function(x){
+  Fx <- numeric( length(x))
+  xUse <- (x>=1)  & (x<=4)
+  Fx[xUse] <- (x[xUse] - 1)^3 / 27
+  Fx[x>4] <- rep(1, length(x[x>1]))
+  Fx
+}
+qfX  <-  function(q){
+  Qx <- rep(NA, length(q))
+  qUse <- (q>=0) & (q<=1)
+  Qx[qUse] <- 1 + 3 * q[qUse]^(1/3)
+  Qx
+}
+
+### Plots
+
 par(mfrow = c(1, 3))
-
-x <- seq(0, 5, 
-         length = 5000)
-xr <- seq(0, 4, 
-         length = 5000)
-p <- seq(0, 1, 
-         length = 5000)
-# yPDF <- function(x){ ifelse( (x >= 0) & (x <= 2), 
-#                              x/2, 
-#                              0)}
-# yDF <- function(x){ ifelse(x < 0, 
-#                            0, 
-#                            ifelse(x >= 2,
-#                                   1, 
-#                                   x^2 / 4 ) ) }
-# yQF <- function(p){ ifelse( (p >= 0) & (p <= 1), 
-#                            2 * sqrt(p),
-#                            NA) }
+plotContinuous(pdf_fn = pdfX,
+               showx = c(0, 5),
+               type = "PDF",
+               xlab = expression(italic(x)),
+               ylab = expression(PDF~italic(f)[italic(X)](italic(x))),
+               main = expression(bold(PDF~of~italic(X)) ) )
 
 
-yPDF <- function(x){ ifelse( (x >= 1) & (x <= 4), 
-                             ((x - 1)^2)/9, 
-                             0)}
-yDF <- function(x){ ifelse(x < 1, 
-                           0, 
-                           ifelse(x >= 4,
-                                  1, 
-                                  ((x - 1)^3) / 27 ) ) }
-yQF <- function(p){ ifelse( (p >= 0) & (p <= 1), 
-                           1 + 3 * (p^(1/3)),
-                           NA) }
 
-
-### PF
-plot(xr, 
-     yPDF(xr),
-     las = 1,
-     type = "l",
-     lwd = 3,
-     xlim = range(x),
-     col = ColourOpaque,
-     xlab = expression(italic(x)),
-     ylab = expression(PDF~italic(f)[italic(X)](italic(x))),
-     main = expression(bold(PDF~of~italic(X)) ) )
-lines(x[x >= 4], 
-      yPDF(x[x >= 4]),
-     lwd = 3,
-     col = ColourOpaque)
-abline(v = 4,
-       lty = 3,
-       col = "grey")
-
-
-### DF
-plot(x, 
-     yDF(x),
-     las = 1,
-     type = "l",
-     lwd = 3,
-     col = ColourOpaque,
-     xlab = expression(italic(x)),
-     ylab = expression(Distribution~fn~italic(F)[italic(X)](italic(x))),
-     main = expression(bold(Distribution~"function"~of~italic(X)) ) )
+plotContinuous(df_fn = dfX,
+               showx = c(0, 5),
+               type = "DF",
+               xlab = expression(italic(x)),
+               ylab = expression(Distribution~fn~italic(F)[italic(X)](italic(x))),
+               main = expression(bold(Distribution~"function"~of~italic(X)) ) )
 
 # Show p = 0.75
 xStar <- 3
-qStar <- yDF(xStar) 
+qStar <- dfX(xStar) 
 arrows(x0 = min(x),
        x1 = xStar,
        y0 = qStar,
@@ -1853,21 +1832,20 @@ text(x = xStar,
      cex = 0.9,
      label = expression(italic(x) == 3) )
 
-### QF
 
-plot(p, 
-     yQF(p),
-     las = 1,
-     type = "l",
-     lwd = 3,
-     ylim = c(0, 4.1),
-     col = ColourOpaque,
-     xlab = expression(italic(p)),
-     ylab = expression(Quantile~fn~italic(Q)[italic(X)](italic(p))),
-     main = expression(bold(Quantile~"function"~of~italic(X)) ) )
+
+
+plotContinuous(q_fn = qfX,
+               showx = c(0, 1),
+               ylim = c(0, 4),
+               n = 5000,
+               type = "QF",
+               xlab = expression(italic(p)),
+               ylab = expression(Quantile~fn~italic(Q)[italic(X)](italic(p))),
+               main = expression(bold(Quantile~"function"~of~italic(X)) ) )
 
 # Show p = 0.8
-arrows(x0 = min(p),
+arrows(x0 = 0,
        x1 = qStar,
        y0 = xStar,
        y1 = xStar,
@@ -1892,6 +1870,7 @@ text(x = qStar,
      pos = 4,
      cex = 0.9,
      label = expression( italic(p) == 0.296) )
+
 ```
 
 
@@ -1936,15 +1915,13 @@ yDF <- function(x){ ifelse(x < 0, 0, 1 - exp(-2*x) ) }
 yQF <- function(x){ ifelse(x < 0, 0, -0.5*(log(1 - x) ) ) }
 ###
 
-plot(x, 
-     yDF(x),
-     las = 1,
-     type = "l",
-     lwd = 3,
-     col = ColourOpaque,
-     xlab = expression(italic(x)),
-     ylab = expression(Distribution~fn~italic(F)[italic(X)](italic(x))),
-     main = expression(bold(Distribution~"function"~of~italic(X)) ) )
+
+plotContinuous(df_fn = yDF,
+               showx = c(-1, 5),
+               type = "DF",
+               xlab = expression(italic(x)),
+               ylab = expression(Distribution~fn~italic(F)[italic(X)](italic(x))),
+               main = expression(bold(Distribution~"function"~of~italic(X)) ) )
 
 # Show p = 0.75
 xStar <- log(4)/2
@@ -1976,15 +1953,12 @@ text(x = xStar,
      label = expression(italic(x) == 0.6931) )
 ###
 
-plot(p, 
-     yQF(p),
-     las = 1,
-     type = "l",
-     lwd = 3,
-     col = ColourOpaque,
-     xlab = expression(italic(p)),
-     ylab = expression(Quantile~fn~italic(Q)[italic(X)](italic(p))),
-     main = expression(bold(Quantile~"function"~of~italic(X)) ) )
+plotContinuous(q_fn = yQF,
+               type = "QF",
+               showx  = c(0, 1),
+               xlab = expression(italic(p)),
+               ylab = expression(Quantile~fn~italic(Q)[italic(X)](italic(p))),
+               main = expression(bold(Quantile~"function"~of~italic(X)) ) )
 
 # Show p = 0.75
 xStar <- log(4)/2
