@@ -5,6 +5,7 @@ plotContinuous <- function(pdf_fn,   # density function
                            showx = c(-4, 4),
                            n = 2000,
                            fill = NA,
+                           lo = NA, hi = NA, # Shade between lo and hi 
                            ...) {
   
   if (!(type %in% c("DF", "PDF", "SF", "QF"))) {
@@ -24,7 +25,6 @@ plotContinuous <- function(pdf_fn,   # density function
   xx <- seq(showx[1],
             showx[2],
             length.out = n)
-  
   plot_defaults <- list(
     col  = "black",
     lwd  = 2,
@@ -67,11 +67,56 @@ plotContinuous <- function(pdf_fn,   # density function
   plot_dots <- modifyList(plot_defaults,
                           dots)
   
+  if (type == "PDF") yy <- pdf_fn(xx)
+  if (type == "DF")  yy <- df_fn(xx)
+  if (type == "SF")  yy <- 1 - df_fn(xx)
+  if (type == "QF"){
+    pp <- seq(0, 1, length.out = n)
+    qq <- q_fn(pp)
+  }
+  
+  
+  ### Canvas
+  if (type == "QF"){
+    do.call(plot,
+            c(list(x = pp,
+                   y = qq,
+                   type = "n"),
+              plot_dots))
+  } else {
+    do.call(plot,
+            c(list(x = xx,
+                   y = yy,
+                   type = "n"),
+              plot_dots))
+  }
+  
+  
+  ### Shading: do first to overplot lines
+  if ( !(is.na(lo) & is.na(hi)) ) {               # If both are NA, then don't proceed
+    if ( is.na(lo) & !is.na(hi)) lo <- min(showx) # If only hi, take lo as the smallest value to show
+    if ( !is.na(lo) & is.na(hi)) hi <- max(showx) # If only lo, take hi as the largest value to show
+
+    inner <- (xx >= lo) & (xx <= hi)
+
+    if (type == "QF") {
+      yyy <- qq 
+    } else {
+      yyy <- yy
+    }
+    
+    polygon( x = c( xx[inner], 
+                    rev(xx[inner])),
+             y = c( yyy[inner], 
+                    rep(0, sum(inner))),
+             col = fill)
+  }
+  
+  
+  ### Now the lines
   if (type == "PDF") {
     
-    yy <- pdf_fn(xx)
-    
-    do.call(plot,
+    do.call(lines,
             c(list(x = xx,
                    y = yy,
                    type = "l"),
@@ -80,7 +125,7 @@ plotContinuous <- function(pdf_fn,   # density function
       polygon(
         x = c(xx, rev(xx)),
         y = c(yy, rep(0, length(xx))),
-        col = fill,
+        col = NA,
         border = NA
       )
     }
@@ -91,9 +136,7 @@ plotContinuous <- function(pdf_fn,   # density function
     
   } else if (type == "DF") {
     
-    yy <- df_fn(xx) # df_fn is already the full mixed CDF
-    
-    do.call(plot,
+    do.call(lines,
             c(list(x = xx,
                    y = yy,
                    type = "l"),
@@ -103,7 +146,7 @@ plotContinuous <- function(pdf_fn,   # density function
       polygon(
         x = c(xx, rev(xx)),
         y = c(yy, rep(0, length(xx))),
-        col = fill,
+        col = NA,
         border = NA
       )
     }
@@ -114,9 +157,7 @@ plotContinuous <- function(pdf_fn,   # density function
     
   } else if (type == "SF") {
     
-    yy <- 1 - df_fn(xx)
-    
-    do.call(plot,
+    do.call(lines,
             c(list(x = xx,
                    y = yy,
                    type = "l"),
@@ -125,7 +166,7 @@ plotContinuous <- function(pdf_fn,   # density function
       polygon(
         x = c(xx, rev(xx)),
         y = c(yy, rep(0, length(xx))),
-        col = fill,
+        col = NA,
         border = NA
       )
     }
@@ -136,10 +177,7 @@ plotContinuous <- function(pdf_fn,   # density function
     
   } else if (type == "QF") {
     
-    pp <- seq(0, 1, length.out = n)
-    qq <- q_fn(pp)
-    
-    do.call(plot,
+    do.call(lines,
             c(list(x = pp,
                    y = qq,
                    type = "l"),
@@ -149,7 +187,7 @@ plotContinuous <- function(pdf_fn,   # density function
       polygon(
         x = c(pp, rev(pp)),
         y = c(qq, rep(min(qq), length(pp))),
-        col = fill,
+        col = NA,
         border = NA
       )
     }
@@ -158,6 +196,8 @@ plotContinuous <- function(pdf_fn,   # density function
           col = plot_dots$col,
           lwd = plot_dots$lwd)
   }
+  
+
   
   invisible(NULL)
 }
