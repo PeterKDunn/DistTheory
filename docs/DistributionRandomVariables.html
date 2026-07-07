@@ -1334,6 +1334,8 @@ This means the quantile function (shown in Fig. <a href="DistributionRandomVari
   = 1 + 3p^{1/3} \qquad\text{for $0 &lt; p &lt; 1$.}
 \]</span></p>
 </div>
+<pre><code>#&gt; Warning in Fx[x &gt; 4] &lt;- rep(1, length(x[x &gt; 1])): number of
+#&gt; items to replace is not a multiple of replacement length</code></pre>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:QuantileFnContinuous1"></span>
 <img src="04-RandomVariables_files/figure-html/QuantileFnContinuous1-1.png" alt="Left: the probability function of $X$. Centre: the distribution function. Right: the quantile function for $X$." width="100%"><p class="caption">
@@ -1563,7 +1565,7 @@ FIGURE 4.17: Selecting a random number from some distribution, using the quantil
 </p>
 </div>
 <p>In <strong>R</strong>, random numbers between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> are found using the function <code><a href="https://rdrr.io/r/stats/Uniform.html">runif()</a></code>:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="co"># '10' here means to generate 10 random numbers between 0 and 1</span></span>
 <span><span class="co">#&gt;  [1] 0.2516103 0.5757754 0.0141046 0.8898474 0.5825408 0.4986948</span></span>
 <span><span class="co">#&gt;  [7] 0.8753130 0.3948804 0.3206488 0.2908654</span></span></code></pre></div>
@@ -1573,7 +1575,7 @@ FIGURE 4.17: Selecting a random number from some distribution, using the quantil
   f_X(x) = 2 \exp(-2x)\quad\text{for $x &gt; 0$},
 \]</span>
 as in Example <a href="DistributionRandomVariables.html#exm:QuantileFnContinuous">4.26</a>, can be generated using <strong>R</strong> using this idea:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create an R function for the quantile function</span></span>
 <span><span class="va">quantileFn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">{</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">}</span></span>
 <span></span>
@@ -1610,11 +1612,11 @@ as in Example <a href="DistributionRandomVariables.html#exm:QuantileFnContinuou
    \end{cases}
 \]</span>
 In <strong>R</strong>, define the values of <span class="math inline">\(X\)</span> where probabilities are non-zero:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="fl">10</span>,  <span class="fl">11</span>,  <span class="fl">15</span>,  <span class="fl">17</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">)</span> </span></code></pre></div>
 <p>Then the probability mass function is</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">p</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    x   p</span></span>
 <span><span class="co">#&gt; 1 10 0.1</span></span>
@@ -1622,11 +1624,11 @@ In <strong>R</strong>, define the values of <span class="math inline">\(X\)</sp
 <span><span class="co">#&gt; 3 15 0.5</span></span>
 <span><span class="co">#&gt; 4 17 0.1</span></span></code></pre></div>
 <p>This is a valid PMF, as the probabilities sum to one:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>The DF can be found using the function <code><a href="https://rdrr.io/r/base/cumsum.html">cumsum()</a></code>, the <strong>cum</strong>ulative <strong>sum</strong>mation:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="cn">F</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">x</span>, <span class="cn">F</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    x   F</span></span>
@@ -1648,10 +1650,10 @@ In <strong>R</strong>, define the values of <span class="math inline">\(X\)</sp
       2w \qquad \text{for $0 &lt; w &lt; 1$}.\\
 \]</span>
 The PDF can be expressed in <strong>R</strong> as a function (note that the <code><a href="https://rdrr.io/r/stats/integrate.html">integrate()</a></code> function in <strong>R</strong>, used below, always denotes the random variable by <code>x</code>):</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fW</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fl">2</span> <span class="op">*</span> <span class="va">x</span><span class="op">}</span></span></code></pre></div>
 <p>Then, the PDF can be plotted (Fig. <a href="DistributionRandomVariables.html#fig:RDistributions">4.18</a>, left panel) using:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="va">fW</span>, </span>
 <span>      main <span class="op">=</span> <span class="st">"Density function"</span>,  <span class="co"># Main title</span></span>
 <span>      xlab <span class="op">=</span> <span class="st">"w"</span>,      <span class="co"># Horizontal-axis label</span></span>
@@ -1661,25 +1663,25 @@ The PDF can be expressed in <strong>R</strong> as a function (note that the <cod
 <span>      las <span class="op">=</span> <span class="fl">1</span>,         <span class="co"># Horizontal axis labels</span></span>
 <span>      lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>         <span class="co"># Lines a little thicker</span></span></code></pre></div>
 <p>As required, the total area under the curve is <span class="math inline">\(1\)</span>:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/integrate.html">integrate</a></span><span class="op">(</span><span class="va">fW</span>,</span>
 <span>          lower <span class="op">=</span> <span class="fl">0</span>,         <span class="co"># Lower limit of integration</span></span>
 <span>          upper <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">$</span><span class="va">value</span>   <span class="co"># Upper limit of integration</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>Probabilities can be found similarly; for example, to find <span class="math inline">\(\Pr(0.2 &lt; X &lt; 0.6)\)</span>:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/integrate.html">integrate</a></span><span class="op">(</span><span class="va">fW</span>, </span>
 <span>          lower <span class="op">=</span> <span class="fl">0.2</span>, </span>
 <span>          upper <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span><span class="op">$</span><span class="va">value</span></span>
 <span><span class="co">#&gt; [1] 0.32</span></span></code></pre></div>
 <p>The DF can also be defined (<code><a href="https://rdrr.io/r/base/Vectorize.html">Vectorize()</a></code> is an <strong>R</strong> construct to avoids writing loops):</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">FW</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Vectorize.html">Vectorize</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="fu"><a href="https://rdrr.io/r/stats/integrate.html">integrate</a></span><span class="op">(</span><span class="va">fW</span>,                  <span class="co"># Integrate f(x)... </span></span>
 <span>                  lower <span class="op">=</span> <span class="fl">0</span>,           <span class="co"># ... from 0 to x</span></span>
 <span>                  upper <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">value</span><span class="op">}</span><span class="op">)</span>   <span class="co"># Return the *value*</span></span></code></pre></div>
 <p>The DF can be plotted also (Fig. <a href="DistributionRandomVariables.html#fig:RDistributions">4.18</a>, right panel):</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="va">FW</span>, </span>
 <span>      main <span class="op">=</span> <span class="st">"Distribution function"</span>,  <span class="co"># Main title</span></span>
 <span>      xlab <span class="op">=</span> <span class="st">"w"</span>,       <span class="co"># Horizontal-axis label</span></span>
@@ -1695,7 +1697,7 @@ FIGURE 4.18: The density function and distribution function for <span class="ma
 </p>
 </div>
 <p>Then, <span class="math inline">\(\Pr(0.2 &lt; W &lt; 0.6)\)</span> can be found using the distribution function:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">FW</span><span class="op">(</span><span class="fl">0.6</span><span class="op">)</span> <span class="op">-</span> <span class="fu">FW</span><span class="op">(</span><span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.32</span></span></code></pre></div>
 </div>
@@ -1717,7 +1719,7 @@ In <strong>R</strong>, <code>table(x) / length(x)</code> computes the relative f
 <p><span id="exm:RandomContinuousEH" class="example"><strong>Example 4.30  (Empirical probability density) </strong></span>In Example <a href="DistributionRandomVariables.html#exm:RandomContinuous">4.29</a>, <span class="math inline">\(20\)</span> random numbers were generated from the continuous probability density function
 <span class="math inline">\(f_X(x) = 2 \exp(-2x)\)</span> for <span class="math inline">\(x &gt; 0\)</span>.
 To generate and display <span class="math inline">\(n = 50\)</span> random numbers in <strong>R</strong>:</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rnos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">quantileFn</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>      <span class="co"># Function as defined previously</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">x</span>,</span>
@@ -1753,7 +1755,7 @@ giving
 \]</span>
 where <span class="math inline">\(\lceil x \rceil\)</span> is the <em>ceiling</em> function: the smallest integer not less than <span class="math inline">\(x\)</span> (e.g., <span class="math inline">\(\lceil\pi\rceil = 4\)</span> and <span class="math inline">\(\lceil-\pi\rceil = -3\)</span>).</p>
 <p>To generate and display <span class="math inline">\(n = 50\)</span> random numbers in <strong>R</strong>:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rnos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span></span>
 <span><span class="va">quanFn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html">ceiling</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">p</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">0.4</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">)</span> </span>
