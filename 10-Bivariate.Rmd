@@ -2743,7 +2743,7 @@ This is a joint density function; the required probability density function for 
 :::
 
 
-```{r BivariateContinuousXformCoVSupportSingle, echo=FALSE, fig.align="center", fig.cap="The support in the $(y_1, y_2)$-plane (left), and the marginal distribution of $Y_1$ (right).", out.width='100%', fig.width=8}
+```{r BivariateContinuousXformCoVSupportSingle, echo=FALSE, fig.align="center", fig.cap="The support in the $(y_1, y_2)$-plane (left), and the marginal distribution of $Y_1$ (right).", out.width='100%', fig.width=8, fig.height=3.75}
 par(mfrow = c(1, 2))
 
 plot( x = c(-1.15, 1.15),
@@ -2822,7 +2822,11 @@ For $Y = u(X_1, X_2)$, the CDF of\ $Y$ is
 $$
   F_Y(y) = \Pr(Y \leq y) = \sum_{\{(x_1,x_2):\, g(x_1,x_2) \leq y\}} p_{X_1, X_2}(x_1, x_2),
 $$
-and the PMF is recovered as $p_Y(y) = F_Y(y) - F_Y(y^-)$ where $y^-$ denotes the largest value in the support of\ $Y$ strictly less than\ $y$.
+and the PMF is recovered (see Equation\ \@ref(eq:DFtoPDFdiscrete)) as 
+$$
+  p_Y(y) = F_Y(y) - F_Y(y^-)
+$$ 
+where $y^-$ denotes the largest value in the support of\ $Y$ strictly less than\ $y$.
 
 The bivariate discrete CDF method is often the most natural approach when\ $u(\cdot)$ is a many-to-one function\index{Transformation!many-to-one} (such as a maximum or minimum), where enumerating pre-images\index{Pre-image} directly would be cumbersome, but the event $\{u(X_1, X_2) \leq y\}$ has a simple geometric or combinatorial description.
 
@@ -2841,15 +2845,15 @@ The distribution function for\ $M$ is
 \end{equation}
 since $X_1$ and $X_2$ are independent.
 
-The probability mass function for\ $M$ can be found from the distribution function as usual (see Equation\ \@ref(eq:DFtoPDFdiscrete)): $f_M(m) = F_M(m) - F_M(m - 1)$.
+The probability mass function for\ $M$ then is found using $p_M(m) = F_M(m) - F_M(m - 1)$.
 Substituting Equation\ \@ref(eq:FM) twice into this expression gives
 \begin{alignat*}{2}
-  f_M(m) 
+  p_M(m) 
   &= F_M(m)                      & {} - {} & F_M(m - 1)\\
   &= F_{X_1}(m) \cdot F_{X_2}(m) & {} - {} & F_{X_1}(m - 1) \cdot F_{X_2}(m - 1).
 \end{alignat*}
 
-This expression does not simplify to a standard named distribution in general.
+This expression does not simplify to a standard distribution in general.
 Two examples of the probability mass function are shown in Fig.\ \@ref(fig:BivariateDiscreteBinomialMax). 
 :::
 
@@ -2860,44 +2864,46 @@ par(mfrow = c(1, 2))
 
 # PLOT1
 n1 <- 9; p1 <- 0.6
-n2 <- 8;  p2 <- 0.5
+n2 <- 8; p2 <- 0.5
 
-m_vals <- 0:max(n1, n2)
+m_vals1 <- 0:max(n1, n2)
 
-fm1 <- pbinom(m_vals, size = n1, prob = p1) * 
-          pbinom(m_vals, size = n2, prob = p2) -
-       pbinom(m_vals - 1, size = n1, prob = p1) * 
-          pbinom(m_vals - 1, size = n2, prob = p2)
+fm1 <- pbinom(m_vals1, size = n1, prob = p1) * 
+          pbinom(m_vals1, size = n2, prob = p2) -
+       pbinom(m_vals1 - 1, size = n1, prob = p1) * 
+          pbinom(m_vals1 - 1, size = n2, prob = p2)
 
-barplot(fm1,
-        xlab = expression(italic(m)),
-        ylab = "Probability fn",
-        main = expression(
-          bold( 
-            atop( 
-              paste(italic(n)[1]==9*"; ", 
-                    italic(p)[1]==0.6),
-              paste(italic(n)[2]==8*"; ",
-                    italic(p)[2]==0.5)
-            )
-          )
-        ),
-        names.arg = m_vals,
-        las = 1)
+plotDiscrete(m_vals1,
+             fm1,
+             type = "MF",
+             xlab = expression(italic(m)),
+             ylab = "Probability fn",
+              main = expression(
+                bold( 
+                  atop( 
+                    paste(italic(n)[1]==9*"; ", 
+                          italic(p)[1]==0.6),
+                    paste(italic(n)[2]==8*"; ",
+                          italic(p)[2]==0.5)
+                  )
+                )
+              ))
 
 
 # PLOT2
 n1 <- 4; p1 <- 0.9
-n2 <- 6;  p2 <- 0.3
+n2 <- 6; p2 <- 0.3
 
-m_vals <- 0:max(n1, n2)
+m_vals2 <- 0:max(n1, n2)
 
-fm2 <- pbinom(m_vals, size = n1, prob = p1) * 
-         pbinom(m_vals, size = n2, prob = p2) -
-      pbinom(m_vals - 1, size = n1, prob = p1) * 
-         pbinom(m_vals - 1, size = n2, prob = p2)
+fm2 <- pbinom(m_vals2, size = n1, prob = p1) * 
+         pbinom(m_vals2, size = n2, prob = p2) -
+      pbinom(m_vals2 - 1, size = n1, prob = p1) * 
+         pbinom(m_vals2 - 1, size = n2, prob = p2)
 
-barplot(fm2,
+plotDiscrete(m_vals2, 
+             fm2, 
+             type = "MF",
         xlab = expression(italic(m)),
         ylab = "Probability fn",
         main = expression(
@@ -2909,107 +2915,19 @@ barplot(fm2,
                     italic(p)[2]==0.3)
             )
           )
-        ),
-        names.arg = m_vals,
-        las = 1)
+        ))
 ```
 
 
 
-For two random *continuous* variables\ $X_1$ and\ $X_2$  with a joint probability density function $f_{X_1, X_2}(x_1, x_2)$ defined on the two-dimensional set of points\ $R^2_X$, the distribution of $Y = u(X_1, X_2)$ (a scalar function of\ $X_1$ and\ $X_2$), find
+For two random *continuous* variables\ $X_1$ and\ $X_2$  with a joint probability density function $f_{X_1, X_2}(x_1, x_2)$ defined on the two-dimensional set of points\ $R^2_X$, the distribution of $Y = u(X_1, X_2)$, find
 $$
   F_Y(y) = \Pr(u(X_1, X_2) \leq y) 
   = 
   \iint_{\{(x_1,x_2):\, u(x_1,x_2) \leq y\}} f_{X_1, X_2}(x_1, x_2)\, dx_1\, dx_2;
 $$
 then differentiate: $f_Y(y) = F_Y'(y)$.
-The key step is characterising the region of integration $\{u(x_1,x_2) \leq y\}$ carefully as a function of\ $y$, paying attention to how its boundaries move as\ $y$ changes. 
-This is often where the difficulty lies, and a sketch of the support is strongly recommended.
-
-
-
-:::{.example #SquaredNormalDistribution name="Distribution of squared normal rv"}
-Let $X \sim N(0, 1)$ and $Y = X^2$. 
-Since $u(x) = x^2$ is not monotone on $\mathbb{R}$, the change of variable method requires partitioning; the distribution function method is simpler.
-
-First, see that the support for $X$ is over\ $\mathbb{R}$, but the support for $Y = X^2$ must be over the non-negative reals.
-Furthermore, since individual points have zero probability for continuous random variables, $X = 0$ is not technically possible, so the support is best given as $(0, \infty)$ or $[0, \infty)$ (see Fig.\ \@ref(fig:DFcontinuousUnivariate)).
-
-So, for $y > 0$:
-$$
-  F_Y(y) = \Pr(X^2 \leq y) = \Pr(-\sqrt{y} \leq X \leq \sqrt{y}\,)
-  = 
-  F_X(\sqrt{y}\,) - F_X(-\sqrt{y}\,) = 2F_X(\sqrt{y}\,) - 1.
-$$
-
-Differentiating:
-$$
-  f_Y(y) = 2 f_X(\sqrt{y}\,) \cdot \frac{1}{2\sqrt{y}}
-  = \frac{1}{\sqrt{y}} \cdot \frac{1}{\sqrt{2\pi}} \exp(-y/2)
-  = \frac{y^{1/2 - 1} \exp(-y/2)}{2^{1/2}\,\Gamma(1/2)}, \quad y > 0.
-$$
-Notice that $Y > 0$; if $Y = 0$ the PMF is undefined.
-The final expressions identifies this as the $\chi^2(1)$ distribution\index{Chi-squared distribution} (i.e., $\text{Gamma}(1/2,\, 1/2)$).
-:::
-
-
-```{r DFcontinuousUnivariate, echo=FALSE, fig.align="center", out.width="100%", fig.width=8, fig.height=3.25, fig.cap="A normal distribution (left panel), the transformation (centre panel), and the resulting chi-squared distribution (right panel)."}
-x <- seq(-4, 4,
-         length = 100)
-fX <- dnorm(x)
-
-y <- seq(0, 16,
-         length = 100)
-fY <- dchisq(y, 
-            df = 1)
-
-par( mfrow = c(1, 3))
-
-plot( fX ~ x,
-      type = "l",
-      las = 1,
-      lwd = 3,
-      main = expression(bold(PDF~of~italic(X))),
-      xlab = expression(italic(x)),
-      ylab = "PDF")
-
-X2 <- x ^2
-plot(X2 ~ x, 
-     type = "l", 
-     lwd = 3,
-     las = 1,
-     xlab = expression(italic(x)),
-     ylab = expression(italic(y)==italic(x)^2),
-     main = "The transformation")
-abline(h = 4,
-       lwd = 2, 
-       lty = 3)
-text(x = 0,
-     y = 4,
-     pos = 3,
-     label = expression(sqrt(italic(y))))
-segments(x0 = 2,
-         x1 = 2,
-         y0 = 0,
-         y1 = 4,
-         lty = 3,
-         lwd = 2)
-segments(x0 = -2,
-         x1 = -2,
-         y0 = 0,
-         y1 = 4,
-         lty = 3,
-         lwd = 2)
-
-
-plot( fY ~ y,
-      type = "l",
-      lwd = 3,
-      las = 1,
-      main = expression(bold(PDF~of~italic(Y)==italic(X)^2)),
-      xlab = expression(italic(y)),
-      ylab = "PDF")
-```
+Characterising the region of integration $\{u(x_1,x_2) \leq y\}$ carefully as a function of\ $y$ is important, and a common source of difficulty; sketching the support is strongly recommended.
 
 
 :::{.example #JointMaximumUniform name="Distribution of $M = \max(X_1, X_2)$ for independent uniforms distributions"}
@@ -3019,24 +2937,21 @@ Define $M = \max(X_1, X_2)$.
 The event $\{M \leq m\}$ is equivalent to $\{X_1 \leq m \text{ and } X_2 \leq m\}$ (see Fig.\ \@ref(fig:BivariateContinuous)),
 so for $m \in [0, 1]$:
 $$
-  F_M(m) = \Pr(X_1 \leq m,\, X_2 \leq m) = m \cdot m = m^2.
+  F_M(m) = \Pr(X_1 \leq m,\, X_2 \leq m) = m \cdot m = m^2
 $$
+using the distribution function for the continuous uniform distribution (Def.\ \@ref(def:ContinuousuniformDF)).
 Differentiating, the PDF is
 $$
-  f_M(m) = 2m, \quad m \in [0, 1].
+  f_M(m) = 2m, \quad\text{for $0 < m < 1$}.
 $$
-This is the $\text{Beta}(2, 1)$ distribution (Fig.\ \@ref(fig:BivariateContinuous), right panel). 
-More generally, for $X_1, X_2, \dots, X_n \overset{\text{iid}}{\sim} \text{Uniform}(0,1)$, we find $M = \max(X_1,\ldots,X_n)$ has CDF $m^n$ and PDF $nm^{n-1}$, a $\text{Beta}(n, 1)$ distribution. 
+This is the $\text{Beta}(2, 1)$ distribution (Fig.\ \@ref(fig:BivariateContinuous), right panel).\index{Beta distribution}
+
+More generally, for $X_1, X_2, \dots, X_n \overset{\text{iid}}{\sim} \text{Uniform}(0,1)$, we find $M = \max(X_1,\ldots,X_n)$ has CDF $m^n$ and PDF $nm^{n-1}$, a $\text{Beta}(n, 1)$ distribution.\index{Beta distribution}
 This extends naturally to order statistics (Chap.\ \@ref(OrderStatisticsChapter)).
 :::
 
 
 ```{r BivariateContinuous, echo=FALSE, fig.width = 8, fig.height = 4.5, fig.align="center", fig.cap="The joint distribution of the maximum from two uniform distributions.", out.width='90%'}
-set.seed(42)
-N <- 80000
-X1 <- runif(N)
-X2 <- runif(N)
-
 M  <- pmax(X1, X2)
 
 m_seq <- seq(0, 1, 
@@ -3045,7 +2960,8 @@ m_seq <- seq(0, 1,
 par(mfrow = c(1, 2), 
     mar = c(4, 4, 3, 1))
 
-m_ex <- 0.65
+m_ex <- 0.63
+x2_ex <- 0.55
 
 # Show the integration region
 plot(c(0,1), 
@@ -3053,17 +2969,24 @@ plot(c(0,1),
      type = "n",
      xlab = expression(italic(x)[1]), 
      ylab = expression(italic(x)[2]),
-     main = expression(bold("Region {max(X"[1]*", X"[2]*") " <= " m}")),
+     main = expression(
+       bold(
+         atop(
+           Region~"{"*plain(max)(italic(X)[1], italic(X)[2]) <= italic(m)*"}",
+           where~italic(m)==plain(max)(italic(x)[1], italic(x)[2]) * " = " * italic(x)[1]
+         )
+       )
+     ),   
      axes = FALSE,
      las = 1, 
      asp = 1)
 axis(side = 1,
      at = c(0, 0.2, 0.4, m_ex, 0.8, 1.0),
-     labels = c(0, 0.2, 0.4, expression(italic(m)), 0.8, 1.0))
+     labels = c(0, 0.2, 0.4, expression(italic(x)[1]==italic(m)), 0.8, 1.0))
 axis(side = 2,
      las = 1,
-     at = c(0, 0.2, 0.4, m_ex, 0.8, 1.0),
-     labels = c(0, 0.2, 0.4, expression(italic(m)), 0.8, 1.0))
+     at = c(0, 0.2, 0.4, x2_ex, m_ex, 0.8, 1.0),
+     labels = c(0, 0.2, 0.4, expression(italic(x)[2]), expression(italic(m)), 0.8, 1.0))
 box()
 
 rect(0,    0, 
@@ -3088,20 +3011,34 @@ text(x = m_ex / 2,
      y = m_ex / 2,
      expression(paste("Area = ", italic(m)^2)), 
      cex = 1)
-grid(col = "darkgrey", 
-     lty = 1)
 
-# Derived pdf vs simulation
-plot( x = c(0, 1),
-      y = c(0, 2), 
-      lwd = 3,
-      type = "l",
-      las = 1,
-      xlab = expression(italic(m)),
-      ylab = "PDF",
-      main = expression(bold(PDF~of~italic(M))))
-grid(col = "grey85", 
-     lty = 1)
+# Points for x1, x2
+usr <- par("usr")
+dx <- diff(usr[1:2]) * 0.0
+dy <- diff(usr[3:4]) * 0.0
+
+points(m_ex, 
+       usr[3] - dy, 
+       pch = 19, 
+       xpd = NA)
+points(usr[1] - dx, 
+       m_ex, 
+       pch = 19, 
+       xpd = NA)
+
+
+# PDF
+beta21 <- function(x){
+  fx <- numeric(length(x))
+  fx[ (x>0) & (x<1)] <- 2 * x[ (x>0) & (x<1) ]
+  fx
+}
+plotContinuous(beta21,
+               support = c(-0.1, 1.1),
+               type = "PDF",
+               xlab = expression(italic(m)),
+               ylab = "PDF",
+               main = expression(bold(PDF~of~italic(M))))
 
 par(mfrow = c(1, 1))
 ```
