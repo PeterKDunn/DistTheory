@@ -4388,8 +4388,98 @@ $$
 which is the PMF of a Poisson distribution, with parameter $\lambda(1 - p)$.
 :::
  
- 
- 
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecDiscreteSoccerPoisson).**
+
+1. $\Pr(G_A = 0\text{\ and\ }G_H = 0) = \Pr(G_A = 0) \cdots \Pr(G_H = 0)$ by independence:
+
+
+```{r}
+lamH <- 1.5; lamA <- 1.0
+
+# Part 1
+dpois(0, lamH) * dpois(0, lamA)
+
+# Part 2
+1 - ppois(1, lamH)
+
+# Part 3
+p_draw <- 0
+for (i in 0:10){
+  p_draw <- p_draw + dpois(i, lamA) * dpois(i, lamH)  
+}
+cat("The probability of a draw:", p_draw, "\n")
+
+# Part 4
+p_five <- 0
+for (i in 0:5){
+  p_five <- p_five + dpois(i, lamA) * dpois(5 - i, lamH)  
+}
+cat("The probability of five match-goals:", p_five, "\n")
+
+# Part 5
+p_home_win <- 0
+for (i in 1:10){ # To win, a team need at least one goal.
+  for (j in (0:i)){
+    p_home_win <- p_home_win + dpois(i, lamA) * dpois(j, lamH)  
+  }
+}
+cat("The probability of home-team win:", p_home_win, "\n")
+
+# Part 6
+num_sims <- 2000
+home_goals <- rpois(num_sims, lamH)
+away_goals <- rpois(num_sims, lamA)
+hist(home_goals + away_goals, freq = FALSE,
+     las = 1, xlab = "Total goals",
+     main = "Total game goals")
+```
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecDiscreteSoccerBinomial).**
+
+CHECK!!!!
+
+```{r}
+p_home <- 0.90; p_away <- 0.85
+
+# Part 1
+cat("Prob home team makes all 5 shots:", dbinom(5, size=5, prob=p_home), "\n")
+
+# Part 2
+cat("Prob away team makes more than 3 shots:", 1 - pbinom(4, size=5, prob=p_home), "\n")
+
+# Part 3
+cat("Prob away team's first on 2nd shot:", dgeom(2, p_away), "\n")
+
+# Part 4
+cat("Prob away team's third goal on 5th shot:", dnbinom(5, 5, p_away), "\n")
+
+# Part 5
+cat("Prob both team's fouth goal on 5th shot:", 
+    dnbinom(4, 5, p_away) * dnbinom(4, 5, p_home), "\n")
+
+# Part 6
+p_same <- 0
+for (g in (0:5)){
+  p_same <- p_same + dbinom(g, 5, p_home) * dbinom(g, 5, p_away)
+}
+cat("Prob same number goals:", p_same, "\n")
+
+# Part 7
+p_home_win <- 0
+for (gh in (1:5)){ # To win, must score at least one goal
+  for (ga in (0:(gh-1))){ # To win, must score at least one goal
+    p_home_win <- p_home_win + dbinom(gh, 5, p_home) * dbinom(ga, 5, p_away)
+  }
+}
+cat("Prob home team wins shoot-out:", p_home_win, "\n")
+```
+:::
+
 
  
 
@@ -7637,6 +7727,88 @@ $$
   \end{cases}
 $$
 :::
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:BivariateAFL).**
+
+1. $\operatorname{E}[G] = 22\times 0.60 = 13.2$
+2. $\operatorname{E}[B] = 22\times 0.4 = 8.8$.
+3. $\Pr(T = 20)$: `dpois(20, 22)`, or approx $0.08088$.
+4. $\Pr(G = 14\mid T = 20)$: `dbinom(14, 20, 0.60)` or approx. $0.12441$.
+5. $\operatorname{E}[S] = 6\operatorname{E}[G] + \operatorname{E}[B] = 88$.
+
+```{r}
+num_sims <- 10000
+
+T <- rpois(num_sims, 22)
+G <- rbinom(num_sims, T, 0.60)
+B <- T - G
+S <- 6*G + B
+
+# Parts 6 to 10
+cat("Mean score:", mean(S), "\n")
+cat("Variance of score:", var(S), "\n")
+cat("P(less than 100 points):", sum(S < 100)/num_sims, "\n")
+cat("P(exactly 87 points):", sum(S == 87)/num_sims, "\n")
+hist(S, las = 1, freq = FALSE,
+     xlab = "Points", main = "Histogram of points scored" )
+
+
+```
+
+6. the mean final score;
+7. the variance of the final score;
+8. the probability that the team scores at least 100 points;
+9. the probability that the team scores exactly 87 points;
+10. the distribution of the team's final score.
+:::
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:BivariateRugbyLeague).**
+
+1. $\operatorname{E}[C\mid T] = 0.85T$, so
+$$
+  \operatorname{E}[C] = \operatorname{E}\big[\operatorname{E}[C\mid T]\big] = 0.85\operatorname{E}[T] = 0.85\times 4 = 3.4.
+$$
+2. Since $T\sim\text{Poisson}(4)$, $\Pr(T = 3) = \exp(-4)\,4^3/3! = 0.19537$.
+3. Given $T = 4$, then $C\mid T=4\sim\text{Binomial}(4, 0.85)$.
+   Hence, $\Pr(C = 4\mid T = 4) = 0.85^4 = 0.52201$.
+4. $\operatorname{E}[S] 
+   = 4\operatorname{E}[T] + 
+     2\operatorname{E}[C] +
+     2\operatorname{E}[P] +
+     \operatorname{E}[F]
+   = (4\times 4) + (3.4\times 2) + (2\times 2) + (0.1\times 1)
+   = 26.9$
+
+
+
+```{r}
+num_sims <- 10000
+T <- rpois(num_sims, 4)
+C <- rbinom(num_sims, T, 0.85)
+P <- rpois(num_sims, 2)
+F <- rpois(num_sims, 0.1)
+
+S <- 4*T + 2*C + 2*P + F
+
+# Part 5--9
+cat("Mean score:", round(mean(S, 3)), "\n")
+cat("Variance of score:", round(var(S), 4), "\n")
+cat("Prob scoring more than 30:", 
+    sum(S > 30)/num_sims, "\n")
+cat("Prob of 20 points exactly:", 
+    sum(S == 20)/num_sims, "\n")
+hist(S, las = 1, freq = FALSE,
+     xlab = "Points", main = "Histogram of points scored" )
+
+```
+
+:::
+
+
 
 <!-- *********************************************************************************** -->
 ## Answers for Chap.\ \@ref(ChapMultivariate) {#AnswersChapMultivariate}
