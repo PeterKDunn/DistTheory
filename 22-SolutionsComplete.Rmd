@@ -4394,8 +4394,10 @@ which is the PMF of a Poisson distribution, with parameter $\lambda(1 - p)$.
 
 1. $\Pr(G_A = 0\text{\ and\ }G_H = 0) = \Pr(G_A = 0) \cdots \Pr(G_H = 0)$ by independence:
 
-
-```{r}
+```{r echo=FALSE}
+set.seed(5690994)
+```
+```{r fig.show='hide'}
 lamH <- 1.5; lamA <- 1.0
 
 # Part 1
@@ -4443,7 +4445,7 @@ hist(home_goals + away_goals, freq = FALSE,
 
 CHECK!!!!
 
-```{r}
+```{r fig.show='hide'}
 p_home <- 0.90; p_away <- 0.85
 
 # Part 1
@@ -4480,6 +4482,67 @@ cat("Prob home team wins shoot-out:", p_home_win, "\n")
 ```
 :::
 
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecDiscreteSoccerGeometric).**
+
+The sudden-death shoot-out produces a winner if one teams scores a pgoal, and the other does not.
+So, the probability that any single round produces a winner is
+$$
+  q 
+  = p_H(1 - p_A) + (1 - p_H) p_A
+  = (0.80\times 0.25) + (0.20\times 0.75) = 0.35.
+$$
+So each round of sudden-death could end the shoot-out, with probability $q = 0.35$.
+
+Let\ $X$ denote the number of additional sudden-death rounds before the shoot-out ends, where $X = 1, 2, \dots$.
+This is the *alternative* parameterisation of the geometric distribution (Sect.\ \@ref(GeometricAlternative)).
+To use the parameterisation used in **R**, define $Y = X - 1$ so that $Y = 0, 1, 2, \dots$.
+Then, 
+$$
+  Y\sim\text{Geometric}(p),
+$$
+
+where $p = 0.35$.
+
+1. The prob the shoot-out end in the first round is just $0.35$.
+2. `dgeom(2, prob = 0.35)` or about $0.1479$.
+3. `pgeom(3, prob = 0.35, lower.tail = FALSE)` or about $0.1785$.
+4. For a geometric distribution, $\operatorname{E}[Y] = 1/p = 1/0.35 \approx 2.857$.
+5. `0.80*(1-0.75)/0.35`, or approx. $0.5714$.
+
+
+```{r echo=FALSE}
+set.seed(11985)
+```
+```{r fig.show='hide'}
+num_sims <- 10000
+pA <- 0.80; pB <- 0.75
+
+rounds <- numeric(num_sims)
+A_wins <- logical(num_sims)
+
+for (i in 1:num_sims) {
+  r <- 0
+  finished <- FALSE
+  while (!finished) {
+    r <- r + 1
+    A <- rbinom(1, 1, pA)
+    B <- rbinom(1, 1, pB)
+
+    if (A != B) {
+      rounds[i] <- r
+      A_wins[i] <- (A == 1)
+      finished <- TRUE
+    }
+  }
+}
+
+cat("Mean number of rounds:", mean(rounds), "\n")
+cat("P(Team A wins):", mean(A_wins), "\n")
+```
+
+:::
 
  
 
@@ -5032,6 +5095,90 @@ $f_X(x) = \lambda \exp(-\lambda x)$ for $x > 0$ and $\lambda > 0$; hence $f'_X(x
 :::
 
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecContinuousMarathon).**
+
+1. $\Pr(T_A < 240)$: `pnorm(240, mean = 250, sd = 36)`, or about $0.3901$.
+2. $\Pr(T_B < 240)$: `pnorm(240, mean = 280, sd = 36)`, or about $0.1333$.
+3. Since independent: `pnorm(240,250,36) * pnorm(240,280,36)` or about $0.0521$.
+4. Since independent: `(1-pnorm(240,250,36)) * (1-pnorm(240,280,36))` or about $0.5282$. 
+5. `pnorm(300,250,36) - pnorm(240,250,36)`, or about $0.5270$.
+9. The distribution looks normally distributed.
+
+```{r echo=FALSE}
+set.seed(96623)
+```
+```{r fig.show='hide'}
+# Parts 6 to 9
+num_sims <- 10000
+TA <- rnorm(num_sims, mean = 250, sd = 36)
+TB <- rnorm(num_sims, mean = 280, sd = 36)
+T_difference <- TB - TA
+cat("P(Runner A finishes first):", sum(TA < TB)/num_sims, "\n")
+cat("P(Runner A finishes 30 mins faster):", sum( (TA+30) < TB)/num_sims, "\n")
+cat("Mean time diff:", mean(T_difference), "\n")
+cat("SD time diff:", sd(T_difference), "\n")
+hist(T_difference, freq = FALSE, las = 1,
+     xlab = "Difference between times")
+```
+
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecContinuousWeightlifting).**
+
+1. Lifter\ $A$: `mean_A <- exp(5.20 + 0.12^2/2)`, or about $182.58\kgs$.  
+   Lifter\ $B$: `mean_B <- exp(5.10 + 0.12^2/2)`, or about $165.15\kgs$.
+2. `1 - plnorm(190, meanlog = 5.20, sdlog = 0.12)`, or about $0.3476$.
+3. `1 - plnorm(190, meanlog = 5.10, sdlog = 0.12)`, or about $0.110$.
+4. `(1 - plnorm(190, 5.20, 0.12)) * (1 - plnorm(190, 5.10, 0.12))` or about $0.0383$.
+5. `plnorm(190, 5.20, 0.12) * plnorm(190, 5.10, 0.12)` or about $0.5805$.
+6. `plnorm(210, 5.20, 0.12) - plnorm(180, 5.20, 0.12)`, or about $0.4133$.
+
+
+```{r echo=FALSE}
+set.seed(40023)
+```
+```{r fig.show='hide'}
+# Parts 7 to 10
+num_sims <- 10000
+WA <- rlnorm(num_sims, meanlog = 5.20, sdlog = 0.12)
+WB <- rlnorm(num_sims, meanlog = 5.10, sdlog = 0.12)
+W_difference <- WA - WB
+
+cat("P(Lifter A lifts more):", mean(WA > WB), "\n")
+cat("P(Lifter A lifts at least 10 kg more):", mean(WA >= WB + 10), "\n")
+cat("Mean lifting difference:", mean(W_difference), "\n")
+cat("SD lifting difference:", sd(W_difference), "\n")
+hist(W_difference, las = 1, freq = FALSE,
+     main = "Estimated PDF of W_A - W_B",
+     xlab = "Difference in lifting weight (kg)")
+```
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecContinuousWeightlifting).**
+
+$$
+  f_X(x) = 
+  \begin{cases}
+    2(x - a)/\big( (b - a)(c - a)\big) & \text{for $a\le x \le b$};\\
+    2(c - x)/\big( (c - b)(c - a)\big) & \text{for $b <  x \le c$};
+  \end{cases}
+$$
+and
+$$
+  F_X(x) = 
+  \begin{cases}
+    0                                       & \text{for $x < a$};\\
+    (x - a)^2/\big( (b - a)(c - a)\big)      & \text{for $a\le x \le b$};\\
+    1 - (c - x)^2/\big( (c - b)(c - a)\big)  & \text{for $b <  x \le c$};\\
+    1                                       & \text{for $x > c$}.
+  \end{cases}
+$$
+:::
 
 
 
@@ -7243,6 +7390,105 @@ plnorm(exp(3), meanlog = 2, sdlog = sqrt(0.9), lower.tail = FALSE)
 1. Plots not shown.
 1 . The $Y = |X|$ transformation effectively folds the left half of the distribution ($-1 < x < 0)$ onto the right half ($-1 < x < 0)$.
 :::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:XformOilSpill).**
+
+1. Since $A = pi R^2$, the inverse transform is $R = \sqrt{A/\pi}$ and $|dR/dA| = 1/(2\sqrt{\pi A}$.
+So
+$$ 
+  f_A(a) = \frac{\lambda \exp(-\lambda)\sqrt{a/\pi}}{2\sqrt{\pi\,a}} \quad\text{for $a > 0$.}
+$$
+3. Since $A = \pi R^2$, $A = 200$ corresponds to $R = \sqrt{200/\pi})$: `1 - pexp(sqrt(200/pi), rate = 0.2)`, or about $0.203$.
+
+```{r}
+lambda <- 0.2
+
+fA <- function(a)
+{
+    lambda * exp(-lambda * sqrt(a/pi)) / (2 * sqrt(pi * a))
+}
+
+curve(fA, las = 1, ylim = c(0, 0.01),
+      from = 0.1, to = 1000,
+      xlab = expression(Area~(m^2)),
+      ylab = "Probability density",
+      main = "PDF of oil-spill area")
+```
+:::
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:XformMarathon).**
+
+2. $T_a = 2531.7/V_A$ and $|d T_A/d V_A| = 2531.7/V_A^2$; so
+$$
+  f_V(v) = \frac{2531.7}{36\sqrt{2\pi}\, v^2} \exp\left(-\frac{(\frac{2531.7}{v} - 2500)^2}{2\times 26^2}\right)
+$$
+for $v > 0$.
+3. Similar to\ 2.
+4. Not normally distributed, but looks similar.
+
+```{r}
+# Part 4
+num_sims <- 10000
+
+TA <- rnorm(num_sims, mean = 250, sd = 36)
+TB <- rnorm(num_sims, mean = 280, sd = 36)
+
+VA <- 60 * 42.195 / TA
+VB <- 60 * 42.195 / TB
+
+V_difference <- VA - VB
+
+hist(V_difference, las = 1,
+     probability = TRUE,
+     main = "Estimated PDF of V_A - V_B",
+     xlab = "Speed difference (km/h)")
+```
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:XformPizza).**
+
+$R = \sqrt{A/\pi}$ so $dR/dA = 1/(2\sqrt{\pi A})$.
+Then:
+$$
+  f_A(a) 
+  =
+  \begin{cases}
+    (\sqrt{a/\pi} - 11) / (4\sqrt{\pi a}) & \text{for $121\pi \le a \le 144\pi$};\\
+    (13 - \sqrt{a/\pi}) / (4\sqrt{\pi a}) & \text{for $144\pi \le a \le 169\pi$}.
+  \end{cases}
+$$
+for $a > 0$.
+Not triangular, but looks similar.
+
+```{r}
+fA <- function(a){
+    ans <- numeric(length(a))
+
+    i1 <- (a >= 121*pi) & (a <= 144*pi)
+    ans[i1] <- (sqrt(a[i1]/pi) - 11) /
+        (4 * sqrt(pi * a[i1]))
+
+    i2 <- (a > 144*pi) & (a <= 169*pi)
+    ans[i2] <- (13 - sqrt(a[i2]/pi)) /
+        (4 * sqrt(pi * a[i2]))
+    ans
+}
+
+curve(fA, las = 1,
+      from = 121*pi, to = 169*pi,
+      xlab = expression(Area~("in"^2)),
+      ylab = "Probability density",
+      main = "PDF of pizza area")
+```
+:::
+
 
 
 
