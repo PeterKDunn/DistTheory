@@ -436,7 +436,7 @@ The covariance between each *pair* of random variables can also be computed (Sec
 The variances and covariances are conveniently compiled into a $n\times n$ *covariance matrix*:\index{Covariance!matrix}
 \begin{align*}
   \Sigma = \text{Cov}(\mathbf{X}) 
-  = \operatorname{E}\left[(\mathbf{X} - \boldsymbol{\mu})(\mathbf{X} - \boldsymbol{\mu})^T\right].
+  = \operatorname{E}\left[(\mathbf{X} - \boldsymbol{\mu})(\mathbf{X} - \boldsymbol{\mu})^T\right]
   = 
   \begin{bmatrix}
     \sigma_1^2                    & \operatorname{Cov}(X_1, X_2)  & \dots   & \operatorname{Cov}(X_1, X_n)\\
@@ -1180,5 +1180,92 @@ where
 2. Find the marginal density of the time to failure $f_X(x)$.
 3. Compute $\Pr(Y = 1 \mid X \leq 2)$, the probability that the failure mode was mechanical given that the component failed within $200$ hours.
 4. Interpret the result in words.
+:::
+
+
+---
+
+
+:::{.exercise #MultivariateTriathlon}
+An Olympic triathlon consist of three legs: a $1.5\kms$ swim, a $40\kms$ bicycle ride, and a $10\kms$ run.
+Denote the time (in minutes) to complete each leg as $S$, $B$ and\ $R$ respectively.
+The total time for the winner to complete the triathlon is $T = S + B + R$.
+For two triathlons (say, Triathlons\ $1$ and\ $2$):
+\begin{align*}
+  S_1\sim N(36, 4^2);\quad & \quad S_2\sim N(32, 5^2);\\
+  B_1\sim N(75, 8^2);\quad & \quad B_2\sim N(81, 7^2);\\
+  R_1\sim N(45, 6^2);\quad & \quad R_2\sim N(54, 6^2).
+\end{align*}
+Assuming each leg is independent of the other legs, answer the following questions:
+
+1. Determine the mean completion time for the winner of each triathlon.
+2. Determine the standard deviation of the completion time for the winner of each triathlon.
+3. Determine the distribution for $T_1 - T_2$: the difference between the completion times for the winners of the two triathlons. (BETTER!!!!!!)
+4. Determine the probability that the winner of Triathlon\ $1$ will record a faster finishing time that the winner of Triathlon\ $2$.
+5. Explain what independence means in this context.
+
+The times for the three legs are usually not independent: many competitors are better athletes than others.
+The correlations between the winner's times for each leg are shown in Table\ \@ref(tab:TriCor), and are the same for both triathlons.
+Using these correlations, answer the following question:
+
+6. Determine the mean completion time for the winner of each triathlon.
+7. Compute the covariance between the times for each leg.
+8. Determine the standard deviation of the completion time for the winner of each triathlon.
+   Compare to the standard deviations under the assumption of independence, and comment.
+9. Determine the distribution for $T_1 - T_2$: the difference between the completion times for the winners of the two triathlons. (BETTER!!!!!!)
+10. Determine the probability that the winner of Triathlon\ $1$ will record a faster finishing time that the winner of Triathlon\ $2$.
+:::
+
+
+```{r TriCor, echo=FALSE}
+TriCor.caption <- "The correlations between the triathlons winners times for each leg."
+
+TriCor <- array( dim = c(3, 3))
+
+TriCor[1, ] <- c("$1.00$", 
+                 "$0.50$",
+                 "$0.40$")
+TriCor[2, ] <- c("$0.50$",
+                 "$1.00$",
+                 "$0.70$")
+TriCor[3, ] <- c("$0.40$",
+                 "$0.70$",
+                 "$1.00$")
+
+rownames(TriCor) <- c( "$S$",
+                       "$B$",
+                       "$R$")
+colnames(TriCor) <- c( "$S$",
+                       "$B$",
+                       "$R$")
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(TriCor,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = TriCor.caption) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(TriCor,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = TriCor.caption) %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+
+
+:::{.exercise #MultivariateMedley}
+ll
 :::
 ::::
