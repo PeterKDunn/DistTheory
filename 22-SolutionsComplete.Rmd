@@ -7490,6 +7490,60 @@ curve(fA, las = 1,
 :::
 
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:XformMaxHeight).**
+
+Write $U = \sqrt{2gh}$ ad $|dU/dH| = g/\sqrt{2gh}$; $f_H(h) = f_U(\sqrt{2gh}) g/\sqrt{2gh}$ in general.
+
+1. If $U\sim N(15, 2^2)$, then
+$$
+  f_H(h) = \frac{g}{4\sqrt{\pi\, gh}}\exp\left(-\frac{(\sqrt{2gh} - 15)^2}{8}\right)
+$$
+for $h > 0$.
+2. If $U\sim\Gamma(10, 1.5)$, then
+$$
+  f_H(h) = \frac{(\sqrt{2gh})^9\, \exp(-\sqrt{2gh}/1.5)}{\Gamma(10)\,1.5^{10}}\,
+           \frac{g}{\sqrt{2gh}}
+$$
+3. Plot below.
+4. $\operatorname{E}[U^2] = \operatorname{var}[U] + (\operatorname{E}[U])^2$, so $\operatorname{E}[H] = (\operatorname{var}[U] + (\operatorname{E}[U])^2)/(2g)$.
+   For the normal, $\operatorname{E}[H] = 11.68\ms$.
+   For the gamma,  $\operatorname{E}[H] = 12.63\ms$.
+:::
+
+
+```{r}
+g <- 9.8
+
+fH_norm <- function(h){
+    u <- sqrt(2 * g * h)
+    dnorm(u, mean = 15, sd = 2) * g / u
+}
+
+fH_gamma <- function(h){
+    u <- sqrt(2 * g * h)
+    dgamma(u, shape = 10, scale = 1.5) * g / u
+}
+
+curve(fH_norm, las = 1,
+      from = 0, to = 30,
+      ylim = c(0, 0.2),
+      xlab = "Maximum height (m)",
+      ylab = "Probability density",
+      lwd = 2)
+
+curve(fH_gamma,
+      add = TRUE,
+      lwd = 2,
+      lty = 2)
+
+legend("topright",
+       legend = c("Normal velocity", "Gamma velocity"),
+       lwd = 2,
+       lty = c(1, 2),
+       bty = "n")
+```
+
 
 
 
@@ -9673,6 +9727,7 @@ pf(0.4, df1 = 5, df2 = 10)                        # P(F_{5,10} <= 0.4)
 pf(2.5, df1 = 10, df2 = 5, lower.tail = FALSE)     # P(F_{10,5} >= 2.5)
 # Both should return the same value, approximately 0.1256
 ```
+
 
 
 
