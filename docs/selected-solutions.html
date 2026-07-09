@@ -5824,6 +5824,59 @@ Not triangular, but looks similar.</p>
 <span>      main <span class="op">=</span> <span class="st">"PDF of pizza area"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-69-1.png" alt="" width="672"></div>
 </div>
+<div class="answer">
+<p><strong>Exercise <a href="ChapterTransformations.html#exr:XformMaxHeight">9.31</a>.</strong></p>
+<p>Write <span class="math inline">\(U = \sqrt{2gh}\)</span> ad <span class="math inline">\(|dU/dH| = g/\sqrt{2gh}\)</span>; <span class="math inline">\(f_H(h) = f_U(\sqrt{2gh}) g/\sqrt{2gh}\)</span> in general.</p>
+<ol style="list-style-type: decimal">
+<li>If <span class="math inline">\(U\sim N(15, 2^2)\)</span>, then
+<span class="math display">\[
+  f_H(h) = \frac{g}{4\sqrt{\pi\, gh}}\exp\left(-\frac{(\sqrt{2gh} - 15)^2}{8}\right)
+\]</span>
+for <span class="math inline">\(h &gt; 0\)</span>.</li>
+<li>If <span class="math inline">\(U\sim\Gamma(10, 1.5)\)</span>, then
+<span class="math display">\[
+  f_H(h) = \frac{(\sqrt{2gh})^9\, \exp(-\sqrt{2gh}/1.5)}{\Gamma(10)\,1.5^{10}}\,
+        \frac{g}{\sqrt{2gh}}
+\]</span>
+</li>
+<li>Plot below.</li>
+<li>
+<span class="math inline">\(\operatorname{E}[U^2] = \operatorname{var}[U] + (\operatorname{E}[U])^2\)</span>, so <span class="math inline">\(\operatorname{E}[H] = (\operatorname{var}[U] + (\operatorname{E}[U])^2)/(2g)\)</span>.
+For the normal, <span class="math inline">\(\operatorname{E}[H] = 11.68\,\text{m}\)</span>.
+For the gamma, <span class="math inline">\(\operatorname{E}[H] = 12.63\,\text{m}\)</span>.</li>
+</ol>
+</div>
+<div class="sourceCode" id="cb283"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fl">9.8</span></span>
+<span></span>
+<span><span class="va">fH_norm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">h</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">u</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">g</span> <span class="op">*</span> <span class="va">h</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="va">u</span>, mean <span class="op">=</span> <span class="fl">15</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="va">g</span> <span class="op">/</span> <span class="va">u</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">fH_gamma</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">h</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">u</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">g</span> <span class="op">*</span> <span class="va">h</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html">dgamma</a></span><span class="op">(</span><span class="va">u</span>, shape <span class="op">=</span> <span class="fl">10</span>, scale <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">*</span> <span class="va">g</span> <span class="op">/</span> <span class="va">u</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="va">fH_norm</span>, las <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>      from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>      ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span>,</span>
+<span>      xlab <span class="op">=</span> <span class="st">"Maximum height (m)"</span>,</span>
+<span>      ylab <span class="op">=</span> <span class="st">"Probability density"</span>,</span>
+<span>      lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="va">fH_gamma</span>,</span>
+<span>      add <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>      lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>      lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>,</span>
+<span>       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Normal velocity"</span>, <span class="st">"Gamma velocity"</span><span class="op">)</span>,</span>
+<span>       lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>       lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>       bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-70-1.png" alt="" width="672"></div>
 <!-- **************************************************************************** -->
 </div>
 <div id="AnswersChapBivariate" class="section level2" number="20.9">
@@ -6446,7 +6499,7 @@ Three parts:</p>
 <li>
 <span class="math inline">\(\operatorname{E}[S] = 6\operatorname{E}[G] + \operatorname{E}[B] = 88\)</span>.</li>
 </ol>
-<div class="sourceCode" id="cb283"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb284"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">num_sims</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
 <span></span>
 <span><span class="cn">T</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span><span class="op">(</span><span class="va">num_sims</span>, <span class="fl">22</span><span class="op">)</span></span>
@@ -6465,7 +6518,7 @@ Three parts:</p>
 <span><span class="co">#&gt; P(exactly 87 points): 0.0187</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">S</span>, las <span class="op">=</span> <span class="fl">1</span>, freq <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">"Points"</span>, main <span class="op">=</span> <span class="st">"Histogram of points scored"</span> <span class="op">)</span></span></code></pre></div>
-<div class="inline-figure"><img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-70-1.png" alt="" width="672"></div>
+<div class="inline-figure"><img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-71-1.png" alt="" width="672"></div>
 <ol start="6" style="list-style-type: decimal">
 <li>the mean final score;</li>
 <li>the variance of the final score;</li>
@@ -6494,7 +6547,7 @@ Hence, <span class="math inline">\(\Pr(C = 4\mid T = 4) = 0.85^4 = 0.52201\)</sp
 = (4\times 4) + (3.4\times 2) + (2\times 2) + (0.1\times 1)
 = 26.9\)</span></li>
 </ol>
-<div class="sourceCode" id="cb284"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb285"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">num_sims</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
 <span><span class="cn">T</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html">rpois</a></span><span class="op">(</span><span class="va">num_sims</span>, <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">C</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">num_sims</span>, <span class="cn">T</span>, <span class="fl">0.85</span><span class="op">)</span></span>
@@ -6516,7 +6569,7 @@ Hence, <span class="math inline">\(\Pr(C = 4\mid T = 4) = 0.85^4 = 0.52201\)</sp
 <span><span class="co">#&gt; Prob of 20 points exactly: 0.0634</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">S</span>, las <span class="op">=</span> <span class="fl">1</span>, freq <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">"Points"</span>, main <span class="op">=</span> <span class="st">"Histogram of points scored"</span> <span class="op">)</span></span></code></pre></div>
-<div class="inline-figure"><img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-71-1.png" alt="" width="672"></div>
+<div class="inline-figure"><img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-72-1.png" alt="" width="672"></div>
 </div>
 <!-- *********************************************************************************** -->
 </div>
@@ -6740,7 +6793,7 @@ Hence we deduce that <span class="math inline">\(\operatorname{E}[Y | X = 4] = 1
 </tbody>
 </table></div>
 </div>
-<div class="sourceCode" id="cb285"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb286"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">108125</span><span class="op">)</span></span>
 <span></span>
@@ -6763,7 +6816,7 @@ Hence we deduce that <span class="math inline">\(\operatorname{E}[Y | X = 4] = 1
 <span><span class="co">#&gt; [1] 2.301363</span></span></code></pre></div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapMultivariate.html#exr:DailyRainfallSim">11.18</a>.</strong></p>
-<div class="sourceCode" id="cb286"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb287"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">annualRainfallList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span> <span class="cn">NA</span>, dim <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span><span class="op">{</span></span>
 <span>   <span class="va">rainAmounts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span> <span class="fl">0</span>, dim <span class="op">=</span> <span class="fl">365</span><span class="op">)</span> <span class="co"># Reset for each simulation</span></span>
@@ -6778,7 +6831,7 @@ Hence we deduce that <span class="math inline">\(\operatorname{E}[Y | X = 4] = 1
 <span>   <span class="va">annualRainfallList</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">rainAmounts</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co"># hist( annualRainfallList)</span></span></code></pre></div>
-<div class="sourceCode" id="cb287"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb288"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Days</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">:</span> <span class="fl">365</span></span>
 <span><span class="va">prob</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span> <span class="op">*</span> <span class="va">Days</span><span class="op">/</span><span class="fl">365</span><span class="op">)</span> <span class="op">)</span> <span class="op">/</span> <span class="fl">2.2</span></span>
 <span></span>
@@ -6797,7 +6850,7 @@ Hence we deduce that <span class="math inline">\(\operatorname{E}[Y | X = 4] = 1
 <span>   <span class="va">annualRainfallList2</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">rainAmounts2</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#hist( annualRainfallList2)</span></span></code></pre></div>
-<div class="sourceCode" id="cb288"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb289"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Days</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">:</span> <span class="fl">365</span></span>
 <span></span>
 <span><span class="va">probList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span><span class="op">(</span> dim <span class="op">=</span> <span class="fl">365</span><span class="op">)</span></span>
@@ -7015,6 +7068,76 @@ Therefore,
 </li>
 </ol>
 </div>
+<div class="answer">
+<p><strong>Exercise <a href="ChapMultivariate.html#exr:MultivariateTriathlon">11.23</a>.</strong></p>
+<ol style="list-style-type: decimal">
+<li>
+<span class="math inline">\(\operatorname{E}[T_1] = 36 + 75 + 45 = 156\,\text{mins}\)</span>;
+<span class="math inline">\(\operatorname{E}[T_2] = 32 + 81 + 54 = 167\,\text{mins}\)</span>.</li>
+<li>
+<span class="math inline">\(\operatorname{var}[T_1] = 4^2 + 8^2 + 6^2 = 116\)</span>; sd: <span class="math inline">\(10.770\,\text{mins}\)</span>;
+<span class="math inline">\(\operatorname{var}[T_1] = 5^2 + 7^2 + 6^2 = 110\)</span>; sd: <span class="math inline">\(10.488\,\text{mins}\)</span>.</li>
+<li>
+<span class="math inline">\((T_1 - T_2)\sim N(-11, 226)\)</span>.</li>
+<li>
+<span class="math inline">\(\Pr( (T_1 - T_2) &lt; 0) = \Pr(Z &lt; 0.7317)\)</span>: <code>pnorm(0.7317)</code>, or about <span class="math inline">\(0.7678\)</span>.</li>
+<li>No matter the time in one leg, this has no impact on their time for other legs.</li>
+<li>
+<span class="math inline">\(\operatorname{E}[T_1] = 156\,\text{mins}\)</span>;
+<span class="math inline">\(\operatorname{E}[T_2] = 167\,\text{mins}\)</span>.</li>
+<li>
+<span class="math inline">\(\operatorname{cov}[S_1, B_1] = 0.5\times 4\times 8 = 16\)</span>;
+<span class="math inline">\(\operatorname{cov}[S_1, R_1] = 0.4\times 4\times 6 = 9.6\)</span>;
+<span class="math inline">\(\operatorname{cov}[B_1, R_1] = 0.7\times 8\times 6 = 33.6\)</span>.
+<span class="math inline">\(\operatorname{cov}[S_2, B_2] = 0.5\times 5\times 7 = 17.5\)</span>;
+<span class="math inline">\(\operatorname{cov}[S_2, R_2] = 0.4\times 5\times 6 = 12\)</span>;
+<span class="math inline">\(\operatorname{cov}[B_2, R_2] = 0.7\times 7\times 6 = 29.4\)</span>.</li>
+<li>
+<span class="math inline">\(\operatorname{var}[T_1] = 4^2 + 8^2 + 6^2 + 2(16 + 9.6 + 33.6) = 234.4\)</span>; sd: <span class="math inline">\(15.3\,\text{mins}\)</span>.
+<span class="math inline">\(\operatorname{var}[T_2] = 5^2 + 7^2 + 6^2 + 2(17.5 + 12 + 29.4) = 227.8\)</span>; sd: <span class="math inline">\(15.09\,\text{mins}\)</span>.</li>
+<li>
+<span class="math inline">\((T_1 - T_2)\sim(-11, 461.89)\)</span>.
+Larger than under independence.</li>
+<li>
+<span class="math inline">\(\Pr( (T_1 - T_2) &lt; 0) = \Pr(Z &lt; 0.5118)\)</span>: <code>pnorm(0.5118)</code>, or about <span class="math inline">\(0.6956\)</span>.</li>
+</ol>
+</div>
+<div class="answer">
+<p><strong>Exercise <a href="ChapMultivariate.html#exr:MultivariateIM">11.24</a>.</strong></p>
+<ol style="list-style-type: decimal">
+<li>
+<span class="math inline">\(\operatorname{E}[T] = 38 + 42 + 48 + 35 = 163\,\text{s}\)</span>.</li>
+<li>
+<span class="math inline">\(\operatorname{var}[T_1] = 2^2 + 2.5^2 + 3^2 + 2^2 = 23.25\)</span>; sd: <span class="math inline">\(4.82\,\text{s}\)</span>.</li>
+<li>
+<span class="math inline">\(T\sim N(163, 4.82^2)\)</span>.</li>
+<li>
+<span class="math inline">\(\Pr( T &lt; 160) = \Pr(Z &lt; -0.6224)\)</span>: <code>pnorm(-0.6224)</code>, or about <span class="math inline">\(0.2268\)</span>.</li>
+<li>
+<span class="math inline">\(\Pr( 160 &lt; T &lt; 165) = \Pr(-0.6224 &lt; Z &lt; 0.4149)\)</span>: <code>pnorm(0.4149) - pnorm(-0.6224)</code>, or about <span class="math inline">\(0.3941\)</span>.</li>
+<li>The time taken for one stroke provides no information about the time taken for any other stroke.</li>
+<li>
+<span class="math inline">\(\operatorname{E}[T] = 163\,\text{s}\)</span>.</li>
+<li>Using <span class="math inline">\(\operatorname{cov}[X, Y] = \rho\sigma_X\sigma_Y\)</span>:
+<span class="math inline">\(\Sigma =
+\begin{bmatrix}
+   2.00 &amp; 3.75 &amp; 3.60 &amp; 3.40\\
+   3.75 &amp; 2.50 &amp; 4.50 &amp; 4.00 \\
+   3.60 &amp; 4.50 &amp; 3.00 &amp; 3.90 \\
+   3.40 &amp; 4.00 &amp; 3.90 &amp; 2.00
+\end{bmatrix}\)</span>
+</li>
+<li>
+<span class="math inline">\(\operatorname{var}[T] = 23.25 + 2(3.75 + 3.60 + 3.40 + 4.50 + 4.00 + 3.90) = 69.55\)</span>; sd: <span class="math inline">\(8.35\,\text{s}\)</span>,
+Larger than under independence.</li>
+<li>
+<span class="math inline">\(T\sim N(163, 8.34^2)\)</span>.</li>
+<li>
+<span class="math inline">\(\Pr(T &lt; 160) = \Pr(Z &lt; -0.3597) = 0.3595\)</span>.</li>
+<li>
+<span class="math inline">\(\Pr( 160 &lt; T &lt; 165) = \Pr(-0.3597 &lt; Z &lt; 0.2398)\)</span>: about <span class="math inline">\(0.2352\)</span>.</li>
+</ol>
+</div>
 <!-- ************************************************************************************ -->
 </div>
 <div id="AnswersChapSampling" class="section level2" number="20.11">
@@ -7219,7 +7342,7 @@ Easily shown by adapting the proof for <span class="math inline">\(S^2_n\)</span
 </li>
 </ol>
 </div>
-<div class="sourceCode" id="cb289"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb290"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">num_Sims</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
 <span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
 <span><span class="va">mnx</span> <span class="op">&lt;-</span> <span class="va">sdx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">numeric</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
@@ -7235,19 +7358,19 @@ Easily shown by adapting the proof for <span class="math inline">\(S^2_n\)</span
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mnx</span> <span class="op">~</span> <span class="va">sdx</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-79"></span>
-<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-79-1.png" alt="Sample means and sample variances." width="70%"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-80"></span>
+<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-80-1.png" alt="Sample means and sample variances." width="70%"><p class="caption">
 FIGURE F.76: Sample means and sample variances.
 </p>
 </div>
-<div class="sourceCode" id="cb290"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb291"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">mnx</span>, <span class="va">sdx</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] -0.04240441</span></span></code></pre></div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ChisqProb">12.26</a>.</strong>
 We seek <span class="math inline">\(c\)</span> such that <span class="math inline">\(\Pr(X \le c) = 0.90\)</span> where <span class="math inline">\(X\sim\chi^2(12)\)</span>.
 In <strong>R</strong>:</p>
-<div class="sourceCode" id="cb291"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb292"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">qchisq</a></span><span class="op">(</span><span class="fl">0.9</span>, df <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 18.54935</span></span></code></pre></div>
 <p>About 90% of the distribution lies below
@@ -7263,14 +7386,14 @@ so
    = \Pr(\chi^2_9 &gt; 18).
 \]</span>
 In <strong>R</strong>:</p>
-<div class="sourceCode" id="cb292"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb293"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">pchisq</a></span><span class="op">(</span><span class="fl">18</span>, df <span class="op">=</span> <span class="fl">9</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.03517354</span></span></code></pre></div>
 <p>Hence <span class="math inline">\(\Pr(S^2 &gt; 10) \approx 0.035\)</span>.</p>
 </div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ExSamplingDist">12.28</a>.</strong></p>
-<div class="sourceCode" id="cb293"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb294"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span>, <span class="fl">9</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 1. Population mean and variance</span></span>
@@ -7318,7 +7441,7 @@ The variance of the sampling distribution is smaller than <span class="math inl
 <li>For Poisson(<span class="math inline">\(\lambda = 3\)</span>): <span class="math inline">\(\operatorname{E}[X_i] = 3\)</span>; <span class="math inline">\(\operatorname{var}[X_i] = 3\)</span>.</li>
 <li>Algebraic argument: <span class="math inline">\(\operatorname{E}[\overline{X}] = (1/n) \times \sum \operatorname{E}[X_i] = (1/n)\times n\times \lambda = \lambda\)</span>.</li>
 </ol>
-<div class="sourceCode" id="cb294"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb295"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 3. Simulation</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fl">3</span>; <span class="va">n</span>      <span class="op">&lt;-</span> <span class="fl">20</span>; <span class="va">nsim</span>   <span class="op">&lt;-</span> <span class="fl">10000</span></span>
@@ -7335,8 +7458,8 @@ The variance of the sampling distribution is smaller than <span class="math inl
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">dnorm</a></span><span class="op">(</span><span class="va">x</span>, mean <span class="op">=</span> <span class="va">lambda</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">lambda</span> <span class="op">/</span> <span class="va">n</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>      add <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-83"></span>
-<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-83-1.png" alt="A sampling distribution." width="90%"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-84"></span>
+<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-84-1.png" alt="A sampling distribution." width="90%"><p class="caption">
 FIGURE F.77: A sampling distribution.
 </p>
 </div>
@@ -7345,7 +7468,7 @@ The histogram is approximately bell-shaped, consistent with the Central Limit Th
 </div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ExBiasedVariance">12.30</a>.</strong></p>
-<div class="sourceCode" id="cb295"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb296"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">mu</span>     <span class="op">&lt;-</span> <span class="fl">10</span>; <span class="va">sigma2</span> <span class="op">&lt;-</span> <span class="fl">4</span>; <span class="va">nsim</span>   <span class="op">&lt;-</span> <span class="fl">10000</span></span>
 <span></span>
@@ -7387,7 +7510,7 @@ For <span class="math inline">\(n = 50\)</span> the bias of <span class="math i
 </div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ExSampMeanVar">12.31</a>.</strong></p>
-<div class="sourceCode" id="cb296"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb297"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>   <span class="co"># rate; E[X] = 1/lambda = 2, var[X] = 1/lambda^2 = 4</span></span>
 <span><span class="va">nsim</span>   <span class="op">&lt;-</span> <span class="fl">10000</span></span>
@@ -7422,7 +7545,7 @@ For <span class="math inline">\(n = 50\)</span> the bias of <span class="math i
 </div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ExCLTShape">12.32</a>.</strong></p>
-<div class="sourceCode" id="cb297"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb298"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">nsim</span> <span class="op">&lt;-</span> <span class="fl">10000</span>; <span class="va">mu_u</span>  <span class="op">&lt;-</span> <span class="fl">0.5</span>; <span class="va">var_u</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="fl">12</span></span>
 <span></span>
@@ -7437,12 +7560,12 @@ For <span class="math inline">\(n = 50\)</span> the bias of <span class="math i
 <span>        add <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-86"></span>
-<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-86-1.png" alt="Two estimates." width="100%"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-87"></span>
+<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-87-1.png" alt="Two estimates." width="100%"><p class="caption">
 FIGURE F.78: Two estimates.
 </p>
 </div>
-<div class="sourceCode" id="cb298"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb299"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>For <span class="math inline">\(n = 1\)</span> the distribution is uniform.
 By <span class="math inline">\(n = 5\)</span> it is already roughly bell-shaped.
@@ -7454,7 +7577,7 @@ The uniform distribution is symmetric, so convergence to normality is fast.</p>
 <ol style="list-style-type: decimal">
 <li>Total <span class="math inline">\(T\)</span> is the sum of <span class="math inline">\(n\)</span> Poisson(<span class="math inline">\(4\)</span>) rvs; <span class="math inline">\(\text{Poisson}(n\times \lambda) = \text{Poisson}(200)\)</span>; <span class="math inline">\(\operatorname{E}[T] = 200\)</span>; <span class="math inline">\(\operatorname{var}[T] = 200\)</span>.</li>
 </ol>
-<div class="sourceCode" id="cb299"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb300"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fl">4</span>; <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
 <span></span>
 <span><span class="co"># 2. Normal approximation: T ~ N(200, 200)</span></span>
@@ -7473,7 +7596,7 @@ With <span class="math inline">\(n = 50\)</span> and <span class="math inline">\
 </div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ExNormalSampMean">12.34</a>.</strong></p>
-<div class="sourceCode" id="cb300"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb301"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fl">500</span>; <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fl">8</span></span>
 <span></span>
 <span><span class="co"># 1. P(X &lt; 490) for a single item</span></span>
@@ -7495,7 +7618,7 @@ Values far from the mean, like <span class="math inline">\(490\)</span>, become
 </div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ExLinearComb">12.35</a>.</strong></p>
-<div class="sourceCode" id="cb301"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb302"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. E[Y] = 3*5 - 2*2 = 11; var[Y] = 9*9 + 4*4 = 81 + 16 = 97</span></span>
 <span><span class="va">E_Y</span>   <span class="op">&lt;-</span> <span class="fl">3</span><span class="op">*</span><span class="fl">5</span> <span class="op">-</span> <span class="fl">2</span><span class="op">*</span><span class="fl">2</span></span>
 <span><span class="va">var_Y</span> <span class="op">&lt;-</span> <span class="fl">3</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">9</span> <span class="op">+</span> <span class="op">(</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">4</span></span>
@@ -7527,7 +7650,7 @@ The theoretical and simulated probabilities agree closely.</p>
 <li>
 <span class="math inline">\(\operatorname{E}[X] = 10\)</span>; <span class="math inline">\(\operatorname{var}[X] = 20\)</span> (for <span class="math inline">\(\chi^2_{10}\)</span>).</li>
 </ol>
-<div class="sourceCode" id="cb302"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb303"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 2. P(X &lt; 15.99)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html">pchisq</a></span><span class="op">(</span><span class="fl">15.99</span>, df <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.900081</span></span>
@@ -7547,8 +7670,8 @@ The theoretical and simulated probabilities agree closely.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, legend <span class="op">=</span> <span class="st">"Theoretical density"</span>,</span>
 <span>       lwd <span class="op">=</span> <span class="fl">2</span>, bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-90"></span>
-<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-90-1.png" alt="A chi-squared distribution." width="70%"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-91"></span>
+<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-91-1.png" alt="A chi-squared distribution." width="70%"><p class="caption">
 FIGURE F.79: A chi-squared distribution.
 </p>
 </div>
@@ -7556,7 +7679,7 @@ FIGURE F.79: A chi-squared distribution.
 </div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ExChiSqFromNormals">12.37</a>.</strong></p>
-<div class="sourceCode" id="cb303"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb304"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
 <span><span class="va">nsim</span> <span class="op">&lt;-</span> <span class="fl">10000</span>; <span class="va">n</span>    <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span></span>
@@ -7571,12 +7694,12 @@ FIGURE F.79: A chi-squared distribution.
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">chi</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span><span class="op">~</span><span class="va">density</span><span class="op">)</span>,</span>
 <span>       lwd <span class="op">=</span> <span class="fl">2</span>, bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-91"></span>
-<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-91-1.png" alt="Two estimates." width="70%"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-92"></span>
+<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-92-1.png" alt="Two estimates." width="70%"><p class="caption">
 FIGURE F.80: Two estimates.
 </p>
 </div>
-<div class="sourceCode" id="cb304"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb305"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># 2. Empirical vs theoretical mean and variance</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Empirical mean:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">chi_sim</span><span class="op">)</span>, <span class="st">"  Theoretical:"</span>, <span class="va">n</span>, <span class="st">"\n"</span><span class="op">)</span></span>
@@ -7591,7 +7714,7 @@ FIGURE F.80: Two estimates.
 <li>
 <span class="math inline">\((n - 1)S^2 / \sigma^2 \sim \chi^2_{n - 1} = \chi^2_{14}\)</span>.</li>
 </ol>
-<div class="sourceCode" id="cb305"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb306"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">15</span>; <span class="va">mu</span> <span class="op">&lt;-</span> <span class="fl">2</span>; <span class="va">sigma2</span> <span class="op">&lt;-</span> <span class="fl">9</span></span>
 <span></span>
 <span><span class="co"># 2. P(S^2 &gt; 14)</span></span>
@@ -7617,7 +7740,7 @@ FIGURE F.80: Two estimates.
 </div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ExTDist">12.39</a>.</strong></p>
-<div class="sourceCode" id="cb306"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb307"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. E[T] = 0 (nu &gt; 1); var[T] = nu/(nu-2) = 8/6 = 4/3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"E[T]   ="</span>, <span class="fl">0</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; E[T]   = 0</span></span>
@@ -7648,8 +7771,8 @@ FIGURE F.80: Two estimates.
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">t</span><span class="op">[</span><span class="fl">8</span><span class="op">]</span><span class="op">~</span><span class="va">density</span><span class="op">)</span>,</span>
 <span>       lwd <span class="op">=</span> <span class="fl">2</span>, bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-93"></span>
-<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-93-1.png" alt="A simulated $t$-distribution." width="70%"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-94"></span>
+<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-94-1.png" alt="A simulated $t$-distribution." width="70%"><p class="caption">
 FIGURE F.81: A simulated <span class="math inline">\(t\)</span>-distribution.
 </p>
 </div>
@@ -7657,7 +7780,7 @@ FIGURE F.81: A simulated <span class="math inline">\(t\)</span>-distribution.
 </div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ExTStatistic">12.40</a>.</strong></p>
-<div class="sourceCode" id="cb307"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb308"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">14.2</span>, <span class="fl">15.8</span>, <span class="fl">13.5</span>, <span class="fl">16.1</span>, <span class="fl">14.9</span>, <span class="fl">15.3</span>, <span class="fl">13.8</span>, <span class="fl">16.4</span>, <span class="fl">14.6</span>, <span class="fl">15.0</span><span class="op">)</span></span>
 <span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="va">mu0</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
@@ -7684,7 +7807,7 @@ The data are consistent with a population mean of <span class="math inline">\(1
 </div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ExFDist">12.41</a>.</strong></p>
-<div class="sourceCode" id="cb308"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb309"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. E[X] = nu2/(nu2-2) = 20/18 = 10/9</span></span>
 <span><span class="co">#    var[X] = 2*nu2^2*(nu1+nu2-2) / (nu1*(nu2-2)^2*(nu2-4))</span></span>
 <span><span class="va">nu1</span> <span class="op">&lt;-</span> <span class="fl">4</span>; <span class="va">nu2</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
@@ -7719,8 +7842,8 @@ The data are consistent with a population mean of <span class="math inline">\(1
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="cn">F</span><span class="op">[</span><span class="fl">4</span><span class="op">*</span><span class="st">","</span><span class="op">*</span><span class="fl">20</span><span class="op">]</span><span class="op">~</span><span class="va">density</span><span class="op">)</span>,</span>
 <span>       lwd <span class="op">=</span> <span class="fl">2</span>, bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-95"></span>
-<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-95-1.png" alt="An $F$-distribution.." width="70%"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-96"></span>
+<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-96-1.png" alt="An $F$-distribution.." width="70%"><p class="caption">
 FIGURE F.82: An <span class="math inline">\(F\)</span>-distribution..
 </p>
 </div>
@@ -7731,7 +7854,7 @@ FIGURE F.82: An <span class="math inline">\(F\)</span>-distribution..
 <ol style="list-style-type: decimal">
 <li>If <span class="math inline">\(T\sim t_n\)</span>, then <span class="math inline">\(T^2 \sim F_{1, n}\)</span>.</li>
 </ol>
-<div class="sourceCode" id="cb309"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb310"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 2. P(T^2 &gt; 3) using t_12</span></span>
 <span><span class="co">#    T^2 &gt; 3 iff |T| &gt; sqrt(3)</span></span>
 <span><span class="va">p_t</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">pt</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, df <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
@@ -7762,12 +7885,12 @@ FIGURE F.82: An <span class="math inline">\(F\)</span>-distribution..
 <span>     xlab   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu">italic</span><span class="op">(</span><span class="va">W</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Fdist.html">df</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span>, <span class="fl">12</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-96"></span>
-<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-96-1.png" alt="Two distributions." width="90%"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-97"></span>
+<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-97-1.png" alt="Two distributions." width="90%"><p class="caption">
 FIGURE F.83: Two distributions.
 </p>
 </div>
-<div class="sourceCode" id="cb310"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb311"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The two probabilities are equal, and the histograms are visually identical, confirming that <span class="math inline">\(T^2 \sim F_{1,12}\)</span> when <span class="math inline">\(T \sim t_{12}\)</span>.</p>
 </div>
@@ -7776,7 +7899,7 @@ FIGURE F.83: Two distributions.
 <ol style="list-style-type: decimal">
 <li>Exact distribution: <span class="math inline">\(Y \sim \text{Binomial}(120, 0.35)\)</span>.</li>
 </ol>
-<div class="sourceCode" id="cb311"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb312"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">0.35</span>; <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">120</span></span>
 <span></span>
 <span><span class="co"># 2. Approximate: Y ~ N(np, np(1-p)) = N(42, 27.3)</span></span>
@@ -7804,7 +7927,7 @@ Without the correction there is slightly more error.</p>
 </div>
 <div class="answer">
 <p><strong>Exercise <a href="ChapDescribingSamples.html#exr:ExMeanVarIndep">12.44</a>.</strong></p>
-<div class="sourceCode" id="cb312"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb313"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span></span>
 <span><span class="va">nsim</span> <span class="op">&lt;-</span> <span class="fl">5000</span>; <span class="va">n</span>    <span class="op">&lt;-</span> <span class="fl">30</span></span>
 <span></span>
@@ -7823,12 +7946,12 @@ Without the correction there is slightly more error.</p>
 <span>     xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu">bar</span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>     ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">S</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-98"></span>
-<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-98-1.png" alt="Correlations between sample mean and sample variance." width="70%"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-99"></span>
+<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-99-1.png" alt="Correlations between sample mean and sample variance." width="70%"><p class="caption">
 FIGURE F.84: Correlations between sample mean and sample variance.
 </p>
 </div>
-<div class="sourceCode" id="cb313"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb314"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># 2. Correlation</span></span>
 <span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">xbars</span>, <span class="va">s2s</span><span class="op">)</span></span>
@@ -7897,7 +8020,7 @@ For large <span class="math inline">\(n\)</span>, <span class="math inline">\(\
 By contrast, <span class="math inline">\(2\overline{X}\)</span> averages out information across all observations and remains comparatively noisy.</li>
 </ol>
 </div>
-<div class="sourceCode" id="cb314"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb315"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fl">5</span>;  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10</span>;  <span class="va">B</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
 <span></span>
@@ -7929,8 +8052,8 @@ By contrast, <span class="math inline">\(2\overline{X}\)</span> averages out inf
 <span>     xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu">tilde</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">theta</span>, lty <span class="op">=</span> <span class="fl">2</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:unnamed-chunk-99"></span>
-<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-99-1.png" alt="Two estimates." width="90%"><p class="caption">
+<span style="display:block;" id="fig:unnamed-chunk-100"></span>
+<img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-100-1.png" alt="Two estimates." width="90%"><p class="caption">
 FIGURE F.85: Two estimates.
 </p>
 </div>
@@ -8023,7 +8146,7 @@ This extra probability in the tails reflects the additional uncertainty from est
 <p>As <span class="math inline">\(\nu\)</span> increases, <span class="math inline">\(t^*\)</span> decreases toward <span class="math inline">\(1.96\approx 2\)</span>, the familiar normal percentage point.
 For small <span class="math inline">\(\nu\)</span> a wider interval is needed to capture the central <span class="math inline">\(95\%\)</span> of probability, again reflecting the heavier tails.</p>
 </div>
-<div class="sourceCode" id="cb315"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb316"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### PART 1</span></span>
 <span><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">pt</a></span><span class="op">(</span><span class="fl">2</span>, df <span class="op">=</span> <span class="va">nu</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -8070,7 +8193,7 @@ where the last step uses Part 2.</li>
 <li>See <strong>R</strong> below.</li>
 </ol>
 </div>
-<div class="sourceCode" id="cb316"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb317"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### PART 1</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, length.out <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
@@ -8085,8 +8208,8 @@ where the last step uses Part 2.</li>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, </span>
 <span>       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"F(5,5)"</span>,<span class="st">"F(5,30)"</span>,<span class="st">"F(30,5)"</span>,<span class="st">"F(30,30)"</span><span class="op">)</span>,</span>
 <span>       lty <span class="op">=</span> <span class="va">lty</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<div class="inline-figure"><img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-101-1.png" alt="" width="672"></div>
-<div class="sourceCode" id="cb317"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="22-SolutionsComplete_files/figure-html/unnamed-chunk-102-1.png" alt="" width="672"></div>
+<div class="sourceCode" id="cb318"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">### PART 4</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/Fdist.html">pf</a></span><span class="op">(</span><span class="fl">0.4</span>, df1 <span class="op">=</span> <span class="fl">5</span>, df2 <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>                        <span class="co"># P(F_{5,10} &lt;= 0.4)</span></span>
@@ -8196,7 +8319,7 @@ So then, <span class="math inline">\(\operatorname{E}[Y] = (1 - p)/p = 1.667\)</
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn and Taryn Axelsen. It was last built on Last updated: 2026-07-08.</p>
+    <p>"<strong>The Theory of Statistical Distributions</strong>" was written by Peter K. Dunn and Taryn Axelsen. It was last built on Last updated: 2026-07-09.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
