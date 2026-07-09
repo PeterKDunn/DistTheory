@@ -1196,7 +1196,7 @@ For two triathlons (say, Triathlons\ $1$ and\ $2$):
   B_1\sim N(75, 8^2);\quad & \quad B_2\sim N(81, 7^2);\\
   R_1\sim N(45, 6^2);\quad & \quad R_2\sim N(54, 6^2).
 \end{align*}
-Assuming each leg is independent of the other legs, answer the following questions:
+Assuming the time for each leg is independent of the other legs, answer the following questions:
 
 1. Determine the mean completion time for the winner of each triathlon.
 2. Determine the standard deviation of the completion time for the winner of each triathlon.
@@ -1265,7 +1265,92 @@ if( knitr::is_html_output() ) {
 
 
 
-:::{.exercise #MultivariateMedley}
-ll
+:::{.exercise #MultivariateIM}
+In the $200\ms$ individual medley (IM), swimmers complete two laps each of butterfly, backstroke, breaststroke, and freestyle (usually front crawl) in a $50\ms$ pool, in that order.
+Denote the time (in seconds) to complete each stroke as $A$, $B$, $C$ and\ $D$ respectively.
+The total time for the IM is $T = A + B + C + D$.
+For IM competitors at state level:
+\begin{align*}
+  A\sim N(38, 2^2); \quad&\quad B\sim N(42, 2.5^2);\\
+  C\sim N(48, 3^2); \quad&\quad D\sim N(35, 2^2).
+\end{align*}
+Assuming the time for each stroke is independent of the others, answer the following questions:
+
+1. Determine the mean completion time for the IM.
+2. Determine the standard deviation of the completion times for the IM.
+3. Determine the distribution for\ $T$.
+4. Determine the probability that the IM completion time is under $160\sec$.
+5. Determine the probability that the IM completion time is between $160\secs$ and $165\secs$.
+6. Explain what independence means in this context.
+
+The completion times for the four strokes legs are usually not independent.
+The correlations between the times are shown in Table\ \@ref(tab:IMCor).
+Using these correlations, answer the following question:
+
+7. Determine the mean completion time for the IM.
+8. Compute the covariance between the times for each stroke.
+9. Determine the standard deviation of the completion time for the IM. 
+   Compare to the standard deviations under the assumption of independence, and comment.
+10. Determine the distribution for $T$.
+11. Determine the probability that the IM completion time is under $160\secs$.
+12. Determine the probability that the IM completion time is between $160\secs$ and $165\secs$.
 :::
+
+
+```{r IMCor, echo=FALSE}
+IMCor.caption <- "The correlations between the strokes in an IM\\@."
+
+IMCor <- array( dim = c(4, 4))
+
+IMCor[1, ] <- c("$1.00$", 
+                 "$0.75$",
+                 "$0.60$",
+                 "$0.85$")
+IMCor[2, ] <- c("$0.75$",
+                 "$1.00$",
+                 "$0.60$",
+                 "$0.80$")
+IMCor[3, ] <- c("$0.60$",
+                 "$0.60$",
+                 "$1.00$",
+                "0.65")
+IMCor[4, ] <- c("$0.85$",
+                 "$0.80$",
+                 "$0.65$",
+                 "$1.00$")
+
+rownames(IMCor) <- c( "Butterfly",
+                      "Backstroke",
+                      "Breaststroke",
+                      "Front crawl")
+colnames(IMCor) <- c( "Butterfly",
+                      "Backstroke",
+                      "Breaststroke",
+                      "Front crawl")
+if( knitr::is_latex_output() ) {
+  knitr::kable(IMCor,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = IMCor.caption) %>%
+    kable_styling(font_size = 10) %>%
+    column_spec(1, bold = TRUE) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(IMCor,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = IMCor.caption) %>%
+    column_spec(1, bold = TRUE) %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+
 ::::
