@@ -3511,14 +3511,14 @@ Consider the PDF $f_X(x) = 2x$ for $0 < x < 1$.
 ---
 
 
-<!-- 
-:::{.exercise #PDFfromGraph}
-Consider the random variable\ $W$ with the probability function shown in Fig.
-Which plot in Fig. is the CDF? Why?
 
+:::{.exercise #PDFfromGraph}
+Consider the random variable\ $X$ with the probability function shown in Fig.\ \@ref(fig:PDFoptionsA).
+Which plot in Fig.\ \@ref(fig:PDFoptionsA) is the corresponding distribution function? 
+Why?
 :::
 
-```{r}
+```{r PDFoptionsA}
 fx <- function(x){
   fx <- numeric(length(x))
   xLo <- (x > 10) & (x < 11.5)
@@ -3543,11 +3543,98 @@ Fx <- function(x){
 
 x <- seq(9.75, 12.25,
          length = 100)
-plot(fx(x) ~ x,
-     type = "l",
-     lwd = 2)
+plotContinuous(pdf_fn = fx, 
+               type = "PDF", 
+               fill = "lightgrey", 
+               lo = 10, hi = 13,
+                showx = range(x))
+
 ```
 
--->
+
+```{r #CDFoptionsA, echo=FALSE, fig.align="center", out.width="100%", fig.width=5, fig.height=5, fig.cap="Four possible distribution functions."}
+x <- seq(9.75, 12.25,
+         length = 100)
+
+FA <- function(x) {  # INCORRECT
+  FA <- numeric(length(x))
+  xLo <- (x > 10) & (x < 11.5)
+  xHi <- (x >= 11.5) & (x < 12)
+  FA[xLo] <- (x[xLo] - 10)/3
+  FA[xHi] <- x[xHi] - 11
+  FA[x >= 12] <- 1
+  
+  FA
+
+}
+
+FB <- function(x) {  # INCORRECT
+  FB <- numeric(length(x))
+  xMid <- (x > 10) & (x < 12)
+
+  FB[xMid] <- (x[xMid] - 10)/2
+  FB[x >= 12] <- 1
+  FB
+}
+
+
+FC <- function(x) { # CORRECT
+  FC <- numeric(length(x))
+  xLo <- (x > 10) & (x < 11.5)
+  xHi <- (x >= 11.5) & (x < 12)
+  FC[xLo] <- (x[xLo] - 10)/6
+  FC[xHi] <- (6*x[xHi] - 68)/4
+  FC[x >= 12] <- 1
+  
+  FC
+}
+
+
+FD <- function(x) { # INCORRECT
+  FD <- numeric(length(x))
+  xLo <- (x > 10) & (x < 11.5)
+  xHi <- (x >= 11.5) & (x < 12)
+  FD[xLo] <- 1/6
+  FD[xHi] <- 1
+  FD[x >= 12] <- 1
+  
+  FD
+}
+
+
+par(mfrow = c(2, 2))
+plotContinuous(df_fn = FA,
+               type = "DF",
+               main = "CDF 1",
+               show = range(x))
+segments(x0 = 11.5, x1 = 11.5,
+         y0 = 0,    y1 = 2,
+         lty = 2)
+
+plotContinuous(df_fn = FB,
+               type = "DF",
+               main = "CDF 2",
+               show = range(x))
+segments(x0 = 11.5, x1 = 11.5,
+         y0 = 0,    y1 = 2,
+         lty = 2)
+
+plotContinuous(df_fn = FC,
+               type = "DF",
+               main = "CDF 3",
+               show = range(x))
+segments(x0 = 11.5, x1 = 11.5,
+         y0 = 0,    y1 = 2,
+         lty = 2)
+
+plotContinuous(df_fn = FD,
+               type = "DF",
+               main = "CDF 3",
+               show = range(x))
+segments(x0 = 11.5, x1 = 11.5,
+         y0 = 0,    y1 = 2,
+         lty = 2)
+```
+
 ::::
 
