@@ -6346,7 +6346,7 @@ cat("All p in (1,2)?", all(p_tw > 1 & p_tw < 2), "\n")
 **R** function for CP-G random sampling:
 
 ```{r cpg_random}
-rcpg <- function(n, lambda, alpha, beta) {
+rCPG <- function(n, lambda, alpha, beta) {
   sapply(1:n, function(i) {
     N <- rpois(1, lambda)
     if (N == 0) return(0)
@@ -6356,7 +6356,7 @@ rcpg <- function(n, lambda, alpha, beta) {
 
 # Simulate and verify
 lam_r <- 2; alp_r <- 3; bet_r <- 0.5
-S_r <- rcpg(1e5, lam_r, alp_r, bet_r)
+S_r <- rCPG(1e5, lam_r, alp_r, bet_r)
 
 cat("--- Theoretical vs Simulated ---\n")
 cat("E[S]:      theory =", lam_r*alp_r/bet_r,
@@ -6387,7 +6387,7 @@ configs <- list(
 
 par(mfrow = c(3, 1), mar = c(4, 4, 3, 1))
 for (cfg in configs) {
-  S <- rcpg(8000, cfg$lambda, cfg$alpha, cfg$beta)
+  S <- rCPG(8000, cfg$lambda, cfg$alpha, cfg$beta)
   p0  <- mean(S == 0)
   eS  <- mean(S)
   S_pos <- S[S > 0]
@@ -6439,7 +6439,7 @@ cat("ZM Gamma: shape=", round(alp_zm,4), "rate=", round(bet_zm,4), "\n")
 
 # Simulate
 n_s <- 30000
-S_cpg <- rcpg(n_s, lam_m, alp_m, bet_m)
+S_cpg <- rCPG(n_s, lam_m, alp_m, bet_m)
 S_zm  <- ifelse(runif(n_s) < p_zm, 0,
                 rgamma(n_s, shape = alp_zm, rate = bet_zm))
 
@@ -6486,8 +6486,8 @@ Reproductive property of CP-G:
 
 ```{r cpg_repro}
 n_r <- 50000
-S1 <- rcpg(n_r, lambda=2, alpha=1.5, beta=0.5)
-S2 <- rcpg(n_r, lambda=3, alpha=1.5, beta=0.5)
+S1 <- rCPG(n_r, lambda=2, alpha=1.5, beta=0.5)
+S2 <- rCPG(n_r, lambda=3, alpha=1.5, beta=0.5)
 T_sum <- S1 + S2  # should behave like CP-G(5, 1.5, 0.5)
 
 lam_T <- 5; alp_T <- 1.5; bet_T <- 0.5
@@ -6502,7 +6502,7 @@ cat("Pr(T=0): theory =", round(exp(-lam_T),4),
 
 # CDF comparison
 x_pts <- quantile(T_sum, probs = seq(0.1, 0.9, 0.1))
-T_theory <- rcpg(n_r, lam_T, alp_T, bet_T)
+T_theory <- rCPG(n_r, lam_T, alp_T, bet_T)
 cat("\nCDF comparison at deciles:\n")
 df_cdf <- data.frame(
   x      = round(x_pts, 2),
@@ -8830,6 +8830,63 @@ $$
 11. $\Pr(T < 160) = \Pr(Z < -0.3597) = 0.3595$.
 12. $\Pr( 160 < T < 165) = \Pr(-0.3597 < Z < 0.2398)$: about $0.2352$.
 :::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MultivariateTransit).**
+
+NEEDS FIXING
+
+```{r}
+rWorkToHome <- function(n = 1) {
+  
+  # Leg 1: Home to traffic lights
+  T1 <- rnorm(n, mean = 2, sd = sqrt(0.3) )
+  
+  # Traffic lights: Compound Poisson-Gamma
+  TTL <- rCPG(n, 
+              lambda = 3, 
+              alpha = 2, 
+              beta = 0.2)
+  
+  # Leg 2: Traffic lights to stop sign
+  T2 <- rnorm(n, mean = 2, sd = sqrt(0.2))
+  
+  # Stop sign: Gamma(shape-scale)
+  TSS <- rgamma(n, 
+                shape = 0.7, 
+                scale = 0.7)
+  
+  # Leg 3: Stop sign to right turn
+  T3 <- rnorm(n, mean = 1, sd = sqrt(0.25) )
+  
+  # Waiting to turn right: Compound Poisson-Gamma
+  TRT <- rCPG(n,
+              lambda = 8/60,
+              alpha = 3/60,
+              beta = 10/60)
+  
+  # Leg 4: Right turn to work
+  T4 <- rnorm(n, mean = 1, sd = sqrt(0.25))
+  
+  # Total journey time
+  T <- T1 + TTL + T2 + TSS + T3 + TRT + T4
+  
+  return( list(T1 = T1, 
+               TTL = TTL, 
+               T2 = T2, 
+               TSS = TSS, 
+               T3 = T3, 
+               TRT = TRT, 
+               T4 = T4, 
+               T = T) )
+}
+
+TransitTimes <- rWorkToHome(2000)
+hist(TransitTimes$T)
+```
+
+
 
 
 

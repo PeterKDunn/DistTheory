@@ -1353,4 +1353,78 @@ if( knitr::is_html_output() ) {
 ```
 
 
+:::{.exercise #MultivariateTransit}
+A trip from home to work consist of these stages (Fig.\ \@ref(fig:WorkToHome)):
+
+* Leg\ 1 from Home (H) to the traffic lights (TL);
+* Leg\ 2 from the traffic lights to the Stop sign (SS);
+* Leg\ 3 from the Stop sign to the right turn (RT);
+* Leg\ 4 from the right turn to Work (W).
+
+The time to complete each part of the journey, in minutes, is modelled as follows (NEEDS FIXING!):
+
+* The time to travel Leg\ 1: $T_1 \sim N(\mu = 2, \sigma^2 = 0.3)$.
+* The time spent at the traffic lights: $T_{TL} \sim \text{CPG}(\lambda = 3/60, \alpha = 2/60, \beta = 1/60)$ since the traffic light may be green;
+* The time to travel Leg\ 2: $T_1 \sim N(mu = 2, \sigma^2 = 0.2)$.
+* The time spent at the Stop sign: $T_1 \sim \text{Gamma}(\alpha = 0,7, \beta = 0.3)$.
+* The time to travel Leg\ 3: $T_1 \sim N(\mu = 3, \sigma = 0.5)$.
+* The time spent waiting to turn right: $T_1 \sim \text{CPG}(\lambda = 8/60, \alpha = 3/60, \beta = 10/60)$.
+* The time to travel Leg\ 4: $T_1 \sim N(\mu = 3, \sigma = 0.75)$.
+
+1. Create an **R** function to model the trip from Home to Work.
+   (A function to produce random numbers from a CPG distribution is given in Sect.\ \@ref(MixedSimulation).)
+2. Complete $1\,000$ simulations, and hence find an approximation to the density function describing the commute time from Home to Work.
+3. From the simulation, estimate $\operatorname{E}(X)$ and $\operatorname{var}(X)$.
+:::
+
+```{r echo=FALSE, WorkToHome, fig.width=6, out.width='100%', fig.align="center", fig.cap="Thejourney from Home (H) to Work (W). TL represent traffic lights; SS represents a Stop Sign; TR represents a right turn."}
+plot( x = c(-1, 11)* 3,
+      y = c(-1, 5),
+      asp = 1,
+      axes = FALSE,
+      xlab = "",
+      ylab = "",
+      main = "",
+      type = "n")
+
+segments(x0 = 0, 
+         x1 = 10 * 3,
+         y0 = 0,
+         y1 = 0,
+         lwd = 2)
+
+# Points of interest
+locateX <- c(0, 2, 4, 7, 10) * 3
+points( x = locateX,
+        y = c(0, 0, 0, 0, 0),
+        pch = 19)
+text(x = locateX,
+     y = c(0, 0, 0, 0, 0),
+     labels = c("H", "TL", "SS", "RT", "W"),
+     pos = 3)
+
+# BETWEEN points of interest
+LocateLeg <- numeric (length(locateX) - 1 )
+for (i in 1:(length(locateX) - 1)){
+  Leg <- c( locateX[i], 
+            locateX[i + 1])
+  cat(i, Leg, "\n")
+  LocateLeg[i] <- mean( Leg ) 
+}
+text(x = LocateLeg,
+     y = c(0, 0, 0, 0),
+     labels = c("1", "2", "3", "4"),
+     pos = 1)
+
+
+
+###
+
+
+
+#box()
+#axis(side=1)
+#axis(side=2)
+```
+
 ::::
