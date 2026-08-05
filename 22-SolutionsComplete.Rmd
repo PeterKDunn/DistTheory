@@ -8833,15 +8833,73 @@ $$
 
 
 :::{.answer data-latex=""}
-**Exercise\ \@ref(exr:MultivariateTransit).**
+**Exercise\ \@ref(exr:MultivariateCommute).**
 
-NEEDS FIXING
+```{r echo=FALSE}
+CommuteTimes <- array( dim=c(7, 3) )
+colnames(CommuteTimes) <- c("Mean",
+                            "Variance",
+                            "90th percentile")
+rownames(CommuteTimes) <- c("Leg 1",
+                            "Traffic lights",
+                            "Leg 2",
+                            "Stop sign",
+                            "Leg 3",
+                            "Right turn",
+                            "Leg 4")
+CommuteTimes[, 1] <- c(2.00,
+                       1.2,
+                       4.00,
+                       1.5,
+                       3.00,
+                       0.083,
+                       3.00)
+CommuteTimes[, 2] <- c(0.2,
+                       0.144,
+                       0.15,
+                       2.25,
+                       0.25,
+                       0.0208,
+                       0.5625)
+CommuteTimes[, 3] <- c(2.57,
+                       2.6,
+                       4.5,
+                       3.45,
+                       3.64,
+                       0.42,
+                       3.96)
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(CommuteTimes,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "The commute times for various parts of a journey.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(CommuteTimes,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "The commute times for various parts of a journey.") %>%
+    row_spec(1, bold = TRUE)
+}
+```
+
+1. Leg\ 2: mean time of $4\mins$.
+2. Stop sign: variance is $2.25\mins^2$.
+3. Leg: $90$th perecentile is $4.5\mins$.
 
 ```{r}
 rWorkToHome <- function(n = 1) {
   
   # Leg 1: Home to traffic lights
-  T1 <- rnorm(n, mean = 2, sd = sqrt(0.3) )
+  T1 <- rnorm(n, mean = 2, sd = sqrt(0.2) )
   
   # Traffic lights: Compound Poisson-Gamma
   TTL <- rCPG(n, 
@@ -8850,20 +8908,20 @@ rWorkToHome <- function(n = 1) {
               beta = 0.2)
   
   # Leg 2: Traffic lights to stop sign
-  T2 <- rnorm(n, mean = 2, sd = sqrt(0.2))
+  T2 <- rnorm(n, mean = 4, sd = sqrt(0.15))
   
   # Stop sign: Gamma(shape-scale)
   TSS <- rgamma(n, 
-                shape = 0.7, 
-                scale = 0.7)
+                shape = 1, 
+                scale = 1.5)
   
   # Leg 3: Stop sign to right turn
-  T3 <- rnorm(n, mean = 1, sd = sqrt(0.25) )
+  T3 <- rnorm(n, mean = 3, sd = sqrt(0.25) )
   
   # Waiting to turn right: Compound Poisson-Gamma
   TRT <- rCPG(n,
-              lambda = 8/60,
-              alpha = 3/60,
+              lambda = 1,
+              alpha = 30/60,
               beta = 10/60)
   
   # Leg 4: Right turn to work
@@ -8882,11 +8940,126 @@ rWorkToHome <- function(n = 1) {
                T = T) )
 }
 
+set.seed(77041)
 TransitTimes <- rWorkToHome(2000)
-hist(TransitTimes$T)
+hist(TransitTimes$T,
+     prob = TRUE,
+     las = 1)
+mean(TransitTimes$T)
+var(TransitTimes$T)
+quantile(TransitTimes$T, 0.10)
 ```
 
+6. Theoretically: $\operatorname{E}[X] = 14.78\mins$ and $\operatorname{var}[X] = 3.58\mins^2$ (i.e., standard deviation is $1.89\mins$) assuming each component is independent of the others.
+From the simulation: mean: `mean(TransitTimes$T)`; variance: `var(TransitTimes$T)`.
+7. `r quantile(TransitTimes$T, 0.10)`
+8. `r quantile(TransitTimes$T, 0.90)`
+9. `r quantile(TransitTimes$T,c(0.25,0.75))`
+:::
 
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MultivariateCommute2).**
+
+```{r echo=FALSE}
+CommuteTimes <- array( dim=c(5, 3) )
+colnames(CommuteTimes) <- c("Mean",
+                            "Variance",
+                            "90th percentile")
+rownames(CommuteTimes) <- c("Leg 1",
+                            "Traffic lights",
+                            "Leg 2",
+                            "Railway crossing",
+                            "Leg 4")
+CommuteTimes[, 1] <- c(5.00,
+                       0.92,
+                       2.00,
+                       0.30,
+                       0.60)
+CommuteTimes[, 2] <- c(0.2,
+                       1.22,
+                       0.10,
+                       0.81,
+                       0.1225)
+CommuteTimes[, 3] <- c(5.57,
+                       2.72,
+                       2.41,
+                       0,
+                       6.45)
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(CommuteTimes,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = "The commute times for various parts of a journey.") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(CommuteTimes,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = "The commute times for various parts of a journey.") %>%
+    row_spec(1, bold = TRUE)
+}
+```
+
+1. Leg\ 3:  $6\mins$.
+2. The traffic light delay.
+3. Leg 3: $90$th percentile is $4.5\mins$.
+
+```{r}
+rWorkToHome <- function(n = 1){
+
+  T1 <- rnorm(n, 5, sqrt(0.2))
+
+  red <- rbinom(n, 1, 0.6)
+  TTL <- red * rlnorm(n, meanlog = 0.25, sdlog = 0.60)
+
+  T2 <- rnorm(n, 2, sqrt(0.1))
+
+  Train <- 3 * rbinom(n, 1, 0.1)
+
+  T3 <- rnorm(n, 6, 0.35)
+
+  T1 + TTL + T2 + Train + T3
+}
+
+set.seed(10097)
+
+commute <- rWorkToHome(1000)
+
+hist(commute,
+     probability = TRUE,
+     las = 1,
+     col = "grey90")
+
+lines(density(commute), lwd = 2)
+mean(commute)
+var(commute)
+quantile(commute, 0.10)
+```
+
+6. Theoretically: 
+\begin{align*}
+  \operatorname{E}[X] 
+  &= 5 + 0.918 + 1 + 0.3 + 6 = 14.22\mins.\\
+  \operatorname{var}[X] 
+  &= 0.20 + 1.22 + 0.10 + 0.81 + 0.1225 = 2.45\mins^,
+\end{align*}
+assuming each component is independent of the others.
+From the simulation: mean: `mean(commute)`; variance: `var(commute)`.
+7. `r quantile(commute, 0.10)`
+8. `r quantile(commute, 0.90)`
+9. `r quantile(commute,c(0.25,0.75))`
+:::
 
 
 
