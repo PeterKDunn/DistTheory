@@ -3044,6 +3044,189 @@ par(mfrow = c(1, 1))
 \index{Transformations of random variables!distribution function method!bivariate|)}
 
 
+## Convolutions and sums of random variables {#Convolutions}
+
+When evaluating system performance, total throughput times, aggregate financial losses, or combined measurement errors, a central task is determining the distribution of a sum of random variables $Z = X + Y$. 
+If $X$ and $Y$ are joint random variables with known joint probability function, the distribution of $Z = X + Y$ can be derived directly using bivariate transformation methods.
+When $X$ and $Y$ are independent, this operation simplifies to a mathematical operation known as *convolution*.\index{Convolution}
+
+
+### Discrete convolutions {#ConvolutionsDiscrete}
+
+\index{Convolution!discrete sum}
+Let\ $X$ and\ $Y$ be discrete random variables with joint probability mass function $p_{X,Y}(x, y)$.
+Define $Z = X + Y$.
+
+The event $\{Z = z\}$ occurs when\ $X$ takes some value\ $x$ and\ $Y$ simultaneously takes the value\ $z - x$ (so that the sum is $X + Y$ takes the value $z$).
+Summing over all feasible values\ $x$ in the support of\ $X$:
+$$
+  p_Z(z) = P(Z = z) = \sum_{x} \Pr(X = x, Y = z - x) = \sum_{x} p_{X,Y}(x, z - x).
+$$
+
+If\ $X$ and\ $Y$ are *independent*, then $p_{X,Y}(x, y) = p_X(x) \, p_Y(y)$, giving the *discrete convolution sum*:
+$$
+  p_Z(z) = (p_X * p_Y)(z) = \sum_{x} p_X(x) \, p_Y(z - x).
+$$
+
+::: {.example}
+Let $X \sim \text{Poisson}(\lambda_1)$ and $Y \sim \text{Poisson}(\lambda_2)$ be independent random variables with support $x, y \in \{0, 1, 2, \dots\}$. 
+For a given integer $z \ge 0$, the sum is over $x \in \{0, 1, \dots, z\}$; then the probability mass function of $Z = X + Y$ is
+\begin{align*}
+  p_Z(z) 
+  &= \sum_{x=0}^z p_X(x) \, p_Y(z - x) \\
+  &= \sum_{x=0}^z \left( \frac{\lambda_1^x e^{-\lambda_1}}{x!} \right) \left( \frac{\lambda_2^{z-x} e^{-\lambda_2}}{(z - x)!} \right) \\
+  &= \exp\left(-(\lambda_1 + \lambda_2)\right) \sum_{x=0}^z \frac{\lambda_1^x \lambda_2^{z - x}}{x! (z - x)!}.
+\end{align*}
+Multiply and divide inside the summation by $z!$:
+$$
+  p_Z(z) = \frac{\exp(-(\lambda_1 + \lambda_2))}{z!} \sum_{x=0}^z \frac{z!}{x! (z - x)!} \lambda_1^x \lambda_2^{z-x}.
+$$
+
+Recognizing the binomial expansion $\sum_{x=0}^z \binom{z}{x} \lambda_1^x \lambda_2^{z-x} = (\lambda_1 + \lambda_2)^z$:
+$$
+  p_Z(z) = \frac{(\lambda_1 + \lambda_2)^z e^{-(\lambda_1 + \lambda_2)}}{z!}, \quad z = 0, 1, 2, \dots
+$$
+
+Thus, $Z \sim \text{Poisson}(\lambda_1 + \lambda_2)$.
+:::
+
+
+### Continuous convolutions {#ConvolutionsContinuous}
+
+\index{Convolution!continuous integral}
+Let\ $X$ and\ $Y$ be continuous random variables with joint probability density function $f_{X,Y}(x, y)$.
+
+#### Derivation via the Distribution Function Method
+To find the probability density function $f_Z(z)$ of $Z = X + Y$, first compute the cumulative distribution function $F_Z(z) = P(X + Y \le z)$:
+$$
+  F_Z(z) = \iint_{x + y \le z} f_{X,Y}(x, y) \, dx \, dy = \int_{-\infty}^{\infty} \left( \int_{-\infty}^{z - x} f_{X,Y}(x, y) \, dy \right) dx.
+$$
+
+Then differentiate $F_Z(z)$ with respect to $z$ using Leibniz's Rule:
+$$
+  f_Z(z) = \frac{d}{dz} F_Z(z) = \int_{-\infty}^{\infty} f_{X,Y}(x, z - x) \, dx.
+$$
+When\ $X$ and\ $Y$ are *independent*, $f_{X,Y}(x, y) = f_X(x) f_Y(y)$, yielding the *continuous convolution integral*:
+$$
+  f_Z(z) = (f_X * f_Y)(z) = \int_{-\infty}^{\infty} f_X(x) f_Y(z - x) \, dx.
+$$
+
+By symmetry, swapping the roles of\ $X$ and\ $Y$ yields the equivalent expression:
+$$
+  f_Z(z) = \int_{-\infty}^{\infty} f_X(z - y) f_Y(y) \, dy.
+$$
+
+::: {.example}
+Let $X \sim \text{Exponential}(\lambda_1)$ and $Y \sim \text{Exponential}(\lambda_2)$ be independent random variables with $\lambda_1 \neq \lambda_2$.
+Find the density function of $Z = X + Y$.
+
+The supports are $x > 0$ and $y > 0$. 
+In the convolution integral, $f_X(x) > 0$ requires $x > 0$, and $f_Y(z - x) > 0$ requires $z - x > 0 \implies x < z$. 
+Hence, $f_Z(z) = 0$ for $z \le 0$, and for $z > 0$, integration bounds run from $x = 0$ to $x = z$:
+\begin{align*}
+  f_Z(z) 
+  &= \int_{0}^{z} \left( \lambda_1 e^{-\lambda_1 x} \right) \left( \lambda_2 e^{-\lambda_2 (z - x)} \right) dx \\
+  &= \lambda_1 \lambda_2 e^{-\lambda_2 z} \int_{0}^{z} e^{-(\lambda_1 - \lambda_2) x} \, dx \\
+  &= \lambda_1 \lambda_2 e^{-\lambda_2 z} \left[ \frac{e^{-(\lambda_1 - \lambda_2) x}}{-(\lambda_1 - \lambda_2)} \right]_0^z \\
+  &= \frac{\lambda_1 \lambda_2}{\lambda_1 - \lambda_2} e^{-\lambda_2 z} \left( 1 - e^{-(\lambda_1 - \lambda_2) z} \right) \\
+  &= \frac{\lambda_1 \lambda_2}{\lambda_1 - \lambda_2} \left( e^{-\lambda_2 z} - e^{-\lambda_1 z} \right), \quad z > 0
+\end{align*}
+This is the hypoexponential (or two-stage phase-type) distribution.
+:::
+
+
+
+### Sums of independent variables via MGFs
+
+While evaluating convolution integrals is explicit, calculating $S_n = \sum_{i=1}^n X_i$ via repeated nested integrals rapidly becomes analytically cumbersome. 
+From Sect.\ \@ref(MGF), if\ $X$ and\ $Y$ are independent random variables with moment generating functions $M_X(t)$ and $M_Y(t)$, the MGF of $Z = X + Y$ is:
+\begin{align*}
+  M_Z(t) 
+  &= \operatorname{E}\left[\exp(t(X + Y))\right] \\
+  &= \operatorname{E}\left[\exp(tX) \, \exp(tY)\right] \\
+  &= \operatorname{E}\left[\exp(tX)\right] \operatorname{E}\left[\exp(tY)\right] \\
+  &= M_X(t) \cdot M_Y(t).
+\end{align*}
+
+
+#### Comparing Direct Convolution vs. MGF Approach
+
+| Approach | Advantages | Disadvantages |
+| :------- | :--------- | :------------ |
+| **Direct Convolution** | Does not require MGF existence.| Integrals can be tedious or analytically intractable for $n > 2$. |
+|                        | Provides explicit piecewise density equations (e.g., sums of Uniforms). | Relies on uniqueness theorem to recognize the resulting MGF. |
+| **MGF Method**         | Converts integration into simple algebraic multiplication. | Requires MGF to exist in an open neighbourhood around $t = 0$.
+|                        | Extends effortlessly to $n$ independent terms. | |
+
+
+
+### Reproductive properties of standard distributions
+
+A family of distributions is closed under convolution (or possesses the *reproductive property*)\index{Reproductive pproperty} if the sum of independent random variables from that family also belongs to the *same* family.
+
+| Distribution Family | Parameters | Sum $Z = X + Y$ Distribution | Condition |
+| :--- | :--- | :--- | :--- |
+| **Poisson** | $X \sim \text{Poisson}(\lambda_1)$, $Y \sim \text{Poisson}(\lambda_2)$ | $Z \sim \text{Poisson}(\lambda_1 + \lambda_2)$ | Independent |
+| **Binomial** | $X \sim \text{Bin}(n_1, p)$, $Y \sim \text{Bin}(n_2, p)$ | $Z \sim \text{Bin}(n_1 + n_2, p)$ | Independent, shared $p$ |
+| **Negative Binomial** | $X \sim \text{NB}(r_1, p)$, $Y \sim \text{NB}(r_2, p)$ | $Z \sim \text{NB}(r_1 + r_2, p)$ | Independent, shared $p$ |
+| **Normal** | $X \sim N(\mu_1, \sigma_1^2)$, $Y \sim N(\mu_2, \sigma_2^2)$ | $Z \sim N(\mu_1 + \mu_2, \sigma_1^2 + \sigma_2^2)$ | Independent |
+| **Gamma** | $X \sim \text{Gamma}(\alpha_1, \beta)$, $Y \sim \text{Gamma}(\alpha_2, \beta)$ | $Z \sim \text{Gamma}(\alpha_1 + \alpha_2, \beta)$ | Independent, shared rate $\beta$ |
+| **Cauchy** | $X \sim \text{Cauchy}(x_0, \gamma_1)$, $Y \sim \text{Cauchy}(x_1, \gamma_2)$ | $Z \sim \text{Cauchy}(x_0 + x_1, \gamma_1 + \gamma_2)$ | Independent |
+
+
+
+### Statistical computing with convolutions in R
+
+#### Discrete Convolution using `convolve()` or Matrix Outer Products
+
+In R, discrete convolution of probability vectors $p_X$ and $p_Y$ over non-negative integer supports can be calculated using polynomial multiplication or the built-in `convolve()` function (which uses Fast Fourier Transforms):
+
+```{r discrete-convolution-r}
+# Define PMFs for X ~ Poisson(2) and Y ~ Poisson(3) truncated to finite support
+x_supp <- 0:15
+y_supp <- 0:15
+
+px <- dpois(x_supp, lambda = 2)
+py <- dpois(y_supp, lambda = 3)
+
+# Method A: Outer product sum over diagonals
+pz_outer <- tapply(outer(px, py), outer(x_supp, y_supp, "+"), sum)
+
+# Method B: Exact theoretical Poisson(5) PMF
+z_supp <- 0:30
+pz_theory <- dpois(z_supp, lambda = 5)
+
+# Compare first 6 values
+head(cbind(Support = z_supp, Convolved = pz_outer, Theoretical = pz_theory))
+```
+
+#### Numerical Integration & Simulation for Continuous ConvolutionsTo compute $f_Z(z)$ for arbitrary continuous independent variables numerically, use `integrate()` or empirical Kernel Density Estimation (KDE) from Monte Carlo draws:
+
+
+```{r}
+# Density function for sum of independent Exp(0.10) and Exp(0.05)
+f_Z_theoretical <- function(z, l1 = 0.10, l2 = 0.05) {
+  ifelse(z > 0, (l1 * l2 / (l1 - l2)) * (exp(-l2 * z) - exp(-l1 * z)), 0)
+}
+
+# Numerical convolution using integrate()
+f_Z_numerical <- function(z, l1 = 0.10, l2 = 0.05) {
+  sapply(z, function(zi) {
+    if (zi <= 0) return(0)
+    integrate(function(x) dexp(x, rate = l1) * dexp(zi - x, rate = l2),
+              lower = 0, upper = zi)$value
+  })
+}
+
+# Verify numerical vs theoretical density at z = 10, 20, 30
+z_vals <- c(10, 20, 30)
+rbind(
+  Numerical = f_Z_numerical(z_vals),
+  Theoretical = f_Z_theoretical(z_vals)
+)
+```
+
+
 
 ## The bivariate normal distribution {#BVNormalDistribution}
 
@@ -4264,10 +4447,29 @@ Use this information to answer the questions below.
 1. What is the mean and variance of the time for the whole trip (home to beach and back)?
 1. Create an **R** function to model the round trip, from home to the beach and back.
 1. Complete $1\,000$ simulations, and hence find an approximation to the density function describing the walking time for the round trip.
-1. From the simulation, estimate $\operatorname{E}(X)$ and $\operatorname{var}(X)$.
+1. From the simulation, estimate $\operatorname{E}[X]$ and $\operatorname{var}[X]$.
 1. The fastest $10$% of times take what time?
 1. The slowest $10$% of times take what time?
 1. Form an interval containing the central $50$% of walk times. 
+:::
+
+
+
+:::{.exercise #BivariateTriage}
+A hospital tracks patient throughput times\ $S$ (in minutes) from admission to discharge.
+Patients go through two consecutive, independent stages:
+
+* Stage 1 ($T_1$): Triage & Diagnostic Prep (nurse assessment, vital measurements, and initial diagnostic tests); modelled using $T_1\sim\text{Exp}(\lambda_1 = 0.10)$.
+* Stage 2 ($T_2$): Physician Consultation & Treatment (attending physician examination, procedure execution, and discharge setup); modelled using  $T_2\sim\text{Exp}(\lambda_2 = 0.05)$.
+
+Then, $S = T_1 + T_2$.
+
+Use this information to answer the following questions.
+
+1. Find the mean and variance of the total throughput times\ $S$.
+1. Find the probability density function of the throughput time.
+1. What is the probability that Stage\ 1 takes longer than Stage\ 2? 
+   That is, find $\Pr(T_1 > T_2)$.
 :::
 
 ::::

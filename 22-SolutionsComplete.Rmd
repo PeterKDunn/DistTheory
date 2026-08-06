@@ -6760,7 +6760,7 @@ $$
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:ContTransform).**
 
-1. Differentiating: $f_X(x) = 1$ for $-1/2 < x < /1/2$}.
+1. Differentiating: $f_X(x) = 1$ for $-1/2 < x < /1/2$.
 2. First: this transformation is not 1:1 (Fig.\ \@ref(fig:TransformSquared)).
    See that $X = \pm\sqrt{4 - Y}$, and that $3.75 < Y < 4$.
    So,
@@ -8496,6 +8496,53 @@ hist( WT <- simWalk(1000),
 :::
 
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:BivariateTriage).**
+
+Note: 
+$\operatorname{E}[T_1] = 1/0.10 = 10\mins$ and $\operatorname{var}[T_1] = 1/0.10^2 = 100\mins^2$;
+$\operatorname{E}[T_2] = 1/0.05 = 20\mins$ and $\operatorname{var}[T_2] = 1/0.05^2 = 400\mins^2$.
+
+1. $\operatorname{E}[S] = \operatorname{E}[T_1] + \operatorname{E}[T_2] = 10 = 20 = 30\mins$. 
+1. $\operatorname{var}[S] = \operatorname{var}[T_1] + \operatorname{var}[T_2] = 500\mins^2$. 
+1. For two independent exponential rvs with distinct rates $\lambda_1 \neq \lambda_2$, the probability density function of $S = T_1 + T_2$ is given by the convolution integral:
+$$
+  f_S(s) = \int_0^s f_{T_1}(t_1) \, f_{T_2}(s - t_1) \, dt_1 = \int_0^s \lambda_1 e^{-\lambda_1 t_1} \cdot \lambda_2 e^{-\lambda_2 (s - t_1)} \, dt_1.
+$$
+  Factoring out terms independent of $t_1$:
+$$
+  f_S(s) = \frac{\lambda_1 \lambda_2}{\lambda_1 - \lambda_2} \left( \exp(-\lambda_2 s) - \exp(-\lambda_1 s) \right).
+$$
+Substituting $\lambda_1 = 0.10$ and $\lambda_2 = 0.05$,
+$$
+  f_S(s) = 0.10 \left( \exp(-0.05 s) - \exp(-0.10 s) \right) \quad \text{for $s > 0$}.
+$$
+1. For independent $T_1 \sim \text{Exp}(\lambda_1)$ and $T_2 \sim \text{Exp}(\lambda_2)$:
+$$
+  \Pr(T_1 > T_2) 
+  = \int_0^\infty f_{T_2}(t_2) \, P(T_1 > t_2) \, dt_2 
+  = \int_0^\infty \lambda_2 \exp(-\lambda_2 t_2) \cdot \exp(-\lambda_1 t_2) \, dt_2 
+  = \frac{\lambda_2}{\lambda_1 + \lambda_2}.
+$$
+Substituting parameters:
+$$
+  \Pr(T_1 > T_2) = \frac{0.05}{0.10 + 0.05} = \frac{0.05}{0.15} = \frac{1}{3}.
+$$
+:::
+
+
+```{r}
+dThroughput <- function(s){
+  0.10 * ( exp(-0.05 * s) - exp(-0.10 * s) )
+}
+```
+
+```{r}
+curve(dThroughput(x), from = 0, to = 150,
+      lwd = 2, las = 1,
+      xlab = "Throughput time (mins)", ylab = "Density",
+      main = "Throughput time at an emergency ward")
+```
 
 <!-- *********************************************************************************** -->
 ## Answers for Chap.\ \@ref(ChapMultivariate) {#AnswersChapMultivariate}
