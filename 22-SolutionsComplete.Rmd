@@ -7611,26 +7611,26 @@ curve(fA, las = 1,
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:XformMaxHeight).**
 
-Write $U = \sqrt{2gh}$ ad $|dU/dH| = g/\sqrt{2gh}$; $f_H(h) = f_U(\sqrt{2gh}) g/\sqrt{2gh}$ in general.
+Write $U = \sqrt{2gh}$ and $|dU/dH| = g/\sqrt{2gh}$; $f_H(h) = f_U(\sqrt{2gh}) g/\sqrt{2gh}$ in general.
 
 1. If $U\sim N(15, 2^2)$, then
 $$
-  f_H(h) = \frac{g}{4\sqrt{\pi\, gh}}\exp\left(-\frac{(\sqrt{2gh} - 15)^2}{8}\right)
+  f_H(h) = \frac{g}{4\sqrt{\pi\, gh}}\exp\left(-\frac{\left(\sqrt{2gh} - 15\right)^2}{8}\right)
 $$
 for $h > 0$.
 2. If $U\sim\Gamma(10, 1.5)$, then
 $$
-  f_H(h) = \frac{(\sqrt{2gh})^9\, \exp(-\sqrt{2gh}/1.5)}{\Gamma(10)\,1.5^{10}}\,
+  f_H(h) = \frac{\left(\sqrt{2gh}\right)^9\, \exp(-\sqrt{2gh}/1.5)}{\Gamma(10)\,1.5^{10}}\,
            \frac{g}{\sqrt{2gh}}
 $$
-3. Plot below.
+3. See Fig.\ \@ref(fig:MaxHt).
 4. $\operatorname{E}[U^2] = \operatorname{var}[U] + (\operatorname{E}[U])^2$, so $\operatorname{E}[H] = (\operatorname{var}[U] + (\operatorname{E}[U])^2)/(2g)$.
    For the normal, $\operatorname{E}[H] = 11.68\ms$.
    For the gamma,  $\operatorname{E}[H] = 12.63\ms$.
 :::
 
 
-```{r}
+```{r MaxHt, echo=FALSE, fig.align="center", fig.cap="The distribution of the maximum height.", out.width='60%', fig.width=5, fig.height = 3.5}
 g <- 9.8
 
 fH_norm <- function(h){
@@ -7664,7 +7664,240 @@ legend("topright",
 
 
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:XformFuelEconomy).**
 
+2. Write $K = k/M$; then the Jacobian is $| dK/dM| = c/m^2$ and so
+$$
+  f_M(m) = \frac{c^\alpha}{\beta^\alpha \Gamma(\alpha)} \, m^{-(\alpha + 1)}\, \exp\left(-\frac{c}{\beta m}\right) \quad \text{for $m > 0$},
+$$
+the inverse Gamma distribution (with mean $\operatorname{E}[M] = \beta/[k(\alpha - 1)]$).
+5. The mean fuel consumption is (equivalently) $10\ell/100\kms$, $26.14\text{US mpg}$ or $31.39\text{US mpg}$.
+:::
+
+
+```{r FuelEconomy, echo=FALSE, out.width='100%', fig.width=7, fig.height = 2.75, fig.align="center", fig.cap="The fuel economy distributions for a fleet of vehicles."}
+par( mfrow = c(1, 3))
+
+curve( dgamma(x, shape=10, scale=1), 
+       from = 0, 
+       to = 30,
+       lwd = 2,
+       las = 1,
+       main = "Fuel economy (l/100km)",
+       ylab = "Density",
+       xlab = "Fuel economy (l/100km)" )
+dinvgamma <- function(x, alpha, beta, k){
+  (k ^ alpha) / (beta ^ alpha * gamma(alpha) ) *
+    x ^ ( -(alpha + 1)) *
+    exp( -k / (beta * x))
+}
+curve( dinvgamma(x, alpha=10, beta=1, k = 235.215), 
+       from = 0, 
+       to = 80,
+       lwd = 2,
+       las = 1,
+       main = "Fuel economy (US mpg)",
+       ylab = "Density",
+       xlab = "Fuel economy (US mpg)" )
+curve( dinvgamma(x, alpha=10, beta=1, k = 282.481), 
+       from = 0, 
+       to = 80,
+       lwd = 2,
+       las = 1,
+       main = "Fuel economy (imperial mpg)",
+       ylab = "Density",
+       xlab = "Fuel economy (imperial mpg)" )
+
+```
+
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:XformBrakingDistance).**
+
+1. $s = v_0^2/(2a)$ where $a < 0$ is the braking deceleration.
+2. The distribution of $s \propto u^2$ is a non-central chi-squared distribution.
+   The speeds and decelerations are in different units of measurements: working in m/s we use $s = v_0^2/(25.92 a)$.
+$F_D(d) = \Pr(D\le d) = \Pr(c V^2 \le d)$; then,
+$$
+  \Pr(V^2 \le d/c) =
+  \Pr\left( -\sqrt{d/c} \le V \le \sqrt{d/c}\,\right),
+$$
+and so
+\begin{align*}
+  F_D(d) &= F_v\left(\sqrt{d/c}\right) - F_v\left(-\sqrt{d/c}\right)\\
+  \text{and}
+  f_D(d) &= \frac{1}{2\sqrt{cd}} \left[ f_v\left(\sqrt{d/c}\right) + f_v\left(-\sqrt{d/c}\right)\right].
+\end{align*}
+Since $V\sim N(\mu, \sigma^2)$, 
+\begin{align*}
+  f_V(x) + f_V(-x) 
+  &= 
+  \frac{1}{\sqrt{2\pi}\sigma} 
+  \exp\left(-\frac{x^2 + \mu^2}{2\sigma^2}\right) 
+  \left[ 
+    \exp\left( \frac{2x\mu}{2\sigma^2}\right) +
+    \exp\left(-\frac{2x\mu}{2\sigma^2}\right) 
+  \right]\\
+  &= 
+  \frac{1}{\sqrt{2\pi}\sigma} 
+  \exp\left(-\frac{x^2 + \mu^2}{2\sigma^2}\right) 
+  \left[ \exp\left( \frac{x\mu}{\sigma^2}\right) +
+         \exp\left(-\frac{x\mu}{\sigma^2}\right) 
+  \right].
+\end{align*}
+  This is the non-central chi-squared distribution, with mean $\operatorname{E}[X] = \mu^2 +\sigma^2$ and $\operatorname{var}{X} = 2\sigma^2(2\mu^2 + \sigma^2)$.
+3. See Fig.\ \@ref(fig:BrakeDistance) and Table\ \@ref(tab:BrakeDecel2).
+4. See Fig.\ \@ref(fig:BrakeDistance) and Table\ \@ref(tab:BrakeDecel2).
+:::
+
+```{r BrakeDecel2, echo=FALSE}
+Brake2.caption <- "The braking distance for various scenarios."
+
+Brake2 <- array( dim = c(4, 3))
+
+Brake2[, 1] <- c("Gentle",
+                "Firm",
+                "Emergency: dry weather",
+                "Emergency: wet weather")
+Decel <- -c(3, 5, 8, 4)
+Brake2[, 2] <- round(3725/(-25.92 * Decel), 1)
+Brake2[, 3] <- round(10615/(-25.92 * Decel), 1)
+colnames(Brake2) <- c( "Scenario",
+                      "Braking distance from $60$",
+                      "Braking distance from $100$")
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(Brake2,
+               format = "latex",
+               booktabs = TRUE,
+               align = c("r", "c", "c"),
+               row.names = FALSE,
+               longtable = FALSE,                
+               escape = FALSE,
+               caption = Brake2.caption) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(Brake2,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               row.names = FALSE,
+               align = c("r", "c", "c"),
+               longtable = FALSE,
+               caption = Brake2.caption) %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+::::
+
+
+```{r BrakeDistance, echo=FALSE, fig.align="center", fig.cap="Braking distances (in m).", out.width='100%', fig.width=9.5, fig.height=4}
+par(mfrow = c(1, 2))
+
+# Parameters for Road 1
+mu1 <- 61
+var1 <- 4
+a_vals <- c("Gentle" = -3, 
+            "Firm" = -5, 
+            "Emergency: dry" = -8, 
+            "Emergency: wet" = -4)
+
+cols <- c("navy", 
+          "forestgreen", 
+          "firebrick", 
+          "darkorange")
+ltys <- 1:4
+
+d_grid1 <- seq(10, 60, 
+               length.out = 500)
+
+# Calculate PDF matrix (columns = scenarios)
+pdf_mat1 <- sapply(a_vals, function(a) {
+  c_val <- 1 / (25.92 * (-a))
+  s_grid <- sqrt(d_grid1 / c_val)
+  (1 / (2 * sqrt(c_val * d_grid1))) * dnorm(s_grid, mean = mu1, sd = sqrt(var1))
+})
+
+# Base R Plot
+plot(d_grid1, 
+     pdf_mat1[, 1], 
+     type = "l", 
+     col = cols[1],
+     lty = ltys[1],
+     lwd = 2,
+     las = 1,
+     ylim = c(0, max(pdf_mat1) * 1.05),
+     xlab = "Braking Distance (m)", 
+     ylab = "Density",
+     main = "Braking Distance Distribution\n(60 km/h Road)")
+
+for (i in 2:length(a_vals)) {
+  lines(d_grid1, 
+        pdf_mat1[, i], 
+        col = cols[i], 
+        lty = ltys[i],
+        lwd = 2)
+}
+
+legend("topright", 
+       legend = names(a_vals), 
+       col = cols, 
+       lwd = 2, 
+       lty = ltys,
+       bty = "n")
+
+
+
+# Parameters for Road 2
+# Parameters for Road 2
+mu2 <- 103
+var2 <- 6
+
+d_grid2 <- seq(30, 160, length.out = 500)
+
+# Calculate PDF matrix (columns = scenarios)
+pdf_mat2 <- sapply(a_vals, function(a) {
+  c_val <- 1 / (25.92 * (-a))
+  s_grid <- sqrt(d_grid2 / c_val)
+  (1 / (2 * sqrt(c_val * d_grid2))) * dnorm(s_grid, mean = mu2, sd = sqrt(var2))
+})
+
+# Base R Plot
+plot(d_grid2, 
+     pdf_mat2[, 1], 
+     type = "l", 
+     col = cols[1], 
+     lty = ltys[1],
+     lwd = 2,
+     las = 1,
+     ylim = c(0, max(pdf_mat2) * 1.05),
+     xlab = "Braking Distance (m)", 
+     ylab = "Density",
+     main = "Braking Distance Distribution\n(100 km/h Road)")
+
+for (i in 2:length(a_vals)) {
+  lines(d_grid2, 
+        pdf_mat2[, i], 
+        col = cols[i], 
+        lty = ltys[i],
+        lwd = 2)
+}
+
+legend("topright", 
+       legend = names(a_vals), 
+       col = cols, 
+       lwd = 2, 
+       lty = ltys,
+       bty = "n")
+
+```
 <!-- **************************************************************************** -->
 
 ## Answers for Chap.\ \@ref(ChapBivariate) {#AnswersChapBivariate}
@@ -8200,7 +8433,7 @@ $$
      \operatorname{E}[F]
    = (4\times 4) + (3.4\times 2) + (2\times 2) + (0.1\times 1)
    = 26.9$
-
+:::
 
 
 ```{r}
@@ -8224,6 +8457,42 @@ hist(S, las = 1, freq = FALSE,
 
 ```
 
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:BivariateWalkBeach).**
+
+1. $\operatorname{E}[B] = 1\hs$; 
+   $\operatorname{var}[B] = 0.02\hs^2$.
+2. $\operatorname{E}[H] = 40/30 \approx 1.33\hs$;
+   $\operatorname{var}[H] \approx 0.0444\hs^2$.
+3. $\operatorname{E}[W] = \operatorname{E}[W] + \operatorname{E}[W] \approx 2.33\hs$.
+   $\operatorname{var}[W] = \operatorname{var}[W]\operatorname{var}[W] \approx 0.044\hs^2$; the standard deviation is about $0.21\hs$ or $12.65\mins$.
+4. See below.
+5. See Fig.\ \@ref(fig:WalkTimes).
+
+
+```{r}
+simWalk <- function(n){
+  B <- rnorm(n = n, mean = 1, sd = sqrt(0.02) )
+  H <- rgamma(n = n, shape = 40, scale = 1/30)
+  B + H
+}
+```
+
+```{r WalkTimes, echo=FALSE, out.width='60%', fig.width=5, fig.height=3, fig.align="center", fig.cap="The total walk time (in hours) for a return walk to the beach." }
+set.seed(882)
+
+hist( WT <- simWalk(1000),
+            las = 1,
+            prob = TRUE,
+            xlab = "Total return trip time (in hs)",
+            ylab = "Density",
+            main = "Return trip to the beach"
+)
+```
+6. `r quantile(WT, 0.10)`. 
+7. `r quantile(WT, 0.90)`.
+8. `r c(quantile(WT, 0.25), quantile(WT, 0.75))`.
 :::
 
 
