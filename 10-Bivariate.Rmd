@@ -3061,73 +3061,87 @@ In addition, convolutions appear in other places also (such as order statistics;
 
 The definition of a convolution is similar for discrete and continuous cases, using summations or integrations as appropriate.
 
+
 :::{.definition #ConvolutionDiscrete name="Convolution: discrete case"}
 \index{Convolution!discrete sum}
-Let\ $X$ and\ $Y$ independent discrete random variables with probability mass functions $p_X(x)$ and $p_Y(y)$, taking values on the integers (or a subset thereof). 
+Let\ $X$ and\ $Y$ be independent discrete random variables with probability mass functions $p_X(x)$ and $p_Y(y)$, taking values on the integers (or a subset thereof). 
 The probability mass function of $Z = X + Y$ is given by the *convolution* of $p_X$ and $p_Y$:
 $$
   p_Z(z) 
   = \Pr(X + Y = z) 
-  = \sum_{x} p_X(x) \, p_Y(z - x)
-  = \sum_{y} p_X(z - y) \, p_Y(y),
+  = \sum_{x} p_X(x) \cdot p_Y(z - x)
+  = \sum_{y} p_X(z - y) \cdot p_Y(y),
 $$
-where the summation occurs over the values where *both* terms in the summation are non-zero.
+where the summation is over all integers.
 We write $p_Z = p_X * p_Y$.
 :::
 
 
+
+The summation is over all integers; in practice, $p_X(x) p_Y(z - x) = 0$ whenever either factor is zero. 
+Therefore, for any given\ $z$, summation is restricted to the set of\ $x$ values where *both* these  conditions hold simultaneously:
+
+* $x$ is in the support of $X$ (i.e., $p_X(x) > 0$); and
+* $(z - x)$ is in the support of $Y$ (i.e., $p_Y(z - x) > 0$).
+
 :::{.definition #ConvolutionContinuous name="Convolution: continuous case"}
 \index{Convolution!continuous integral}
-Let\ $X$ and\ $Y$ independent continuous random variables with probability density functions $f_X(x)$ and $f_Y(y)$. 
+Let\ $X$ and\ $Y$ be independent continuous random variables with probability density functions $f_X(x)$ and $f_Y(y)$. 
 The probability density function of $Z = X + Y$ is given by the *convolution* of $f_X$ and $f_Y$:
 $$
   f_Z(z) 
-  = \int f_X(x) \, f_Y(z - x)\, dx
-  = \int f_X(z - y) \, f_Y(y)\, dy.
+  = \int_{-\infty}^{\infty} f_X(x) \cdot f_Y(z - x)\, dx
+  = \int_{-\infty}^{\infty} f_X(z - y) \cdot f_Y(y)\, dy.
 $$
 
 We write $f_Z = f_X * f_Y$.
 :::
 
 
+The integration is over the entire real line; in practice, $f_X(x) f_Y(z - x) = 0$ whenever either factor is zero. 
+Therefore, for any given\ $z$, integration is restricted to the set of\ $x$ values where *both* conditions hold simultaneously:
+
+* $x$ is in the support of $X$ (i.e., $f_X(x) > 0$); and
+* $(z - x)$ is in the support of $Y$ (i.e., $f_Y(z - x) > 0$).
+
+
 ::: {.example #SumTwoDice name="Sum of two dice"}
 Consider rolling two dice, and finding the *sum* of the two numbers.
-Since rolling two dice and two *independent* events, convolutions are appropriate.
+Since rolling two dice are *independent* events, convolutions are appropriate.
 
 Write $X \sim \text{Discrete Uniform}(1, 6)$ and $Y \sim \text{Discrete Uniform}(1, 6)$, and define $Z = X + Y$.
 Then, $p_X(x) = 1/6$ for $x = 1, 2, \dots, 6$ and $p_Y(y) = 1/6$ for $y = 1, 2, \dots, 6$.
-Notice that the support of $Z$ is $2, 3, \dots, 12$.
+Notice that the support of $Z = X + Y$ is $2, 3, \dots, 12$.
 
 Using the convolution ideas, $p_Z = p_X * p_Y$ where
 $$
-  p_Z(z) = \sum_x p_X(x) \, p_Y(z - x).
+  p_Z(z) = \sum_x p_X(x) \cdot p_Y(z - x).
 $$
 So, for example:
 $$
   p_Z(2)
   = \sum_x p_X(x)\, p_Y(2 - x)
-  = \overbrace{p_X(1) \, p_Y(1)}^{\text{Put $x = 1$}}
+  = \overbrace{p_X(1) \cdot p_Y(1)}^{\text{Put $x = 1$}}
   = \frac{1}{6}\times\frac{1}{6} 
-  = \frac{1}{36}
+  = \frac{1}{36},
 $$
-(where we sum over just $x = 1$).
+where we sum over just $x = 1$ (where both probabilities are greater than zero).
 Also:
 \begin{align*}
   p_Z(4)
   &= \sum_x p_X(x)\, p_Y(2 - x)
-   = \overbrace{p_X(1) \, p_Y(3)}^{\text{Put $x = 1$}}
+   = \overbrace{p_X(1) \cdot p_Y(3)}^{\text{Put $x = 1$}}
      +
-     \overbrace{p_X(2) \, p_Y(2)}^{\text{Put $x = 2$}}
+     \overbrace{p_X(2) \cdot p_Y(2)}^{\text{Put $x = 2$}}
      +
-     \overbrace{p_X(3) \, p_Y(1)}^{\text{Put $x = 3$}}
-   = \frac{1}{12}
+     \overbrace{p_X(3) \cdot p_Y(1)}^{\text{Put $x = 3$}}
+   = \frac{1}{12},
 \end{align*}
-(where we sum over $x = 1, 2, 3$).
+where we sum over $x = 1, 2, 3$.
 :::
 
 
-As the above examples shows, care is needed with the summation limits.
-The sum only runs over the values where *both* terms are non-zero (e.g., both $p_X(z - y)$ and $p_Y(y)$, or both $p_X(z - y)$ and $p_Y(y)$).
+As the above examples shows, care is needed with the summation limits; the convolution is only non-zero when *both* terms are non-zero (e.g., both $p_X(z - y)$ and $p_Y(y)$, or both $p_X(z - y)$ and $p_Y(y)$).
 In the above two-dice example, this means the summation occurs when
 
 * $p_X(x) > 0$; that is, $1\le x \le 6$; and also
@@ -3179,36 +3193,13 @@ $$
   = \sum_y p_X(2 - y)\, p_Y(y)
   = \overbrace{p_X(1) \, p_Y(1)}^{\text{Put $y = 1$}}
   = \frac{1}{6}\times\frac{1}{6} 
-  = \frac{1}{36}
+  = \frac{1}{36},
 $$
 giving the same answer as in Example\ \@ref(exm:SumTwoDice).
 :::
 
 
-::: {.example}
-Let $X \sim \text{Poisson}(\lambda_1)$ and $Y \sim \text{Poisson}(\lambda_2)$ be independent random variables with support $x, y \in \{0, 1, 2, \dots\}$. 
-For a given integer $z \ge 0$, the sum is over $x \in \{0, 1, \dots, z\}$; then the probability mass function of $Z = X + Y$ is
-\begin{align*}
-  p_Z(z) 
-  &= \sum_{x=0}^z p_X(x) \, p_Y(z - x) \\
-  &= \sum_{x=0}^z \left( \frac{\lambda_1^x e^{-\lambda_1}}{x!} \right) \left( \frac{\lambda_2^{z-x} e^{-\lambda_2}}{(z - x)!} \right) \\
-  &= \exp\left(-(\lambda_1 + \lambda_2)\right) \sum_{x=0}^z \frac{\lambda_1^x \lambda_2^{z - x}}{x! (z - x)!}.
-\end{align*}
-Multiply and divide inside the summation by $z!$:
-$$
-  p_Z(z) = \frac{\exp(-(\lambda_1 + \lambda_2))}{z!} \sum_{x=0}^z \frac{z!}{x! (z - x)!} \lambda_1^x \lambda_2^{z-x}.
-$$
-
-Recognizing the binomial expansion $\sum_{x=0}^z \binom{z}{x} \lambda_1^x \lambda_2^{z-x} = (\lambda_1 + \lambda_2)^z$:
-$$
-  p_Z(z) = \frac{(\lambda_1 + \lambda_2)^z e^{-(\lambda_1 + \lambda_2)}}{z!}, \quad z = 0, 1, 2, \dots
-$$
-
-Thus, $Z \sim \text{Poisson}(\lambda_1 + \lambda_2)$.
-:::
-
-
-::: {.example}
+::: {.example #HypoExponential name="Convolution of two exponential distributions"}
 Let $X \sim \text{Exponential}(\lambda_1)$ and $Y \sim \text{Exponential}(\lambda_2)$ be independent random variables with $\lambda_1 \neq \lambda_2$.
 Find the density function of $Z = X + Y$.
 
@@ -3223,8 +3214,198 @@ Hence, $f_Z(z) = 0$ for $z \le 0$, and for $z > 0$, integration bounds run from 
   &= \frac{\lambda_1 \lambda_2}{\lambda_1 - \lambda_2} e^{-\lambda_2 z} \left( 1 - e^{-(\lambda_1 - \lambda_2) z} \right) \\
   &= \frac{\lambda_1 \lambda_2}{\lambda_1 - \lambda_2} \left( e^{-\lambda_2 z} - e^{-\lambda_1 z} \right), \quad z > 0
 \end{align*}
-This is the hypoexponential (or two-stage phase-type) distribution.
+This is the hypoexponential distribution.\index{Hypoexponential distribution}
 :::
+
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+In the discrete case, the convolution between two sequences (i.e., probability functions), say `px` and `py`, is found using `convolve(px, rev(py), type = "o")`.
+
+In the continuous case, the integration regions can be represented by discrete points ('discretised') and `convolve()` used again.
+Alternatively, `integrate()` can be used directly.
+:::
+
+
+:::{.example #ConvolutionRDiscrete name="Convolut`ion (discrete) in R"}
+Consider the convolution of $X\sim\text{Pois}(\lambda = 2)$ and $Y\sim\text{Pois}(\lambda = 3)$.
+In **R**:
+
+```{r}
+# PMF of X ~ Poisson(2) and Y ~ Poisson(3) on 0:10:
+x <- dpois(0:10, lambda = 2)
+y <- dpois(0:10, lambda = 3)
+
+# Discrete convolution
+z_conv <- convolve(x, rev(y), 
+                   type = "open")
+
+# Support for Z = X + Y runs from 0 to (length(x) + length(y) - 2)
+z_support <- 0:(length(x) + length(y) - 2)
+
+# Verify against exact theoretical Poisson(5) PMF at z = 0, 1, 2, 3, 4
+# In the convolution, Index 5 corresponds to z = 4
+cbind(z_conv[1:5], dpois(0:4, lambda = 5))
+```
+:::
+
+
+:::{.example #ConvolutionRContinuous name="Convolution (continuous) in R"}
+Consider the convolution of $X\sim\text{Exp}(\lambda = 0.10)$ and $Y\sim\text{Exp}(\lambda = 0.05)$.
+Using the theoretical convolution results, the exact density is:
+
+```{r}
+# Setiop
+rate1 <- 0.10; rate2 <- 0.05
+
+# Exact theoretical density function for sum of two Exponentials (l1 != l2)
+f_Z_exact <- function(z, lambda1 = rate1, lambda2 = rate2) {
+  ifelse(z > 0, 
+         (lambda1 * lambda2 / (lambda1 - lambda2)) * 
+             (exp(-lambda2 * z) - exp(-lambda1 * z)), 
+         0)
+}
+```
+
+
+The convolution can be evaluated using direct integration of Def.\ \@ref(def:ConvolutionContinuous):
+
+
+```{r}
+f_X <- function(x) dexp(x, rate = rate1)
+f_Y <- function(y) dexp(y, rate = rate2)
+
+# Pointwise convolution function for Z = X + Y
+f_Z_single <- function(z) {
+  if (z <= 0) return(0)
+  # Integrate over non-zero overlapping support (0 to z)
+  integrate(function(x) f_X(x) * f_Y(z - x), 
+            lower = 0, 
+            upper = z)$value
+}
+
+# Use Vectorize(),  to accept *vector* inputs for z
+f_Z <- Vectorize(f_Z_single)
+```
+
+
+The resulting function is compared to the exact density in Fig.\ \@ref(fig:ConvolveContinuousIntegrateFig).
+
+Alternatively, the integration regions can be discretised, and then `convolve()` used as a means for *approximating* the exact density:
+
+
+```{r}
+# Define grid parameters
+delta <- 0.01
+grid  <- seq(0, 200, by = delta)
+
+# Discretize PDFs
+pdf_x <- dexp(grid, rate = rate1) * delta
+pdf_y <- dexp(grid, rate = rate2) * delta
+
+# Convolve discretized sequences
+pdf_z_grid <- convolve(pdf_x, 
+                       rev(pdf_y), 
+                       type = "open")
+
+# Support grid for Z
+grid_z <- seq(0, 2 * max(grid), by = delta)
+```
+
+
+The resulting density is compared to the exact density in Fig.\ \@ref(fig:ConvolveContinuousFig) (left panel).
+Using a coarser grid (e.g., `delta <- 1` in the above code) produces a density that is less smooth and less accurate (Fig.\ \@ref(fig:ConvolveContinuousFig), right panel).
+:::
+
+
+```{r ConvolveContinuousIntegrateFig, echo=FALSE, fig.align="center", fig.cap="A continuous convolultion, comparing the exact density with the evaluation using direct integration", out.width='60%', fig.width=6.5, fig.height=4}
+# Select region for plotting (e.g., z from 0 to 20 minutes)
+### EXACT vs using INTEGRATE
+upper_limit <- 40
+z_vals <- seq(0, upper_limit, by = 0.2)
+
+# Integrate densities
+z_num_int    <- f_Z(z_vals)
+plot(z_vals, z_num_int, type = "l", 
+     col = "black", pch = 19, las = 1, lwd = 6,
+     xlab = "z", ylab = "f_Z(z)", 
+     main = "Continuous convolution density:\ngrid approximation vs exact density")
+
+# Add the exact density curve
+lines(z_vals, f_Z_exact(z_vals), 
+      col = "lightgray", las = 2, lwd = 2, lty = 1)
+
+# Add legend
+legend("bottom", 
+       legend = c("Using integrate()", "Exact Density"),
+       col = c("black", "lightgray"), 
+       lwd = 3, lty = 1, bty = "n")
+```
+
+```{r ConvolveContinuousFig, echo=FALSE, fig.align="center", fig.cap="A continuous convolultion, comparing the exact density with a discretised density.", out.width='100%', fig.width=9, fig.height=4}
+par(mfrow = c(1, 2))
+
+# Define grid parameters
+delta <- 0.01
+grid  <- seq(0, 200, by = delta)
+
+# Select region for plotting (e.g., z from 0 to 20 minutes)
+upper_limit <- 40
+plot_indices <- 1:(upper_limit / delta)
+z_vals <- grid_z[plot_indices]
+
+
+### EXACT VS discretised
+
+# Plot grid/FFT convolved density
+plot(z_vals, pdf_z_grid[plot_indices] / delta, type = "l", 
+     col = "black", pch = 19, las = 1, lwd = 6,
+     xlab = "z", ylab = "f_Z(z)", 
+     main = "Continuous convolution density:\ngrid approximation vs exact density")
+
+# Add the exact density curve as a dashed red line
+lines(z_vals, f_Z_exact(z_vals), 
+      col = "lightgray", las = 2, lwd = 2, lty = 1)
+
+# Add legend
+legend("bottom", 
+       legend = c("Using convolve()", "Exact Density"),
+       col = c("black", "lightgray"), 
+       lwd = 3, lty = 1, bty = "n")
+
+
+################################################################################
+
+
+# Coarse grid
+delta1 <- 1
+grid1  <- seq(0, 200, by = delta1)  # Grid built with delta = 1
+
+pdf_x1 <- dexp(grid1, rate = rate1) * delta1
+pdf_y1 <- dexp(grid1, rate = rate2) * delta1
+
+pdf_z_grid1 <- convolve(pdf_x1, rev(pdf_y1), type = "open")
+grid_z1     <- seq(0, 2 * max(grid1), by = delta1)
+
+plot_indices1 <- 1:(upper_limit / delta1 + 1)
+z_vals1       <- grid_z1[plot_indices1]
+density_conv1 <- pdf_z_grid1[plot_indices1] / delta1
+
+# 1. Draw coarse convolve() as a thick gray background line first
+plot(z_vals1, density_conv1, type = "s", 
+     col = "gray70", las = 1, lwd = 6,
+     xlab = "z", ylab = "f_Z(z)", 
+     main = "Continuous convolution density:\ncoarse grid approximation vs exact density")
+
+# 2. Draw exact density ON TOP as a thin black line
+lines(z_vals1, f_Z_exact(z_vals1), col = "black", lwd = 2)
+
+legend("bottomright", 
+       legend = c("convolve() (delta = 1)", "Exact Density"),
+       col = c("gray70", "black"), 
+       lwd = c(6, 2), bty = "n")
+```
+
 
 ### Properties of convolutions
 
@@ -3243,90 +3424,111 @@ The following are the basic properties of convolutions.
   $X$ and\ $Y$ must be independent random variables.
 
 
-### Comparing Direct Convolution vs. MGF Approach
-
-| Approach | Advantages | Disadvantages |
-| :------- | :--------- | :------------ |
-| **Direct Convolution** | Does not require MGF existence.| Integrals can be tedious or analytically intractable for $n > 2$. |
-|                        | Provides explicit piecewise density equations (e.g., sums of Uniforms). | Relies on uniqueness theorem to recognize the resulting MGF. |
-| **MGF Method**         | Converts integration into simple algebraic multiplication. | Requires MGF to exist in an open neighbourhood around $t = 0$.
-|                        | Extends effortlessly to $n$ independent terms. | |
-
-
-
 ### Reproductive properties of common distributions {#Reproductive}
 
 A family of distributions is closed under convolution\index{Convolution!closed under} if the sum of independent random variables from that family also belongs to the *same* family.
 The family of distributions is said to possesses the *reproductive property*)\index{Reproductive property} 
 
-Not all distribution have the reproductive property (for example, the sum of two discrete uniform distributions does not produce another discrete uniform distribution; Example\ \@ref(exm:SumTwoDice2)).
-However, many common distributions do have the reproductive property (Table BELOW).
+
+::: {.example #ConvolutionTwoPoisson name="The Poisson distribution is reproductive"}
+Let $X \sim \text{Poisson}(\lambda_1)$ and $Y \sim \text{Poisson}(\lambda_2)$ be independent random variables with support $x, y \in \{0, 1, 2, \dots\}$. 
+For a given integer $z \ge 0$, the sum is over $x \in \{0, 1, \dots, z\}$; then the probability mass function of $Z = X + Y$ is
+\begin{align*}
+  p_Z(z) 
+  &= \sum_{x=0}^z p_X(x) \, p_Y(z - x) \\
+  &= \sum_{x=0}^z \left( \frac{\lambda_1^x e^{-\lambda_1}}{x!} \right) \left( \frac{\lambda_2^{z-x} e^{-\lambda_2}}{(z - x)!} \right) \\
+  &= \exp\left(-(\lambda_1 + \lambda_2)\right) \sum_{x=0}^z \frac{\lambda_1^x \lambda_2^{z - x}}{x!\, (z - x)!}.
+\end{align*}
+Multiply and divide inside the summation by $z!$:
+$$
+  p_Z(z) = \frac{\exp(-(\lambda_1 + \lambda_2))}{z!} \sum_{x=0}^z \frac{z!}{x!\, (z - x)!} \lambda_1^x \lambda_2^{z-x}.
+$$
+
+Recognizing the binomial expansion $\sum_{x=0}^z \binom{z}{x} \lambda_1^x \lambda_2^{z-x} = (\lambda_1 + \lambda_2)^z$:
+$$
+  p_Z(z) = \frac{(\lambda_1 + \lambda_2)^z e^{-(\lambda_1 + \lambda_2)}}{z!}, \quad z = 0, 1, 2, \dots
+$$
+
+Thus, $Z \sim \text{Poisson}(\lambda_1 + \lambda_2)$.
+Thus the sum of two Poisson distribution produces another Poisson distribution; the Poisson distribution is reproductive.
+:::
+
+
+
+Not all distributions have the reproductive property (for example, the sum of two discrete uniform distributions does not produce another discrete uniform distribution; Example\ \@ref(exm:SumTwoDice2)).
+However, many common distributions do have the reproductive property (Table\ \@ref(tab:ReproductiveDistributions)).
 
 
 \index{Reproductive property!for common distributions} 
 
-| Distribution Family | Parameters | Sum $Z = X + Y$ Distribution | Condition |
-| :--- | :--- | :--- | :--- |
-| **Poisson** | $X \sim \text{Poisson}(\lambda_1)$, $Y \sim \text{Poisson}(\lambda_2)$ | $Z \sim \text{Poisson}(\lambda_1 + \lambda_2)$ | Independent |
-| **Binomial** | $X \sim \text{Bin}(n_1, p)$, $Y \sim \text{Bin}(n_2, p)$ | $Z \sim \text{Bin}(n_1 + n_2, p)$ | Independent, shared $p$ |
-| **Negative Binomial** | $X \sim \text{NB}(r_1, p)$, $Y \sim \text{NB}(r_2, p)$ | $Z \sim \text{NB}(r_1 + r_2, p)$ | Independent, shared $p$ |
-| **Normal** | $X \sim N(\mu_1, \sigma_1^2)$, $Y \sim N(\mu_2, \sigma_2^2)$ | $Z \sim N(\mu_1 + \mu_2, \sigma_1^2 + \sigma_2^2)$ | Independent |
-| **Gamma** | $X \sim \text{Gamma}(\alpha_1, \beta)$, $Y \sim \text{Gamma}(\alpha_2, \beta)$ | $Z \sim \text{Gamma}(\alpha_1 + \alpha_2, \beta)$ | Independent, shared rate $\beta$ |
-| **Cauchy** | $X \sim \text{Cauchy}(x_0, \gamma_1)$, $Y \sim \text{Cauchy}(x_1, \gamma_2)$ | $Z \sim \text{Cauchy}(x_0 + x_1, \gamma_1 + \gamma_2)$ | Independent |
 
+```{r echo=FALSE, ReproductiveDistributions}
+ReproductiveProperty <- array( "",
+                               dim = c(5, 4) )
+colnames(ReproductiveProperty) <- c("Distribution family",
+                                    "Parameters",
+                                    "$Z = X + Y$",
+                                    "Condition")
+ReproductiveProperty[1, ] <- 
+  c("Poisson",
+    "$X\\sim\\text{Poisson}(\\lambda_1)$ $Y\\sim\\text{Poisson}(\\lambda_2)$",
+    "$Z\\sim\\text{Poisson}(\\lambda_1 + \\lambda_2)$",
+    "Independence")
+ReproductiveProperty[2, ] <- 
+  c("Binomial",
+    "$X\\sim\\text{Bin}(n_1, p)$ $Y\\sim\\text{Bin}(n_2, p)$",
+    "$Z\\sim\\text{Bin}(n_1 + n_2, p)$",
+    "Independence; common value of $p$")
+ReproductiveProperty[3, ] <- 
+  c("Negative binomial",
+    "$X\\sim\\text{NegBin}(r_1, p)$ $Y\\sim\\text{NegBin}(r_2, p)$",
+    "$Z\\sim\\text{NegBin}(r_1 + r_2, p)$",
+    "Independence; common value of $p$")
+ReproductiveProperty[4, ] <- 
+  c("Normal",
+    "$X\\sim N(\\mu_1, \\sigma_1^2)$ $Y\\sim N(\\mu_2, \\sigma_2^2)$",
+    "$Z\\sim N(\\mu_1 + \\mu_2, \\sigma_1^2 + \\sigma_2^2)$",
+    "Independence")
+ReproductiveProperty[5, ] <- 
+  c("Gamma",
+    "$X\\sim\\text{Gamma}(\\alpha_1, \\beta)$ $Y\\sim\\text{Gamma}(\\alpha_2, \\beta)$",
+    "$Z\\sim\\text{Gamma}(\\alpha_1 + \\alpha_2, \\beta)$",
+    "Independence; common value of $\\beta$")
 
+RP.caption <- "Common distributions with the reproductve property."
 
-EXAMPLES UING R
+if( knitr::is_latex_output() ) {
 
-#### Discrete Convolution using `convolve()` or Matrix Outer Products
-
-In R, discrete convolution of probability vectors $p_X$ and $p_Y$ over non-negative integer supports can be calculated using polynomial multiplication or the built-in `convolve()` function (which uses Fast Fourier Transforms):
-
-```{r discrete-convolution-r}
-# Define PMFs for X ~ Poisson(2) and Y ~ Poisson(3) truncated to finite support
-x_supp <- 0:15
-y_supp <- 0:15
-
-px <- dpois(x_supp, lambda = 2)
-py <- dpois(y_supp, lambda = 3)
-
-# Method A: Outer product sum over diagonals
-pz_outer <- tapply(outer(px, py), outer(x_supp, y_supp, "+"), sum)
-
-# Method B: Exact theoretical Poisson(5) PMF
-z_supp <- 0:30
-pz_theory <- dpois(z_supp, lambda = 5)
-
-# Compare first 6 values
-head(cbind(Support = z_supp, Convolved = pz_outer, Theoretical = pz_theory))
-```
-
-#### Numerical Integration & Simulation for Continuous ConvolutionsTo compute $f_Z(z)$ for arbitrary continuous independent variables numerically, use `integrate()` or empirical Kernel Density Estimation (KDE) from Monte Carlo draws:
-
-
-```{r}
-# Density function for sum of independent Exp(0.10) and Exp(0.05)
-f_Z_theoretical <- function(z, l1 = 0.10, l2 = 0.05) {
-  ifelse(z > 0, (l1 * l2 / (l1 - l2)) * (exp(-l2 * z) - exp(-l1 * z)), 0)
+  knitr::kable(ReproductiveProperty,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               escape = FALSE,
+               linesep = "\\addlinespace",
+               caption = RP.caption) %>%
+    kable_styling(font_size = 10) %>%
+    column_spec(2, width = "30mm") %>%
+    column_spec(3, width = "38mm") %>%
+    column_spec(4, width = "28mm") %>%
+    add_header_above( c( "Distribution of the sum" = 3),
+                         bold = TRUE,
+                         line = FALSE ) %>%
+    row_spec(0, bold = TRUE) 
 }
+if( knitr::is_html_output() ) {
 
-# Numerical convolution using integrate()
-f_Z_numerical <- function(z, l1 = 0.10, l2 = 0.05) {
-  sapply(z, function(zi) {
-    if (zi <= 0) return(0)
-    integrate(function(x) dexp(x, rate = l1) * dexp(zi - x, rate = l2),
-              lower = 0, upper = zi)$value
-  })
+  knitr::kable(ReproductiveProperty,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,                
+               caption = RP.caption) %>%
+    add_header_above("Distribution of the sum") %>%
+    row_spec(0, bold = TRUE) 
 }
-
-# Verify numerical vs theoretical density at z = 10, 20, 30
-z_vals <- c(10, 20, 30)
-rbind(
-  Numerical = f_Z_numerical(z_vals),
-  Theoretical = f_Z_theoretical(z_vals)
-)
 ```
-
 
 
 ## The bivariate normal distribution {#BVNormalDistribution}
