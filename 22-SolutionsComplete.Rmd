@@ -8544,6 +8544,129 @@ curve(dThroughput(x), from = 0, to = 150,
       main = "Throughput time at an emergency ward")
 ```
 
+
+
+
+---
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:ConvolutionDiscreteSimple).**
+$p_X(x) = p_Y(y) = \frac{1}{3}$ for $x,y \in \{1,2,3\}$; thus
+$$
+  p_Z(z) = 
+  \sum_{x=\max(1,z-3)}^{\min(3,z-1)}  \frac{1}{3}\cdot\frac{1}{3}.
+$$
+$z$ ranges from $2$ to $6$.
+Counting terms:
+
+| $z$ | range of $x$ | # terms | $p_Z(z)$ |
+| --- | --- | --- | --- |
+| 2   | $x=1$ | 1   | $1/9$ |
+| 3   | $x=1,2$ | 2   | $2/9$ |
+| 4   | $x=1,2,3$ | 3   | $3/9$ |
+| 5   | $x=2,3$ | 2   | $2/9$ |
+| 6   | $x=3$ | 1   | $1/9$ |
+
+This is triangular, peaking at $z = 4$.
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:ConvolutionContinuousSimple).**
+$f_X(x) = f_Y(y) = 1$ on $(0,1)$, zero elsewhere.
+Then,
+$$
+ f_Z(z) = \int f_X(x) f_Y(z-x)\,dx.
+$$
+Need $0 < x < 1$ *and* $0 < z-x < 1%+$, and so $z-1 < x < z$. Intersecting: $\max(0, z-1) < x < \min(1, z)$.
+
+$Z$ has support $(0,2)$; split into two cases:
+
+* **Case $0 < z \le 1$:** 
+  bounds are $x \in (0, z)$, length $z$:
+  $f_Z(z) = \int_0^z 1\,dx = z$.
+* **Case $1 < z < 2$:** 
+  bounds are $x \in (z-1, 1)$, length $2-z$:
+  $f_Z(z) = \int_{z-1}^1 1\,dx = 2-z$.
+
+Hence
+$$
+  f_Z(z) = 
+  \begin{cases} 
+    z       & \text{for $0 < z \le 1$} \\ 
+    2 - z   & \text{for $1 < z < 2$}.
+  \end{cases}
+$$
+
+This is a triangular density on $(0, 2)$ peaking at $z = 1$.
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:ConvolutionContinuousExp).**
+$f_X(x) = \lambda e^{-\lambda x}$ for $x > 0$ (similarly for $Y$), so
+$$
+  f_Z(z) = \int f_X(x) f_Y(z-x)\, dx.
+$$
+We need $x > 0$ *and* $z - x > 0$, so $x < z$. 
+So bounds are $0 < x < z$ (and $Z$ has support $z>0$):
+$$
+  f_Z(z) 
+  = \int_0^z \lambda e^{-\lambda x} \cdot \lambda e^{-\lambda(z-x)}\, dx 
+  = \lambda^2 e^{-\lambda z}\int_0^z e^{-\lambda x} e^{\lambda x}\, dx
+  = \lambda^2 e^{-\lambda z}\int_0^z 1\, dx
+$$
+
+and so
+$$
+  f_Z(z) = \lambda^2 z\, e^{-\lambda z}, \qquad \text{for $z > 0$}.
+$$
+This is the density of a $\text{Gamma}(2, \lambda)$ random variable. 
+2. Exponentials are not closed under convolution.
+3. From above (with $\lambda = 1$): $f_Z(z) = z \exp(-z)$ for $z > 0$.
+   Then,
+$$
+  \Pr(Z > 2) = \int_2^\infty z e^{-z}\,dz.
+$$
+Integrate by parts to get $3\exp(-2) \approx 0.406$.
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:ConvolutionContinuousUniforms).**
+We have $f_X(x) = 1$ on $(0, 1)$ and $f_Y(y) = \frac{1}{2}$ on $(0,2)$.
+Then,
+$$
+  f_Z(z) = \int f_X(x) f_Y(z-x)\, dx.
+$$
+We need $0 < x < 1$ *and* $0 < z - x < 2$, so $z-2 < x < z$. 
+The intersection is:
+$$
+  \max(0, z-2) < x < \min(1, z)
+$$
+so $Z$ has support $(0,3)$. 
+There are **three** cases, since the two intervals have different lengths:
+
+* **Case $0 < z \le 1$:** bounds $x \in (0, z)$, length $z$.
+  Then, $f_Z(z) = \int_0^z \frac{1}{2}\,dx = \frac{z}{2}$.
+* **Case $1 < z \le 2$:** bounds $x \in (0,1)$, length $1$ (full overlap: the uniform$(0,1)$ piece is entirely inside the valid window):
+  $f_Z(z) = \int_0^1 \frac{1}{2}\,dx = \frac{1}{2}$.
+* **Case $2 < z < 3$:** bounds $x \in (z-2, 1)$, length $3 - z$:
+  $f_Z(z) = \int_{z-2}^1 \frac{1}{2}\,dx = \frac{3-z}{2}$.
+
+And so
+$$
+  f_Z(z) = 
+  \begin{cases} 
+    z/2         & \text{for $0 < z \le 1$} \\ 
+    1/2         & \text{for $1 < z \le 2$} \\ 
+    (3 - z)/2   & \text{for $2 < z < 3$}.
+  \end{cases}
+$$
+:::
+
+
 <!-- *********************************************************************************** -->
 ## Answers for Chap.\ \@ref(ChapMultivariate) {#AnswersChapMultivariate}
 
