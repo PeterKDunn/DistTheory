@@ -1385,7 +1385,7 @@ Use this information to answer the questions below.
 1. Form an interval containing the central $50$% of commute times. 
 :::
 
-```{r echo=FALSE, WorkToHome, fig.width=6, out.width='100%', fig.align="center", fig.cap="The journey from Home (H) to Work (W). TL represent traffic lights; SS represents a Stop Sign; TR represents a right turn."}
+```{r echo=FALSE, WorkToHome, fig.width=6, out.width='50%', fig.align="center", fig.cap="The journey from Home (H) to Work (W). TL represent traffic lights; SS represents a Stop Sign; TR represents a right turn."}
 plot( x = c(-1, 11)* 3,
       y = c(-1, 5),
       axes = FALSE,
@@ -1460,7 +1460,7 @@ Use this information to answer the questions below.
 1. Form an interval containing the central $50$% of commute times. 
 :::
 
-```{r echo=FALSE, WorkToHome2, fig.width=6, out.width='100%', fig.align="center", fig.cap="The journey from Home (H) to Work (W). TL represent traffic lights; RC represents a railway crossing."}
+```{r echo=FALSE, WorkToHome2, fig.width=6, out.width='50%', fig.align="center", fig.cap="The journey from Home (H) to Work (W). TL represent traffic lights; RC represents a railway crossing."}
 plot( x = c(-1, 11)* 3,
       y = c(-1, 5),
       axes = FALSE,
@@ -1498,4 +1498,45 @@ text(x = LocateLeg,
      pos = 1)
 
 ```
+
+
+:::{.exercise #MultivariateElevator}
+A building has a ground floor, and then 12 storeys above the ground floor.
+A series of elevators services the building.
+
+Suppose a tenant on Storey\ i (where $i = 1, 2, \dots 12$) calls the elevator.
+Assume the elevator then travels from the ground floor (i.e., $i = 0$) to the $i$th storey, without stopping.
+
+When the elevator is called, the time to arrive (in seconds) has three components:
+
+* the elevator accelerates between the ground floor and the first storey, the acceleration phase\ $A$;
+* the elevator then travels from storey\ $j-1$ and storey\ $j$ (for $j = 1, 2, \dots, i-2$); the cruising  phase\ $C$; and
+* the elevator then decelerates between storey $i-1$ and storey\ $i$, the deceleration phase\ $D$.
+
+The total time for the elevator to reach the $i$th storey is therefore  $T = A + C + D$.
+Each phase is modelled independently as
+\begin{align*}
+  A  \sim\text{Gamma}(\text{shape} = 9, \text{scale} = 0.4);
+  C_j\sim N(\mu = 1.5, \sigma^2 = 0.2^2);\\
+  D  \sim\text{Gamma}(\text{shape} = 9, \text{scale} = 0.4),
+\end{align*}
+where $C = \sum_{j=1}^{i-2} C_j$ with $C = 0$ when $i \le 2$.
+Thus, 
+$$
+  T 
+  = 
+  \begin{cases}
+    A/2 + D/2                           & \text{for $i = 1$};\\
+    A + D                               & \text{for $i = 2$};\\
+    A + D + \sum_{j = 1}^{i - 2} C_j    & \text{for $i = 3, \dots 12$}.
+  \end{cases}
+$$
+
+1. Find $\operatorname{E}[T]$ and $\operatorname{var}[T]$ as a function of\ $i$.
+1. Write an **R** function to model the time taken for the elevator to arrive when called from storey\ $i$.
+1. Use the **R** function to verify the answer to Part\ 1.
+1. Estimate the probability that the elevator takes longer than $20\secs$ to arrive when called from storey\ $10$.
+1. Plot the mean elevator travel time against the storey from which it was called, and include the $10$th and $90$th percentile for the travel time for each storey.
+:::
+
 ::::

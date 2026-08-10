@@ -9334,7 +9334,7 @@ if( knitr::is_html_output() ) {
 2. Stop sign: variance is $2.25\mins^2$.
 3. Leg: $90$th perecentile is $4.5\mins$.
 
-```{r}
+```{r fig.align="center"}
 rWorkToHome <- function(n = 1) {
   
   # Leg 1: Home to traffic lights
@@ -9381,9 +9381,9 @@ rWorkToHome <- function(n = 1) {
 
 set.seed(77041)
 TransitTimes <- rWorkToHome(2000)
-hist(TransitTimes$T,
-     prob = TRUE,
-     las = 1)
+hist(TransitTimes$T, prob = TRUE, las = 1,
+     xlab = "Transit times (mins)",
+     main = "Transit times")
 mean(TransitTimes$T)
 var(TransitTimes$T)
 quantile(TransitTimes$T, 0.10)
@@ -9500,6 +9500,84 @@ From the simulation: mean: `mean(commute)`; variance: `var(commute)`.
 9. `r quantile(commute,c(0.25,0.75))`
 :::
 
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:MultivariateElevator).**
+
+1. For $A$ and $D$: the mean is $\alpha\beta = 3.6\secs$ and variance is $\alpha\beta^2 = 1.44\secs^2$.
+   Then:
+   $\operatorname{E}[T] = 3.6$ for $i = 1$ and $7.2 + 1.5\max(i-2, 0)$ for $i = 2, \dots 12$. 
+   $\operatorname{var}[T] = 0.72$ for $i = 1$ and $2.88 + 0.04\max(i-2, 0)$ for $i = 2, \dots 12$.
+   For the case $i = 1$, the mean and variance of $A/2$ and $D/2$ are (respectively) halved and quartered.
+2. The **R** function:
+
+```{r}
+elevator_time <- function(i, n = 1){
+  accel_shape <- 9;   accel_scale <- 0.4
+  decel_shape <- 9;   decel_scale <- 0.4
+  cruise_mean <- 1.5; cruise_sd <- 0.2
+
+  stopifnot(i %in% 1:12)
+
+  scale_factor <- if (i == 1) 0.5 else 1
+
+  A <- rgamma(n, shape = accel_shape, scale = accel_scale * scale_factor)
+  D <- rgamma(n, shape = decel_shape, scale = decel_scale * scale_factor)
+
+  n_cruise <- max(i - 2, 0)
+  C <- if (n_cruise > 0) {
+    rowSums(matrix(rnorm(n * n_cruise, cruise_mean, cruise_sd), nrow = n))
+  } else {
+    rep(0, n)
+  }
+
+  A + C + D
+}
+```
+
+3: 
+```{r}
+set.seed(117605)
+n <- 5000
+storeys <- c(1, 2, 3, 7, 12)
+
+for (i in storeys) {
+  T <- elevator_time(i, n = n)
+  EmeanT <- if (i == 1) 3.6 else 7.2 + 1.5 * max(i - 2, 0)
+  EvarT  <- if (i == 1) 0.72 else 2.88 + 0.04 * max(i - 2, 0)
+  cat(sprintf("i=%2d | analytic mean=%.3f sim mean=%.3f | analytic var=%.4f sim var=%.4f\n",
+              i, EmeanT, mean(T), EvarT, var(T)))
+}
+```
+4. 
+```{r}
+set.seed(1)
+T10 <- elevator_time(10, n = 5000)
+mean(T10 > 20)
+```
+5. 
+```{r ElevatorTimes, fig.cap="Mean times for an elevator to reach the $i$th storey when called from the ground floor.", fig.align="center", fig.width=5, fig.height=4, out.width='60%'}
+storeys <- 1:12
+n <- 5000
+results <- t(sapply(storeys, function(i) {
+  T <- elevator_time(i, n = n)
+  c(mean = mean(T),
+    p10  = quantile(T, 0.10),
+    p90  = quantile(T, 0.90))
+}))
+
+plot(storeys, results[, "mean"], type = "b", pch = 19, col = ColourSolid,
+     ylim = range(results), las = 1,
+     xlab = "Storey called from (i)", ylab = "Travel time, T (seconds)",
+     main = "Mean elevator travel time vs. calling storey\nwith 10th/90th percentiles")
+lines(storeys, results[, "p10.10%"], lty = 2, col = ColourSolid)
+lines(storeys, results[, "p90.90%"], lty = 2, col = ColourSolid)
+legend("topleft", legend = c("Mean", "10th/90th percentile"),
+       col = ColourSolid, lty = c(1, 2), pch = c(19, NA), bty = "n")
+
+```
+
+:::
 
 
 <!-- ************************************************************************************ -->
