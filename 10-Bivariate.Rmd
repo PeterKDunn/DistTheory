@@ -3049,11 +3049,11 @@ An alternative for determining the probability distribution of a sum of two rand
 \begin{align*}
   M_Z(t) 
   &= \operatorname{E}\left[\exp(t(X + Y))\right] \\
-  &= \operatorname{E}\left[\exp(tX) \, \exp(tY)\right] \\
-  &= \operatorname{E}\left[\exp(tX)\right] \operatorname{E}\left[\exp(tY)\right] \\
+  &= \operatorname{E}\left[\exp(tX) \cdot \exp(tY)\right] \\
+  &= \operatorname{E}\left[\exp(tX)\right] \cdot \operatorname{E}\left[\exp(tY)\right] \\
   &= M_X(t) \cdot M_Y(t).
 \end{align*}
-However, MGFs do not always exist, and not always easy easy to invert (i.e., to recognise the distribution or recover the probability function from the resulting MGF).
+However, MGFs do not always exist, and not always easy easy to invert (i.e., to recognise the distribution, or recover the probability function, from the resulting MGF).
 In addition, convolutions appear in other places also (such as order statistics; Sect.\ \@ref(OrderStatisticsDistribution)).
 
 
@@ -3064,13 +3064,12 @@ The definition of a convolution is similar for discrete and continuous cases, us
 
 :::{.definition #ConvolutionDiscrete name="Convolution: discrete case"}
 \index{Convolution!discrete sum}
-Let\ $X$ and\ $Y$ be independent discrete random variables with probability mass functions $p_X(x)$ and $p_Y(y)$, taking values on the integers (or a subset thereof). 
+Let\ $X$ and\ $Y$ be independent discrete random variables with probability mass functions $p_X(x)$ and $p_Y(y)$, taking values on the integers (or a subset of the integers). 
 The probability mass function of $Z = X + Y$ is given by the *convolution* of $p_X$ and $p_Y$:
 $$
   p_Z(z) 
   = \Pr(X + Y = z) 
   = \sum_{x} p_X(x) \cdot p_Y(z - x)
-  = \sum_{y} p_X(z - y) \cdot p_Y(y),
 $$
 where the summation is over all integers.
 We write $p_Z = p_X * p_Y$.
@@ -3078,11 +3077,19 @@ We write $p_Z = p_X * p_Y$.
 
 
 
-The summation is over all integers; in practice, $p_X(x) p_Y(z - x) = 0$ whenever either factor is zero. 
+The summation is over all integers; in practice, $p_X(x)\cdot p_Y(z - x) = 0$ whenever either factor is zero. 
 Therefore, for any given\ $z$, summation is restricted to the set of\ $x$ values where *both* these  conditions hold simultaneously:
 
 * $x$ is in the support of $X$ (i.e., $p_X(x) > 0$); and
 * $(z - x)$ is in the support of $Y$ (i.e., $p_Y(z - x) > 0$).
+
+The convolution can also be written equivalently as 
+$$
+  p_Z(z) 
+  = \Pr(X + Y = z) 
+  = \sum_{x} p_X(x) \cdot p_Y(z - x)
+  = \sum_{y} p_X(z - y) \cdot p_Y(y).
+$$
 
 :::{.definition #ConvolutionContinuous name="Convolution: continuous case"}
 \index{Convolution!continuous integral}
@@ -3090,19 +3097,25 @@ Let\ $X$ and\ $Y$ be independent continuous random variables with probability de
 The probability density function of $Z = X + Y$ is given by the *convolution* of $f_X$ and $f_Y$:
 $$
   f_Z(z) 
-  = \int_{-\infty}^{\infty} f_X(x) \cdot f_Y(z - x)\, dx
-  = \int_{-\infty}^{\infty} f_X(z - y) \cdot f_Y(y)\, dy.
+  = \int_{-\infty}^{\infty} f_X(x) \cdot f_Y(z - x)\, dx.
 $$
 
 We write $f_Z = f_X * f_Y$.
 :::
 
 
-The integration is over the entire real line; in practice, $f_X(x) f_Y(z - x) = 0$ whenever either factor is zero. 
+The integration is over the entire real line; in practice, $f_X(x)\cdot f_Y(z - x) = 0$ whenever either factor is zero. 
 Therefore, for any given\ $z$, integration is restricted to the set of\ $x$ values where *both* conditions hold simultaneously:
 
 * $x$ is in the support of $X$ (i.e., $f_X(x) > 0$); and
 * $(z - x)$ is in the support of $Y$ (i.e., $f_Y(z - x) > 0$).
+
+The convolution can also be written equivalently as 
+$$
+  f_Z(z) 
+  = \int_{-\infty}^{\infty} f_X(x) \cdot f_Y(z - x)\, dx
+  = \int_{-\infty}^{\infty} f_X(z - y) \cdot f_Y(y)\, dy.
+$$
 
 
 ::: {.example #SumTwoDice name="Sum of two dice"}
@@ -3129,8 +3142,8 @@ where we sum over just $x = 1$ (where both probabilities are greater than zero).
 Also:
 \begin{align*}
   p_Z(4)
-  &= \sum_x p_X(x)\, p_Y(2 - x)
-   = \overbrace{p_X(1) \cdot p_Y(3)}^{\text{Put $x = 1$}}
+  &= \sum_x p_X(x)\, p_Y(2 - x)\\
+  &= \overbrace{p_X(1) \cdot p_Y(3)}^{\text{Put $x = 1$}}
      +
      \overbrace{p_X(2) \cdot p_Y(2)}^{\text{Put $x = 2$}}
      +
@@ -3141,7 +3154,7 @@ where we sum over $x = 1, 2, 3$.
 :::
 
 
-As the above examples shows, care is needed with the summation limits; the convolution is only non-zero when *both* terms are non-zero (e.g., both $p_X(z - y)$ and $p_Y(y)$, or both $p_X(z - y)$ and $p_Y(y)$).
+As the above examples shows, care is needed with the summation limits; the convolution is only non-zero when *both* terms are non-zero (e.g., both $p_X(z - y)$ and $p_Y(y)$).
 In the above two-dice example, this means the summation occurs when
 
 * $p_X(x) > 0$; that is, $1\le x \le 6$; and also
@@ -3220,14 +3233,14 @@ This is the hypoexponential distribution.\index{Hypoexponential distribution}
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-In the discrete case, the convolution between two sequences (i.e., probability functions), say `px` and `py`, is found using `convolve(px, rev(py), type = "o")`.
+In the discrete case, the convolution between two sequences (i.e., probability functions), say `px` and `py`, is found using `convolve(px, rev(py), type = "outer")`.
 
 In the continuous case, the integration regions can be represented by discrete points ('discretised') and `convolve()` used again.
 Alternatively, `integrate()` can be used directly.
 :::
 
 
-:::{.example #ConvolutionRDiscrete name="Convolut`ion (discrete) in R"}
+:::{.example #ConvolutionRDiscrete name="Convolution (discrete) in R"}
 Consider the convolution of $X\sim\text{Pois}(\lambda = 2)$ and $Y\sim\text{Pois}(\lambda = 3)$.
 In **R**:
 
@@ -3318,7 +3331,7 @@ Using a coarser grid (e.g., `delta <- 1` in the above code) produces a density t
 :::
 
 
-```{r ConvolveContinuousIntegrateFig, echo=FALSE, fig.align="center", fig.cap="A continuous convolultion, comparing the exact density with the evaluation using direct integration", out.width='60%', fig.width=6.5, fig.height=4}
+```{r ConvolveContinuousIntegrateFig, echo=FALSE, fig.align="center", fig.cap="A continuous convolultion, comparing the exact density with the evaluation using direct integration.", out.width='60%', fig.width=6.5, fig.height=4}
 # Select region for plotting (e.g., z from 0 to 20 minutes)
 ### EXACT vs using INTEGRATE
 upper_limit <- 40
@@ -3333,12 +3346,12 @@ plot(z_vals, z_num_int, type = "l",
 
 # Add the exact density curve
 lines(z_vals, f_Z_exact(z_vals), 
-      col = "lightgray", las = 2, lwd = 2, lty = 1)
+      col = "gray", las = 2, lwd = 2, lty = 1)
 
 # Add legend
 legend("bottom", 
        legend = c("Using integrate()", "Exact Density"),
-       col = c("black", "lightgray"), 
+       col = c("black", "gray"), 
        lwd = 3, lty = 1, bty = "n")
 ```
 
@@ -3365,13 +3378,13 @@ plot(z_vals, pdf_z_grid[plot_indices] / delta, type = "l",
 
 # Add the exact density curve as a dashed red line
 lines(z_vals, f_Z_exact(z_vals), 
-      col = "lightgray", las = 2, lwd = 2, lty = 1)
+      col = "gray", las = 2, lwd = 2, lty = 1)
 
 # Add legend
 legend("bottom", 
-       legend = c("Using convolve()", "Exact Density"),
-       col = c("black", "lightgray"), 
-       lwd = 3, lty = 1, bty = "n")
+       legend = c("Using convolve(); delta=0.01", "Exact Density"),
+       col = c("black", "gray"), 
+       lwd = c(6, 2), lty = 1, bty = "n")
 
 
 ################################################################################
@@ -3393,16 +3406,16 @@ density_conv1 <- pdf_z_grid1[plot_indices1] / delta1
 
 # 1. Draw coarse convolve() as a thick gray background line first
 plot(z_vals1, density_conv1, type = "s", 
-     col = "gray70", las = 1, lwd = 6,
+     col = "black", las = 1, lwd = 6,
      xlab = "z", ylab = "f_Z(z)", 
      main = "Continuous convolution density:\ncoarse grid approximation vs exact density")
 
 # 2. Draw exact density ON TOP as a thin black line
-lines(z_vals1, f_Z_exact(z_vals1), col = "black", lwd = 2)
+lines(z_vals1, f_Z_exact(z_vals1), col = "gray", lwd = 2)
 
 legend("bottomright", 
-       legend = c("convolve() (delta = 1)", "Exact Density"),
-       col = c("gray70", "black"), 
+       legend = c("convolve(); delta = 1", "Exact Density"),
+       col = c("black", "gray"), 
        lwd = c(6, 2), bty = "n")
 ```
 
