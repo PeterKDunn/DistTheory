@@ -7897,6 +7897,136 @@ legend("topright",
        bty = "n")
 
 ```
+
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:XformPrizeWheel).**
+
+1. $\Theta = cF^2$ is a monotonic, increasing function for $F>0$ so $F = \sqrt{\Theta/c}$ and $|dF/d\Theta| = 1/(2\sqrt{c\Theta}\,)$.
+   Using change of variables: 
+$$
+  f_\Theta(t) 
+  = f_F\left(\sqrt{t/c}\right)\cdot\frac{1}{2\sqrt{ct}} 
+  = \frac{t^{\alpha/2 - 1}\, c^{-\alpha/2}}{2\Gamma(\alpha)\,\beta^\alpha} \exp\left(-\frac{\sqrt{t/c}}{\beta}\right)
+$$
+  for $t > 0$.
+  Using $\alpha = 6$: 
+$$
+  f_\Theta(t) 
+  = \frac{t^2}{240\, c^3\, \beta^6} \exp\left(-\frac{\sqrt{t/c}}{\beta}\right).
+$$
+2. Since $\Theta > 0$, wrapping onto $[0, 2\pi)$ sums over all non-negative windings:
+$$
+  f_\Phi(\phi) = \sum_{n = 0}^\infty f\Theta(\phi + 2\pi n)\quad\text{for $\phi \in [0, 2\pi)$}.
+$$
+
+3. We can simulate many values of\ $F$, compute $\Theta = cF^2$, reduce $\mod 2\pi$, and bin into a histogram over pockets.
+4. See **R** function below.
+5. Using $c = 0.15$ and then $c = 0.52$, see Fig.\ \@ref(fig:PocketWheel).
+6. See Figs.\ \@ref(fig:PocketWheel) and\ \@ref(fig:PocketWheelForce).
+:::
+
+```{r fig.show='hide'}
+spin_wheel <- function(n = 1, shape = 6, scale = 1.2, c = 0.15, k = 12) {
+  F <- rgamma(n, shape = shape, scale = scale)
+  Theta <- c * F^2
+  Phi <- Theta %% (2 * pi)  # %% is the  mod  function in R
+  pocket <- floor(Phi / (2 * pi / k))   # 0, 1, ..., k-1
+  pocket
+}
+
+num_spins <- 15000
+barplot( table(spin_wheel(num_spins, c = .15)) / num_spins )
+barplot( table(spin_wheel(num_spins, c = .52)) / num_spins)
+
+```
+
+```{r PocketWheel, echo=FALSE, fig.align="center", out.width='100%', fig.width=8, fig.height = 10, fig.cap="The distribution of teh pocket number, for spins with two different sets of parameters."}
+set.seed(7801)
+
+par(mfrow = c(3, 2))
+
+num_spins <- 15000
+
+barplot( table(spin_wheel(num_spins, c = .15)) / num_spins ,
+         col = ColourLight,
+         xlab = "Pocket wheel lands on",
+         ylab = "Probability",
+         main = expression(Pocket~"for"~italic(c)==0.15),
+         sub = expression(alpha==6~and~beta==1.2),
+         las = 1)
+barplot( table(spin_wheel(num_spins, c = .52)) / num_spins ,
+         col = ColourLight,
+         xlab = "Pocket wheel lands on",
+         ylab = "Probability",
+         main = expression(Pocket~"for"~italic(c)==0.52),
+         sub = expression(alpha==6~and~beta==1.2),
+         las = 1)
+
+barplot( table(spin_wheel(num_spins, c = .15, shape=15, scale=0.48)) / num_spins ,
+         col = ColourLight,
+         xlab = "Pocket wheel lands on",
+         ylab = "Probability",
+         main = expression(Pocket~"for"~italic(c)==0.15),
+         sub = expression(alpha==15~and~beta==0.48),
+         las = 1)
+barplot( table(spin_wheel(num_spins, c = .52, shape=15, scale=0.48)) / num_spins ,
+         col = ColourLight,
+         xlab = "Pocket wheel lands on",
+         ylab = "Probability",
+         main = expression(Pocket~"for"~italic(c)==0.52),
+         sub = expression(alpha==15~and~beta==0.48),
+         las = 1)
+barplot( table(spin_wheel(num_spins, c = .15, shape=0.8, scale=9)) / num_spins ,
+         col = ColourLight,
+         xlab = "Pocket wheel lands on",
+         ylab = "Probability",
+         main = expression(Pocket~"for"~italic(c)==0.15),
+         sub = expression(alpha==0.8~and~beta==9),
+         las = 1)
+barplot( table(spin_wheel(num_spins, c = .52, shape=0.8, scale=9)) / num_spins ,
+         col = ColourLight,
+         xlab = "Pocket wheel lands on",
+         ylab = "Probability",
+         main = expression(Pocket~"for"~italic(c)==0.52),
+         sub = expression(alpha==0.8~and~beta==9),
+         las = 1)
+```
+
+
+```{r PocketWheelForce, echo=FALSE, fig.align="center", out.width='100%', fig.width=8, fig.height = 4, fig.cap="The distribution of the force applied to a spinning wheel. The vertical grey lines is the mean."}
+set.seed(7801)
+
+par(mfrow = c(1, 3))
+
+curve(dgamma(x, shape = 0.8, scale = 9),
+      from = 0, to = 25,
+      las = 1, lwd = 2,
+      main = expression(atop(Force:~"Gamma"~distribution,
+                             with~alpha==0.8~and~beta==9) ),
+      xlab = "Force (newtons)", ylab = "Density")
+abline(v = 7.2, lwd = 2, col = "grey")
+curve(dgamma(x, shape = 6, scale = 1.2),
+      from = 0, to = 25,
+      las = 1, lwd = 2,
+      main = expression(atop(Force:~"Gamma"~distribution,
+                             with~alpha==6~and~beta==1.2) ),
+      xlab = "Force (newtons)", ylab = "Density")
+abline(v = 7.2, lwd = 2, col = "grey")
+curve(dgamma(x, shape = 15, scale = 0.48),
+      from = 0, to = 25,
+      las = 1, lwd=2, 
+      main = expression(atop(Force:~"Gamma"~distribution,
+                             with~alpha==15~and~beta==0.48) ),
+      xlab = "Force (newtons)", ylab = "Density")
+abline(v = 7.2, lwd = 2, col = "grey")
+```
+
+
+
+
 <!-- **************************************************************************** -->
 
 ## Answers for Chap.\ \@ref(ChapBivariate) {#AnswersChapBivariate}

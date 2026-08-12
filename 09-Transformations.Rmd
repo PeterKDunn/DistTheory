@@ -2106,9 +2106,6 @@ On a road with a $100\kms.\xhs^{-1}$ speed limit, the speed of cars\ $S$ has a $
 5. Summarise your findings.
 :::
 
-::::
-
-
 ```{r BrakeDecel, echo=FALSE}
 Brake.caption <- "The braking acceleration for various scenarios."
 
@@ -2151,4 +2148,33 @@ if( knitr::is_html_output() ) {
 }
 ```
 
+:::{.exercise #XformPrizeWheel}
+A prize wheel at a local fund raiser has $k = 12$ equal 'pockets', each pocket spanning an angle of $\pi/12$ radians and numbered $0, 1, \dots 11$.
+A player spins the wheel by applying a force\ $F$ (in Newtons) to the rim.
+Assume:
 
+* The force imparts an initial angular velocity $\omega_0 = b F$ for some constant $b > 0$;
+* The force (in newtons) applied by a player is modelled as $F\sim\text{Gamma}(\text{shape} = \alpha, \text{scale} = \beta)$.
+* Friction decelerates the wheel at a constant rate $\alpha$, so by $\omega^2 = 2\alpha\Theta$ where $\alpha$ is the scale parameter, the total angle rotated before the wheel stops is $\Theta = cF^2$, where $c = b^2/(2\alpha)$.
+  The value of\ $c$ is a function of the features of the wheel (e.g. its diameter, friction, air resistance, etc.) that measures 'spin efficiency': larger values mean the wheel completes more turns before stopping. 
+
+The landing pocket is determined by $\Phi = \Theta \mod 2\pi$, with pocket\ $j$ won whenever 
+$$
+  \Phi\in\left[ \frac{2\pi j}{12}, \frac{2\pi(j+1)}{12}\right).
+$$
+
+1. Derive the probability density function of $\Theta = c F^2$.
+1. Write down the general formula for the density of a wrapped random variable $\Phi = \Theta\mod 2\pi$ in terms of the density of\ $\Theta$.
+1. Explain why $f_\Phi$ has no simple closed form; then, describe how you would evaluate $\Pr(\text{wheel lands in pocket $j$})$ numerically.
+1. Write an **R** function to simulate the pocket the wheel lands in, given $F\sim \text{Gamma}(6, 1.2)$.
+1. Use simulation to estimate $\Pr(\text{pocket} = j)$ for $j = 0, 2, \dots, 11$ using $c = 0.15$ and $c = 0.52$.
+   Is the wheel 'fair' in both scenarios?
+   Explain.
+1. Using $F\sim \text{Gamma}(\alpha=6, \beta=1.2)$ gives $\operatorname{E}[F] = 6\times 1.2 = 7.2$ and $\operatorname{var}[F] = 8.64$.
+   Repeat the previous part with $F\sim \text{Gamma}(\alpha=15, \beta=0.48)$ and with $F\sim \text{Gamma}(\alpha=0.8, \beta=9.0)$ (where both distributions have the same mean, but a smaller and larger variance respectively). 
+   Plot the three gamma distributions.
+   Comment.
+:::
+
+
+::::
