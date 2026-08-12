@@ -3,9 +3,9 @@ plotContinuous <- function(pdf_fn,   # density function
                            q_fn,     # quantile function
                            type = "DF",
                            showx = c(-4, 4),
-                           n = 2000,
+                           n = 2000,  # Number of points between range(showx)
                            fill = NA,
-                           lo = NA, hi = NA, # Shade between lo and hi 
+                           lo = min(showx), hi = max(showx), # Shade between lo and hi 
                            ...) {
   
   if (!(type %in% c("DF", "PDF", "SF", "QF"))) {
