@@ -4617,7 +4617,216 @@ cat("P(Team A wins):", mean(A_wins), "\n")
 
 :::
 
- 
+
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecDiscreteQualControl).**
+1. Let the true number of defectives in a batch of $50$ be\ $D$; then $D \sim \text{Binomial}(50, 0.04)$.
+   Conditional on $D = d$, the number of defectives found in a sample of $10$\ drawn **without replacement** is
+$$
+  X \mid D = d \;\sim\; \text{Hypergeometric}(N = 50,\; K = d,\; n = 10).
+$$
+2. A single batch's rejection probability requires **mixing** a Binomial (which determines the unknown composition of the batch) with a Hypergeometric (which determines what the sample reveals about that composition): sum over all possible values of $d$, weighting each Hypergeometric probability by $P(D = d)$. 
+   That is a finite but tedious sum. 
+   The one-replacement rule makes it worse: when $X = 1$, the *next* draw's distribution depends on exactly which items remain unsampled, which depends on $d$ and on which specific items were drawn (i.e. a second layer of Hypergeometric-type conditioning nested inside the first). 
+    It's not intractable by hand, but it stops being "look up a formula" and becomes a multi-stage conditional sum that simulation sidesteps entirely.
+3. 
+
+```{r batch-sim-function}
+simulate_batch <- function(batch_size = 50, p_defect = 0.04, sample_size = 10) {
+  # Step 1: generate the true (unknown) identity of every item in the batch
+  batch <- rbinom(batch_size, size = 1, prob = p_defect)  # 1 = defective
+
+  # Step 2: sample 10 items without replacement, inspect them
+  sample_idx   <- sample(seq_len(batch_size), sample_size)
+  sample_items <- batch[sample_idx]
+  d0 <- sum(sample_items)
+
+  if (d0 == 0) {
+    return(0L)  # ship
+  } else if (d0 >= 2) {
+    return(1L)  # reject
+  } else {
+    # exactly one defective found: discard it, draw a replacement from
+    # whatever was never sampled
+    remaining_idx   <- setdiff(seq_len(batch_size), sample_idx)
+    replacement_idx <- sample(remaining_idx, 1)
+    replacement_item <- batch[replacement_idx]
+    return(as.integer(replacement_item == 1))  # 1 = reject, 0 = ship
+  }
+}
+
+# sanity check on a handful of batches
+replicate(10, simulate_batch())
+```
+
+4. Estimate $\Pr(N \ge 20)$ for $200$\ batches.
+*Direct approach*: simulate all $200$\ batches from scratch, many times:
+
+```{r direct-N-sim}
+n_batches <- 200
+n_reps    <- 1000
+
+N_direct <- replicate(
+  n_reps,
+  sum(sapply(seq_len(n_batches), function(i) simulate_batch()))
+)
+
+p_reject_hat <- mean(N_direct) / n_batches
+prob_N_ge_20_direct <- mean(N_direct >= 20)
+
+p_reject_hat
+prob_N_ge_20_direct
+```
+
+*Shortcut approach*: first estimate the single-batch rejection probability $\hat p$ from a large number of *single*-batch simulations (much cheaper per replicate than $200$ at once), then treat $N \sim \text{Binomial}(200, \hat p)$, since batches are independent and identically distributed:
+
+```{r shortcut-N-sim}
+p_hat <- mean(replicate(1000, simulate_batch()))
+p_hat
+
+N_binom_approx <- rbinom(n_reps, size = n_batches, prob = p_hat)
+prob_N_ge_20_binom <- mean(N_binom_approx >= 20)
+prob_N_ge_20_binom
+```
+
+The shortcut is valid because batches are independent and identically distributed; once $p$ is known exactly (or to
+high precision), $N$ really is exactly Binomial(200, $p$); there's no approximation error in that step, only in how precisely you've estimated $p$. 
+The two approaches should agree closely. 
+The shortcut is worthwhile when estimating $p$ from single-batch simulation is much cheaper than simulating full batches of 200 repeatedly (it is: you get a much larger effective sample size for $p$ per unit of computation). 
+It stops being fair the moment batches are *not* iid; e.g. if defect rates drift over the production run, or inspection outcomes for consecutive batches are correlated (shared machinery, shared inspector fatigue), because then $N$
+is genuinely not Binomial and only full re-simulation captures the dependence.
+
+```{r N-margin-of-error}
+se <- sqrt(prob_N_ge_20_direct * (1 - prob_N_ge_20_direct) / n_reps)
+c(estimate = prob_N_ge_20_direct,
+  lower = prob_N_ge_20_direct - 1.96 * se,
+  upper = prob_N_ge_20_direct + 1.96 * se)
+```
+
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecDiscreteSuccesShrinkingPool).**
+
+1. If everyone always picked up, the number of candidates called until the first qualified one is found (inclusive) would be related to the classic "waiting time in sampling without replacement" problem. 
+It's *not* Geometric, because Geometric assumes an infinite sequence of iid trials with a *constant* success probability at every step. 
+Here the pool is finite and shrinks: once a non-qualified candidate is called, the probability the *next* candidate is qualified changes (there are fewer non-qualified candidates left in the pool), so the "trials" are not independent nor identically distributed. 
+This waiting time is best described directly as arising from a random permutation of the $40$\ candidates: its distribution is related to a negative hypergeometric distribution (which is not inb this book), which is exactly why simulation is the practical tool.
+2. Adding the $70$% pickup rate layers a Geometric-flavoured filter (independent Bernoulli trials for "did they pick up?") on top of a Hypergeometric-flavoured structure (sampling without replacement determines *when* a qualified name
+comes up in the order). 
+$T$ depends jointly on where the qualified candidates happen to fall in a random shuffle *and* on an independent sequence of coin flips for pickup: two different random mechanisms entangled together, which is precisely why $T$ matches neither a Geometric nor a Hypergeometric distribution on its own.
+3. 
+
+```{r recruiter-sim-function}
+simulate_T <- function(n_qual = 15, n_unqual = 25, pickup = 0.7) {
+  total <- n_qual + n_unqual
+
+  # random shuffle of the candidate list: 1 = qualified, 0 = not
+  order <- sample(c(rep(1L, n_qual), rep(0L, n_unqual)))
+
+  for (i in seq_len(total)) {
+    picks_up <- rbinom(1, 1, pickup)
+    if (picks_up == 1 && order[i] == 1) {
+      return(list(T = i, success = TRUE))
+    }
+  }
+
+  # exhausted the list without a successful qualified contact
+  return(list(T = total, success = FALSE))
+}
+
+# sanity check
+replicate(5, simulate_T()["T"])
+```
+
+4. 
+
+```{r recruiter-many-sims}
+n_reps <- 1000
+
+results <- replicate(n_reps, simulate_T(), simplify = FALSE)
+T_values      <- sapply(results, function(x) x$T)
+success_flags <- sapply(results, function(x) x$success)
+
+E_T_hat            <- mean(T_values)
+P_exhausted_hat     <- mean(!success_flags)
+
+E_T_hat
+P_exhausted_hat
+
+se_exhausted <- sqrt(P_exhausted_hat * (1 - P_exhausted_hat) / n_reps)
+c(estimate = P_exhausted_hat,
+  lower = P_exhausted_hat - 1.96 * se_exhausted,
+  upper = P_exhausted_hat + 1.96 * se_exhausted)
+```
+
+*Intuition for pickup = 0.3:* with a lower pickup rate, each call is much less likely to "count", so the recruiter is far more likely to burn through all 40 names (many of them unanswered) without ever successfully reaching
+one of the $15$\ qualified candidates who picks up. 
+We'd expect
+$\Pr(\text{exhausted})$ to rise substantially, and $\operatorname{E}[T]$ to rise too (closer to\ $40$, since more calls get "wasted" on no-answers regardless of qualification).
+
+```{r recruiter-lower-pickup}
+results_lowpickup <- replicate(n_reps, simulate_T(pickup = 0.3), simplify = FALSE)
+T_values_lp      <- sapply(results_lowpickup, function(x) x$T)
+success_flags_lp <- sapply(results_lowpickup, function(x) x$success)
+
+E_T_hat_lp        <- mean(T_values_lp)
+P_exhausted_hat_lp <- mean(!success_flags_lp)
+
+E_T_hat_lp
+P_exhausted_hat_lp
+```
+
+Comparing `P_exhausted_hat` (pickup = 0.7) against `P_exhausted_hat_lp` (pickup = 0.3) confirms the intuition directly from simulated relative frequencies, with no need to derive either probability analytically.
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecDiscreteIndependenceA).**
+
+1. Natural choice: Binomial$(n=500, p=0.02)$. 
+   Trials are independent here: visits are unrelated, no shared campaign or event is driving correlated behaviour, and the population of potential visitors is effectively infinite relative to the sample. Binomial is suitable.
+2. Natural choice: Binomial.
+   But batch composition is fixed and known ($3$ faulty out of $20$) and boards are drawn without replacement from this small, fixed population: drawing a faulty board changes the probability the next draw is also faulty. 
+   Trials are not independent. 
+   The correct model is Hypergeometric$(N=20, K=3, n=5)$, not Binomial: Binomial is not suitable.
+3. Natural choice: Poisson (events in time at a constant rate).
+   But the scenario explicitly describes crashes triggering further crashes (self-reinforcing instability): the rate is not constant over the $6$-hour window and events are not independent of each other. 
+  Trials are not independent; Poisson is not suitable.
+4. Strictly, this is sampling **without replacement** from a finite population.
+   So, the technically correct model is *Hypergeometric*($N=40\, 000$, $K$ = true number of defectives, $n=60$).
+   But the key judgment call is the *ratio*: $60$ items are being drawn from $40\,000$, so removing one bolt barely changes the defect proportion left behind for the next draw (roughly a $1$-in-$40\,000$ shift each time). 
+   This ratio is very likely small enough ($n/N = 0.15\%$) for the dependence between draws to be negligible in practice, making Binomial($n=60$, $\hat p$) a very good *working approximation*.
+   This is a legitimate modelling choice, not a mistake, provided it's stated as an approximation and the reasoning
+(small sampling fraction) is given. 
+   The "obvious" instinct to reach for Hypergeometric just because it's sampling-without-replacement isn't wrong, but it misses that the population size makes the distinction nearly irrelevant here.
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecDiscreteIndependenceB).**
+
+1. Natural choice: $\text{Geometric}(p=0.22)$, where $p$\ is the probability of a miss), counting attempts until the first miss. 
+   Shots are stated to be independent (no hot-hand effect; stable long-run rate). 
+   Geometric is suitable.
+2. Natural choice: Binomial$(n=1000, p)$, but claims from different homes are not independent: they share a common cause (same storm, same contractors, same building codes), so if one home floods, geographically and structurally similar homes are far more likely to flood too. 
+   Binomial is not suitable (the true variance of\ $X$ will be much higher than Binomial predicts: simulation would be useful).
+3. Poisson, since typos occur at a low, steady rate with no location influencing another location's typo likelihood. 
+   Trials/events are independent as described. 
+   Poisson is suitable
+4. Depends on an assumption about the underlying process. 
+   Assuming weld quality is essentially homogeneous along the pipeline (each weld's crack risk is the same regardless of crew, machine, or section), independence across the sampled welds is a reasonable working assumption, and Binomial-style reasoning (or Poisson, for *count* of cracks per length) is defensible. 
+   But several plausible sources of *shared cause within sections* are possible: *different crews and machines*, *routine equipment servicing*, and welding *over several weeks* all suggest that quality could vary systematically from one section to another: one crew or one worn machine producing a cluster of weak welds together would make welds within the same section positively correlated even though welds in different sections are roughly independent of each other. 
+   A defensible answer is: "assuming quality is constant across crews/sections, a named distribution is a reasonable approximation; but if crew- or machine-level effects are suspected, the constant-probability assumption breaks down and a named distribution risks understating the true variability (e.g. via clustered failures).
+   This would need to be checked against the data, possibly by comparing observed variance to what the named model predicts."
+   Either conclusion is acceptable as long as the assumption is stated and justified from the details given.
+:::
+
+
 
 <!-- ******************************************************************************************* --> 
 ## Answers for Chap.\ \@ref(ContinuousDistributions) {#AnswersChapContinuousDistributions}
@@ -5297,7 +5506,124 @@ for (i in 1:8) {
 
 
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecContinuousIndependenceB}
 
+1. Natural choice: **Exponential**, for the time between arrivals, implying a Poisson process for the arrival counts. 
+   The scenario explicitly rules out both congestion effects (no queue forming) and any time-of-day effect (arrivals equally likely throughout), which are the two most common ways this assumption fails in practice. 
+   Exponential is suitable.
+2. The defining property of the Exponential distribution is **memorylessness**: $\Pr(T > s+t \mid T>s) = \Pr(T>t)$, i.e.
+the chance of surviving another hour doesn't depend on age so far.
+   The scenario directly describes the opposite: a bulb that's already lasted longer is *more* likely to fail soon, meaning the "hazard rate" increases with age. 
+   Exponential is not suitable here.
+
+```{r a2-illustration}
+# Illustrating the difference: memoryless (exponential) survival vs
+# an increasing-hazard ("wear-out") process, simulated crudely via a
+# Weibull with shape > 1 for comparison.
+n <- 100000
+lifetimes_memoryless <- rexp(n, rate = 1/1000)          # constant hazard
+lifetimes_wearout     <- rweibull(n, shape = 2.5, scale = 1130) # increasing hazard
+
+# P(survive another 100h | already survived 1000h) under each model
+p_survive_more_memoryless <- mean(lifetimes_memoryless > 1100) /
+                              mean(lifetimes_memoryless > 1000)
+p_survive_more_wearout <- mean(lifetimes_wearout > 1100) /
+                           mean(lifetimes_wearout > 1000)
+
+# compare to the "fresh bulb" probability of surviving 100h from new
+p_survive_100_fresh_memoryless <- mean(lifetimes_memoryless > 100)
+p_survive_100_fresh_wearout    <- mean(lifetimes_wearout > 100)
+
+c(memoryless_conditional = p_survive_more_memoryless,
+  memoryless_fresh        = p_survive_100_fresh_memoryless)
+c(wearout_conditional = p_survive_more_wearout,
+  wearout_fresh         = p_survive_100_fresh_wearout)
+```
+
+  For the memoryless model the two numbers in each pair are (up to simulation error) equal, exactly as the Exponential's defining property requires. 
+  For the wear-out model they clearly aren't: the already-aged bulb is worse off, confirming visually why Exponential fails to capture this bulb's behaviour.
+3. Natural choice: *Uniform*, on some small interval like $(-0.5, 0.5)$ grams. 
+   The scenario states the error is "equally likely to fall anywhere" in the interval, with no dependence on
+the true weight: exactly the Uniform assumption. 
+   Uniform is suitable.
+4. A defensible starting assumption is that each participant is a fresh, unrelated individual completing an unfamiliar task once, so reaction times across participants can reasonably be treated as iid, probably Normal (or a right-skewed relative like Log-Normal) as an approximation, on the grounds that reaction time results from many small additive neurological/perceptual factors. 
+   But two details are worth flagging as threats to that assumption rather than ignoring them: testing everyone "one after another... across a single afternoon" raises the possibility of a *time-of-day effect* (fatigue building across the afternoon, or a noisy corridor developing later on) that would make reaction times drift similarly to the voltmeter case; and using the "same equipment" for everyone means any equipment-specific quirk (e.g. a slightly sticky button) affects every participant identically, which doesn't break independence *between* participants but does mean the whole sample may be systematically shifted. 
+   A good answer states the iid-Normal assumption explicitly, notes these as caveats, and says how you'd check them (e.g. plot reaction time against testing order to look for a trend).
+:::
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecContinuousIndependenceB}
+
+1. Two separate things need checking: independence (the men are explicitly unrelated, different households, no shared family: nothing links one man's height to another's, so treating the 50 measurements as independent is
+reasonable); shape (the scenario states this as an established empirical fact from prior population studies, so
+there's no need to justify it from first principles here).
+   Normal is suitable, on the combined basis of (a)\ independent sampling from a large population and (b)\ the distribution shape being empirically well-documented for this variable.
+2. The true voltage is constant, so in a correctly functioning instrument, successive readings would be iid Normal
+around that true value (measurement noise only). 
+   But the scenario describes a systematic warm-up drift for the first $20\mins$: the *mean* of the readings is not constant across the session, so readings taken at different times are not identically distributed, and readings
+taken close together in time (both mid-drift) will tend to be similarly off from the true value in a way readings far apart in time won't be.
+  A single stationary Normal model is not suitable for readings drawn from across the whole session; readings restricted to *after* stabilisation might reasonably be modelled as iid Normal on their own.
+
+```{r b2-illustration}
+n_readings <- 40
+time_min   <- seq(0, 39, by = 1)  # one reading per minute, 40 minutes
+
+true_voltage <- 5.00
+drift <- ifelse(time_min < 20, (20 - time_min) * 0.01, 0)  # warms up, drift shrinks
+noise <- rnorm(n_readings, mean = 0, sd = 0.01)
+
+readings <- true_voltage + drift + noise
+
+plot(time_min, readings, type = "b", pch = 16,
+     xlab = "Minutes into session", ylab = "Voltmeter reading",
+     main = "Simulated drifting readings (early readings biased high)")
+abline(h = true_voltage, col = "red", lty = 2)
+```
+
+  The systematic early-session bias is visible directly in the plot: later readings scatter tightly around the true value, early ones don't, which is exactly the kind of pattern a single "iid Normal" model would miss.
+3. Natural choice: Exponential, for time until the next decay, given a Poisson process of decays. 
+   The scenario is essentially the textbook justification for this model: independence and constant rate are stated as an established physical fact, not just assumed for convenience. 
+   Exponential is suitable: this is one of the few real-world situations where memorylessness is not just a convenient approximation but a genuinely well-supported physical property.
+4. This is the one where blind pattern-matching to "measurements over time $\Rightarrow$ Normal" is dangerous. 
+   Daily rainfall totals are **not independent** in any typical climate: rain tends to arrive in multi-day weather systems, so a wet day is more likely to be followed by another wet day than the "average" day would suggest
+(positive autocorrelation), and rainfall amounts are also usually strongly right-skewed with a spike of exact zeros (dry days) rather than symmetric around a mean (the opposite of what Normal assumes). 
+   A reasonable answer: a single stationary Normal model for daily rainfall is not suitable, both because of the skew/zero-inflation in the marginal distribution and because of day-to-day dependence; a more appropriate approach would model wet/dry runs and rainfall amount on wet days separately, or just use the empirical distribution via simulation/bootstrapping rather than force a single named distribution onto autocorrelated data.
+
+```{r c2-illustration}
+# crude illustration of autocorrelation in rainfall: simulate a simple
+# 2-state (dry/wet) Markov chain for "is it raining", vs an iid coin flip,
+# and compare run lengths of consecutive wet days.
+n_days <- 3000
+
+# iid version: each day wet with prob 0.3, independent of yesterday
+iid_wet <- rbinom(n_days, 1, 0.3)
+
+# Markov version: persistence in weather systems
+markov_wet <- numeric(n_days)
+markov_wet[1] <- rbinom(1, 1, 0.3)
+for (d in 2:n_days) {
+  p_wet_given_wet <- 0.6   # weather systems persist
+  p_wet_given_dry <- 0.15
+  p <- ifelse(markov_wet[d-1] == 1, p_wet_given_wet, p_wet_given_dry)
+  markov_wet[d] <- rbinom(1, 1, p)
+}
+
+run_lengths <- function(x) {
+  r <- rle(x)
+  r$lengths[r$values == 1]
+}
+
+mean(run_lengths(iid_wet))
+mean(run_lengths(markov_wet))
+```
+
+Both processes have roughly the same overall proportion of wet days, but
+the Markov (realistic, autocorrelated) version produces noticeably longer
+runs of consecutive wet days — exactly the clustering that an iid/Normal
+treatment of daily rainfall would fail to capture.
+:::
 
 
 <!-- *********************************************************************************** -->
@@ -6561,8 +6887,110 @@ from which we find $\operatorname{E}[X\mid X > 0] = \lambda\alpha\beta/(1 - \exp
 :::
 
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecMixedIndependenceA).**
+
+1. All three assumptions hold up. 
+   Claims arise from many unrelated drivers in different areas; nothing suggests a shared cause pushing several claims to occur together, so treating occurrences as an (approximately) Poisson process is reasonable. 
+   Each claim's cost is tied to the specific incident and vehicle involved, with no stated link between one claim's size and another's, or between the *number* of claims and how large each one tends to be. 
+   Compound Poisson-Gamma is suitable.
+2. This is a *common-shock* scenario, and it breaks all three assumptions at once. 
+   Claims don't occur independently: they're triggered together by the same storm passing over the town, so "nearly everyone claims on the same day" is a single shared event, not many small independent ones.
+   Severities aren't independent of each other either: hailstone size varies smoothly across the storm's path, so nearby properties tend to have similarly-sized claims (spatial correlation). 
+   And crucially, severity is not independent of $N$: a day with an unusually large number of claims is, by the same mechanism (a bigger/more intense storm), also a day with unusually large claim sizes: frequency and severity move
+together. 
+   Compound Poisson-Gamma is not suitable; the standard actuarial fix is to model catastrophe events separately (e.g., as a distinct shock component) rather than folding them into the same iid-severity, Poisson-frequency structure used for
+routine claims.
+
+```{r a2-illustrationB}
+n_sim <- 20000
+
+# "routine" claims: independent Poisson frequency, iid Gamma severity,
+# independent of N
+lambda_routine <- 30
+sim_S_routine <- replicate(n_sim, {
+  N <- rpois(1, lambda_routine)
+  if (N == 0) return(0)
+  sum(rgamma(N, shape = 2, rate = 0.01))  # mean severity 200
+})
+
+# "storm" version: a shared latent "storm intensity" inflates BOTH the
+# number of claims AND the size of each claim on the same day
+sim_S_storm <- replicate(n_sim, {
+  intensity <- rgamma(1, shape = 4, rate = 4)       # storm-day severity multiplier, mean 1
+  N <- rpois(1, lambda_routine * intensity)          # more claims on intense days
+  if (N == 0) return(0)
+  sum(rgamma(N, shape = 2, rate = 0.01 / intensity)) # AND bigger claims on intense days
+})
+
+c(mean_routine = mean(sim_S_routine), var_routine = var(sim_S_routine))
+c(mean_storm   = mean(sim_S_storm),   var_storm   = var(sim_S_storm))
+
+# theoretical compound Poisson-Gamma variance under independence:
+# Var(S) = lambda * E[X^2], with X ~ Gamma(shape=2, rate=0.01)
+ex2 <- (2/0.01)^2 + 2/(0.01^2)   # E[X^2] = Var(X) + E[X]^2 for Gamma
+theoretical_var <- lambda_routine * ex2
+theoretical_var
+```
+
+Even with the two versions set up to have similar *means*, the shared-shock
+version has dramatically higher variance than the independence-based
+theoretical formula predicts — exactly the extra "clumping risk" that
+ignoring the common shock would miss.
+
+3. This is a genuine judgment call. 
+   The **occurrence** side is defensible as approximately Poisson: customers notice and report the fault independently and at their own pace, with no coordination: spreading claims out over many months rather than all at once looks like a
+reasonable, roughly constant-rate process. 
+   The **severity** side is murkier: because every claim relates to fixing the *same* flaw with broadly the same part and labour, individual claim costs are likely to be far more similar to each other than would be the case for genuinely
+unrelated repair jobs; they might not be strictly *independent* draws from a common Gamma distribution so much as tightly clustered around a typical repair cost with only minor variation. 
+   A defensible answer: the Poisson-frequency half of the model is reasonable, but the severities, while perhaps still well-described by a Gamma shape, are more homogeneous (lower variance, less "independent draw" flavour) than a generic claims severity distribution would be---worth flagging rather than assuming away, though it doesn't necessarily invalidate the compound Poisson-Gamma structure outright the way a "common shock" does.
+:::
 
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecMixedIndependenceB).**
+
+1. Households are unrelated and spread across a wide region, with loss causes (theft, accidental damage, appliance fire) that are inherently household-specific rather than shared. 
+   No mechanism is described that would make one household's zero/nonzero outcome move together with another's. 
+   A zero-modified model with independent hurdle outcomes across policyholders is suitable.
+2. This one is explicit: a contagious infection means one family member's "nonzero" outcome (needing treatment) directly raises the probability that *other members of the same household* also end up nonzero, because they share close contact. 
+   The zero/nonzero outcomes are **not independent across members of the same family** this year, although outcomes across *different, unrelated* families would likely still be reasonably independent of each other. 
+   A hurdle model with a single, constant $p_0$ applied independently to each family member is not suitable during an outbreak; you'd underestimate the chance of seeing *all four* family members with a nonzero cost together, and overestimate
+the chance of seeing exactly one.
+
+```{r b2-illustrationB}
+n_families <- 20000
+
+# independent hurdle: each of 4 family members independently has a
+# nonzero outcome with probability p0
+p0 <- 0.25
+nonzero_count_independent <- rbinom(n_families, size = 4, prob = p0)
+
+# contagion version: a shared household latent risk shifts p0 up or down
+# together for all 4 members
+household_risk <- rbeta(n_families, shape1 = 1, shape2 = 3)  # mean ~0.25, varies by household
+nonzero_count_contagion <- rbinom(n_families, size = 4, prob = household_risk)
+
+c(mean_independent = mean(nonzero_count_independent),
+  var_independent  = var(nonzero_count_independent))
+c(mean_contagion = mean(nonzero_count_contagion),
+  var_contagion  = var(nonzero_count_contagion))
+
+# proportion of families with ALL 4 members nonzero
+c(all4_independent = mean(nonzero_count_independent == 4),
+  all4_contagion    = mean(nonzero_count_contagion == 4))
+```
+
+With a similar overall mean number of affected family members, the
+contagion version produces far more variance and a much higher chance of
+*all four* family members being affected together — the clustering the
+independent-hurdle model completely misses.
+3. A judgment call, and it hinges on **time** rather than a shared social mechanism. 
+   If you model $X$ using a single $p_0$ that's constant across the whole year, you're assuming every machine---whenever built---has the same probability of a claim. 
+   But the scenario describes a supplier switch partway through the year that changes the underlying failure rate for machines built afterward. 
+   A defensible answer: for machines within a single, homogeneous production period (all pre-switch, or all post-switch), a hurdle model with constant $p_0$ across *those* machines is reasonable, since nothing suggests failures are contagious between customers' machines. 
+   But pooling the whole year's machines into one hurdle model with a single $p_0$ is not suitable, because $p_0$ has genuinely changed partway through: you'd want either two separate hurdle models (pre/post switch) or $p_0$ modelled as a function of build date.
+:::
 
 
 

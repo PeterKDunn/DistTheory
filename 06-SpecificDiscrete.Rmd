@@ -2404,4 +2404,94 @@ Use **R** to help answer the following questions.
    b. the probability that Team A wins.
 
 :::
+
+---
+
+
+:::{.exercise #SpecDiscreteQualControl}
+A factory produces items in batches of\ $50$. 
+Each item is independently defective with probability\ $0.04$. 
+Before shipping, an inspector samples $10$\ items, without replacement, from the batch and inspects them.
+
+* If $0$\ defectives are found in the sample, the batch is shipped as-is.
+* If $1$\ defective is found, the inspector discards the defective item only, draws one more item from the remaining items in the batch to replace it in the sample, and re-checks.
+  (This replacement item is also inspected, but not replaced again even if it is defective.)
+  If this bew item is defective, the batch is rejected; otherwise , the batch is shipped.
+* If $2$\ or more defectives are found in the original sample of\ $10$, the whole batch is rejected.
+
+Let  $N$ be the number of batches, out of $200$\ independently produced batches, that get rejected.
+
+
+1. What distribution describes the number of defectives in the initial batch of\ $50$? 
+1. What distribution describes the number of defectives found in the sample of\ $10$, conditional on the batch's true defect count?
+1. Explain why the probability that a single batch is rejected is awkward to compute exactly manually : which two distributions are being mixed/chained together, and why does the one-replacement rule make it worse?
+1. Describe how to simulate the inspection of a single batch, step by step, including how to generate the batch's true (unknown) defect count first, then simulate the sampling.
+1. Explain how simulating 200 batches lets you estimate $\Pr(N\ge 20)$, and how this relates to simulating\ $N$ directly as (approximately) $\text{Binomial}(200, p)$ once you have a good estimate of\ $p$; i.e., when is it fair to skip re-simulating all $200$ batches from scratch versus just simulating $N\sim\text{Bin}(200, p)$?
+:::
+
+
+:::{.exercise #SpecDiscreteSuccesShrinkingPool}
+A recruiter has a list of $40$\ candidates: $15$ are "qualified" and $25$ are not. 
+She calls candidates one at a time, without replacement, in a random order.
+She stops calling as soon as she finds a qualified candidate, but each candidate she calls (qualified or not) only picks up the phone with probability\ $0.7$ independently; if they don't pick up, she moves to the next name on the list without that call "counting" toward anything except time spent.
+
+Let $T$\ be the number of phone calls she makes (attempts, including no-answers) until she either successfully places a call to a qualified candidate, or exhausts the list of\ $40$.
+
+1. If every candidate always picked up, what named distribution would describe the number of candidates called until the first qualified one is reached? Why does the finite list (without replacement) rule out treating this as Geometric?
+1. Now add back the "$70$% pickup" complication. 
+   Explain why\ $T$ is no longer cleanly Hypergeometric or Geometric, but has features of both.
+1. Write some **R** code to simulate one realisation of $T$.
+   You will need to simulate a random shuffle of the $40$\ candidates ($15$ qualified; $25$ not), then walk down the list simulating pickup/no-pickup for each.
+1. Estimate $\operatorname{E}[T]$ and $\Pr(\text{list exhausted with no successful qualified contact})$.
+1. Simulate what would happen to this second probability if the pickup rate dropped to\ $0.3$.
+:::
+
+:::{.exercise #SpecDiscreteIndependenceA}
+For each scenario below:
+
+a. Determine which named discrete distribution (Bernoulli, Binomial, Uniform, Geometric, Negative Binomial, Poisson, Hypergeometric) would be the natural first choice to model the quantity described.
+b. Determine if the individual trials/events are genuinely (or approximately) independent.
+c. Based on your previous answer, is the named distribution actually a suitable model here, or does the dependence structure break the assumptions it relies on?
+
+The scenarios are:
+
+1. A website gets visitors throughout the day. 
+   Historically, visits result in a completed sign-up independently with probability\ $0.02$, and visits are spread out and unrelated to one another (no marketing campaigns running, traffic from many unrelated sources). 
+   Let\ $X$ be the number of sign-ups out of the next $500$\ visits.
+2. A batch of $20$\ circuit boards was just produced, and $3$ are known to be faulty (a fixed, already-realised fact about this specific batch: the faults happened during manufacture and won't change). 
+   A technician selects $5$\ boards at random from the batch to test. 
+   Let \$X$ be the number of faulty boards found among the $5$\ selected.
+3. A web server crashes on average once every $4\hs$ during normal operation. 
+   Following a botched software update this morning, the server has become unstable: each crash triggers an automatic restart into the same faulty state, which sharply increases the chance of another crash soon afterward, before engineers roll back the update. 
+   Let\ $X$ be the number of crashes in the $6\hs$ immediately following the update.
+4. An inspector checks welds along a newly built pipeline, examining every 50th weld for cracks (about $400$\ welds are checked in total, out of tens of thousands along the pipeline). 
+   The welding was done by several different crews and machines working in sections along the route, over several weeks, with routine equipment servicing in between sections. 
+  Let\ $X$ be the number of cracked welds found among the $400$ inspected.
+:::
+
+:::{.exercise #SpecDiscreteIndependenceB}
+For each scenario below:
+
+a. Determine which named discrete distribution (Bernoulli, Binomial, Uniform, Geometric, Negative Binomial, Poisson, Hypergeometric) would be the natural first choice to model the quantity described.
+b. Determine if the individual trials/events are genuinely (or approximately) independent.
+c. Based on your previous answer, is the named distribution actually a suitable model here, or does the dependence structure break the assumptions it relies on?
+
+The scenarios are:
+
+1. A basketball player shoots free throws. 
+   She has a long, stable career free-throw percentage of $78$%, and sports scientists have found no meaningful "hot hand" effect for her: each shot's outcome is unrelated to the previous one. 
+   Let\ $X$ be the number of shots she needs to attempt until she misses one for the first time.
+2. An insurer holds policies on $1000$ homes in a coastal town. 
+   A major hurricane is forecast to hit the town directly. 
+   Let\ $X$ be the number of homes that file a storm-damage claim. 
+   (Homes are close together, share the same roofing contractors and building codes, and will all experience broadly the same storm intensity and flooding.)
+3. A copy editor is proofreading a manuscript. 
+   Typos were introduced by the original author essentially at random throughout the writing process, at a low, steady rate, with no reason for one typo's location to make another typo more or less likely nearby. 
+   Let\ $X$ be the number of typos found in a randomly selected $10$-page chapter.
+4. A shipping container has just arrived holding $40\,000$\ bolts from a single production run. 
+   A quality inspector selects $60$\ bolts at random from the container, without putting any back, to check for defects. 
+   Let\ $X$ be the number of defective bolts found among the\ $60$.
+
+:::
+
 ::::
