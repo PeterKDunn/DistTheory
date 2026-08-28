@@ -1365,38 +1365,27 @@ A more precise estimate would be found using a larger number of simulations.
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:ProbFaceRecognition).**
 
-1. Using the Law of Total Probability: $\Pr(A) = \Pr(A \mid W)\cdot \Pr(W) + \Pr(A \mid W^c)\cdot \Pr(W^c)$.
-   Given:
-
-* $\Pr(W) = 0.00001$
-* $\Pr(W^c) = 1 - \Pr(W) = 0.99999$
-* $\Pr(A \mid W) = 0.85$
-* $\Pr(A \mid W^c) = 0.001$
-
-  Substituting the values:
+1. $\Pr(A) = \Pr(A \mid W)\cdot \Pr(W) + \Pr(A \mid W^c)\cdot \Pr(W^c)$.
+   Using the given information, and that $\Pr(W^c) = 1 - \Pr(W) = 0.99999$:
 \begin{align*}
   \Pr(A) &= (0.85 \times 0.00001) + (0.001 \times 0.99999)\\
   \Pr(A) &= 0.0000085 + 0.00099999 = 0.00100849 \approx 0.1008\%
 \end{align*}
-2. By Bayes' Theorem: $\Pr(W \mid A) = \frac{\Pr(A \mid W)\Pr(W)}{\Pr(A)}$.
+2. By Bayes' Theorem: $\Pr(W \mid A) = \frac{\Pr(A \mid W)\Pr(W)}{\Pr(A)}$, so
 $$
   \Pr(W \mid A) = \frac{0.85 \times 0.00001}{0.00100849} = \frac{0.0000085}{0.00100849} \approx 0.0084285.
 $$
-  The posterior probability that a flagged person is actually on the watchlist is approximately **0.84%** (less than 1 in 118 alerts).
-
-3. This result is an example of the **Base Rate Fallacy** (or False Positive Paradox):
-
-* Because the event of being on the watchlist is extremely rare ($1$ in $100\,000$), the vast majority of people scanned ($99,999$ out of $100\,000$) are innocent.
-* Even with a low false positive rate of $0.1\%$, out of $100\,000$ innocent people, the system will generate roughly $100$ false alerts.
-* In contrast, out of $100\,000$ people, we expect only $1$ target individual, generating roughly $0.85$ true alerts.
-* Thus, out of roughly $101$ total alerts, fewer than $1$ is a true positive, dominating the denominator with false positives.
-
-4. See below.
+  The posterior probability that a flagged person is actually on the watchlist is approximately $0.84$%.
+3. Because the event of being on the watchlist is extremely rare ($1$ in $100\,000$), the vast majority of people scanned ($99,999$ out of $100\,000$) are innocent.
+   Even with a low false positive rate of $0.1\%$, out of $100\,000$ innocent people, the system will generate roughly $100$\ *false* alerts.
+   In contrast, out of $100\,000$ people, we expect only $1$\ target individual, generating roughly $0.85$ *true* alerts.
+   Thus, out of roughly $101$\ total alerts, fewer than $1$\ is a *true* positive, dominating the denominator with false positives.
+4. See below and Fig.\ \@ref(fig:plotAIFR) (left panel).
 :::
 
-```{r solutionFacialRecognition, echo=TRUE}
+```{r solutionFacialRecognition, echo=TRUE, fig.show='hide'}
 # Define parameters
-p_W <- 10^seq(-6, -2, by = 0.5)  # Range of prior probabilities from 10^-6 to 10^-2
+p_W <- 10^seq(-6, -2, by = 0.1)  # Range of prior probabilities from 10^-6 to 10^-2
 sens <- 0.85                       # P(A | W)
 fpr  <- 0.001                      # P(A | W^c)
 
@@ -1412,7 +1401,10 @@ ppv_results <- data.frame(
   Posterior_P_W_given_A = posterior_P_W_given_A(p_W, sens, fpr)
 )
 
-print(ppv_results)
+plot(ppv_results,
+     type = "l", lwd = 3, las = 1, col = ColourSolid,
+     xlab = "Prior probability", ylab = "Posterior probability",
+     main = "Facial recognition PPV")
 ```
 
 
@@ -1420,53 +1412,41 @@ print(ppv_results)
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:ProbAITextDetectors).**
 
-1. Let $A$ be the event an essay is AI-generated, and $H = AIc$ be the event it is written by a human.
-   Using the Law of Total Probability:
+1. Let $A$ be the event an essay is AI-generated, and $H = A^c$ be the event teh essay is written by a human:
 $$
   \Pr(F) = \Pr(F \mid A)\cdot\Pr(A) + \Pr(F \mid H)\cdot\Pr(H).
 $$
-
-Given:
-
-* $\Pr(A) = 0.05 \implies P(H) = 1 - 0.05 = 0.95$
-* $\Pr(F \mid A) = 0.85$
-* $\Pr(F \mid H) = 0.04$
-
-Substituting the values:
+Using the given information, and that $\Pr(A) = 0.05 \implies P(H) = 1 - 0.05 = 0.95$:
 \begin{align*}
   \Pr(F) &= (0.85 \times 0.05) + (0.04 \times 0.95)\\
   \Pr(F) &= 0.0425 + 0.0380 = 0.0805 \quad (8.05\%)
 \end{align*}
-
 2. By Bayes' Theorem:
 \begin{align*}
   \Pr(A \mid F) &= \frac{\Pr(F \mid A)\cdot \Pr(A)}{\Pr(F)}\\
   \Pr(A \mid F) &= \frac{0.85 \times 0.05}{0.0805} = \frac{0.0425}{0.0805} \approx 0.52795
 \end{align*}
-The posterior probability that a flagged essay is actually AI-generated is approximately **52.8%** (roughly a coin flip).
+   The posterior probability that a flagged essay is actually AI-generated is approximately $52.8$% (roughly a coin flip).
 3. First, calculate the probability of *not* being flagged:
 $$
   \Pr(F^c) = 1 - \Pr(F) = 1 - 0.0805 = 0.9195.
 $$
-The probability of a true negative (human text not flagged) is $\Pr(F^c \mid H) = 1 - 0.04 = 0.96$.
-Applying Bayes' Theorem:
+   The probability of a true negative (human text not flagged) is $\Pr(F^c \mid H) = 1 - 0.04 = 0.96$.
+   Applying Bayes' Theorem:
 \begin{align*}
   \Pr(H \mid F^c) 
   &= \frac{\Pr(F^c \mid Human)\cdot \Pr(H)}{\Pr(F^c)}\\
   &= \frac{0.96 \times 0.95}{0.9195} = \frac{0.9120}{0.9195} \approx 0.99184
 \end{align*}
-If an essay passes unflagged, there is a **99.18%** probability that it is genuine human work.
-4. This outcome illustrates the **Base Rate Fallacy**:
-
-* Because human-written papers dominate the pool (95% of submissions), even a modest 4% false positive rate produces $0.04 \times 95 = 3.8$ false alerts per 100 papers.
-* Meanwhile, an 85% sensitivity on the small 5% AI pool yields $0.85 \times 5 = 4.25$ true alerts per 100 papers.
-* Because the base rate of AI usage is low, the volume of false positives ($3.8$) is nearly equal to the volume of true positives ($4.25$), diluting the confidence of any single positive flag.
-
-5. See below.
+   If an essay passes unflagged, there is a $99.18$% probability that it is genuine human work.
+4. Because human-written papers dominate the pool ($95$% of submissions), even a modest $4$% false positive rate produces $0.04 \times 95 = 3.8$ *false* alerts per $100$\ papers.
+   Meanwhile, an $85$% sensitivity on the small $5$% AI pool yields $0.85 \times 5 = 4.25$ *true* alerts per $100$\ papers.
+   Because the base rate of AI usage is low, the number of false positives ($3.8$) is nearly equal to the volume of true positives ($4.25$), diluting the confidence of any single positive flag.
+5. See below and Fig.\ \@ref(fig:plotAIFR) (right panel).
 :::
 
 
-```{r solutionAI, echo=TRUE, fig.width=7, fig.height=4.5}
+```{r solutionAI, echo=TRUE, fig.show='hide'}
 # Define parameters
 p_ai_vector <- seq(0.01, 0.50, by = 0.01) # Vector of priors
 sens <- 0.85                               # Sensitivity
@@ -1482,16 +1462,17 @@ calc_ppv <- function(p_ai, sensitivity, false_pos_rate) {
 ppv_values <- calc_ppv(p_ai_vector, sens, fpr)
 
 # Base R Plotting
-plot(p_ai_vector, ppv_values, type = "l", col = "darkblue", lwd = 2,
-     xlab = "Prior Probability P(AI)",
-     ylab = "Posterior Probability P(AI | Flag)",
-     main = "AI Detector PPV as a Function of Prior Prevalence")
-abline(v = 0.05, col = "red", lty = 2) # Highlight course base rate (5%)
-abline(h = calc_ppv(0.05, sens, fpr), col = "red", lty = 2)
-grid()
+plot(p_ai_vector, ppv_values, type = "l", col = ColourSolid, lwd = 3, las = 1,
+     xlab = "Prior Probability P(AI)", ylab = "Posterior Probability",
+     main = "AI detector PPV as a\nfunction of prior prevalence")
 ```
-:::
 
+
+```{r plotAIFR, echo=FALSE, fig.cap="Posterior probabilities, for the facial recognition (left) and AI detection examples (right).", out.width='100%', fig.width=8, fig.height=3, fig.align="center"}
+par(mfrow = c(1, 2))
+<<solutionFacialRecognition>>
+<<solutionAI>>
+```
 
 
 

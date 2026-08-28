@@ -2653,6 +2653,7 @@ Then\index{Law of total probability}
    &= \Pr(A \mid B_1) \cdot \Pr(B_1) + \Pr(A \mid B_2) \cdot \Pr(B_2) + \ldots \\
    & \qquad {} + \Pr(A \mid B_k) \cdot \Pr(B_k).
 \end{align*}
+This is known as the *Law of total probability*.
 
 ::::{.proof}
 The proof follows from writing $A = (A\cap B_1) \cup (A\cap B_2) \cup \ldots \cup (A\cap B_k)$, where the events on the RHS are mutually exclusive.
@@ -4072,36 +4073,39 @@ Create an **R** simulation to check the answer.
 
 :::{.exercise #ProbFaceRecognition}
 An international airport deploys an automated facial recognition (AFR) system to screen passengers walking past a checkpoint against a database of known security threats. 
-Based on benchmark evaluations of "in the wild" facial recognition systems (such as NIST FRVT studies) and security watchlist data, assume the following parameters:
+Based on real scenarios (such as NIST FRVT studies) and security watchlist data, assume the following parameters:
 
-* *Prevalence:* The probability that a randomly scanned passenger is on the watchlist is $\Pr(W) = 1 \times 10^{-5}$ ($1$ in $100\,000$).
-* *Sensitivity (true positive rate):* If a passenger is on the watchlist, the system correctly generates an alert with probability $\Pr(A \mid W) = 0.85$ (or $85$%).
-* *False Positive Rate:* If a passenger is **not** on the watchlist, the system mistakenly generates an alert with probability $\Pr(A \mid W^c) = 0.001$ ($0.1$%, or $1$ in $1\,000$).
+* *Prevalence:* The probability that a randomly scanned passenger is on the watchlist is $\Pr(W) = 1 \times 10^{-5}$ ($1$\ in\ $100\,000$).
+* *Sensitivity:* If a passenger is on the watchlist, the system correctly generates an alert with probability $\Pr(A \mid W) = 0.85$.
+* *False positive rate:* If a passenger is *not* on the watchlist, the system mistakenly generates an alert with probability $\Pr(A \mid W^c) = 0.001$ ($0.1$%, or $1$\ in\ $1\,000$; i.e., $99.9$% specificity).
 
 Use this information to answer these questions.
 
-1. State the *Law of Total Probability* formula for $\Pr(A)$, the marginal probability that a randomly scanned passenger triggers an alert, and calculate its numerical value.
+1. Use the *Law of total probability* to compute the value of $\Pr(A)$, and explain what this value *means*.
 2. Calculate the *Positive Predictive Value (PPV)*, $\Pr(W \mid A)$: given that the camera triggers an alert for a passenger, what is the posterior probability that this passenger is actually on the watchlist?
-3. Briefly explain the intuition behind why $\Pr(W \mid A)$ is so low despite the system having an $85$% sensitivity and a $99.9$% specificity (the "False Positive Paradox" / "Base Rate Fallacy").
-4. Write a short **R** code snippet using Bayes' theorem to compute $\Pr(W \mid A)$ for a vector of prior probabilities $\Pr(W) \in [10^{-6}, 10^{-2}]$.
+3. Briefly explain the why $\Pr(W \mid A)$ is so low, despite the system having an $85$% sensitivity and a $99.9$% specificity.
+4. Write some **R** code to use Bayes' theorem to compute $\Pr(W \mid A)$ for a range of prior probabilities $\Pr(W) \in [10^{-6}, 10^{-2}]$.
+   Plot the resulting posterior curve.
+
 :::
 
 
 :::{.exercise #ProbAITextDetectors}
 A university introducing automated academic integrity software uses an AI text classifier (such as GPTZero or Turnitin) to screen student essays for AI generation. 
-Based on realistic independent benchmarks of AI detectors on non-native or heavily edited writing:
+Based on realistic independent benchmarks of AI detectors on non-native or heavily edited writing, assume the following parameters::
 
-* *Prevalence:* In a specific course, it is estimated that only 5% of submitted essays are actually AI-generated without permission ($\Pr(A) = 0.05$).
-* *Sensitivity (true positive rate):* If an essay is fully AI-generated, the tool correctly flags it with probability $\Pr(F \mid A) = 0.85$ (85% sensitivity).
-* *False Positive Rate:* If an essay is human-written, the tool mistakenly flags it as AI-generated with probability $\Pr(F \mid H) = 0.04$ (4% FPR, or 96% specificity).
+* *Prevalence:* In a specific course, 5% of submitted essays are estimated to be AI-generated without permission ($\Pr(A) = 0.05$).
+* *Sensitivity:* If an essay is fully AI-generated, it is correctly flagged by the tool with probability $\Pr(F \mid A) = 0.85$.
+* *False Positive Rate:* If an essay is human-written, the tool mistakenly flags it as AI-generated with probability $\Pr(F \mid H) = 0.04$ (i.e., $96$% specificity).
 
 Use this information to answer these questions.
 
-1. State the *Law of Total Probability* formula for $\Pr(F)$, the marginal probability that a randomly scanned essay is flagged by the detector, and compute its value.
-2. Calculate the *Positive Predictive Value (PPV)*, $\Pr(A \mid F)$: given that an essay triggers a flag, what is the posterior probability that the student actually used AI?
+1. Use the *Law of total probability* to compute the value of $\Pr(F)$, and explain what this value *means*.
+2. Calculate the *Positive Predictive Value (PPV)*, $\Pr(A \mid F)$: given that an essay triggers a flag, what is the probability that the student actually used AI?
 3. Calculate the *Negative Predictive Value (NPV)*, $\Pr(H \mid F^c)$: given that an essay is *not* flagged, what is the probability that it was genuinely written by a human?
-4. Briefly explain why $\Pr(A \mid F)$ is surprisingly low despite the detector having high sensitivity (85%) and high specificity (96%).
-5. Write a short **R** code snippet that computes $\Pr(A \mid F)$ across a sequence of prior probabilities $\Pr(A) \in [0.01, 0.50]$ and plots the resulting posterior curve.
+4. Briefly explain why $\Pr(A \mid F)$ is surprisingly low, despite the detector having high sensitivity ($85$%) and high specificity ($96$%).
+5. Write some **R** code that computes $\Pr(A \mid F)$ for a range of prior probabilities $\Pr(A) \in [0.01, 0.50]$.
+   Plot the resulting posterior curve.
 :::
 
 ::::
