@@ -1438,7 +1438,7 @@ $$
   &= \frac{\Pr(F^c \mid Human)\cdot \Pr(H)}{\Pr(F^c)}\\
   &= \frac{0.96 \times 0.95}{0.9195} = \frac{0.9120}{0.9195} \approx 0.99184
 \end{align*}
-   If an essay passes unflagged, there is a $99.18$% probability that it is genuine human work.
+   If an essay passes unflagged, the probability that is the work of a human is $99.18$%.
 4. Because human-written papers dominate the pool ($95$% of submissions), even a modest $4$% false positive rate produces $0.04 \times 95 = 3.8$ *false* alerts per $100$\ papers.
    Meanwhile, an $85$% sensitivity on the small $5$% AI pool yields $0.85 \times 5 = 4.25$ *true* alerts per $100$\ papers.
    Because the base rate of AI usage is low, the number of false positives ($3.8$) is nearly equal to the volume of true positives ($4.25$), diluting the confidence of any single positive flag.
@@ -4689,7 +4689,7 @@ $$
 
 where $p = 0.35$.
 
-1. The prob the shoot-out end in the first round is just $0.35$.
+1. The probability the shoot-out end in the first round is just $0.35$.
 2. `dgeom(2, prob = 0.35)` or about $0.1479$.
 3. `pgeom(3, prob = 0.35, lower.tail = FALSE)` or about $0.1785$.
 4. For a geometric distribution, $\operatorname{E}[Y] = 1/p = 1/0.35 \approx 2.857$.
@@ -4739,10 +4739,9 @@ cat("P(Team A wins):", mean(A_wins), "\n")
 $$
   X \mid D = d \;\sim\; \text{Hypergeometric}(N = 50,\; K = d,\; n = 10).
 $$
-2. A single batch's rejection probability requires **mixing** a Binomial (which determines the unknown composition of the batch) with a Hypergeometric (which determines what the sample reveals about that composition): sum over all possible values of $d$, weighting each Hypergeometric probability by $P(D = d)$. 
+2. A single batch's rejection probability requires *mixing* a Binomial (which determines the unknown composition of the batch) with a hypergeometric (which determines what the sample reveals about that composition): sum over all possible values of $d$, weighting each hypergeometric probability by $P(D = d)$. 
    That is a finite but tedious sum. 
-   The one-replacement rule makes it worse: when $X = 1$, the *next* draw's distribution depends on exactly which items remain unsampled, which depends on $d$ and on which specific items were drawn (i.e. a second layer of Hypergeometric-type conditioning nested inside the first). 
-    It's not intractable by hand, but it stops being "look up a formula" and becomes a multi-stage conditional sum that simulation sidesteps entirely.
+   The one-replacement rule makes it worse: when $X = 1$, the *next* draw's distribution depends on exactly which items remain unsampled, which depends on $d$ and on which specific items were drawn (i.e. a second layer of hypergeometric-type conditioning nested inside the first). 
 3. 
 
 ```{r batch-sim-function}
@@ -4792,7 +4791,7 @@ p_reject_hat
 prob_N_ge_20_direct
 ```
 
-*Shortcut approach*: first estimate the single-batch rejection probability $\hat p$ from a large number of *single*-batch simulations (much cheaper per replicate than $200$ at once), then treat $N \sim \text{Binomial}(200, \hat p)$, since batches are independent and identically distributed:
+*Shortcut*: first estimate the single-batch rejection probability $\hat p$ from a large number of *single*-batch simulations (much cheaper per replicate than $200$ at once), then treat $N \sim \text{Binomial}(200, \hat p)$, since batches are independent and identically distributed:
 
 ```{r shortcut-N-sim}
 p_hat <- mean(replicate(1000, simulate_batch()))
@@ -4804,11 +4803,11 @@ prob_N_ge_20_binom
 ```
 
 The shortcut is valid because batches are independent and identically distributed; once $p$ is known exactly (or to
-high precision), $N$ really is exactly Binomial(200, $p$); there's no approximation error in that step, only in how precisely you've estimated $p$. 
+high precision), $N$ really is exactly $\text{Binomial}(200, p)$; there's no approximation error in that step, only in how precisely you've estimated $p$. 
 The two approaches should agree closely. 
-The shortcut is worthwhile when estimating $p$ from single-batch simulation is much cheaper than simulating full batches of 200 repeatedly (it is: you get a much larger effective sample size for $p$ per unit of computation). 
-It stops being fair the moment batches are *not* iid; e.g. if defect rates drift over the production run, or inspection outcomes for consecutive batches are correlated (shared machinery, shared inspector fatigue), because then $N$
-is genuinely not Binomial and only full re-simulation captures the dependence.
+The shortcut is worthwhile when estimating\ $p$ from single-batch simulation is much cheaper than simulating full batches of $200$ repeatedly (it is: you get a much larger effective sample size for $p$\ per unit of computation). 
+It stops being fair the moment batches are *not* iid; e.g. if defect rates drift over the production run, or inspection outcomes for consecutive batches are correlated (shared machinery, shared inspector fatigue), because then $N$\
+is not binomial and only full re-simulation captures the dependence.
 
 ```{r N-margin-of-error}
 se <- sqrt(prob_N_ge_20_direct * (1 - prob_N_ge_20_direct) / n_reps)
@@ -4824,12 +4823,12 @@ c(estimate = prob_N_ge_20_direct,
 **Exercise\ \@ref(exr:SpecDiscreteSuccesShrinkingPool).**
 
 1. If everyone always picked up, the number of candidates called until the first qualified one is found (inclusive) would be related to the classic "waiting time in sampling without replacement" problem. 
-It's *not* Geometric, because Geometric assumes an infinite sequence of iid trials with a *constant* success probability at every step. 
+It's *not* geometric, because geometric assumes an infinite sequence of iid trials with a *constant* success probability at every step. 
 Here the pool is finite and shrinks: once a non-qualified candidate is called, the probability the *next* candidate is qualified changes (there are fewer non-qualified candidates left in the pool), so the "trials" are not independent nor identically distributed. 
-This waiting time is best described directly as arising from a random permutation of the $40$\ candidates: its distribution is related to a negative hypergeometric distribution (which is not inb this book), which is exactly why simulation is the practical tool.
-2. Adding the $70$% pickup rate layers a Geometric-flavoured filter (independent Bernoulli trials for "did they pick up?") on top of a Hypergeometric-flavoured structure (sampling without replacement determines *when* a qualified name
+This waiting time is best described directly as arising from a random permutation of the $40$\ candidates: its distribution is related to a negative hypergeometric distribution (not in this book), so simulation is the practical tool.
+2. Adding the $70$% pickup rate layers a Geometric-flavoured filter (independent Bernoulli trials for "did they pick up?") on top of a hypergeometric-flavoured structure (sampling without replacement determines *when* a qualified name
 comes up in the order). 
-$T$ depends jointly on where the qualified candidates happen to fall in a random shuffle *and* on an independent sequence of coin flips for pickup: two different random mechanisms entangled together, which is precisely why $T$ matches neither a Geometric nor a Hypergeometric distribution on its own.
+$T$ depends jointly on where the qualified candidates happen to fall in a random shuffle *and* on an independent sequence of coin flips for pickup: two different random mechanisms entangled together, which is why $T$ matches neither a geometric nor a hypergeometric distribution on its own.
 3. 
 
 ```{r recruiter-sim-function}
@@ -4892,29 +4891,29 @@ E_T_hat_lp
 P_exhausted_hat_lp
 ```
 
-Comparing `P_exhausted_hat` (pickup = 0.7) against `P_exhausted_hat_lp` (pickup = 0.3) confirms the intuition directly from simulated relative frequencies, with no need to derive either probability analytically.
+Comparing `P_exhausted_hat` (pickup: $0.7$) against `P_exhausted_hat_lp` (pickup: $0.3$) confirms the intuition directly from simulated relative frequencies, with no need to derive either probability analytically.
 :::
 
 
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:SpecDiscreteIndependenceA).**
 
-1. Natural choice: Binomial$(n=500, p=0.02)$. 
+1. Natural choice: $\text{Binomial(n = 500, p = 0.02)$. 
    Trials are independent here: visits are unrelated, no shared campaign or event is driving correlated behaviour, and the population of potential visitors is effectively infinite relative to the sample. Binomial is suitable.
 2. Natural choice: Binomial.
    But batch composition is fixed and known ($3$ faulty out of $20$) and boards are drawn without replacement from this small, fixed population: drawing a faulty board changes the probability the next draw is also faulty. 
    Trials are not independent. 
-   The correct model is Hypergeometric$(N=20, K=3, n=5)$, not Binomial: Binomial is not suitable.
+   The correct model is $\text{Hypergeometric}(N=20, K=3, n=5)$, not binomial: binomial is not suitable.
 3. Natural choice: Poisson (events in time at a constant rate).
    But the scenario explicitly describes crashes triggering further crashes (self-reinforcing instability): the rate is not constant over the $6$-hour window and events are not independent of each other. 
   Trials are not independent; Poisson is not suitable.
 4. Strictly, this is sampling **without replacement** from a finite population.
-   So, the technically correct model is *Hypergeometric*($N=40\, 000$, $K$ = true number of defectives, $n=60$).
+   So, the technically correct model is $\text{Hypergeometric}(N = 40\, 000, K = \text{true number of defectives}, n=60)$.
    But the key judgment call is the *ratio*: $60$ items are being drawn from $40\,000$, so removing one bolt barely changes the defect proportion left behind for the next draw (roughly a $1$-in-$40\,000$ shift each time). 
-   This ratio is very likely small enough ($n/N = 0.15\%$) for the dependence between draws to be negligible in practice, making Binomial($n=60$, $\hat p$) a very good *working approximation*.
+   This ratio is very likely small enough ($n/N = 0.15\%$) for the dependence between draws to be negligible in practice, making $\text{Binomial}n=60, \hat p)$ a very good *working approximation*.
    This is a legitimate modelling choice, not a mistake, provided it's stated as an approximation and the reasoning
 (small sampling fraction) is given. 
-   The "obvious" instinct to reach for Hypergeometric just because it's sampling-without-replacement isn't wrong, but it misses that the population size makes the distinction nearly irrelevant here.
+   Using the hypergeometric isn't wrong, but misses that the population size makes the distinction nearly irrelevant here.
 :::
 
 
@@ -4924,13 +4923,13 @@ Comparing `P_exhausted_hat` (pickup = 0.7) against `P_exhausted_hat_lp` (pickup 
 1. Natural choice: $\text{Geometric}(p=0.22)$, where $p$\ is the probability of a miss), counting attempts until the first miss. 
    Shots are stated to be independent (no hot-hand effect; stable long-run rate). 
    Geometric is suitable.
-2. Natural choice: Binomial$(n=1000, p)$, but claims from different homes are not independent: they share a common cause (same storm, same contractors, same building codes), so if one home floods, geographically and structurally similar homes are far more likely to flood too. 
-   Binomial is not suitable (the true variance of\ $X$ will be much higher than Binomial predicts: simulation would be useful).
+2. Natural choice: $\text{Binomial}(n=1000, p)$, but claims from different homes are not independent: they share a common cause (same storm, same contractors, same building codes), so if one home floods, geographically and structurally similar homes are far more likely to flood too. 
+   Binomial is not suitable (the variance of\ $X$ will be much higher than binomial predicts: simulation would be useful).
 3. Poisson, since typos occur at a low, steady rate with no location influencing another location's typo likelihood. 
    Trials/events are independent as described. 
    Poisson is suitable
 4. Depends on an assumption about the underlying process. 
-   Assuming weld quality is essentially homogeneous along the pipeline (each weld's crack risk is the same regardless of crew, machine, or section), independence across the sampled welds is a reasonable working assumption, and Binomial-style reasoning (or Poisson, for *count* of cracks per length) is defensible. 
+   Assuming weld quality is essentially homogeneous along the pipeline (each weld's crack risk is the same regardless of crew, machine, or section), independence across the sampled welds is a reasonable working assumption, and binomial-style reasoning (or Poisson, for *count* of cracks per length) is defensible. 
    But several plausible sources of *shared cause within sections* are possible: *different crews and machines*, *routine equipment servicing*, and welding *over several weeks* all suggest that quality could vary systematically from one section to another: one crew or one worn machine producing a cluster of weak welds together would make welds within the same section positively correlated even though welds in different sections are roughly independent of each other. 
    A defensible answer is: "assuming quality is constant across crews/sections, a named distribution is a reasonable approximation; but if crew- or machine-level effects are suspected, the constant-probability assumption breaks down and a named distribution risks understating the true variability (e.g. via clustered failures).
    This would need to be checked against the data, possibly by comparing observed variance to what the named model predicts."
