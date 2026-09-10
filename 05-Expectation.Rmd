@@ -19,16 +19,20 @@ Upon completion of this chapter, you should be able to:
 
 
 
-## Expected values {#ExpectedValue}
+## Introduction {#ExpectedValueIntro}
 
 \index{Expected value|(}
 Because random variables are *random*, knowing the outcome on any one realisation of the random process is not possible.
-Instead, we can talk about what might be *expected* to happen, or what might happen *on average*.
+Instead, we talk about what might be *expected* to happen, or what might happen *on average*.
 
 This is the idea of *mathematical expectation*. 
 In more usual terms, the mathematical expression of a random variable is the *mean*.
-Mathematical expectation goes far beyond just computing means, but we begin here as the idea of a *mean* is easily understood.
+Mathematical expectation goes far beyond just computing means, but since this idea is easily understood, we begin here.
 
+
+## Expected values {#ExpectedValue}
+
+The *expected values* of a random variables is a numerical expression of the average value that a random variable can take.
 The definition looks different in detail for discrete, continuous and mixed random variables, but the intention is the same.
 
 
@@ -56,8 +60,11 @@ where\ $D$ is the set of discrete mass points (with probability mass function $p
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-$\operatorname{E}[X]$ is well-defined only if $\operatorname{E}[\,|X|\,] < \infty$.\index{Expected value!well-defined}
-If $\int |x|f(x)\,dx = \infty$, the expectation does not exist (Example\ \@ref(exm:MGFDoesNotExist)).
+$\operatorname{E}[X]$ is finite only if, and only if, $\operatorname{E}[\,|X|\,] < \infty$.\index{Expected value!finite}
+
+If $X\ge 0$ (or $X\le 0$) and $\operatorname{E}[X] = \infty$, the expectation is *infinite* (Example\ \@ref(exm:InfiniteMean)).\index{Expected value!infinite}
+
+More generally, $\operatorname{E}[X]$ exists (and is possibly infinite) provided $\operatorname{E}[X^+]$ and $\operatorname{E}[X^-]$ are not *both* infinite. If both are infinite, then $\operatorname{E}[X]$ *does not exist* (Example\ \@ref(exm:ExpectationDoesNotExist)).\index{Expected value!does not exist}
 :::
 
 
@@ -144,8 +151,110 @@ The expected value of\ $0.5$ simply means that over a large number of repetition
 :::
 
 
-:::{.example #InfiniteMean name="Mean undefined"}
-Consider the distribution of\ $Z$, with the probability density function\index{Expected value!undefined}
+:::{.example #ExpectationDoesNotExist name="Expectation does not exist"}
+Let\ $X$ be a discrete random variable such that
+$$
+  X = (-1)^{n+1}\frac{2^n}{n}\quad\text{for $n = 1, 2, 3, \dots$}.
+$$
+The probability mass function is
+$$
+  p_X(x) = 2^{-n}\quad\text{for $n = 1, 2, 3, \dots$}.
+$$
+More explicitly, the probability mass function is the last two columns shown in Table\ \@ref(tab:InfiniteExp).
+This is a valid probability distribution since $\sum_{n = 1}^{\infty} 2^{-n} = 1$.
+First, check if the expected value exists:
+$$
+  \operatorname{E}[\, |X|\, ] 
+  = \sum_{n=1}^\infty \frac{2^n}{n} \cdot \frac{1}{2^n} 
+  = \sum_1^\infty \frac{1}{n} = \infty.
+$$
+Thus, $\operatorname{E}[\, |X|\, ]$ is infinite and so $\operatorname{E}[X]$ *does not exist*.
+Now, consider naively summing the series
+\begin{equation}
+  \operatorname{E}[X]
+  = \sum_{n=1}^\infty (-1)^{n+1} \cdot \frac{2^n}{n}\cdot\frac{1}{2^n}
+  = \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n}
+  = \log 2,
+   (\#eq:NotTheMean)
+\end{equation}
+and this summation converges.
+However, *this is not $\operatorname{E}[X]$*; since $\operatorname{E}[\,|X|\,] = \infty$, $\operatorname{E}[X]$ is not defined.
+:::
+
+
+
+```{r InfiniteExp, echo=FALSE}
+n <- 1:6
+X <- as.character(
+  MASS::fractions(
+    (-1)^(n + 1) * (2^n)/n
+  )
+)
+pX <- as.character(
+  MASS::fractions(
+    2^(-n)
+  )
+)
+
+knitr::kable( cbind(n, 
+                    X, 
+                    pX),
+              col.names = c("$n$",
+                            "$X$",
+                            "$p_X(X = x)$"),
+              escape = FALSE,
+              align = "c",
+              booktabs = TRUE,
+              caption = "The probability mass function for the random variable $X$."
+)
+```
+
+
+The reason why the second summation Eq.\ \@ref(eq:NotTheMean) is *not* the mean is that the values of\ $X$ form a *set* (i.e., unordered), not a *sequence* (i.e., ordered); there is no natural first, second, third value. 
+So $\sum x\cdot p_X(x)$ is only a legitimate definition if it gives the *same* value regardless of the *order* in which the terms are added. 
+But this is not the case.
+For example, Eq.\ \@ref(eq:NotTheMean) could be written to take two positive outcomes ($n$ odd) for every one negative outcome ($n$ even):
+\begin{align*}
+  \sum_{n=1}^\infty x_n\,p_X(x_n)
+    &= \Big[(x_1 p_X(x_1) + x_3 p_X(x_3)) + x_2 p_X(x_2)\Big]\\
+    &\quad + \Big[(x_5 p_X(x_5) + x_7 p_X(x_7)) + x_4 p_X(x_4)\Big] + \cdots\\
+    &= \Big[1            + \tfrac{1}{3} - \tfrac{1}{2}\Big] 
+     + \Big[\tfrac{1}{5} + \tfrac{1}{7} - \tfrac{1}{4}\Big] + \cdots\\
+    &= \tfrac{3}{2}\log 2.
+\end{align*}
+Alternatively, Eq.\ \@ref(eq:NotTheMean) could be written to take one positive outcome for every two negative outcomes:
+\begin{align*}
+  \sum_{n=1}^\infty x_n\,p_X(x_n)
+  &= \Big[(x_1 p_X(x_1) + x_2 p_X(x_2) ) + x_4 p_X(x_4\Big] \\
+  &\quad + \Big[(x_3 p_X(x_3) + x_6 p_X(x_6) ) + x_8 p_X(x_8)\Big] + \cdots\\
+  &= \Big[1              - \tfrac{1}{2} - \tfrac{1}{4}\Big] 
+    +  \Big[\tfrac{1}{3} - \tfrac{1}{6} - \tfrac{1}{8}\Big] + \cdots \\
+  &= \tfrac{1}{2} \log 2.
+\end{align*}
+The proof for these sums is not straightforward, but can be demonstrated in R:
+
+```{r}
+log2 <- log(2)
+
+## Original order: 1 - 1/2 + 1/3 - 1/4 + ... -> log(2) ---
+n <- 1:200000
+orig_sum <- sum((-1)^(n + 1) / n)
+
+## --- Rearrangement 1: two positive terms, then one negative ---
+k <- 1:100000
+r1_sum <- sum(1 / (4 * k - 3) + 1 / (4 * k - 1) - 1 / (2 * k))
+
+## --- Rearrangement 2: one positive term, then two negative ---
+r2_sum <- sum(1 / (2 * k - 1) - 1 / (4 * k - 2) - 1 / (4 * k))
+
+cat("Original     ->", orig_sum, " (target: log 2      =", log2,       ")\n")
+cat("2 pos, 1 neg ->", r1_sum,   " (target: 1.5 * log2 =", 1.5 * log2, ")\n")
+cat("1 pos, 2 neg ->", r2_sum,   " (target: 0.5 * log2 =", 0.5 * log2, ")\n")
+```
+
+
+:::{.example #InfiniteMean name="Infinite mean"}
+Consider the distribution of\ $Z$, with the probability density function\index{Expected value!infinite}
 $$
    f_Z(z) = z^{-2} \qquad \text{(for $z \ge 1$)}
 $$
@@ -155,7 +264,7 @@ $$
    \operatorname{E}[Z] = \int_1^{\infty} z \frac{1}{z^2}\, dz = \int_1^\infty \frac{1}{z} = \left[\log z \right]_1^\infty.
 $$
 However, $\displaystyle\lim_{z\to\infty}\, \log z \to \infty$.
-The expected value of $\operatorname{E}[Z]$ is undefined.
+The expected value of $\operatorname{E}[Z]$ is *infinite*, or is *not finite*.
 :::
 \index{Expected value|)}
 
