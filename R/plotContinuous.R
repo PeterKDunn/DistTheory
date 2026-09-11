@@ -1,10 +1,10 @@
-plotContinuous <- function(pdf_fn,   # density function
-                           df_fn,    # distribution function
-                           q_fn,     # quantile function
-                           type = "DF",
-                           showx = c(-4, 4),
-                           n = 2000,  # Number of points between range(showx)
-                           fill = NA,
+plotContinuous <- function(pdf_fn,            # density function
+                           df_fn,             # distribution function
+                           q_fn,              # quantile function
+                           type = "DF",       # The type of plot (e.g., "PDF")
+                           showx = c(-4, 4),  # the range of x-value for which to draw the graph
+                           n = 2000,          # Number of points between range(showx)
+                           fill = NA,         # When shading, what colour to ise
                            lo = min(showx), hi = max(showx), # Shade between lo and hi 
                            ...) {
   
@@ -71,7 +71,8 @@ plotContinuous <- function(pdf_fn,   # density function
   if (type == "DF")  yy <- df_fn(xx)
   if (type == "SF")  yy <- 1 - df_fn(xx)
   if (type == "QF"){
-    pp <- seq(0, 1, length.out = n)
+    pp <- seq(0.00005, 0.99995, 
+              length = n)
     qq <- q_fn(pp)
   }
   
@@ -93,23 +94,35 @@ plotContinuous <- function(pdf_fn,   # density function
   
   
   ### Shading: do first to overplot lines
-  if ( !(is.na(lo) & is.na(hi)) ) {               # If both are NA, then don't proceed
-    if ( is.na(lo) & !is.na(hi)) lo <- min(showx) # If only hi, take lo as the smallest value to show
-    if ( !is.na(lo) & is.na(hi)) hi <- max(showx) # If only lo, take hi as the largest value to show
-
-    inner <- (xx >= lo) & (xx <= hi)
-
-    if (type == "QF") {
-      yyy <- qq 
-    } else {
-      yyy <- yy
-    }
+  ### Shading: do first to overplot lines
+  if ( !(is.na(lo) & is.na(hi)) & !is.na(fill) ) {
     
-    polygon( x = c( xx[inner], 
-                    rev(xx[inner])),
-             y = c( yyy[inner], 
-                    rep(0, sum(inner))),
-             col = fill)
+    if (type == "QF") {
+      
+      if ( is.na(lo) & !is.na(hi)) lo <- 0
+      if ( !is.na(lo) & is.na(hi)) hi <- 1
+      
+      inner <- (pp >= lo) & (pp <= hi)
+      
+      polygon( x = c( pp[inner],
+                      rev(pp[inner])),
+               y = c( qq[inner],
+                      rep(min(qq[is.finite(qq)]), sum(inner))),
+               col = fill, border = NA)
+      
+    } else {
+      
+      if ( is.na(lo) & !is.na(hi)) lo <- min(showx)
+      if ( !is.na(lo) & is.na(hi)) hi <- max(showx)
+      
+      inner <- (xx >= lo) & (xx <= hi)
+      
+      polygon( x = c( xx[inner],
+                      rev(xx[inner])),
+               y = c( yy[inner],
+                      rep(0, sum(inner))),
+               col = fill, border = NA)
+    }
   }
   
   
