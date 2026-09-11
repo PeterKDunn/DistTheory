@@ -405,8 +405,8 @@ given that throwing a cricket ball greater than $150\ms$ is effectively impossib
 
 Two events can be defined:
 \begin{align*}
-   B_1 &= \{b \in D \mid b \ge 40\} = [40, 150)\text{(i.e., throw a cricket ball at least $40\ms$)};\\
-   B_2 &= \{b \in D \mid b < 50\} = (0, 50)   \text{(i.e., throw a cricket ball less than $50\ms$)}.
+   B_1 &= \{b \in D \mid b \ge 40\} = [40, 150)\quad\text{(i.e., throw a cricket ball at least $40\ms$)};\\
+   B_2 &= \{b \in D \mid b < 50\} = (0, 50)\quad\text{(i.e., throw a cricket ball less than $50\ms$)}.
 \end{align*}
 (All events must be subsets of the sample space $D$.)
 Then:
@@ -423,12 +423,15 @@ par( mar = c(2, 1, 1, 1) + 0.1 )
 
 plot( x = c(-10, 155),
       y = c(0, 0),
-      ylim = c(-15, 80),
+      ylim = c(-15, 70),
       type = "l",
       lwd = 2,
       axes = FALSE,
       xlab = "",
       ylab = "")
+abline(v = c(40, 50),
+       lty = 2,
+       col = "grey")
 
 # x-label
 mtext("Distance thrown with cricket ball (in m)",
@@ -938,7 +941,6 @@ Listing the sample space is feasible:
   &(\text{Tail}, \text{Tail}, \text{Head}),   & &(\text{Tail}, \text{Tail}, \text{Tail}).
 \end{align*}
 The four outcomes where a Tail is tossed last can be counted easily.
-
 So the probability of the event 'a tail of the final toss of three coin tosses' is (using classical probability) $4/8 = 0.5$.
 :::
 
@@ -1166,6 +1168,7 @@ Some common properties of combinations are given below.
 * $\displaystyle\binom{n}{1} = n$.
 * $\displaystyle\binom{n}{r} = \binom{n}{n - r}$.
 * $\displaystyle\binom{n}{r} + \binom{n}{r - 1} = \binom{n + 1}{r}$.
+* $\displaystyle\binom{n}{r} = 0$ if $r > n$ or $r < 0$.
 :::
 
 ::: {.col data-latex="{0.025\textwidth}"}
@@ -1176,7 +1179,6 @@ a column separator -->
 
 ::: {.col data-latex="{0.49\textwidth}"}
 
-* $\displaystyle\binom{n}{r} = 0$ if $r > n$ or $r < 0$.
 * $\displaystyle\binom{n}{r} = \binom{n - 1}{r} + \binom{n - 1}{r - 1}$ for $1\le r\le (n - 1)$.
 * $\displaystyle \sum_{r = 0}^n \binom{n}{r} = 2^n$.
 
@@ -1289,6 +1291,7 @@ Some common properties of permutations are given below.
 * $\displaystyle P^n_0 = 1$.
 * $\displaystyle P^n_1 = n$.
 * $\displaystyle P^n_r = r!\, C^n_r$.
+* $\displaystyle P^n_{n - 1} = n!$.
 
 :::
 
@@ -1300,7 +1303,6 @@ a column separator -->
 
 ::: {.col data-latex="{0.65\textwidth}"}
 
-* $\displaystyle P^n_{n - 1} = n!$.
 * $\displaystyle\frac{P^n_r}{P^n_{r - 1}} = n - r + 1$.
 * $\displaystyle P^n_r = P^{n - 1}_r + r \times P^{n - 1}_{r - 1}$.
 * $\displaystyle P^n_r = n \times P^{n - 1}_{r - 1} = n \times (n - 1) \times P^{n - 2}_{r - 2}$, and so on.
@@ -2488,7 +2490,7 @@ This shows that each *pair* of events is independent.
 
 However, $\Pr(A\cap B\cap C) = \Pr(TTT, HHH) = 2/8 = 1/4$, but
 $$
-  \Pr(A)\times \Pr(B)\times \Pr(C) = \left(\frac{1}{2}\right)^3 = \frac{1}{8}.
+  \Pr(A)\times \Pr(B)\times \Pr(C) = \left(\tfrac{1}{2}\right)^3 = \tfrac{1}{8}.
 $$
 Since $\Pr(A)\times \Pr(B)\times \Pr(C) \ne \Pr(A\cap B\cap C)$, the three events are not mutually independent.
 
@@ -2671,7 +2673,7 @@ Event\ $A$ overlaps with each of the events\ $B_j$ for $j = 1, \dots, 6$.
 The overlaps of event\ $A$ with each partition\ $B_j$ are the *intersections* $\Pr(A\cap B_j)$.
 Event\ $A$ is the sum of all these intersections: 
 $$
-  \Pr(A) = \sum_{J = 1}^6 \Pr(A\cap B_j) = \sum_{J = 1}^6  \Pr(A\mid B_j)\cdot \Pr(B_k).
+  \Pr(A) = \sum_{j = 1}^6 \Pr(A\cap B_j) = \sum_{j = 1}^6  \Pr(A\mid B_j)\cdot \Pr(B_k).
 $$
 For example, $\Pr(A\mid B_6) = 1$ from Fig.\ \@ref(fig:Partitioning)).
 
@@ -2742,10 +2744,10 @@ Then, using the *Law of total probability* (Sect.\ \@ref(thm:TotalProb)):
    &= \Pr(A \mid B_1)\times \Pr(B_1)\quad +  \quad\Pr(A \mid B_2)\times \Pr(B_2) \quad+ {}\\
    &\quad \Pr(A \mid B_3)\times \Pr(B_3)\quad + \quad\Pr(A\mid B_4)\times \Pr(B_4) \quad+ {} \\
    &\quad \Pr(A \mid B_5)\times \Pr(B_5)\quad +  \quad\Pr(A\mid B_6)\times \Pr(B_6)\\
-   &= \left(0\times \frac{1}{6}\right) + \left(1\times \frac{1}{6}\right) + {} \\
-   &\quad \left(0\times \frac{1}{6}\right) + \left(1\times \frac{1}{6}\right) + {}\\
-   &\quad \left(0\times \frac{1}{6}\right) + \left(1\times \frac{1}{6}\right) 
-    = \frac{1}{2}.
+   &= \left(0\times \tfrac{1}{6}\right) + \left(1\times \tfrac{1}{6}\right) + {} \\
+   &\quad \left(0\times \tfrac{1}{6}\right) + \left(1\times \tfrac{1}{6}\right) + {}\\
+   &\quad \left(0\times \tfrac{1}{6}\right) + \left(1\times \tfrac{1}{6}\right) 
+    = \tfrac{1}{2}.
 \end{align*}
 This the same answer obtained using the classical approach.
 :::

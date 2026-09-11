@@ -1454,7 +1454,9 @@ for (i in (1:(length(xDF) - 1) ) ) {
             length = 0.1)
     text(x = xDF[i],
          y = mean(yDF[(i-1): i]),
-         label = "Change in DF is\n0.3 at X = 11",
+         #label = "Change in DF is\n0.3 at X = 11",
+         label = expression( atop(Change~"in"~DF~is,
+                                  0.3~at~italic(X)==11)),
          cex = 0.9,
          pos = 4)
   }
@@ -1515,8 +1517,8 @@ To find the PDF, use Eq.\ \@ref(eq:DFtoPDFcontinuous):
 \begin{align*}
    f_X(x) &= 
    \begin{cases}
-      \displaystyle\frac{d}{dx} 0        & \text{for $x < 0 $;}\\[6pt]
-      \displaystyle\frac{d}{dx} x(2 - x) & \text{for $0 \le x \le 1$;}\\[6pt]
+      \displaystyle\frac{d}{dx} 0        & \text{for $x < 0 $;}\\[8pt]
+      \displaystyle\frac{d}{dx} x(2 - x) & \text{for $0 \le x \le 1$;}\\[8pt]
       \displaystyle\frac{d}{dx} 1        & \text{for $x > 1$}
    \end{cases} \\
    &=
@@ -1768,29 +1770,31 @@ $$
 ```{r QuantileFnContinuous1, echo=FALSE, fig.align="center", fig.cap="Left: the probability function of $X$. Centre: the distribution function. Right: the quantile function for $X$.", fig.width=6.5, fig.height=3, out.width='100%'}
 pdfX <- function(x){
   fx <- numeric( length(x))
-  xUse <- (x>=1)  & (x<=4)
+  xUse <- (x >= 1)  & (x<= 4)
   fx[xUse] <- (x[xUse] - 1)^2 /9
   fx
 } 
 dfX  <- function(x){
   Fx <- numeric( length(x))
-  xUse <- (x>=1)  & (x<=4)
+  xUse <- (x >= 1)  & (x <= 4)
   Fx[xUse] <- (x[xUse] - 1)^3 / 27
-  Fx[x>4] <- rep(1, length(x[x>1]))
+  Fx[x > 4] <- rep(1, sum(x > 4))
   Fx
 }
 qfX  <-  function(q){
   Qx <- rep(NA, length(q))
-  qUse <- (q>=0) & (q<=1)
+  qUse <- (q >= 0) & (q <= 1)
   Qx[qUse] <- 1 + 3 * q[qUse]^(1/3)
   Qx
 }
 
 ### Plots
-
 par(mfrow = c(1, 3))
+xlo <- 0
+xhi <- 5
+
 plotContinuous(pdf_fn = pdfX,
-               showx = c(0, 5),
+               showx = c(xlo, xhi),
                type = "PDF",
                xlab = expression(italic(x)),
                ylab = expression(PDF~italic(f)[italic(X)](italic(x))),
@@ -1799,7 +1803,7 @@ plotContinuous(pdf_fn = pdfX,
 
 
 plotContinuous(df_fn = dfX,
-               showx = c(0, 5),
+               showx = c(xlo, xhi),
                type = "DF",
                xlab = expression(italic(x)),
                ylab = expression(Distribution~fn~italic(F)[italic(X)](italic(x))),
@@ -1808,7 +1812,7 @@ plotContinuous(df_fn = dfX,
 # Show p = 0.75
 xStar <- 3
 qStar <- dfX(xStar) 
-arrows(x0 = min(x),
+arrows(x0 = xlo,
        x1 = xStar,
        y0 = qStar,
        y1 = qStar,
