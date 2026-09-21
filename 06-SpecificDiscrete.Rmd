@@ -170,6 +170,47 @@ using \@ref(eq:SumGeometricFinite).
 :::
 
 
+The discrete uniform distribution is rarely useful by itself, except in trivial scenarios like rolling dice and tossing coins, but forms the foundation for other distributions in statistics.
+
+
+:::{.example #UsingDiscreteUniform name="Using the dicrete uniform distributuon"}
+Computers can generate (pseudo-) random numbers using a discrete uniform distribution, which then can be used to generate random numbers from other discrete distributions.
+
+Suppose a medical simulation requires a discrete random variable\ $Y$ representing a patient's blood type with non-uniform probabilities:
+$$
+  p_Y(y)
+  =
+  \begin{cases}
+    0.45 & \text{for $y = 1$ (i.e., Type\ O blood);}\\
+    0.40 & \text{for $y = 2$ (i.e., Type\ A blood);}\\
+    0.11 & \text{for $y = 3$ (i.e., Type\ B blood);}\\
+    0.04 & \text{for $y = 4$ (i.e., Type\ AB blood).}\\
+  \end{cases}
+$$
+The random-number generator produces an integer value, say\ $U$, such that $U\sim \text{Discrete Uniform}(1, 100)$.
+Then, $U$ can be mapped to\ $Y$ by partitioning the $100$ outcomes:
+$$
+  Y
+  = 
+  \begin{cases}
+    1   & \text{if $1 \le U \le 45$};\\
+    2   & \text{if $46 \le U \le 85$};\\
+    3   & \text{if $86 \le U \le 96$};\\
+    4   & \text{if $97 \le U \le 100$}.
+  \end{cases}
+$$
+Each value of\ $U$ occurs with probability $\Pr(U = k) = 1/100 = 0.01$, so the probability of $U$ occurring within any interval of integers $[a, b]$ is $\Pr(a \le U \le b) = (b - a + 1)/100$:
+$$
+\begin{alignat*}{3}
+  \Pr(Y = 1) &= \Pr( 1 \le U\le 45)   &&= (45 - 1 + 1)/100   &&= 0.45;\\
+  \Pr(Y = 2) &= \Pr( 46 \le U\le 85)  &&= (85 - 46 + 1)/100  &&= 0.40;\\
+  \Pr(Y = 3) &= \Pr( 86 \le U\le 96)  &&= (96 - 86 + 1)/100  &&= 0.11;\\
+  \Pr(Y = 4) &= \Pr( 97 \le U\le 100) &&= (100 - 97 + 1)/100 &&= 0.04.
+\end{alignat*}
+$$
+:::
+
+
 ## Bernoulli distribution {#BernoulliDistribution}
 
 ### Derivation and definition {#BernoulliDefinition}
@@ -194,14 +235,14 @@ More succinctly:
 \end{equation}
 
 
-:::{.definition #BrnoulliDistribution name="Bernoulli distribution"}
+:::{.definition #BernoulliDistribution name="Bernoulli distribution"}
 Let\ $X$ be the number of successes in a single trial with $\Pr(\text{Success}) = p$ ($0\le p\le 1$).
 Then\ $X$ has a *Bernoulli probability distribution* with parameter\ $p$ and probability function given by \@ref(eq:BernoulliPMF).
 We write $X\sim\text{Bernoulli}(p)$.
 :::
 
 
-:::{.definition #BrnoulliDistributionCDF name="Bernoulli distribution: distribution function"}
+:::{.definition #BernoulliDistributionCDF name="Bernoulli distribution: distribution function"}
 For a random variable\ $X$ with the Bernoulli distribution given in \@ref(eq:BernoulliPMF), the *distribution function* is
 $$
   F_X(x; p) = 
@@ -2470,6 +2511,7 @@ The scenarios are:
   Let\ $X$ be the number of cracked welds found among the $400$ inspected.
 :::
 
+
 :::{.exercise #SpecDiscreteIndependenceB}
 For each scenario below:
 
@@ -2492,7 +2534,46 @@ The scenarios are:
 4. A shipping container has just arrived holding $40\,000$\ bolts from a single production run. 
    A quality inspector selects $60$\ bolts at random from the container, without putting any back, to check for defects. 
    Let\ $X$ be the number of defective bolts found among the\ $60$.
+:::
 
+
+
+:::{.exercise #SpecUseDiscreteA}
+A university library records the proportion of borrowing requests across four subject categories: Humanities ($y = 1$), Sciences ($y = 2$), Social Sciences ($y = 3$), and Arts ($y = 4$).
+The discrete random variable $Y \in \{1, 2, 3, 4\}$ has the following probability mass function:
+$$
+  p_Y(y) 
+  =
+  \begin{cases} 
+    0.30 & \text{for $y = 1$  (Humanities);}\\ 
+    0.45 & \text{for $y = 2$  (Sciences);}\\
+    0.15 & \text{for $y = 3$  (Social Sciences);}\\ 
+    0.10 & \text{for $y = 4$  (Arts).} 
+  \end{cases}
+$$
+
+1. Let $U \sim \text{Discrete Uniform}(1, 100)$.
+   Write down the explicit piecewise function $Y = g(U)$ that maps $U$ to $Y$ by partitioning the $100$ outcomes.
+2. Write some **R** code to simulate $N = 1\,000$ draws of $U$, map them to $Y$, and output the empirical relative frequencies alongside the theoretical probabilities $p_Y(y)$.
+:::
+
+
+:::{.exercise #SpecUseDiscreteB}
+An online retailer tracks the distribution of shipping speeds chosen by customers: Standard ($y = 1$), Express ($y = 2$), and Next-Day ($y = 3$).
+Because Next-Day shipping is rarely chosen (due to the higher cost), the probabilities are given to three decimal places:
+$$
+  p_Y(y) 
+  = 
+  \begin{cases} 
+    0.725 & \text{for $y = 1$ (Standard);}\\ 
+    0.250 & \text{for $y = 2$ (Express);}\\ 
+    0.025 & \text{for $y = 3$ (Next-Day).} 
+  \end{cases}
+$$
+
+1. Specify the discrete uniform range $1 \dots M$ required so that $U \sim \text{Discrete Uniform}(1, M)$ can represent these probabilities with exact integer boundaries.
+2. Write down the piecewise mapping function $Y = g(U)$.
+3. Write some **R** code to simulate $N = 1\,000$ draws of $U$, map them to $Y$, and output the empirical relative frequencies alongside the theoretical probabilities $p_Y(y)$.
 :::
 
 ::::

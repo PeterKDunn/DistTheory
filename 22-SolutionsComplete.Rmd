@@ -4936,6 +4936,70 @@ Comparing `P_exhausted_hat` (pickup: $0.7$) against `P_exhausted_hat_lp` (pickup
 
 
 
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecUseDiscreteA).**
+
+1. $Y = 1$ for $1 \le U \le 30$; $U = 2$ for $31\le U \le 75$; $U = 3$ for $76 \le U \le 90$; $Y = 4$ for $91 \le U \le 100$.
+2. See **R** below.
+:::
+
+```{r}
+set.seed(1234)
+
+# 1. Generate U ~ Discrete Uniform(1, 100)
+n_sim <- 10000
+U <- sample(1:100, size = n_sim, replace = TRUE)
+
+# 2. Map U to Y
+Y <- numeric(n_sim)
+Y[1 <= U & U <= 30]  <- 1
+Y[31 <= U & U <= 75] <- 2
+Y[76 <= U & U <= 90] <- 3
+Y[91 <= U & U <= 100] <- 4
+
+# 3. Compare Empirical vs Theoretical PMF
+empirical_pmf <- prop.table(table(Y))
+theoretical_pmf <- c("1" = 0.30, "2" = 0.45, "3" = 0.15, "4" = 0.10)
+
+res <- rbind(Empirical = empirical_pmf, 
+             Theoretical = theoretical_pmf)
+print(round(res, 4))
+```
+
+
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecUseDiscreteB).**
+
+1. Since probablilities are given to three decimal places, use $M = 1000$.
+2. $Y = 1$ for $1 \le U \le 725$; $Y = 2$ for $725\le U \le 975$; $Y = 3$ for $976 \le U \le 1000$.
+3. See **R** below.
+:::
+
+```{r}
+set.seed(456)
+
+# 1. Generate U ~ Discrete Uniform(1, 1000)
+n_sim <- 100000
+U <- sample(1:1000, size = n_sim, replace = TRUE)
+
+# 2. Map U to Y
+Y <- numeric(n_sim)
+Y[1 <= U & U <= 725]   <- 1
+Y[726 <= U & U <= 975]  <- 2
+Y[976 <= U & U <= 1000] <- 3
+
+# 3. Compare E[Y]
+
+empirical_pmf <- prop.table(table(Y))
+theoretical_pmf <- c("1" = 0.725, "2" = 0.250, "3" = 0.025)
+res <- rbind(Empirical = empirical_pmf, 
+             Theoretical = theoretical_pmf)
+print(round(res, 4))
+```
+
+
+
 <!-- ******************************************************************************************* --> 
 ## Answers for Chap.\ \@ref(ContinuousDistributions) {#AnswersChapContinuousDistributions}
 
@@ -5615,122 +5679,64 @@ for (i in 1:8) {
 
 
 :::{.answer data-latex=""}
-**Exercise\ \@ref(exr:SpecContinuousIndependenceB}
+**Exercise\ \@ref(exr:SpecContinuousIndependenceA).**
 
 1. Natural choice: **Exponential**, for the time between arrivals, implying a Poisson process for the arrival counts. 
    The scenario explicitly rules out both congestion effects (no queue forming) and any time-of-day effect (arrivals equally likely throughout), which are the two most common ways this assumption fails in practice. 
    Exponential is suitable.
-2. The defining property of the Exponential distribution is **memorylessness**: $\Pr(T > s+t \mid T>s) = \Pr(T>t)$, i.e.
+2. The defining property of the Exponential distribution is **memorylessness**: $\Pr(T > s + t \mid T > s) = \Pr(T > t)$, i.e.
 the chance of surviving another hour doesn't depend on age so far.
-   The scenario directly describes the opposite: a bulb that's already lasted longer is *more* likely to fail soon, meaning the "hazard rate" increases with age. 
-   Exponential is not suitable here.
-
-```{r a2-illustration}
-# Illustrating the difference: memoryless (exponential) survival vs
-# an increasing-hazard ("wear-out") process, simulated crudely via a
-# Weibull with shape > 1 for comparison.
-n <- 100000
-lifetimes_memoryless <- rexp(n, rate = 1/1000)          # constant hazard
-lifetimes_wearout     <- rweibull(n, shape = 2.5, scale = 1130) # increasing hazard
-
-# P(survive another 100h | already survived 1000h) under each model
-p_survive_more_memoryless <- mean(lifetimes_memoryless > 1100) /
-                              mean(lifetimes_memoryless > 1000)
-p_survive_more_wearout <- mean(lifetimes_wearout > 1100) /
-                           mean(lifetimes_wearout > 1000)
-
-# compare to the "fresh bulb" probability of surviving 100h from new
-p_survive_100_fresh_memoryless <- mean(lifetimes_memoryless > 100)
-p_survive_100_fresh_wearout    <- mean(lifetimes_wearout > 100)
-
-c(memoryless_conditional = p_survive_more_memoryless,
-  memoryless_fresh        = p_survive_100_fresh_memoryless)
-c(wearout_conditional = p_survive_more_wearout,
-  wearout_fresh         = p_survive_100_fresh_wearout)
-```
-
-  For the memoryless model the two numbers in each pair are (up to simulation error) equal, exactly as the Exponential's defining property requires. 
-  For the wear-out model they clearly aren't: the already-aged bulb is worse off, confirming visually why Exponential fails to capture this bulb's behaviour.
+   The scenario directly describes the opposite: a bulb that's already lasted longer is *more* likely to fail soon; exponential is not suitable here.
 3. Natural choice: *Uniform*, on some small interval like $(-0.5, 0.5)$ grams. 
    The scenario states the error is "equally likely to fall anywhere" in the interval, with no dependence on
 the true weight: exactly the Uniform assumption. 
    Uniform is suitable.
-4. A defensible starting assumption is that each participant is a fresh, unrelated individual completing an unfamiliar task once, so reaction times across participants can reasonably be treated as iid, probably Normal (or a right-skewed relative like Log-Normal) as an approximation, on the grounds that reaction time results from many small additive neurological/perceptual factors. 
-   But two details are worth flagging as threats to that assumption rather than ignoring them: testing everyone "one after another... across a single afternoon" raises the possibility of a *time-of-day effect* (fatigue building across the afternoon, or a noisy corridor developing later on) that would make reaction times drift similarly to the voltmeter case; and using the "same equipment" for everyone means any equipment-specific quirk (e.g. a slightly sticky button) affects every participant identically, which doesn't break independence *between* participants but does mean the whole sample may be systematically shifted. 
+4. A defensible starting assumption is that each participant is a fresh, unrelated individual completing an unfamiliar task once, so reaction times across participants can reasonably be treated as iid, probably normal (or a right-skewed, like log-normal) as an approximation, on the grounds that reaction time results from many small additive neurological/perceptual factors. 
+   Two details are potential threats to that assumption: testing everyone "one after another... across a single afternoon" raises the possibility of a *time-of-day effect* (fatigue building across the afternoon, or a noisy corridor developing later on) that would make reaction times drift; and using the "same equipment" for everyone means any equipment-specific quirk (e.g. a slightly sticky button) affects every participant identically, which doesn't break independence *between* participants but does mean the whole sample may be systematically shifted. 
    A good answer states the iid-Normal assumption explicitly, notes these as caveats, and says how you'd check them (e.g. plot reaction time against testing order to look for a trend).
 :::
 
 
 :::{.answer data-latex=""}
-**Exercise\ \@ref(exr:SpecContinuousIndependenceB}
+**Exercise\ \@ref(exr:SpecContinuousIndependenceB).**
 
-1. Two separate things need checking: independence (the men are explicitly unrelated, different households, no shared family: nothing links one man's height to another's, so treating the 50 measurements as independent is
-reasonable); shape (the scenario states this as an established empirical fact from prior population studies, so
-there's no need to justify it from first principles here).
+1. Two separate things need checking: independence (the men are explicitly unrelated, different households, no shared family: nothing links one man's height to another's, so treating the 50 measurements as independent is reasonable); shape (the scenario states this as an established empirical fact from prior population studies, so there's no need to justify it from first principles here).
    Normal is suitable, on the combined basis of (a)\ independent sampling from a large population and (b)\ the distribution shape being empirically well-documented for this variable.
-2. The true voltage is constant, so in a correctly functioning instrument, successive readings would be iid Normal
-around that true value (measurement noise only). 
-   But the scenario describes a systematic warm-up drift for the first $20\mins$: the *mean* of the readings is not constant across the session, so readings taken at different times are not identically distributed, and readings
-taken close together in time (both mid-drift) will tend to be similarly off from the true value in a way readings far apart in time won't be.
+2. The true voltage is constant, so in a correctly functioning instrument, successive readings would be iid Normal around that true value (measurement noise only). 
+   But the scenario describes a systematic warm-up drift for the first $20\mins$: the *mean* of the readings is not constant across the session, so readings taken at different times are not identically distributed, and readings taken close together in time (both mid-drift) will tend to be similarly off from the true value in a way readings far apart in time won't be.
   A single stationary Normal model is not suitable for readings drawn from across the whole session; readings restricted to *after* stabilisation might reasonably be modelled as iid Normal on their own.
-
-```{r b2-illustration}
-n_readings <- 40
-time_min   <- seq(0, 39, by = 1)  # one reading per minute, 40 minutes
-
-true_voltage <- 5.00
-drift <- ifelse(time_min < 20, (20 - time_min) * 0.01, 0)  # warms up, drift shrinks
-noise <- rnorm(n_readings, mean = 0, sd = 0.01)
-
-readings <- true_voltage + drift + noise
-
-plot(time_min, readings, type = "b", pch = 16,
-     xlab = "Minutes into session", ylab = "Voltmeter reading",
-     main = "Simulated drifting readings (early readings biased high)")
-abline(h = true_voltage, col = "red", lty = 2)
-```
-
-  The systematic early-session bias is visible directly in the plot: later readings scatter tightly around the true value, early ones don't, which is exactly the kind of pattern a single "iid Normal" model would miss.
 3. Natural choice: Exponential, for time until the next decay, given a Poisson process of decays. 
    The scenario is essentially the textbook justification for this model: independence and constant rate are stated as an established physical fact, not just assumed for convenience. 
    Exponential is suitable: this is one of the few real-world situations where memorylessness is not just a convenient approximation but a genuinely well-supported physical property.
 4. This is the one where blind pattern-matching to "measurements over time $\Rightarrow$ Normal" is dangerous. 
-   Daily rainfall totals are **not independent** in any typical climate: rain tends to arrive in multi-day weather systems, so a wet day is more likely to be followed by another wet day than the "average" day would suggest
-(positive autocorrelation), and rainfall amounts are also usually strongly right-skewed with a spike of exact zeros (dry days) rather than symmetric around a mean (the opposite of what Normal assumes). 
+   Daily rainfall totals are *not independent* in any typical climate: rain tends to arrive in multi-day weather systems, so a wet day is more likely to be followed by another wet day than the "average" day would suggest (positive autocorrelation), and rainfall amounts are also usually strongly right-skewed with a spike of exact zeros (dry days) rather than symmetric around a mean (the opposite of what Normal assumes). 
    A reasonable answer: a single stationary Normal model for daily rainfall is not suitable, both because of the skew/zero-inflation in the marginal distribution and because of day-to-day dependence; a more appropriate approach would model wet/dry runs and rainfall amount on wet days separately, or just use the empirical distribution via simulation/bootstrapping rather than force a single named distribution onto autocorrelated data.
+:::
 
-```{r c2-illustration}
-# crude illustration of autocorrelation in rainfall: simulate a simple
-# 2-state (dry/wet) Markov chain for "is it raining", vs an iid coin flip,
-# and compare run lengths of consecutive wet days.
-n_days <- 3000
 
-# iid version: each day wet with prob 0.3, independent of yesterday
-iid_wet <- rbinom(n_days, 1, 0.3)
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecContinuousAppA).**
 
-# Markov version: persistence in weather systems
-markov_wet <- numeric(n_days)
-markov_wet[1] <- rbinom(1, 1, 0.3)
-for (d in 2:n_days) {
-  p_wet_given_wet <- 0.6   # weather systems persist
-  p_wet_given_dry <- 0.15
-  p <- ifelse(markov_wet[d-1] == 1, p_wet_given_wet, p_wet_given_dry)
-  markov_wet[d] <- rbinom(1, 1, p)
-}
+1. Write 
+$$
+  \operatorname{E}[D] = \operatorname{E}[\,|X - 5|\,] = \int_0^{10} |x - 5|\cdot \frac{1}{10}\, dx.
+$$
+2. Split the integral: 
+$$
+  \operatorname{E}[D] 
+  = \int_0^{5} (5 - x)\cdot \frac{1}{10}\, dx + \int_5^{10} (x - 5)\cdot \frac{1}{10}\, dx
+  = 2.5;
+$$
+so $2.5\ms$.
+:::
 
-run_lengths <- function(x) {
-  r <- rle(x)
-  r$lengths[r$values == 1]
-}
 
-mean(run_lengths(iid_wet))
-mean(run_lengths(markov_wet))
-```
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecContinuousAppB).**
 
-Both processes have roughly the same overall proportion of wet days, but
-the Markov (realistic, autocorrelated) version produces noticeably longer
-runs of consecutive wet days — exactly the clustering that an iid/Normal
-treatment of daily rainfall would fail to capture.
+1. Since $X\sim\text{Uniform}(95, 105)$, so $f_X(x) = 1/10$ for $95 < x < 105$.
+   $\Pr(Y = 1) = \Pr(95 < X < 97) = (97 - 95)/10 = 0.20$; similarly, $\Pr(Y = 1) = 0.60$ and $\Pr(Y = 3) = 0.20$.
+2. $\operatorname{E}[X] = 2$;  $\operatorname{E}[X^2] = 4.4$ and so $\operatorname{var}[X] = 0.40$.
 :::
 
 
