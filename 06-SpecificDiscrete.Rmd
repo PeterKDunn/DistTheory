@@ -19,16 +19,15 @@ Upon completion of this chapter, you should be able to:
 
 ## Introduction
 
-In statistics and probability, we rarely work with arbitrary distributions.
-Some distributions arise so frequently in practice that they are given names and are studied in detail. 
+In statistics and probability, some distributions arise so frequently in practice that they are given names and are studied in detail.
 These standard distributions act as building blocks for modelling real-world phenomena.
 In this chapter, the most commonly used discrete distributions are studied: 
 
-* the *discrete uniform distribution* models situations where every outcome is equally likely, such as rolling a fair die or drawing a card at random from a well-shuffled deck.
-* the *Bernoulli* and *binomial distributions* model the number of successes in repeated independent trials, relevant whenever we count how many times an event occurs in a fixed number of attempts, such as the number of defective items in a production run or the number of patients responding to a treatment.
-* the *geometric* and *negative binomial distributions* model waiting times: how long until a first success, or until a fixed number of successes occur, arising naturally in quality control, reliability, and queuing problems.
-* the *Poisson distribution* models the number of rare events occurring in a fixed interval of time or space; these are used widely in insurance, telecommunications, epidemiology, and traffic modelling.
-* the *hypergeometric distribution* models the number of successes when sampling without replacement from a finite population, applicable in quality inspection, ecology, and clinical trials where the population is small enough that each draw meaningfully changes the composition of what remains.
+* the *discrete uniform distribution*, for modelling situations where every outcome is equally likely, such as rolling a fair die or drawing a card at random from a well-shuffled deck.
+* the *Bernoulli* and *binomial distributions*, for modelling the number of successes in repeated independent trials, such as the number of defective items in a production run or the number of patients responding to a treatment.
+* the *geometric* and *negative binomial distributions*, for modelling waiting times: how long until a first success, or until a fixed number of successes occur, arising naturally in quality control, reliability, and queuing problems.
+* the *Poisson distribution*, for modelling the number of rare events occurring in a fixed interval of time or space;  widely used in insurance, telecommunications, epidemiology, and traffic modelling.
+* the *hypergeometric distribution*, for modelling the number of successes when sampling without replacement from a finite population; applicable in quality inspection, ecology, and clinical trials.
 
 The probability mass function, distribution function, and key properties (such as the mean, variance and moment generating function) are studied for each distribution.
 
@@ -55,16 +54,18 @@ We write $X\sim U(a, b)$, $X\sim \text{Uniform}(a, b)$ or $X\sim \text{Discrete 
 ::: {.notationBox .notation data-latex="{iconmonstr-infinity-8-240.png}"}
 The notation $p_X(x; a, b)$ means that the probability function for\ $X$ depends on the parameters\ $a$ and\ $b$.
 
-The symbol $\sim$ means 'is distributed with'; hence, '$X\sim U(a, b)$' means '$X$\ is distributed with a discrete uniform distribution with parameters\ $a$ and\ $b$'.
+The symbol $\sim$ means 'is distributed with'; hence, '$X\sim \text{Uniform}(a, b)$' means '$X$\ is distributed with a discrete uniform distribution with parameters\ $a$ and\ $b$'.
 :::
 
 
 A plot of the probability function for a discrete uniform distribution is shown in Fig. \@ref(fig:DiscreteUniform).
 
 
-```{r DiscreteUniform, echo=FALSE, fig.align="center", fig.cap="The probability function for the discrete uniform distribution $\\text{Uniform}(a, b)$.", fig.width=5, fig.height=3.5, out.width='50%'}
+```{r DiscreteUniform, echo=FALSE, fig.align="center", fig.cap="The probability function for the discrete uniform distribution $\\text{Discrete uniform}(a, b)$.", fig.width=5, fig.height=3.5, out.width='50%'}
 x <- c(1:4, 7)
 y <- rep(1, length(x))
+
+par(mar = c(5.1, 6.1, 4.1, 2.1)) # DEFAULT: 5.1 4.1 4.1 2.1
 
 plotDiscrete(x,
              y,
@@ -73,7 +74,7 @@ plotDiscrete(x,
              axes = FALSE,
              main = "A discrete uniform distribution",
              xlab = expression(italic(x)),
-             ylab = "Probability function")
+             ylab = "Prob. fn.  ")
 
 # Ellipses
 points( x = c(5.3, 5.5, 5.7),
@@ -89,7 +90,8 @@ points( x = c(5.3, 5.5, 5.7),
 
 axis(side = 2,
      at = c(0, 1),
-     labels = expression(0, 1/(italic(b) - italic(a) + 1) ) )
+     las = 1,
+     labels = expression(0, frac(1, italic(b) - italic(a) + 1 ) ) )
 axis(side = 1,
      at = c(1, 2, 3, 4, 5.5, 7),
      labels = expression(
@@ -121,9 +123,9 @@ where $\lfloor z \rfloor$ is the *floor function*\index{Floor function} (i.e., r
 
 :::{.example #DiscreteUniform name="Discrete uniform"}
 Let\ $X$ be the number showing after a single throw of a fair die.
-Then $X \sim \text{Unif}(1, 6)$.
+Then $X \sim \text{Discrete uniform}(1, 6)$.
 
-To select a single-digit number from a table of random digits, the number chosen,\ $X$, has probability distribution $\text{Unif}(0, 9)$.
+To select a single-digit number from a table of random digits, the number chosen,\ $X$, has probability distribution $\text{Discrete uniform}(0, 9)$.
 :::
 
 
@@ -149,7 +151,7 @@ Since $Y\sim\text{Unif}(0, b - a)$:
   &= \frac{1}{b - a + 1}\big(0 + 1 + 2 + \dots + (b - a)\big)\\
   &= \frac{(b - a)(b - a + 1)}{2(b - a + 1)} = (b - a)/2
 \end{align*}
-using \@ref(eq:SumNaturalNumbers).
+using Eq.\ \@ref(eq:SumNaturalNumbers).
 Therefore,
 $$
    \operatorname{E}[X]= \operatorname{E}[Y] + a = \frac{b - a}{2} + a = \frac{a + b}{2}.
@@ -165,18 +167,18 @@ To find the MGF:
   &= \frac{\exp(at)}{b - a + 1} \left( 1 + \exp\{t\} + \exp\{2t\} + \dots + \exp\{(b - 1)t\} \right) \\
   &= \frac{\exp(at)}{b - a + 1} \left( \frac{1 - \exp\{(b - a + 1)t\}}{1 - \exp(t)} \right) 
 \end{align*}
-using \@ref(eq:SumGeometricFinite).
+using Eq.\ \@ref(eq:SumGeometricFinite).
 ::::
 :::
 
 
-The discrete uniform distribution is rarely useful by itself, except in trivial scenarios like rolling dice and tossing coins, but forms the foundation for other distributions in statistics.
+The discrete uniform distribution is rarely useful by itself, except in trivial scenarios like rolling dice and tossing coins, but can be used to generate other distributions in statistics.
 
 
-:::{.example #UsingDiscreteUniform name="Using the dicrete uniform distributuon"}
+:::{.example #UsingDiscreteUniform name="Using the discrete uniform distribution"}
 Computers can generate (pseudo-) random numbers using a discrete uniform distribution, which then can be used to generate random numbers from other discrete distributions.
 
-Suppose a medical simulation requires a discrete random variable\ $Y$ representing a patient's blood type with non-uniform probabilities:
+Suppose a medical simulation requires a discrete random variable\ $Y$ representing a patient's blood type, with non-uniform probabilities:
 $$
   p_Y(y)
   =
@@ -187,8 +189,8 @@ $$
     0.04 & \text{for $y = 4$ (i.e., Type\ AB blood).}\\
   \end{cases}
 $$
-The random-number generator produces an integer value, say\ $U$, such that $U\sim \text{Discrete Uniform}(1, 100)$.
-Then, $U$ can be mapped to\ $Y$ by partitioning the $100$ outcomes:
+The random-number generator can be used to produce an integer value, say\ $U$, such that $U\sim \text{Discrete uniform}(1, 100)$.
+Then, $U$ can be mapped to\ $Y$ by partitioning the $100$\ outcomes:
 $$
   Y
   = 
@@ -199,15 +201,13 @@ $$
     4   & \text{if $97 \le U \le 100$}.
   \end{cases}
 $$
-Each value of\ $U$ occurs with probability $\Pr(U = k) = 1/100 = 0.01$, so the probability of $U$ occurring within any interval of integers $[a, b]$ is $\Pr(a \le U \le b) = (b - a + 1)/100$:
-$$
+Each value of\ $U$ occurs with probability $\Pr(U = k) = 1/100 = 0.01$, so the probability of\ $U$ occurring within any interval of integers $[a, b]$ is $\Pr(a \le U \le b) = (b - a + 1)/100$:
 \begin{alignat*}{3}
   \Pr(Y = 1) &= \Pr( 1 \le U\le 45)   &&= (45 - 1 + 1)/100   &&= 0.45;\\
   \Pr(Y = 2) &= \Pr( 46 \le U\le 85)  &&= (85 - 46 + 1)/100  &&= 0.40;\\
   \Pr(Y = 3) &= \Pr( 86 \le U\le 96)  &&= (96 - 86 + 1)/100  &&= 0.11;\\
   \Pr(Y = 4) &= \Pr( 97 \le U\le 100) &&= (100 - 97 + 1)/100 &&= 0.04.
 \end{alignat*}
-$$
 :::
 
 
@@ -216,10 +216,27 @@ $$
 ### Derivation and definition {#BernoulliDefinition}
 
 \index{Bernoulli distribution|(}
-A Bernoulli distribution is used in a situation where a single trial of a random process has two possible outcomes.
-A simple example is tossing a coin and observing if a head falls. 
+A Bernoulli distribution is used in a situation where a single trial of a random process has exactly two possible outcomes.
+A simple example is tossing a coin once, and counting how many heads are observed.
+These situations are called *Bernoulli trials*.
 
-The probability function is simple:
+
+:::{.definition #BernoulliTrials name="Bernoulli trials"}
+A *Bernoulli trial* is a random process with only two possible outcomes, usually labelled 'success'\ $s$ and 'failure'\ $f$.
+The sample space can be denoted by $S = \{ s, f\}$.
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The terms 'success' and 'failure' are not literal.
+'Success' simply refers to the event of interest.
+If the event of interest is whether a cyclone causes damage, this is still called a 'success'.
+:::
+
+
+:::{.definition #BernoulliDistribution name="Bernoulli distribution"}
+Let\ $X$ be the number of successes in a single Bernoulli trial with $\Pr(\text{Success}) = p$ (for $0\le p\le 1$).
+Then\ $X$ has a *Bernoulli probability distribution* with parameter\ $p$ and probability function given by
 $$
    p_X(x; p) = 
    \begin{cases}
@@ -227,23 +244,18 @@ $$
       p     & \text{if $x = 1$},
     \end{cases}
 $$
-so that the parameter\ $p$ represents the probability of $x = 1$, called a 'success' (while $x = 0$ is called a 'failure').
-More succinctly:
+where the parameter\ $p$ represents the probability of $x = 1$, and called a 'success' (and $x = 0$ is called a 'failure').
+Equivalently, but more succinctly,
 \begin{equation}
    p_X(x; p) = p^x (1 - p)^{1 - x} \quad\text{for $x = 0, 1$}.
    (\#eq:BernoulliPMF)
 \end{equation}
-
-
-:::{.definition #BernoulliDistribution name="Bernoulli distribution"}
-Let\ $X$ be the number of successes in a single trial with $\Pr(\text{Success}) = p$ ($0\le p\le 1$).
-Then\ $X$ has a *Bernoulli probability distribution* with parameter\ $p$ and probability function given by \@ref(eq:BernoulliPMF).
 We write $X\sim\text{Bernoulli}(p)$.
 :::
 
 
 :::{.definition #BernoulliDistributionCDF name="Bernoulli distribution: distribution function"}
-For a random variable\ $X$ with the Bernoulli distribution given in \@ref(eq:BernoulliPMF), the *distribution function* is
+For a random variable\ $X$ with the Bernoulli distribution given in Eq.\ \@ref(eq:BernoulliPMF), the *distribution function* is
 $$
   F_X(x; p) = 
   \begin{cases}
@@ -257,27 +269,11 @@ $$
 
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The terms 'success' and 'failure' are not literal.
-'Success' simply refers to the event of interest.
-If the event of interest is whether a cyclone causes damage, this is still called a 'success'.
-:::
-
-
-These ideas also introduces a common idea of a *Bernoulli trial*.
-
-
-:::{.definition #BernoulliTrials name="Bernoulli trials"}
-A *Bernoulli trial* is a random process with only two possible outcomes, usually labelled 'success'\ $s$ and 'failure'\ $f$.
-The sample space can be denoted by $S = \{ s, f\}$.
-:::
-
-
-A plot of the probability function for a Bernoulli distribution is very simple, and shown in Fig. \@ref(fig:Bernoulli).
+A plot of the probability function is shown in Fig. \@ref(fig:Bernoulli).
 The Bernoulli distribution is rarely useful by itself, but forms the foundation for the binomial (Sect.\ \@ref(BinomialDistribution)), and geometric distributions (Sect.\ \@ref(GeometricDistribution)).
 
 
-```{r Bernoulli, echo=FALSE, fig.align="center", fig.cap="The probability function for the Bernoulli distribution $\\text{Bernoulli}(p = 0.35)$.", fig.width=6, fig.height=3.5, out.width='70%'}
+```{r Bernoulli, echo=FALSE, fig.align="center", fig.cap="The probability function (left) and distribution function (right) for the Bernoulli distribution $\\text{Bernoulli}(p = 0.35)$.", fig.width=6, fig.height=3.5, out.width='70%'}
 par(mfrow = c(1, 2))
 
 p <- 0.35
@@ -311,20 +307,17 @@ If $X\sim\text{Bern}(p)$ then
 ::::{.proof}
 By definition:
 $$
-     \operatorname{E}[X] = \sum^1_{x = 0} x\, p_X(x) = 0\times (1 - p) + 1\times p = p.
+     \operatorname{E}[X] = \sum^1_{x = 0} x\cdot p_X(x) = 0\times (1 - p) + 1\times p = p.
 $$
 To find the variance, use the computational formula $\operatorname{var}[X] = \operatorname{E}[X^2] - \operatorname{E}[X]^2$.
 Then,
 $$
-     \operatorname{E}[X^2] = \sum^1_{x = 0} x^2\, p_X(x) = 0^2\times (1 - p) + 1^2\times p = p,
+     \operatorname{E}[X^2] = \sum^1_{x = 0} x^2\cdot p_X(x) = 0^2\times (1 - p) + 1^2\times p = p,
 $$
-and so
-$$ 
-   \operatorname{var}[X] 
+and so $\operatorname{var}[X] 
    = \operatorname{E}[X^2] - \operatorname{E}[X]^2 
    = p - p^2
-   = p (1- p). 
-$$
+   = p (1- p)$.
 
 The MGF of\ $X$ is
 \begin{align*}
@@ -346,7 +339,7 @@ Proving the third result first, and then using it to prove the others, is easier
 \index{Binomial distribution|(}
 A binomial distribution is used to model the number of successes in\ $n$ independent Bernoulli trials (Def. \@ref(def:BernoulliTrials)).
 A simple example is tossing a coin ten times and observing how often a head falls. 
-The same random process is repeated (tossing the coin), only two outcomes are possible on each trial (a head or a tail), and the probability of a head remains constant on each trial (i.e., the tosses are independent).
+The same random process (the Bernoulli trial) is repeated (tossing the coin), only two outcomes are possible on each trial (a head or a tail), and the probability of a head remains constant on each trial (i.e., the tosses are independent).
 
 ### Derivation and definition {#BinomialDerivation}
 
@@ -356,14 +349,14 @@ In the five tosses, a `r knitr::include_graphics("Dice/die2.png", dpi=1750)` mus
 In the five rolls, `r knitr::include_graphics("Dice/die2.png", dpi=1750)` must appear three times with probability\ $1/6$; the other two rolls must produce another number, with probability\ $5/6$.
 So the probability is
 $$
-   \Pr(\text{3 ones}) = \binom{5}{3} (1/6)^3 (5/6)^2 = 0.032,
+   \Pr(\text{3 ones}) = \binom{5}{3} \cdot \left(\frac{1}{6}\right)^3 \cdot \left(\frac{5}{6}\right)^2 = 0.032,
 $$
 assuming independence of the events.
-Using this approach, the PMF for the binomial distribution can be developed.
+Using this approach, the probability function for the binomial distribution can be developed.
 
 
 A binomial situation arises if a *sequence* of Bernoulli trials is observed, in each of which $\Pr(\{ s\} ) = p$ and $\Pr(\{ f\} ) = q = 1 - p$.
-For\ $n$ such trials, consider the random variable\ $X$, where\ $X$ is the number of successes in $n$\ trials. 
+For\ $n$ such independent trials, consider the random variable\ $X$, where\ $X$ is the number of successes in $n$\ trials. 
 Now\ $X$ will have value set $\mathcal{R}_X = \{ 0, 1, 2, \dots, n\}$.
 $p$\ must be constant from trial to trial, and the $n$\ trials must be independent.
 
@@ -374,7 +367,6 @@ $$
    \underbrace{f \quad f \dots f \quad f}_{n - r} 
 $$
 which is the intersection of\ $n$ independent events comprising $r$\ successes and $n - r$ failures, and hence the probability is $p^r q^{n - r}$.
-
 Every other sample point in the event $X = r$ will appear as a rearrangement of these\ $s$'s and\ $f$'s in the sample point described above and will therefore have the same probability. 
 
 Now the number of distinct arrangements of the\ $r$ successes\ $s$ and $(n - r)$ failures\ $f$ is $\binom{n}{r}$, so
@@ -384,7 +376,7 @@ $$
 for $r = 0, 1, \dots, n$.
 This is the *binomial distribution*.
 
-Note that the sum of the probabilities is\ $1$, as the binomial expansion of $(p + q)^n$ (using \@ref(eq:BinomialSeries)) is
+Note that the sum of the probabilities is\ $1$, as the binomial expansion of $(p + q)^n$ (using Eq.\ \@ref(eq:BinomialSeries)) is
 \begin{equation}
    \sum_{r = 0}^n \binom{n}{r} p^r q^{n - r} = (p + q)^n = 1(\#eq:sumbin)
 \end{equation}
@@ -398,7 +390,7 @@ The definition of the binomial distribution can now be given.
 Let $X$ be the number of successes in $n$\ independent Bernoulli trials with $\Pr(\text{Success}) = p$ (for $0\le p\le 1$) constant for each trial.
 Then\ $X$ has a *binomial probability distribution* with parameters\ $n$, $p$ and probability function given by
 \begin{equation}
-   p_X(x; n, p) = \binom{n}{x} p^x q^{n - x} \quad\text{for $x = 0, 1, \dots, n$}.
+   p_X(x; n, p) = \binom{n}{x} p^x (1 - p)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}.
    (\#eq:BinomialPMF)
 \end{equation}
 We write $X\sim\text{Bin}(n, p)$ or $X\sim\text{Binomial}(n, p)$.
@@ -425,7 +417,7 @@ The following are the basic properties of the binomial distribution.
 If $X\sim\text{Bin}(n,p)$ then
 
 1. $\operatorname{E}[X] = np$.
-2. $\operatorname{var}[X] = np(1 - p) = npq$.
+2. $\operatorname{var}[X] = np(1 - p) = npq$ where $q = 1 - p$.
 3. $M_X(t) = (p\exp t + q)^n$.
 
 
@@ -433,9 +425,9 @@ If $X\sim\text{Bin}(n,p)$ then
 Using \@ref(eq:BinomialSeries):
 \begin{align*}
      \operatorname{E}[X] 
-     & = \sum^n_{x = 0} x\binom{n}{x} p^x q^{n - x}\\
+     & = \sum^n_{x = 0} x\binom{n}{x} p^x (1 - p)^{n - x}\\
      & = \sum^n_{x = 1} x \frac{n}{x} \binom{n - 1}{x - 1} p^x q^{n - x} 
-          \quad\text{(note the lower summation-index change)}\\
+          \quad\text{(note the lower summation-index change, and $q = 1-p$)}\\
      & = np\sum^n_{x = 1} \binom{n - 1}{x - 1} p^{x - 1} q^{n - x}\\
      & = np \sum^{n - 1}_{y = 0} \binom{n - 1}{y}p^y q^{n - 1 - y}\quad \text{putting $y = x - 1$}.
 \end{align*}
@@ -445,9 +437,8 @@ Thus,
 $$
    \operatorname{E}[X] = np.
 $$
-
 To find the variance, use the computational formula $\operatorname{var}[X] = \operatorname{E}[X^2] - \operatorname{E}[X]^2$.
-Firstly, to find $\operatorname{E}[X^2]$, write $\operatorname{E}[X^2]$ as $\operatorname{E}[X(X - 1) + X]$ so that $\operatorname{E}[X(X - 1)] + \operatorname{E}[X]$; then:
+Then write $\operatorname{E}[X^2]$ as $\operatorname{E}[X(X - 1) + X]$ so that $\operatorname{E}[X(X - 1)] + \operatorname{E}[X]$; so:
 \begin{align*}
      \operatorname{E}[X^2] 
      &= \sum^n_{x = 0} x(x - 1)\Pr(X = x) + np\\
@@ -504,8 +495,8 @@ In all these functions, `prob`${} = p$ and `size`${} = n$.
 
 :::{.example #ThrowDice name="Throwing dice"}
 A die is thrown $4$\ times. 
-To find the probability of rolling exactly $2$\ sixes, see that there are $n = 4$ Bernoulli trials with $p = 1/6$.
-Let the random variable\ $X$ be the number of 6's in $4$\ tosses. 
+To find the probability of rolling exactly $2$\ sixes, see that there are $n = 4$ independent Bernoulli trials with $p = 1/6$.
+Let the random variable\ $X$ be the number of 6s in $4$\ tosses. 
 Then
 $$
   \Pr(X = 2) = 
@@ -514,9 +505,7 @@ $$
 In **R**:
 
 ```{r}
-dbinom(2,
-       prob = 1/6,
-       size = 4)
+dbinom(2, prob = 1/6, size = 4)
 ```
 :::
 
@@ -525,7 +514,7 @@ dbinom(2,
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 A binomial situation requires the trials to be *independent*, and the probability of success $p$ to be *constant* throughout the trials.
 
-For example, drawing cards from a pack *without* replacing them is **not** a binomial situation; after drawing one card, the probabilities will then change for the drawing of the next card.
+For example, drawing cards from a pack *without* replacing them is **not** a binomial situation; after drawing one card, the probabilities change for the drawing of the next card.
 In this case, the *hypergeometric distribution* should be used (Sect. \@ref(HypergeometricDistribution)).
 :::
 
@@ -538,17 +527,13 @@ The probability that the lake will not freeze in any of these ten years is $\Pr(
 
 In **R**:
 ```{r}
-dbinom(0,
-       size = 10,
-       prob = 0.05)
+dbinom(0, size = 10, prob = 0.05)
 ```
 
-Note we could define the random variable\ $Y$ as the number of times the lake *will* freeze in the ten randomly chosen years.
+We could define the random variable\ $Y$ as the number of times the lake *will* freeze in the ten randomly chosen years.
 Then, $Y\sim\text{Bin}(10, 0.05)$ and we would compute $\Pr(Y = 0)$ and get the same answer.
 ```{r}
-dbinom(10,
-       size = 10,
-       prob = 0.95)
+dbinom(10, size = 10, prob = 0.95)
 ```
 :::
 
@@ -559,10 +544,10 @@ Binomial probabilities can sometimes be approximated using the normal distributi
 
 ## Geometric distribution {#GeometricDistribution}
 
-### Derivation and definition {#GeometricDerivation}
+### Derivation and definition: standard parameterisation {#GeometricDerivation}
 
 \index{Geometric distribution|(}
-Consider now a random process where independent Bernoulli trials  (Def.\ \@ref(def:BernoulliTrials)) are repeated until the *first* success occurs. 
+Consider a random process where independent Bernoulli trials are repeated until the *first* success occurs. 
 What is the distribution of the number of *failures* until the first success is observed?
 
 Let the random variable\ $X$ be the number of failures before the first success is observed.
@@ -612,7 +597,7 @@ This is the parameterisation used by **R**.
 ```
 
 
-### Properties {#GeometricProperties}
+### Properties: standard parameterisation {#GeometricProperties}
 
 The following are the basic properties of the geometric distribution.
 
@@ -669,9 +654,8 @@ The expected number of shots until the first miss is $\operatorname{E}[Y] = (1 -
 ### Alternative parameterisation {#GeometricAlternative}
 
 \index{Geometric distribution!alternative parameterisation}
-The parameterisation above is for the *number of failures* needed for the first success, so that $x = 0, 1, 2, 3, \dots$.
-An alternative parameterisation is for the *number of trials* $X$ before observing a success, when $x = 1, 2, \dots$.
-The only way to distinguish which parameterisation is being used is to check the range or the probability function.
+The distribution of\ $Y$ in Example\ \@ref(exm:GeometricNetball) is for the *number of failures* needed for the first success, so that $y = 0, 1, 2, 3, \dots$.
+An alternative parameterisation is for the *number of trials*\ $X$ before observing a success, when $x = 1, 2, \dots$ (like the random variable\ $X$ in Example\ \@ref(exm:GeometricNetball)).
 
 
 :::{.definition #GeometricDistributionALT name="Geometric distribution: Alternative parameterisation"}
@@ -693,8 +677,17 @@ If $X\sim\text{Geom}(p)$ as defined in Eq.\ \@ref(eq:GeometricPMFAlternative), t
 3. $M_X(t) = p\exp(t) /\{ 1 - (1 - p)\exp t \}$ for $t < -\log(1 - p)$.
 
 ::::{.proof}
-The first two result can be proven from Theorem \@ref(thm:GeometricProperties).
+The first two results can be proven from Theorem\ \@ref(thm:GeometricProperties).
 ::::
+:::
+
+
+:::{.example #GeometricNetball2 name="Netball shooting"}
+Consider Example\ \@ref(exm:GeometricNetball) again, where the random variable\ $X$ refers to the number of shots made until the first *miss*, with $p = 0.2$.
+In this case a 'success' refers to *missing* the shot with $p = 0.2$.
+Then, $X = \{1, 2, 3, \dots \}$, since the first miss may occur on the first shot, or any subsequent shot, hence $X$ can be modelled using the *alternative* parameterisation in Def.\ \@ref(def:GeometricDistributionALT).
+
+However, this is *not* the parameterisation used by **R**, so the scenario must be reparametrised in terms of\ $Y$, the number of goals scored until the shooter first misses (so that $Y = \{0, 1, 2, \dots\})$ as in Example\ \@ref(exm:GeometricNetball), if **R** is to be used to compute probabilities.
 :::
 \index{Geometric distribution|)}
 
@@ -709,7 +702,7 @@ Let the random variable\ $X$ be the number of *failures* before the $r$th succes
 
 To observe the $r$th\ success after $x$\ failures, there are $x$\ failures and $r - 1$ successes are observed first in these $x + r - 1$ trials.
 There are $\binom{x + r - 1}{r - 1}$ ways in which to allocate these $r - 1$ successes among the first $x + r - 1$ trials.
-Each successes occurs with probability $p$, and each failures with probability $1 - p$ (assuming events are independent).
+Each successes occurs with probability\ $p$, and each failures with probability $1 - p$ (assuming events are independent).
 Then finally, the $r$th success occurs in the final trial with probability\ $p$.
 Hence the probability of observing the $r$th\ success after\ $x$ failures is
 \begin{align*}
@@ -772,8 +765,10 @@ The probability that a randomly-chosen person accepts the invitation is only\ $0
 Here, a 'success' is an acceptance to attend the demonstration. 
 Let\ $Y$ be the number of *failed* calls necessary to secure ten acceptances.
 Then\ $Y$ has a negative binomial distribution with $p = 0.15$ and $r = 10$.
-The mean number of failures made is $\operatorname{E}[Y] = \{r(1 - p)\}/p = \{10 \times (1 - 0.15)\}/0.15 \approx  56.66667$.
-
+The mean number of failures made is 
+$$
+  \operatorname{E}[Y] = \{r(1 - p)\}/p = \{10 \times (1 - 0.15)\}/0.15 \approx  56.66667.
+$$
 Hence, including the ten calls that leads to a person accepting the invitation, the mean number of calls to be made is $10 + \operatorname{E}[Y] = 66.66\dots$.
 :::
 
@@ -782,14 +777,20 @@ Since the parameterisation in Eq.\ \@ref(eq:NegativeBinomialPMF) is defined over
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the negative binomial distribution are based on the paramaterisation in Eq.\ \@ref(eq:NegativeBinomialPMF), and have the form `[dpqr]nbinom(., size, prob)` (see App.\ \@ref(UseRDistributions)):\index{dnbinom()@\texttt{dnbinom()}}
+The four **R** functions for working with the negative binomial distribution are based on the parameterisation in Eq.\ \@ref(eq:NegativeBinomialPMF), and have the form `[dpqr]nbinom(., size, prob)` (see App.\ \@ref(UseRDistributions)):\index{dnbinom()@\texttt{dnbinom()}}
 
 * `dnbinom(x, size, prob)` computes the PMF at $X = {}$`x`;
 * `pnbinom(q, size, prob)` computes the CDF at $X = {}$`q`;
 * `qnbinom(p, size, prob)` computes the quantile for cumulative probability `p`; and
 * `rnbinom(n, size, prob)` generates `n` random numbers,
 
-where `prob` is\ $p$ and `size` is\ $r$.
+where `size` is\ $r$ and `prob` is\ $p$.
+
+The negative binomial distribution can also be specified using `size` and `mu`: for example: 
+
+* `dnbinom(x, size, mu)` computes the PMF at $X = {}$`x`
+
+where `size` is\ $r$ and `mu` is $\operatorname{E}[X]$.
 :::
 
 
@@ -814,26 +815,21 @@ In **R**, the command `dnbinom()` returns probabilities from the probability fun
 
 
 ```{r}
-x.values <- seq(1, 100, 
-                by = 1)
-1 - sum(dnbinom( x.values, 
-                 size = 10, 
-                 prob = 0.15))
+x.values <- seq(1, 100, by = 1)
+1 - sum(dnbinom( x.values, size = 10, prob = 0.15))
+
 # Alternatively:
-1 - pnbinom(100, 
-            size = 10, 
-            prob = 0.15)
+1 - pnbinom(100, size = 10, prob = 0.15)
 ```
 
 The probability is about\ $0.0244$.
 
 Assuming each call take an average of\ $5$ minutes, we can determine how long is the marketer expected to be calling to find ten acceptances.
-Let\ $T$ be the time to make the calls in minutes.
-Then $T = 5Y$.
+Let\ $T$ be the time to make the calls in minutes; then $T = 5Y$.
 Hence, $\operatorname{E}[T] = 5\operatorname{E}[Y] = 5 \times 66.7 = 333.5$, or about $5.56\hs$.
 
-Assume that each call costs $25$\ cents, and that the company pays the marketer \$$30$\ per hour.
-To determine the total cost, let\ $C$ be the total cost in dollars.
+Assume each call costs $25$\ cents, and that the company pays the marketer \$$30$\ per hour.
+Let\ $C$ be the total cost in dollars.
 The cost of employing the marketer is, on average, $30\times 5.56 = \$166.75$.
 Then $C = 0.25 Y + 166.75$, so $\operatorname{E}[C] = 0.25 \operatorname{E}[Y] + 166.75 = C = 0.25 \times 66.7 + 166.75 = \$183.43$.
 :::
@@ -842,12 +838,12 @@ Then $C = 0.25 Y + 166.75$, so $\operatorname{E}[C] = 0.25 \operatorname{E}[Y] +
 ### Alternative parameterisations {#NegBinAlternative}
 
 \index{Negative binomial distribution!alternative parameterisation}
-Often, a different parameterisation for the negative binomial distribution; see Exercise \@ref(exr:NegativeBinomialALT).
-However, the parameterisation presented in Sect.\ \@ref(NegBinStandard) is used by **R**.
+Often, a different parameterisation for the negative binomial distribution is used; see Exercise \@ref(exr:NegativeBinomialALT).
+However, the parameterisation presented in Sect.\ \@ref(NegBinStandard) is the one used by **R**.
 
 The negative binomial distribution can be extended so that\ $r$ can be *any* positive number, not just an integer.
 When\ $r$ is non-integer, the above interpretations are lost, but the distribution is more flexible.
-Relaxing the restriction on\ $r$ gives the probability function as
+Relaxing the restriction on\ $r$ means the probability function becomes
 \begin{equation}
    p_X(x; p, r) = \frac{\Gamma(x + r)}{\Gamma(r)\, x!} p^r (1 - p)^x,
    (\#eq:NegativeBinomialPMFAlternative2)
@@ -864,12 +860,7 @@ $$
 for $r > 0$.
 :::
 
-The gamma function has the property that
-\begin{equation}
-   \Gamma(r) = (r - 1)!
-   (\#eq:gammaprop)
-\end{equation}
-if\ $r$ is a positive integer (Fig. \@ref(fig:GammaFunction)).
+
 Important properties of the gamma function are given below.
 
 
@@ -880,7 +871,7 @@ For the gamma function $\Gamma(\cdot)$,
 1. $\Gamma(1/2) = \sqrt{\pi}$.
 1. $\lim_{r\to 0} \to \infty$.
 1. $\Gamma(1) = \Gamma(2) = 1$.
-1. $\Gamma(n) = (n - 1)$ for all positive integers $n$.
+1. $\Gamma(n) = (n - 1)!$ for all positive integers $n$.
 
 ::::{.proof}
 For the first property, integration by parts gives
@@ -933,71 +924,104 @@ text(x = xPoints,
 ```
 
 :::{.example #Computing name="Negative binomial"}
-Consider a computer system that fails with probability $p = 0.02$ on any given day (so that the system failure is a 'success').
-Suppose after five failures, the system is upgraded.
+Consider a computer system that fails with probability $p = 0.02$ on any given day (so that a system failure is a 'success').
+After five failures, the system is upgraded.
 
 To find the probability that an upgrade will happen within one year, let\ $D$ be the number of days before the fifth failure.
 So, we seek $\Pr(X < 360)$.
 Using **R**:
 
 ```{r echo=TRUE}
-pnbinom(360, 
-        size = 5, 
-        prob = 0.02)
+pnbinom(360, size = 5, prob = 0.02)
 ```
-So the probability of upgrading within one year is about $85$%.
+The probability of upgrading within one year is about\ $85$%.
 :::
 
 
 :::{.example #NBMites name="Mites"}
-@BIB:Bliss:negbin gives data from the counts of adult European red mites on leaves selected at random from six similar apple trees (Table\ \@ref(tab:MitesTable)).
-The mean number of mites per leaf is\ $1.14$ with a variance of\ $3.57$; since the Poisson distribution has an equal mean and variance, the Poisson distribution may not model these count data well.
-However, the mean number of mites per leaf can be modelled using a negative binomial distribution with $r = 1.18$ and $p = 0.5$.
+@BIB:Bliss:negbin gives data from the counts of adult European red mites on $150$\ leaves selected at random from six similar apple trees (Table\ \@ref(tab:MitesTable)).
+The mean and variance of the number of mites per leaf is:\index{Empirical mean}\index{Empirical variance}
 
-The estimated probability function for both the Poisson and negative binomial distributions are given in Table\ \@ref(tab:MitesTable); the negative binomial distribution fits better as expected.
+```{r}
+mites <- 0:7
+leaves <- c(70, 38, 17, 10, 9, 3, 2, 1)
+mites_mn <- sum( leaves * mites) / sum(leaves)
+mites_vr <- sum( leaves * (mites - mites_mn)^2 ) / sum(leaves)
+cat("Mean: ", mites_mn, "; Var: ", mites_vr, "\n")
+```
+
+Using the mean and variance formulas from Sect.\ \@ref(NegBinProperties), we can deduce that
+$$
+  p = \frac{\text{mean}}{\text{variance}}\quad\text{and}\quad r = \frac{\text{mean}^2}{\text{variance} - \text{mean}},
+$$
+and so the number of mites per leaf can be modelled using a negative binomial distribution:
+
+```{r}
+mites_p <- mites_mn / mites_vr
+mites_r <- mites_mn^2 / (mites_vr - mites_mn)
+nb_probs <- dnbinom(mites, size = mites_mn^2/(mites_vr - mites_mn), 
+                                  mu = mites_mn)
+cbind(mites, leaves, round(nb_probs, 3) )
+```
+
+The empirical probability function\index{Empirical probability function} for the negative binomial distribution is given in Table\ \@ref(tab:MitesTable); for instance, the empirical probability of $1$\ mite per leaf is $38/150 \approx 0.253$.
+The negative binomial distribution is a good fit for the data.
 :::
 
 
 ```{r MitesTable, echo=FALSE}
-MitesTab <- array( dim = c(9, 5))
+MitesTab <- data.frame(
+  mites  = 0:7,
+  leaves = c(70, 38, 17, 10, 9, 3, 2, 1),
+  emp    = c(0.467, 0.253, 0.113, 0.067, 0.060, 0.020, 0.013, 0.007),
+  nb     = nb_probs
+)
 
-MitesTab[1, ] <- c(0 ,  70 ,  0.467 ,  0.318 ,  0.449)
-MitesTab[2, ] <- c(1 ,  38 ,  0.253 ,  0.364 ,  0.261)
-MitesTab[3, ] <- c(2 ,  17 ,  0.113 ,  0.209 ,  "0.140")
-MitesTab[4, ] <- c(3 ,  10 ,  0.067 ,  "0.080" ,  0.073)
-MitesTab[5, ] <- c(4 ,  9 ,  "0.060" ,  0.023 ,  0.038)
-MitesTab[6, ] <- c(5 ,  3 ,  "0.020" ,  0.005 ,  0.019)
-MitesTab[7, ] <- c(6 ,  2 ,  0.013 ,  0.001 ,  "0.010")
-MitesTab[8, ] <- c(7 ,  1 ,  0.007 ,  "0.000" ,  0.005)
-MitesTab[9, ] <- c("8+" ,  0 ,  "0.000" ,  "0.000" ,  "0.000")
+# Add the "8+" row
+MitesTab <- rbind(MitesTab,
+                   data.frame(mites = "8+", leaves = 0, emp = 0.000, nb = 0.000))
+
+# Format only the probability columns, as character, after all numeric work is done
+MitesTab_fmt <- MitesTab
+MitesTab_fmt$emp <- sprintf("%.3f", as.numeric(MitesTab_fmt$emp))
+MitesTab_fmt$nb  <- sprintf("%.3f", as.numeric(MitesTab_fmt$nb))
+
+# Totals row — 4 values, matching 4 columns
+MitesTab_fmt <- rbind(MitesTab_fmt,
+                       c("Totals:", "150", "1.000", "1.000"))
 
 MitesTab.caption <- "Counts of mites on leaves selected at random from six similar apple trees."
 
+
+row_selection <- c(1, 2, 3, 5)
 if( knitr::is_latex_output() ) {
-  knitr::kable(MitesTab,
+  knitr::kable(MitesTab_fmt,
                format = "latex",
                booktabs = TRUE,
                longtable = FALSE,
                align = "c",
+               digits = c(0, 0, 3, 3),
                linesep = c("", "", "\\addlinespace"),
                col.names = c("mites per leaf", 
                              "with that many mites",
                              "probability",
-                             "probability",
+                             #"probability",
                              "probability"),
                caption = MitesTab.caption) %>%
     kable_styling(font_size = 10) %>%
     add_header_above( c("Number of" = 1,
                         "Number of leaves" = 1,
                         "Empirical" = 1,
-                        "Poisson" = 1,
+#                        "Poisson" = 1,
                         "Negative binomial" = 1),
                       bold = TRUE,
                       line = FALSE) %>%
-    row_spec(0, bold = TRUE) 
+    row_spec(0, bold = TRUE) %>%
+    row_spec(10, bold = TRUE) %>%
+    row_spec(9, hline_after = TRUE) 
 }
 if( knitr::is_html_output() ) {
-  knitr::kable(MitesTab,
+  knitr::kable(MitesTab_fmt,
                format = "html",
                booktabs = TRUE,
                longtable = FALSE,
@@ -1006,17 +1030,19 @@ if( knitr::is_html_output() ) {
                col.names = c("mites per leaf", 
                              "with that many mites",
                              "probability",
-                             "probability",
+                             #"probability",
                              "probability"),
                caption = MitesTab.caption) %>%
     add_header_above( c("Number of" = 1,
                         "Number of leaves" = 1,
                         "Empirical" = 1,
-                        "Poisson" = 1,
+#                        "Poisson" = 1,
                         "Negative binomial" = 1),
                       bold = TRUE,
                       line = FALSE) %>%
-    row_spec(1, bold = TRUE) 
+    row_spec(1, bold = TRUE) %>%
+    row_spec(10, bold = TRUE) %>%
+    row_spec(9, hline_after = TRUE)
 }
 ```
 \index{Negative binomial distribution|)}
@@ -1041,7 +1067,7 @@ Many natural phenomena fall into this category.
 
 The binomial distribution (Sect.\ \@ref(BinomialDistribution)) applies in situations where an event may occur a certain number of times in a fixed number of trials, say\ $n$.
 What if\ $n$ gets increasingly large though, so effectively there is no upper limit?
-Mathematically, we might say: What happens if $n\to\infty$?
+Mathematically, we might say: what happens if $n\to\infty$?
 
 Begin with the binomial probability function
 \begin{equation}
@@ -1049,15 +1075,14 @@ Begin with the binomial probability function
    (\#eq:BinomialPMF2)
 \end{equation}
 which has a mean of $\lambda = np$. 
-First, re-writing \@ref(eq:BinomialPMF2) in terms of the mean\ $\lambda$:
-\begin{equation}
+Re-writing \@ref(eq:BinomialPMF2) in terms of the mean\ $\lambda$ gives
+$$
    p_X(x; n, \lambda) 
    = 
    \binom{n}{x} \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}.
-   (\#eq:BinomialPMF2Mean)
-\end{equation}
+$$
 Now consider the case $n \to \infty$ (for $x = 0, 1, \dots$):
-\begin{align}
+\begin{align*}
    \lim_{n\to\infty}
    p_X(x; n, \lambda) 
    &= 
@@ -1065,11 +1090,11 @@ Now consider the case $n \to \infty$ (for $x = 0, 1, \dots$):
    \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x}\\
    &= \frac{\lambda^x}{x!} 
    \lim_{n\to\infty} \frac{n!}{(n - x)!} \frac{1}{n^x} \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}.
-\end{align}
+\end{align*}
 Now, since *the limit of product of functions is equal to product of their limits*, each component can be considered in turn.
 
 Looking at the first component, see that
-\begin{align}
+\begin{align*}
   \lim_{n\to\infty} \frac{n!}{(n - x)!} \times \frac{1}{n^x}
   &= \lim_{n\to\infty} \frac{n \times (n - 1) \times (n - 2) \times\cdots\times 2 \times 1}
                             {(n - x)\times (n - x - 1) \times \cdots \times 2 \times 1} \times \frac{1}{n^x}\\
@@ -1077,7 +1102,7 @@ Looking at the first component, see that
                            { \underbrace{n \times n \times\cdots \times n\times n}_{\text{$x$ terms}}}\\
   &= \lim_{n\to\infty} \frac{n}{n} \times \frac{n - 1}{n} \times \frac{n - 2}{n} \times\cdots\times \frac{n - x + 1}{n}\\
   &= 1 \times 1\times\cdots\times 1 = 1.
-\end{align}
+\end{align*}
 For the next component, see that (using \@ref(eq:ExponentialLimit)):
 $$
   \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{n} = \exp(-\lambda).
@@ -1105,6 +1130,7 @@ A *Poisson process*\index{Poisson process} refers to events that occur at a *rat
 
 The definition of the Poisson distribution can now be given.
 
+
 :::{.definition #PoissonDistribution name="Poisson distribution"}
 A random variable\ $X$ is said to have a *Poisson distribution* if its probability function is
 \begin{equation}
@@ -1117,7 +1143,7 @@ We write $X\sim\text{Poisson}(\lambda)$.
 
 
 :::{.definition #PoissonDistributionDF name="Poisson distribution: distribution function"}
-For a random variable\ $X$ with the Poisson distribution given in \@ref(eq:PoissonPMF), the distribution function is
+For a random variable\ $X$ with the Poisson distribution given in Eq.\ \@ref(eq:PoissonPMF), the distribution function is
 $$
   F_X(x; \lambda) = 
   \begin{cases}
@@ -1151,20 +1177,19 @@ If $X\sim\text{Poisson}(\lambda)$ then
 ::::{.proof}
 The third result is proven, then the other results follow:
 \begin{align*}
-   M_X(t) = \operatorname{E}[e^{tX}] 
-     &= \sum^\infty_{x = 0} e^{xt} e^{-\lambda} \lambda^x / x!\\
-     &= e^{-\lambda} \sum^\infty_{x = 0} \frac{(\lambda\, \exp t)^x}{x!} \\
-     &= e^{-\lambda} \left[ 1 + \lambda\, \exp t + \frac{(\lambda\,\exp t)^2}{2!} + \dots \right]\\
-     &= e^{-\lambda} e^{\lambda\, \exp t}\\
-     &= e^{-\lambda (1 - \exp t)},
+   M_X(t) = \operatorname{E}[\exp(tX)] 
+     &= \sum^\infty_{x = 0} \exp(xt)\,\exp(-\lambda) \lambda^x / x!\\
+     &= \exp(-\lambda) \sum^\infty_{x = 0} \frac{(\lambda\, \exp t)^x}{x!} \\
+     &= \exp(-\lambda) \left[ 1 + \lambda\, \exp t + \frac{(\lambda\,\exp t)^2}{2!} + \dots \right]\\
+     &= \exp(-\lambda) \exp(\lambda\, \exp t) = \exp\big(-\lambda (1 - \exp t)\big),
 \end{align*}
-using \@ref(eq:Exponential).
+using Eq.\ \@ref(eq:Exponential).
 The first two results follow from differentiating the MGF.
 ::::
 :::
 
 
-Notice that the Poisson distribution has the variance equal to the mean.
+The Poisson distribution has the variance equal to the mean.
 The negative binomial distribution has two parameters and the Poison only one, so often the negative binomial distribution produces a better fit to data.
 
 
@@ -1181,25 +1206,24 @@ where `lambda`${} = \lambda$.
 
 
 :::{.example #Queues name="Queuing"}
-Customers enter a service line 'at random' at a rate of 4 per minute.
-Assume that the number entering the line in any given time interval has a Poisson distribution.
+Customers enter a service line at random, at a rate of $4$\ per minute.
+Assume that the number of people entering the line in any given time interval has a Poisson distribution.
 To determine the probability that at least one customer enters the line in a given $\frac{1}{2}$-minute interval, use (since $\lambda = 2$ over half-hour):
 $$
    \Pr(X\geq 1) = 1 - \Pr(X = 0) = 1 - e^{-2} = 0.865.
 $$
 In **R**:
 ```{r}
-1 - dpois(0,
-          lambda = 2)
+1 - dpois(0, lambda = 2)
 ```
 :::
 
 
 :::{.example #Bombs name="Bomb hits"}
-@clarke1946application (quoted in @data:hand:handbook, Dataset 289) discusses the number of flying bomb hits on London during World War II in a $36$\ square kilometre area of South London.
+@clarke1946application (quoted in @data:hand:handbook, Dataset\ 289) discusses the number of flying bomb hits on London during World War II in a $36$\ square kilometre area of South London.
 The area was gridded into $0.25$\ km squares and the number of bombs falling in each grid was counted (Table\ \@ref(tab:BombTable)).
 Assuming random hits, the Poisson distribution can be used to model the data using $\lambda = 0.93$.
-The probabilityfunction for the Poisson distribution can be compared to the empirical probabilities computed above; see Table\ \@ref(tab:BombTable).
+The probabilityfunction for the Poisson distribution can be compared to the empirical probabilities\index{Empirical probability function} computed above; see Table\ \@ref(tab:BombTable).
 For example, the probability of zero hits is
 $$
    \frac{\exp(-0.93) (0.93)^0}{0!} \approx 0.39.
@@ -1212,7 +1236,7 @@ The two probabilities are very close; the Poisson distribution fits the data ver
 BombTable <- array( dim = c(8, 4))
 colnames(BombTable) <- c("Hits",
                          "Number of bombs",
-                         "Proportion of bombs",
+                         "Empirical proportion",
                          "Poisson proportion")
 BombTable[, 1] <- 0:7
 BombTable[, 2] <- c(229,
@@ -1260,21 +1284,20 @@ if( knitr::is_html_output() ) {
                 caption = BombTable.caption) %>%
     row_spec(1, bold = TRUE)
 }
-
 ```
 
 
 
 ### Relationship to the binomial distribution {#PoissonBinomial}
 
-Given the derivation of the Poisson distribution (Sect.\ \@ref(PoissonDerivation)), a relationship between the Poisson and binomial distributions should come as no surprise.
+Given the derivation of the Poisson distribution (Sect.\ \@ref(PoissonDerivation)), a relationship between the Poisson and binomial distributions should be no surprise.
 
 Computing binomial probabilities is tedious if the number of trials\ $n$ is very large and the probability of success in a single trial is very small. 
 For example, consider $X\sim \text{Bin}(n = 2000, p = 0.005)$; the probability function is
 $$
    p_X(x) = \binom{2000}{x}(0.005)^x 0.995^{2000 - x}.
 $$
-Using the PMF, computing some probabilities, such as $\Pr(X > 101)$, is tedious.
+Using the probability mass function, computing some probabilities, such as $\Pr(X > 101)$, is tedious.
 (Try computing $\binom{2000}{102}$ on your calculator, for example.)
 However, the Poisson distribution can be used to *approximate* this probability.
 
@@ -1342,11 +1365,10 @@ for (i in (1:4)) {
   }
   
 }
-
 ```
 
 
-### Extensions {#PoissonExtensions}
+### Poisson distribution: extensions {#PoissonExtensions}
 
 The Poisson distribution is commonly used to model independent counts.
 However, sometimes these counts explicitly *exclude* a count of zero.
@@ -1599,7 +1621,7 @@ If the population is much larger than the sample size (that is, $N$\ is much lar
 
 Consider the example at the start of this section.
 The probability of drawing a light-coloured ball initially is $6/10 = 0.6$, and the probability that the next ball is light-coloured is $5/9 = 0.556$.
-But suppose there are $10\,000$\ balls in the bag, of which $6\,000 $are light-coloured.
+But suppose there are $10\,000$\ balls in the bag, of which $6\,000$ are light-coloured.
 The probability of drawing a light-coloured ball initially is $6000 / 10,000 = 0.6$, and the probability that the next ball is light-coloured becomes $5999/9999 = 0.59996$; the probability is almost the same.
 In this case, we might consider using the binomial distribution with $p\approx 0.6$.
 
@@ -1656,9 +1678,9 @@ The *zero-truncated Poisson distribution*,\index{Poisson distribution!zero-trunc
 In contrast, the *zero-inflated Poisson distribution*,\index{Poisson distribution!zero-inflated} with range $\mathcal{R}_X = \{0, 1, 2, \dots\}$, is used to model counts where the proportion of zeros is higher than expected when using the Poisson distribution.
 
 The *beta-binomial distribution*\index{Beta-binomial distribution} occurs when with a binomial distribution where the success probability\ $p$ is itself random (beta-distributed) variable (see Chap.\ \@ref(BayesianIntro)).
-This distribution is useful when there is overdispersion relative to the binomial.
+This distribution is useful when overdispersion\index{Overdispersion} is present relative to the binomial (that is, the variance is larger than expected using the binomial distribution).
 
-The *Conway–Maxwell–Poisson* (COM-Poisson)\index{Conway–Maxwell–Poisson} is a flexible generalisation of the Poisson that can handle both overdispersion and underdispersion, and is increasingly used for modelling count data.
+The *Conway–Maxwell–Poisson* (COM-Poisson)\index{Conway–Maxwell–Poisson} is a flexible generalisation of the Poisson that can handle both overdispersion\index{Overdispersion} and underdispersion\index{Underdispersion}  (that is, the variance is larger and smaller respectively than expected using the Poisson distribution), and is increasingly used for modelling count data.
 
 
 ## Simulation {#SimulationDiscrete}
@@ -2554,7 +2576,7 @@ $$
 
 1. Let $U \sim \text{Discrete Uniform}(1, 100)$.
    Write down the explicit piecewise function $Y = g(U)$ that maps $U$ to $Y$ by partitioning the $100$ outcomes.
-2. Write some **R** code to simulate $N = 1\,000$ draws of $U$, map them to $Y$, and output the empirical relative frequencies alongside the theoretical probabilities $p_Y(y)$.
+2. Write some **R** code to simulate $N = 1\,000$ draws of $U$, map them to $Y$, and output the empirical probability function alongside the theoretical probabilities $p_Y(y)$.
 :::
 
 
@@ -2573,7 +2595,7 @@ $$
 
 1. Specify the discrete uniform range $1 \dots M$ required so that $U \sim \text{Discrete Uniform}(1, M)$ can represent these probabilities with exact integer boundaries.
 2. Write down the piecewise mapping function $Y = g(U)$.
-3. Write some **R** code to simulate $N = 1\,000$ draws of $U$, map them to $Y$, and output the empirical relative frequencies alongside the theoretical probabilities $p_Y(y)$.
+3. Write some **R** code to simulate $N = 1\,000$ draws of $U$, map them to $Y$, and output the empirical probability function alongside the theoretical probabilities $p_Y(y)$.
 :::
 
 ::::
