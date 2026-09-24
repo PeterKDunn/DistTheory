@@ -139,7 +139,7 @@ If $X\sim \text{Unif}(a, b)$ then
 
 1. $\displaystyle \operatorname{E}[X] = (a + b)/2$.
 2. $\displaystyle \operatorname{var}[X] = \frac{(b - a)(b - a + 2)}{12}$.
-3. $\displaystyle M_X(t) = \frac {e^{at} - e^{(b + 1)t}}{(b - a + 1)(1 - e^{t})}$.
+3. $\displaystyle M_X(t) = \frac{\exp(at) - \exp\{ (b + 1)t\})}{(b - a + 1)(1 - \exp\{t\})}$.
 4. The median is $(a + b) / 2$.
 
 ::::{.proof}
@@ -323,7 +323,7 @@ The MGF of\ $X$ is
 \begin{align*}
    M_X(t)
    &= \operatorname{E}\big[\exp(tX)\big]\\
-   &= \sum^1_{x = 0} e^{tx} p^x q^{1 - x}\\
+   &= \sum^1_{x = 0} \exp(tx) p^x q^{1 - x}\\
    &= \sum^1_{x = 0}(p\exp t)^x q^{1 - x}
     = p\exp t + q.
 \end{align*}
@@ -694,7 +694,7 @@ However, this is *not* the parameterisation used by **R**, so the scenario must 
 
 ## Negative binomial distribution {#NegativeBinomialDistribution}
 
-### Derivation and definition: standard parameterisation {#NegBinStandard}
+### Derivation and definition {#NegBinStandard}
 
 \index{Negative binomial distribution|(}
 Consider a random process where independent Bernoulli trials are repeated until the $r$th\ success occurs. 
@@ -713,7 +713,8 @@ Hence the probability of observing the $r$th\ success after\ $x$ failures is
 \end{align*}
 
 
-The standard definition of the negative binomial distribution can now be given.
+The definition of the negative binomial distribution can now be given.
+
 
 :::{.definition #NegativeBinomialDistribution name="Negative binomial distribution"}
 A random variable\ $X$ with probability function
@@ -723,7 +724,7 @@ A random variable\ $X$ with probability function
    (\#eq:NegativeBinomialPMF)
 \end{equation}
 has a *negative binomial distribution* with parameters\ $r$ (an positive integer) and\ $p$ ($0\le p\le 1$).
-We write $X\sim\text{NB}(r, p)$ r $X\sim\text{Negative binomial}(r, p)$.
+We write $X\sim\text{NB}(r, p)$, $X\sim\text{NBin}(r, p)$ or $X\sim\text{Negative binomial}(r, p)$.
 :::
 
 The distribution function is complicated and is not given.
@@ -738,7 +739,7 @@ The distribution function is complicated and is not given.
 
 
 
-### Properties: standard parameterisation {#NegBinProperties}
+### Properties {#NegBinProperties}
 
 The basic properties of the negative binomial distribution follow.
 
@@ -763,7 +764,7 @@ Ten people are needed for the demonstration.
 The probability that a randomly-chosen person accepts the invitation is only\ $0.15$.
 
 Here, a 'success' is an acceptance to attend the demonstration. 
-Let\ $Y$ be the number of *failed* calls necessary to secure ten acceptances.
+Let\ $Y = \{0, 1, 2, \dots\}$ be the number of *failed* calls necessary to secure ten acceptances.
 Then\ $Y$ has a negative binomial distribution with $p = 0.15$ and $r = 10$.
 The mean number of failures made is 
 $$
@@ -835,21 +836,30 @@ Then $C = 0.25 Y + 166.75$, so $\operatorname{E}[C] = 0.25 \operatorname{E}[Y] +
 :::
 
 
-### Alternative parameterisations {#NegBinAlternative}
+### Extension to continuous $r$ {#NegBinAlternative}
 
-\index{Negative binomial distribution!alternative parameterisation}
+\index{Negative binomial distribution!$r$ continuous}
+<!-- 
 Often, a different parameterisation for the negative binomial distribution is used; see Exercise \@ref(exr:NegativeBinomialALT).
 However, the parameterisation presented in Sect.\ \@ref(NegBinStandard) is the one used by **R**.
+-->
 
-The negative binomial distribution can be extended so that\ $r$ can be *any* positive number, not just an integer.
-When\ $r$ is non-integer, the above interpretations are lost, but the distribution is more flexible.
-Relaxing the restriction on\ $r$ means the probability function becomes
+The negative binomial distribution can be extended so that\ $r$ can be *any* positive number, not just a positive integer.
+When\ $r$ is non-integer, the above interpretation (where $r$ is the number of successes) is lost, but the distribution is more flexible.
+
+
+:::{.definition #NegativeBinomialDistributionContinuousR name="Negative binomial distribution ($r$ continuous)"}
+A random variable\ $X$ with probability function
 \begin{equation}
-   p_X(x; p, r) = \frac{\Gamma(x + r)}{\Gamma(r)\, x!} p^r (1 - p)^x,
+   p_X(x; p, r) = \frac{\Gamma(x + r)}{\Gamma(r)\, x!} p^r (1 - p)^x\quad\text{for $x = 0, 1, 2, \dots$}
    (\#eq:NegativeBinomialPMFAlternative2)
 \end{equation}
-for $x = 0, 1, 2 \dots$ and $r > 0$.
-In this expression, $\Gamma(r)$ is the *gamma function* (Def.\ \@ref(def:GammaFunction)), and is related to factorials when\ $r$ is integer: $\Gamma(r) = (r - 1)!$ if\ $r$ is a positive integer.
+has a *negative binomial distribution* with parameters\ $r > 0$ and\ $p$ ($0\le p\le 1$).
+We write $X\sim\text{NB}(r, p)$, $X\sim\text{NBin}(r, p)$ or $X\sim\text{Negative binomial}(r, p)$.
+:::
+
+
+In this expression, $\Gamma(r)$ is the *gamma function*\index{Gamma} (Def.\ \@ref(def:GammaFunction)), and is related to factorials when\ $r$ is integer: $\Gamma(r) = (r - 1)!$ if\ $r$ is a positive integer.
 
 
 :::{.definition #GammaFunction name="Gamma function"}
@@ -928,13 +938,13 @@ Consider a computer system that fails with probability $p = 0.02$ on any given d
 After five failures, the system is upgraded.
 
 To find the probability that an upgrade will happen within one year, let\ $D$ be the number of days before the fifth failure.
-So, we seek $\Pr(X < 360)$.
+So, we seek $\Pr(X \le 365)$.
 Using **R**:
 
 ```{r echo=TRUE}
-pnbinom(360, size = 5, prob = 0.02)
+pnbinom(365, size = 5, prob = 0.02)
 ```
-The probability of upgrading within one year is about\ $85$%.
+The probability of upgrading within one year is about\ $86$%.
 :::
 
 
@@ -1047,7 +1057,9 @@ if( knitr::is_html_output() ) {
 ```
 \index{Negative binomial distribution|)}
 
+### ALTERBATIVE PARAMETERISATION
 
+In terms of mu and phi; see Ex\ \@ref(ex:LayDate)
 
 ## Poisson distribution {#PoissonDistribution}
 
@@ -1134,7 +1146,7 @@ The definition of the Poisson distribution can now be given.
 :::{.definition #PoissonDistribution name="Poisson distribution"}
 A random variable\ $X$ is said to have a *Poisson distribution* if its probability function is
 \begin{equation}
-   p_X(x; \lambda) = \frac{\exp(-\lambda) \lambda^x}{x!}\quad \text{for $x = 0, 1, 2, \dots$}
+   p_X(x; \lambda) = \frac{\exp(-\lambda)\, \lambda^x}{x!}\quad \text{for $x = 0, 1, 2, \dots$}
    (\#eq:PoissonPMF)
 \end{equation}
 where the rate parameter is $\lambda > 0$.
@@ -1372,17 +1384,23 @@ for (i in (1:4)) {
 
 The Poisson distribution is commonly used to model independent counts.
 However, sometimes these counts explicitly *exclude* a count of zero.
-For example, consider modelling the number of nights patients spend in hospital; patients must spend at least one night to be in the data. 
-Then, the probability functions can be expressed as
+For example, consider modelling $X$, the number of nights patients spend in hospital; the hospital is only interested in $X > 0$. 
+The probability function can be expressed as
 $$
-   p_X(x; \lambda) = \frac{\exp(-\lambda) \lambda^{x - 1}}{(x - 1)!}\quad   \text{for $x = 1, 2, 3, \dots$}
+   p_X(x; \lambda) = \frac{\exp(-\lambda)\, \lambda^{x - 1}}{(x - 1)!}\quad   \text{for $x = 1, 2, 3, \dots$}
 $$
 where the parameter is $\lambda > 0$.
 This is called the *zero-truncated Poisson distribution*.\index{Poisson distribution!zero-truncated}
 In this case, $\operatorname{E}[X] = \lambda + 1$ and $\operatorname{var}[X] = \lambda$ (Ex. \@ref(exr:PoissonZeroTruncated)).
 
-In some cases, the random variable is a count, but has an upper limit on the possible number of counts.
-This is the *truncated Poisson distribution*.
+In some cases, the random variable is a count, but has an upper limit (usually a large value) on the possible number of counts.
+Suppose the random variable $X$ has a Poisson distribution, but is defined only over $X = \{0, 1, 2, \dots m\}$; then the probability mass function is
+$$
+   P(X = x \mid X \le m) 
+    = \frac{\exp(-\lambda)\,\lambda^x / x!}{\sum_{j=0}^{m} \exp(-\lambda)\,\lambda^j / j!}
+    = \frac{\lambda^x / x!}{\sum_{j=0}^{m} \lambda^j / j!}\quad\text{for $x = 0, 1, \ldots, m$}.
+$$
+This is the *truncated Poisson distribution* (or the *right-truncated Poisson distribution*).\index{Poisson distribution!truncated}
 
 Other situations exist where the the proportions of zeros exceed the proportions expected by the Poisson distribution (e.g., $\exp(-\lambda)$), but the Poisson distributions seems to otherwise be suitable.
 In these situations, the *zero-inflated Poisson distribution* may be suitable.\index{Poisson distribution!zero-inflated}
@@ -2376,6 +2394,11 @@ Prove the results in Theorem\ \@ref(thm:GeometricProperties), by first finding t
 
 :::{.exercise #PoissonZeroTruncated}
 Prove these results from Sect.\ \@ref(PoissonExtensions): $\operatorname{E}[X] = \lambda + 1$ and $\operatorname{var}[X] = \lambda$ for the zero-truncated Poisson distribution.\index{Poisson distribution!zero-truncated}
+:::
+
+
+:::{.exercise #PoissonRightTruncated}
+Derive the probability mass function for the truncated Poisson distribution, as shown in Sect.\ \@ref(PoissonExtensions).\index{Poisson distribution!truncated}
 :::
 
 
