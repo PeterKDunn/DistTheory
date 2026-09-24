@@ -11,7 +11,7 @@ source("R/SetColours.R")
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
 Upon completion of this chapter, you should be able to:
 
-* recognise the probability functions and underlying parameters of uniform, Bernoulli, binomial, geometric, negative binomial, Poisson, and hypergeometric random variables.
+* recognise the probability functions and underlying parameters of uniform, Bernoulli, binomial, Poisson, geometric, negative binomial, and hypergeometric random variables.
 * know the basic properties of the above discrete distributions.
 * apply these discrete distributions as appropriate to problem solving.
 :::
@@ -25,11 +25,11 @@ In this chapter, the most commonly used discrete distributions are studied:
 
 * the *discrete uniform distribution*, for modelling situations where every outcome is equally likely, such as rolling a fair die or drawing a card at random from a well-shuffled deck.
 * the *Bernoulli* and *binomial distributions*, for modelling the number of successes in repeated independent trials, such as the number of defective items in a production run or the number of patients responding to a treatment.
-* the *geometric* and *negative binomial distributions*, for modelling waiting times: how long until a first success, or until a fixed number of successes occur, arising naturally in quality control, reliability, and queuing problems.
 * the *Poisson distribution*, for modelling the number of rare events occurring in a fixed interval of time or space;  widely used in insurance, telecommunications, epidemiology, and traffic modelling.
+* the *geometric* and *negative binomial distributions*, for modelling waiting times: how long until a first success, or until a fixed number of successes occur, arising naturally in quality control, reliability, and queuing problems.
 * the *hypergeometric distribution*, for modelling the number of successes when sampling without replacement from a finite population; applicable in quality inspection, ecology, and clinical trials.
 
-The probability mass function, distribution function, and key properties (such as the mean, variance and moment generating function) are studied for each distribution.
+The probability mass function and key properties are studied for each distribution.
 
 
 ## Discrete uniform distribution {#DiscreteUniform}
@@ -47,14 +47,14 @@ If a random variable\ $X$ with range $\{a, a + 1, a + 2, \dots, b\}$, where the 
    (\#eq:DiscreteUniform)
 \end{equation}
 then\ $X$ has a *discrete uniform distribution*.
-We write $X\sim U(a, b)$, $X\sim \text{Uniform}(a, b)$ or $X\sim \text{Discrete uniform}(a, b)$.
+We write $X\sim DU(a, b)$, $X\sim \text{DUniform}(a, b)$ or $X\sim \text{Discrete uniform}(a, b)$.
 :::
 
 
 ::: {.notationBox .notation data-latex="{iconmonstr-infinity-8-240.png}"}
 The notation $p_X(x; a, b)$ means that the probability function for\ $X$ depends on the parameters\ $a$ and\ $b$.
 
-The symbol $\sim$ means 'is distributed with'; hence, '$X\sim \text{Uniform}(a, b)$' means '$X$\ is distributed with a discrete uniform distribution with parameters\ $a$ and\ $b$'.
+The symbol $\sim$ means 'is distributed with'; hence, '$X\sim \text{DUniform}(a, b)$' means '$X$\ is distributed with a discrete uniform distribution with parameters\ $a$ and\ $b$'.
 :::
 
 
@@ -131,20 +131,20 @@ To select a single-digit number from a table of random digits, the number chosen
 
 ### Properties {#DiscreteUniformProperties}
 
-
 The following are the basic properties of the discrete uniform distribution.
 
+
 :::{.theorem #DiscreteUniformProperties name="Discrete uniform properties"}
-If $X\sim \text{Unif}(a, b)$ then
+If $X\sim \text{DUnif}(a, b)$ then
 
 1. $\displaystyle \operatorname{E}[X] = (a + b)/2$.
 2. $\displaystyle \operatorname{var}[X] = \frac{(b - a)(b - a + 2)}{12}$.
 3. $\displaystyle M_X(t) = \frac{\exp(at) - \exp\{ (b + 1)t\})}{(b - a + 1)(1 - \exp\{t\})}$.
-4. The median is $(a + b) / 2$.
+4. The median is $(a + b) / 2$ when $b - a$ is even.
 
 ::::{.proof}
 The mean and variance are easier to find by working with  $Y = X - a$ rather than\ $X$ itself (as\ $Y$ is defined on $0 < y < (b - a)$), using that $\operatorname{E}[X] = \operatorname{E}[Y] + a$ and $\operatorname{var}[Y] = \operatorname{var}[X]$.
-Since $Y\sim\text{Unif}(0, b - a)$:
+Since $Y\sim\text{DUnif}(0, b - a)$:
 \begin{align*}
   \operatorname{E}[Y]
   &= \sum_{y = 0}^{b - a} i\frac{1}{b - a + 1}\\
@@ -164,7 +164,7 @@ To find the MGF:
   &= \sum_{x = a}^{b} \exp(xt) \frac{1}{b - a + 1}\\
   &= \frac{1}{b - a + 1} \sum_{x = a}^{b} \exp(xt)\\
   &= \frac{1}{b - a + 1} \left( \exp\{at\} + \exp\{(a + 1)t\} + \exp\{(a + 2)t\} + \dots + \exp\{bt\} \right) \\
-  &= \frac{\exp(at)}{b - a + 1} \left( 1 + \exp\{t\} + \exp\{2t\} + \dots + \exp\{(b - 1)t\} \right) \\
+  &= \frac{\exp(at)}{b - a + 1} \left( 1 + \exp\{t\} + \exp\{2t\} + \dots + \exp\{(b - a)t\} \right) \\
   &= \frac{\exp(at)}{b - a + 1} \left( \frac{1 - \exp\{(b - a + 1)t\}}{1 - \exp(t)} \right) 
 \end{align*}
 using Eq.\ \@ref(eq:SumGeometricFinite).
@@ -270,7 +270,7 @@ $$
 
 
 A plot of the probability function is shown in Fig. \@ref(fig:Bernoulli).
-The Bernoulli distribution is rarely useful by itself, but forms the foundation for the binomial (Sect.\ \@ref(BinomialDistribution)), and geometric distributions (Sect.\ \@ref(GeometricDistribution)).
+The Bernoulli distribution is rarely useful by itself, but forms the foundation for the binomial (Sect.\ \@ref(BinomialDistribution)), geometric (Sect.\ \@ref(GeometricDistribution)) and negative binomial (Sect.\ \@ref(NegativeBinomialDistribution)) distributions.
 
 
 ```{r Bernoulli, echo=FALSE, fig.align="center", fig.cap="The probability function (left) and distribution function (right) for the Bernoulli distribution $\\text{Bernoulli}(p = 0.35)$.", fig.width=6, fig.height=3.5, out.width='70%'}
@@ -302,7 +302,7 @@ If $X\sim\text{Bern}(p)$ then
 1. $\operatorname{E}[X] = p$.
 2. $\operatorname{var}[X] = p(1 - p) = pq$ where $q = 1 - p$.
 3. $M_X(t) = p\exp t + q$.
-4. The median is\ $0$ if $p < 0.5$, $1$ if $p > 0.5$, and both\ $0$ and\ $1$ are medians if $p = 0.5$, 
+4. The median is\ $0$ if $p < 0.5$, $1$ if $p > 0.5$, and every values in $[0, 1]$ is a median if $p = 0.5$.
 
 ::::{.proof}
 By definition:
@@ -327,7 +327,7 @@ The MGF of\ $X$ is
    &= \sum^1_{x = 0}(p\exp t)^x q^{1 - x}
     = p\exp t + q.
 \end{align*}
-Proving the third result first, and then using it to prove the others, is easier (using of the methods in Sect.\ \@ref(MGFMoments)---try this as an exercise.)
+Proving the third result first, and then using it to prove the others, is easier (using the methods in Sect.\ \@ref(MGFMoments)---try this as an exercise.)
 ::::
 :::
 \index{Bernoulli distribution|)}
@@ -378,17 +378,19 @@ This is the *binomial distribution*.
 
 Note that the sum of the probabilities is\ $1$, as the binomial expansion of $(p + q)^n$ (using Eq.\ \@ref(eq:BinomialSeries)) is
 \begin{equation}
-   \sum_{r = 0}^n \binom{n}{r} p^r q^{n - r} = (p + q)^n = 1(\#eq:sumbin)
+   \sum_{r = 0}^n \binom{n}{r} p^r q^{n - r} = (p + q)^n = 1
+   (\#eq:sumbin)
 \end{equation}
 since $p + q = 1$. 
-Equation\ \@ref(eq:sumbin) is called the *Binomial theorem*.\index{Binomial theorem}
+Equation\ \@ref(eq:sumbin) comes from the *Binomial theorem*\index{Binomial theorem} (Eq.\ \@ref(eq:BinomialSeries)).
 
 
 The definition of the binomial distribution can now be given.
 
+
 :::{.definition #BinomialDistribution name="Binomial distribution"}
-Let $X$ be the number of successes in $n$\ independent Bernoulli trials with $\Pr(\text{Success}) = p$ (for $0\le p\le 1$) constant for each trial.
-Then\ $X$ has a *binomial probability distribution* with parameters\ $n$, $p$ and probability function given by
+Let $X$ be the number of successes in $n$\ independent Bernoulli trials with $\Pr(\text{Success}) = p$ (for $0 < p < 1$) constant for each trial, where $n$ is a positive integer.
+Then\ $X$ has a *binomial probability distribution* with parameters\ $n$ and $p$, and probability function given by
 \begin{equation}
    p_X(x; n, p) = \binom{n}{x} p^x (1 - p)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}.
    (\#eq:BinomialPMF)
@@ -397,7 +399,7 @@ We write $X\sim\text{Bin}(n, p)$ or $X\sim\text{Binomial}(n, p)$.
 :::
 
 
-The distribution function is complicated and is not given.
+The distribution function has no simple closed form and is not given.
 
 
 ```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/Binomial_html.Rmd' }
@@ -438,7 +440,7 @@ $$
    \operatorname{E}[X] = np.
 $$
 To find the variance, use the computational formula $\operatorname{var}[X] = \operatorname{E}[X^2] - \operatorname{E}[X]^2$.
-Then write $\operatorname{E}[X^2]$ as $\operatorname{E}[X(X - 1) + X]$ so that $\operatorname{E}[X(X - 1)] + \operatorname{E}[X]$; so:
+Then write $\operatorname{E}[X^2]$ as $\operatorname{E}[X(X - 1) + X]$, so that $\operatorname{E}[X(X - 1)] = \operatorname{E}[X]$; so:
 \begin{align*}
      \operatorname{E}[X^2] 
      &= \sum^n_{x = 0} x(x - 1)\Pr(X = x) + np\\
@@ -520,26 +522,391 @@ In this case, the *hypergeometric distribution* should be used (Sect. \@ref(Hype
 
 
 :::{.example #LakeFreees name="Freezing lake"}
-Based on @BIB:Wilks:statistical (p.\ 68), the probability that Cayuga Lake freezes can be modelled by a binomial distribution with $p = 0.05$.
+Based on @BIB:Wilks:statistical (p.\ 68), the number years that Cayuga Lake freezes can be modelled by a binomial distribution with $p = 0.05$.
 
-Using this information, the number of times the lake will *not* freeze in $n = 10$ randomly chosen years in given by the random variable\ $X$, where $X \sim \text{Bin}(10, 0.95)$.
-The probability that the lake will not freeze in any of these ten years is $\Pr(X = 10) = \binom{10}{10} 0.95^{10} 0.05^{0} \approx 0.599$, or about 60%.
+Using this information, the number of times the lake will *not* freeze in $n = 10$ randomly chosen years is given by the random variable\ $X$, where $X \sim \text{Bin}(10, 0.95)$.
+The probability that the lake will *not* freeze in any of these ten years is $\Pr(X = 10) = \binom{10}{10} 0.95^{10} 0.05^{0} \approx 0.599$, or about 60%.
 
 In **R**:
 ```{r}
-dbinom(0, size = 10, prob = 0.05)
+dbinom(0, size = 10, prob = 0.95)
 ```
 
 We could define the random variable\ $Y$ as the number of times the lake *will* freeze in the ten randomly chosen years.
 Then, $Y\sim\text{Bin}(10, 0.05)$ and we would compute $\Pr(Y = 0)$ and get the same answer.
 ```{r}
-dbinom(10, size = 10, prob = 0.95)
+dbinom(10, size = 10, prob = 0.05)
 ```
 :::
 
 
 Binomial probabilities can sometimes be approximated using the normal distribution (Sect. \@ref(NormalApproxBinomial)) or the Poisson distribution (Sect. \@ref(PoissonBinomial)).
 \index{Binomial distribution|)}
+
+
+## Poisson distribution {#PoissonDistribution}
+
+\index{Poisson distribution|(}
+
+### Derivation and definition {#PoissonDerivation}
+(link the three process assumptions to the binomial limit!!!!!!!!!)
+
+
+When\ $n$ is large and\ $p$ is small, the binomial distribution is awkward to work with, and the number of successes is well approximated by a distribution with a single parameter $\lambda = np$.
+This is the *Poisson distribution*, which is commonly used to model counts of rare events.
+
+The Poisson distribution is very commonly used to model the number of occurrences of an event which occurs randomly in time or space.
+The Poisson distribution arises as a result of assumptions made about a random process:
+
+* Events that occur in one time-interval (or region) are independent of those occurring in any other non-overlapping time-interval (or region).
+* The probability that an event occurs in a small time-interval is proportional to the length of the interval.
+* The probability that\ $2$ or more events occur in a very small time-interval is so small that it is negligible.
+
+Whenever these assumptions are valid, or approximately so, the Poisson distribution is appropriate.
+Many natural phenomena fall into this category.
+
+The binomial distribution (Sect.\ \@ref(BinomialDistribution)) applies in situations where an event may occur a certain number of times in a fixed number of trials, say\ $n$.
+What if\ $n$ gets increasingly large though, so effectively there is no upper limit?
+Mathematically, we might say: what happens if $n\to\infty$?
+
+Begin with the binomial probability function
+\begin{equation}
+   p_X(x; n, p) = \binom{n}{x} p^x (1 - p)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}
+   (\#eq:BinomialPMF2)
+\end{equation}
+which has a mean of $\lambda = np$.
+Hold the mean\ $\lambda$ fixed, so that $p = \lambda/n$ (and hence $p\to 0$ as $n\to\infty$).
+Re-writing Eq.\ \@ref(eq:BinomialPMF2) in terms of\ $\lambda$ gives
+$$
+   p_X(x; n, \lambda)
+   =
+   \binom{n}{x} \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x}
+   \quad\text{for $x = 0, 1, \dots, n$}.
+$$
+Now consider what happens to the probability of each fixed value\ $x = 0, 1, 2, \dots$ as $n \to \infty$:
+\begin{align*}
+   \lim_{n\to\infty}
+   p_X(x; n, \lambda) 
+   &= 
+   \lim_{n\to\infty} \binom{n}{x} 
+   \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x}\\
+   &= \frac{\lambda^x}{x!} 
+   \lim_{n\to\infty} \frac{n!}{(n - x)!} \frac{1}{n^x} \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}.
+\end{align*}
+Now, since *the limit of product of functions is equal to product of their limits*, each component can be considered in turn.
+
+Looking at the first component, see that
+\begin{align*}
+  \lim_{n\to\infty} \frac{n!}{(n - x)!} \times \frac{1}{n^x}
+  &= \lim_{n\to\infty} \frac{n \times (n - 1) \times (n - 2) \times\cdots\times 2 \times 1}
+                            {(n - x)\times (n - x - 1) \times \cdots \times 2 \times 1} \times \frac{1}{n^x}\\
+  &= \lim_{n\to\infty}\frac{ \overbrace{n \times (n - 1) \times \cdots\times (n - x + 1)}^{\text{$x$ terms}}}
+                           { \underbrace{n \times n \times\cdots \times n\times n}_{\text{$x$ terms}}}\\
+  &= \lim_{n\to\infty} \frac{n}{n} \times \frac{n - 1}{n} \times \frac{n - 2}{n} \times\cdots\times \frac{n - x + 1}{n}\\
+  &= 1 \times 1\times\cdots\times 1 = 1.
+\end{align*}
+For the next component, see that (using \@ref(eq:ExponentialLimit)):
+$$
+  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{n} = \exp(-\lambda).
+$$
+For the last term:
+$$
+  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{-x} = 1^{-x} = 1.
+$$
+Putting the pieces together, for $x = 0, 1, 2, \dots$,
+\begin{align*}
+   \lim_{n\to\infty} p_X(x; n, \lambda)
+   &= \frac{\lambda^x}{x!}
+      \left[\lim_{n\to\infty} \frac{n!}{(n - x)!\, n^x}\right]
+      \left[\lim_{n\to\infty}\left(1 - \frac{\lambda}{n}\right)^{n}\right]
+      \left[\lim_{n\to\infty}\left(1 - \frac{\lambda}{n}\right)^{-x}\right]\\
+   &= \frac{\lambda^x}{x!} \times 1 \times \exp(-\lambda) \times 1
+    = \frac{\exp(-\lambda)\, \lambda^x}{x!}.
+\end{align*}
+This is the probability function of the *Poisson distribution*.
+A *Poisson process*\index{Poisson process} refers to events that occur at a mean count per interval $\lambda$ , and occur at random.
+
+The definition of the Poisson distribution can now be given.
+
+
+:::{.definition #PoissonDistribution name="Poisson distribution"}
+A random variable\ $X$ is said to have a *Poisson distribution* if its probability function is
+\begin{equation}
+   p_X(x; \lambda) 
+   = 
+   \frac{\exp(-\lambda)\, \lambda^x}{x!}\quad \text{for $x = 0, 1, 2, \dots$}
+   (\#eq:PoissonPMF)
+\end{equation}
+where the rate parameter is $\lambda > 0$.
+We write $X\sim\text{Poisson}(\lambda)$.
+:::
+
+
+:::{.definition #PoissonDistributionDF name="Poisson distribution: distribution function"}
+For a random variable\ $X$ with the Poisson distribution given in Eq.\ \@ref(eq:PoissonPMF), the distribution function is
+$$
+  F_X(x; \lambda) = 
+  \begin{cases}
+    0                                  & \text{for $x < 0$}\\
+    \displaystyle \exp(-\lambda) \sum _{i = 0}^{\lfloor x \rfloor }{\frac {\lambda ^{i}}{i!}} & \text{for $x\ge 0$};\\
+  \end{cases}
+$$
+where $\lfloor z \rfloor$ is the *floor function*.\index{Floor function}
+:::
+
+
+```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/Poisson_html.Rmd' }
+```
+
+```{r, child = if (knitr::is_latex_output()) './children/DiscreteDist/Poisson_latex.Rmd'}
+```
+
+
+### Properties {#PoissonProperties}
+
+The following are the basic properties of the Poisson distribution.
+
+::: {.theorem #PoissonProperties name="Poisson distribution properties"}
+If $X\sim\text{Poisson}(\lambda)$ then
+
+1. $\operatorname{E}[X] = \lambda$.
+2. $\operatorname{var}[X] = \lambda$.
+3. $M_X(t) = \exp[ \lambda\{\exp(t) - 1\}]$.
+4. The mode is\ $\lfloor\lambda\rfloor$ if\ $\lambda$ is not an integer; the two modes are $\lambda - 1$ and\ $\lambda$ if\ $\lambda$ is an integer.
+
+::::{.proof}
+The third result is proven, then the other results follow:
+\begin{align*}
+   M_X(t) = \operatorname{E}[\exp(tX)] 
+     &= \sum^\infty_{x = 0} \exp(xt)\,\exp(-\lambda) \lambda^x / x!\\
+     &= \exp(-\lambda) \sum^\infty_{x = 0} \frac{(\lambda\, \exp t)^x}{x!} \\
+     &= \exp(-\lambda) \left[ 1 + \lambda\, \exp t + \frac{(\lambda\,\exp t)^2}{2!} + \dots \right]\\
+     &= \exp(-\lambda) \exp(\lambda\, \exp t) = \exp\big(\lambda (\exp t - 1)\big),
+\end{align*}
+using Eq.\ \@ref(eq:Exponential).
+The first two results follow from differentiating the MGF.
+::::
+:::
+
+
+The Poisson distribution has variance equal to the mean.
+Real count data often have a variance larger than the mean (*overdispersion*),\index{Overdispersion} in which case the Poisson distribution is a poor fit; the negative binomial distribution (Sect.\ \@ref(NegativeBinomialDistribution)) is a common alternative.
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+The four **R** functions for working with the Poisson distribution have the form `[dpqr]pois(., lambda)` (see App.\ \@ref(UseRDistributions)):\index{dpois()@\texttt{dpois()}}
+
+* `dpois(x, lambda)` computes the PMF at $X = {}$`x`;
+* `ppois(q, lambda)` computes the CDF at $X = {}$`q`;
+* `qpois(p, lambda)` computes the quantile for cumulative probability `p`; and
+* `rpois(n, lambda)` generates `n` random numbers,
+
+where `lambda`${} = \lambda$.
+:::
+
+
+:::{.example #Queues name="Queuing"}
+Customers enter a service line at random, at a rate of $4$\ per minute.
+Assume that the number of people entering the line in any given time interval has a Poisson distribution.
+To determine the probability that at least one customer enters the line in a given $\frac{1}{2}$-hour interval, use (since $\lambda = 2$ over half-hour):
+$$
+   \Pr(X\geq 1) = 1 - \Pr(X = 0) = 1 - e^{-2} = 0.865.
+$$
+In **R**:
+```{r}
+1 - dpois(0, lambda = 2)
+```
+:::
+
+
+:::{.example #Bombs name="Bomb hits"}
+@clarke1946application (quoted in @data:hand:handbook, Dataset\ 289) discusses the number of flying bomb hits on London during World War\ II in a $36$\ square kilometre area of South London.
+The area was gridded into $0.25$\ km squares and the number of bombs falling in each grid was counted (Table\ \@ref(tab:BombTable)).
+Assuming random hits, the Poisson distribution can be used to model the data using $\lambda = 0.93$.
+The probabilityfunction for the Poisson distribution can be compared to the empirical probabilities\index{Empirical probability function} computed below; see Table\ \@ref(tab:BombTable).
+For example, the probability of zero hits is
+$$
+   \frac{\exp(-0.93) (0.93)^0}{0!} \approx 0.39.
+$$
+The two probabilities are very close; the Poisson distribution fits the data very well.
+:::
+
+
+```{r BombTable, echo=FALSE}
+BombTable <- array( dim = c(8, 4))
+colnames(BombTable) <- c("Hits",
+                         "with that many hits",
+                         "Empirical proportion",
+                         "Poisson proportion")
+BombTable[, 1] <- 0:7
+BombTable[, 2] <- c(229,
+                    211,
+                    93,
+                    35,
+                    7,
+                    0,
+                    0,
+                    1)
+BombTable[, 3] <- round(BombTable[, 2] / sum(BombTable[, 2]), 4)
+lambda <- 0.93 # sum( BombTable[, 1] * BombTable[, 3])
+
+BombTable[, 4] <- dpois(0:7,
+                        lambda = lambda )
+BombTable[, 4] <- round( BombTable[, 4], 4)
+BombTable[ 8, 4] <- 1 - sum( BombTable[1:7, 4])
+
+BombTable.caption <- "The number of flying bomb hits on London during World War II in a $36$\\ square kilometre area of South London. The proportion of the $576$\\ grid squares receiving $0, 1, ...$ hits was also computed. The observed and empirical probabilities are shown. The Poisson distribution fits the data well."
+
+if( knitr::is_latex_output() ) {
+  knitr::kable( BombTable,
+                format = "latex",
+                booktabs = TRUE,
+                longtable = FALSE,
+                align = "c",
+                linesep = c("", "", "\\addlinespace"),
+                col.names = c("hits",
+                              "with that many hits",
+                              "of squares", 
+                              "proportion"),
+                caption = BombTable.caption) %>%
+    kable_styling(font_size = 10) %>%
+    add_header_above( c("Number of" = 1,
+                        "Number of squares" = 1,
+                        "Empirical proportion" = 1,
+                        "Poisson" = 1),
+                      bold = TRUE,
+                      line = FALSE) %>%
+    row_spec(0, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  knitr::kable( BombTable,
+                format = "html",
+                booktabs = TRUE,
+                longtable = FALSE,
+                align = "c",
+                linesep = c("", "", "\\addlinespace"),
+                col.names = c("hits",
+                             "with that many hits",
+                              "of squares", 
+                              "proportion"),
+                caption = BombTable.caption) %>%
+    add_header_above( c("Number of" = 1,
+                        "Number of squares" = 1,
+                        "Empirical proportion" = 1,
+                        "Poisson" = 1),
+                      bold = TRUE,
+                      line = FALSE) %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+
+
+### Relationship to the binomial distribution {#PoissonBinomial}
+
+Given the derivation of the Poisson distribution (Sect.\ \@ref(PoissonDerivation)), a relationship between the Poisson and binomial distributions should be no surprise.
+
+Computing binomial probabilities is tedious if the number of trials\ $n$ is very large and the probability of success in a single trial is very small. 
+For example, consider $X\sim \text{Bin}(n = 2000, p = 0.005)$; the probability function is
+$$
+   p_X(x) = \binom{2000}{x}(0.005)^x 0.995^{2000 - x}.
+$$
+Using the probability mass function, computing some probabilities, such as $\Pr(X > 15)$, is tedious.
+(Try computing $\binom{2000}{102}$ on your calculator, for example.)
+However, the Poisson distribution can be used to *approximate* this probability.
+
+Set the Poisson mean to equal the binomial mean (that is, $\lambda = \mu = np$).
+Since $\operatorname{E}[Y] = \operatorname{var}[Y] = \lambda$ for the Poisson distribution, this means the variance is also set to $\sigma^2 = np$.
+Of course, the binomial variance is $np(1 - p)$, so this can only be (approximately) true if\ $p$ is close to zero (and so $1 - p\approx 1$).
+
+A general guideline is that the Poisson distribution can be used to approximate the binomial when $n$\ is large (recall, the derivation was for the case $n\to\infty$), $p$\ is small and $np \le 7$ (though numerous other similar heuristics exists, such as $np \le 5$ or $np \le 10$).
+
+
+::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
+If the random variable\ $X$ has the binomial distribution $X \sim \text{Bin}(n, p)$, the probability function can be approximated by the Poisson distribution $X \sim \text{Poisson}(\lambda)$, where $\lambda = np$.
+The approximation is good when\ $n$ is large, $p$\ is small, and $np\le 7$.
+:::
+
+
+```{r BinomialPoisson, echo=FALSE, fig.align="center", fig.cap="The Poisson distribution as an approximation to the binomial distribution when $p$ is small and $n$ is large. The binomial probability function is shown using circles; the Poisson probability function using crosses.", fig.height = 7, fig.width=7, out.width='80%'}
+par( mfrow = c(2, 2))
+
+n <- c(10, 50, 
+       100, 1000)
+p <- c(0.2, 0.1, 
+       0.010, 0.005)
+xmax <- c(10, 20, 
+          10, 15)
+
+for (i in (1:4)) {
+   pValue <- p[i]
+   nValue <- n[i]
+   
+  x <-  0:n[i]
+  y <- dbinom(x, 
+              size = n[i],
+              prob = p[i])
+  
+   plot( x = x,
+         y = y,
+         xlim = c(0, xmax[i]),
+         xlab = expression(italic(x)),
+         ylab = "Probability",
+         main = bquote("Binomial: " ~ italic(n) == ~ .(nValue) ~ "and" ~ italic(p) == .(pValue) ),
+         lwd = 2,
+         las = 1,
+         lty = 3,
+         col = "grey",
+         type = "h")
+  points(x = x,
+         y = y,
+         pch = 19)
+
+  muPoisson <- nValue * pValue
+  xValues <- 0:xmax[i]
+  points( x = xValues,
+          y = dpois(xValues,
+                    lambda = muPoisson),
+          pch = 4,
+          cex = 1.5)
+  
+  if (i == 4 ){
+    legend("topright",
+           pch = c(19, 4),
+           pt.cex = c(1.5, 1),
+           legend = c("Binomial",
+                      "Poisson approx."))
+  }
+  
+}
+```
+
+
+### Poisson distribution: extensions {#PoissonExtensions}
+
+The Poisson distribution is commonly used to model independent counts.
+However, sometimes these counts explicitly *exclude* a count of zero.
+For example, consider modelling $X$, the number of nights patients spend in hospital; the hospital is only interested in $X > 0$. 
+The probability function can be expressed as
+$$
+   p_X(x; \lambda) = \frac{\exp(-\lambda)\, \lambda^{x - 1}}{(x - 1)!}\quad   \text{for $x = 1, 2, 3, \dots$}
+$$
+where the parameter is $\lambda > 0$.
+This is called the *shifted Poisson distribution*.\index{Poisson distribution!shifted}
+In this case, $\operatorname{E}[X] = \lambda + 1$ and $\operatorname{var}[X] = \lambda$ (Ex. \@ref(exr:PoissonShifted)).
+
+In some cases, the random variable is a count, but has an upper limit (usually a large value) on the possible number of counts.
+Suppose the random variable $X$ has a Poisson distribution, but is defined only over $X = \{0, 1, 2, \dots, m\}$; then the probability mass function is
+$$
+   P(X = x \mid X \le m) 
+    = \frac{\exp(-\lambda)\,\lambda^x / x!}{\sum_{j=0}^{m} \exp(-\lambda)\,\lambda^j / j!}
+    = \frac{\lambda^x / x!}{\sum_{j=0}^{m} \lambda^j / j!}\quad\text{for $x = 0, 1, \ldots, m$}.
+$$
+This is the *truncated Poisson distribution* (or the *right-truncated Poisson distribution*).\index{Poisson distribution!truncated}
+
+Other situations exist where the proportions of zeros exceed the proportions expected by the Poisson distribution (e.g., $\exp(-\lambda)$), but the Poisson distribution seems to otherwise be suitable.
+In these situations, the *zero-inflated Poisson distribution* may be suitable.\index{Poisson distribution!zero-inflated}
+\index{Poisson distribution|)}
 
 
 ## Geometric distribution {#GeometricDistribution}
@@ -610,7 +977,7 @@ If $X\sim\text{Geom}(p)$ as defined in Eq.\ \@ref(eq:GeometricPMF), then
 4. The mode is\ $0$.
 
 ::::{.proof}
-The first two result can be proven directly but proving the third result, and using the MGF to prove the first two, is easier.
+The first two results can be proven directly but proving the third result, and using the MGF to prove the first two, is easier.
 This is left as an exercise (Ex.\ \@ref(exr:GeometricPropertiesProof)).
 ::::
 :::
@@ -632,7 +999,7 @@ where `prob`${} = p$.
 Suppose a netball goal shooter has a probability of $p = 0.2$ of *missing* a goal.
 In this case a 'success' refers to *missing* the shot with $p = 0.2$.
 
-Let\ $X$ be the number of shots made till the first miss.
+Let\ $X$ be the number of shots taken up to and including the first miss.
 Then, $X = \{1, 2, 3, \dots \}$, since the first miss may occur on the first shot, or any subsequent shot.
 *This is **not** the parameterisation used by **R***.
 
@@ -647,7 +1014,8 @@ The probability that the shooter makes\ $4$ or fewer goals before the first miss
 ```{r}
 pgeom(4, prob = 0.2)
 ```
-The expected number of shots until the first miss is $\operatorname{E}[Y] = (1 - p)/p  = 4$.
+The expected number of goals scored before the first miss is $\operatorname{E}[Y] = (1 - p)/p  = 4$.
+The expected number of shots taken is $\operatorname{E}[X] = 1/p = 5$.
 :::
 
 
@@ -655,7 +1023,7 @@ The expected number of shots until the first miss is $\operatorname{E}[Y] = (1 -
 
 \index{Geometric distribution!alternative parameterisation}
 The distribution of\ $Y$ in Example\ \@ref(exm:GeometricNetball) is for the *number of failures* needed for the first success, so that $y = 0, 1, 2, 3, \dots$.
-An alternative parameterisation is for the *number of trials*\ $X$ before observing a success, when $x = 1, 2, \dots$ (like the random variable\ $X$ in Example\ \@ref(exm:GeometricNetball)).
+An alternative parameterisation is for the *number of trials*\ $X$ needed to observe the first success, when $x = 1, 2, \dots$ (like the random variable\ $X$ in Example\ \@ref(exm:GeometricNetball)).
 
 
 :::{.definition #GeometricDistributionALT name="Geometric distribution: Alternative parameterisation"}
@@ -683,11 +1051,11 @@ The first two results can be proven from Theorem\ \@ref(thm:GeometricProperties)
 
 
 :::{.example #GeometricNetball2 name="Netball shooting"}
-Consider Example\ \@ref(exm:GeometricNetball) again, where the random variable\ $X$ refers to the number of shots made until the first *miss*, with $p = 0.2$.
+Consider Example\ \@ref(exm:GeometricNetball) again, where the random variable\ $X$ refers to the number of shots taken up to and including the first *miss*, with $p = 0.2$.
 In this case a 'success' refers to *missing* the shot with $p = 0.2$.
 Then, $X = \{1, 2, 3, \dots \}$, since the first miss may occur on the first shot, or any subsequent shot, hence $X$ can be modelled using the *alternative* parameterisation in Def.\ \@ref(def:GeometricDistributionALT).
 
-However, this is *not* the parameterisation used by **R**, so the scenario must be reparametrised in terms of\ $Y$, the number of goals scored until the shooter first misses (so that $Y = \{0, 1, 2, \dots\})$ as in Example\ \@ref(exm:GeometricNetball), if **R** is to be used to compute probabilities.
+However, this is *not* the parameterisation used by **R**, so the scenario must be reparameterised in terms of\ $Y$, the number of goals scored until the shooter first misses (so that $Y = \{0, 1, 2, \dots\})$ as in Example\ \@ref(exm:GeometricNetball), if **R** is to be used to compute probabilities.
 :::
 \index{Geometric distribution|)}
 
@@ -702,7 +1070,7 @@ Let the random variable\ $X$ be the number of *failures* before the $r$th succes
 
 To observe the $r$th\ success after $x$\ failures, there are $x$\ failures and $r - 1$ successes are observed first in these $x + r - 1$ trials.
 There are $\binom{x + r - 1}{r - 1}$ ways in which to allocate these $r - 1$ successes among the first $x + r - 1$ trials.
-Each successes occurs with probability\ $p$, and each failures with probability $1 - p$ (assuming events are independent).
+Each success occurs with probability\ $p$, and each failure with probability $1 - p$ (assuming events are independent).
 Then finally, the $r$th success occurs in the final trial with probability\ $p$.
 Hence the probability of observing the $r$th\ success after\ $x$ failures is
 \begin{align*}
@@ -723,12 +1091,12 @@ A random variable\ $X$ with probability function
  \quad\text{for $x = 0, 1, 2, \dots$}
    (\#eq:NegativeBinomialPMF)
 \end{equation}
-has a *negative binomial distribution* with parameters\ $r$ (an positive integer) and\ $p$ ($0\le p\le 1$).
+has a *negative binomial distribution* with parameters\ $r$ (a positive integer) and\ $p$ ($0 < p < 1$).
 We write $X\sim\text{NB}(r, p)$, $X\sim\text{NBin}(r, p)$ or $X\sim\text{Negative binomial}(r, p)$.
 :::
 
-The distribution function is complicated and is not given.
 
+The distribution function has no simple closed form and is not given.
 
 
 ```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/NegBinomial_html.Rmd' }
@@ -749,11 +1117,11 @@ If $X\sim \text{NB}(r, p)$ with the probability function in Eq.\ \@ref(eq:Negati
 
 1. $\operatorname{E}[X] = \{r(1 - p)\}/p$.
 2. $\operatorname{var}[X] = r(1 - p)/p^2$.
-3. $M_X(t) = \left[ p / \{1 - (1 - p)\exp(t)\} \right]^r$ for $t < -\log p$.
+3. $M_X(t) = \left[ p / \{1 - (1 - p)\exp(t)\} \right]^r$ for $t < -\log (1 - p)$.
 
 ::::{.proof}
 Proving the third statement is left as an exercise.
-Then the first two are then derived from the MGF.
+Then the first two are derived from the MGF.
 ::::
 :::
 
@@ -770,7 +1138,7 @@ The mean number of failures made is
 $$
   \operatorname{E}[Y] = \{r(1 - p)\}/p = \{10 \times (1 - 0.15)\}/0.15 \approx  56.66667.
 $$
-Hence, including the ten calls that leads to a person accepting the invitation, the mean number of calls to be made is $10 + \operatorname{E}[Y] = 66.66\dots$.
+Hence, including the ten calls that lead to a person accepting the invitation, the mean number of calls to be made is $10 + \operatorname{E}[Y] = 66.66\dots$.
 :::
 
 
@@ -786,12 +1154,6 @@ The four **R** functions for working with the negative binomial distribution are
 * `rnbinom(n, size, prob)` generates `n` random numbers,
 
 where `size` is\ $r$ and `prob` is\ $p$.
-
-The negative binomial distribution can also be specified using `size` and `mu`: for example: 
-
-* `dnbinom(x, size, mu)` computes the PMF at $X = {}$`x`
-
-where `size` is\ $r$ and `mu` is $\operatorname{E}[X]$.
 :::
 
 
@@ -807,8 +1169,9 @@ Ten people are needed for the demonstration.
 The probability that a randomly chosen person accepts the invitation is only\ $0.15$.
 
 Consider finding the probability that the marketer will need to make more than $100$\ calls to secure ten acceptances.
-In this situation, a 'success' is an acceptance to attend the demonstration.
 Let\ $Y$ be the number of failed calls before securing ten acceptances.
+In this situation, a 'success' is an acceptance to attend the demonstration.
+'More than $100$ calls' means $Y + 10 > 100$ and hence $Y > 90$.
 Then\ $Y$ has a negative binomial distribution such that $Y\sim\text{NBin}(p = 0.15, r = 10)$.
 
 To determine $\Pr(Y > 100) = 1 - \Pr(Y\le 100)$, using a computer is the easiest approach. 
@@ -816,34 +1179,30 @@ In **R**, the command `dnbinom()` returns probabilities from the probability fun
 
 
 ```{r}
-x.values <- seq(1, 100, by = 1)
+x.values <- seq(0, 90, by = 1)
 1 - sum(dnbinom( x.values, size = 10, prob = 0.15))
 
 # Alternatively:
-1 - pnbinom(100, size = 10, prob = 0.15)
+1 - pnbinom(90, size = 10, prob = 0.15)
 ```
 
-The probability is about\ $0.0244$.
+The probability is about\ $0.055$.
 
-Assuming each call take an average of\ $5$ minutes, we can determine how long is the marketer expected to be calling to find ten acceptances.
-Let\ $T$ be the time to make the calls in minutes; then $T = 5Y$.
-Hence, $\operatorname{E}[T] = 5\operatorname{E}[Y] = 5 \times 66.7 = 333.5$, or about $5.56\hs$.
+Assuming each call takes an average of\ $5$ minutes, we can determine how long is the marketer expected to be calling to find ten acceptances.
+
+Let\ $N$ be the total number of calls made, and let\ $T$ be the time to make the calls in minutes; then $T = 5N = 5(Y + 10)$.
+Hence, $\operatorname{E}[T] = 5(\operatorname{E}[Y] + 10) = 5 \times (56.7 + 10) = 333.5$, or about $5.56\hs$.
 
 Assume each call costs $25$\ cents, and that the company pays the marketer \$$30$\ per hour.
 Let\ $C$ be the total cost in dollars.
 The cost of employing the marketer is, on average, $30\times 5.56 = \$166.75$.
-Then $C = 0.25 Y + 166.75$, so $\operatorname{E}[C] = 0.25 \operatorname{E}[Y] + 166.75 = C = 0.25 \times 66.7 + 166.75 = \$183.43$.
+Then $C = 0.25 N + 30 (T/ 60) = 2.75N$, so $\operatorname{E}[C] = 2.75 \times 66.67 = \$183.33$.
 :::
 
 
 ### Extension to continuous $r$ {#NegBinAlternative}
 
 \index{Negative binomial distribution!$r$ continuous}
-<!-- 
-Often, a different parameterisation for the negative binomial distribution is used; see Exercise \@ref(exr:NegativeBinomialALT).
-However, the parameterisation presented in Sect.\ \@ref(NegBinStandard) is the one used by **R**.
--->
-
 The negative binomial distribution can be extended so that\ $r$ can be *any* positive number, not just a positive integer.
 When\ $r$ is non-integer, the above interpretation (where $r$ is the number of successes) is lost, but the distribution is more flexible.
 
@@ -852,14 +1211,14 @@ When\ $r$ is non-integer, the above interpretation (where $r$ is the number of s
 A random variable\ $X$ with probability function
 \begin{equation}
    p_X(x; p, r) = \frac{\Gamma(x + r)}{\Gamma(r)\, x!} p^r (1 - p)^x\quad\text{for $x = 0, 1, 2, \dots$}
-   (\#eq:NegativeBinomialPMFAlternative2)
+   (\#eq:NegativeBinomialPMFContinuousR)
 \end{equation}
 has a *negative binomial distribution* with parameters\ $r > 0$ and\ $p$ ($0\le p\le 1$).
 We write $X\sim\text{NB}(r, p)$, $X\sim\text{NBin}(r, p)$ or $X\sim\text{Negative binomial}(r, p)$.
 :::
 
 
-In this expression, $\Gamma(r)$ is the *gamma function*\index{Gamma} (Def.\ \@ref(def:GammaFunction)), and is related to factorials when\ $r$ is integer: $\Gamma(r) = (r - 1)!$ if\ $r$ is a positive integer.
+In this expression, $\Gamma(r)$ is the *gamma function*\index{Gamma function} (Def.\ \@ref(def:GammaFunction)), and is related to factorials when\ $r$ is integer: $\Gamma(r) = (r - 1)!$ if\ $r$ is a positive integer (see Theorem\ \@ref(thm:GammaFunctionProperties)).
 
 
 :::{.definition #GammaFunction name="Gamma function"}
@@ -877,20 +1236,25 @@ Important properties of the gamma function are given below.
 :::{.theorem #GammaFunctionProperties name="Gamma function properties"}
 For the gamma function $\Gamma(\cdot)$,
 
-1. $\Gamma(r) = (r - 1)\Gamma(r - 1)$ if $r > 0$.
+1. $\Gamma(r + 1) = r\,\Gamma(r)$ for $r > 0$.
 1. $\Gamma(1/2) = \sqrt{\pi}$.
-1. $\lim_{r\to 0} \to \infty$.
-1. $\Gamma(1) = \Gamma(2) = 1$.
+1. $\lim_{r\to 0^+} \Gamma(r) = \infty$.
 1. $\Gamma(n) = (n - 1)!$ for all positive integers $n$.
 
 ::::{.proof}
-For the first property, integration by parts gives
+For the first property, use integration by parts with $u = x^{r}$ and $dv = \exp(-x)\,dx$:
 \begin{align*}
-   \Gamma(r)
-   &= \left. -\exp(-x) \frac{x^2}{r}\right|_0^\infty + \int_0^\infty \exp(-x) (r - 1) x^{r - 2}\,dx\\
-   &= 0 + \ (r - 1) \int_0^{\infty}  e^{-x}  x^{r - 2} \, dx\\
-   &= (r - 1) \Gamma(r - 1).
+   \Gamma(r + 1)
+   &= \int_0^\infty x^{r} \exp(-x)\,dx\\
+   &= \Big[-x^{r} \exp(-x)\Big]_0^\infty + r\int_0^\infty x^{r - 1} \exp(-x)\,dx\\
+   &= 0 + r\,\Gamma(r).
 \end{align*}
+The boundary term is zero at $\infty$ because $\exp(-x)$ decays faster than any power of $x$ grows, and zero at $x = 0$ because $r > 0$.
+
+Property\ 3 follows from Property\ 1: $\Gamma(r) = \Gamma(r + 1)/r$, and $\Gamma(r + 1) \to \Gamma(1) = 1$ as $r \to 0^+$ (by continuity), so $\Gamma(r) \sim 1/r \to \infty$.
+
+For the fourth property, $\Gamma(1) = \int_0^\infty \exp(-x)\,dx = 1$.
+Applying the first property repeatedly gives $\Gamma(n) = (n - 1)\Gamma(n - 1) = \cdots = (n - 1)!\,\Gamma(1) = (n - 1)!$.
 ::::
 :::
 
@@ -938,13 +1302,61 @@ Consider a computer system that fails with probability $p = 0.02$ on any given d
 After five failures, the system is upgraded.
 
 To find the probability that an upgrade will happen within one year, let\ $D$ be the number of days before the fifth failure.
-So, we seek $\Pr(X \le 365)$.
+So, we seek $\Pr(X \le 365)$; the fifth failure occurs by day\ $365$ if $X + 5\le 365$.
 Using **R**:
 
 ```{r echo=TRUE}
-pnbinom(365, size = 5, prob = 0.02)
+pnbinom(360, size = 5, prob = 0.02)
 ```
 The probability of upgrading within one year is about\ $86$%.
+:::
+
+
+### Alternative (mean--dispersion) parameterisation {#NegBinAlternativeParameterisation}
+
+\index{Negative binomial distribution!mean--dispersion parameterisation}
+Sometimes an alternative (or *mean--dispersion*) parameterisation of the negative binomial distribution is used, where the probability mass function is written in terms of $\mu = \operatorname{E}[X] = r(1 - p)/p$.
+First, rewrite this expression for the mean and solve for\ $p$, giving
+$$
+  p = \frac{r}{r + \mu}
+  \quad\text{and}\quad
+  1 - p = \frac{\mu}{r + \mu}.
+$$
+Then, write $1/\alpha$ in place of $r$, and substitute into
+Eq.\ \@ref(eq:NegativeBinomialPMFContinuousR) to obtain the probability mass function.
+
+:::{.definition #NegativeBinomialDistributionALT name="Negative binomial distribution: mean--dispersion parameterisation"}
+A random variable\ $X$ with probability function
+\begin{equation}
+   p_X(x; \mu, \alpha)
+   =
+   \frac{\Gamma(x + 1/\alpha)}{\Gamma(1/\alpha)\, x!}
+   \left(\frac{1}{1 + \alpha\mu}\right)^{1/\alpha}
+   \left(\frac{\alpha\mu}{1 + \alpha\mu}\right)^{x}
+   \quad\text{for $x = 0, 1, 2, \dots$}
+   (\#eq:NegativeBinomialPMFalt)
+\end{equation}
+has a *negative binomial distribution* with parameters $\mu > 0$ (the mean)
+and\ $\alpha > 0$ (the *dispersion parameter*).\index{Dispersion parameter}
+We write $X\sim\text{NB}(\mu, \alpha)$, $X\sim\text{NBin}(\mu, \alpha)$
+or $X\sim\text{Negative binomial}(\mu, \alpha)$.
+:::
+
+The variance is $\operatorname{var}[X] = \mu + \alpha\mu^2$
+(see Exercise\ \@ref(exr:SpecNegBinAltOverdispersion)),
+so larger values of\ $\alpha$ give greater variance relative to the mean.
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+The four **R** functions for working with the negative binomial distribution
+using the parameterisation in Eq.\ \@ref(eq:NegativeBinomialPMFalt) have the form `[dpqr]nbinom(., size, mu)` (see App.\ \@ref(UseRDistributions)):\index{dnbinom()@\texttt{dnbinom()}}
+
+* `dnbinom(x, size, mu)` computes the PMF at $X = {}$`x`;
+* `pnbinom(q, size, mu)` computes the CDF at $X = {}$`q`;
+* `qnbinom(p, size, mu)` computes the quantile for cumulative probability `p`; and
+* `rnbinom(n, size, mu)` generates `n` random numbers,
+
+where `size` is\ $1/\alpha$ and `mu` is\ $\mu$.
 :::
 
 
@@ -960,50 +1372,47 @@ mites_vr <- sum( leaves * (mites - mites_mn)^2 ) / sum(leaves)
 cat("Mean: ", mites_mn, "; Var: ", mites_vr, "\n")
 ```
 
-Using the mean and variance formulas from Sect.\ \@ref(NegBinProperties), we can deduce that
+The variance is larger than the mean, so the counts are overdispersed relative to a Poisson distribution (Sect.\ \@ref(PoissonDistribution)),\index{Overdispersion} and a negative binomial distribution is a natural model.
+For the mean--dispersion parameterisation, $\operatorname{E}[X] = \mu$ and $\operatorname{var}[X] = \mu + \alpha\mu^2$ (Exercise\ \@ref(exr:SpecNegBinAltOverdispersion)).
+Equating these to the empirical mean and variance (the *method of moments*)\index{Method of moments} gives
 $$
-  p = \frac{\text{mean}}{\text{variance}}\quad\text{and}\quad r = \frac{\text{mean}^2}{\text{variance} - \text{mean}},
+  \mu = \text{mean}
+  \quad\text{and}\quad
+  \alpha = \frac{\text{variance} - \text{mean}}{\text{mean}^2}.
 $$
-and so the number of mites per leaf can be modelled using a negative binomial distribution:
+Since **R** uses `size` ${} = 1/\alpha$, the fitted probabilities are:
 
 ```{r}
-mites_p <- mites_mn / mites_vr
-mites_r <- mites_mn^2 / (mites_vr - mites_mn)
-nb_probs <- dnbinom(mites, size = mites_mn^2/(mites_vr - mites_mn), 
-                                  mu = mites_mn)
-cbind(mites, leaves, round(nb_probs, 3) )
+mites_alpha <- (mites_vr - mites_mn) / mites_mn^2
+cat("alpha:", mites_alpha, "; 1/alpha:", 1 / mites_alpha, "\n")
+nb_probs <- dnbinom(mites, size = 1 / mites_alpha, mu = mites_mn)
+cbind(mites, leaves, round(nb_probs, 3))
 ```
 
-The empirical probability function\index{Empirical probability function} for the negative binomial distribution is given in Table\ \@ref(tab:MitesTable); for instance, the empirical probability of $1$\ mite per leaf is $38/150 \approx 0.253$.
-The negative binomial distribution is a good fit for the data.
+The empirical probabilities, fitted Poisson and negative binomial probability functions\index{Empirical probability function} are given in Table\ \@ref(tab:MitesTable); for instance, the empirical probability of $1$\ mite per leaf is $38/150 \approx 0.253$.
+The negative binomial distribution is a good fit for the data; the Poisson distribution is not.
 :::
 
 
 ```{r MitesTable, echo=FALSE}
+nb_tail <- 1 - sum(nb_probs)
+ps_tail <- 1 - sum(dpois(0:7, mites_mn))
+
 MitesTab <- data.frame(
-  mites  = 0:7,
-  leaves = c(70, 38, 17, 10, 9, 3, 2, 1),
-  emp    = c(0.467, 0.253, 0.113, 0.067, 0.060, 0.020, 0.013, 0.007),
-  nb     = nb_probs
-)
-
-# Add the "8+" row
-MitesTab <- rbind(MitesTab,
-                   data.frame(mites = "8+", leaves = 0, emp = 0.000, nb = 0.000))
-
-# Format only the probability columns, as character, after all numeric work is done
+    mites  = c(as.character(0:7), "8+"),
+    leaves = c(leaves, 0),
+    emp    = c(leaves, 0) / sum(leaves),
+    ps     = c(dpois(0:7, mites_mn), ps_tail),
+    nb     = c(nb_probs, nb_tail))
 MitesTab_fmt <- MitesTab
-MitesTab_fmt$emp <- sprintf("%.3f", as.numeric(MitesTab_fmt$emp))
-MitesTab_fmt$nb  <- sprintf("%.3f", as.numeric(MitesTab_fmt$nb))
-
-# Totals row — 4 values, matching 4 columns
-MitesTab_fmt <- rbind(MitesTab_fmt,
-                       c("Totals:", "150", "1.000", "1.000"))
+MitesTab_fmt[, 3:5] <- lapply(MitesTab[, 3:5], 
+                              sprintf, fmt = "%.3f")
+MitesTab_fmt <- rbind(MitesTab_fmt, 
+                      c("Totals:", "150", "1.000", "1.000", "1.000"))
+  
 
 MitesTab.caption <- "Counts of mites on leaves selected at random from six similar apple trees."
 
-
-row_selection <- c(1, 2, 3, 5)
 if( knitr::is_latex_output() ) {
   knitr::kable(MitesTab_fmt,
                format = "latex",
@@ -1015,14 +1424,14 @@ if( knitr::is_latex_output() ) {
                col.names = c("mites per leaf", 
                              "with that many mites",
                              "probability",
-                             #"probability",
+                             "probability",
                              "probability"),
                caption = MitesTab.caption) %>%
     kable_styling(font_size = 10) %>%
     add_header_above( c("Number of" = 1,
                         "Number of leaves" = 1,
                         "Empirical" = 1,
-#                        "Poisson" = 1,
+                        "Poisson" = 1,
                         "Negative binomial" = 1),
                       bold = TRUE,
                       line = FALSE) %>%
@@ -1040,371 +1449,24 @@ if( knitr::is_html_output() ) {
                col.names = c("mites per leaf", 
                              "with that many mites",
                              "probability",
-                             #"probability",
+                             "probability",
                              "probability"),
                caption = MitesTab.caption) %>%
     add_header_above( c("Number of" = 1,
                         "Number of leaves" = 1,
                         "Empirical" = 1,
-#                        "Poisson" = 1,
+                        "Poisson" = 1,
                         "Negative binomial" = 1),
                       bold = TRUE,
                       line = FALSE) %>%
-    row_spec(1, bold = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
     row_spec(10, bold = TRUE) %>%
     row_spec(9, hline_after = TRUE)
 }
 ```
+
 \index{Negative binomial distribution|)}
 
-### ALTERBATIVE PARAMETERISATION
-
-In terms of mu and phi; see Ex\ \@ref(ex:LayDate)
-
-## Poisson distribution {#PoissonDistribution}
-
-\index{Poisson distribution|(}
-
-### Derivation and definition {#PoissonDerivation}
-
-The Poisson distribution is very commonly used to model the number of occurrences of an event which occurs randomly in time or space.
-The Poisson distribution arises as a result of assumptions made about a random process:
-
-* Events that occur in one time-interval (or region) are independent of those occurring in any other non-overlapping time-interval (or region).
-* The probability that an event occurs in a small time-interval is proportional to the length of the interval.
-* The probability that\ $2$ or more events occur in a very small time-interval is so small that it is negligible.
-
-Whenever these assumptions are valid, or approximately so, the Poisson distribution is appropriate.
-Many natural phenomena fall into this category.
-
-The binomial distribution (Sect.\ \@ref(BinomialDistribution)) applies in situations where an event may occur a certain number of times in a fixed number of trials, say\ $n$.
-What if\ $n$ gets increasingly large though, so effectively there is no upper limit?
-Mathematically, we might say: what happens if $n\to\infty$?
-
-Begin with the binomial probability function
-\begin{equation}
-   p_X(x; n, p) = \binom{n}{x} p^x (1 - p)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}
-   (\#eq:BinomialPMF2)
-\end{equation}
-which has a mean of $\lambda = np$. 
-Re-writing \@ref(eq:BinomialPMF2) in terms of the mean\ $\lambda$ gives
-$$
-   p_X(x; n, \lambda) 
-   = 
-   \binom{n}{x} \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x} \quad\text{for $x = 0, 1, \dots, n$}.
-$$
-Now consider the case $n \to \infty$ (for $x = 0, 1, \dots$):
-\begin{align*}
-   \lim_{n\to\infty}
-   p_X(x; n, \lambda) 
-   &= 
-   \lim_{n\to\infty} \binom{n}{x} 
-   \left(\frac{\lambda}{n}\right)^x \left(1 - \frac{\lambda}{n}\right)^{n - x}\\
-   &= \frac{\lambda^x}{x!} 
-   \lim_{n\to\infty} \frac{n!}{(n - x)!} \frac{1}{n^x} \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}.
-\end{align*}
-Now, since *the limit of product of functions is equal to product of their limits*, each component can be considered in turn.
-
-Looking at the first component, see that
-\begin{align*}
-  \lim_{n\to\infty} \frac{n!}{(n - x)!} \times \frac{1}{n^x}
-  &= \lim_{n\to\infty} \frac{n \times (n - 1) \times (n - 2) \times\cdots\times 2 \times 1}
-                            {(n - x)\times (n - x - 1) \times \cdots \times 2 \times 1} \times \frac{1}{n^x}\\
-  &= \lim_{n\to\infty}\frac{ \overbrace{n \times (n - 1) \times \cdots\times (n - x + 1)}^{\text{$x$ terms}}}
-                           { \underbrace{n \times n \times\cdots \times n\times n}_{\text{$x$ terms}}}\\
-  &= \lim_{n\to\infty} \frac{n}{n} \times \frac{n - 1}{n} \times \frac{n - 2}{n} \times\cdots\times \frac{n - x + 1}{n}\\
-  &= 1 \times 1\times\cdots\times 1 = 1.
-\end{align*}
-For the next component, see that (using \@ref(eq:ExponentialLimit)):
-$$
-  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{n} = \exp(-\lambda).
-$$
-For the last term:
-$$
-  \lim_{n\to\infty} \left(1 - \frac{\lambda}{n}\right)^{-x} = 1^{-x} = 1.
-$$
-Putting the pieces together:
-\begin{align*}
-   \lim_{n\to\infty}
-   p_X(x; n, \lambda) 
-   &= 
-   \frac{\lambda^x}{x!} 
-   \lim_{n\to\infty} \frac{n!}{(n - x)!} \frac{1}{n^x} 
-   \left(1 - \frac{\lambda}{n}\right)^{n}  \left(1 - \frac{\lambda}{n}\right)^{-x}\\
-   p_X(x; \lambda) 
-   &= \frac{\lambda^k}{x!}
-   1 \times \exp(-\lambda) \times 1\\
-   &= \frac{\exp(-\lambda) \lambda^x}{x!},
-\end{align*}
-for $x = 0, 1, 2, \dots$.
-This is the probability function for the *Poisson distribution*.
-A *Poisson process*\index{Poisson process} refers to events that occur at a *rate*\ $\lambda$, and occur at random.
-
-The definition of the Poisson distribution can now be given.
-
-
-:::{.definition #PoissonDistribution name="Poisson distribution"}
-A random variable\ $X$ is said to have a *Poisson distribution* if its probability function is
-\begin{equation}
-   p_X(x; \lambda) = \frac{\exp(-\lambda)\, \lambda^x}{x!}\quad \text{for $x = 0, 1, 2, \dots$}
-   (\#eq:PoissonPMF)
-\end{equation}
-where the rate parameter is $\lambda > 0$.
-We write $X\sim\text{Poisson}(\lambda)$.
-:::
-
-
-:::{.definition #PoissonDistributionDF name="Poisson distribution: distribution function"}
-For a random variable\ $X$ with the Poisson distribution given in Eq.\ \@ref(eq:PoissonPMF), the distribution function is
-$$
-  F_X(x; \lambda) = 
-  \begin{cases}
-    0                                  & \text{for $x < 0$}\\
-    \displaystyle \exp(-\lambda) \sum _{i = 0}^{\lfloor x \rfloor }{\frac {\lambda ^{i}}{i!}} & \text{for $x\ge 0$};\\
-  \end{cases}
-$$
-where $\lfloor z \rfloor$ is the *floor function*.\index{Floor function}
-:::
-
-
-```{r, child = if (knitr::is_html_output())  './children/DiscreteDist/Poisson_html.Rmd' }
-```
-
-```{r, child = if (knitr::is_latex_output()) './children/DiscreteDist/Poisson_latex.Rmd'}
-```
-
-
-### Properties {#PoissonProperties}
-
-The following are the basic properties of the Poisson distribution.
-
-::: {.theorem #PoissonProperties name="Poisson distribution properties"}
-If $X\sim\text{Poisson}(\lambda)$ then
-
-1. $\operatorname{E}[X] = \lambda$.
-2. $\operatorname{var}[X] = \lambda$.
-3. $M_X(t) = \exp[ \lambda\{\exp(t) - 1\}]$.
-4. The mode is\ $\lfloor\lambda\rfloor$ if\ $\lambda$ is not an integer; the two modes are $\lambda - 1$ and\ $\lambda$ if\ $\lambda$ is an integer.
-
-::::{.proof}
-The third result is proven, then the other results follow:
-\begin{align*}
-   M_X(t) = \operatorname{E}[\exp(tX)] 
-     &= \sum^\infty_{x = 0} \exp(xt)\,\exp(-\lambda) \lambda^x / x!\\
-     &= \exp(-\lambda) \sum^\infty_{x = 0} \frac{(\lambda\, \exp t)^x}{x!} \\
-     &= \exp(-\lambda) \left[ 1 + \lambda\, \exp t + \frac{(\lambda\,\exp t)^2}{2!} + \dots \right]\\
-     &= \exp(-\lambda) \exp(\lambda\, \exp t) = \exp\big(-\lambda (1 - \exp t)\big),
-\end{align*}
-using Eq.\ \@ref(eq:Exponential).
-The first two results follow from differentiating the MGF.
-::::
-:::
-
-
-The Poisson distribution has the variance equal to the mean.
-The negative binomial distribution has two parameters and the Poison only one, so often the negative binomial distribution produces a better fit to data.
-
-
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the Poisson distribution have the form `[dpqr]poiss(., lambda)` (see App.\ \@ref(UseRDistributions)):\index{dpois()@\texttt{dpois()}}
-
-* `dpois(x, lambda)` computes the PMF at $X = {}$`x`;
-* `ppois(q, lambda)` computes the PDF at $X = {}$`q`;
-* `qpois(p, lambda)` computes the quantile for cumulative probability `p`; and
-* `rpois(n, lambda)` generates `n` random numbers,
-
-where `lambda`${} = \lambda$.
-:::
-
-
-:::{.example #Queues name="Queuing"}
-Customers enter a service line at random, at a rate of $4$\ per minute.
-Assume that the number of people entering the line in any given time interval has a Poisson distribution.
-To determine the probability that at least one customer enters the line in a given $\frac{1}{2}$-minute interval, use (since $\lambda = 2$ over half-hour):
-$$
-   \Pr(X\geq 1) = 1 - \Pr(X = 0) = 1 - e^{-2} = 0.865.
-$$
-In **R**:
-```{r}
-1 - dpois(0, lambda = 2)
-```
-:::
-
-
-:::{.example #Bombs name="Bomb hits"}
-@clarke1946application (quoted in @data:hand:handbook, Dataset\ 289) discusses the number of flying bomb hits on London during World War II in a $36$\ square kilometre area of South London.
-The area was gridded into $0.25$\ km squares and the number of bombs falling in each grid was counted (Table\ \@ref(tab:BombTable)).
-Assuming random hits, the Poisson distribution can be used to model the data using $\lambda = 0.93$.
-The probabilityfunction for the Poisson distribution can be compared to the empirical probabilities\index{Empirical probability function} computed above; see Table\ \@ref(tab:BombTable).
-For example, the probability of zero hits is
-$$
-   \frac{\exp(-0.93) (0.93)^0}{0!} \approx 0.39.
-$$
-The two probabilities are very close; the Poisson distribution fits the data very well.
-:::
-
-
-```{r BombTable, echo=FALSE}
-BombTable <- array( dim = c(8, 4))
-colnames(BombTable) <- c("Hits",
-                         "Number of bombs",
-                         "Empirical proportion",
-                         "Poisson proportion")
-BombTable[, 1] <- 0:7
-BombTable[, 2] <- c(229,
-                    211,
-                    93,
-                    35,
-                    7,
-                    0,
-                    0,
-                    1)
-BombTable[, 3] <- round(BombTable[, 2] / sum(BombTable[, 2]), 4)
-lambda <- 0.93 # sum( BombTable[, 1] * BombTable[, 3])
-
-BombTable[, 4] <- dpois(0:7,
-                        lambda = lambda )
-BombTable[, 4] <- round( BombTable[, 4], 4)
-BombTable[ 8, 4] <- 1 - sum( BombTable[1:7, 4])
-
-BombTable.caption <- "The number of flying bomb hits on London during World War II in a $36$\\ square kilometre area of South London. The proportion of the $576$\\ grid squares receiving $0, 1, ...$ hits was also computed. The observed and empirical probabilities are shown. The Poisson distribution fits the data well."
-
-if( knitr::is_latex_output() ) {
-  knitr::kable( BombTable,
-                format = "latex",
-                booktabs = TRUE,
-                longtable = FALSE,
-                linesep = c("", "", "\\addlinespace"),
-                col.names = c("Hits",
-                              "Number bombs", 
-                              "Proportion bombs", 
-                              "Poisson proportion"),
-                caption = BombTable.caption) %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE)
-}
-if( knitr::is_html_output() ) {
-  knitr::kable( BombTable,
-                format = "html",
-                booktabs = TRUE,
-                longtable = FALSE,
-                linesep = c("", "", "\\addlinespace"),
-                col.names = c("Hits",
-                              "Number bombs", 
-                              "Proportion bombs", 
-                              "Poisson proportion"),
-                caption = BombTable.caption) %>%
-    row_spec(1, bold = TRUE)
-}
-```
-
-
-
-### Relationship to the binomial distribution {#PoissonBinomial}
-
-Given the derivation of the Poisson distribution (Sect.\ \@ref(PoissonDerivation)), a relationship between the Poisson and binomial distributions should be no surprise.
-
-Computing binomial probabilities is tedious if the number of trials\ $n$ is very large and the probability of success in a single trial is very small. 
-For example, consider $X\sim \text{Bin}(n = 2000, p = 0.005)$; the probability function is
-$$
-   p_X(x) = \binom{2000}{x}(0.005)^x 0.995^{2000 - x}.
-$$
-Using the probability mass function, computing some probabilities, such as $\Pr(X > 101)$, is tedious.
-(Try computing $\binom{2000}{102}$ on your calculator, for example.)
-However, the Poisson distribution can be used to *approximate* this probability.
-
-Set the Poisson mean to equal the binomial mean (that is, $\lambda = \mu = np$).
-Since $\operatorname{E}[Y] = \operatorname{var}[Y] = \lambda$ for the Poisson distribution, this means the variance is also set to $\sigma^2 = np$.
-Of course, the binomial mean is $np(1 - p)$, so this can only be (approximately) true if\ $p$ is close to zero (and so $1 - p\approx 1$).
-
-A general guideline is that the Poisson distribution can be used to approximate the binomial when $n$\ is large (recall, the derivation was for the case $n\to\infty$), $p$\ is small and $np \le 7$.
-
-
-::: {.linkBox .link data-latex="{iconmonstr-link-1-240.png}"}
-If the random variable\ $X$ has the binomial distribution $X \sim \text{Bin}(n, p)$, the probability function can be approximated by the Poisson distribution $X \sim \text{Poisson}(\lambda)$, where $\lambda = np$.
-The approximation is good when\ $n$ is large, $p$\ is small, and $np\le 7$.
-:::
-
-
-```{r BinomialPoisson, echo=FALSE, fig.align="center", fig.cap="The Poisson distribution is an excellent approximation to the binomial distribution when $p$ is small and $n$ is large. The binomial probability function is shown using empty circles; the Poisson probability function using crosses.", fig.height = 7, fig.width=7, out.width='80%'}
-par( mfrow = c(2, 2))
-
-n <- c(10, 50, 
-       100, 1000)
-p <- c(0.2, 0.1, 
-       0.010, 0.005)
-xmax <- c(10, 20, 
-          10, 15)
-
-for (i in (1:4)) {
-   pValue <- p[i]
-   nValue <- n[i]
-   
-  x <-  0:n[i]
-  y <- dbinom(x, 
-              size = n[i],
-              prob = p[i])
-  
-   plot( x = x,
-         y = y,
-         xlim = c(0, xmax[i]),
-         xlab = expression(italic(x)),
-         ylab = "Probability",
-         main = bquote("Binomial: " ~ italic(n) == ~ .(nValue) ~ "and" ~ italic(p) == .(pValue) ),
-         lwd = 2,
-         las = 1,
-         lty = 3,
-         col = "grey",
-         type = "h")
-  points(x = x,
-         y = y,
-         pch = 19)
-
-  muPoisson <- nValue * pValue
-  xValues <- 0:xmax[i]
-  points( x = xValues,
-          y = dpois(xValues,
-                    lambda = muPoisson),
-          pch = 4,
-          cex = 1.5)
-  
-  if (i == 4 ){
-    legend("topright",
-           pch = c(4, 19),
-           pt.cex = c(1.5, 1),
-           legend = c("Binomial",
-                      "Poisson approx."))
-  }
-  
-}
-```
-
-
-### Poisson distribution: extensions {#PoissonExtensions}
-
-The Poisson distribution is commonly used to model independent counts.
-However, sometimes these counts explicitly *exclude* a count of zero.
-For example, consider modelling $X$, the number of nights patients spend in hospital; the hospital is only interested in $X > 0$. 
-The probability function can be expressed as
-$$
-   p_X(x; \lambda) = \frac{\exp(-\lambda)\, \lambda^{x - 1}}{(x - 1)!}\quad   \text{for $x = 1, 2, 3, \dots$}
-$$
-where the parameter is $\lambda > 0$.
-This is called the *zero-truncated Poisson distribution*.\index{Poisson distribution!zero-truncated}
-In this case, $\operatorname{E}[X] = \lambda + 1$ and $\operatorname{var}[X] = \lambda$ (Ex. \@ref(exr:PoissonZeroTruncated)).
-
-In some cases, the random variable is a count, but has an upper limit (usually a large value) on the possible number of counts.
-Suppose the random variable $X$ has a Poisson distribution, but is defined only over $X = \{0, 1, 2, \dots m\}$; then the probability mass function is
-$$
-   P(X = x \mid X \le m) 
-    = \frac{\exp(-\lambda)\,\lambda^x / x!}{\sum_{j=0}^{m} \exp(-\lambda)\,\lambda^j / j!}
-    = \frac{\lambda^x / x!}{\sum_{j=0}^{m} \lambda^j / j!}\quad\text{for $x = 0, 1, \ldots, m$}.
-$$
-This is the *truncated Poisson distribution* (or the *right-truncated Poisson distribution*).\index{Poisson distribution!truncated}
-
-Other situations exist where the the proportions of zeros exceed the proportions expected by the Poisson distribution (e.g., $\exp(-\lambda)$), but the Poisson distributions seems to otherwise be suitable.
-In these situations, the *zero-inflated Poisson distribution* may be suitable.\index{Poisson distribution!zero-inflated}
-\index{Poisson distribution|)}
 
 
 ## Hypergeometric distribution {#HypergeometricDistribution}
@@ -1563,9 +1625,9 @@ text(x = 4.4,
 The probabilities can be computed, however, using the counting ideas from Chap.\ \@ref(Probability).
 There are a total of $\binom{10}{3}$ ways of selecting a sample of size $k = 3$ from the bag.
 Consider the case $X = 0$.
-The number of ways of drawing no light-coloured balls is $\binom{6}{0}$ and the number of ways of drawing the three dark-coloured balls in $\binom{4}{3}$, so the probability is
+The number of ways of drawing no light-coloured balls is $\binom{6}{0}$ and the number of ways of drawing the three dark-coloured balls is $\binom{4}{3}$, so the probability is
 $$
-   \Pr(X = 0) = \frac{\binom{6}{0}\binom{4}{3}}{\binom{10}{3}} \approx 0.00833.
+   \Pr(X = 0) = \frac{\binom{6}{0}\binom{4}{3}}{\binom{10}{3}} \approx 0.0333.
 $$
 Likewise, the number of ways to draw one light-coloured ball (and hence two dark-coloured balls; Fig.\ \@ref(fig:HypergeometricHelp)) is $\binom{6}{1}\times \binom{4}{2}$, so
 $$
@@ -1597,12 +1659,14 @@ We are interested in the probability of $x$\ successes in $k$\ trials, when the 
 Then the random variable\ $X$ is said to have a *hypergeometric distribution* with probability function
 \begin{equation}
    p_X(x; n, m, k) = \frac{ \binom{m}{x}\binom{n}{k - x}}{\binom{m + n}{k}}
-   \quad\text{for $\max(0, k - n) \le x \le \min(n, m)$}.
+   \quad\text{for $\max(0, k - n) \le x \le \min(k, m)$}.
    (\#eq:HypergeometricPMF)
 \end{equation}
+We write $X\sim\text{Hypergeometric}(n, m, k)$.
 :::
 
-The distribution function is complicated and is not given.
+
+The distribution function has no simple closed form and is not given.
 
 
 ### Properties {#HypergeometricProperties}
@@ -1610,7 +1674,7 @@ The distribution function is complicated and is not given.
 The following are the basic properties of the hypergeometric distribution.
 
 
-:::{.theorem #HypergeomatricDistributionProperties name="Hypergeometric distribution properties"}
+:::{.theorem #HypergeometricDistributionProperties name="Hypergeometric distribution properties"}
 If\ $X$ has a hypergeometric distribution with probability function\ \@ref(eq:HypergeometricPMF), then (writing $N = m + n$)
 
 1. $\operatorname{E}[X] = km/N$.
@@ -1621,7 +1685,7 @@ The moment generating function is difficult and will not be considered.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The four **R** functions for working with the hypergeometric distribution functions have the form `[dpqr]hyper(., m, n, k)` (see App.\ \@ref(UseRDistributions)):\index{dhyper()@\texttt{dhyper()}}
+The four **R** functions for working with the hypergeometric distribution have the form `[dpqr]hyper(., m, n, k)` (see App.\ \@ref(UseRDistributions)):\index{dhyper()@\texttt{dhyper()}}
 
 * `dhyper(x, m, n, k)` computes the PMF at $X = {}$`x`;
 * `phyper(q, m, n, k)` computes the CDF at $X = {}$`q`;
@@ -1643,7 +1707,7 @@ But suppose there are $10\,000$\ balls in the bag, of which $6\,000$ are light-c
 The probability of drawing a light-coloured ball initially is $6000 / 10,000 = 0.6$, and the probability that the next ball is light-coloured becomes $5999/9999 = 0.59996$; the probability is almost the same.
 In this case, we might consider using the binomial distribution with $p\approx 0.6$.
 
-In general, if\ $N$ is much larger than $k$, the population proportion then will be approximately $p\approx m/N$, and so $1 - p \approx (N - m)/N$.
+In general, if\ $N$ is much larger than $k$, the population proportion is $p m/N$, and so $1 - p = (N - m)/N$.
 Using this information,
 $$
    \operatorname{E}[X] = k \times (m/N) \approx kp
@@ -1691,11 +1755,7 @@ The distributions discussed in this chapter are standard and commonly-used discr
 
 The *Zeta distribution*\index{Zeta distribution} (or sometimes, the *Zipf distribution*),\index{Zipf distribution} defined for $x = 1, 2, \dots$, is often used in linguistics, and for heavy-tailed counts.
 
-While the Poisson distribution is commonly used to model counts, two important variations to the Poisson distribution exist.
-The *zero-truncated Poisson distribution*,\index{Poisson distribution!zero-truncated} with range $\mathcal{R}_X = \{1, 2, \dots\}$, is used to model counts where counts of zero are impossible (i.e., the number of night of hospital stay for in-patients).
-In contrast, the *zero-inflated Poisson distribution*,\index{Poisson distribution!zero-inflated} with range $\mathcal{R}_X = \{0, 1, 2, \dots\}$, is used to model counts where the proportion of zeros is higher than expected when using the Poisson distribution.
-
-The *beta-binomial distribution*\index{Beta-binomial distribution} occurs when with a binomial distribution where the success probability\ $p$ is itself random (beta-distributed) variable (see Chap.\ \@ref(BayesianIntro)).
+The *beta-binomial distribution*\index{Beta-binomial distribution} occurs with a binomial distribution, where the success probability\ $p$ is itself a random (beta-distributed) variable (see Chap.\ \@ref(BayesianIntro)).
 This distribution is useful when overdispersion\index{Overdispersion} is present relative to the binomial (that is, the variance is larger than expected using the binomial distribution).
 
 The *Conway–Maxwell–Poisson* (COM-Poisson)\index{Conway–Maxwell–Poisson} is a flexible generalisation of the Poisson that can handle both overdispersion\index{Overdispersion} and underdispersion\index{Underdispersion}  (that is, the variance is larger and smaller respectively than expected using the Poisson distribution), and is increasingly used for modelling count data.
@@ -1713,7 +1773,7 @@ Many applications (in finance, epidemiology, engineering, machine learning) rely
 This book introduces the distributions that provide the building blocks for these more complex simulations.
 
 Distributions can be used to *simulate* practical situations, using random numbers generated from specific distributions.
-In **R**, these function start with the letter `r` (see Sect.\ \@ref(UseRDistributions) for details for specific distributions); for example: \index{rpois()@\texttt{rpois()}}\index{rgeom()@\texttt{rgeom()}}\index{rbinom()@\texttt{rbinom()}}
+In **R**, these functions start with the letter `r` (see Sect.\ \@ref(UseRDistributions) for details for specific distributions); for example: \index{rpois()@\texttt{rpois()}}\index{rgeom()@\texttt{rgeom()}}\index{rbinom()@\texttt{rbinom()}}
 
 ```{r echo=FALSE}
 set.seed(107283)
@@ -1726,12 +1786,12 @@ rpois(10,              # Generate 10 random numbers...
 
 ###   Random numbers from Geometric(p = 0.3):
 rgeom(10,              # Generate 10 random numbers...
-      p = 0.3)         # ... with p = 0.3
+      prob = 0.3)      # ... with p = 0.3
 
 ###   Random numbers from Binomial(n = 4, p = 0.3):
 rbinom(10,             # Generate 10 random numbers...
        size = 4,       # ... with n = 4, and
-       p = 0.3)        # ... with p = 0.3
+       prob = 0.3)     # ... with p = 0.3
 ```
 
 Random numbers from a Bernoulli distribution are generated using `rbinom()`, setting the input `size` to one:
@@ -1740,9 +1800,7 @@ Random numbers from a Bernoulli distribution are generated using `rbinom()`, set
 set.seed(5809)
 ```
 ```{r}
-rbinom(10, 
-       size = 1,
-       prob = 0.75)
+rbinom(10, size = 1, prob = 0.75)
 ```
 
 By using random numbers from appropriate distributions, accurate models can be used to understand complex phenomena.
@@ -1750,8 +1808,8 @@ By using random numbers from appropriate distributions, accurate models can be u
 
 ### Example: laying eggs
 
-Consider a study of insects where a females lays $E$\ eggs, only some of which are fertile (based on @ito1977model).
-Suppose $E \sim \text{Poisson}(8.5)$, and the probability that any given egg is fertile is $p = 0.6$ (and assume the fertility of the eggs from any one female are independent).
+Consider a study of insects where a female lays $E$\ eggs, only some of which are fertile (based on @ito1977model).
+Suppose $E \sim \text{Poisson}(8.5)$, and the probability that any given egg is fertile is $p = 0.6$ (and assume the fertility of the eggs from any one female is independent of other females).
 
 The fertility for one females can be modelled in **R**:
 
@@ -1761,8 +1819,7 @@ set.seed(17283)
 
 ```{r}
 # One female
-NumberOfEggs <- rpois(1, 
-                      lambda = 8.5)
+NumberOfEggs <- rpois(1, lambda = 8.5)
 
 # How many eggs are fertile?
 NumberFertileEggs <- rbinom(1, # Only one random number for this one female
@@ -1772,7 +1829,7 @@ cat("Number of eggs:", NumberOfEggs,
     "| Number of fertile eggs:", NumberFertileEggs, "\n")
 ```
 
-Since random numbers are being generated, each simulation will produce different results, so we repeat this over many simulations (each generating different a realisation):\index{R@\textbf{R}!for loops}
+Since random numbers are being generated, each simulation will produce different results, so we repeat this over many simulations (each generating a different realisation):\index{R@\textbf{R}!for loops}
 
 
 ```{r echo=FALSE}
@@ -1798,17 +1855,18 @@ for (i in (1:numberSims)){       # For *each* simulation/insect...
 }
 ```
 
-We can then draw the empirical probability mass function\index{Empirical probability function} (Sect.\ \@ref(EmpiricalProbFunctions))\index{Empirical probability function} of the simulated number of fertile eggs laid by females (Fig. \@ref(fig:EggsSimulation)):\index{hist()@\texttt{hist()}}
+We can then draw the empirical probability mass function\index{Empirical probability function} (Sect.\ \@ref(EmpiricalProbFunctions))\index{Empirical probability function} of the simulated number of fertile eggs laid by females (Fig. \@ref(fig:EggsSimulation)):\index{barplot()@\texttt{barplot()}}
 
 
 ```{r EggsSimulation, fig.cap="The empirical probability mass function of the number of fertile eggs laid, over $5\\,000$\\ simulations.", fig.height=4, fig.width=5, out.width='56%', fig.align="center"}
-hist(NumberFertileEggs,
+barplot( table(NumberFertileEggs)/numberSims,
      las = 1, # Horizontal tick mark labels
      xlab = "Number of fertile eggs",
      ylab = "Count",
      main = "Number of fertile eggs:\n5000 simulations")
 ```
 
+The fertile-egg count here has an exact $\text{Poisson}(8.5\times 0.6 = 5.1)$ distribution.
 Using this information, questions can be answered about the number of fertile eggs layed.
 For example, what is the probability that a females lays more than six fertile eggs?
 
@@ -1860,7 +1918,7 @@ Three quantities are of interest to management:
 - The *number of calls*\ $C$ arriving in a one-hour period, modelled as $C \sim \text{Poisson}(\lambda = 12)$.
 - Whether each call is *resolved* on the first attempt, modelled as $\text{Bernoulli}(p = 0.7)$.
   Thus, the *number of calls resolved* in an hour is $R \sim \text{Bin}(C, 0.7)$, but since\ $C$ is random, this cannot be modelled using a simple binomial distribution.
-- The *number of calls until the first unresolved call*, modelled as $X \sim \text{Geom}(p = 0.7)$.
+- The *number of calls until the first unresolved call*, modelled as $X \sim \text{Geom}(p = 0.3)$.
 
 To simulate $n = 10\,000$ hours of call centre operation, we can use:
 \index{rpois()@\texttt{rpois()}}\index{rbinom()@\texttt{rbinom()}}\index{rgeom()@\texttt{rgeom()}}
@@ -1886,7 +1944,7 @@ cat("--- Number of calls ---\n",
     "Simulated mean:      ", round(mean(n_calls), 2), "\n\n")
 
 cat("--- First unresolved call ---\n",
-    "Theoretical mean:    ", (1 - p_res) / p_res, "\n")
+    "Theoretical mean:    ", p_res / (1 - p_res), "\n")
 
 
 cat("Simulated mean:      ", round(mean(first_fail), 2), "\n",
@@ -1908,7 +1966,7 @@ round(1 - ppois(15, lambda = lambda), 3)
 round(mean(n_calls > 15), 3)
 ```
 
-A measure of efficiency is the proportion of hours have zero unresolved calls.
+A measure of efficiency is the proportion of hours having zero unresolved calls.
 The number of unresolved calls per hour is $C - R$; an hour has zero unresolved calls when every call is resolved:
 
 ```{r}
@@ -1920,28 +1978,25 @@ round(mean(n_unresolved == 0), 3)
 
 
 We may also be interested in the probability of $3$\ or more consecutive unresolved calls in a sequence of $20$\ calls.
-Analytically this requires inclusion-exclusion over many cases; simulation is far more straightforward using `rle()`\index{rle()@\texttt{rle()}} (which compute the lengths of runs of equal values in a vector):
+Simulation using `rle()`\index{rle()@\texttt{rle()}} (which computes the lengths of runs of equal values in a vector) can be used:
 
 ```{r}
 streak3 <- replicate(n, {
-  resolved <- rbinom(20, 
-                     size = 1, 
-                     prob = p_res)
+  resolved <- rbinom(20, size = 1, prob = p_res)
   unres    <- 1 - resolved
   any(rle(unres)$lengths[rle(unres)$values == 1] >= 3)
 })
 
-###   "P(3+ consecutive unresolved in 20 calls):
+###  P(3+ consecutive unresolved in 20 calls):
 round(mean(streak3), 3)
 ```
 
 Suppose we also seek the probability that total handling time in an hour exceeds $60\mins$.
-Suppose each resolved call takes $H \sim \text{Geom}(p = 0.5)$ minutes to handle; then, the total handling time depends on both the random number of resolved calls and their random handling times.
-This compound randomness makes an analytic answer intractable:
+Suppose each resolved call takes $H \sim \text{Geom}(p = 0.1) + 1$ minutes to handle; then, the total handling time depends on both the random number of resolved calls and their random handling times.
 
 ```{r}
 total_time <- sapply(n_resolved, function(r) {
-  if (r == 0) 0 else sum(rgeom(r, prob = 0.5))
+  if (r == 0) 0 else sum(rgeom(r, prob = 0.1) + 1)
 })
 
 ###   P(total handling time > 60 min):
@@ -1959,7 +2014,7 @@ busy_day <- replicate(n, {
   any(rpois(8, lambda = lambda) > 20)
 })
 
-###   "Simulated probability:
+###  Simulated probability:
 round(mean(busy_day), 3)
 
 ### Theoretical probability:
@@ -1967,7 +2022,7 @@ round(1 - ppois(20, lambda = lambda)^8, 3)
 ```
 
 
-```{r echo=FALSE, fig.cap="Empirical probability mass functions from the call-center modelling. Left: the number of calls per hours. Right: the handling time per hour.", out.width='100%', fig.width=8, fig.height=4, fig.align="center" }
+```{r echo=FALSE, fig.cap="Left: the empirical probability mass functions from the call center modelling: the number of calls per hour. Right: the empirical density of the handling time per hour.", out.width='100%', fig.width=8, fig.height=4, fig.align="center" }
 par(mfrow = c(1, 2))
 barplot(table(n_calls) / n,
         main   = "Calls per hour",
@@ -2022,7 +2077,7 @@ Discrete uniform, Bernoulli, Binomial, Geometric, Poisson, Negative binomial, Hy
 Briefly justify your choice.
 
 1. A hospital records the number of emergency arrivals between 2pm and 3pm on a typical day.
-1. A factory inspects 12 items selected at random from a large production batch without replacement and counts how many are defective.
+1. A factory inspects $12$\ items selected at random from a large production batch without replacement and counts how many are defective.
 1. A machine is tested repeatedly until the 4th failure occurs, and the number of tests required is recorded.
 :::
 
@@ -2058,16 +2113,14 @@ A study by @data:Sutherland:SaltIntake found that about\ $30$% of Britons 'gener
 
 
 :::{.exercise #DiscreteSitting}
-@alleyImpactIncreasingSocial2017 (p.\ 91) state that
-
-> In Australia, $70$% of adults sit for more than $8$\ h per day.
+@alleyImpactIncreasingSocial2017 (p.\ 91) state that 'In Australia, $70$% of adults sit for more than $8$\ h per day'.
 
 1. In a group of $20$\ randomly-chosen Australians, what is the probability that at least\ $15$ sat for more than $8\hs$ per day?
 1. In a group of $20$\ randomly-chosen Australians, what is the probability that more than\ $10$ sat for more than $8\hs$ per day?
 1. In a group of $20$\ randomly-chosen Australians, what is the probability that between\ $10$ and $15$ (inclusive) sat for more than $8\hs$ per day?
 1. What is the probability that $5$\ randomly-chosen Australians would need to be selected to find one that sat for *less* than $8\hs$ per day?
-1. What is the probability that at least $5$\ randomly-chosen Britons would need to be selected to find the first sat for *more* than $8\hs$ per day?
-1. What is the probability that at least $10$\ randomly-chosen Britons would need to be selected to find\ $5$ that sat for more than $8\hs$ per day?
+1. What is the probability that at least $5$\ randomly-chosen Australians would need to be selected to find the first sat for *more* than $8\hs$ per day?
+1. What is the probability that at least $10$\ randomly-chosen Australians would need to be selected to find\ $5$ that sat for more than $8\hs$ per day?
 1. What assumptions are being made in the above calculations?
 :::
 
@@ -2076,10 +2129,10 @@ A study by @data:Sutherland:SaltIntake found that about\ $30$% of Britons 'gener
 A study by @loyeung2018experimental examined whether people could identify potential placebos.
 The $81$\ subjects were each presented with five different supplements, and asked to select which *one* was the legitimate herbal supplement based on the taste (the rest were placebos).
 
-1. What is the probability that more than\ $15$ will correctly identify the legitimate supplement?
-1. What is the probability that at least\ $12$ correctly identify the legitimate supplement?
-1. What is the probability that the first person to identify the legitimate supplement is the third person tested?
-1. What is the probability that the fifth person to identify the legitimate supplement is the $10$th person tested?
+1. What is the probability that more than\ $15$ will correctly identify the legitimate supplement, assuming guessing at random?
+1. What is the probability that at least\ $12$ correctly identify the legitimate supplement, assuming guessing at random?
+1. What is the probability that the first person to identify the legitimate supplement is the third person tested, assuming guessing at random?
+1. What is the probability that the fifth person to identify the legitimate supplement is the $10$th person tested, assuming guessing at random?
 1. In the study, $50$\ people correctly selected the true herbal supplement.
    What does this suggest?
 :::
@@ -2101,6 +2154,7 @@ drinking coffee daily.
 
 :::{.exercise #DiscreteNoisyMiners}
 A study by @data:Maron:eucthreshold used statistical modelling to show that the mean number of noisy miners (a type of bird) in sites with about\ $15$ eucalypts per two hectares was about\ $3$.
+Assume the number of miners per site can be modelled using a Poisson distribution.
 
 1. In a two hectare site with $15$\ eucalypts, what is the probability of observing no noisy miners?
 1. In a two hectare site with $15$\ eucalypts, what is the probability of observing more than\ $5$ noisy miners?
@@ -2111,10 +2165,9 @@ A study by @data:Maron:eucthreshold used statistical modelling to show that the 
 :::
 
 
-
-
 :::{.exercise #DiscreteInsuranceClaims}
-Let\ $X$ be the number of insurance claims per year for a certain portfolio, with a mean of\ $12$ claims per year.
+Let\ $X$ be the number of insurance claims per year for a certain portfolio.
+Assume $X$ can be modelled using a Poisson distribution with a mean of\ $12$ claims per year.
 
 1. What is the probability of more than $15$\ claims being made in a year?
 1. What is the probability of fewer than $8$\ claims being made in a year?
@@ -2145,7 +2198,7 @@ At a later point, more animals are trapped, and the number tagged is noted.
 
 Define\ $p$ as the probability that an animal is captured zero times during the study, and\ $n_x$ as the number of animals captured $x$\ times (for $x = 0, 1, 2, \dots$).
 ($n_0$, which we write as\ $N$, is unknown.)
-The study consist of $s$\ trapping events, so we have $n_1$, $n_2, \dots n_s$ where\ $s$ is sufficiently 'large' that the truncation is negligible.
+The study consists of $s$\ trapping events, so we have $n_1$, $n_2, \dots n_s$ where\ $s$ is sufficiently 'large' that the truncation is negligible.
 Then,
 \begin{equation}
    n_x = N p (1 - p)^x \quad \text{for $x = 0, 1, 2, \dots$}.
@@ -2154,9 +2207,9 @@ Then,
 While\ $p$ and\ $N$ are both unknown, the value of\ $N$ (effectively, the population size) is of interest.
 
 1. Explain *how* \@ref(eq:GeomCapture) arises from understanding the problem.
-1. Take logarithms of both sides of of \@ref(eq:GeomCapture), and hence write this equation in the form of a linear (regression) equation.
+1. Take logarithms of both sides of \@ref(eq:GeomCapture), and hence write this equation in the form of a linear (regression) equation.
 1. Identify *how* to estimate\ $p$ from knowing an estimate of the slope of the line (say, $\beta_1$), and then how to estimate\ $N$ from the $y$-intercept (say, $\beta_0$).
-1. Use the data in Table \@ref(tab:RabbitPop), from a study of rabbits in an area Michigan [@eberhardt1963problems, to plot the appropriate plot to show the linear relationship.
+1. Use the data in Table \@ref(tab:RabbitPop), from a study of rabbits in an area of Michigan [@eberhardt1963problems], to produce the appropriate plot to show the linear relationship.
    On this plot, draw a sensible regression line (by eye is fine), and hence estimate the rabbit population.
 
 
@@ -2212,16 +2265,16 @@ Define\ $p$ as the probability that a single day records more than this threshol
 
 
 
-:::{.exercise}
-A negative binomial distribution\index{Negative binomial distribution} was used to model the number of parasites on feral cats on on Kerguelen Island [@hwang2016estimating].
-The model used is parameterised so that $\mu = 8.7$ and $k = 0.4$, where $\operatorname{var}[X] = \mu + \mu^2/k$.
+:::{.exercise #FeralCats}
+A negative binomial distribution\index{Negative binomial distribution} was used to model the number of parasites on feral cats on Kerguelen Island [@hwang2016estimating].
+The model used is parameterised so that $\mu = 8.7$ and $k = 1/\alpha = 0.4$, where $\operatorname{var}[X] = \mu + \mu^2/k$.
 
-1. Use the above information to determine the negative binomial parameters used for the parameterisation in Sect. \@ref(def:GeometricDistributionALT).
+1. Use the above information to determine the negative binomial parameters used for the parameterisation in Sect. \@ref(NegBinAlternativeParameterisation).
 1. Determine the probability that a feral cat has more than\ $10$ parasites.
 1. The cats with the largest\ $10$% of parasites have how many parasites?
 :::
 
-:::{.exercise}
+:::{.exercise #DiscreteSingleCells}
 A study investigating bacterial sample preparation procedures for single-cell studies  [@koyama2016bacterial] studied, among other bacteria, *E.\ coli\ 110*.
 The number of bacteria in 2$\mu$L samples was modelled using a Poisson distribution\index{Poisson distribution} with $\lambda = 1.04$.
 
@@ -2232,39 +2285,37 @@ The number of bacteria in 2$\mu$L samples was modelled using a Poisson distribut
 
 
 
-:::{.exercise}
-A study of accidents in coal mines [@sari2009stochastic] used a Poisson distribution\index{Poisson distribution} with $\lambda = 12.87$.
+:::{.exercise #DiscreteCoalAccidents}
+A study of accidents in coal mines [@sari2009stochastic] used a Poisson distribution\index{Poisson distribution} with $\lambda = 12.87$ per month.
 
 1. Plot the distribution.
 1. Compute the probability of more than one accident per day in February.
 :::
 
 
-:::{.exercise}
+:::{.exercise #DiscreteHeatSpells}
 In a study of heat spells [@furrer2010statistical] examined three cities.
 In Paris, a 'hot' day was defined as a day with a maximum over\ $27$^$\circ$^C; in Phoenix, a 'hot' day was defined as a day with a maximum over $40.8$^$\circ$^C.
 
 The length of a heat spell\ $X$ was modelled using a geometric distribution,\index{Geometric distribution} with $p = 0.40$ in Paris, and $\lambda = 0.24$ in Phoenix.
 
 1. On the same graph, plot both probability functions.
-1. For each city, what is the probability that a heat spell last longer than a week?
-1. For each city, what is the probability that a heat spell last longer than a week, given it has lasted two days?
+1. For each city, what is the probability that a heat spell lasts longer than a week?
+1. For each city, what is the probability that a heat spell lasts longer than a week, given it has lasted two days?
 :::
 
 
-:::{.exercise}
-A study of crashes at intersections [@lord2005poisson] examined high risk intersections, and modelled the number of crashes with a Poisson distribution\index{Poisson distribution} using $\lambda = 11.5$ per day.
+:::{.exercise #DiscreteIntersectionCrashes}
+A study of crashes [@lord2005poisson] examined high risk intersections, and modelled the number of crashes with a Poisson distribution\index{Poisson distribution} using $\lambda = 11.5$ per day.
 
-1. What proportion of such intersection would be expected to have zero crashes?
-1. What proportion of such intersection would be expected to have more than five crashes?
+1. What proportion of such intersection would be expected to have zero crashes per day?
+1. What proportion of such intersection would be expected to have more than five crashes per day?
 :::
-
-
 
 
 :::{.exercise #LayDate}
 A *negative binomial* distribution\index{Negative binomial distribution!alternative parameterisation} was used to model the day on which eggs were layed by glaucous-winged gulls [@zador2006balancing].
-The authors used a different parameterisation of the negative binomial distribution, with the two parameters\ $\mu$ (the mean) and\ $\phi$ (the overdispersion parameter).
+The authors used the mean--dispersion parameterisation of the negative binomial distribution (Sect.\ \@ref(NegBinAlternativeParameterisation)), with the two parameters\ $\mu$ (the mean) and\ $\phi = 1/\alpha$.
 (In\ **R**, these are called `mu` and `size` respectively when calling `dnbinom()` and friends.)
 The *expected* 'lay date' (from Day\ $0$) was $23.0$ in 1999, and $19.5$ in 2000;
 the overdispersion parameter was $\phi = 20.6$ in 1999 and $\phi = 8.9$ in 2000.
@@ -2317,20 +2368,14 @@ if( knitr::is_html_output() ) {
 ```
 
 
-
-
-
-
-
 ::: {.exercise #NegativeBinomialALT}
-The negative binomial distribution\index{Negative binomial distribution!alternative parameterisation} was defined in Sect \@ref(NegativeBinomialDistribution) for the random variable\ $X$, which represented the number of failures until the $r$th\ success.
+The negative binomial distribution\index{Negative binomial distribution!alternative parameterisation} was defined in Sect.\ \@ref(NegativeBinomialDistribution) for the random variable\ $X$, which represented the number of failures until the $r$th\ success.
 An alternative parameterisation is to define the random variable\ $Y$ as the number of trials necessary to obtain\ $r$ successes.
 
 1. Define the range for\ $Y$; explain.
 1. Deduce the probability function for\ $Y$.
 1. Determine the mean, variance and MGF of\ $Y$, using the results already available for\ $X$.
 :::
-
 
 
 :::{.exercise #PoissonTypos}
@@ -2344,7 +2389,7 @@ Suppose typos made by a typist on a typing test form a *Poisson process* with th
 
 
 :::{.exercise #RiverDepth}
-The depth of a river varies from the 'normal' level, say\ $Y$ (in metres), a specific location with a PDF given by $f(y) = 1/4$ for $-2 \le y \le 2$.
+The depth of a river varies from the 'normal' level, say\ $Y$ (in metres), at a specific location with a PDF given by $f(y) = 1/4$ for $-2 \le y \le 2$.
 
 1. Find the probability that\ $Y$ is greater than $1\ms$.
 2. If readings on four different days are taken what is the probability that exactly two are greater than $1\ms$?
@@ -2353,22 +2398,23 @@ The depth of a river varies from the 'normal' level, say\ $Y$ (in metres), a spe
 
 :::{.exercise #QueuingPois}
 Poisson distributions\index{Poisson distribution!queuing} are used in *queuing theory* to model the formation of queues.
-Suppose that a certain queue is modelled with a Poisson distribution with a mean of $0.5$\ arrivals per minute.
+Suppose that arrivals at a certain queue is modelled with a Poisson distribution with a mean of $0.5$\ arrivals per minute.
 
 1. Use **R** to simulate the arrivals from 8AM to 9AM (for one simulation, plot the queue length after each minute).
    Produce $100$\ simulations, and hence compute the mean and standard deviation of people in the queue at 9AM.
-1. Suppose a server begins work at 8:30AM serving customers (e.g., removing them from the queue) at the rate of $0.7$\ per minute.
+1. Suppose a server begins work at 8:30AM serving customers (e.g., removing them from the queue), and that the number of customers being served per minutes can be modelled with a Poisson distribution at the rate of $0.7$\ per minute.
    Again, use **R** to simulate the arrivals for $60\mins$ (for one simulation, plot the queue length after each minute).
    Produce $100$\ simulations, and hence compute the mean and standard deviation of people in the queue at 9AM.
-1. Suppose one server begins work at 8:30AM as above, and another servers begins at 8:45; together the two can serve customers (e.g., removing them from the queue) at the rate of $1.3$\ per minute.
+1. Suppose one server begins work at 8:30AM as above, and another server begins at 8:45; together the two can serve customers (e.g., removing them from the queue) at the rate of $1.3$\ per minute.
    Again, use **R** to simulate the arrivals for 60 minutes (for one simulation, plot the queue length after each minute).
    Produce $100$\ simulations, and hence compute the mean and standard deviation of people in the queue at 9AM.
 :::
 
 
 :::{.exercise #PoissonEqualValues}
-For the Poisson distribution in \@ref(eq:PoissonPMF), determine the values of $\lambda$ such that $\Pr(X) = \Pr(X + 1)$.
+For the Poisson distribution in \@ref(eq:PoissonPMF), determine the values of $\lambda$ such that $\Pr(X = x) = \Pr(X = x + 1)$.
 :::
+
 
 :::{.exercise #HypergeometricFPC}
 Consider the mean and variance for the hypergeometric distribution.\index{Hypergeometric distribution}
@@ -2392,8 +2438,8 @@ Prove the results in Theorem\ \@ref(thm:GeometricProperties), by first finding t
 :::
 
 
-:::{.exercise #PoissonZeroTruncated}
-Prove these results from Sect.\ \@ref(PoissonExtensions): $\operatorname{E}[X] = \lambda + 1$ and $\operatorname{var}[X] = \lambda$ for the zero-truncated Poisson distribution.\index{Poisson distribution!zero-truncated}
+:::{.exercise #PoissonShifted}
+Prove these results from Sect.\ \@ref(PoissonExtensions): $\operatorname{E}[X] = \lambda + 1$ and $\operatorname{var}[X] = \lambda$ for the shifted Poisson distribution.\index{Poisson distribution!shifted}
 :::
 
 
@@ -2503,7 +2549,7 @@ Before shipping, an inspector samples $10$\ items, without replacement, from the
 * If $0$\ defectives are found in the sample, the batch is shipped as-is.
 * If $1$\ defective is found, the inspector discards the defective item only, draws one more item from the remaining items in the batch to replace it in the sample, and re-checks.
   (This replacement item is also inspected, but not replaced again even if it is defective.)
-  If this bew item is defective, the batch is rejected; otherwise , the batch is shipped.
+  If this new item is defective, the batch is rejected; otherwise, the batch is shipped.
 * If $2$\ or more defectives are found in the original sample of\ $10$, the whole batch is rejected.
 
 Let  $N$ be the number of batches, out of $200$\ independently produced batches, that get rejected.
@@ -2518,20 +2564,26 @@ Let  $N$ be the number of batches, out of $200$\ independently produced batches,
 
 
 :::{.exercise #SpecDiscreteSuccesShrinkingPool}
-A recruiter has a list of $40$\ candidates: $15$ are "qualified" and $25$ are not. 
-She calls candidates one at a time, without replacement, in a random order.
-She stops calling as soon as she finds a qualified candidate, but each candidate she calls (qualified or not) only picks up the phone with probability\ $0.7$ independently; if they don't pick up, she moves to the next name on the list without that call "counting" toward anything except time spent.
+A recruiter has a list of $40$\ candidates, of whom $3$ are 'qualified'.
+She calls the candidates one at a time, in random order, and each candidate is called at most once.
+Each candidate answers the call independently with probability\ $0.7$.
+She stops as soon as she reaches a qualified candidate who answers; if there is no such candidate, she works through the whole list.
 
-Let $T$\ be the number of phone calls she makes (attempts, including no-answers) until she either successfully places a call to a qualified candidate, or exhausts the list of\ $40$.
+Let $T$\ be the number of calls she makes ($T = 40$ if the list is exhausted).
 
-1. If every candidate always picked up, what named distribution would describe the number of candidates called until the first qualified one is reached? Why does the finite list (without replacement) rule out treating this as Geometric?
-1. Now add back the "$70$% pickup" complication. 
-   Explain why\ $T$ is no longer cleanly Hypergeometric or Geometric, but has features of both.
-1. Write some **R** code to simulate one realisation of $T$.
-   You will need to simulate a random shuffle of the $40$\ candidates ($15$ qualified; $25$ not), then walk down the list simulating pickup/no-pickup for each.
-1. Estimate $\operatorname{E}[T]$ and $\Pr(\text{list exhausted with no successful qualified contact})$.
-1. Simulate what would happen to this second probability if the pickup rate dropped to\ $0.3$.
+1. Suppose every candidate answers, and let\ $K$ be the number of candidates called
+   until the first qualified one is reached.
+
+   (a) Find $\Pr(K = 1)$ and $\Pr(K = 2)$, and give a formula for $\Pr(K = k)$.
+   (b) Explain why $K$ is not geometric. (Hint: what is $\Pr(K = 38)$?)
+   (c) Compare $\operatorname{E}[K] = 41/4$ with the mean of a geometric distribution with success probability $3/40$.
+2. Now include the $70$% answer rate.
+   Explain how the without-replacement structure (which candidates are qualified) and the independent answering (each call succeeds with probability\ $0.7$) combine to determine\ $T$.
+3. Write **R** code to simulate one realisation of\ $T$.
+4. Simulate $10\,000$ realisations to estimate $\operatorname{E}[T]$ and $\Pr(\text{no qualified candidate answers})$.
+5. Repeat with answer rate $0.3$, and comment.
 :::
+
 
 :::{.exercise #SpecDiscreteIndependenceA}
 For each scenario below:
@@ -2547,7 +2599,7 @@ The scenarios are:
    Let\ $X$ be the number of sign-ups out of the next $500$\ visits.
 2. A batch of $20$\ circuit boards was just produced, and $3$ are known to be faulty (a fixed, already-realised fact about this specific batch: the faults happened during manufacture and won't change). 
    A technician selects $5$\ boards at random from the batch to test. 
-   Let \$X$ be the number of faulty boards found among the $5$\ selected.
+   Let\ $X$ be the number of faulty boards found among the $5$\ selected.
 3. A web server crashes on average once every $4\hs$ during normal operation. 
    Following a botched software update this morning, the server has become unstable: each crash triggers an automatic restart into the same faulty state, which sharply increases the chance of another crash soon afterward, before engineers roll back the update. 
    Let\ $X$ be the number of crashes in the $6\hs$ immediately following the update.
@@ -2597,7 +2649,7 @@ $$
   \end{cases}
 $$
 
-1. Let $U \sim \text{Discrete Uniform}(1, 100)$.
+1. Let $U \sim \text{Discrete uniform}(1, 100)$.
    Write down the explicit piecewise function $Y = g(U)$ that maps $U$ to $Y$ by partitioning the $100$ outcomes.
 2. Write some **R** code to simulate $N = 1\,000$ draws of $U$, map them to $Y$, and output the empirical probability function alongside the theoretical probabilities $p_Y(y)$.
 :::
@@ -2616,9 +2668,21 @@ $$
   \end{cases}
 $$
 
-1. Specify the discrete uniform range $1 \dots M$ required so that $U \sim \text{Discrete Uniform}(1, M)$ can represent these probabilities with exact integer boundaries.
+1. Specify the discrete uniform range $1 \dots M$ required so that $U \sim \text{Discrete uniform}(1, M)$ can represent these probabilities with exact integer boundaries, with the smallest possible value of\ $M$.
 2. Write down the piecewise mapping function $Y = g(U)$.
 3. Write some **R** code to simulate $N = 1\,000$ draws of $U$, map them to $Y$, and output the empirical probability function alongside the theoretical probabilities $p_Y(y)$.
 :::
 
+
+:::{.exercise #SpecNegBinAltOverdispersion}
+Consider the mean--dispersion parameterisation of the negative binomial distribution (Sect.\ \@ref(NegBinAlternativeParameterisation)) in terms of\ $\mu$ and\ $\alpha$.
+
+1. Show that $\operatorname{var}[X] = \mu + \alpha\mu^2$ for this parameterisation.
+2. Show that, for fixed\ $\mu$, the variance approaches that of a Poisson distribution with mean\ $\mu$ as $\alpha \to 0$.
+3. Explain why larger values of $\alpha$ correspond to greater *overdispersion* in the counts\ $X$.
+   (Overdispersion relative to a Poisson distribution with the same mean\ $\mu$ means that    $\operatorname{var}[X] > \operatorname{E}[X]$.)\index{Overdispersion}
+4. Explain why the negative binomial distribution cannot be used to model   *underdispersion*.\index{Underdispersion}
+5. Show that, for fixed\ $\mu$, the probability function of the negative binomial distribution in Eq.\ \@ref(eq:NegativeBinomialPMFalt) converges to the probability function of a Poisson distribution with mean\ $\mu$ as $\alpha\to 0$.
+   (Hint: use $\Gamma(r + 1) = r\,\Gamma(r)$ from Theorem\ \@ref(thm:GammaFunctionProperties), and the limit $(1 + a/n)^n \to e^{a}$ as $n\to\infty$.)
+:::
 ::::
