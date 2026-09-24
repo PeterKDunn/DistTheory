@@ -4820,77 +4820,71 @@ c(estimate = prob_N_ge_20_direct,
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:SpecDiscreteSuccesShrinkingPool).**
 
-1. If everyone always picked up, the number of candidates called until the first qualified one is found (inclusive) would be related to the classic "waiting time in sampling without replacement" problem. 
-It's *not* geometric, because geometric assumes an infinite sequence of iid trials with a *constant* success probability at every step. 
-Here the pool is finite and shrinks: once a non-qualified candidate is called, the probability the *next* candidate is qualified changes (there are fewer non-qualified candidates left in the pool), so the "trials" are not independent nor identically distributed. 
-This waiting time is best described directly as arising from a random permutation of the $40$\ candidates: its distribution is related to a negative hypergeometric distribution (not in this book), so simulation is the practical tool.
-2. Adding the $70$% pickup rate layers a Geometric-flavoured filter (independent Bernoulli trials for "did they pick up?") on top of a hypergeometric-flavoured structure (sampling without replacement determines *when* a qualified name
-comes up in the order). 
-$T$ depends jointly on where the qualified candidates happen to fall in a random shuffle *and* on an independent sequence of coin flips for pickup: two different random mechanisms entangled together, which is why $T$ matches neither a geometric nor a hypergeometric distribution on its own.
-3. 
+1. (a) Sequential conditioning gives
+   \[
+     \Pr(K = 1) = \frac{3}{40} = 0.075, \qquad
+     \Pr(K = 2) = \frac{37}{40}\times\frac{3}{39} = \frac{37}{520}\approx 0.0712.
+   \]
+   In general, the first $k - 1$ candidates are unqualified and the $k$th is qualified:
+   \[
+     \Pr(K = k)
+     = \left[\prod_{i = 0}^{k - 2}\frac{37 - i}{40 - i}\right]\frac{3}{41 - k}
+     = \frac{\binom{40 - k}{2}}{\binom{40}{3}}
+     \quad\text{for $k = 1, 2, \dots, 38$.}
+   \]
+   The second form counts the ways to place the other two qualified candidates among the $40 - k$ positions after position\ $k$.
 
-```{r recruiter-sim-function}
-simulate_T <- function(n_qual = 15, n_unqual = 25, pickup = 0.7) {
-  total <- n_qual + n_unqual
+   (b) The trials are not independent, and the support is bounded.
+       If $K$ were geometric with $p = 3/40$, then $\Pr(K = 2)$ would be $(37/40)(3/40)$, but the true value is $(37/40)(3/39)$, because the pool changes after each call.
+       Also, $\Pr(K = 39) = 0$, since at most $37$ unqualified candidates can come before the first qualified one, whereas a geometric distribution gives positive probability to every\ $k$.
 
-  # random shuffle of the candidate list: 1 = qualified, 0 = not
-  order <- sample(c(rep(1L, n_qual), rep(0L, n_unqual)))
+   (c) The three qualified candidates split the $37$ unqualified candidates into four gaps, which by symmetry have the same expected size, $37/4$.
+   Since $K = 1 + (\text{size of the first gap})$,
+   \[
+     \operatorname{E}[K] = 1 + \frac{37}{4} = \frac{41}{4} = 10.25.
+   \]
+   A geometric distribution with $p = 3/40$ has mean $1/p = 40/3\approx 13.3$.
+   Sampling without replacement finds the first qualified candidate sooner on average.
+2. Which candidates are qualified is a without-replacement (hypergeometric-type) mechanism.
+   Whether a call is answered is independent with probability $0.7$ (Bernoulli/geometric-type).
+   Let\ $M$ be the number of qualified candidates who *would* answer.
+   Since each of the three answers independently, $M\sim\text{Bin}(3, 0.7)$.
+   Given $M = m\ge 1$, these $m$ candidates occupy $m$ uniformly random positions in the list, and $T$ is the smallest of those positions.
+   This is the situation in Part 1, with mean $41/(m + 1)$.
+   If $M = 0$ the list is exhausted and $T = 40$.
+   So $T$ is a binomial mixture of negative hypergeometric distributions.
+3. See code below.
+4. Exact values (for checking the simulation): $M\sim\text{Bin}(3, 0.7)$ gives $\Pr(M = 0, 1, 2, 3) = 0.027, 0.189, 0.441, 0.343$, so
+\begin{align*}
+     \Pr(\text{exhausted}) 
+     &= \Pr(M = 0) = 0.3^3 = 0.027\\
+     \implies \operatorname{E}[T]
+     &= \sum_{m = 1}^{3}\Pr(M = m)\frac{41}{m + 1} + 40\times 0.027
+     &= 3.87 + 6.03 + 3.52 + 1.08 \approx 14.50.
+\end{align*}
+5. With answer rate $0.3$, $\Pr(M = 0, 1, 2, 3) = 0.343, 0.441, 0.189, 0.027$, so $\Pr(\text{exhausted}) = 0.7^3 = 0.343$ and $\operatorname{E}[T] = 9.04 + 2.58 + 0.28 + 13.72 \approx 25.62$.
+   Reducing the answer rate from $0.7$ to $0.3$ raises the chance of exhausting the list from about $3$% to about $34$%, and the mean number of calls from about $14.5$ to $25.6$.
+   The mean does not scale in proportion to $1/(\text{answer rate})$, because $T$ cannot exceed $40$.
+:::
 
-  for (i in seq_len(total)) {
-    picks_up <- rbinom(1, 1, pickup)
-    if (picks_up == 1 && order[i] == 1) {
-      return(list(T = i, success = TRUE))
-    }
+
+```{r}
+sim_T <- function(n_qual = 3, n_total = 40, p_answer = 0.7) {
+  qualified <- sample(c(rep(TRUE,  n_qual), 
+                        rep(FALSE, n_total - n_qual)))
+  answered  <- runif(n_total) < p_answer
+  hit <- which(qualified & answered)
+  if (length(hit) == 0) {
+    c(T = n_total, exhausted = 1) 
+  } else {
+    c(T = hit[1], exhausted = 0)
   }
-
-  # exhausted the list without a successful qualified contact
-  return(list(T = total, success = FALSE))
 }
 
-# sanity check
-replicate(5, simulate_T()["T"])
+set.seed(100896)
+rowMeans(replicate(10000, sim_T(p_answer = 0.7)))   # about 14.5 and 0.027
+rowMeans(replicate(10000, sim_T(p_answer = 0.3)))   # about 25.6 and 0.343
 ```
-
-4. 
-
-```{r recruiter-many-sims}
-n_reps <- 1000
-
-results <- replicate(n_reps, simulate_T(), simplify = FALSE)
-T_values      <- sapply(results, function(x) x$T)
-success_flags <- sapply(results, function(x) x$success)
-
-E_T_hat            <- mean(T_values)
-P_exhausted_hat     <- mean(!success_flags)
-
-E_T_hat
-P_exhausted_hat
-
-se_exhausted <- sqrt(P_exhausted_hat * (1 - P_exhausted_hat) / n_reps)
-c(estimate = P_exhausted_hat,
-  lower = P_exhausted_hat - 1.96 * se_exhausted,
-  upper = P_exhausted_hat + 1.96 * se_exhausted)
-```
-
-*Intuition for pickup = 0.3:* with a lower pickup rate, each call is much less likely to "count", so the recruiter is far more likely to burn through all 40 names (many of them unanswered) without ever successfully reaching
-one of the $15$\ qualified candidates who picks up. 
-We'd expect
-$\Pr(\text{exhausted})$ to rise substantially, and $\operatorname{E}[T]$ to rise too (closer to\ $40$, since more calls get "wasted" on no-answers regardless of qualification).
-
-```{r recruiter-lower-pickup}
-results_lowpickup <- replicate(n_reps, simulate_T(pickup = 0.3), simplify = FALSE)
-T_values_lp      <- sapply(results_lowpickup, function(x) x$T)
-success_flags_lp <- sapply(results_lowpickup, function(x) x$success)
-
-E_T_hat_lp        <- mean(T_values_lp)
-P_exhausted_hat_lp <- mean(!success_flags_lp)
-
-E_T_hat_lp
-P_exhausted_hat_lp
-```
-
-Comparing `P_exhausted_hat` (pickup: $0.7$) against `P_exhausted_hat_lp` (pickup: $0.3$) confirms the intuition directly from simulated relative frequencies, with no need to derive either probability analytically.
-:::
 
 
 :::{.answer data-latex=""}
@@ -4971,8 +4965,8 @@ print(round(res, 4))
 :::{.answer data-latex=""}
 **Exercise\ \@ref(exr:SpecUseDiscreteB).**
 
-1. Since probablilities are given to three decimal places, use $M = 1000$.
-2. $Y = 1$ for $1 \le U \le 725$; $Y = 2$ for $725\le U \le 975$; $Y = 3$ for $976 \le U \le 1000$.
+1. Since probablilities are given to three decimal places, the smallest value is $M = 40$.
+2. $Y = 1$ for $1 \le U \le 29$; $Y = 2$ for $29 < U \le 39$; $Y = 3$ for $39 <e U \le 40$.
 3. See **R** below.
 :::
 
@@ -4998,6 +4992,82 @@ res <- rbind(Empirical = empirical_pmf,
 print(round(res, 4))
 ```
 
+
+:::{.answer data-latex=""}
+**Exercise\ \@ref(exr:SpecNegBinAltOverdispersion).**
+
+1. For the $(p, r)$ parameterisation, $\operatorname{E}[X] = r(1-p)/p$ and
+   $\operatorname{var}[X] = r(1-p)/p^2$.
+   Since $\mu = r(1-p)/p$,
+   \[
+     \operatorname{var}[X]
+     = \frac{r(1-p)}{p}\cdot\frac{1}{p}
+     = \frac{\mu}{p}.
+   \]
+   In the mean--dispersion parameterisation, $r = 1/\alpha$ and $p = r/(r + \mu)$, so
+   \[
+     \frac{1}{p} = \frac{r + \mu}{r} = 1 + \frac{\mu}{r} = 1 + \alpha\mu.
+   \]
+   Hence
+   \[
+     \operatorname{var}[X] = \mu(1 + \alpha\mu) = \mu + \alpha\mu^2.
+   \]
+2. From Part 1, for fixed\ $\mu$,
+   \[
+     \lim_{\alpha\to 0}\operatorname{var}[X]
+     = \lim_{\alpha\to 0}\left(\mu + \alpha\mu^2\right)
+     = \mu,
+   \]
+   which is the variance of a Poisson distribution with mean\ $\mu$.
+3. For a Poisson distribution with mean\ $\mu$, $\operatorname{var}[X] = \mu$.
+   For the negative binomial distribution,
+   \[
+     \operatorname{var}[X] - \operatorname{E}[X] = \alpha\mu^2 > 0,
+   \]
+   so $\operatorname{var}[X] > \operatorname{E}[X]$ for every $\alpha > 0$:
+   the counts are overdispersed relative to a Poisson distribution with the
+   same mean.
+   The excess variance $\alpha\mu^2$ (equivalently, the variance-to-mean ratio
+   $\operatorname{var}[X]/\operatorname{E}[X] = 1 + \alpha\mu$)
+   increases as\ $\alpha$ increases, so larger\ $\alpha$ means
+   greater overdispersion.
+   As $\alpha \to 0$ the excess variance vanishes (Part 2).
+4. Underdispersion means $\operatorname{var}[X] < \operatorname{E}[X]$.
+   For the negative binomial distribution, $\operatorname{var}[X] - \operatorname{E}[X]
+   = \alpha\mu^2$ is strictly positive for all $\alpha > 0$ and $\mu > 0$,
+   so the variance always exceeds the mean.
+   The negative binomial distribution therefore cannot model underdispersion.
+5. Write $\phi = 1/\alpha$, so that $\alpha\to 0$ means $\phi\to\infty$.
+   Applying $\Gamma(r + 1) = r\,\Gamma(r)$ repeatedly, $x$ times,
+   \[
+     \frac{\Gamma(x + \phi)}{\Gamma(\phi)}
+     = (\phi + x - 1)(\phi + x - 2)\cdots(\phi + 1)\,\phi
+     = \prod_{k=0}^{x-1} (\phi + k).
+   \]
+   Then the probability function can be rearranged as
+   \[
+     p_X(x;\mu,\alpha)
+     = \frac{\mu^x}{x!}
+       \left[\prod_{k=0}^{x-1} \frac{\phi + k}{\phi + \mu}\right]
+       \left(1 + \frac{\mu}{\phi}\right)^{-\phi}.
+   \]
+   For fixed\ $x$ and\ $\mu$, as $\phi\to\infty$:
+
+   * each of the $x$ factors in the product satisfies
+     $\dfrac{\phi + k}{\phi + \mu}\to 1$, so the product tends to\ $1$; and
+   * $\left(1 + \mu/\phi\right)^{-\phi}\to e^{-\mu}$.
+
+   Hence
+   \[
+     p_X(x;\mu,\alpha)\;\to\;\frac{\mu^x e^{-\mu}}{x!}
+     \quad\text{as }\alpha\to 0,
+   \]
+   which is the probability function of a Poisson distribution with
+   mean\ $\mu$.
+:::
+
+
+:::
 
 
 <!-- ******************************************************************************************* --> 
